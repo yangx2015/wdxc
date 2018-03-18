@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ldz.job.mapper.ClClMapper">
+
+
+
+<resultMap type="com.ldz.job.model.ClCl" id="ClClresultMap">
+        <id column="CL_ID" property="clId" />
+		<result column="CPH" property="cph" />
+		<result column="JGDM" property="jgdm" />
+		<result column="JGMC" property="jgmc" />
+		<result column="CX" property="cx" />
+		<result column="ZKL" property="zkl" />
+		<result column="DL" property="dl" />
+		<result column="CJSJ" property="cjsj" />
+		<result column="CJR" property="cjr" />
+		<result column="XGSJ" property="xgsj" />
+		<result column="XGR" property="xgr" />
+		<result column="SJ_ID" property="sjId" />
+		<result column="SJXM" property="sjxm" />
+		<result column="ZT" property="zt" />
+		<result column="TP" property="tp" />
+		<result column="SCS" property="scs" />
+		<result column="XH" property="xh" />
+		<result column="ZDBH" property="zdbh" />
+        <result column="CCDJRQ" property="ccdjrq" />
+		<result column="CDBH" property="cdbh" />
+		<result column="BXGSMC" property="bxgsmc" />
+		<result column="BXSJ" property="bxsj" />
+		<result column="NSSJ" property="nssj" />
+
+</resultMap>
+</mapper>

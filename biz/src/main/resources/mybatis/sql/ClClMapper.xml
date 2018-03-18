@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ldz.biz.module.mapper.ClClMapper">
+
+<!-- 启用二级缓存，收回策略使用FIFO：先进先出:按对象进入缓存的顺序来移除它们。
+		LRU – 最近最少使用的:移除最长时间不被使用的对象。（默认）
+     	FIFO – 先进先出:按对象进入缓存的顺序来移除它们。
+      	SOFT – 软引用:移除基于垃圾回收器状态和软引用规则的对象。
+      	WEAK – 弱引用:更积极地移除基于垃圾收集器状态和弱引用规则的对象。
+	 -->
+	<!--<cache type="com.jxba.mybatis.cache.MybatisRedisCache"></cache>-->
+<select id="seleByZdbh" resultMap="ClClresultMap" parameterType="java.lang.String">
+SELECT t3.id,t3.wlmc,t3.jgdm,t3.jgmc,t3.mj,t3.dlxxzb,t3.ksjd,t3.kswd,t3.zt,t3.cjsj,t3.cjr,t3.xgsj,t3.xgr 
+FROM CL_CL t1,CL_DZWL_CL t2,CL_DZWL t3 WHERE t1.CL_ID=t2.CL_ID and t2.WL_ID=t3.id and t1.ZDBH=#{deviceId}
+</select>
+
+<resultMap type="com.ldz.biz.module.model.ClCl" id="ClClresultMap">
+        <id column="CL_ID" property="clId" />
+		<result column="CPH" property="cph" />
+		<result column="JGDM" property="jgdm" />
+		<result column="JGMC" property="jgmc" />
+		<result column="CX" property="cx" />
+		<result column="ZKL" property="zkl" />
+		<result column="DL" property="dl" />
+		<result column="CJSJ" property="cjsj" />
+		<result column="CJR" property="cjr" />
+		<result column="XGSJ" property="xgsj" />
+		<result column="XGR" property="xgr" />
+		<result column="SJ_ID" property="sjId" />
+		<result column="SJXM" property="sjxm" />
+		<result column="ZT" property="zt" />
+		<result column="TP" property="tp" />
+		<result column="SCS" property="scs" />
+		<result column="XH" property="xh" />
+		<result column="ZDBH" property="zdbh" />
+        <result column="CCDJRQ" property="ccdjrq" />
+		<result column="CDBH" property="cdbh" />
+		<result column="BXGSMC" property="bxgsmc" />
+		<result column="BXSJ" property="bxsj" />
+		<result column="NSSJ" property="nssj" />
+		<collection property="clDzwlCl" ofType="com.ldz.biz.module.model.ClDzwlCl">
+		<id column="ID" property="id" />
+		<result column="WL_ID" property="wlId" />
+		<result column="CL_ID" property="clId" />
+		<result column="CPH" property="cph" />
+		<result column="CJSJ" property="cjsj" />
+		<result column="CJR" property="cjr" />
+		</collection>
+		<collection property="clDzwl" ofType="com.ldz.biz.module.model.ClDzwl">
+		<id column="ID" property="id" />
+		<result column="WLMC" property="wlmc" />
+		<result column="JGDM" property="jgdm" />
+		<result column="JGMC" property="jgmc" />
+		<result column="MJ" property="mj" />
+		<result column="DLXXZB" property="dlxxzb" />
+		<result column="KSJD" property="ksjd" />
+		<result column="KSWD" property="kswd" />
+		<result column="ZT" property="zt" />
+		<result column="CJSJ" property="cjsj" />
+		<result column="CJR" property="cjr" />
+		<result column="XGSJ" property="xgsj" />
+		<result column="XGR" property="xgr" />
+		</collection>
+</resultMap>
+
+</mapper>

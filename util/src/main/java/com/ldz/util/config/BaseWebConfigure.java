@@ -1,0 +1,44 @@
+package com.ldz.util.config;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.StringHttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * Spring基础配置
+ * @author 李彬彬
+ *
+ */
+@Configuration
+public class BaseWebConfigure extends WebMvcConfigurerAdapter {
+
+	/**
+	 * 扩展配置Spring消息转换器
+	 */
+	@Override
+	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {		
+		super.configureMessageConverters(converters);
+		MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
+		json.setDefaultCharset(Charset.forName("UTF-8"));
+		List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
+		supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
+		supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
+		supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+		json.setSupportedMediaTypes(supportedMediaTypes);
+		//格式化日期对象。如果字段中有Date类型字段，自动转换为String格式的字符串，防止转成long类型传递至前台
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+		json.setObjectMapper(mapper);
+		converters.add(json);
+		converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+	}
+}

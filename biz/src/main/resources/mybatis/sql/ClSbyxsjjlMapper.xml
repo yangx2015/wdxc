@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ldz.biz.module.mapper.ClSbyxsjjlMapper">
+
+	<insert id="ClSbyxsjj" parameterType="com.ldz.biz.module.model.ClSbyxsjjl" useGeneratedKeys="false">
+		INSERT INTO CL_SBYXSJJL (ID,ZDBH,SJJB,CJSJ,JD,WD,JID,SJLX,YXFX,BZ)
+		VALUES
+		(#{id,jdbcType=VARCHAR},#{zdbh,jdbcType=VARCHAR},#{sjjb,jdbcType=VARCHAR},#{cjsj,jdbcType=DATE},
+		 #{jd,jdbcType=NUMERIC},#{wd,jdbcType=NUMERIC},#{jid,jdbcType=NUMERIC},
+		 #{sjlx,jdbcType=VARCHAR},#{yxfx,jdbcType=DOUBLE},#{bz,jdbcType=VARCHAR})
+	</insert>
+
+
+</mapper>
