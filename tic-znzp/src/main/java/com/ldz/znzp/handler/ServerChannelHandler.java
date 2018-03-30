@@ -2,7 +2,6 @@ package com.ldz.znzp.handler;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -27,8 +26,6 @@ import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.bean.ZnzpOnlineBean;
 import com.ldz.znzp.exception.IotException;
-import com.ldz.znzp.mapper.ClXlMapper;
-import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.server.IotServer;
 import com.ldz.znzp.service.ClService;
 import com.ldz.znzp.service.XlService;
@@ -68,22 +65,11 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	private ClService clService;
 	
 	@Autowired
-	private ClXlMapper cllxMapper;
-	@Autowired
 	SnowflakeIdWorker idWorker;
 	
 	// 连接成功后，向server发送消息 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		ClXl exist = cllxMapper.getManyData("1");
-		System.out.println(exist);
-		ClXl record = new ClXl();
-		record.setId(String.valueOf(idWorker.nextId()));
-		record.setXlmc("测试线路3");
-		record.setXlbh("3");
-		record.setCjsj(new Date());
-		record.setCd(20d);
-		cllxMapper.insertSelective(record);
 		//将新建立的通道放入group中
 		IotServer.onlineChannels.add(ctx.channel());
 		super.channelActive(ctx);

@@ -86,6 +86,18 @@ public class ClGps implements Serializable {
     @Column(name = "DWJD")
     private Short dwjd;
 
+    /**
+     * 方向角
+     */
+    @Column(name = "FXJ")
+    private BigDecimal fxj;
+
+    /**
+     * 运行速度
+     */
+    @Column(name = "YXSD")
+    private String yxsd;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -322,6 +334,42 @@ public class ClGps implements Serializable {
         this.dwjd = dwjd;
     }
 
+    /**
+     * 获取方向角
+     *
+     * @return FXJ - 方向角
+     */
+    public BigDecimal getFxj() {
+        return fxj;
+    }
+
+    /**
+     * 设置方向角
+     *
+     * @param fxj 方向角
+     */
+    public void setFxj(BigDecimal fxj) {
+        this.fxj = fxj;
+    }
+
+    /**
+     * 获取运行速度
+     *
+     * @return YXSD - 运行速度
+     */
+    public String getYxsd() {
+        return yxsd;
+    }
+
+    /**
+     * 设置运行速度
+     *
+     * @param yxsd 运行速度
+     */
+    public void setYxsd(String yxsd) {
+        this.yxsd = yxsd;
+    }
+
     public enum InnerColumn {
         zdbh("ZDBH"),
         lx("LX"),
@@ -335,7 +383,9 @@ public class ClGps implements Serializable {
         gdwd("GDWD"),
         cjsj("CJSJ"),
         gxsj("GXSJ"),
-        dwjd("DWJD");
+        dwjd("DWJD"),
+        fxj("FXJ"),
+        yxsd("YXSD");
 
         private final String column;
 

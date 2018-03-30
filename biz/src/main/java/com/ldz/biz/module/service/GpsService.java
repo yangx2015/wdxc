@@ -43,5 +43,5 @@ public interface GpsService extends BaseService<ClGps,String>{
      * 根据gps点位信息转换成推送至前端的模型
      * @parm ClGps GpsInfo
      */
-    websocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs);
+    websocketInfo changeSocket(GpsInfo gpsinfo ,ClGps clpgs);
 }
