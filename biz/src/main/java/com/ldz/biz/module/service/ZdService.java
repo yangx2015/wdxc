@@ -20,5 +20,5 @@ public interface ZdService extends BaseService<ClZd,String>{
      * @param xlId  线路ID
      * @return
      */
-    List<DdClModel> getBySiteVehicleList(String xlId);
+    ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId);
 }

@@ -93,17 +93,16 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     }
 
     @Override
-    public List<DdClModel> getBySiteVehicleList(String xlId) {
+    public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
         List<DdClModel> clZds=entityMapper.getBySiteVehicleList(xlId);
         if(clZds!=null){
             SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
             condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
             condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
-            Iterator<ClClyxjl> iter = xlzds.iterator();
-
             if(xlzds!=null&&xlzds.size()>0){
                 for(DdClModel clZd:clZds){
+                    Iterator<ClClyxjl> iter = xlzds.iterator();
                     if(clZd.getVehicleCount()>0){
                         List<ClClyxjlModel> list=new ArrayList<ClClyxjlModel>();
                         while (iter.hasNext()) {
@@ -131,7 +130,9 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                 }
             }
         }
-        return clZds;
+        ApiResponse<List<DdClModel>> apiResponse=new ApiResponse<List<DdClModel>>();
+        apiResponse.setResult(clZds);
+        return apiResponse;
     }
 
     @Override
