@@ -1,6 +1,6 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.exception.RuntimeCheck;
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;

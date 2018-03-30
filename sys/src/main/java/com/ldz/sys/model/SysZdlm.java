@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 @Table(name = "SYS_ZDLM")
 public class SysZdlm implements Serializable {
+    @Id
     @Column(name = "LMDM")
     private String lmdm;
 

@@ -3,9 +3,10 @@ package com.ldz.biz.module.service.impl;
 import java.util.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.ldz.biz.exception.RuntimeCheck;
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClSpkMapper;
@@ -22,7 +23,10 @@ import tk.mybatis.mapper.common.Mapper;
 public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements SpkService{
     @Autowired
     private ClSpkMapper entityMapper;
-
+     
+    @Value("${spk.url}")
+	private String path;
+    
     @Autowired
     private ClClMapper clclmapper;
 
@@ -70,7 +74,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		ClCl clinfo = clclmapper.selectOne(selectOne);
 		
 		clSpk.setDz(entity.getFileLocalPath());//本地地址 必传
-		clSpk.setUrl(entity.getFilePath());//url   必传
+		clSpk.setUrl(path+entity.getFilePath());//url   必传
 		clSpk.setWjm(entity.getFileRealName());//文件名称  必传
 		clSpk.setZdbh(entity.getDeviceId());//设备id  必传
 		clSpk.setSplx(entity.getFilePostfix());//文件后缀 ->视屏类型 必传

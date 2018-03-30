@@ -8,7 +8,6 @@ import java.util.Date;
 public class SysJs implements Serializable {
     @Id
     @Column(name = "JS_ID")
-    @GeneratedValue(generator = "JDBC")
     private String jsId;
 
     @Column(name = "JSMC")

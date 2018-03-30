@@ -159,18 +159,20 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
                                 condition.lte(fieldName, value);
                             }
                         } else if ("InRange".equals(optType)) {
-                            String[] arrs = value.split(",");
-                            if (existField.getType().isInstance(new Date())) {
-                                condition.gte(fieldName, DateUtils.getDate(arrs[0], "yyyy-MM-dd"));
-                            } else {
-                                condition.gte(fieldName, arrs[0]);
-                            }
-
-                            if (arrs.length == 2) {
+                            if (StringUtils.isNotBlank(value.replaceAll(",","").trim())){
+                                String[] arrs = value.split(",");
                                 if (existField.getType().isInstance(new Date())) {
-                                    condition.lte(fieldName, DateUtils.getDate(arrs[1], "yyyy-MM-dd"));
+                                    condition.gte(fieldName, DateUtils.getDate(arrs[0], "yyyy-MM-dd"));
                                 } else {
-                                    condition.lte(fieldName, arrs[1]);
+                                    condition.gte(fieldName, arrs[0]);
+                                }
+
+                                if (arrs.length == 2) {
+                                    if (existField.getType().isInstance(new Date())) {
+                                        condition.lte(fieldName, DateUtils.getDate(arrs[1], "yyyy-MM-dd"));
+                                    } else {
+                                        condition.lte(fieldName, arrs[1]);
+                                    }
                                 }
                             }
                         } else if ("IsNull".equals(optType)) {

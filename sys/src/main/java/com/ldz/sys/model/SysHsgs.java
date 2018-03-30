@@ -9,7 +9,6 @@ import javax.persistence.*;
 public class SysHsgs implements Serializable {
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "JDBC")
     private String id;
 
     @Column(name = "CX")

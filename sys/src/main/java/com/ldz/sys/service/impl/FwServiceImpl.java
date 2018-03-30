@@ -1,37 +1,25 @@
 package com.ldz.sys.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.exception.RuntimeCheck;
-import com.ldz.sys.mapper.SysJgsqlbMapper;
-import com.ldz.sys.mapper.SysPtfwMapper;
-import com.ldz.sys.mapper.SysPtjgMapper;
-import com.ldz.sys.mapper.SysResourceMapper;
-import com.ldz.sys.mapper.SysRsRoleBizMapper;
-import com.ldz.sys.model.SysBiz;
-import com.ldz.sys.model.SysFw;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.model.SysJgsq;
-import com.ldz.sys.model.SysResource;
-import com.ldz.sys.model.SysRsRoleBiz;
-import com.ldz.sys.model.SysYh;
+import com.ldz.sys.mapper.*;
+import com.ldz.sys.model.*;
 import com.ldz.sys.service.FwService;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -60,6 +48,7 @@ public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwS
         boolean exists = ifExists(SysFw.InnerColumn.fwdm.name(),entity.getFwdm());
         RuntimeCheck.ifTrue(exists,"服务编号已存在");
         entity.setCjsj(new Date());
+        entity.setFwId(genId());
         bizMapper.insert(entity);
         return ApiResponse.success();
     }

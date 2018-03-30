@@ -12,5 +12,6 @@ import java.util.List;
  */
 public interface ZdxmService extends BaseService<SysZdxm,String>{
     List<SysZdxm> findByTypeCode(String typeCode);
+    List<SysZdxm> findByZdlms(List<String> zdlms);
     ApiResponse<String> add(SysZdxm zdxm);
 }

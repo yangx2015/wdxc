@@ -14,7 +14,6 @@ public class ClSbyxsjjl implements Serializable {
      */
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "JDBC")
     private String id;
 
     /**
@@ -54,7 +53,7 @@ public class ClSbyxsjjl implements Serializable {
     private BigDecimal jid;
 
     /**
-     * 事件类型
+     * 事件类型   //事件 10急加速，20急刹车，30急转弯 ，40超速，50点火，60熄火,70不在电子围栏范围,80离线
      */
     @Column(name = "SJLX")
     private String sjlx;

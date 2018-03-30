@@ -3,9 +3,13 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import lombok.ToString;
+
 import java.io.Serializable;
 import java.util.Date;
 
+@ToString
 @Table(name = "CL_XL")
 public class ClXl implements Serializable {
     /**

@@ -7,9 +7,11 @@ import com.ldz.sys.model.*;
 import com.ldz.sys.service.FwService;
 import com.ldz.sys.service.GnService;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -26,6 +28,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     private SysJsGnMapper jsGnMapper;
     @Autowired
     private JgService jgService;
+    @Autowired
+    private JsService jsService;
+    @Autowired
+    private GnService gnService;
     @Autowired
     private SysPtjgMapper ptjgMapper;
     @Autowired
@@ -47,6 +53,67 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     }
 
 
+    @Override
+    public ApiResponse<String> updateEntity(SysGn gn) {
+        SysGn oldRecord = gnMapper.selectByPrimaryKey(gn.getGndm());
+        RuntimeCheck.ifNull(oldRecord,"未找到记录");
+        RuntimeCheck.ifBlank(gn.getGndm(),"功能代码不能为空");
+        if (!gn.getGndm().equals(oldRecord.getGndm())){
+            boolean exists = ifExists(SysGn.InnerColumn.gndm.name(),gn.getGndm());
+            RuntimeCheck.ifTrue(exists,"功能代码已存在");
+        }
+        gn.setXgr(getOperateUser());
+        gn.setXgsj(new Date());
+        BeanUtils.copyProperties(gn,oldRecord);
+        gnMapper.updateByPrimaryKeySelective(oldRecord);
+
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<String> setRoleFunctions(String jsdm, List<String> gndms) {
+        RuntimeCheck.ifBlank(jsdm,"角色代码不能为空");
+        List<SysJs> roles = jsService.findEq(SysJs.InnerColumn.jgdm,jsdm);
+        RuntimeCheck.ifTrue(roles.size() == 0,"未找到记录");
+
+        SimpleCondition condition = new SimpleCondition(SysJsGn.class);
+        condition.eq(SysJsGn.InnerColumn.jsdm,jsdm);
+        jsGnMapper.deleteByExample(condition);
+
+        if (gndms == null || gndms.size() == 0)return ApiResponse.success();
+        List<SysGn> functionList = findIn(SysGn.InnerColumn.gndm,gndms);
+
+        String createUser = getOperateUser();
+        Date now = new Date();
+        List<SysJsGn> jsGns = new ArrayList<>();
+        for (SysGn function : functionList) {
+            SysJsGn jsGn = new SysJsGn();
+            jsGn.setGndm(function.getGndm());
+            jsGn.setJsdm(jsdm);
+            jsGn.setCjr(createUser);
+            jsGn.setCjsj(now);
+            jsGn.setFwdm(function.getFwdm());
+            jsGn.setFgndm(function.getFjd());
+            jsGn.setId(genId());
+            jsGns.add(jsGn);
+        }
+        jsGnMapper.insertList(jsGns);
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<List<SysGn>> getRoleFunctions(String jsdm) {
+        SimpleCondition condition = new SimpleCondition(SysJsGn.class);
+        condition.eq(SysJsGn.InnerColumn.jsdm,jsdm);
+        List<SysJsGn> roleFunctions = jsGnMapper.selectByExample(condition);
+        if (roleFunctions.size() == 0){
+            List<SysGn> gnList = new ArrayList<>();
+            return ApiResponse.success(gnList);
+        }
+        List<String> gndms = roleFunctions.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
+        List<SysGn> functions = gnService.findIn(SysGn.InnerColumn.gndm,gndms);
+        return ApiResponse.success(functions);
+    }
 
 
     /**

@@ -1,6 +1,5 @@
 package com.ldz.job.job;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,14 +11,10 @@ import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundListOperations;
 
 import com.ldz.job.mapper.ClClMapper;
-import com.ldz.job.mapper.ClGpsLsMapper;
-import com.ldz.job.mapper.ClGpsMapper;
 import com.ldz.job.model.ClCl;
-import com.ldz.job.model.ClGpsLs;
-import com.ldz.util.redis.RedisTemplateUtil;
+import com.ldz.job.service.GpsService;
 
 /**
  * 定时器说明:每隔10分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
@@ -33,38 +28,22 @@ import com.ldz.util.redis.RedisTemplateUtil;
 @DisallowConcurrentExecution
 public class GpsSaveJob implements Job {
 	Logger errorLog = LoggerFactory.getLogger("error_info");
-	@Autowired
-	private RedisTemplateUtil redis;
+
 	@Autowired
 	private ClClMapper clclmapper;
 	@Autowired
-	private ClGpsMapper clgpsmapper;
-	@Autowired
-	private ClGpsLsMapper clgpsls;
+	private GpsService GpsService;
+
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-
 		// 获取所有的终端编号
 		List<ClCl> gpslist = clclmapper.selectAll();
-		Collection<Object> zubhList = gpslist.stream().map(ClCl::getZdbh).collect(Collectors.toList());
-
-		// 从redis(实时)里面获取所有终端车辆的gps信息
-		List<Object> gpsList = redis.boundHashOps("GPSDW").multiGet(zubhList);
-
+		List<String> zubhList = gpslist.stream().map(ClCl::getZdbh).collect(Collectors.toList());
 		try {
+			for (String zdbh : zubhList) {
 
-			if (gpsList != null && gpsList.size() > 0) {
-				// 批量存入数据库里面
-				clgpsmapper.saveGpsList(gpsList);
-			}
-			for (Object gpsls : zubhList) {
-				BoundListOperations<Object, Object> cacheList = redis.boundListOps(gpsls);
-				for (int i = 0; i < cacheList.size(); i++) {
-					ClGpsLs rightPop = (ClGpsLs) cacheList.rightPop();
-					//将gps历史信息插入数据库里面
-					clgpsls.insertSelective(rightPop);
-				}
+				GpsService.InsetRedisToDb(zdbh);
 			}
 
 		} catch (Exception e) {

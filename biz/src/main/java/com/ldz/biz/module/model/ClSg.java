@@ -92,8 +92,8 @@ public class ClSg implements Serializable {
     /**
      * 修改时间
      */
-    @Column(name = "XGNR")
-    private Date xgnr;
+    @Column(name = "XGSJ")
+    private Date xgsj;
 
     /**
      * 修改人
@@ -112,6 +112,16 @@ public class ClSg implements Serializable {
      */
     @Column(name = "CLSJ")
     private Date clsj;
+    /**
+     * 联系电话
+     */
+    @Column(name = "LXDH")
+    private Date lxdh;
+    /**
+     * 备注
+     */
+    @Column(name = "BZ")
+    private Date bz;
 
     @Transient
     private List<ClSgwj> sgwjs;
@@ -125,6 +135,22 @@ public class ClSg implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public Date getBz() {
+        return bz;
+    }
+
+    public void setBz(Date bz) {
+        this.bz = bz;
+    }
+
+    public Date getLxdh() {
+        return lxdh;
+    }
+
+    public void setLxdh(Date lxdh) {
+        this.lxdh = lxdh;
+    }
 
     /**
      * 获取ID
@@ -365,17 +391,17 @@ public class ClSg implements Serializable {
      *
      * @return XGNR - 修改时间
      */
-    public Date getXgnr() {
-        return xgnr;
+    public Date getXgsj() {
+        return xgsj;
     }
 
     /**
      * 设置修改时间
      *
-     * @param xgnr 修改时间
+     * @param xgsj 修改时间
      */
-    public void setXgnr(Date xgnr) {
-        this.xgnr = xgnr;
+    public void setXgsj(Date xgsj) {
+        this.xgsj = xgsj;
     }
 
     /**
@@ -446,7 +472,7 @@ public class ClSg implements Serializable {
         sgms("SGMS"),
         cjsj("CJSJ"),
         cjr("CJR"),
-        xgnr("XGNR"),
+        xgsj("XGSJ"),
         xgr("XGR"),
         clId("CL_ID"),
         clsj("CLSJ");

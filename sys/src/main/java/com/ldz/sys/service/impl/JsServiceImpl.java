@@ -1,14 +1,8 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.mapper.SysClkPtjsMapper;
-import com.ldz.sys.mapper.SysJsGnMapper;
-import com.ldz.sys.mapper.SysUserMapper;
-import com.ldz.sys.mapper.SysYhJsMapper;
-import com.ldz.sys.model.SysJs;
-import com.ldz.sys.model.SysJsGn;
-import com.ldz.sys.model.SysUser;
-import com.ldz.sys.model.SysYhJs;
+import com.ldz.sys.mapper.*;
+import com.ldz.sys.model.*;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +21,7 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
     @Autowired
     private SysClkPtjsMapper roleMapper;
     @Autowired
-    private SysUserMapper userMapper;
+    private SysClkPtyhMapper userMapper;
     @Autowired
     private SysYhJsMapper userRoleMapper;
     @Autowired
@@ -40,6 +34,8 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
     @Override
     public ApiResponse<String> saveEntity(SysJs entity) {
         entity.setCjsj(new Date());
+        entity.setJsId(genId());
+        entity.setCjr(getOperateUser());
         roleMapper.insert(entity);
         return ApiResponse.success();
     }
@@ -91,19 +87,24 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
     @Override
     public ApiResponse<String> modifyUserRoles(String yhid, List<String> jsIds) {
         // 检查用户是否存在
-        SysUser user = userMapper.selectByPrimaryKey(yhid);
+        SysYh user = userMapper.selectByPrimaryKey(yhid);
         if (user == null) return ApiResponse.fail("用户不存在");
 
         // 删除就数据
         Example userRoleExample = new Example(SysYhJs.class);
         userRoleExample.and().andEqualTo(SysYhJs.InnerColumn.yhId.name(),yhid);
         userRoleMapper.deleteByExample(userRoleExample);
+        String createUser = getOperateUser();
+        Date now = new Date();
 
         // 插入新数据
         for (String jsId : jsIds) {
             SysYhJs userRole = new SysYhJs();
+            userRole.setYhjsId(genId());
             userRole.setJsId(jsId);
             userRole.setYhId(yhid);
+            userRole.setCjr(createUser);
+            userRole.setCjsj(now);
             userRoleMapper.insert(userRole);
         }
         return ApiResponse.success();

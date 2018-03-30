@@ -1,6 +1,7 @@
 package com.ldz.sys.model;
 
 import javax.persistence.Column;
+import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @Table(name = "SYS_FWGN")
 public class SysGn implements Serializable {
+    @Id
     @Column(name = "GNDM")
     private String gndm;
 
@@ -55,6 +57,9 @@ public class SysGn implements Serializable {
     private String apiHz;
 
     @Transient
+    private String title;
+
+    @Transient
     private List<SysGn> children;
 
     public List<SysGn> getChildren() {
@@ -66,6 +71,10 @@ public class SysGn implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public String getTitle() {
+        return gnmc;
+    }
 
     /**
      * @return GNDM

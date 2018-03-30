@@ -1,33 +1,31 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.exception.RuntimeCheck;
-import com.ldz.biz.module.mapper.ClSgwjMapper;
-import com.ldz.biz.module.model.ClCssd;
-import com.ldz.biz.module.model.ClSgwj;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.model.SysYh;
-import com.ldz.sys.service.JgService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.biz.module.mapper.ClSgMapper;
-import com.ldz.biz.module.model.ClSg;
-import com.ldz.biz.module.service.SgService;
-import com.ldz.util.bean.SimpleCondition;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.biz.module.mapper.ClSgMapper;
+import com.ldz.biz.module.mapper.ClSgwjMapper;
+import com.ldz.biz.module.model.ClSg;
+import com.ldz.biz.module.model.ClSgwj;
+import com.ldz.biz.module.service.SgService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.sys.model.SysYh;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+
+import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class SgServiceImpl extends BaseServiceImpl<ClSg,String> implements SgService{
     @Autowired
     private ClSgMapper entityMapper;
-    @Autowired
-    private JgService jgService;
+   
     @Autowired
     private ClSgwjMapper sgwjMapper;
 

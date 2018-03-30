@@ -35,6 +35,8 @@ public class ClZdgl implements Serializable {
 
     /**
      * 状态
+     * 00 正常
+     * 10 停用
      */
     @Column(name = "ZT")
     private String zt;
@@ -65,6 +67,9 @@ public class ClZdgl implements Serializable {
 
     /**
      * 在线状态
+     * 00点火
+     * 10熄火
+     * 20离线
      */
     @Column(name = "ZXZT")
     private String zxzt;

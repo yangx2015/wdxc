@@ -2,13 +2,13 @@ package com.ldz.sys.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 import javax.persistence.*;
 
 @Table(name = "SYS_HDYX")
 public class SysHdyx implements Serializable {
     @Id
     @Column(name = "HD_ID")
-    @GeneratedValue(generator = "JDBC")
     private String hdId;
 
     @Column(name = "KSSJ")
@@ -43,6 +43,17 @@ public class SysHdyx implements Serializable {
 
     @Column(name = "URL")
     private String url;
+
+    @Transient
+    private List<String> filePaths;
+
+    public List<String> getFilePaths() {
+        return filePaths;
+    }
+
+    public void setFilePaths(List<String> filePaths) {
+        this.filePaths = filePaths;
+    }
 
     private static final long serialVersionUID = 1L;
 

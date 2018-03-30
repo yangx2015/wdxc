@@ -9,7 +9,6 @@ import java.util.List;
 public class SysFw implements Serializable {
     @Id
     @Column(name = "FW_ID")
-    @GeneratedValue(generator = "JDBC")
     private String fwId;
 
     @Column(name = "FWMC")

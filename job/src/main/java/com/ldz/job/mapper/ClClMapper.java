@@ -6,4 +6,6 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface ClClMapper extends Mapper<ClCl> {
 	
+	
+ 
 }

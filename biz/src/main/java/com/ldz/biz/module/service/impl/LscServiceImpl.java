@@ -1,13 +1,17 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ldz.biz.module.mapper.ClLscMapper;
 import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.LscService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.util.bean.ApiResponse;
+
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.Date;
 
 @Service
 public class LscServiceImpl extends BaseServiceImpl<ClLsc,String> implements LscService{
@@ -26,6 +30,8 @@ public class LscServiceImpl extends BaseServiceImpl<ClLsc,String> implements Lsc
 
     @Override
     public ApiResponse<String> saveEntity(ClLsc entity) {
+        entity.setCjsj(new Date());
+        entity.setCjr(getOperateUser());
         save(entity);
         return ApiResponse.saveSuccess();
     }

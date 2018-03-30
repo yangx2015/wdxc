@@ -79,8 +79,21 @@ public class ClCd implements Serializable {
      */
     @Column(name = "XGR")
     private String xgr;
+    /**
+     * 手机号码
+     */
+    @Column(name = "SJHM")
+    private String sjhm;
 
     private static final long serialVersionUID = 1L;
+
+    public String getSjhm() {
+        return sjhm;
+    }
+
+    public void setSjhm(String sjhm) {
+        this.sjhm = sjhm;
+    }
 
     /**
      * 获取车队编号

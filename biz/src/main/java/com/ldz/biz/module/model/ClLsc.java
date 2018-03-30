@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Table(name = "CL_LSC")
 public class ClLsc implements Serializable {
@@ -67,6 +68,11 @@ public class ClLsc implements Serializable {
      */
     @Column(name = "CL_ID")
     private String clId;
+    /**
+     * 创建时间
+     */
+    @Column(name = "CJSJ")
+    private Date cjsj;
 
     private static final long serialVersionUID = 1L;
 
@@ -167,6 +173,14 @@ public class ClLsc implements Serializable {
      */
     public String getLsdwmc() {
         return lsdwmc;
+    }
+
+    public Date getCjsj() {
+        return cjsj;
+    }
+
+    public void setCjsj(Date cjsj) {
+        this.cjsj = cjsj;
     }
 
     /**

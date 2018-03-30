@@ -48,4 +48,10 @@ public interface GnService extends BaseService<SysGn, String> {
     List<SysFw> getOrgPermissionTree(String jgdm);
 
     List<SysFw> getUserPermissionTree(SysYh user);
+
+    ApiResponse<String> updateEntity(SysGn gn);
+
+    ApiResponse<String> setRoleFunctions(String jsdm, List<String> gndms);
+
+    ApiResponse<List<SysGn>> getRoleFunctions(String jsdm);
 }

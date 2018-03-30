@@ -40,18 +40,32 @@ public class ZdlmServiceImpl extends BaseServiceImpl<SysZdlm,String> implements 
     @Override
     public void afterPager(PageInfo<SysZdlm> resultPage){
         List<SysZdlm> list = resultPage.getList();
-
+        List<String> lmdms = list.stream().map(SysZdlm::getLmdm).collect(Collectors.toList());
+        List<SysZdxm> zdxms = zdxmService.findByZdlms(lmdms);
+        Map<String,SysZdlm> zdlmMap = list.stream().collect(Collectors.toMap(SysZdlm::getLmdm,p->p));
+        for (SysZdxm zdxm : zdxms) {
+            SysZdlm zdlm = zdlmMap.get(zdxm.getZdlmdm());
+            if (zdlm == null)continue;
+            if (zdlm.getZdxmList() == null){
+                List<SysZdxm> zdxmList = new ArrayList<>();
+                zdxmList.add(zdxm);
+                zdlm.setZdxmList(zdxmList);
+            }else{
+                zdlm.getZdxmList().add(zdxm);
+            }
+        }
     }
+
     @Override
     public ApiResponse<String> add(SysZdlm zdlm) {
         RuntimeCheck.ifBlank(zdlm.getLmdm(),"类目代码不能为空");
         RuntimeCheck.ifBlank(zdlm.getLmmc(),"类目名称不能为空");
-        RuntimeCheck.ifTrue(ifExists(SysZdlm.InnerColumn.lmdm.getValue(),zdlm.getLmdm()),"类目代码已存在");
+//        RuntimeCheck.ifTrue(ifExists(SysZdlm.InnerColumn.lmdm.getValue(),zdlm.getLmdm()),"类目代码已存在");
 
         zdlm.setCjr(getOperateUser());
         zdlm.setCjsj(new Date());
         zdlmMapper.insertSelective(zdlm);
-        return null;
+        return ApiResponse.success();
     }
 
     @Override

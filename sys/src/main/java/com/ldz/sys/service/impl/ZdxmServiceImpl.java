@@ -39,6 +39,13 @@ public class ZdxmServiceImpl extends BaseServiceImpl<SysZdxm,String> implements 
     }
 
     @Override
+    public List<SysZdxm> findByZdlms(List<String> zdlms) {
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+        condition.in(SysZdxm.InnerColumn.zdlmdm,zdlms);
+        return zdxmMapper.selectByExample(condition);
+    }
+
+    @Override
     public ApiResponse<String> add(SysZdxm zdxm) {
         RuntimeCheck.ifBlank(zdxm.getZddm(),"字典代码不能为空");
         RuntimeCheck.ifBlank(zdxm.getZdlmdm(),"字典类目代码不能为空");

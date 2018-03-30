@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
 
+import lombok.ToString;
+
+@ToString
 @Table(name = "CL_GPS")
 public class ClGps implements Serializable {
     /**

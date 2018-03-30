@@ -6,6 +6,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 驾驶员表
+ */
 @Table(name = "CL_JSY")
 public class ClJsy implements Serializable {
     /**
@@ -223,7 +226,8 @@ public class ClJsy implements Serializable {
 
     /**
      * 获取状态
-     *
+     *  00 在班
+     *  10 休息
      * @return ZT - 状态
      */
     public String getZt() {

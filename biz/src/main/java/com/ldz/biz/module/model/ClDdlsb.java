@@ -6,6 +6,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 订单历史表(订单原始单据表)
+ */
 @Table(name = "CL_DDLSB")
 public class ClDdlsb implements Serializable {
     /**

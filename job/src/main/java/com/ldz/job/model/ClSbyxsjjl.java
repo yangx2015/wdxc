@@ -12,7 +12,6 @@ public class ClSbyxsjjl implements Serializable {
      */
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "JDBC")
     private String id;
 
     /**

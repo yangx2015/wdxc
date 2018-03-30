@@ -1,12 +1,17 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.biz.module.mapper.ClXlzdMapper;
 import com.ldz.biz.module.model.ClXlzd;
 import com.ldz.biz.module.service.XlzdService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.util.bean.ApiResponse;
+
 import tk.mybatis.mapper.common.Mapper;
 
 @Service
@@ -26,7 +31,21 @@ public class XlzdServiceImpl extends BaseServiceImpl<ClXlzd,String> implements X
 
     @Override
     public ApiResponse<String> saveEntity(ClXlzd entity) {
-        save(entity);
+         Date now = new Date();
+         entity.setCjr(getOperateUser());
+         entity.setCjsj(now);
+         entity.setId(genId());
+         save(entity);
         return ApiResponse.saveSuccess();
     }
+
+	@Override
+	public ApiResponse<String> updateEntity(ClXlzd entity) {
+	      ClXlzd findById = findById(entity.getId());
+	        RuntimeCheck.ifNull(findById,"未找到记录");
+	        entity.setXgr(getOperateUser());
+	        entity.setXgsj(new Date());
+	        update(entity);
+		return ApiResponse.success();
+	}
 }

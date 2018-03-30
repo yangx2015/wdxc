@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -165,10 +166,12 @@ public class ClCl implements Serializable {
      /*
       * 车辆电子围栏中间关联表
      */
+     @Transient
     private List<ClDzwlCl> clDzwlCl;
     /*
      *电子围栏表 
      */
+    @Transient
     private List<ClDzwl> clDzwl;
     
 	private static final long serialVersionUID = 1L;

@@ -7,10 +7,12 @@ import javax.persistence.*;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
-@Table(name = "CL_GPS_LS")
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor(force=true)
+@Table(name = "CL_GPS_LS")
 public class ClGpsLs implements Serializable {
     /**
      * ID

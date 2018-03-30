@@ -7,7 +7,6 @@ import javax.persistence.*;
 @Table(name = "SYS_YH_XX")
 public class SysYhXx implements Serializable {
     @Id
-    @GeneratedValue(generator = "JDBC")
     private String id;
 
     @Column(name = "YH_ID")

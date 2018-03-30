@@ -3,7 +3,9 @@ package com.ldz.sys.controller;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.model.SysFw;
+import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.FwService;
+import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,5 +24,12 @@ public class FwController extends BaseController<SysFw, String> {
         return bizService;
     }
 
+
+    @Override
+    public ApiResponse<String> save(SysFw entity) {
+        SysYh user = getCurrentUser();
+        entity.setCjr(user.getYhid());
+        return this.bizService.saveEntity(entity);
+    }
 
 }

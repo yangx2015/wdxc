@@ -26,7 +26,7 @@ public class ScheduleComponent {
 		
 		JobDetail jobDetail = JobBuilder.newJob(GpsSaveJob.class).withIdentity(GpsSaveJob.class.getName(), "GPSSync").build(); 
 		//执行周期，每10分钟执行一次
-		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/10 * * * ? *"); 
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *"); 
 		//创建一个trigger
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(GpsSaveJob.class.getName(), "GPSSync") .withSchedule(scheduleBuilder).build();
 		try {

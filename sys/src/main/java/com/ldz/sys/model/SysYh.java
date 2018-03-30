@@ -1,61 +1,95 @@
 package com.ldz.sys.model;
 
 import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 平台用户表
+ */
 @Table(name = "SYS_CLK_PTYH")
 public class SysYh implements Serializable {
+    /**
+     * 用户ID
+     */
     @Id
     @Column(name = "YHID")
-    @GeneratedValue(generator = "JDBC")
     private String yhid;
-
+    /**
+     * 账户
+     */
     @Column(name = "ZH")
     private String zh;
-
+    /**
+     * 密码
+     */
     @Column(name = "MM")
     private String mm;
-
+    /**
+     * 手机号
+     */
     @Column(name = "SJH")
     private String sjh;
-
+    /**
+     * 创建人
+     */
     @Column(name = "CJR")
     private String cjr;
-
+    /**
+     * 创建时间
+     */
     @Column(name = "CJSJ")
     private Date cjsj;
-
+    /**
+     * 修改人
+     */
     @Column(name = "XGR")
     private String xgr;
-
+    /**
+     * 修改时间
+     */
     @Column(name = "XGSJ")
     private Date xgsj;
-
+    /**
+     * 状态
+     */
     @Column(name = "ZT")
     private String zt;
-
+    /**
+     * 机构代码
+     */
     @Column(name = "JGDM")
     private String jgdm;
-
+    /**
+     * 用户姓名
+     */
     @Column(name = "XM")
     private String xm;
-
+    /**
+     * 类型
+     */
     @Column(name = "LX")
     private String lx;
-
+    /**
+     * 性别
+     */
     @Column(name = "XB")
     private String xb;
-
+    /**
+     * 证件号码
+     */
     @Column(name = "ZJHM")
     private String zjhm;
-
+    /**
+     * 密码有效期
+     */
     @Column(name = "MMYXQ")
     private Date mmyxq;
-
+    /**
+     * 职务
+     */
     @Column(name = "ZW")
     private String zw;
 

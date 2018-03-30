@@ -6,6 +6,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 订单日志表
+ */
 @Table(name = "CL_DDRZ")
 public class ClDdrz implements Serializable {
     /**

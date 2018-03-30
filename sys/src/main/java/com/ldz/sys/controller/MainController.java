@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.ldz.sys.bean.AccessToken;
-import com.ldz.sys.model.SysYh;
-import com.ldz.util.bean.ApiResponse;
 import com.ldz.sys.bean.UserPassCredential;
 import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.YhService;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.Des;
 import com.ldz.util.commonUtil.FileUtil;
 import com.ldz.util.commonUtil.JwtUtil;
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 @RestController
 public class MainController {
 
-	@Value("${staticPath}")
+	@Value("${staticPath:/}")
 	private String staticPath;
 
 	@Autowired
@@ -161,10 +161,12 @@ public class MainController {
 	@RequestMapping(value="/upload", method = RequestMethod.POST)
 	@ResponseBody
 	public ApiResponse<String> uploadImg(@RequestParam("file") MultipartFile file, String targetPath) {
+    	if (StringUtils.isEmpty(targetPath)) targetPath = "temp";
+		targetPath = targetPath + "/";
 		String fileName = file.getOriginalFilename();
 		String suffix = fileName.substring(fileName.lastIndexOf("."));
 		UUID uuid = UUID.randomUUID();
-		fileName = uuid.toString() + suffix;
+		fileName = uuid.toString().replaceAll("-","") + suffix;
 		String filePath = staticPath + targetPath;
 		String path = targetPath + fileName;
 		try {
@@ -172,7 +174,6 @@ public class MainController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//返回json
 		return ApiResponse.success(path);
 	}
 	@RequestMapping(value = "/403",method = {RequestMethod.GET,RequestMethod.POST})

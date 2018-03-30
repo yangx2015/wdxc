@@ -5,6 +5,7 @@ import com.ldz.sys.mapper.SysPtrzMapper;
 import com.ldz.sys.model.SysRz;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -36,6 +37,8 @@ public class OperateLogAop {
     private Map<String,BaseService> serviceMap = new HashMap<>();
 
     @Autowired
+    public SnowflakeIdWorker idGenerator;
+    @Autowired
     private SysPtrzMapper logMapper;
 
     @Around("execution(public * com.ldz.biz..*.*Controller.save*(..))" +
@@ -59,6 +62,7 @@ public class OperateLogAop {
             log.setCzr(userInfo.getYhid());
             log.setZxsj(elapseTime);
             log.setCs(getArgsAsString(joinPoint));
+            log.setRzId(""+idGenerator.nextId());
             logMapper.insert(log);
         }
     }

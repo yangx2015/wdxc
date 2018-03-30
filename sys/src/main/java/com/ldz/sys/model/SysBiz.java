@@ -12,7 +12,6 @@ public class SysBiz implements Serializable {
      */
     @Id
     @Column(name = "biz_id")
-    @GeneratedValue(generator = "JDBC")
     private Long bizId;
 
     /**

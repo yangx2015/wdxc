@@ -6,6 +6,9 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
+/**
+ * 订单主表
+ */
 @Table(name = "CL_DD")
 public class ClDd implements Serializable {
     /**
@@ -124,7 +127,7 @@ public class ClDd implements Serializable {
     private Date yysj;
 
     /**
-     * 订单状态
+     * 订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
      */
     @Column(name = "DDZT")
     private String ddzt;
@@ -248,6 +251,25 @@ public class ClDd implements Serializable {
      */
     @Column(name = "FKBZ")
     private String fkbz;
+
+
+    /**
+     * 司机属性：10:内部司机，关联CL_JSY表 11：外部车，关联临时车表
+     */
+    @Column(name = "SJ_SX")
+    private String sjSx;
+
+    /**
+     * 队长编号
+     */
+    @Column(name = "DZBH")
+    private String dzbh;
+
+    /**
+     * 车队编号
+     */
+    @Column(name = "CDBH")
+    private String cdbh;
 
     private static final long serialVersionUID = 1L;
 
@@ -605,6 +627,7 @@ public class ClDd implements Serializable {
     /**
      * 设置订单状态
      *
+     * 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
      * @param ddzt 订单状态
      */
     public void setDdzt(String ddzt) {
@@ -969,6 +992,31 @@ public class ClDd implements Serializable {
      */
     public void setFkbz(String fkbz) {
         this.fkbz = fkbz;
+    }
+
+
+    public String getSjSx() {
+        return sjSx;
+    }
+
+    public void setSjSx(String sjSx) {
+        this.sjSx = sjSx;
+    }
+
+    public String getDzbh() {
+        return dzbh;
+    }
+
+    public void setDzbh(String dzbh) {
+        this.dzbh = dzbh;
+    }
+
+    public String getCdbh() {
+        return cdbh;
+    }
+
+    public void setCdbh(String cdbh) {
+        this.cdbh = cdbh;
     }
 
     public enum InnerColumn {

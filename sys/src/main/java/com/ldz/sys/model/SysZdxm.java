@@ -7,11 +7,10 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-@Table(name = "SYS_PTZD")
+@Table(name = "SYS_ZDXM")
 public class SysZdxm implements Serializable {
     @Id
     @Column(name = "ZD_ID")
-    @GeneratedValue(generator = "JDBC")
     private String zdId;
 
     @Column(name = "ZDLMDM")

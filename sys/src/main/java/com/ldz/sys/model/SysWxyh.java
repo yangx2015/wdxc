@@ -8,7 +8,6 @@ import javax.persistence.*;
 public class SysWxyh implements Serializable {
     @Id
     @Column(name = "OPENID")
-    @GeneratedValue(generator = "JDBC")
     private String openid;
 
     @Column(name = "XM")

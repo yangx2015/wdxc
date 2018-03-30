@@ -32,10 +32,9 @@ public class ZdLmController extends BaseController<SysZdlm, String> {
     }
 
     @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(SysZdlm entity) {
-        SysYh user = getCurrentUser();
-        entity.setCjr(user.getYhid());
-        this.zdlmService.save(entity);
+        this.zdlmService.add(entity);
         return ApiResponse.success();
     }
 

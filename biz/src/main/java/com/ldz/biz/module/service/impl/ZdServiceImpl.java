@@ -1,22 +1,29 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
-import com.ldz.sys.base.BaseServiceImpl;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.biz.module.mapper.ClZdMapper;
 import com.ldz.biz.module.model.ClXlzd;
 import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.biz.module.service.ZdService;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdService{
@@ -24,7 +31,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     private ClZdMapper entityMapper;
     @Autowired
     private XlzdService xlzdService;
-
+    @Autowired
+    private JgService jgService;
     @Override
     protected Mapper<ClZd> getBaseMapper() {
         return entityMapper;
@@ -37,7 +45,15 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
 
     @Override
     public ApiResponse<String> saveEntity(ClZd entity) {
-        save(entity);
+    	 SysYh user = getCurrentUser();
+         SysJg org = jgService.findByOrgCode(user.getJgdm());
+         Date now = new Date();
+         entity.setCjr(getOperateUser());
+         entity.setCjsj(now);
+         entity.setId(genId());
+         entity.setJgdm(user.getJgdm());
+         entity.setJgmc(org.getJgmc());
+         save(entity);
         return ApiResponse.saveSuccess();
     }
 
@@ -70,4 +86,14 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if (xlzds.size() == 0)return;
         station.setRouteOrder(xlzds.get(0).getXh());
     }
+
+	@Override
+	public ApiResponse<String> updateEntity(ClZd entity) {
+		    ClZd findById = findById(entity.getId());
+	        RuntimeCheck.ifNull(findById,"未找到记录");
+	        entity.setXgr(getOperateUser());
+	        entity.setXgsj(new Date());
+	        update(entity);
+		return ApiResponse.success();
+	}
 }

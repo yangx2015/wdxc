@@ -6,4 +6,6 @@ import com.ldz.util.bean.ApiResponse;
 
 public interface CdService extends BaseService<ClCd,String> {
     ApiResponse<String> saveEntity(ClCd entity);
+    
+    ApiResponse<String> updateEntity(ClCd entity);
 }

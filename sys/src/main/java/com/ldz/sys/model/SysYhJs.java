@@ -11,7 +11,6 @@ import java.util.Date;
 public class SysYhJs implements Serializable {
     @Id
     @Column(name = "YHJS_ID")
-    @GeneratedValue(generator = "JDBC")
     private String yhjsId;
 
     @Column(name = "YH_ID")

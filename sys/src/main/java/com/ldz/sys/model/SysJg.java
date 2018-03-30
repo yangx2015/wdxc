@@ -2,7 +2,10 @@ package com.ldz.sys.model;
 
 import com.ldz.sys.util.OrgUtil;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -15,9 +18,10 @@ public class SysJg implements Serializable {
      */
     @Id
     @Column(name = "JGDM")
-    @GeneratedValue(generator = "JDBC")
     private String jgdm;
-
+    /**
+     * 机构等级
+     */
     @Column(name = "JGDJ")
     private Integer jgdj;
 

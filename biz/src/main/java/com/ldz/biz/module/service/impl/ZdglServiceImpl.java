@@ -29,4 +29,15 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         save(entity);
         return ApiResponse.saveSuccess();
     }
+
+	@Override
+	public void insetAndUpdate(ClZdgl entity) {
+		
+	 boolean flag= ifExists("zdbh",entity.getZdbh());
+		if (flag==true) {
+			update(entity);
+		}else {
+			save(entity);
+		}
+	}
 }
