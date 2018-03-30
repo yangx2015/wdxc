@@ -1,10 +1,10 @@
 package com.ldz.biz.module.bean;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import lombok.Getter;
 import lombok.Setter;
+
+import java.math.BigDecimal;
+import java.util.Date;
 
 @Getter
 @Setter

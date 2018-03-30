@@ -1,13 +1,13 @@
 package com.ldz.biz.module.bean;
 
-import java.util.Date;
-
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClXl;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.Date;
+
 /**
  * 用于处理车辆/校巴 日历展示模型
  */
