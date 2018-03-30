@@ -74,7 +74,7 @@
 						<Button type="error" size="large" @click="AddRali">电子围栏</Button>
 						<Button type="success" size="large"  @click="RootShow = !RootShow">完成</Button>
 					</div>
-					<my-map ref='maps' :center="mapCenter"></my-map>
+					<my-map ref='maps' :mapDot="mapCenter"></my-map>
 				</div>
 			</div>
 		</div>
@@ -95,10 +95,9 @@ export default {
         return {
         	SpinShow:true,
 			tabHeight: 220,
-        	mapCenter:{
-        		lng: 114.372443,
-        		lat: 30.544572
-        	},
+        	mapCenter:[{
+        		
+        	}],
         	RootShow:true,
 			//收索
             datetime:[],
@@ -264,9 +263,10 @@ export default {
     	},
     	//树多点击事件
     	treeClick(mess){
-    		console.log(mess)
-    		if(mess[0].mapCen){
-    			this.mapCenter = mess[0].mapCen
+    		
+    		console.log('1',mess)
+    		if(mess[0]){
+    			this.mapCenter[0] = mess[0].mapCen
     		}
     	},
     	changeTime(val){

@@ -8,7 +8,7 @@
 	    width: 64px;
 	    height: 47px;
 	    top: 5px;
-	    right: 57px;
+	    right: 170px;
 	    z-index: 100;
 	    background-color: rgb(255, 255, 255);
 	    text-align: center;
@@ -33,8 +33,8 @@
 			return{
 				map:'',
 				mapcenter:{
-					lng: 114.372443,
-	    			lat: 30.544572
+					lng: 114.368095,
+	    			lat: 30.545038
 				},
 				zoom:16,
 				mess:[
@@ -47,6 +47,18 @@
 	    				lat: 30.564572
 					}
 				]
+			}
+		},
+		props:{
+			mapDot:{
+				type:Array,
+				default:[]
+			}
+		},
+		watch:{
+			mapDot:function(n,o){
+				console.log(n)
+				console.log(o)
 			}
 		},
 		created(){
@@ -84,7 +96,7 @@
 			    enableDrawingTool: true, //是否显示工具栏
 			    drawingToolOptions: {
 			        anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
-			        offset: new BMap.Size(200, 5), //偏离值
+			        offset: new BMap.Size(233, 5), //偏离值
 			    },
 			    circleOptions: styleOptions, //圆的样式
 			    polylineOptions: styleOptions, //线的样式
