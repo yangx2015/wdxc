@@ -1,3 +1,5 @@
+server:
+  port: 8089
 spring:
   #线程池配置信息
   thread:
@@ -8,14 +10,38 @@ spring:
       queueCapacity: 200
       waitForTasksToCompleteOnShutdown: true
       awaitTerminationSeconds: 30
+  #redis配置信息
+  redis:
+    host: 47.104.13.95
+    port: 6379
+    password: test123
+    maxIdle: 200
+    maxActive: 1024
+    maxWait: 1000
+  http:
+    multipart:
+      maxFileSize: 200Mb
+      maxRequestSize: 200Mb
 #接口配置，接口可以有多个地址，多个地址中间使用';'
 interface:
   #设备状态更新接口，点火、熄火、离线
   status: http://127.0.0.1;http://127.0.0.1;
   #设备事件更新接口，急加速、急转弯、急刹车、碰撞、超速
-  event: http://127.0.0.1;
+  event: http://tcixvm.natappfree.cc/pub/gps/save;
   #设备GPS上报处理接口
   gps: http://127.0.0.1;
+  #文件上传的数据交互接口
+  fileapi: http://tcixvm.natappfree.cc/pub/spk/save;
+  #终端请求加密key
+  clientsecurity: ldzticclient
+  #服务端请求验证key
+  serversecurity: ldzticserver
+  #文件存储的本地路径
+  filelocalpath: F://Temp//test//
+  
+  #tsconvertmp4cmd: ffmpeg.exe -i "concat:F:\Temp\ffmeg\bin\car_865923030039405F20180322111850.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
+  #文件转换基本命令（linux 部署时自己改命令）
+  tsconvertmp4cmd: F://Temp//ffmeg//bin//ffmpeg.exe -i "concat:@localfile" -acodec copy -vcodec copy -absf aac_adtstoasc @newfile
   
 logging:
   config: classpath:log4j2.xml
