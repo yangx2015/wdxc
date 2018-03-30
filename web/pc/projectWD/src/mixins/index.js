@@ -1,0 +1,65 @@
+export default{
+	created(){
+//		alert("公用方法")
+		this.rowClassName
+	},
+	methods:{
+		getdate(){
+			var getDate = new Date
+			return getDate
+		},
+		getdateStr(){
+			var NowDate = new Date
+			let Year = NowDate.getFullYear()
+			let Month = NowDate.getMonth()+1
+			let Day = NowDate.getDate()
+			let Hours = NowDate.getHours()
+			let Minutes = NowDate.getMinutes()
+			let Seconds = NowDate.getSeconds()
+			let time = Year+'-'+Month+'-'+Day+' '+Hours+':'+Minutes+':'+Seconds
+			return time
+		},
+		getdateStrD(){
+			var NowDate = new Date
+			let Year = NowDate.getFullYear()
+			let Month = NowDate.getMonth()+1
+			let Day = NowDate.getDate()
+			let time = Year+'-'+Month+'-'+Day
+			return time
+		},
+		getdatePara(val){//时间转换
+			let Year = val.getFullYear()
+			let Month = val.getMonth()+1
+			let Day = val.getDate()
+			let Hours = val.getHours()
+			let Minutes = val.getMinutes()
+			let Seconds = val.getSeconds()
+			let time = Year+'-'+Month+'-'+Day+' '+Hours+':'+Minutes+':'+Seconds
+			return time
+		},
+		getdateParaD(val){//时间转换
+			if(val==null){
+				return ''
+			}
+			let Year = val.getFullYear()
+			let Month = val.getMonth()+1
+			let Day = val.getDate()
+			if(Month<10){
+                Month = '0'+Month
+			}
+			let time = Year+'-'+Month+'-'+Day
+			return time
+		},
+    	rowClassName (row, index) {
+            if (index%2 === 0) {
+                return 'demo-table-info-row';
+            } 
+            return '';
+        },
+        //根据浏览器高度，设置document高度
+        getWindowHeight(){
+        	var windowHeight = window.innerHeight
+        	return windowHeight
+        }
+	}
+}
