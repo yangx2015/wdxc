@@ -90,15 +90,10 @@
 			}
 		},
 		created(){
-            console.log('created');
-            console.log(this.$parent);
 		},
 		mounted(){
-            console.log('mounted');
-            console.log(this.$parent);
             if (this.$parent.choosedRow !== null){
-                this.formItem = $parent.choosedRow;
-                console.log(this.formItem);
+                this.formItem = this.$parent.choosedRow;
             }
         },
 		methods:{
