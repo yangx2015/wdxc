@@ -217,7 +217,7 @@ public class ClDd implements Serializable {
     private String sy;
 
     /**
-     * 车辆类型
+     * 车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
      */
     @Column(name = "CLLX")
     private String cllx;

@@ -5,35 +5,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ldz.biz.module.model.ClCd;
-import com.ldz.biz.module.service.CdService;
+import com.ldz.biz.module.model.ClXl;
+import com.ldz.biz.module.service.XlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
-/**
- * 车队设定
- */
 @RestController
-@RequestMapping("api/cd")
-public class CdCtrl extends BaseController<ClCd, String> {
-	 @Autowired
-	 private  CdService cdservice;
-
+@RequestMapping("api/xl")
+public class ClXlCtrl  extends BaseController<ClXl, String>{
+    @Autowired
+    private XlService xlservice;
 	@Override
-	protected BaseService<ClCd, String> getBaseService() {
-		return cdservice;
+	protected BaseService<ClXl, String> getBaseService() {
+		return xlservice;
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
-	public ApiResponse<String> update(ClCd entity) {
-		return cdservice.updateEntity(entity);
+	public ApiResponse<String> update(ClXl entity) {
+		return xlservice.updateEntity(entity);
 	}
 
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
-	public ApiResponse<String> save(ClCd entity) {
-		return cdservice.saveEntity(entity);
+	public ApiResponse<String> save(ClXl entity) {
+		return xlservice.saveEntity(entity);
 	}
-
-
+	
+	
 }

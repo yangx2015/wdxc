@@ -1,5 +1,7 @@
 package com.ldz.biz.module.bean;
 
+import com.ldz.biz.module.model.ClCl;
+
 import java.util.List;
 
 /**

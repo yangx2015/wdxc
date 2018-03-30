@@ -43,7 +43,7 @@ logging:
   
 mapper:
   identity: MYSQL
-  
+       
 server:
   port: 80
   

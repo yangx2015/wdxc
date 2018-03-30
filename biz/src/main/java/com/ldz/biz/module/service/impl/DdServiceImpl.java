@@ -79,6 +79,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
     @Override
     public ApiResponse<String> saveEntity(ClDd entity) {
+        String userId="1";// TODO: 2018/3/15 测试代码
+//      String userId=getOperateUser();
+
         SysJg org = jgService.findByOrgCode(entity.getJgdm());
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
@@ -86,8 +89,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         String orderId=genId();
         entity.setId(orderId);
 
-        String userId="1";// TODO: 2018/3/15 测试代码
-//      String userId=getOperateUser();
 
         entity.setCjr(userId);
 
@@ -123,7 +124,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @param entity
      * @return
      */
-    public ApiResponse<String> orderAuditing(ClDd entity){
+    public ApiResponse<String> updateOrderAuditing(ClDd entity){
+        String userId="1";  // TODO: 2018/3/15 测试代码
+//       String userId=getOperateUser();
+
         //订单状态入参验证 验证入参"ddzt"必须是11 或者  12
         Boolean orderTypeValid=true;
         orderTypeValid= StringUtils.equals(entity.getDdzt(),"11");
@@ -137,9 +141,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         String oracleType=clDd.getDdzt();//订单状态
         RuntimeCheck.ifFalse(StringUtils.equals(oracleType,"10"),"当前订单不是待审核状态，无法进行该操作");
-
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
 
         ClDd ent=new ClDd();
         ent.setId(entity.getId());
@@ -231,9 +232,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     public ApiResponse<List<ClDd>> assignedOrderd(ClDd entity){
         ApiResponse<List<ClDd>> result = new ApiResponse<List<ClDd>>();
         SimpleCondition condition = new SimpleCondition(ClDd.class);
-
+        //是否用乘客做查询条件了。
         if(StringUtils.isNotBlank(entity.getCk())){
             condition.like(ClDd.InnerColumn.ck,entity.getCk());
+        }
+
+        //车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
+        if(StringUtils.isNotBlank(entity.getCllx())){
+            condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
@@ -258,7 +264,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             resExample.and().andLike(ClJsy.InnerColumn.xm.name(),"%"+entity.getXm()+"%");
         }
 
+        ClDd parameters =new ClDd();//入参
+        parameters.setSjSx("10");//默认身份证号码
         List<ClJsy> list = clJsyMapper.selectByExample(resExample);
+        if(list!=null){
+            for(ClJsy obj:list){
+                parameters.setSjSx(obj.getSfzhm());//设置身份证号码
+                ApiResponse<List<ClDd>> retObject=affirmOrderList(parameters);
+                if(retObject.isSuccess()){
+                    List<ClDd> clDdList=retObject.getResult();
+                    obj.setClDdList(clDdList);
+                }
+            }
+        }
         result.setResult(list);
         return result;
 
@@ -310,7 +328,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      * 成功或失败提示
      */
-    public ApiResponse<String> assignOrder(ClDd entity){
+    public ApiResponse<String> updateAssignOrder(ClDd entity){
         String userId="1";  // TODO: 2018/3/15 测试代码
 //       String userId=getOperateUser();
         ClDd newClDd=new ClDd();
@@ -405,14 +423,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * 取消派单操作   请求方式为post
      * 1、验证订单ID是否存在
      * 2、验证该订单是否处于：已派单状态
-     * 3、将订单状态修改为待洗手间
+     * 3、将订单状态修改为待派单状态
      * 4、写入日志表。
      * @param entity
      * 1、订单id  id 必填
      * @return
      * 成功或失败提示
      */
-    public ApiResponse<String> cancelAssignOrder(ClDd entity){
+    public ApiResponse<String> updateCancelAssignOrder(ClDd entity){
         String userId="1";  // TODO: 2018/3/15 测试代码
 //       String userId=getOperateUser();
         ClDd newClDd=new ClDd();
@@ -422,7 +440,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
-        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有处理已派单状态，不能进行取消派单操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有处于已派单状态，不能进行取消派单操作");
 
 
         newClDd.setCph("");//车牌号
@@ -505,7 +523,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
 
-    public  ApiResponse<String> affirmOracle(ClDd entity){
+    public  ApiResponse<String> updateAffirmOracle(ClDd entity){
         String userId="1";  // TODO: 2018/3/15 测试代码
 //       String userId=getOperateUser();
 //        1、查找该ID是否存在
