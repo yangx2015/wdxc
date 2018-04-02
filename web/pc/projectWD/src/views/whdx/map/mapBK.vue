@@ -33,7 +33,7 @@
 			return{
 				map:'',
 				mapcenter:{
-					lng: 114.368095,
+					lng: 114.370095,
 	    			lat: 30.545038
 				},
 				zoom:16,
@@ -57,8 +57,24 @@
 		},
 		watch:{
 			mapDot:function(n,o){
-				console.log(n)
-				console.log(o)
+				console.log('new',n)
+				console.log('old',o)
+				if(n.length==1){
+					console.log('1')
+					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
+					this.zoom = 12
+				}else if(n.length==0){
+					console.log('2')
+					this.mapcenter = {lng: 114.370095,lat: 30.545038}
+					this.zoom = 16
+					this.clear()
+				}else{
+					console.log('3')
+					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
+					this.zoom = 12
+				}
+				this.disDot(n)
+				this.mapCenter()
 			}
 		},
 		created(){
@@ -67,30 +83,33 @@
 		mounted(){
 			var v = this
 			// 百度地图API功能
-			//this.map = new BMap.Map("allmap");    // 创建Map实例
-			//this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+			this.map = new BMap.Map("allmap"); // 创建Map实例
+			this.mapCenter()
 			
-			this.map = new BMap.Map("allmap");
-			var point = new BMap.Point(116.404, 39.915);
-			this.map.centerAndZoom(point, 15);
-			//添加地图类型控件
-			this.map.addControl(new BMap.MapTypeControl({
-				mapTypes:[
-		            BMAP_NORMAL_MAP
-//		            BMAP_HYBRID_MAP
-		        ]}));	  
-
-			this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-		    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-		    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-		    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
+			              
 		  	
 		  	this.bk()
-		  	this.disDot()
+//		  	this.disDot()
 		},
 		methods:{
+			//地图级别中心
+			mapCenter(){
+				var v = this
+				var point = new BMap.Point(v.mapcenter.lng, v.mapcenter.lat);
+				this.map.centerAndZoom(point, v.zoom);// 初始化地图,设置中心点坐标和地图级别
+				this.map.addControl(new BMap.MapTypeControl({
+				mapTypes:[
+		            BMAP_NORMAL_MAP
+		        ]}));	  
+				//添加地图类型控件
+				this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
+			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
+			},
 			//撒点
-			disDot(){
+			disDot(list){
+				this.clear()
 				// 编写自定义函数,创建标注
 				var v = this
 				function addMarker(point){
@@ -98,13 +117,8 @@
 				  v.map.addOverlay(marker);
 				}
 				// 随机向地图添加25个标注
-				var bounds = v.map.getBounds();
-				var sw = bounds.getSouthWest();
-				var ne = bounds.getNorthEast();
-				var lngSpan = Math.abs(sw.lng - ne.lng);
-				var latSpan = Math.abs(ne.lat - sw.lat);
-				for (var i = 0; i < 25; i ++) {
-					var point = new BMap.Point(sw.lng + lngSpan * (Math.random() * 0.7), ne.lat - latSpan * (Math.random() * 0.7));
+				for (var i = 0; i < list.length; i ++) {
+					var point = new BMap.Point(list[i].mapCen.lng, list[i].mapCen.lat);
 					addMarker(point);
 				}
 			},
