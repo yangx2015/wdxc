@@ -1,9 +1,5 @@
 package com.ldz.biz.module.bean;
 
-import java.util.Date;
-
-import org.springframework.format.annotation.DateTimeFormat;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,8 +17,6 @@ public class PbClXlmodel {
 
 	private String date2;
 	
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date date;
 	
 	
 }
