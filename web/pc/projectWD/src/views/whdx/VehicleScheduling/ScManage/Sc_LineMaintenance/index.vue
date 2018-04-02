@@ -50,6 +50,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
+    import configApi from '@/axios/config.js'
 	import expandRow from './table-expand.vue';
 	import compModal from './comp/modal.vue'
 	export default {
@@ -91,39 +92,39 @@
 					{
 						title: '线路名称',
 						align: 'center',
-						key: 'siteName'
+						key: 'xlmc'
 					},
 					{
 						title: '方向',
 						align: 'center',
-						key: 'direction'
+						key: 'yxfx'
 					},
 					{
 						title: '状态',
 						align: 'center',
-						key: 'type'
+						key: 'zt'
 					},
 					{
 						title: '运行方式',
 						align: 'center',
-						key: 'model'
+						key: 'yxfx'
 					},
 					{
 						title: '创建人',
 						align: 'center',
-						key: 'Founder'
+						key: 'cjr'
 					},
 					{
 						title: '创建时间',
 						width: '100',
 						align: 'center',
-						key: 'time'
+						key: 'cjsj'
 					},
 					{
 						title: '备注',
 						width: '100',
 						align: 'center',
-						key: 'mess'
+						key: 'bz'
 					},
 					{
 						title: '操作',
@@ -196,12 +197,21 @@
 				title: '线路维护',
 			}])
 			this.tabHeight = this.getWindowHeight() - 290
-			setTimeout(() => {
-                this.SpinShow = false;
-            }, 1000);
+		},
+		mounted(){
+		  this.getmess();
 		},
 		methods: {
-			getmess(){},
+            getmess(){
+                this.$http.get(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
+                    this.SpinShow = false;
+                    if(res.code===200){
+                        this.data9 = res.page.list;
+                        this.pageTotal = res.page.total;
+                        console.log(this.data9);
+                    }
+                })
+            },
 			//收索事件
 			findMessList() {
 				this.$Message.info('查詢');
@@ -212,6 +222,8 @@
 			listDele(id){},
 			pageChange(event) {
 				var v = this
+				this.findMess.pageNum = event;
+				this.getmess();
 			}
 		}
 	}

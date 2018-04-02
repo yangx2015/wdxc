@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.ToString;
 
@@ -113,6 +114,17 @@ public class ClXl implements Serializable {
      */
     @Column(name = "LX")
     private String lx;
+
+    @Transient
+    private String zdIds;
+
+    public String getZdIds() {
+        return zdIds;
+    }
+
+    public void setZdIds(String zdIds) {
+        this.zdIds = zdIds;
+    }
 
     private static final long serialVersionUID = 1L;
 
