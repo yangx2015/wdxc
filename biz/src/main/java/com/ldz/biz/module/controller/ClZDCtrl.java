@@ -1,18 +1,21 @@
 package com.ldz.biz.module.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.ldz.biz.module.bean.DdClModel;
 import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.ZdService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
-@RequestMapping("clzd")
+@RequestMapping("api/clzd")
 public class ClZDCtrl extends BaseController<ClZd, String> {
 	@Autowired
 	private ZdService zdservice;
@@ -32,10 +35,12 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 	public ApiResponse<String> save(ClZd entity) {
 		return zdservice.saveEntity(entity);
 	}
-	@RequestMapping(value = "/getBySiteVehicle", method = { RequestMethod.GET })
-	public ApiResponse<String> save() {
-		 zdservice.getBySiteVehicleList("1");
-		return ApiResponse.saveSuccess();
+
+    @MessageMapping("/getzdcl")
+//	@RequestMapping(value = "/getzdcl", method = { RequestMethod.GET })
+	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
+		xlId="1";
+		return zdservice.getBySiteVehicleList(xlId);
 	}
 
 }
