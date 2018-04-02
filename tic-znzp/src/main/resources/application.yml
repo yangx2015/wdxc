@@ -55,6 +55,9 @@ logging:
   config: classpath:log4j2.xml
   
 mapper:
+  mappers:
+    - tk.mybatis.mapper.common.Mapper
+    - tk.mybatis.mapper.common.special.InsertListMapper
   identity: MYSQL
 
 server:

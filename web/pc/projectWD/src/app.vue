@@ -37,7 +37,7 @@
 
     var stompClient = Stomp.over(socket);
     stompClient.connect({}, function(frame) {
-        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+        stompClient.subscribe('/topic/get',  function(data) { //订阅消息
             console.log(data);
         });
     });

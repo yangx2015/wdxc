@@ -108,7 +108,10 @@
 					{
 						title: '车速上限',
 						align: 'center',
-						key: 'sdsx'
+						key: 'sdsx',
+						render:(h,p)=> {
+                            return h('div', p.row.sdsx +' KM/h')
+                    	}
 					},
 					{
                       	title:'操作',

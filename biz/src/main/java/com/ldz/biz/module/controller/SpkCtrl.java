@@ -1,6 +1,5 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.model.ClSg;
 import com.ldz.biz.module.model.ClSpk;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.sys.base.BaseController;

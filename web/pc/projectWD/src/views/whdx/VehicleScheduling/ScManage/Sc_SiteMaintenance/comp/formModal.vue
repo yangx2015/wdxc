@@ -14,9 +14,14 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="6">
-		    			<Input v-model="formItem.fw" type="number"
-		    				placeholder="请输入站点范围...">
-		    			</Input>
+					<Select v-model="formItem.fw"
+							placeholder="请选择站点范围...">
+						<Option value="5">5</Option>
+						<Option value="10">10</Option>
+						<Option value="20">20</Option>
+						<Option value="30">30</Option>
+						<Option value="30">30</Option>
+					</Select>
 		    		</Col>
 		    		<Col span="6">
 	    				<Input v-model="formItem.jd"
@@ -70,7 +75,14 @@
 		data(){
 			return{
 				showModal:true,
-				formItem:{},
+				formItem:{
+                    mc:'',
+                    fw:'',
+				    jd:'',
+                    zt:'',
+                    bz:'',
+					wd:''
+				},
 				mapCenter:{
 	        		lng: 114.372443,
 	        		lat: 30.544572
@@ -78,15 +90,10 @@
 			}
 		},
 		created(){
-            console.log('created');
-            console.log(this.$parent);
 		},
 		mounted(){
-            console.log('mounted');
-            console.log(this.$parent);
             if (this.$parent.choosedRow !== null){
-                this.formItem = $parent.choosedRow;
-                console.log(this.formItem);
+                this.formItem = this.$parent.choosedRow;
             }
         },
 		methods:{
@@ -112,9 +119,10 @@
 
             },
 		    getDot(e){
-        		this.formItem.jd = e.point.lng
+                this.formItem.jd = e.point.lng
         		this.formItem.wd = e.point.lat
-        	}
+                console.log(this.formItem);
+            }
 		}
 	}
 </script>

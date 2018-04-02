@@ -3,7 +3,10 @@ package com.ldz.znzp.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.*;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Table(name = "CL_SBYXSJJL")
 public class ClSbyxsjjl implements Serializable {
@@ -12,7 +15,6 @@ public class ClSbyxsjjl implements Serializable {
      */
     @Id
     @Column(name = "ID")
-    @GeneratedValue(generator = "JDBC")
     private String id;
 
     /**
