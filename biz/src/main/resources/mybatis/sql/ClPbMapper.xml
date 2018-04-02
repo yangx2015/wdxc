@@ -6,14 +6,15 @@
 		resultMap="ClPBresultMap">
 		select t1.PBSJ,t2.CPH,t3.XLMC,t3.ZT from CL_PB t1 INNER JOIN CL_CL t2
 		on t1.CL_ID =t2.CL_ID
-		LEFT JOIN CL_XL t3 on t1.XL_ID=t3.id WHERE
-		to_char(t1.cjsj,'yyyy-mm-dd')=#{date2}
 		<if test="clcx != null">
 			and t2.cx=#{clcx}
 		</if>
+		LEFT JOIN CL_XL t3 on t1.XL_ID=t3.id
 		<if test="lulx != null">
 			and t3.lx=#{lulx}
 		</if>
+		 WHERE
+		to_char(t1.cjsj,'yyyy-mm-dd')=#{date2}
 	</select>
 
 	<select id="selectXbPb" resultMap="XBXLPbresultmap" parameterType="com.ldz.biz.module.bean.PbClXlmodel" >
