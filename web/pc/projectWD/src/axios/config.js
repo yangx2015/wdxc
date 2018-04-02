@@ -115,7 +115,13 @@ module.exports = {
         CHANGE: '/api/clzd/update',
 		DELE:   '/api/clzd/removeIds'
 	},
-	CS:{
+	PB:{//校巴排版
+		QUERY:  '/api/pb/xbpb/',
+	},
+	XLPBXX:{
+		QUERY: '/api/pb/xbbjpb/',
+	},
+	CS:{//超速
 		QUERY:  '/api/cssd/pager',
 		ADD:    '/api/cssd/save',
         CHANGE: '/api/cssd/update',
