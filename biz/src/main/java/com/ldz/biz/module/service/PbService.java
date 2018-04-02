@@ -19,7 +19,6 @@ public interface PbService extends BaseService<ClPb, String> {
 	             clcx :车辆车型 (10:小车,20:大车,30:校巴)
 	             lulx;:线路类型(10:校巴,20大车)
 	             date2; 后台转换日期后的字符串类型
-	             date;  前台传入的日期类型
 	 */
 	ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel pbclxlmodel);
 
@@ -29,7 +28,6 @@ public interface PbService extends BaseService<ClPb, String> {
 	             clcx :车辆车型 (10:小车,20:大车,30:校巴)  不传就是该线路下面所有的车辆
 	             lulx;:线路类型(10:校巴,20大车)
 	             date2; 后台转换日期后的字符串类型
-	             date;  前台传入的日期类型
 	 */
 	ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel pbclxlmodel);
 }
