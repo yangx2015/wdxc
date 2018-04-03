@@ -4,7 +4,7 @@
 
 	<select id="selectBydate" parameterType="com.ldz.biz.module.bean.PbClXlmodel"
 		resultMap="ClPBresultMap">
-		select t1.PBSJ,t2.CPH,t3.XLMC,t3.ZT from CL_PB t1 INNER JOIN CL_CL t2
+		select t3.YXKSSJ,t3.YXJSSJ,t2.CPH,t3.XLMC,t3.ZT from CL_PB t1 INNER JOIN CL_CL t2
 		on t1.CL_ID =t2.CL_ID
 		<if test="clcx != null">
 			and t2.cx=#{clcx}

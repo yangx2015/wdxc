@@ -75,6 +75,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	@Override
 	public ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel pbclxlmodel) {
 		
+		
 		ApiResponse<List<PbInfo>> pbinflist = new ApiResponse<>();
 		// 获取该日车辆已排班信息
 		List<PbInfo> selectBydate = pbinfomapper.selectBydate(pbclxlmodel);
