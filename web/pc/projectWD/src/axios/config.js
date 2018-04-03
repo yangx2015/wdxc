@@ -79,6 +79,12 @@ module.exports = {
         CHANGE:'/api/cl/update',
         DELE:  '/api/cl/removeIds'
 	},
+	XL:{
+		QUERY: '/api/xl/pager',
+        ADD:   '/api/xl/save',
+        CHANGE:'/api/xl/update',
+        DELE:  '/api/xl/removeIds'
+	},
 	LSDW:{
 		QUERY: '/api/lsdw/pager',
 		ADD:   '/api/lsdw/save',
@@ -113,9 +119,17 @@ module.exports = {
 		QUERY:  '/api/clzd/pager',
 		ADD:    '/api/clzd/save',
         CHANGE: '/api/clzd/update',
-		DELE:   '/api/clzd/removeIds'
+		DELE:   '/api/clzd/removeIds',
+		GET_ALL:'/api/clzd/getAll',
+		GET_BY_ROUTE_ID:'/api/clzd/getByXlId'
 	},
-	CS:{
+	PB:{//校巴排版
+		QUERY:  '/api/pb/xbpb/',
+	},
+	XLPBXX:{
+		QUERY: '/api/pb/xbbjpb/',
+	},
+	CS:{//超速
 		QUERY:  '/api/cssd/pager',
 		ADD:    '/api/cssd/save',
         CHANGE: '/api/cssd/update',

@@ -47,6 +47,9 @@ export default{
 			if(Month<10){
                 Month = '0'+Month
 			}
+			if(Day<10){
+                Day = '0'+Day
+			}
 			let time = Year+'-'+Month+'-'+Day
 			return time
 		},

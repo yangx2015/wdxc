@@ -63,7 +63,6 @@
 						<div class="body">
 							<Tree :data="data1"
 							  show-checkbox
-							  multiple
 							  @on-check-change='checkClick'
 							  @on-select-change='treeClick'></Tree>
 						</div>
@@ -74,7 +73,7 @@
 						<Button type="error" size="large" @click="AddRali">电子围栏</Button>
 						<Button type="success" size="large"  @click="RootShow = !RootShow">完成</Button>
 					</div>
-					<my-map ref='maps' :mapDot="mapCenter"></my-map>
+					<my-map ref='maps' :mapDot="mapDot"></my-map>
 				</div>
 			</div>
 		</div>
@@ -95,9 +94,7 @@ export default {
         return {
         	SpinShow:true,
 			tabHeight: 220,
-        	mapCenter:[{
-        		
-        	}],
+        	mapDot:[],
         	RootShow:true,
 			//收索
             datetime:[],
@@ -259,14 +256,34 @@ export default {
     	},
     	//树多选框
     	checkClick(event){
-    		console.log(event)
+    		console.log('2',event[0])
+    		var v = this
+    		v.mapDot = []
+    		if(event[0]){
+    			v.getLeaf([event[0]])
+    		}else if(event==undefined){
+    			v.getLeaf([])
+    		}
+    	},
+    	getLeaf(list){
+    		let v = this;
+    		if(list.length>0){
+    			for (let r of list){
+    				if (r.children){
+    					v.getLeaf(r.children)
+    				}else{
+    					v.mapDot.push(r);
+    				}
+    			}
+    		}else{
+    			v.mapDot.push([]);
+    		}
     	},
     	//树多点击事件
     	treeClick(mess){
-    		
     		console.log('1',mess)
     		if(mess[0]){
-    			this.mapCenter[0] = mess[0].mapCen
+    			this.mapDot = mess
     		}
     	},
     	changeTime(val){

@@ -16,45 +16,42 @@
 		    <div>
 		    	<Row :gutter='30' style="margin-bottom: 15px;">
 		    		<Col span="6">
-		    			<Input v-model="addspot.routertName" placeholder="请输入线路名称...">
+		    			<Input v-model="addspot.xlmc" placeholder="请输入线路名称...">
 		    			</Input>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="addspot.spotType">
-					        <Option value="正常">正常</Option>
-					        <Option value="停用">停用</Option>
+		    			<Select v-model="addspot.zt">
+					        <Option value="00">正常</Option>
+					        <Option value="10">停用</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="addspot.direction">
-					        <Option value="上行">上行</Option>
-					        <Option value="下行">下行</Option>
+		    			<Select v-model="addspot.yxfs">
+					        <Option value="10">上行</Option>
+					        <Option value="20">下行</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-	    				<Input v-model="addspot.spotmess" placeholder="备注信息...">
+	    				<Input v-model="addspot.bz" placeholder="备注信息...">
 		    			</Input>
 		    		</COl>
 		    	</Row>
 		    </div>
 		    <div class="box-row">
 		    	<div class="body-F stepsList">
-		    		<Steps :current="routerList.length" size="small">
-				        <Step icon="disc" :content="item.name" v-for="(item,index) in routerList"></Step>
+		    		<Steps :current="choosedStations.length" size="small">
+				        <Step icon="disc" :content="item.name" v-for="(item,index) in choosedStations"></Step>
 				    </Steps>
 		    	</div>
 		    	<div style="width: 100px;">
 		    		<div>
-		    			<Select v-model="spotName">
-					        <Option value="光谷广场">光谷广场</Option>
-					        <Option value="珞喻路">珞喻路</Option>
-					        <Option value="武汉大学">武汉大学</Option>
-					        <Option value="珞珈山">珞珈山</Option>
+		    			<Select v-model="stationId">
+					        <Option v-for="r in stationList" :value="r.id">{{r.mc}}</Option>
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
 		    			<Button type="primary" shape="circle" icon="plus" 
-		    				:disabled="spotName==''"
+		    				:disabled="stationId==''"
 		    				@click='addspotlist'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
 		    				:disabled="routerList.length==0" style="float: right;"
@@ -65,24 +62,27 @@
 			</div>
 		    <div slot='footer'>
 		    	<Button type="ghost" @click="colse">取消</Button>
-	        	<Button type="primary" @click="colse">确定</Button>
+	        	<Button type="primary" @click="save">确定</Button>
 		    </div>
 		</Modal>
 	</div>
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
 	export default{
 		name:'',
 		data(){
 			return{
 				showModal:true,
+                stationId:'',
+				choosedStations:[],
 				addspot:{
-					routertName:'',
-					spotType:'正常',
-					direction:'上行',
-					spotmess:''
+                    xlmc:'',
+                    zt:'00',
+                    yxfs:'10',
 				},
+				stationList:[],
 				spotName:'',
 				routerList:[
 					{
@@ -96,18 +96,50 @@
 				
 			}
 		},
+		mounted(){
+		  this.getAllStation();
+		},
 		methods:{
+		    getAllStation(){
+                this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
+                    if(res.code===200){
+                        this.stationList = res.result;
+                    }
+                })
+			},
+			getStationById(id){
+				for (let r of this.stationList){
+				    if (r.id === id)return r;
+				}
+				return null;
+            },
+			getStationNameById(id){
+		        let station = this.getStationById(id);
+		        if (station == null)return '';
+		        return station.mc;
+			},
+			save(){
+                let zdIds = '';
+                for(let r of this.choosedStations){
+                    zdIds += r.id+",";
+				}
+                this.addspot.zdIds = zdIds;
+                this.$http.post(configApi.XL.ADD,this.addspot).then((res) =>{
+                    if(res.code===200){
+                        this.$Message.success(res.message);
+                    }
+                })
+			},
 			addspotlist(){
-				this.routerList.push({'name':this.spotName})
-				this.spotName = ''
+		        this.choosedStations.push({id:this.stationId,name:this.getStationNameById(this.stationId)});
+		        this.stationId = '';
 			},
 			removespot(){
-				this.routerList.pop()
+				this.choosedStationIds.pop()
 			},
 			colse(){
 				var v = this
 				v.$parent.compName = ''
-				console.log(v.$parent)
 		    }
 		}
 	}

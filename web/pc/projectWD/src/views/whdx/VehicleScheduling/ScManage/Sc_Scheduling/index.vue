@@ -91,6 +91,8 @@
 	import drag from './comp/drag.vue'
 	import drlist from '../../../components/draggable-list/draggable-list.vue'
 	import mixins from '@/mixins'
+	
+	import configApi from '@/axios/config.js'
 	export default {
 		name: '',
 		mixins:[mixins],
@@ -233,13 +235,24 @@
 				title: '班车管理',
 			}, {
 				title: '班车排班',
-			}])
+			}]),
+			this.todaytime = this.getdateParaD(this.getdate())
+			this.getmess()
 		},
 		mounted(){
-			this.todaytime = this.getdateStrD()
 			this.getalert()
 		},
 		methods: {
+			getmess(){
+				var v = this
+				console.log('排班数据2')
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+					console.log('排班数据2',res)
+				})
+//				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+//					console.log('排班数据',res)
+//				})
+			},
 			okdrag(){
 //				alert('132')
 				this.dateMess=!this.dateMess
@@ -256,6 +269,7 @@
         	},
 			dayClick(event) {
 				this.todaytime = this.getdateParaD(event)
+				this.getmess()
 //				console.log('天事件', this.getdateParaD(event))
 //				console.log('天事件', event.toLocaleString())
 //				this.dateMess = true
