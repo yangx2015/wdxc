@@ -33,8 +33,8 @@
 			return{
 				map:'',
 				mapcenter:{
-					lng: 114.370095,
-	    			lat: 30.545038
+					lng: 114.370095,//bdjd
+	    			lat: 30.545038//bdwd
 				},
 				zoom:16,
 				mess:[
@@ -87,7 +87,6 @@
 			this.mapCenter()
 			
 			              
-		  	
 		  	this.bk()
 //		  	this.disDot()
 		},
