@@ -138,4 +138,16 @@ module.exports = {
         CHANGE: '/api/cssd/update',
 		DELE:   '/api/cssd/removeIds'
 	},
-} 
+	ZNZP:{//智能站牌
+		QUERY:  '/api/znzp/pager',
+		ADD:    '/api/znzp/save',
+        CHANGE: '/api/znzp/update',
+		DELE:   '/api/znzp/removeIds'
+	},
+	ZDGL:{//终端管理
+		QUERY:  '/api/zd/pager',
+		ADD:    '/api/zd/save',
+        CHANGE: '/api/zd/update',
+		DELE:   '/api/zd/removeIds'
+	},
+}
