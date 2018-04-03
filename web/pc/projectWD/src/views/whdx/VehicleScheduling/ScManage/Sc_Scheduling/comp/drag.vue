@@ -42,14 +42,14 @@ li{
 							<Card style="width:100%">
 								<p slot="title">
 									<Icon type="ios-film-outline"></Icon>
-									光谷大道一号线
+									{{item.xlmc}}
 								</p>
 								<span slot="extra">
 										            <Icon type="ios-loop-strong"></Icon>
-										            早班
+										            时间
 										        </span>
 								<div style="height: 140px;text-align: center;overflow: auto;" :id="index+'card'">
-									<Row style="border: solid 1px #9B9B9B;padding: 3px 0;">
+									<Row style="border: solid 1px #9B9B9B;padding: 3px 0;" v-for="(items,indexs) in item.clList">
 										<Col span="8">周师傅</Col>
 										<Col span="8">鄂A12345</Col>
 										<Col span="8">静态</Col>
@@ -66,11 +66,13 @@ li{
 
 <script>
 	import Sortable from 'sortablejs';
+	
+	import configApi from '@/axios/config.js'
 	export default {
 		name:'',
 		data(){
 			return{
-				listdata:[1,2,2,2,2,2,2,2,2,2,,2,2,2,2,,,,,,]
+				listdata:[]
 			}
 		},
 		props: {
@@ -78,6 +80,9 @@ li{
 				type: String,
 				default: '2018-08-08'
 			}
+		},
+		created(){
+			this.getmess()
 		},
 		mounted (){
 			let vm = this;
@@ -88,15 +93,10 @@ li{
 	                pull: true
 	            },
 	            animation: 120,
-//	            ghostClass: 'placeholder-style',
-//	            fallbackClass: 'iview-admin-cloned-item',
 	            onRemove (event) {
-//	            	event.to.innerHTML="<div style='background-color:#000;width:50px;height:50px'></div>"
 	            	console.log(event.item.getAttribute('data-index'))
 	            	console.log(event)
 	            	console.log(event.to.id)
-	//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
-	//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 	            }
 	        });
 	        setTimeout(function(){
@@ -104,26 +104,28 @@ li{
 	        },200)
 		},
 		methods:{
+			getmess(){
+				var v = this
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":'2018-03-26'}).then((res) =>{
+					console.log('排班数据2',res)
+					this.listdata = res.result
+				})
+			},
 			okmodel(){
 				this.$emit('okdrag')
 			},
 			fordata(){
 				let vm = this;
 				for(var i=0;i<vm.listdata.length;i++){
-//					let todoList+index = document.getElementById(index+'card');
 					Sortable.create((document.getElementById(i+'card')), {
 			            group: {
 			                name: 'list',
 			                pull: true
 			            },
 			            animation: 120,
-//			            ghostClass: 'placeholder-style',
-//			            fallbackClass: 'iview-admin-cloned-item',
 			            onRemove (event) {
 			            	console.log(event.item.getAttribute('data-index'))
 			            	console.log(event)
-			//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
-			//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 			           }
 			        });
 				}

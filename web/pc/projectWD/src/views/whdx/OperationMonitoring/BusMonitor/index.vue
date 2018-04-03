@@ -33,7 +33,7 @@
     	}
     	.carlines{
 			background-color: #fff;
-			padding-top: 35px;
+			padding-top: 80px;
 			margin: 0 15px;
 		}
     }
@@ -73,7 +73,11 @@
 						    <div class="carlines">
 						    	<div class="box-row-z">
 						    		<div v-for="(item,index) in XBline">
-						    			<carline :zd="item.entryCount!=0"  :linecar='item.exportCount!=0' :siteName="item.zdName"></carline>
+						    			<carline 
+						    				:zd="item.entryCount!=0"
+						    				:linecar='item.exportCount!=0'
+						    				:siteName="item.zdName"
+						    				:lineShow="!(index==XBline.length-1)"></carline>
 						    		</div>
 						  			<!--<div>
 						  				<carline :zd="true" :linecar="true" siteName="第一食堂第一食堂"></carline>

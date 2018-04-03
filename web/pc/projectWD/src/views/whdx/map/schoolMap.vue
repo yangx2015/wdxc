@@ -37,14 +37,14 @@
 			return{
 				// let host = "127.0.0.1"
 			    host : "192.168.31.180",
-			    socket : new SockJS("http://"+"192.168.31.180"+"/gps"),
+			    socket : new SockJS("http://"+"192.168.31.228"+"/gps"),
 			    
 			    
 				scoketMess:this.$store.state.app.socketMess,
 				map:'',
 				mapcenter:{
-					lng: 114.372443,
-	    			lat: 30.544572
+					lng: 114.369503,
+	    			lat: 30.544272
 				},
 				zoom:16
 			}

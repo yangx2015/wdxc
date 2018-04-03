@@ -73,8 +73,8 @@
 							<Table 
 								border 
 								:height="tabHeight" 
-								:columns="columns2" 
-								:data="data2"></Table>
+								:columns="tableTiT" 
+								:data="tableData"></Table>
 							<div>
 								<Button type="warning">复制当日排班信息</Button>
 							</div>
@@ -104,8 +104,8 @@
 			return {
 				tabHeight:'',
 				todaytime:'',
-				dateMess: false,
-				modalName: '',
+				dateMess: true,
+				modalName: 'drag',
 				events: [{
 						title: '早班',
 						start: '2018-01-01',
@@ -128,29 +128,7 @@
 						YOUR_DATA: {}
 					}
 				],
-				columns1: [{
-						title: '序号',
-						type: 'index'
-					},
-					{
-						title: '班次',
-						key: 'Shift'
-					},
-					{
-						title: '线路',
-						key: 'line'
-					},
-					{
-						title: '司机',
-						key: 'driver'
-					}
-				],
-				data1: [{
-					Shift: '早班',
-					line: '999线',
-					driver: '王炫智'
-				}],
-				columns2: [
+				tableTiT: [
                 	{
                         type: 'index',
                         width: 40,
@@ -163,13 +141,16 @@
                     {
                         title: '车辆',
                         width: 100,
-                        key: 'car',
+                        key: 'cph',
                         align: 'center'
                     },
                     {
                         title: '线路',
-                        key: 'line',
-                        align: 'center'
+                        key: 'clXl',
+                        align: 'center',
+                        render: (h, params) => {
+                        	return params.row.clXl.xlmc
+                        }
                     },
                     {
                         title: '状态',
@@ -187,42 +168,7 @@
 						}
                     }
                 ],
-                data2: [
-                    {
-                        date:'早班',
-                        car:'鄂A12345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'45km/h'
-                    },
-                    {
-                        date:'午班',
-                        car:'鄂A11345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'60km/h'
-                    },
-                    {
-                        date:'晚班',
-                        car:'鄂A96345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'20km/h'
-                    },
-                    {
-                        date:'早班',
-                        car:'鄂A12695',
-                        line:'3号线路',
-                        type:'正常',
-                        km:'40km/h'
-                    },
-                    {
-                        date:'晚班',
-                        car:'鄂A12665',
-                        line:'3号线路',
-                        type:'正常',
-                        km:'70km/h'
-                    }
+                tableData: [
                 ]
 			}
 		},
@@ -246,12 +192,10 @@
 			getmess(){
 				var v = this
 				console.log('排班数据2')
-//				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-//					console.log('排班数据2',res)
-//				})
-//				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-//					console.log('排班数据',res)
-//				})
+				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+					console.log('排班数据',res)
+					v.tableData = res.result
+				})
 			},
 			okdrag(){
 //				alert('132')
@@ -264,7 +208,7 @@
         	},
         	changeClick(){
         		this.dateMess = true
-        		this.modalName = drag
+        		this.modalName = 'drag'
 //				this.modalName = drlist
         	},
 			dayClick(event) {

@@ -130,7 +130,7 @@ module.exports = {
 		QUERY: '/api/pb/xbbjpb/',
 	},
 	XBDT:{//校巴实时动态
-		QUERY: '/clzd/getzdcl/',
+		QUERY: '/api/clzd/getzdcl/',
 	},
 	CS:{//超速
 		QUERY:  '/api/cssd/pager',
