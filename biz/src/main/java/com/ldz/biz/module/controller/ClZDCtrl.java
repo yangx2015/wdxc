@@ -7,8 +7,6 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,10 +35,14 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 		return zdservice.saveEntity(entity);
 	}
 
-    @MessageMapping("/getzdcl")
-//	@RequestMapping(value = "/getzdcl", method = { RequestMethod.GET })
+	/**
+	 * 获取线路下站点和车辆的信息
+	 * @param xlId	线路ID
+	 * @return
+	 */
+//    @MessageMapping("/getzdcl")
+	@RequestMapping(value = "/getzdcl", method = {RequestMethod.POST})
 	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
-		xlId="1";
 		return zdservice.getBySiteVehicleList(xlId);
 	}
 
