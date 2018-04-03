@@ -11,4 +11,6 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
      * 
      */
     void insetAndUpdate(ClZdgl entity);
+
+    ApiResponse<String> updateEntity(ClZdgl entity);
 }

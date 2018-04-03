@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.Date;
+
 @Service
 public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ZdglService{
     @Autowired
@@ -26,6 +28,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public ApiResponse<String> saveEntity(ClZdgl entity) {
+        entity.setCjr(getOperateUser());
+        entity.setCjsj(new Date());
         save(entity);
         return ApiResponse.saveSuccess();
     }
@@ -40,4 +44,12 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 			save(entity);
 		}
 	}
+
+    @Override
+    public ApiResponse<String> updateEntity(ClZdgl entity) {
+        entity.setXgr(getOperateUser());
+        entity.setXgsj(new Date());
+        update(entity);
+        return ApiResponse.success();
+    }
 }

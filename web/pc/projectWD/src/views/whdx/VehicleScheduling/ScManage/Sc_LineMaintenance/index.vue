@@ -16,7 +16,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.xlmcLike" placeholder="请输入线路名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -97,7 +97,10 @@
 					{
 						title: '方向',
 						align: 'center',
-						key: 'yxfx'
+						key: 'yxfx',
+						render:(h,p)=>{
+
+						}
 					},
 					{
 						title: '状态',
@@ -161,7 +164,7 @@
 									on: {
 										click: () => {
 											//this.remove(params.index)
-											this.$Message.info('确认')
+											this.listDele(params.row.id);
 										}
 									}
 								})
@@ -182,7 +185,7 @@
 				cjsjInRange:[],
 				findMess: {
 					cjsjInRange:'',
-					zjhmLike: '',
+                    xlmcLike: '',
 					pageNum: 1,
 					pageSize: 5
 				}
@@ -205,6 +208,11 @@
 		},
 		methods: {
             getmess(){
+                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
+                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                }else{
+                    this.findMess.cjsjInRange = '';
+                }
                 this.$http.get(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
@@ -216,19 +224,17 @@
             },
 			//收索事件
 			findMessList() {
-				this.$Message.info('查詢');
+				this.getmess();
 			},
 			AddDataList() {
                 this.currentRow = null;
 				this.compName = 'compModal'
 			},
 			listDele(id){
-                this.$http.post(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.post(configApi.XL.DELE,{ids:[id]}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
-                        this.data9 = res.page.list;
-                        this.pageTotal = res.page.total;
-                        console.log(this.data9);
+                        this.pageChange(1);
                     }
                 })
 			},
