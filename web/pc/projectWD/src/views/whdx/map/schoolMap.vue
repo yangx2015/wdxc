@@ -50,7 +50,6 @@
 			}
 		},
 		created(){
-			this.cs()
 		},
 		mounted(){
 			//点布控
@@ -58,17 +57,11 @@
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
 		  	this.mapCenter()
-//		  	this.sco()
+		  	this.sco()
 		},
 		methods:{
 			cs(){
 				let arr = [9,8,7,6,5,4,3,2]
-//				console.log(arr)
-//				for(var r in arr){
-//					if(arr[r]==7){
-//						arr.splice(3,1,250)
-//					}
-//				}
 				arr.forEach((index,item) => {
 					if(item==7){
 						arr.splice(3,1,256)
@@ -107,7 +100,13 @@
 						console.log('数据接受2',data.body);
 			            console.log('数据接受3',JSON.parse(data.body));
 			            console.log('数据存储',v.scoketMess)
-			            v.scoketMess.push(JSON.parse(data.body))
+			            let jsonMess = JSON.parse(data.body)
+//			            v.scoketMess.forEach((index,item) => {
+//							if(item==7){
+				            v.scoketMess.push(jsonMess)
+//								arr.splice(3,1,256)
+//							}
+//						})
 			            v.$store.commit('socketMessAdd',v.scoketMess)
 			        });
 			    });	
