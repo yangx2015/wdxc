@@ -46,7 +46,6 @@ httpInstance.interceptors.response.use((response) => {
 		var v = this
     // 对响应数据做点什么
     if(response.status===200){
-			console.log('数据请求成功',response)
     	return response.data;
     }else if(!Cookies.get('result')||response.status===500){
   		router.push({name: 'error-500'})

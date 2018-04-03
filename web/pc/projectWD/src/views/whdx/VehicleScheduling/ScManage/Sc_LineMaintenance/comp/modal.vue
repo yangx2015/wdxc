@@ -16,23 +16,23 @@
 		    <div>
 		    	<Row :gutter='30' style="margin-bottom: 15px;">
 		    		<Col span="6">
-		    			<Input v-model="addspot.xlmc" placeholder="请输入线路名称...">
+		    			<Input v-model="form.xlmc" placeholder="请输入线路名称...">
 		    			</Input>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="addspot.zt">
+		    			<Select v-model="form.zt">
 					        <Option value="00">正常</Option>
 					        <Option value="10">停用</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="addspot.yxfs">
+		    			<Select v-model="form.yxfs">
 					        <Option value="10">上行</Option>
 					        <Option value="20">下行</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-	    				<Input v-model="addspot.bz" placeholder="备注信息...">
+	    				<Input v-model="form.bz" placeholder="备注信息...">
 		    			</Input>
 		    		</COl>
 		    	</Row>
@@ -52,7 +52,7 @@
 		    		<div style="margin-top: 8px;">
 		    			<Button type="primary" shape="circle" icon="plus" 
 		    				:disabled="stationId==''"
-		    				@click='addspotlist'></Button>
+		    				@click='addStation'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
 		    				:disabled="routerList.length==0" style="float: right;"
 		    				@click='removespot'></Button>
@@ -77,7 +77,8 @@
 				showModal:true,
                 stationId:'',
 				choosedStations:[],
-				addspot:{
+				form:{
+				    id:'',
                     xlmc:'',
                     zt:'00',
                     yxfs:'10',
@@ -97,13 +98,31 @@
 			}
 		},
 		mounted(){
+		    if (this.$parent.currentRow){
+				this.form = this.$parent.currentRow;
+			}
 		  this.getAllStation();
 		},
 		methods:{
+		    getStations(){
+                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID+'?xlId='+this.form.id).then((res) =>{
+                    if(res.code === 200){
+                        for (let r of res.result){
+                            this.addByStationId(r.id);
+						}
+                    }
+                })
+			},
+			addByStationId(stationId){
+                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
+			},
 		    getAllStation(){
                 this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
+                        if (this.$parent.currentRow){
+                            this.getStations();
+                        }
                     }
                 })
 			},
@@ -123,19 +142,23 @@
                 for(let r of this.choosedStations){
                     zdIds += r.id+",";
 				}
-                this.addspot.zdIds = zdIds;
-                this.$http.post(configApi.XL.ADD,this.addspot).then((res) =>{
+                this.form.zdIds = zdIds;
+                let url = configApi.XL.ADD;
+                if (this.$parent.currentRow){
+                    url = configApi.XL.CHANGE;
+                }
+                this.$http.post(url,this.form).then((res) =>{
                     if(res.code===200){
                         this.$Message.success(res.message);
                     }
                 })
 			},
-			addspotlist(){
+			addStation(){
 		        this.choosedStations.push({id:this.stationId,name:this.getStationNameById(this.stationId)});
 		        this.stationId = '';
 			},
 			removespot(){
-				this.choosedStationIds.pop()
+				this.choosedStations.pop()
 			},
 			colse(){
 				var v = this
