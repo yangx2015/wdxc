@@ -34,17 +34,18 @@
 					lng: 114.372443,
 	    			lat: 30.544572
 				},
-                xlId:'',
 				zoom:16,
                 stationList:[],
 			}
 		},
+        props: {
+            xlId: String
+        },
 		created(){
 			
 		},
 		mounted(){
-            this.xlId = this.$parent.xlId;
-            console.log("xl:"+this.$parent.xlId);
+            console.log("xl:"+this.xlId);
             var v = this
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例

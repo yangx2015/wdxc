@@ -30,7 +30,7 @@
     	</div>
     	<div class="showmapline">
     		<div class="showmap" v-if="changeS">
-    			<map-show-line></map-show-line>
+    			<map-show-line :xlId="xlId"></map-show-line>
     		</div>
     		<div class="showline stepsList" v-else>
     			<Steps :current="stationList.length" size="small">
