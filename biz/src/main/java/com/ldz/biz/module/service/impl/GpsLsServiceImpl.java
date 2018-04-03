@@ -2,6 +2,7 @@ package com.ldz.biz.module.service.impl;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.service.GpsLsService;
@@ -29,4 +30,12 @@ public class GpsLsServiceImpl extends BaseServiceImpl<ClGpsLs,String> implements
         save(entity);
         return ApiResponse.saveSuccess();
     }
+
+	@Override
+	public ApiResponse<String[]> getZdbhAllLsGps(gpsSJInfo info) {
+		
+		
+		
+		return null;
+	}
 }

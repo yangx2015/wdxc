@@ -41,12 +41,12 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	}
 
 	@PostMapping("/xbpb/")
-	public ApiResponse<List<PbInfo>> getPbInfo(@RequestBody PbClXlmodel  pbclxlmodel) {
+	public ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel  pbclxlmodel) {
 		return pbservice.getPbInfo(pbclxlmodel);
 	}
 
 	@PostMapping("/xbbjpb/")
-	public ApiResponse<List<XbXlPb>> getAllPbInfo(@RequestBody PbClXlmodel  pbclxlmodel) {
+	public ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel  pbclxlmodel) {
 		return pbservice.getAllPbInfo(pbclxlmodel);
 	}
 }
