@@ -129,6 +129,9 @@ module.exports = {
 	XLPBXX:{
 		QUERY: '/api/pb/xbbjpb/',
 	},
+	XBDT:{//校巴实时动态
+		QUERY: '/clzd/getzdcl/',
+	},
 	CS:{//超速
 		QUERY:  '/api/cssd/pager',
 		ADD:    '/api/cssd/save',

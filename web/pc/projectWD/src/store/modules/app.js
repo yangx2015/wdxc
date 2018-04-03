@@ -5,6 +5,7 @@ import Vue from 'vue';
 
 const app = {
     state: {
+    	socketMess:[],
     	loading:{
     		size:55,
     		text:'数据加载中请稍后...'
@@ -38,6 +39,9 @@ const app = {
         dontCache: [] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
+    	socketMessAdd (state,data){
+    		state.socketMess = data
+    	},
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },

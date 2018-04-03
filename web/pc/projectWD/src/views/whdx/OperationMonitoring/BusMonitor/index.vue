@@ -72,39 +72,18 @@
 						<div class="body">
 						    <div class="carlines">
 						    	<div class="box-row-z">
-						  			<div>
-						  				<carline :linecar="true" siteName="第一食堂第一食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第二食堂第二食堂"></carline>
+						    		<div v-for="(item,index) in XBline">
+						    			<carline :zd="item.entryCount!=0"  :linecar='item.exportCount!=0' :siteName="item.zdName"></carline>
+						    		</div>
+						  			<!--<div>
+						  				<carline :zd="true" :linecar="true" siteName="第一食堂第一食堂"></carline>
 						  			</div>
 						  			<div>
 						  				<carline :zd="true" siteName="第003食堂第二食堂"></carline>
 						  			</div>
 						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
 						  				<carline siteName="第003食堂第二食堂" :lineShow="false"></carline>
-						  			</div>
+						  			</div>-->
 						  		</div>
 					    	</div>
 						</div>
@@ -174,6 +153,8 @@ import myMap from '../../map/schoolmap.vue'
 import gauge from './comp/gauge.vue'
 import abnor from './comp/abnormal.vue'
 import carline from './comp/travelist.vue'
+
+import configApi from '@/axios/config.js'
 export default {
     name: 'VehicleMonitoring',
     components: {
@@ -257,7 +238,8 @@ export default {
         			time:'2017-12-12 08:00:00',
         			text:'上线时间',
         		}
-        	]
+        	],
+        	XBline:[]
         };
     },
     computed: {
@@ -271,11 +253,19 @@ export default {
             title: '校巴监控',
         }]),
         this.carlist = this.carlaunch
+        this.getXBline()
     },
      mounted(){
 		this.getalert()
     },
     methods: {
+    	getXBline(){
+    		var v = this
+    		this.$http.post(configApi.XBDT.QUERY,{"xlId":"1"}).then((res) =>{
+				console.log('线路数据',res)
+				v.XBline = res.result
+			})
+    	},
     	getalert(){
     		var windowHeight = window.innerHeight
     		this.carheight.height = (windowHeight/2 - 160)+'px'

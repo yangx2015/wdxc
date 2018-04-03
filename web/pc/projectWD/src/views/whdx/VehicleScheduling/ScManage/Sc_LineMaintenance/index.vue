@@ -65,7 +65,7 @@
 				loading:this.$store.state.app.loading,
 				tabHeight: 220,
 				compName: '',
-				
+                currentRow:[],
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
@@ -144,8 +144,10 @@
 									},
 									on: {
 										click: () => {
+										    this.currentRow = params.row;
+										    this.compName = 'compModal'
 											//this.show(params.index)
-											this.$Message.info('编辑')
+											// this.$Message.info('编辑')
 										}
 									}
 								}),
@@ -217,9 +219,19 @@
 				this.$Message.info('查詢');
 			},
 			AddDataList() {
+                this.currentRow = null;
 				this.compName = 'compModal'
 			},
-			listDele(id){},
+			listDele(id){
+                this.$http.post(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
+                    this.SpinShow = false;
+                    if(res.code===200){
+                        this.data9 = res.page.list;
+                        this.pageTotal = res.page.total;
+                        console.log(this.data9);
+                    }
+                })
+			},
 			pageChange(event) {
 				var v = this
 				this.findMess.pageNum = event;

@@ -8,6 +8,7 @@ import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,6 +42,12 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
 		xlId="1";
 		return zdservice.getBySiteVehicleList(xlId);
+	}
+
+	@RequestMapping("getByXlId")
+	public ApiResponse<List<ClZd>> getByXlId(String xlId){
+		List<ClZd> stations = zdservice.getByXlId(xlId);
+		return ApiResponse.success(stations);
 	}
 
 }

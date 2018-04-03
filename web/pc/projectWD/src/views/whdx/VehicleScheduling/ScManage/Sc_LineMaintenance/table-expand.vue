@@ -30,7 +30,7 @@
     	</div>
     	<div class="showmapline">
     		<div class="showmap" v-if="changeS">
-    			<map-show-line :xlId="xlId"></map-show-line>
+    			<map-show-line :xlid="xlId"></map-show-line>
     		</div>
     		<div class="showline stepsList" v-else>
     			<Steps :current="stationList.length" size="small">
@@ -51,16 +51,17 @@
     	data(){
     		return{
     			changeS:true,
-				xlId:'',
+				xlId:'qweqweqwe',
     			stationList:[]
     		}
     	},
         props: {
             row: Object
         },
-		mounted(){
+		created(){
             this.xlId = this.row.id;
-            console.log('p.xlid:'+this.xlId);
+		},
+		mounted(){
             this.getStations();
 		},
         methods:{
