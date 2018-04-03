@@ -246,9 +246,9 @@
 			getmess(){
 				var v = this
 				console.log('排班数据2')
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-					console.log('排班数据2',res)
-				})
+//				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+//					console.log('排班数据2',res)
+//				})
 //				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
 //					console.log('排班数据',res)
 //				})
