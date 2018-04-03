@@ -1,9 +1,7 @@
 package com.ldz.biz.module.controller;
 
 import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.model.ClZnzp;
 import com.ldz.biz.module.service.ZdglService;
-import com.ldz.biz.module.service.ZnzpService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 终端管理
  */
 @RestController
-@RequestMapping("api/zd")
+@RequestMapping("api/zdgl")
 public class ZdCtrl extends BaseController<ClZdgl,String> {
     @Autowired
     private ZdglService service;

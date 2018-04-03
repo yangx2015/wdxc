@@ -57,7 +57,7 @@ module.exports = {
         ADD:'/api/rz/save',
         CHANGE:'/api/rz/update',
         DELE:'/api/rz/removeIds'
-		
+
 	},
 	SUGGES:{
 		QUERY:'api/yj/pager',//意见管理
@@ -145,9 +145,9 @@ module.exports = {
 		DELE:   '/api/znzp/removeIds'
 	},
 	ZDGL:{//终端管理
-		QUERY:  '/api/zd/pager',
-		ADD:    '/api/zd/save',
-        CHANGE: '/api/zd/update',
-		DELE:   '/api/zd/removeIds'
+		QUERY:  '/api/zdgl/pager',
+		ADD:    '/api/zdgl/save',
+        CHANGE: '/api/zdgl/update',
+		DELE:   '/api/zdgl/removeIds'
 	},
 }
