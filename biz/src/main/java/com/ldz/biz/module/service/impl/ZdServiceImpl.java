@@ -99,6 +99,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
             if(xlzds!=null&&xlzds.size()>0){
                 for(DdClModel clZd:clZds){
+                    //到站车辆
+                    long entryCount=0;
+                    //出站车辆
+                    long exportCount=0;
                     Iterator<ClClyxjl> iter = xlzds.iterator();
                     if(clZd.getVehicleCount()>0){
                         List<ClClyxjlModel> list=new ArrayList<ClClyxjlModel>();
@@ -113,6 +117,9 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                                String clczzt="1";//
                                if(item.getZdjl()!=null&& clZd.getVehicleScope()<item.getZdjl()){
                                    clczzt="0";
+                                   entryCount++;
+                               }else{
+                                   exportCount++;
                                }
                                model.setClczzt(clczzt);//车辆出站状态  0未出站
                                model.setCjsj(item.getCjsj());
@@ -123,7 +130,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                         }
                         clZd.setVehicleList(list);
                     }
-
+                    clZd.setEntryCount(entryCount);
+                    clZd.setExportCount(exportCount);
                 }
             }
         }

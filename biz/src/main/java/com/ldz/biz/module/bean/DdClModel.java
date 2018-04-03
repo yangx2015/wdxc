@@ -12,8 +12,27 @@ public class DdClModel {
     private String zdName;//站点名称
     private long vehicleCount;//该站点下车辆的数量
     private long vehicleScope;//站点范围
+
+    private long entryCount=0;//到站车辆
+
+    private long exportCount=0;//出站车辆
     private List<ClClyxjlModel> vehicleList;//当前站点的车辆节点
 
+    public long getEntryCount() {
+        return entryCount;
+    }
+
+    public void setEntryCount(long entryCount) {
+        this.entryCount = entryCount;
+    }
+
+    public long getExportCount() {
+        return exportCount;
+    }
+
+    public void setExportCount(long exportCount) {
+        this.exportCount = exportCount;
+    }
 
     public String getZdId() {
         return zdId;

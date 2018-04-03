@@ -270,7 +270,11 @@ public class ClDd implements Serializable {
      */
     @Column(name = "CDBH")
     private String cdbh;
-
+    /**
+     * 终端编号
+     */
+    @Column(name = "ZDBH")
+    private String zdbm;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -994,6 +998,13 @@ public class ClDd implements Serializable {
         this.fkbz = fkbz;
     }
 
+    public String getZdbm() {
+        return zdbm;
+    }
+
+    public void setZdbm(String zdbm) {
+        this.zdbm = zdbm;
+    }
 
     public String getSjSx() {
         return sjSx;
