@@ -28,12 +28,18 @@ export default{
 			return time
 		},
 		getdatePara(val){//时间转换
-			let Year = val.getFullYear()
-			let Month = val.getMonth()+1
-			let Day = val.getDate()
-			let Hours = val.getHours()
-			let Minutes = val.getMinutes()
-			let Seconds = val.getSeconds()
+			let Year = val.getFullYear();
+			let Month = val.getMonth()+1;
+			let Day = val.getDate();
+			let Hours = val.getHours();
+			let Minutes = val.getMinutes();
+			let Seconds = val.getSeconds();
+			if(Month<10){
+                Month = '0'+Month
+			}
+			if(Day<10){
+                Day = '0'+Day
+			}
 			let time = Year+'-'+Month+'-'+Day+' '+Hours+':'+Minutes+':'+Seconds
 			return time
 		},
@@ -52,6 +58,11 @@ export default{
 			}
 			let time = Year+'-'+Month+'-'+Day
 			return time
+		},
+		getDJC(val){
+			var newDate = new Date();
+			newDate.setTime(val);
+			return this.getdatePara(newDate);
 		},
     	rowClassName (row, index) {
             if (index%2 === 0) {

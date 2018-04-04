@@ -35,6 +35,8 @@
 			background-color: #fff;
 			padding-top: 80px;
 			margin: 0 15px;
+			height: 100%;
+			overflow: auto;
 		}
     }
 </style>
@@ -55,7 +57,7 @@
 					    </Card>
 			    	</div>
 				</div>
-				<div class="body-r-5 height-100 padding-5px" style="width:55.56%;background-color: #fff;">
+				<div class="body-r-5 padding-5px" style="background-color: #fff;width: 55.56%;height: 100%;">
 					<div class="box">
 						<div>
 					    	<Menu mode="horizontal" theme="light" active-name="1">
@@ -79,15 +81,6 @@
 						    				:siteName="item.zdName"
 						    				:lineShow="!(index==XBline.length-1)"></carline>
 						    		</div>
-						  			<!--<div>
-						  				<carline :zd="true" :linecar="true" siteName="第一食堂第一食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline :zd="true" siteName="第003食堂第二食堂"></carline>
-						  			</div>
-						  			<div>
-						  				<carline siteName="第003食堂第二食堂" :lineShow="false"></carline>
-						  			</div>-->
 						  		</div>
 					    	</div>
 						</div>
@@ -97,14 +90,45 @@
 		</div>
 		<div class="body height-50">
 			<div class="box-row height-100">
-				<div class="body-r-5 height-100 padding-5px" style="">
-					<div style="height:100%;">
-						<Card>
+				<div class="body-r-5 height-100 padding-5px" style="width: 55.55%;background-color: #fff;">
+					<div class="box">
+						<div class="body">
+						    <div class="" style="height: 100%;overflow: auto;">
+						    	<div class="box-row-z">
+						    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
+						    			<div style="width: 300px;">
+						    				adfdf-------------------------------
+						    			</div>
+						    		</div>
+						  		</div>
+					    	</div>
+						</div>
+					</div>
+					<!--<div class="box" style="height:100%;background-color: #00A854;">
+						<div class="body">
+						    <div class="" style="overflow: auto;height: 100%;">
+						    	<div class="box-row-z">
+						    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
+						    			adfdf-------------------------------
+						    		</div>
+						    	</div>
+						    </div>
+						</div>-->
+						<!--<Card>
 					        <p slot="title">
 					            <Icon type="ios-film-outline"></Icon>
 					            时速监控
 					        </p>
-					        <div style="padding: 3px 0;">
+					        <div class="box" :style="SSjk">
+					        	<div class="body" style="height: 100%;width: 100%;background-color: #000000;">
+					        		<div class="box-row-z">
+					        			<div style="width: 300px;" v-for="i in [,,,,,,,]">
+					        				werwer
+					        			</div>
+					        		</div>
+					        	</div>
+					        </div>-->
+					        <!--<div style="padding: 3px 0;">
 					        	<Row style="text-align: center;">
 									<Col span="8">
 										鄂A12345
@@ -129,9 +153,9 @@
 										<gauge Eid="Eid3"></gauge>
 									</Col>
 								</Row>
-					        </div>
-					    </Card>
-			    	</div>
+					        </div>-->
+					    <!--</Card>-->
+			    	<!--</div>-->
 				</div>
 				<div class="body-r-4 height-100 padding-5px" style="">
 					<div style="height:100%;">
@@ -141,7 +165,7 @@
 					            	异常行驶记录
 					        </p>
 						    <div :style="mapheight">
-						    	<abnor></abnor>
+						    	<abnor :tabmess=tabmess></abnor>
 							</div>
 					    </Card>
 			    	</div>
@@ -159,91 +183,27 @@ import abnor from './comp/abnormal.vue'
 import carline from './comp/travelist.vue'
 
 import configApi from '@/axios/config.js'
+import mixins from '@/mixins'
 export default {
     name: 'VehicleMonitoring',
     components: {
     	myMap,gauge,abnor,carline
     },
+    mixins: [mixins],
     data () {
         return {
         	mapCenter:{lng: 114.372443, lat: 30.544572},
-        	carlist:[
-        	],
         	carheight:{
-        		height:'220px'
+        		height:''
+        	},
+        	SSjk:{
+        		height:''
         	},
         	mapheight:{
         		height:''
         	},
-        	//启动
-        	carlaunch:[
-        		{
-        			deviceID:'张师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        			ico:'arrow-up-a'
-        		},
-        		{
-        			deviceID:'王师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        			ico:'arrow-up-a'
-        		},
-        		{
-        			deviceID:'李师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        			ico:'arrow-down-a'
-        		}
-        	],
-        	//熄火
-        	flameout:[
-				{
-        			deviceID:'张师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间',
-        			ico:'android-restaurant'
-        		},
-        		{
-        			deviceID:'王师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间',
-        			ico:'android-restaurant'
-        		},
-        		{
-        			deviceID:'李师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间',
-        			ico:'android-restaurant'
-        		}
-        	],
-        	offline:[
-        		{
-        			deviceID:'张师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        		},
-        		{
-        			deviceID:'王师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        		},
-        		{
-        			deviceID:'李师傅',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间',
-        		}
-        	],
-        	XBline:[]
+        	XBline:[],
+        	tabmess:[]
         };
     },
     computed: {
@@ -253,7 +213,8 @@ export default {
 	},
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
-			this.getXBline()
+			this.tabmess = newQuestion
+//			this.getXBline()
 		},
 	},
     created(){
@@ -263,9 +224,8 @@ export default {
             title: '运营监控',
         },{
             title: '校巴监控',
-        }]),
-        this.carlist = this.carlaunch
-        this.getXBline()
+        }])
+//      this.getXBline()
     },
      mounted(){
 		this.getalert()
@@ -281,17 +241,9 @@ export default {
     	getalert(){
     		var windowHeight = window.innerHeight
     		this.carheight.height = (windowHeight/2 - 160)+'px'
+    		this.SSjk.height = (windowHeight/2 - 120)+'px'
     		this.mapheight.height = (windowHeight/2 - 120)+'px'
         },
-    	carlaunchClick(){
-    		this.carlist = this.carlaunch
-    	},
-    	flameoutClick(){
-    		this.carlist = this.flameout
-    	},
-    	offlineClick(){
-    		this.carlist = this.offline
-    	}
-    }
+	    }
 };
 </script>

@@ -9,12 +9,14 @@
 			border 
 			:height="tabHeight" 
 			:columns="columns1" 
-			:data="data1"></Table>
+			:data="tabmess"></Table>
 	</div>
 </template>
 <script>
+	import mixins from '@/mixins'
     export default {
     	name:'',
+    	mixins: [mixins],
         data () {
             return {
             	tabHeight:'220',
@@ -27,57 +29,35 @@
                     },
                     {
                         title: '异常事件',
-                        key: 'name'
+                        key: 'eventType',
+                        render: (h, params) => {
+                        	switch (params.row.eventType){
+                        		case "80":
+                        			return '正常';
+                        	}
+						}
                     },
                     {
                         title: '车辆编号',
-                        key: 'age',
+                        key: 'cph',
                         align: 'center'
                     },
                     {
                         title: '事发时间',
-                        key: 'date',
-                        align: 'center'
-                    }
-                ],
-                data1: [
-                    {
-                        name: '车辆抛锚',
-                        age: '鄂A15245',
-                        date: '2016-10-03'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A65345',
-                        date: '2016-10-01'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A19845',
-                        date: '2016-10-02'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A69345',
-                        date: '2016-10-04'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A12975',
-                        date: '2016-10-04'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A1635',
-                        date: '2016-10-04'
-                    },
-                    {
-                        name: '车辆追尾',
-                        age: '鄂A12345',
-                        date: '2016-10-04'
+                        key: 'time',
+                        align: 'center',
+                        render: (h, params) => {
+                        	return this.getDJC(params.row.time)
+						}
                     }
                 ]
             }
+        },
+        props:{
+        	tabmess:{
+        		type:Array,
+        		default:[]
+        	}
         },
         created(){
         },
