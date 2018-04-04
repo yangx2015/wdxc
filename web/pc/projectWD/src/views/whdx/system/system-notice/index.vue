@@ -1,6 +1,6 @@
 <style lang="less">
     @import '../../../../styles/common.less';
-    
+
 </style>
 <!--查询统计-->
 <template>
@@ -24,7 +24,7 @@
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="componentName = 'formData'">
+							<Button type="primary" @click="choosedRow = null;componentName = 'formData'">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -69,7 +69,7 @@
             	pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
-				choosedRow:{},
+				choosedRow:null,
                 componentName:'',
             	page:{
             		pageNum:1,
@@ -224,7 +224,7 @@
             },
             pageChange(event){
                 this.form.pageNum = event;
-                this.getmess();
+                this.getPageData();
             }
         }
     }

@@ -66,16 +66,18 @@
         },
 		methods: {
 		    save(){
-		        let url = configApi.ZNZP.ADD;
+		        let url = configApi.ZDGL.ADD;
 				if (this.$parent.choosedRow){
                     url = configApi.ZNZP.CHANGE;
 				}
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
+                    this.close();
                 })
 			},
 			close(){
 		        this.showModal = false;
+		        this.$parent.componentName = '';
 			}
 
 		}
