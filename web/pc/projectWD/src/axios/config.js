@@ -126,8 +126,9 @@ module.exports = {
 	PB:{//校巴排版
 		QUERY:  '/api/pb/xbpb/',
 	},
-	XLPBXX:{
+	XLPBXX:{//车辆排班信息
 		QUERY: '/api/pb/xbbjpb/',
+		ADD:    '/api/pb/save',
 	},
 	XBDT:{//校巴实时动态
 		QUERY: '/api/clzd/getzdcl/',

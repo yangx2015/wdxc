@@ -27,10 +27,10 @@
 			            <Input type="text" v-model="addmess.dl" placeholder="请输入等级">
 			            </Input>
 			        </FormItem>
-			        <FormItem prop="sjId" label='司机：'>
-						<Select v-model="addmess.sjId">
-							<Option value="1">张三</Option>
-							<Option value="0">李四</Option>
+			        <FormItem prop="sjxm" label='司机：'>
+						<Select v-model="addmess.sjxm">
+							<Option value="张三">张三</Option>
+							<Option value="李四">李四</Option>
 						</Select>
 			        </FormItem>
 			        <FormItem prop="zt" label='车辆状态：'>
@@ -67,7 +67,7 @@
                     cph: '',
                     cx:'',
                     dl:'',
-                    sjId:'',
+                    sjxm:'',
                     zt:'',
                     zdbh:''
                 },
@@ -78,7 +78,7 @@
                   dl: [
                       { required: true,message: '请设置密码', trigger: 'blur' }
                   ],
-                  sjId:[
+                  sjxm:[
                       { required: true,message: '请输入手机号码', trigger: 'blur' }
                   ],
                   zt:[

@@ -40,7 +40,7 @@
 			    socket : new SockJS("http://"+"192.168.31.228"+"/gps"),
 			    
 			    
-				scoketMess:this.$store.state.app.socketMess,
+				scoketMess:[],
 				map:'',
 				mapcenter:{
 					lng: 114.369503,
@@ -48,6 +48,17 @@
 				},
 				zoom:16
 			}
+		},
+		computed: {
+			GetscoketMess() {
+				return this.$store.state.app.socketMess
+			}
+		},
+		watch: {
+			GetscoketMess: function(newQuestion, oldQuestion) {
+				this.scoketMess = newQuestion
+				this.disDot(newQuestion)
+			},
 		},
 		created(){
 		},
@@ -62,16 +73,33 @@
 		methods:{
 			cs(){
 				let arr = [9,8,7,6,5,4,3,2]
-				arr.forEach((index,item) => {
-					if(item==7){
-						arr.splice(3,1,256)
-					}
+				arr.forEach((item,index) => {
+					console.log(item)
+					console.log(index)
+//					if(item==7){
+//						arr.splice(3,1,256)
+//					}
 				})
 				setTimeout(() =>{
 					console.log(arr)
 				},200)
 			},
-			sco(){
+			//撒点
+			disDot(list){
+				this.clear()
+				// 编写自定义函数,创建标注
+				var v = this
+				function addMarker(point){
+				  var marker = new BMap.Marker(point);
+				  v.map.addOverlay(marker);
+				}
+				// 随机向地图添加25个标注
+				for (var i = 0; i < list.length; i ++) {
+					var point = new BMap.Point(list[i].bdjd, list[i].bdwd);
+					addMarker(point);
+				}
+			},
+			sco(){//数据推送
 				var v = this
 			/**
 		     * 建立成功的回调函数
@@ -96,17 +124,22 @@
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
 			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-						console.log('数据接受1',data);
-						console.log('数据接受2',data.body);
-			            console.log('数据接受3',JSON.parse(data.body));
-			            console.log('数据存储',v.scoketMess)
+//						console.log('数据接受1',data);
+//						console.log('数据接受2',data.body);
+//			            console.log('数据接受3',JSON.parse(data.body));
+//			            console.log('数据存储',v.scoketMess)
 			            let jsonMess = JSON.parse(data.body)
-//			            v.scoketMess.forEach((index,item) => {
-//							if(item==7){
-				            v.scoketMess.push(jsonMess)
-//								arr.splice(3,1,256)
+//			           	for( var i = 0 ; i<v.scoketMess.length ; i++){
+//			           		if(v.scoketMess[i].clid==jsonMess.clid){
+//								v.scoketMess.splice(i,1)
 //							}
-//						})
+//			           	}
+			            v.scoketMess.forEach((item,index) => {
+							if(item.clid==jsonMess.clid){
+								v.scoketMess.splice(index,1)
+							}
+						})
+				        v.scoketMess.push(jsonMess)
 			            v.$store.commit('socketMessAdd',v.scoketMess)
 			        });
 			    });	
@@ -125,6 +158,10 @@
 			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
 			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
+			},
+			//清除层
+			clear(){
+				this.map.clearOverlays()
 			},
 		}
 	}

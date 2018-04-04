@@ -247,7 +247,15 @@ export default {
         };
     },
     computed: {
-    },
+		GetscoketMess() {
+			return this.$store.state.app.socketMess
+		}
+	},
+	watch: {
+		GetscoketMess: function(newQuestion, oldQuestion) {
+			this.getXBline()
+		},
+	},
     created(){
     	this.$store.commit('setCurrentPath', [{
             title: '首页',
