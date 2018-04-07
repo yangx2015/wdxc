@@ -94,26 +94,6 @@
 		<div class="body height-50">
 			<div class="box-row height-100">
 				<div class="body-r-5 height-100 padding-5px" style="width: 55.55%;background-color: #fff;">
-					<!--<div class="box">
-						<div class="body">
-							<Card>
-								<p slot="title">
-					            	<Icon type="ios-film-outline"></Icon>
-						            时速监控
-						        </p>
-							    <div class="" :style="carheight" style="height: 100%;overflow: auto;background-color: #33B976;">
-							    	<div class="box-row-z">
-							    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
-							    			<div style="width: 300px;">
-							    				adfdf-------------------------------
-							    			</div>
-							    		</div>
-							  		</div>
-						    	</div>
-							</Card>	
-						</div>
-					</div>-->
-					
 					<div class="box" style="height:100%;">
 						<Card>
 					        <p slot="title">
