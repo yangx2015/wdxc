@@ -39,6 +39,9 @@
 			overflow: auto;
 		}
     }
+    .SSJKsty{
+    	overflow: auto;
+    }
 </style>
 <template>
 	<div class="box sugges">
@@ -91,71 +94,43 @@
 		<div class="body height-50">
 			<div class="box-row height-100">
 				<div class="body-r-5 height-100 padding-5px" style="width: 55.55%;background-color: #fff;">
-					<div class="box">
+					<!--<div class="box">
 						<div class="body">
-						    <div class="" style="height: 100%;overflow: auto;">
-						    	<div class="box-row-z">
-						    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
-						    			<div style="width: 300px;">
-						    				adfdf-------------------------------
-						    			</div>
-						    		</div>
-						  		</div>
-					    	</div>
-						</div>
-					</div>
-					<!--<div class="box" style="height:100%;background-color: #00A854;">
-						<div class="body">
-						    <div class="" style="overflow: auto;height: 100%;">
-						    	<div class="box-row-z">
-						    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
-						    			adfdf-------------------------------
-						    		</div>
+							<Card>
+								<p slot="title">
+					            	<Icon type="ios-film-outline"></Icon>
+						            时速监控
+						        </p>
+							    <div class="" :style="carheight" style="height: 100%;overflow: auto;background-color: #33B976;">
+							    	<div class="box-row-z">
+							    		<div v-for="i in [,,,,,,,,,,,,,,,,,,,]">
+							    			<div style="width: 300px;">
+							    				adfdf-------------------------------
+							    			</div>
+							    		</div>
+							  		</div>
 						    	</div>
-						    </div>
-						</div>-->
-						<!--<Card>
+							</Card>	
+						</div>
+					</div>-->
+					
+					<div class="box" style="height:100%;">
+						<Card>
 					        <p slot="title">
 					            <Icon type="ios-film-outline"></Icon>
 					            时速监控
 					        </p>
-					        <div class="box" :style="SSjk">
-					        	<div class="body" style="height: 100%;width: 100%;background-color: #000000;">
-					        		<div class="box-row-z">
-					        			<div style="width: 300px;" v-for="i in [,,,,,,,]">
-					        				werwer
-					        			</div>
-					        		</div>
-					        	</div>
-					        </div>-->
-					        <!--<div style="padding: 3px 0;">
-					        	<Row style="text-align: center;">
-									<Col span="8">
-										鄂A12345
-									</Col>
-									<Col span="8">
-										鄂A12345
-									</Col>
-									<Col span="8">
-										鄂A12345
-									</Col>
-								</Row>
-					        </div>
-					        <div :style="carheight">
-								<Row style="height: 100%;text-align: center;">
-									<Col span="8" style="height: 100%;">
-									        <gauge Eid="Eid1"></gauge>
-									</Col>
-									<Col span="8" style="height: 100%;">
-										<gauge Eid="Eid2"></gauge>
-									</Col>
-									<Col span="8" style="height: 100%;">
-										<gauge Eid="Eid3"></gauge>
-									</Col>
-								</Row>
-					        </div>-->
-					    <!--</Card>-->
-			    	<!--</div>-->
+					        <div class="SSJKsty" :style="carheight">
+						    	<div class="box-row-z">
+						    		<div v-for="(i,index) in [,,,,,,,,,,,,,,,,,,,]">
+						    			<div style="width: 260px;height: 100%;">
+						    				<gauge :Eid="index+'Eid1'" :TiT="'neme'"></gauge>
+						    			</div>
+						    		</div>
+						  		</div>
+					    	</div>
+					    </Card>
+			    	</div>
 				</div>
 				<div class="body-r-4 height-100 padding-5px" style="">
 					<div style="height:100%;">
@@ -240,7 +215,7 @@ export default {
     	},
     	getalert(){
     		var windowHeight = window.innerHeight
-    		this.carheight.height = (windowHeight/2 - 160)+'px'
+    		this.carheight.height = (windowHeight/2 - 120)+'px'
     		this.SSjk.height = (windowHeight/2 - 120)+'px'
     		this.mapheight.height = (windowHeight/2 - 120)+'px'
         },

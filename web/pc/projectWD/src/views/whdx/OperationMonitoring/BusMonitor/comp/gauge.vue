@@ -1,5 +1,12 @@
 <template>
-    <div style="width:100%;height:100%;position: relative;" :id="Eid"></div>
+	<div class="box">
+		<div class="tit" style="text-align: center;">
+			{{TiT}}			
+		</div>
+		<div class="body">
+			<div style="width:100%;height:100%;position: relative;" :id="Eid"></div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -16,6 +23,10 @@ export default {
 		Eid:{
 			type:String,
 			default:'ePie'
+		},
+		TiT:{
+			type:String,
+			default:'tit'
 		}
 	},
     mounted () {
