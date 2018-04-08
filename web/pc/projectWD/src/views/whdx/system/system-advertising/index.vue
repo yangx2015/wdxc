@@ -12,7 +12,7 @@
     			<div style="height: 45px;line-height: 45px;">
     				<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>广告管理</span>
+							<span>活动管理</span>
 				        </div>
 						<div class="body-r-1 inputSty">
 				        	<Input v-model="findMess.like_ScName" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>
@@ -102,7 +102,7 @@
                         type: 'index',
                     },
                     {
-                        title: '广告标题',
+                        title: '活动标题',
                         align:'center',
                         key: 'VehicleUnit'
                     },
@@ -112,7 +112,7 @@
                         key: 'UseCarPeople'
                     },
                     {
-                        title: '广告类型',//微信--自能站牌
+                        title: '活动类型',//微信--自能站牌
                         align:'center',
                         key: 'phoneNomber'
                     },
@@ -174,7 +174,7 @@
                 ],
                 data9: [
                     {
-                        VehicleUnit:'信息学院',//广告标题
+                        VehicleUnit:'信息学院',//活动标题
                         UseCarPeople: '毛毛',//内容、URL
                         phoneNomber: '15113131414',//用车人电话
                         CarModel: '45人座位',//车型--按座位数分
@@ -249,7 +249,7 @@
             },{
                 title: '系统管理',
             },{
-                title: '广告管理',
+                title: '活动管理',
             }]),
 			this.tabHeight = this.getWindowHeight() - 290
 			this.SpinShow = false;
