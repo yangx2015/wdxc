@@ -310,12 +310,12 @@
 					v.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
 //						console.log('删除',res)
 						if(res.code===200){
-							this.$Message.success('用户删除成功');
+							this.$Message.success('操作成功');
 						}
 						v.getmess()
 					})
 				  } else {
-				  	this.$Message.error('订单创建失败');
+				  	this.$Message.error('操作失败');
 				  }
 				});
 			},

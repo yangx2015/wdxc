@@ -238,31 +238,51 @@
         methods: {
         	getmess(){
         		this.$http.get(configApi.ROLE.QUERY).then((res) =>{
-					console.log('数据请求',res)
+					//console.log('数据请求',res)
 					this.tableData = res.page.list
 					this.SpinShow = false;
 				})
         	},
         	RootShowF(val) {
-//				console.log(val.row)
+//				//console.log(val.row)
 				this.messdata = val.row
 				this.compName = 'mess'
 			},
 			//收索事件
         	findMessList(){
         		var v = this
-				console.log(this.findMess)
+				//console.log(this.findMess)
 				this.$http.get(configApi.ROLE.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+					//console.log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
         	},
 			//数据删除
         	listDele(id) {
-        		this.$http.post(configApi.ROLE.DELE,{'ids':[id]}).then((res) =>{
-					console.log('删除',res)
+        		var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
 				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.ROLE.DELE,{'ids':[id]}).then((res) =>{
+//						console.log('删除',res)
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				});
+//      		this.$http.post(configApi.ROLE.DELE,{'ids':[id]}).then((res) =>{
+//					//console.log('删除',res)
+//				})
             },
             //添加数据
         	AddDataList(){

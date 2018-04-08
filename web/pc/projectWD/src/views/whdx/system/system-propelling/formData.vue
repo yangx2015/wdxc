@@ -71,11 +71,18 @@
                     url = configApi.ZNZP.CHANGE;
 				}
                 this.$http.post(url,this.form).then((res) =>{
-                    this.$Message.success(res.message);
+                    if(res.code===200){
+                        var v = this
+                        v.$parent.compName = ''
+                        v.$parent.getmess()
+                        this.$Message.success(res.message);
+                    }
                 })
 			},
 			close(){
-		        this.showModal = false;
+		        let v = this;
+                v.$parent.compName = ''
+                v.$parent.getmess()
 			}
 
 		}

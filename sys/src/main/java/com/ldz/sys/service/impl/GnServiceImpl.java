@@ -175,7 +175,11 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<SysGn> getUserFunctions(SysYh user) {
+        if ("su".equals(user.getLx())){
+            return findAll();
+        }
         List<String> functionCodes = getUserFunctionCodes(user);
+        if (functionCodes.size() == 0)return new ArrayList<>();
         return findIn(SysGn.InnerColumn.gndm,functionCodes);
     }
 

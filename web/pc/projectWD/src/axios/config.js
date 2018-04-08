@@ -14,6 +14,7 @@ module.exports = {
 	},
 	ROLE:{
 		QUERY:'/api/js/pager',//角色管理
+		ALL:'/api/js/getAll',//角色管理
 		ADD:'/api/js/save',
 		CHANGE:'/api/js/update',
 		GIVE:'/api/js/modifyUserRoles',

@@ -52,12 +52,12 @@ public class JsController extends BaseController<SysJs, String> {
      * @param userId 用户id
      * @return 操作结果
      */
-    @RequestMapping(value = "getUserRoles",method = RequestMethod.POST)
+    @RequestMapping(value = "getUserRoles")
     public ApiResponse<List<SysJs>> getUserRoles(String userId){
         List<SysJs> roles = roleService.getUserRoles(userId);
         return new ApiResponse<>(roles);
     }
-    @RequestMapping(value = "getUserRolesWithChecked",method = RequestMethod.POST)
+    @RequestMapping(value = "getUserRolesWithChecked")
     public ApiResponse<List<SysJs>> getUserRolesWithChecked(String userId){
         List<SysJs> roles = roleService.getUserRolesWithChecked(userId);
         return new ApiResponse<>(roles);
