@@ -1,4 +1,4 @@
-package com.ldz.sys.aop;
+/*package com.ldz.sys.aop;
 
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.mapper.SysPtrzMapper;
@@ -27,9 +27,9 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
+*//**
  * Created by chenwei on 2017/9/12
- */
+ *//*
 @Aspect
 @Component
 public class SysOperateLogAop {
@@ -71,11 +71,11 @@ public class SysOperateLogAop {
         }
     }
 
-    /**
+    *//**
      * 获取参数的json格式
      * @param joinPoint
      * @return
-     */
+     *//*
     private String getArgsAsString(ProceedingJoinPoint joinPoint){
         StringBuilder res = new StringBuilder();
         Object[] args = joinPoint.getArgs();
@@ -85,11 +85,11 @@ public class SysOperateLogAop {
         return res.toString();
     }
 
-    /**
+    *//**
      * 获取操作对象类型
      * @param joinPoint
      * @return
-     */
+     *//*
     private Object getEntity(ProceedingJoinPoint joinPoint){
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
@@ -100,12 +100,12 @@ public class SysOperateLogAop {
         return null;
     }
 
-    /**
+    *//**
      * 获取主键
      * @param obj
      * @return
      * @throws IllegalAccessException
-     */
+     *//*
     private Object getPK(Object obj) throws IllegalAccessException {
         if (obj == null)return null;
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -118,11 +118,11 @@ public class SysOperateLogAop {
         return null;
     }
 
-    /**
+    *//**
      * 获取BaseService
      * @param joinPoint
      * @return
-     */
+     *//*
     private BaseService getBaseService(ProceedingJoinPoint joinPoint){
         try {
             String className = joinPoint.getTarget().getClass().getSimpleName();
@@ -145,3 +145,4 @@ public class SysOperateLogAop {
         return baseService.findById((Serializable) pk);
     }
 }
+*/

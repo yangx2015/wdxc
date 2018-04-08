@@ -67,8 +67,11 @@ public class GpsInfo {
 	 * 摄像头参数如下:0,前后都抓拍, 1表示仅前摄像头, 2表示仅仅后摄像头。当cmdType为12的时候，此参数也是一样，只是抓拍前后多少秒参数无效【客户端自动判断，后台传递参数即可】
 	 * cmdType 为13的时候参数是0-0 或者1-0  ，特别注意，为13的时候，startTime和endTime必须有值
 	 * 摄像头参数如下:0 合并前摄像头  1 合并后摄像头  2 合并内置摄像头【内置摄像头这个暂时无法使用】
+	 * 
+	 * cmdType为11 ，12 ，13的时候这样设定     值用cmdParams 里面
+
 	 */
-	 
+	private String sczt; //该点位的上传状态  10点火上传  20熄火上传
 	private String cmd;//具体命令（推送消息时使用）   
 	private String cmdParams;//其它参数（推送消息时使用）
 	private String fxj;//方向角
