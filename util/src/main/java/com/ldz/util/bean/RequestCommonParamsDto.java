@@ -61,7 +61,13 @@ public class RequestCommonParamsDto implements Serializable {
 	private String filePostfix;//文件后缀（可以用于文件类型）
 	private String taskId;//任务id（用于上传服务器下载命令之后，终端上传之后回调给服务器之后的数据使用）
 	
-	private String cmdType;//命令类型（推送消息时使用）  01：超速设定 02:灵敏度设定(急加速灵敏度)   11:拍（当前时间前后10s）视频 12:拍图片(实时) 13 合并视频   20 碰撞灵敏度    30 上传模式  40 GPS心跳间隔
+	private String sczt;//汽车是在运行中还是已经熄火的数据上传标识
+	
+	/**
+	 * 命令类型（推送消息时使用）  01：超速设定 02:灵敏度设定(急加速灵敏度)  
+	 *  11:拍（当前时间前后10s）视频 12:拍图片(实时) 13 合并视频   20 碰撞灵敏度    30 上传模式  40 GPS心跳间隔
+	 */
+	private String cmdType;//
 	/**
 	  cmdType 02:  
 	    设置加减速监测灵敏等级，level 1-6，默认为 2 :
@@ -93,6 +99,7 @@ public class RequestCommonParamsDto implements Serializable {
                     合并视频只需要将startTime 2017-10-12 00:00:00 和endTime 2017-10-12 00:00:00赋值即可
        cmdType=50
           cmd 00 全部视频   10 只上传碰撞视频
+       cmdType=11,12,13时这个参数不使用，使用拓展参数进行传值
 	 */
 	private String cmd;//具体命令（推送消息时使用）   
 	/**
@@ -212,6 +219,14 @@ public class RequestCommonParamsDto implements Serializable {
 	}
 	public void setFxj(String fxj) {
 		this.fxj = fxj;
+	}
+	
+	
+	public String getSczt() {
+		return sczt;
+	}
+	public void setSczt(String sczt) {
+		this.sczt = sczt;
 	}
 	@Override
 	public String toString() {

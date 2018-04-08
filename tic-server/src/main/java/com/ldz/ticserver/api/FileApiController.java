@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,7 @@ import com.ldz.ticserver.plugins.file.FileConvertManager;
 import com.ldz.ticserver.service.BizApiService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.FileUtil;
 
 /**
@@ -39,6 +41,13 @@ public class FileApiController {
 	private String filelocalpath;
 	@Value("${interface.tsconvertmp4cmd}")
 	private String tsconvertmp4;
+
+	@Value("${interface.cacheimgdir}")
+	private String cacheImgDir;
+	@Value("${interface.videodir}")
+	private String videoDir;
+	@Value("${interface.imgdir}")
+	private String imgdir;
 	
 	
 	@Autowired
@@ -65,7 +74,11 @@ public class FileApiController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         logger.info("上传的后缀名为：" + suffixName);
         // 文件上传后的路径
-        String filePath = filelocalpath+dto.getDeviceId()+File.separator;
+        String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+        if(suffixName.contains("jpg")){
+        	filePath += imgdir+File.separator;
+        }
+        //if()
         // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
         // fileName = UUID.randomUUID() + suffixName;
         fileName = "car_"+dto.getDeviceId()+fileName;
@@ -87,7 +100,10 @@ public class FileApiController {
             	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
             	convertManager.convertMp4(convsp);
         	}
-        	bizApiService.pushFileData(dto);
+        	if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
+        		bizApiService.pushFileData(dto);
+        	}
+        	sp.setMessage(file.getOriginalFilename());
         	sp.setResult(dto);
         	
             return sp;
@@ -104,10 +120,10 @@ public class FileApiController {
         return sp;
     }
     
-    //多文件上传
+    //多文件上传(上传视频和视频截图得时候用，普通得文件上传还是用单个文件上传)
     @RequestMapping(value = "/batch/upload", method = RequestMethod.POST)
-    public ApiResponse<String> handleFileUpload(HttpServletRequest request) {
-    	ApiResponse<String> sp = new ApiResponse<>();
+    public ApiResponse<RequestCommonParamsDto> handleFileUpload(RequestCommonParamsDto dto,HttpServletRequest request) {
+    	ApiResponse<RequestCommonParamsDto> sp = new ApiResponse<>();
     	sp.setMessage("上传成功");
         List<MultipartFile> files = ((MultipartHttpServletRequest) request)
                 .getFiles("file");
@@ -117,15 +133,56 @@ public class FileApiController {
             if (!file.isEmpty()) {
                 try {
                     byte[] bytes = file.getBytes();
-                    String filePath = "E://test//";
-                    // 获取文件名
+                 // 获取文件名
                     String fileName = file.getOriginalFilename();
                     logger.info("上传的文件名为：" + fileName);
                     // 获取文件的后缀名
                     String suffixName = fileName.substring(fileName.lastIndexOf("."));
                     logger.info("上传的后缀名为：" + suffixName);
-                    fileName = UUID.randomUUID() + suffixName;
-                    FileUtil.uploadFile(bytes, filePath, fileName);
+                    // 文件上传后的路径
+                    String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+                    if(suffixName.contains("jpg")){
+                    	filePath += cacheImgDir+File.separator;
+                    }else{
+                    	filePath += videoDir+File.separator;
+                    }
+                    //if()
+                    // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
+                    // fileName = UUID.randomUUID() + suffixName;
+                    fileName = "car_"+dto.getDeviceId()+fileName;
+                    logger.info("文件保存的名称为：" + suffixName);
+                    try {
+                       // file.transferTo(dest);
+                    	FileUtil.uploadFile(bytes, filePath, fileName);
+                    	if(!suffixName.contains("jpg")){
+	                    	dto.setFileLocalPath(filePath+fileName);
+	                    	dto.setFilePath(fileName);
+	                    	dto.setFilePostfix(suffixName);
+	                    	dto.setFileRealName(file.getOriginalFilename());
+	                    	dto.setFileSize(file.getSize()+"");
+	                    	//dto.setEventType(eventType);
+	                    	if(suffixName.contains("ts")){//只有ts文件才转换
+	                    		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
+	                        	dto.setFilePath(fileName.replace(".ts", ".mp4"));
+	                        	dto.setFilePostfix("mp4");
+	                        	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
+	                        	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
+	                        	convertManager.convertMp4(convsp);
+	                    	}
+	                    	//if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
+	                    		bizApiService.pushFileData(dto);
+	                    	//}
+	                    	sp.setMessage(file.getOriginalFilename());
+	                    	sp.setResult(dto);
+                    	}
+                    } catch (IllegalStateException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+            			// TODO: handle exception
+                    	 e.printStackTrace();
+            		}
 
                 } catch (Exception e) {
                     sp.setCode(ApiResponse.FAILED);
