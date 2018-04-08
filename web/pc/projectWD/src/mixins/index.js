@@ -28,6 +28,8 @@ export default{
 			return time
 		},
 		getdatePara(val){//时间转换
+			var newDate = new Date();
+			newDate.setTime(val)
 			let Year = val.getFullYear();
 			let Month = val.getMonth()+1;
 			let Day = val.getDate();
@@ -47,6 +49,8 @@ export default{
 			if(val==null){
 				return ''
 			}
+			var newDate = new Date();
+			newDate.setTime(val)
 			let Year = val.getFullYear()
 			let Month = val.getMonth()+1
 			let Day = val.getDate()

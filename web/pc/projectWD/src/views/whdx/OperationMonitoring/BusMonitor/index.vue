@@ -64,13 +64,9 @@
 					<div class="box">
 						<div>
 					    	<Menu mode="horizontal" theme="light" active-name="1">
-						        <MenuItem name="1">
+						        <MenuItem v-for="(item,index) in XBlineName" :name="index">
 						            <!--<Icon type="ios-paper"></Icon>-->
-					            		一号线路
-						        </MenuItem>
-						        <MenuItem name="2">
-						            <!--<Icon type="ios-people"></Icon>-->
-						            二号线路
+					            		{{item.xlmc}}
 						        </MenuItem>
 						    </Menu>
 						</div>
@@ -93,7 +89,7 @@
 		</div>
 		<div class="body height-50">
 			<div class="box-row height-100">
-				<div class="body-r-5 height-100 padding-5px" style="width: 55.55%;background-color: #fff;">
+				<div class="body-r-5 height-100 padding-5px" style="width: 55.55%;">
 					<div class="box" style="height:100%;">
 						<Card>
 					        <p slot="title">
@@ -102,9 +98,9 @@
 					        </p>
 					        <div class="SSJKsty" :style="carheight">
 						    	<div class="box-row-z">
-						    		<div v-for="(i,index) in [,,,,,,,,,,,,,,,,,,,]">
-						    			<div style="width: 260px;height: 100%;">
-						    				<gauge :Eid="index+'Eid1'" :TiT="'neme'"></gauge>
+						    		<div v-for="(item,index) in tabmess">
+						    			<div class="margin-top-5" style="width: 260px;height: 90%;">
+						    				<gauge :Eid="index+'Eid1'" :CarSpeed="item"></gauge>
 						    			</div>
 						    		</div>
 						  		</div>
@@ -157,6 +153,7 @@ export default {
         	mapheight:{
         		height:''
         	},
+        	XBlineName:[],
         	XBline:[],
         	tabmess:[]
         };
@@ -169,7 +166,7 @@ export default {
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
 			this.tabmess = newQuestion
-//			this.getXBline()
+			this.getXBline()
 		},
 	},
     created(){
@@ -180,13 +177,21 @@ export default {
         },{
             title: '校巴监控',
         }])
-//      this.getXBline()
+        this.getXBline()
+        this.getXBlineName()
     },
      mounted(){
 		this.getalert()
     },
     methods: {
-    	getXBline(){
+    	getXBlineName(){//校巴线路名称
+    		var v = this
+    		this.$http.post(configApi.XL.QUERY).then((res) =>{
+				console.log('线路名称',res)
+				v.XBlineName = res.page.list
+			})
+    	},
+    	getXBline(){//校巴线路
     		var v = this
     		this.$http.post(configApi.XBDT.QUERY,{"xlId":"1"}).then((res) =>{
 				console.log('线路数据',res)

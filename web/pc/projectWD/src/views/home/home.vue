@@ -12,12 +12,12 @@
 </style>
 <template>
 	<div class="" style="height: 100%;">
-		<div class="box">
+		<div class="box" v-show="false">
 			<div class="body">
 				<hcl></hcl>
 			</div>
 		</div>
-		<div v-show="false" class="homeE" style="background-color: #fff;padding: 5px 3px;">
+		<div class="homeE" style="background-color: #fff;padding: 5px 3px;">
 			<Row :gutter="8" class="margin-bottom-10">
 				<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
 				<infor-card id-name="user_created_count" :end-val="count.createUser" iconType="planet" color="#2d8cf0" intro-text="设备总数"></infor-card>
