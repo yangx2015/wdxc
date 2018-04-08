@@ -67,6 +67,7 @@
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
 	
+	
 	import newmess from './comp/newmes.vue'
 	import changemes from './comp/changmes.vue'
 	export default {
@@ -297,14 +298,26 @@
 			},
 			//删除数据
 			listDele(id){
-				this.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
-					console.log('删除',res)
-					if(res.code===200){
-						this.$Message.success('用户删除成功');
-					}
-					this.getmess()
-					
+				var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
 				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
+						console.log('删除',res)
+						if(res.code===200){
+							this.$Message.success('用户删除成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('订单创建失败');
+				  }
+				});
 			},
 			//分页点击事件按
 			pageChange(event) {

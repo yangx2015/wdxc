@@ -10,7 +10,7 @@ import VueI18n from 'vue-i18n';
 //import util from './libs/util';
 import http from './axios/index';
 
-
+import swal from 'sweetalert'
 Vue.use(VueI18n);
 Vue.use(iView);
 //import BaiduMap from 'vue-baidu-map'
