@@ -145,8 +145,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             record.setClId(car.getClId());
             record.setCphm(car.getCph());
             record.setId(""+idGenerator.nextId());
-            record.setXlId(route.getId());
-            record.setXlmc(route.getXlmc());
+            if(route!=null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
+            }
         }else {
             record = clClyxjls.get(0);
             String stationId = record.getZdId();
