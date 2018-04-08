@@ -1,31 +1,28 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.ldz.biz.module.mapper.ClXlzdMapper;
-import com.ldz.sys.constant.Dict;
-import com.ldz.util.bean.SimpleCondition;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.biz.module.mapper.ClXlMapper;
+import com.ldz.biz.module.mapper.ClXlzdMapper;
 import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.model.ClXlzd;
 import com.ldz.biz.module.service.XlService;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
-
+import com.ldz.util.bean.SimpleCondition;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlService {
@@ -87,7 +84,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
             xlzd.setXlId(router.getId());
             xlzd.setZdId(stationId);
             xlzd.setId(genId());
-            xlzd.setZt(Dict.CommonStatus.VALID.getCode());
+//            xlzd.setZt(Dict.CommonStatus.VALID.getCode());
+            xlzd.setZt("00");
             xlzds.add(xlzd);
         }
         xlzdMapper.insertList(xlzds);
