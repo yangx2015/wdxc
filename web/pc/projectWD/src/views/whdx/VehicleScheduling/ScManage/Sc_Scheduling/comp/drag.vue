@@ -6,6 +6,12 @@ li{
 </style>
 <template>
 	<div class="box">
+		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+			<Spin fix style="background-color:#fff">
+	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+	            <div style="font-size: 30px;">排版</div>
+	        </Spin>
+		</div>
 		<div class="tit">
 			<Row class="margin-top-10">
 				<Col span="24" style="text-align:center;">
@@ -25,13 +31,13 @@ li{
 						<Col span="8">状态</Col>
 					</Row>
 					<Row style="text-align: center;font-size: 14px;">
-						<ul id="todoList" class="iview-admin-draggable-list">
+						<ul id="todoList" class="iview-admin-draggable-list" style="min-height: 300px;">
                             <li v-for="(item,index) in carList" :key="index" :data-index="index">
-		                        <Row style="border: solid 1px #9B9B9B;padding: 3px 0;">
-									<Col span="8">{{item.sjxm}}.</Col>
-									<Col span="8">{{item.cph}}.</Col>
-									<Col span="8">{{item.zt | changeZT}}.</Col>
-								</Row>
+		                        <div style="border: solid 1px #9B9B9B;padding: 3px 0;overflow: hidden;">
+		                        	<div style="width: 33.33%;float: left;">{{item.sjxm}}</div>
+		                        	<div style="width: 33.33%;float: left;">{{item.cph}}</div>
+		                        	<div style="width: 33.33%;float: left;">{{item.zt | changeZT}}</div>
+								</div>
                             </li>
                         </ul>
 					</Row>
@@ -73,7 +79,8 @@ li{
 		data(){
 			return{
 				listdata:[],
-				carList:[]
+				carList:[],
+				SpinShow:false
 			}
 		},
 		props: {
@@ -101,14 +108,22 @@ li{
 	        Sortable.create(todoList, {
 	            group: {
 	                name: 'list',
-	                pull: true
+	                pull: 'clone'
 	            },
 	            animation: 120,
 	            onRemove (event) {
-	            	console.log(event.item.getAttribute('data-index'))
-					console.log(vm.carList[event.item.getAttribute('data-index')].clId)
-					console.log(event)
-	            	console.log(event.to.id)
+//	            	console.log(event.item.getAttribute('data-index'))
+//					console.log(vm.carList[event.item.getAttribute('data-index')].clId)
+//					console.log(event)
+
+	            	//车辆id
+	            	let clid = vm.carList[event.item.getAttribute('data-index')].clId
+	            	//线路id
+	            	let linelength = event.to.id
+	            	let lineID = linelength.substring(0,linelength.length-5)
+	            	let xlid = vm.listdata[lineID].id
+	            	vm.AddList(clid,xlid)
+	            	vm.SpinShow = true
 	            }
 	        });
 		},
@@ -134,8 +149,12 @@ li{
 				})
 			},
 			AddList(carID,LineID){
-				this.$http.post(configApi.XLPBXX.ADD,{"clid":carID,"xlid":LineID}).then((res) =>{
+				var v = this
+				this.$http.post(configApi.XLPBXX.ADD,{"clid":carID,"xlid":LineID,"date2":'2018-03-26'}).then((res) =>{
 					console.log('排版新增',res)
+//					if(res.code==500){
+						v.$parent.domeC()
+//					}
 				})
 			},
 			okmodel(){

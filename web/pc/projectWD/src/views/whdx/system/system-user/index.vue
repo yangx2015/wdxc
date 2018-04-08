@@ -300,7 +300,7 @@
 			listDele(id){
 				var v = this
 				swal({
-				  title: "是否提交数据?",
+				  title: "是删除数据?",
 				  text: "",
 				  icon: "warning",
 				  buttons:['取消','确认'],
