@@ -290,6 +290,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
          "type":"in",
          "stationNo":"7",
          */
+        if (channel == null)return;
         nettyUtil.sendData(channel,reportData);
     }
 }
