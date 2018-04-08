@@ -238,7 +238,7 @@
 		},
 		watch: {
 			cjsjInRange:function(newQuestion, oldQuestion){
-					this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 			},
 		},
 		created() {

@@ -62,13 +62,26 @@
 				</div>
 				<div class="body-r-5 padding-5px" style="background-color: #fff;width: 55.56%;height: 100%;">
 					<div class="box">
-						<div>
-					    	<Menu mode="horizontal" theme="light" active-name="1">
+						<div style="overflow: auto;">
+							<div class="box-row-z padding-left-right">
+								<Button class="margin-5" 
+									type="primary" 
+									v-for="(item,index) in XBlineName"
+									@click="getXBline(item.id,item.xlmc)">{{item.xlmc}}</Button>
+							</div>
+					    	<!--<Menu mode="horizontal" theme="light" active-name="1">
 						        <MenuItem v-for="(item,index) in XBlineName" :name="index">
-						            <!--<Icon type="ios-paper"></Icon>-->
+						            <Icon type="ios-paper"></Icon>
 					            		{{item.xlmc}}
 						        </MenuItem>
-						    </Menu>
+						    </Menu>-->
+						</div>
+						<div>
+							<!--线路名称-->
+							 <Button type="success">
+							 	{{lineName}}
+							 </Button>
+
 						</div>
 						<div class="body">
 						    <div class="carlines">
@@ -153,6 +166,7 @@ export default {
         	mapheight:{
         		height:''
         	},
+        	lineName:'',
         	XBlineName:[],
         	XBline:[],
         	tabmess:[]
@@ -189,14 +203,16 @@ export default {
     		this.$http.post(configApi.XL.QUERY).then((res) =>{
 				console.log('线路名称',res)
 				v.XBlineName = res.page.list
+				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
 			})
     	},
-    	getXBline(){//校巴线路
+    	getXBline(id,name){//校巴线路
     		var v = this
-    		this.$http.post(configApi.XBDT.QUERY,{"xlId":"1"}).then((res) =>{
+    		this.$http.post(configApi.XBDT.QUERY,{"xlId":id}).then((res) =>{
 				console.log('线路数据',res)
 				v.XBline = res.result
 			})
+    		v.lineName = name
     	},
     	getalert(){
     		var windowHeight = window.innerHeight

@@ -46,7 +46,7 @@ export default{
 			return time
 		},
 		getdateParaD(val){//时间转换
-			if(val==null){
+			if(val==null||val==""){
 				return ''
 			}
 			var newDate = new Date();
