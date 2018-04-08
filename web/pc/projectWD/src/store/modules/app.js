@@ -42,8 +42,8 @@ const app = {
     },
     mutations: {
     	setFunctions (state,data){
-    		state.functionList = data
-            console.log(data);
+            state.functionList = data
+            console.log('state.functionList',state.functionList);
         },
     	socketMessAdd (state,data){
     		state.socketMess = data
@@ -51,11 +51,10 @@ const app = {
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
-        updateMenulist (state,data) {
-            console.log('updateMenulist');
+        updateMenulist (state) {
             console.log(state);
-            // console.log('functions:',state.functionList);
-            state.menuList = data;
+            console.log('functions:',state.functionList);
+            // state.menuList = [];
         },
         changeMenuTheme (state, theme) {
             state.menuTheme = theme;
