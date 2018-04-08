@@ -194,11 +194,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         ClPb clPb = clPbs.get(0);
         String xlId = clPb.getXlId();
-        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
+//        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
 
         // 获取线路站点
         condition = new SimpleCondition(ClXlzd.class);
-        condition.eq(ClXlzd.InnerColumn.xlId,xl.getId());
+        condition.eq(ClXlzd.InnerColumn.xlId,xlId);
         List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
         if (xlzds.size() == 0){
             return null;
