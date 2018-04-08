@@ -41,6 +41,7 @@
 <script>
 import Cookies from 'js-cookie';
 import configApi from '@/axios/config.js'
+//import session from '@/libs/session';
 export default {
     data () {
         return {
@@ -62,25 +63,39 @@ export default {
     },
     methods: {
         handleSubmit () {
+        	var v = this
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
-                	this.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
-                		console.log('登陆结果',res)
+                	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
+//              		console.log('登陆结果',res)
                 		if(res.code===200){
                 			Cookies.set('usermess', this.form.username);
                 			Cookies.set('result', res.result);
+                			v.root()
 //						    this.$router.push({
 //						    	name: 'home_index'
 //						    });
-							this.$router.push('home')
+							v.$router.push('home')
                 		}else{
-                			this.$router.push({
+                			v.$router.push({
 						    	name: 'error-500'
 						    });
                 		}
+                	}).catch((error) =>{
+                		console.log('error',error)
                 	})
                 }
-            });
+            })
+        },
+        root(){
+        	this.$http.get(configApi.USERROOT.QUERY).then((res) =>{
+//      		console.log('权限列表',res)
+        		if(res.code===200){
+        			this.session.setItem('userRoot',res.result)
+        		}
+        	}).catch((error) =>{
+        		console.log(error)
+        	})
         }
     }
 };

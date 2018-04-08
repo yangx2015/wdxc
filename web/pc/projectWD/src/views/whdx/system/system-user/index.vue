@@ -255,14 +255,14 @@
 		},
 		methods: {
 			enter(mes){
-				console.log(mes)
-				
-				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
+//				console.log(mes)
+//				
+//				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
 			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+//					console.log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -273,14 +273,14 @@
 				var v = this
 				v.compName = 'changemes'
 				this.usermes = val;
-                console.log(val);
+//              console.log(val);
 
             },
 			//收索事件
 			findMessList() {
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+//					console.log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -308,7 +308,7 @@
 				.then((willDelete) => {
 				  if (willDelete) {
 					v.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
-						console.log('删除',res)
+//						console.log('删除',res)
 						if(res.code===200){
 							this.$Message.success('用户删除成功');
 						}

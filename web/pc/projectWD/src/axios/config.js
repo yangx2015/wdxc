@@ -1,4 +1,7 @@
 module.exports = {
+	USERROOT:{
+		QUERY:'/api/gn/getUserFunctions'
+	},
 	LOGIN:{
 		QUERY:'login'
 	},
