@@ -1,23 +1,16 @@
 package com.ldz.biz.api;
 
-import java.math.BigDecimal;
-import java.util.Date;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.biz.module.bean.GpsInfo;
-import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
-import com.ldz.biz.module.model.ClSbyxsjjl;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.commonUtil.SnowflakeIdWorker;
 
 
 /*
@@ -60,28 +53,5 @@ public class MessageApi {
 		
 	}
 	
-	
-	@Autowired
-	private ClSbyxsjjlMapper  mapper;
-	@Autowired
-	SnowflakeIdWorker idWorker;
-	@GetMapping("/testSave")
-	public ApiResponse<String> sendinstruction(){
-		ClSbyxsjjl clsb= new ClSbyxsjjl();
-		
-		clsb.setId(String.valueOf(idWorker.nextId()));
-		clsb.setJd(new BigDecimal(11));
-		clsb.setWd(new BigDecimal(22));
-		clsb.setCjsj(new Date());
-		clsb.setJid(new BigDecimal(33));
-		clsb.setYxfx(new Double(11));
-		clsb.setZdbh("11");
-		clsb.setSjjb("20");
-		clsb.setSjlx("10");
-		
-		mapper.insertSelective(clsb);
-		
-		return ApiResponse.success();
-		
-	}
+
 }
