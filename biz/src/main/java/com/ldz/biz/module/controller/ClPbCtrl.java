@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -29,14 +28,16 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	protected BaseService<ClPb, String> getBaseService() {
 		return pbservice;
 	}
-
+	
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
-	public ApiResponse<String> update(@RequestBody ClPb entity) {
+	public ApiResponse<String> update(ClPb entity) {
 		return pbservice.updateEntity(entity);
 	}
-
+	
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
-	public ApiResponse<String> save(@RequestBody ClPb entity) {
+	public ApiResponse<String> save(ClPb entity) {
 		return pbservice.saveEntity(entity);
 	}
 

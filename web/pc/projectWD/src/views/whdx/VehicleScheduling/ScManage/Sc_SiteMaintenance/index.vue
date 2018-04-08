@@ -91,7 +91,10 @@
                     {
                         title: '状态',
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render: (h, params) => {
+                        	return params.row.zt=='00' ? "正常":"停用"
+                        }
                     },
                     {
                         title: '创建人',

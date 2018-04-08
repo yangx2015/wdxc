@@ -40,8 +40,8 @@
 		    		<Col span="12">
 		    			<Select v-model="formItem.zt"
 		    				placeholder="请选择站点状态...">
-					        <Option value="10">正常</Option>
-					        <Option value="00">停用</Option>
+					        <Option value="00">正常</Option>
+					        <Option value="10">停用</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="12">
