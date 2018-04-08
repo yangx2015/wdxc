@@ -31,9 +31,16 @@
 </style>
 <template>
 	<div class="SC box">
+		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 110;">
+			<Spin fix style="background-color:#fff">
+	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+	            <div style="font-size: 30px;">数据加载中请稍后</div>
+	        </Spin>
+		</div>
 		<div class="body" v-show='dateMess' style="background-color: #fff;">
 			<component 
 				:is="modalName"
+				ref="pbxx"
 				:todaytime='todaytime'
 				@okdrag='okdrag'></component>
 		</div>
@@ -104,8 +111,9 @@
 			return {
 				tabHeight:'',
 				todaytime:'',
-				dateMess: true,
-				modalName: 'drag',
+				dateMess: false,
+				modalName: '',
+				SpinShow:false,
 				events: [{
 						title: '早班',
 						start: '2018-01-01',
@@ -220,6 +228,15 @@
 			},
 			eventClick(event) {
 				console.log('备注事件', event)
+			},
+			//dome组件刷新
+			domeC(){
+//				debugger
+				this.$refs.pbxx.SpinShow = false
+				this.$router.push({
+					name:'Sc_Scheduling'
+				})
+				this.modalName = 'drag'
 			}
 		}
 	}

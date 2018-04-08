@@ -42,7 +42,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
 		this.yhService = SpringContextUtil.getBean(YhService.class);
 		this.redisDao = redisTemp;
-		this.whiteList = Arrays.asList("/api/resource/getOnlineUserPermission","/api/user/getAll");
+		this.whiteList = Arrays.asList("/api/resource/getOnlineUserPermission","/api/user/getAll","/api/gn/getUserFunctions");
 
 	}
 	
@@ -54,7 +54,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			//如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
 			return true;
 		}
-		if (true)return true;
+//		if (true)return true;
 
 		//访问权限值
 //		String userid = "1";

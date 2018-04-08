@@ -27,17 +27,21 @@ interface:
   #设备状态更新接口，点火、熄火、离线
   status: http://127.0.0.1;http://127.0.0.1;
   #设备事件更新接口，急加速、急转弯、急刹车、碰撞、超速
-  event: http://tcixvm.natappfree.cc/pub/gps/save;
+  event: http://47.98.39.45:8080/biz/pub/gps/save;http://47.98.39.45:8080/znzp/api/reporting;
   #设备GPS上报处理接口
   gps: http://127.0.0.1;
   #文件上传的数据交互接口
-  fileapi: http://tcixvm.natappfree.cc/pub/spk/save;
+  fileapi: http://47.98.39.45:8080/biz/pub/spk/save;
   #终端请求加密key
   clientsecurity: ldzticclient
   #服务端请求验证key
   serversecurity: ldzticserver
   #文件存储的本地路径
-  filelocalpath: F://Temp//test//
+  filelocalpath: D://Temp//test//
+  
+  cacheimgdir: cache
+  videodir: video
+  imgdir: images
   
   #tsconvertmp4cmd: ffmpeg.exe -i "concat:F:\Temp\ffmeg\bin\car_865923030039405F20180322111850.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
   #文件转换基本命令（linux 部署时自己改命令）
