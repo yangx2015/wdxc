@@ -147,7 +147,7 @@
 									},
 									on: {
 										click: () => {
-											console.log('数据调试', params)
+											//console.log('数据调试', params)
 										}
 									}
 								})
@@ -272,7 +272,7 @@
 			getmess(){
 				var v = this
 				this.$http.get(configApi.FUNCTION.QUERY,{params:this.findMess}).then((res) =>{
-					console.log('功能数据',res)
+					//console.log('功能数据',res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 					v.pageTotal = res.page.total;
@@ -280,19 +280,30 @@
 			},
 			//删除数据
 			listDele(id){
-				this.$http.post(configApi.FUNCTION.DELE,{'ids':[id]}).then((res) =>{
-					console.log('删除',res)
-					if(res.code===200){
-						this.$Message.success('用户删除成功');
-					}
-					this.getmess()
-					
+				var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.FUNCTION.DELE,{'ids':[id]}).then((res) =>{
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
 				})
 			},
 			changeTime(val) {
 				this.findMess.gte_StartTime = val[0]
 				this.findMess.lte_StartTime = val[1]
-				//      		console.log(this.findMess)
+				//      		//console.log(this.findMess)
 				this.findMessList()
 			},
 			getDataList() {

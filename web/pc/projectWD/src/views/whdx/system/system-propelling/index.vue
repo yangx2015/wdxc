@@ -180,6 +180,7 @@
             },{
                 title: '智能站牌',
             }]),
+            this.tabHeight = this.getWindowHeight() - 300,
 			this.getPageData();
         },
         methods: {
@@ -203,14 +204,25 @@
 			},
             //删除数据
             listDele(r){
-                this.$http.post(configApi.ZNZP.DELE,{'ids':[r.zdbh]}).then((res) =>{
-                    if(res.code===200){
-                        this.$Message.success('操作成功');
-                    }else{
-                        this.$Message.error('操作成功');
-                    }
-                    this.getmess()
-                })
+            	var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.ZNZP.DELE,{'ids':[r.zdbh]}).then((res) =>{
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}
+						v.getPageData()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				})
             },
             pageChange(event){
                 this.form.pageNum = event;

@@ -33,7 +33,7 @@
     	}
     	.carlines{
 			background-color: #fff;
-			padding-top: 80px;
+			padding-top: 20px;
 			margin: 0 15px;
 			height: 100%;
 			overflow: auto;
@@ -76,11 +76,11 @@
 						        </MenuItem>
 						    </Menu>-->
 						</div>
-						<div>
+						<div style="border-top: solid 2px #BBBEC4;">
 							<!--线路名称-->
-							 <Button type="success">
-							 	{{lineName}}
-							 </Button>
+							 <!--<Button type="success">-->
+							 	当前线路:{{lineName}}
+							 <!--</Button>-->
 
 						</div>
 						<div class="body">

@@ -121,7 +121,7 @@
 									},
 									on: {
 										click: () => {
-											console.log('数据调试', params)
+											//console.log('数据调试', params)
 										}
 									}
 								})
@@ -220,21 +220,33 @@
 			getmess(){
 				var v = this
 				this.$http.get(configApi.ITMS.QUERY).then((res) =>{
-					console.log('服务管理',res)
+					//console.log('服务管理',res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
 			},
 			//删除数据
 			listDele(id){
-				this.$http.post(configApi.ITMS.DELE,{'ids':[id]}).then((res) =>{
-					console.log('删除',res)
-					if(res.code===200){
-						this.$Message.success('用户删除成功');
-					}
-					this.getmess()
-					
+				var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
 				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.ITMS.DELE,{'ids':[id]}).then((res) =>{
+//						console.log('删除',res)
+						if(res.code===200){
+							v.$Message.success('操作成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				});
 			},
 			AddDataList() {
 				var v = this
@@ -247,7 +259,7 @@
 			findMessList() {
 				var v = this
 				this.$http.get(configApi.ITMS.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+					//console.log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})

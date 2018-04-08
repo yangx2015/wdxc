@@ -7,7 +7,7 @@ import qs from 'qs'
 //订单分配权限
 let httpInstance = axios.create({
 //baseURL: 'http://127.0.0.1:8080',
-// baseURL: 'http://47.98.39.45:8080',
+// baseURL: 'http://47.98.39.45:8080/biz',
 //	baseURL: 'http://192.168.31.228:80',//羊
 	baseURL: 'http://192.168.31.181:80',//陈
   	timeout: 300000,
