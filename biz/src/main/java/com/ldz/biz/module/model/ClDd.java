@@ -217,7 +217,7 @@ public class ClDd implements Serializable {
     private String sy;
 
     /**
-     * 车辆类型
+     * 车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
      */
     @Column(name = "CLLX")
     private String cllx;
@@ -270,7 +270,11 @@ public class ClDd implements Serializable {
      */
     @Column(name = "CDBH")
     private String cdbh;
-
+    /**
+     * 终端编号
+     */
+    @Column(name = "ZDBH")
+    private String zdbm;
     private static final long serialVersionUID = 1L;
 
     /**
@@ -994,6 +998,13 @@ public class ClDd implements Serializable {
         this.fkbz = fkbz;
     }
 
+    public String getZdbm() {
+        return zdbm;
+    }
+
+    public void setZdbm(String zdbm) {
+        this.zdbm = zdbm;
+    }
 
     public String getSjSx() {
         return sjSx;

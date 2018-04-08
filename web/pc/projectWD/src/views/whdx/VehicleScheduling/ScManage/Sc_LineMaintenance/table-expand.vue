@@ -30,11 +30,11 @@
     	</div>
     	<div class="showmapline">
     		<div class="showmap" v-if="changeS">
-    			<map-show-line></map-show-line>
+    			<map-show-line :xlid="xlId"></map-show-line>
     		</div>
     		<div class="showline stepsList" v-else>
-    			<Steps :current="routerList.length" size="small">
-			        <Step icon="disc" :content="item.name" v-for="(item,index) in routerList"></Step>
+    			<Steps :current="stationList.length" size="small">
+			        <Step icon="disc" :content="item.mc" v-for="(item,index) in stationList"></Step>
 			    </Steps>
     		</div>
     	</div>
@@ -42,6 +42,7 @@
 </template>
 <script>
 	import mapShowLine from '../../../map/mapShowLine.vue'
+    import configApi from '@/axios/config.js'
     export default {
     	name:'',
     	components: {
@@ -50,55 +51,27 @@
     	data(){
     		return{
     			changeS:true,
-    			routerList:[
-					{
-						name:'光谷广场'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					},{
-						name:'上钱村'
-					},{
-						name:'九九九'
-					}
-				]
+				xlId:'qweqweqwe',
+    			stationList:[]
     		}
     	},
         props: {
             row: Object
-        }
+        },
+		created(){
+            this.xlId = this.row.id;
+		},
+		mounted(){
+            this.getStations();
+		},
+        methods:{
+    	    getStations(){
+                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID,{params:{xlId:this.xlId}}).then((res) =>{
+                    if(res.code===200){
+                        this.stationList = res.result;
+                    }
+                })
+			}
+		}
     };
 </script>

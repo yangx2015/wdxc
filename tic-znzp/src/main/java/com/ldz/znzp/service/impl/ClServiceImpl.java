@@ -6,10 +6,12 @@ import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
 import com.ldz.znzp.base.BaseServiceImpl;
+import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.bean.ReportData;
 import com.ldz.znzp.mapper.*;
 import com.ldz.znzp.model.*;
 import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.GpsService;
 import com.ldz.znzp.service.XlService;
 import com.ldz.znzp.service.ZdService;
 import com.ldz.znzp.util.NettyUtil;
@@ -43,8 +45,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Autowired
     private XlService xlService;
     @Autowired
+    private GpsService gpsService;
+    @Autowired
     private NettyUtil nettyUtil;
-
     @Autowired
     public SnowflakeIdWorker idGenerator;
     @Override
@@ -64,8 +67,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public void report(String tid) {
-        ApiResponse<String> result;
+    public ApiResponse<String> report(String tid) {
+        ApiResponse<String> result = new ApiResponse<>();
         ReportData reportData = new ReportData();
         reportData.setTid(tid);
 
@@ -108,17 +111,21 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
         log.info(reportData.toString());
         writeResult(channel,reportData);
+        return result;
     }
 
     @Override
-    public void updateGps(String tid,String lat,String lng) {
+    public ApiResponse<String> updateGps(GpsInfo gpsInfo) {
         // 站点存储百度位置
         // 30.5411624384,114.3167198864（原始点,谷歌地球）
         // 30.5371683904,114.3242740669（原始点,谷歌地球）
+
+        // 原始gps转百度gps
+        ClGps clGps = gpsService.changeCoordinates(gpsInfo);
         // 获取车辆信息
-        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,tid);
+        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
         if (cars.size() == 0){
-            return;
+            return ApiResponse.fail("未找到车辆");
         }
         ClCl car = cars.get(0);
         ClXl route = xlService.getByCarId(car.getClId());
@@ -131,48 +138,50 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         ClZd currentStation = null;
         ClClyxjl record = null;
         String zt = null;
+        Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (clClyxjls.size() == 0){
-            Gps gps = new Gps(new Double(lat),new Double(lng));
             currentStation = findCurrentZd(gps,car);
             record = new ClClyxjl();
             record.setCjsj(now);
             record.setClId(car.getClId());
             record.setCphm(car.getCph());
             record.setId(""+idGenerator.nextId());
-            record.setXlId(route.getId());
-            record.setXlmc(route.getXlmc());
+            if(route!=null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
+            }
         }else {
             record = clClyxjls.get(0);
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
-            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),new Double(lat),new Double(lng));
+            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
             if (distance < currentStation.getFw()){
-                zt = "1";
+                zt = "1"; // 进站
                 zdService.setStationOrder(currentStation);
             }else{
-                Gps gps = new Gps(new Double(lat),new Double(lng));
                 currentStation = findCurrentZd(gps,car);
             }
         }
         if (zt == null){
-            double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),new Double(lat),new Double(lng));
+            double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
             if (distance < currentStation.getFw()){
-                zt = "1";
+                zt = "1"; // 进站
             }else{
-                zt = "2";
+                zt = "2"; // 出站
             }
         }
         record.setZdbh(currentStation.getRouteOrder());
         record.setZdmc(currentStation.getMc());
         record.setZdId(currentStation.getId());
-        record.setJd(new BigDecimal(lat));
-        record.setWd(new BigDecimal(lng));
+        record.setJd(clGps.getBdjd());
+        record.setWd(clGps.getBdwd());
         record.setZt(zt);
         if (clClyxjls.size() == 0){
             clyxjlMapper.insertSelective(record);
         }else{
             clyxjlMapper.updateByPrimaryKeySelective(record);
         }
+        return ApiResponse.success();
     }
 
     private List<ClZd> getStationList(ClCl car){
@@ -187,11 +196,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         ClPb clPb = clPbs.get(0);
         String xlId = clPb.getXlId();
-        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
+//        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
 
         // 获取线路站点
         condition = new SimpleCondition(ClXlzd.class);
-        condition.eq(ClXlzd.InnerColumn.xlId,xl.getId());
+        condition.eq(ClXlzd.InnerColumn.xlId,xlId);
         List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
         if (xlzds.size() == 0){
             return null;
@@ -285,6 +294,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
          "type":"in",
          "stationNo":"7",
          */
+        if (channel == null)return;
         nettyUtil.sendData(channel,reportData);
     }
 }

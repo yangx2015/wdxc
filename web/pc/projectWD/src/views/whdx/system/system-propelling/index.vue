@@ -4,75 +4,80 @@
 </style>
 <!--查询统计-->
 <template>
-    <div class="box">
-    	<div class="tit">
-	    	<Row class="margin-top-10">
-	    		<Col span="6">
-	    			<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
-	    		</Col>
-		        <!--<Col span="6">
-		        	<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-		        </Col>
-		        <Col span="6">
-		        	<Input v-model="findMess.like_ScName" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-		        </Col>-->
-		        <Col span="18" style="text-align: right;">
-		        	<Button type="primary" @click="getDataList()">新增</Button>
-		        </Col>
-		    </Row>
-    		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
-    			<span class="tabPageTit">
+	<div class="box boxbackborder">
+		<div class="tit">
+			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-    			<div style="height: 45px;line-height: 45px;">
-	    			<span style="margin-left: 60px;font-size: 24px;">推送服务</span>
-    			</div>
+				<div style="height: 45px;line-height: 45px;">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>智能站牌</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="getPageData()" style="width: 220px"></DatePicker>
+							<Input v-model="form.mcLike" placeholder="请输入站牌名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="getPageData()">
+								<Icon type="search"></Icon>
+								<!--查询-->
+							</Button>
+							<Button type="primary" @click="componentName = 'formData'">
+								<Icon type="plus-round"></Icon>
+							</Button>
+						</div>
+					</div>
+				</div>
 			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row>
-	    		<Table
-	    			:row-class-name="rowClassName"
-	    			:columns="tableTiT"
-	    			:data="tableData"></Table>
-	    	</Row>
-	    	<Row class="margin-top-10" style="text-align: right;">
-		    	<Page :total=pageTotal 
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row>
-    	</div>
-		<Modal
-		    v-model="showModal"
-		    width='800'
-		    :mask-closable="false"
-		    title="信息详情">
-		    <div slot='footer'></div>
-		</Modal>
-    </div>
+		</div>
+		<div class="body">
+			<Row>
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+					<Spin fix>
+						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">{{loading.text}}</div>
+					</Spin>
+				</div>
+			</Row>
+			<Row class="margin-top-10 pageSty">
+				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
+			</Row>
+		</div>
+		<component :is="componentName"></component>
+	</div>
 </template>
 
 <script>
 	import mixins from '@/mixins'
-//	import axios from '@/axios'
+    import configApi from '@/axios/config.js'
+	import formData from './formData'
 	export default {
     	name:'char',
     	mixins:[mixins],
+		components:{
+            formData
+		},
         data () {
             return {
             	PickerTime:2017,
+                SpinShow:false,
             	//分页
+                loading:this.$store.state.app.loading,
             	pageTotal:1,
+                cjsjInRange:'',
+                tabHeight: 220,
+				choosedRow:{},
+                componentName:'',
             	page:{
             		pageNum:1,
             		pageSize:5
             	},
             	//弹层
             	showModal:false,
-                tableTiT: [
+                columns: [
                 	{
 	                	title:"序号",
 	                	width:80,
@@ -80,50 +85,77 @@
 	                	type:'index'
 	                },
                     {
-                        title: '活动信息',
+                        title: '名称',
                         align:'center',
-                        key: 'Remarks'
+                        key: 'mc'
+                    },
+                    {
+                        title: '终端编号',
+                        align:'center',
+                        key: 'zdbh'
+                    },
+                    {
+                        title: '厂商',
+                        align:'center',
+                        key: 'cs'
+                    },
+                    {
+                        title: '地址',
+                        align:'center',
+                        key: 'dz'
                     },
                     {
                         title: '创建时间',
-                        width:180,
                         align:'center',
-                        key: 'time'
-                    }
+                        key: 'cjsj'
+                    },
+                    {
+                        title: '创建人',
+                        align:'center',
+                        key: 'cjr'
+                    },
+                    {
+                        title:'操作',
+                        align:'center',
+                        type: 'action',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        icon: 'navicon-round',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.choosedRow = params.row;
+                                            this.componentName = 'formData';
+                                        }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: {
+                                        type: 'error',
+                                        icon: 'close',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listDele(params.row)
+                                        }
+                                    }
+                                })
+                            ]);
+                        }
+                    },
                 ],
                 tableData: [
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                },
-	                {
-	                	Remarks:'活动信息通知',
-	                	time:'2017-05-02 09:10:00',
-	                }
+
                 ],
                 //form表单
                 formTop: {
@@ -133,11 +165,8 @@
                 ],
                 //收索
                 datetime:[],
-                findMess:{
-                	gte_StartTime:'',
-            		lte_StartTime:'',
-                	like_CarNumber:'',
-                	like_ScName:'',
+                form:{
+                    mcLike:'',
                 	pageNum:1,
             		pageSize:5
                 }
@@ -149,52 +178,56 @@
             },{
                 title: '系统管理',
             },{
-                title: '推送服务',
+                title: '智能站牌',
             }]),
-			this.getDataList();
+            this.tabHeight = this.getWindowHeight() - 300,
+			this.getPageData();
         },
         methods: {
-        	changeTime(val){
-        		this.findMess.gte_StartTime=val[0]
-        		this.findMess.lte_StartTime=val[1]
-//      		console.log(this.findMess)
-        		this.findMessList()
-        	},
-        	print(){
-        		window.print()
-        	},
-            listEve(num,event){
-        		console.log('event',event)
-        		console.log('num',num)
-//      		var v = this
-//        		v.showModal = true
-//        		v.formTop = event
-        	},
-        	getDataList(){
-                var v = this
-//              axios.get('carLogs/pager',this.page).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
+    	    getPageData(){
+                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
+                    this.form.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                }else{
+                    this.form.cjsjInRange = '';
+                }
+                this.$http.get(configApi.ZNZP.QUERY,{params:this.form}).then((res) =>{
+                    this.SpinShow = false;
+                    if(res.code===200){
+                        this.tableData = res.page.list;
+                        this.pageTotal = res.page.total;
+                    }
+                })
+			},
+			pageChange(e){
+    	        this.form.pageNum = e;
+    	        this.getPageData();
+			},
+            //删除数据
+            listDele(r){
+            	var v = this
+				swal({
+				  title: "是删除数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.ZNZP.DELE,{'ids':[r.zdbh]}).then((res) =>{
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}
+						v.getPageData()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				})
             },
-        	GetMess(page){
-        		var v = this
-//      		console.log(page)
-        	},
             pageChange(event){
-        		var v = this
-        		v.page.pageNum = event
-        		v.getDataList(v.page)
-//      		console.log(v.page)
-        	},
-        	findMessList(){
-        		var v = this
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
-        	},
-
+                this.form.pageNum = event;
+                this.getmess();
+            }
         }
     }
 </script>

@@ -99,7 +99,7 @@
         },
         computed: {
             menuList () {
-            	console.log('面包',this.$store.state.app.menuList)
+//          	console.log('面包',this.$store.state.app.menuList)
                 return this.$store.state.app.menuList;
             },
             pageTagsList () {

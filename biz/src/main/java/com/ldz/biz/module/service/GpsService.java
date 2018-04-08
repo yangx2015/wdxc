@@ -1,6 +1,7 @@
 package com.ldz.biz.module.service;
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.bean.websocketInfo;
 import com.ldz.biz.module.model.ClDzwl;
 import com.ldz.biz.module.model.ClGps;
 import com.ldz.biz.module.model.ClSbyxsjjl;
@@ -37,4 +38,10 @@ public interface GpsService extends BaseService<ClGps,String>{
      * @parm GpsInfo
      */
     ClSbyxsjjl   saveClSbyxsjjl(GpsInfo entity);
+    
+    /*
+     * 根据gps点位信息转换成推送至前端的模型
+     * @parm ClGps GpsInfo
+     */
+    websocketInfo changeSocket(GpsInfo gpsinfo ,ClGps clpgs);
 }

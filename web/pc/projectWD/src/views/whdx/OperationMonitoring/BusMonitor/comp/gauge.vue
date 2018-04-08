@@ -1,5 +1,12 @@
 <template>
-    <div style="width:100%;height:100%;position: relative;" :id="Eid"></div>
+	<div class="box">
+		<div class="tit" style="text-align: center;">
+			{{CarSpeed.cph}}			
+		</div>
+		<div class="body">
+			<div style="width:100%;height:92%;position: relative;" :id="Eid"></div>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -16,6 +23,10 @@ export default {
 		Eid:{
 			type:String,
 			default:'ePie'
+		},
+		CarSpeed:{
+			type:Object,
+			default:{}
 		}
 	},
     mounted () {
@@ -64,7 +75,7 @@ export default {
 			            },
 			            data: [
 			                {
-			                    value: 150,
+			                    value: v.CarSpeed.speed,
 			                    name: "km/h"
 			                }
 			            ],
@@ -82,10 +93,10 @@ export default {
 //          	color: ["#19be6b","#ffad33","#ed3f14","#ff7f50", "#87cefa", "#da70d6", "#32cd32", "#6495ed", "#ff69b4", "#ba55d3", "#cd5c5c", "#ffa500", "#40e0d0", "#1e90ff", "#ff6347", "#7b68ee", "#00fa9a", "#ffd700", "#6699FF", "#ff6666", "#3cb371", "#b8860b", "#30e0e0"]
             };
             datagauge.setOption(option);
-            setInterval(function () {
-			    option.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
-			    datagauge.setOption(option, true);
-			},2000);
+//          setInterval(function () {
+//			    option.series[0].data[0].value = (Math.random() * 100).toFixed(2) - 0;
+//			    datagauge.setOption(option, true);
+//			},2000);
 //          window.addEventListener('resize', function () {
 //              datagauge.resize();
 //          });

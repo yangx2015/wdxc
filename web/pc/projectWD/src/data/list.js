@@ -7,7 +7,6 @@ export default {
 				title: '系统管理',
 				children: [
 					{
-						path: '/system/system-user',
 						icon: 'android-clipboard',
 						name: 'system-user',
 						title: '用户管理',

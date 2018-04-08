@@ -27,45 +27,143 @@
 </template>
 
 <script>
-	export default {
+    import SockJS from 'sockjs-client';
+    // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
+    import Stomp from '@stomp/stompjs';
+
+    export default {
 		name:'',
 		data(){
 			return{
+				// let host = "127.0.0.1"
+			    host : "192.168.31.180",
+			    socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
+//			    socket : new SockJS("http://"+"192.168.31.228"+"/gps"),
+			    
+			    
+				scoketMess:[],
 				map:'',
 				mapcenter:{
-					lng: 114.372443,
-	    			lat: 30.544572
+					lng: 114.370103,
+	    			lat: 30.544672
 				},
 				zoom:16
 			}
 		},
+		computed: {
+			GetscoketMess() {
+				return this.$store.state.app.socketMess
+			}
+		},
+		watch: {
+			GetscoketMess: function(newQuestion, oldQuestion) {
+				this.scoketMess = newQuestion
+				this.disDot(newQuestion)
+			},
+		},
 		created(){
-			
 		},
 		mounted(){
 			//点布控
 			var v = this
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
-			this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-			//添加地图类型控件
-			this.map.addControl(new BMap.MapTypeControl({
-				mapTypes:[
-		            BMAP_NORMAL_MAP
-//		            BMAP_HYBRID_MAP
-		        ]}));	  
-
-			this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-		    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-		    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-		    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
-		  	
-//		  	for (var i = 0; i < 25; i ++) {
-//				var point = new BMap.Point(114.372443 + (0.001*i),30.544572 + (0.001*i));
-//				v.map.addMarker(point);
-//			}
+		  	this.mapCenter()
+		  	this.sco()
 		},
 		methods:{
+			cs(){
+				let arr = [9,8,7,6,5,4,3,2]
+				arr.forEach((item,index) => {
+					console.log(item)
+					console.log(index)
+//					if(item==7){
+//						arr.splice(3,1,256)
+//					}
+				})
+				setTimeout(() =>{
+					console.log(arr)
+				},200)
+			},
+			//撒点
+			disDot(list){
+				this.clear()
+				// 编写自定义函数,创建标注
+				var v = this
+				function addMarker(point){
+				  var marker = new BMap.Marker(point);
+				  v.map.addOverlay(marker);
+				}
+				// 随机向地图添加25个标注
+				for (var i = 0; i < list.length; i ++) {
+					var point = new BMap.Point(list[i].bdjd, list[i].bdwd);
+					addMarker(point);
+				}
+			},
+			sco(){//数据推送
+				var v = this
+			/**
+		     * 建立成功的回调函数
+		     */
+			    v.socket.onopen = function() {
+			        console.log('开启');
+			    };
+			/**
+		     * 服务器有消息返回的回调函数
+		     */
+			    v.socket.onmessage = function(e) {
+			        console.log('message', e.data);
+			    };
+		
+		    /**
+		     * websocket链接关闭的回调函数
+		     */
+			    v.socket.onclose = function() {
+			        console.log('关闭');
+			    };
+		
+			    var stompClient = Stomp.over(v.socket);
+			    stompClient.connect({}, function(frame) {
+			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+//						console.log('数据接受1',data);
+//						console.log('数据接受2',data.body);
+//			            console.log('数据接受3',JSON.parse(data.body));
+//			            console.log('数据存储',v.scoketMess)
+			            let jsonMess = JSON.parse(data.body)
+//			           	for( var i = 0 ; i<v.scoketMess.length ; i++){
+//			           		if(v.scoketMess[i].clid==jsonMess.clid){
+//								v.scoketMess.splice(i,1)
+//							}
+//			           	}
+			            v.scoketMess.forEach((item,index) => {
+							if(item.clid==jsonMess.clid){
+								v.scoketMess.splice(index,1)
+							}
+						})
+				        v.scoketMess.push(jsonMess)
+			            v.$store.commit('socketMessAdd',v.scoketMess)
+			        });
+			    });	
+			},
+			//地图级别中心
+			mapCenter(){
+				var v = this
+				var point = new BMap.Point(v.mapcenter.lng, v.mapcenter.lat);
+				this.map.centerAndZoom(point, v.zoom);// 初始化地图,设置中心点坐标和地图级别
+				this.map.addControl(new BMap.MapTypeControl({
+				mapTypes:[
+		            BMAP_NORMAL_MAP
+		        ]}));	  
+				//添加地图类型控件
+				this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
+			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
+			},
+			//清除层
+			clear(){
+				this.map.clearOverlays()
+			},
 		}
 	}
 </script>

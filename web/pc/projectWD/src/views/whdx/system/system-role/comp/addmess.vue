@@ -16,6 +16,10 @@
 				            <Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
 				            </Input>
 				        </FormItem>
+				        <FormItem prop="jsmc" label='角色代码：'>
+				            <Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码">
+				            </Input>
+				        </FormItem>
 				        <FormItem label='类型：' placeholder="请选着角色类型...">
 							<Select v-model="addmess.jslx">
 				                <Option value="00">管理</Option>
@@ -77,7 +81,6 @@
 		},
 		created(){
 			this.addmess = this.messdata
-			// this.data4 = treelist.numList
 		},
 		mounted(){
 			this.getPermissionTree();
@@ -87,13 +90,12 @@
                 this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
-                        console.log(res);
                     }
                 })
 			},
 		    setRolePermission(){
                 this.getChoosedIds(this.data4);
-                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsdm,'gndms':this.choosedIds}).then((res) =>{
+                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':this.choosedIds}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success('修改成功');
                     }
@@ -108,16 +110,14 @@
 				}
 			},
 			AddDataListOk(name){
-		        this.setRolePermission();
-		        return;
                 var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-//                    	新增
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('角色注册成功');
+                                    this.setRolePermission();
 									v.$emit('listF',res)
 								}
 							})

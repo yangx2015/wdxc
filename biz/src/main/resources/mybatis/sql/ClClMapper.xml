@@ -10,9 +10,21 @@
 	 -->
 	<!--<cache type="com.jxba.mybatis.cache.MybatisRedisCache"></cache>-->
 <select id="seleByZdbh" resultMap="ClClresultMap" parameterType="java.lang.String">
-SELECT t3.id,t3.wlmc,t3.jgdm,t3.jgmc,t3.mj,t3.dlxxzb,t3.ksjd,t3.kswd,t3.zt,t3.cjsj,t3.cjr,t3.xgsj,t3.xgr 
-FROM CL_CL t1,CL_DZWL_CL t2,CL_DZWL t3 WHERE t1.CL_ID=t2.CL_ID and t2.WL_ID=t3.id and t1.ZDBH=#{deviceId}
+SELECT t1.*,t2.*,t3.ID as wlid,t3.WLMC,t3.JGDM as jg_dm,t3.JGMC as jg_mc,t3.MJ,t3.DLXXZB,t3.KSJD,t3.KSWD,t3.ZT as z_t,t3.CJR as cj_sj,t3.CJR as cj_r,t3.XGSJ as xg_sj,t3.XGR as xg_r from 
+CL_CL t1 LEFT JOIN CL_DZWL_CL t2 ON t1.CL_ID=t2.CL_ID  LEFT JOIN CL_DZWL t3 on t2.WL_ID=t3.id WHERE t1.ZDBH=#{deviceId}
 </select>
+
+ <select id="getAllClInfo" resultMap="ClClresultMap">
+       select * from CL_CL t1  WHERE t1.CL_ID IN
+        <foreach collection="list" item="ClId" index="index"
+            open="(" close=")" separator=",">
+            #{ClId}
+        </foreach>
+    </select>
+
+
+
+
 
 <resultMap type="com.ldz.biz.module.model.ClCl" id="ClClresultMap">
         <id column="CL_ID" property="clId" />
@@ -47,19 +59,19 @@ FROM CL_CL t1,CL_DZWL_CL t2,CL_DZWL t3 WHERE t1.CL_ID=t2.CL_ID and t2.WL_ID=t3.i
 		<result column="CJR" property="cjr" />
 		</collection>
 		<collection property="clDzwl" ofType="com.ldz.biz.module.model.ClDzwl">
-		<id column="ID" property="id" />
+		<id column="wlid" property="id" />
 		<result column="WLMC" property="wlmc" />
-		<result column="JGDM" property="jgdm" />
-		<result column="JGMC" property="jgmc" />
+		<result column="jg_dm" property="jgdm" />
+		<result column="jg_mc" property="jgmc" />
 		<result column="MJ" property="mj" />
 		<result column="DLXXZB" property="dlxxzb" />
 		<result column="KSJD" property="ksjd" />
 		<result column="KSWD" property="kswd" />
-		<result column="ZT" property="zt" />
-		<result column="CJSJ" property="cjsj" />
-		<result column="CJR" property="cjr" />
-		<result column="XGSJ" property="xgsj" />
-		<result column="XGR" property="xgr" />
+		<result column="z_t" property="zt" />
+		<result column="cj_sj" property="cjsj" />
+		<result column="cj_r" property="cjr" />
+		<result column="xg_sj" property="xgsj" />
+		<result column="xg_r" property="xgr" />
 		</collection>
 </resultMap>
 

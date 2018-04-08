@@ -17,8 +17,8 @@
   "author": "Lison<zhigang.li@tendcloud.com>",
   "license": "MIT",
   "dependencies": {
-    "@stomp/stompjs":"^4.0.0",
-    "sockjs-client":"^1.1.4",
+    "@stomp/stompjs": "^4.0.0",
+    "sockjs-client": "^1.1.4",
     "area-data": "^1.0.0",
     "axios": "^0.17.1",
     "clipboard": "^1.7.1",

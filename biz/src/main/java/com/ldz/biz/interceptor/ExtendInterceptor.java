@@ -21,6 +21,7 @@ public class ExtendInterceptor extends BaseWebConfigure {
 				.excludePathPatterns("/pub/**"
 						,"**/export"
 						,"/login"
+						,"/upload"
 						,"/openapi/**"
 						,"/api/openuser/loginByCode"
 						,"/api/openuser/createCustomer");

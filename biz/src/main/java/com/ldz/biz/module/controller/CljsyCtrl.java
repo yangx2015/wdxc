@@ -1,13 +1,16 @@
 package com.ldz.biz.module.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 驾驶员设定
@@ -24,4 +27,15 @@ public class CljsyCtrl extends BaseController<ClJsy, String> {
 		return jsyservice;
 	}
 
+	@RequestMapping(value = "/update", method = { RequestMethod.POST })
+	public ApiResponse<String> update(ClJsy entity) {
+		return jsyservice.updateEntity(entity);
+	}
+
+	@PostMapping("/save")
+	public ApiResponse<String> save(ClJsy entity) {
+		return jsyservice.saveEntity(entity);
+	}
+	
+	
 }

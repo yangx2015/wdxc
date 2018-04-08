@@ -1,3 +1,4 @@
+<!--角色分配-->
 <template>
 	<div>
 		<Modal v-model='RootShow' width='800' :closable='false' :mask-closable="false" title="角色分配">
@@ -7,7 +8,7 @@
 				</div>
 				<CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
 					<div v-for="item in roleList" style="margin-left:15px">
-						<Checkbox :label="item.key" :checked.sync="item.checked">{{item.value}}</Checkbox>
+						<Checkbox :label="item.key" :checked="item.checked">{{item.value}}</Checkbox>
 					</div>
 
 				</CheckboxGroup>
@@ -49,14 +50,14 @@
 		},
 		methods: {
 		    getRoleList(){
-                this.$http.post(configApi.ROLE.QUERY).then((res) =>{
+                this.$http.get(configApi.ROLE.ALL).then((res) =>{
                     if(res.code===200){
                         this.roleList = [];
-                        let list = res.page.list;
-						for(let r of list){
-							let t = {key:r.jsId,value:r.jsmc,checked:this.hasRole(r.jsId)};
+                        let list = res.result;
+                        for(let r of list){
+                            let t = {key:r.jsId,value:r.jsmc,checked:this.hasRole(r.jsId)};
 							this.roleList.push(t);
-						}
+                        }
                     }
                 })
 			},
@@ -67,9 +68,13 @@
 				return false;
 			},
 		    getUserRoles(){
-                this.$http.post(configApi.ROLE.GET_USER_ROLES+'?userId='+this.usermes.yhid).then((res) =>{
+                this.$http.get(configApi.ROLE.GET_USER_ROLES+'?userId='+this.usermes.yhid).then((res) =>{
                     if(res.code===200){
-                        this.userRoles = res.result;
+                        if (res.result){
+                            this.userRoles = res.result;
+						}else{
+                            this.userRoles = [];
+						}
                         this.getRoleList();
                     }
                 })

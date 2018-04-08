@@ -9,8 +9,11 @@ spring:
     username: 'C##wdxc_admin'
     password: 'wdxc123456'
 
-
+  
 server:
   port: 80
   
-staticPath: /develop/static/ldz
+spk: 
+  url: http://127.0.0.1:8080/
+  
+staticPath: /develop/static/8081/

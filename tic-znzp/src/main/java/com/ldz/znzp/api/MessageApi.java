@@ -2,6 +2,7 @@ package com.ldz.znzp.api;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.service.ClService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +31,10 @@ public class MessageApi {
 	 * 根据智能站牌配置的显示哪条运营线路找到站牌ID，向其发送车辆运行情况
 	 */
 	@RequestMapping(value="/reporting", method={RequestMethod.POST})
-	public void reporting(@RequestBody GpsInfo gpsInfo ){
-		clService.updateGps(gpsInfo);
-		clService.report(gpsInfo.getDeviceId());
+	public ApiResponse<String> reporting(@RequestBody GpsInfo gpsInfo ){
+		ApiResponse<String> res = clService.updateGps(gpsInfo);
+		if (!res.isSuccess())return res;
+		return clService.report(gpsInfo.getDeviceId());
 	}
 	
 	@RequestMapping(value="/media", method={RequestMethod.POST})

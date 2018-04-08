@@ -132,21 +132,21 @@ export const appRouter = [
 				path: 'system-notice',
 				icon: 'android-clipboard',
 				name: 'system-notice',
-				title: '活动公告',
+				title: '设备终端',
 				component: () => import('@/views/whdx/system/system-notice')
 			},
 			{
 				path: 'system-propelling',
 				icon: 'android-clipboard',
 				name: 'system-propelling',
-				title: '推送服务',
+				title: '自能站牌',
 				component: () => import('@/views/whdx/system/system-propelling')
 			},
 			{
 				path: 'system-advertising',
 				icon: 'android-clipboard',
 				name: 'system-advertising',
-				title: '广告管理',
+				title: '活动管理',
 				component: () => import('@/views/whdx/system/system-advertising')
 			}
 		]

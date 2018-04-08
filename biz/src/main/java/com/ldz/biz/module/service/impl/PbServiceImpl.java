@@ -24,7 +24,6 @@ import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.commonUtil.DateUtils;
 
 import tk.mybatis.mapper.common.Mapper;
 
@@ -76,14 +75,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	@Override
 	public ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel pbclxlmodel) {
 		
-		ApiResponse<List<PbInfo>> pbinflist = new ApiResponse<>();
-
-		String dateStr = DateUtils.getDateStr(pbclxlmodel.getDate(), "yyyy-dd-mm");
-		PbClXlmodel pbClXlmodel = new PbClXlmodel();
-		pbclxlmodel.setDate2(dateStr);
 		
+		ApiResponse<List<PbInfo>> pbinflist = new ApiResponse<>();
 		// 获取该日车辆已排班信息
-		List<PbInfo> selectBydate = pbinfomapper.selectBydate(pbClXlmodel);
+		List<PbInfo> selectBydate = pbinfomapper.selectBydate(pbclxlmodel);
 
 		pbinflist.setResult(selectBydate);
 
@@ -94,10 +89,6 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	public ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel pbclxlmodel) {
 
 		ApiResponse<List<XbXlPb>> pbinflist = new ApiResponse<>();
-
-		String dateStr = DateUtils.getDateStr(pbclxlmodel.getDate(), "yyyy-dd-mm");
-		pbclxlmodel.setDate2(dateStr);
-
 		// 获取指定线路下面的排班信息
 		List<XbXlPb> selectXbPb = pbinfomapper.selectXbPb(pbclxlmodel);
 

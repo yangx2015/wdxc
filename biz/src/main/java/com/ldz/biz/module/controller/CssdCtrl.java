@@ -1,19 +1,17 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.model.ClCssd;
-import com.ldz.biz.module.model.ClDzwl;
-import com.ldz.biz.module.model.ClSg;
-import com.ldz.biz.module.service.CssdService;
-import com.ldz.biz.module.service.SgService;
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ldz.biz.module.model.ClCssd;
+import com.ldz.biz.module.service.CssdService;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 超速设定
@@ -27,6 +25,12 @@ public class CssdCtrl extends BaseController<ClCssd,String>{
     @Override
     protected BaseService<ClCssd, String> getBaseService() {
         return service;
+    }
+
+    @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
+    public ApiResponse<String> save(ClCssd entity){
+        return service.saveEntity(entity);
     }
 
     @RequestMapping(value="/update", method={RequestMethod.POST})

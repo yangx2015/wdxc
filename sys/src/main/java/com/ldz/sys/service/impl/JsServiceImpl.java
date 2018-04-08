@@ -34,7 +34,6 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
     @Override
     public ApiResponse<String> saveEntity(SysJs entity) {
         entity.setCjsj(new Date());
-        entity.setJsId(genId());
         entity.setCjr(getOperateUser());
         roleMapper.insert(entity);
         return ApiResponse.success();

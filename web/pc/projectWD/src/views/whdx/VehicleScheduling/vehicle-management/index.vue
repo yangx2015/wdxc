@@ -232,6 +232,7 @@
 				}
 				var v = this
 				this.$http.get(configApi.CLGL.QUERY,{params:v.findMess}).then((res) =>{
+					console.log('车辆数据',res.page.list)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -247,15 +248,28 @@
                 this.getmess()
         	},
         	listDele(id){
-				this.$http.post(configApi.CLGL.DELE,{'ids':[id.clId]}).then((res) =>{
-					if(res.code===200){
-						this.$Message.success('操作成功');
-					}else{
-						this.$Message.error('操作成功');
-					}
-					this.getmess()
-					
+        		var v = this
+				swal({
+				  title: "是删除数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
 				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.CLGL.DELE,{'ids':[id.clId]}).then((res) =>{
+//						console.log('删除',res)
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}else{
+							this.$Message.error('操作成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				});
 			},
             pageChange(event){
                 this.findMess.pageNum = event

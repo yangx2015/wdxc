@@ -2,9 +2,11 @@ import {otherRouter, appRouter} from '@/router/router';
 import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
+import session from '../../libs/session';
 
 const app = {
     state: {
+    	socketMess:[],
     	loading:{
     		size:55,
     		text:'数据加载中请稍后...'
@@ -35,14 +37,24 @@ const app = {
         ],
         tagsList: [...otherRouter.children],
         messageCount: 0,
+        functionList:[],
         dontCache: [] // 在这里定义你不想要缓存的页面的name属性值(参见路由配置router.js)
     },
     mutations: {
+    	setFunctions (state,data){
+            state.functionList = data
+            console.log('state.functionList',state.functionList);
+        },
+    	socketMessAdd (state,data){
+    		state.socketMess = data
+    	},
         setTagsList (state, list) {
             state.tagsList.push(...list);
         },
-        updateMenulist (state,data) {
-            state.menuList = data;
+        updateMenulist (state) {
+            console.log(state);
+            console.log('functions:',state.functionList);
+            // state.menuList = [];
         },
         changeMenuTheme (state, theme) {
             state.menuTheme = theme;

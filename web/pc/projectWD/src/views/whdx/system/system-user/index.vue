@@ -67,6 +67,7 @@
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
 	
+	
 	import newmess from './comp/newmes.vue'
 	import changemes from './comp/changmes.vue'
 	export default {
@@ -238,7 +239,7 @@
 		},
 		watch: {
 			cjsjInRange:function(newQuestion, oldQuestion){
-					this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 			},
 		},
 		created() {
@@ -254,14 +255,14 @@
 		},
 		methods: {
 			enter(mes){
-				console.log(mes)
-				
-				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
+//				console.log(mes)
+//				
+//				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
 			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+//					console.log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -272,14 +273,14 @@
 				var v = this
 				v.compName = 'changemes'
 				this.usermes = val;
-                console.log(val);
+//              console.log(val);
 
             },
 			//收索事件
 			findMessList() {
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-					console.log(res)
+//					console.log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -297,14 +298,26 @@
 			},
 			//删除数据
 			listDele(id){
-				this.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
-					console.log('删除',res)
-					if(res.code===200){
-						this.$Message.success('用户删除成功');
-					}
-					this.getmess()
-					
+				var v = this
+				swal({
+				  title: "是删除数据?",
+				  text: "",
+				  icon: "warning",
+				  buttons:['取消','确认'],
 				})
+				.then((willDelete) => {
+				  if (willDelete) {
+					v.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
+//						console.log('删除',res)
+						if(res.code===200){
+							this.$Message.success('操作成功');
+						}
+						v.getmess()
+					})
+				  } else {
+				  	this.$Message.error('操作失败');
+				  }
+				});
 			},
 			//分页点击事件按
 			pageChange(event) {

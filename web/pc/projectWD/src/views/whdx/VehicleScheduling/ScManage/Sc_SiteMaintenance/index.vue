@@ -48,8 +48,8 @@
 		    <Row class="margin-top-10" style="text-align: right;">
 		    	<Page
 		    		:total=pageTotal
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
+		    		:current=findMess.pageNum
+		    		:page-size=findMess.pageSize
 		    		show-total
 		    		show-elevator
 		    		@on-change='pageChange'></Page>
@@ -75,10 +75,6 @@
             	componentName:'',
             	//弹层
             	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:5
-            	},
 				choosedRow:null,
                 columns10: [
                     {
@@ -95,7 +91,10 @@
                     {
                         title: '状态',
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render: (h, params) => {
+                        	return params.row.zt=='00' ? "正常":"停用"
+                        }
                     },
                     {
                         title: '创建人',
@@ -223,7 +222,8 @@
                 })
             },
         	pageChange(event){
-        		var v = this
+                this.findMess.pageNum = event;
+                this.getmess();
         	}
         }
     }

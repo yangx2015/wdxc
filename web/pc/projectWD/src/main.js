@@ -7,17 +7,17 @@ import App from './app.vue';
 import '@/locale';
 import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
-//import util from './libs/util';
 import http from './axios/index';
 
+import session from './libs/session';
+
+import swal from 'sweetalert'
 
 Vue.use(VueI18n);
 Vue.use(iView);
-//import BaiduMap from 'vue-baidu-map'
-//Vue.use(BaiduMap, {
-//ak: 'evDHwrRoILvlkrvaZEFiGp30'
-//})
+
 //替换原始网络框架
+Vue.prototype.session = session
 Vue.prototype.$http = http;
 
 new Vue({

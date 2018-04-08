@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 驾驶员表
@@ -114,7 +115,17 @@ public class ClJsy implements Serializable {
     @Column(name = "CLRQ")
     private Date clrq;
 
+    private List<ClDd> clDdList;
+
     private static final long serialVersionUID = 1L;
+
+    public List<ClDd> getClDdList() {
+        return clDdList;
+    }
+
+    public void setClDdList(List<ClDd> clDdList) {
+        this.clDdList = clDdList;
+    }
 
     /**
      * 获取身份证号码

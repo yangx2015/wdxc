@@ -1,44 +1,24 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ldz.biz.module.mapper.ClCdMapper;
-import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.mapper.ClDdMapper;
-import com.ldz.biz.module.mapper.ClDdlsbMapper;
-import com.ldz.biz.module.mapper.ClDdrzMapper;
-import com.ldz.biz.module.mapper.ClGpsLsMapper;
-import com.ldz.biz.module.mapper.ClJsyMapper;
-import com.ldz.biz.module.mapper.ClLscMapper;
-import com.ldz.biz.module.model.ClCd;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClDd;
-import com.ldz.biz.module.model.ClDdlsb;
-import com.ldz.biz.module.model.ClDdrz;
-import com.ldz.biz.module.model.ClGps;
-import com.ldz.biz.module.model.ClGpsLs;
-import com.ldz.biz.module.model.ClJsy;
-import com.ldz.biz.module.model.ClLsc;
+import com.ldz.biz.module.mapper.*;
+import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
+
+import java.util.*;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
@@ -79,15 +59,15 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
     @Override
     public ApiResponse<String> saveEntity(ClDd entity) {
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
         SysJg org = jgService.findByOrgCode(entity.getJgdm());
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
         String orderId=genId();
         entity.setId(orderId);
-
-        String userId="1";// TODO: 2018/3/15 测试代码
-//      String userId=getOperateUser();
 
         entity.setCjr(userId);
 
@@ -110,7 +90,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setDdzt(entity.getDdzt());//订单状态
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -123,7 +102,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @param entity
      * @return
      */
-    public ApiResponse<String> orderAuditing(ClDd entity){
+    public ApiResponse<String> updateOrderAuditing(ClDd entity){
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
         //订单状态入参验证 验证入参"ddzt"必须是11 或者  12
         Boolean orderTypeValid=true;
         orderTypeValid= StringUtils.equals(entity.getDdzt(),"11");
@@ -137,9 +119,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         String oracleType=clDd.getDdzt();//订单状态
         RuntimeCheck.ifFalse(StringUtils.equals(oracleType,"10"),"当前订单不是待审核状态，无法进行该操作");
-
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
 
         ClDd ent=new ClDd();
         ent.setId(entity.getId());
@@ -164,7 +143,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setBz(entity.getSy());
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -195,24 +173,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         if(oracleLog!=null){
             rMap.put("oracleLog",oracleLog);
         }
+
 //        4、车辆GPS列表
-        ClCl clCl = clService.findByOrgCode(clDd.getClId());
-        if(clCl!=null){
-            SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
+        SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
 
-            condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());//开始时间
-            condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());//结束时间
-
-            condition.eq(ClGpsLs.InnerColumn.zdbh,clCl.getZdbh());
-            condition.setOrderByClause(ClGps.InnerColumn.cjsj.desc());
-            List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
-            if(gpsLog!=null){
-                rMap.put("gpsLog",gpsLog);
-            }
+        condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());//开始时间
+        condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());//结束时间
+        condition.eq(ClGpsLs.InnerColumn.zdbh,clDd.getZdbm());//终端编码
+        condition.setOrderByClause(ClGps.InnerColumn.cjsj.desc());//创建时间
+        List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
+        if(gpsLog!=null){
+            rMap.put("gpsLog",gpsLog);
         }
 
 //        5、原始单据信息
-        SimpleCondition condition = new SimpleCondition(ClDdlsb.class);
+        condition = new SimpleCondition(ClDdlsb.class);
         condition.eq(ClDdlsb.InnerColumn.id,entity.getId());
         List<ClDdlsb> initialOracle = ddlsbMapper.selectByExample(condition);
         if(initialOracle!=null){
@@ -231,9 +206,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     public ApiResponse<List<ClDd>> assignedOrderd(ClDd entity){
         ApiResponse<List<ClDd>> result = new ApiResponse<List<ClDd>>();
         SimpleCondition condition = new SimpleCondition(ClDd.class);
-
+        //是否用乘客做查询条件了。
         if(StringUtils.isNotBlank(entity.getCk())){
             condition.like(ClDd.InnerColumn.ck,entity.getCk());
+        }
+
+        //车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
+        if(StringUtils.isNotBlank(entity.getCllx())){
+            condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
@@ -258,7 +238,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             resExample.and().andLike(ClJsy.InnerColumn.xm.name(),"%"+entity.getXm()+"%");
         }
 
+        ClDd parameters =new ClDd();//入参
+        parameters.setSjSx("10");//默认身份证号码
         List<ClJsy> list = clJsyMapper.selectByExample(resExample);
+        if(list!=null){
+            for(ClJsy obj:list){
+                parameters.setSjSx(obj.getSfzhm());//设置身份证号码
+                ApiResponse<List<ClDd>> retObject=affirmOrderList(parameters);
+                if(retObject.isSuccess()){
+                    List<ClDd> clDdList=retObject.getResult();
+                    obj.setClDdList(clDdList);
+                }
+            }
+        }
         result.setResult(list);
         return result;
 
@@ -310,9 +302,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      * 成功或失败提示
      */
-    public ApiResponse<String> assignOrder(ClDd entity){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
+    public ApiResponse<String> updateAssignOrder(ClDd entity){
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
         ClDd newClDd=new ClDd();
 
 //        1、查找该ID是否存在
@@ -352,6 +344,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //            newClDd.setZws((short) 0);//座位数
             newClDd.setDzbh(clcd.getDzbh());//队长编号
             newClDd.setCdbh(clcd.getCdbh());//车队编号
+            newClDd.setZdbm(clCl.getZdbh());//终端编号
         }else if(StringUtils.equals(entity.getSjSx(),"11")){
 
 //            3-5、通过车牌号码查询临时车表，验证该车牌的正确性。
@@ -378,9 +371,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         int i=update(newClDd);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"派单操作数据库失败");
-//            return ApiResponse.fail("操作数据库失败");
         }
 
         ClDdrz clDdrz=new ClDdrz();
@@ -393,7 +384,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setDdzt(newClDd.getDdzt());//订单状态
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -405,16 +395,17 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * 取消派单操作   请求方式为post
      * 1、验证订单ID是否存在
      * 2、验证该订单是否处于：已派单状态
-     * 3、将订单状态修改为待洗手间
+     * 3、将订单状态修改为待派单状态
      * 4、写入日志表。
      * @param entity
      * 1、订单id  id 必填
      * @return
      * 成功或失败提示
      */
-    public ApiResponse<String> cancelAssignOrder(ClDd entity){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
+    public ApiResponse<String> updateCancelAssignOrder(ClDd entity){
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
         ClDd newClDd=new ClDd();
 
 //        1、查找该ID是否存在
@@ -422,7 +413,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
-        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有处理已派单状态，不能进行取消派单操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有处于已派单状态，不能进行取消派单操作");
 
 
         newClDd.setCph("");//车牌号
@@ -431,11 +422,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        newClDd.setZws("");//座位数
         newClDd.setClId("");//车辆ID
         newClDd.setSjSx("");//司机属性 内部司机、外部司机
+        newClDd.setZdbm("");//终端编号
         newClDd.setDdzt("11");//订单状态
         newClDd.setId(clDd.getId());
         int i=update(newClDd);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"操作数据库失败");
             return ApiResponse.fail("操作数据库失败");
         }
@@ -450,7 +441,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setDdzt(newClDd.getDdzt());//订单状态
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -468,8 +458,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      */
     public ApiResponse<String> updateOrder(ClDd entity){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
@@ -496,7 +487,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         int i=update(newClDd);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.fail("操作数据库失败");
         }else{
@@ -505,9 +495,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
 
-    public  ApiResponse<String> affirmOracle(ClDd entity){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
+    public  ApiResponse<String> updateAffirmOracle(ClDd entity){
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
@@ -522,7 +513,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         newClDd.setDdzt("30");//订单状态
         int i=update (newClDd);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"操作数据库失败");
 //            return ApiResponse.fail("操作数据库失败");
         }
@@ -541,7 +531,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setDdzt(newClDd.getDdzt());//订单状态
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -677,8 +666,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      */
     public ApiResponse<String> updateFinanceOrder(ClDd entity){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
+
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
@@ -693,7 +683,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //      3、修改订单
         int i=update(entity);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.fail("操作数据库失败");
         }
@@ -709,7 +698,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         clDdrz.setDdzt(ddzt);//订单状态
         i=ddrzMapper.insertSelective(clDdrz);
         if(i==0){
-//            throw new Exception("");
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
@@ -718,9 +706,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
     public ApiResponse<String> updateFinanceConfirm(String[] ids){
-        String userId="1";  // TODO: 2018/3/15 测试代码
-//       String userId=getOperateUser();
-
+        SysYh user=getCurrentUser();
+        String userId=user.getYhid();
         RuntimeCheck.ifNull(ids,"入参错误");
         for (String id : ids) {
 //            1、查找该ID是否存在
@@ -750,4 +737,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         return ApiResponse.success();
     }
 
+    public ClDd orderMoneyFormula(ClDd order){
+
+
+        return order;
+    }
 }

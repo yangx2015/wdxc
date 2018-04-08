@@ -1,4 +1,7 @@
 module.exports = {
+	USERROOT:{
+		QUERY:'/api/gn/getUserFunctions'
+	},
 	LOGIN:{
 		QUERY:'login'
 	},
@@ -11,6 +14,7 @@ module.exports = {
 	},
 	ROLE:{
 		QUERY:'/api/js/pager',//角色管理
+		ALL:'/api/js/getAll',//角色管理
 		ADD:'/api/js/save',
 		CHANGE:'/api/js/update',
 		GIVE:'/api/js/modifyUserRoles',
@@ -57,7 +61,7 @@ module.exports = {
         ADD:'/api/rz/save',
         CHANGE:'/api/rz/update',
         DELE:'/api/rz/removeIds'
-		
+
 	},
 	SUGGES:{
 		QUERY:'api/yj/pager',//意见管理
@@ -78,6 +82,12 @@ module.exports = {
         ADD:   '/api/cl/save',
         CHANGE:'/api/cl/update',
         DELE:  '/api/cl/removeIds'
+	},
+	XL:{
+		QUERY: '/api/xl/pager',
+        ADD:   '/api/xl/save',
+        CHANGE:'/api/xl/update',
+        DELE:  '/api/xl/removeIds'
 	},
 	LSDW:{
 		QUERY: '/api/lsdw/pager',
@@ -113,12 +123,36 @@ module.exports = {
 		QUERY:  '/api/clzd/pager',
 		ADD:    '/api/clzd/save',
         CHANGE: '/api/clzd/update',
-		DELE:   '/api/clzd/removeIds'
+		DELE:   '/api/clzd/removeIds',
+		GET_ALL:'/api/clzd/getAll',
+		GET_BY_ROUTE_ID:'/api/clzd/getByXlId'
 	},
-	CS:{
+	PB:{//校巴排版
+		QUERY:  '/api/pb/xbpb/',
+	},
+	XLPBXX:{//车辆排班信息
+		QUERY: '/api/pb/xbbjpb/',
+		ADD:    '/api/pb/save',
+	},
+	XBDT:{//校巴实时动态
+		QUERY: '/api/clzd/getzdcl/',
+	},
+	CS:{//超速
 		QUERY:  '/api/cssd/pager',
 		ADD:    '/api/cssd/save',
         CHANGE: '/api/cssd/update',
 		DELE:   '/api/cssd/removeIds'
 	},
-} 
+	ZNZP:{//智能站牌
+		QUERY:  '/api/znzp/pager',
+		ADD:    '/api/znzp/save',
+        CHANGE: '/api/znzp/update',
+		DELE:   '/api/znzp/removeIds'
+	},
+	ZDGL:{//终端管理
+		QUERY:  '/api/zdgl/pager',
+		ADD:    '/api/zdgl/save',
+        CHANGE: '/api/zdgl/update',
+		DELE:   '/api/zdgl/removeIds'
+	},
+}
