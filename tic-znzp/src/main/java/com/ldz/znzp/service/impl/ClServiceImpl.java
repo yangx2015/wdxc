@@ -33,8 +33,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Autowired
     private ClPbMapper clPbMapper;
     @Autowired
-    private ClXlMapper xlMapper;
-    @Autowired
     private ClZdMapper zdMapper;
     @Autowired
     private ClXlzdMapper xlzdMapper;
@@ -42,8 +40,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     private ClClyxjlMapper clyxjlMapper;
     @Autowired
     private ZdService zdService;
-    @Autowired
-    private XlService xlService;
     @Autowired
     private GpsService gpsService;
     @Autowired
@@ -67,40 +63,18 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> report(String tid) {
+    public ApiResponse<String> report(GpsInfo gpsInfo,ClPb clPb,ClCl car,ClXl xl) {
         ApiResponse<String> result = new ApiResponse<>();
         ReportData reportData = new ReportData();
-        reportData.setTid(tid);
+        reportData.setTid(gpsInfo.getDeviceId());
 
-        Channel channel = nettyUtil.getChannelByTid(tid);
+        Channel channel = nettyUtil.getChannelByTid(gpsInfo.getDeviceId());
 //        if (channel == null) return;
-
-        // 获取车辆信息
-        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,tid);
-        if (cars.size() == 0){
-            result = ApiResponse.fail("未找到车辆");
-            Map<String,String> map = new HashMap<>();
-            writeResult(channel,null);
-        }
-        ClCl car = cars.get(0);
-
-        // 获取车辆当天线路信息
-        SimpleCondition condition = new SimpleCondition(ClPb.class);
-        condition.eq(ClPb.InnerColumn.clId,car.getClId());
-        List<ClPb> clPbs = clPbMapper.selectByExample(condition);
-        if (clPbs.size() == 0){
-            result = ApiResponse.fail("未找到车辆排班信息");
-            writeResult(channel,null);
-        }
-
-        ClPb clPb = clPbs.get(0);
-        String xlId = clPb.getXlId();
-        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
         reportData.setRouteId(xl.getId());
         reportData.setRouteName(xl.getXlmc());
 
         // 获取车辆运行记录
-        condition = new SimpleCondition(ClClyxjl.class);
+        SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
         condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
         List<ClClyxjl> clClyxjls = clyxjlMapper.selectByExample(condition);
         if (clClyxjls.size() != 0){
@@ -115,20 +89,14 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> updateGps(GpsInfo gpsInfo) {
-        // 站点存储百度位置
+    public ApiResponse<String> updateGps(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route) {// 站点存储百度位置
         // 30.5411624384,114.3167198864（原始点,谷歌地球）
         // 30.5371683904,114.3242740669（原始点,谷歌地球）
+        ApiResponse<String> result;
 
         // 原始gps转百度gps
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
-        // 获取车辆信息
-        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
-        if (cars.size() == 0){
-            return ApiResponse.fail("未找到车辆");
-        }
-        ClCl car = cars.get(0);
-        ClXl route = xlService.getByCarId(car.getClId());
+
         // 获取车辆运行记录
         SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
         condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
@@ -140,7 +108,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (clClyxjls.size() == 0){
-            currentStation = findCurrentZd(gps,car);
+            currentStation = findCurrentZd(gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
             record.setClId(car.getClId());
@@ -159,7 +127,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 zt = "1"; // 进站
                 zdService.setStationOrder(currentStation);
             }else{
-                currentStation = findCurrentZd(gps,car);
+                currentStation = findCurrentZd(gps,car,pb);
             }
         }
         if (zt == null){
@@ -184,22 +152,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         return ApiResponse.success();
     }
 
-    private List<ClZd> getStationList(ClCl car){
+    private List<ClZd> getStationList(ClPb pb){
         // 获取车辆当天线路信息
-        SimpleCondition condition = new SimpleCondition(ClPb.class);
-        condition.eq(ClPb.InnerColumn.clId,car.getClId());
-        List<ClPb> clPbs = clPbMapper.selectByExample(condition);
-
-        if (clPbs.size() == 0){
-            return null;
-        }
-
-        ClPb clPb = clPbs.get(0);
-        String xlId = clPb.getXlId();
-//        ClXl xl = xlMapper.selectByPrimaryKey(xlId);
-
+        String xlId = pb.getXlId();
         // 获取线路站点
-        condition = new SimpleCondition(ClXlzd.class);
+        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
         condition.eq(ClXlzd.InnerColumn.xlId,xlId);
         List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
         if (xlzds.size() == 0){
@@ -213,11 +170,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         for (ClZd station : stations) {
             station.setXlId(xlId);
         }
-        return zdMapper.selectByExample(condition);
+        return stations;
     }
 
     @Override
-    public ClZd getCurrentZd(BigDecimal jd,BigDecimal wd,ClCl car,String currentZdId){
+    public ClZd getCurrentZd(BigDecimal jd,BigDecimal wd,ClCl car,String currentZdId,ClPb pb){
         // 判断是否有当前站点信息
         // 如果有当前站点，再判断与当前站点距离
         currentZdId = "1";
@@ -229,13 +186,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (distance < currentZd.getFw()){ // 如果在站点范围之内，则这就是当前站点
             return currentZd;
         }else{ // 如果不在站点范围之内，查找最近的站点
-            return findCurrentZd(currentGps,car);
+            return findCurrentZd(currentGps,car,pb);
         }
     }
 
     @Override
-    public ClZd findCurrentZd(Gps currentGps,ClCl car){
-        List<ClZd> stations = getStationList(car);
+    public ClZd findCurrentZd(Gps currentGps,ClCl car,ClPb pb){
+        List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
         Map<String,ClZd> stationMap = stations.stream().collect(Collectors.toMap(ClZd::getId,p->p));
 
@@ -260,6 +217,37 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         zdService.setStationOrder(station0);
         zdService.setStationOrder(station1);
         return station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
+    }
+
+    @Override
+    public ClPb getCarPb(String carId) {
+        SimpleCondition condition = new SimpleCondition(ClPb.class);
+        condition.eq(ClPb.InnerColumn.clId,carId);
+        List<ClPb> clPbs = clPbMapper.selectByExample(condition);
+        if (clPbs.size() == 0){
+            return null;
+        }
+        return clPbs.get(0);
+    }
+
+    @Override
+    public ClPb getCarPbByDeviceId(String deviceId) {
+        // 获取车辆信息
+        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,deviceId);
+        if (cars.size() == 0){
+            return null;
+        }
+        return getCarPb(cars.get(0).getClId());
+    }
+
+    @Override
+    public ClCl getByDeviceId(String deviceId) {
+        // 获取车辆信息
+        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,deviceId);
+        if (cars.size() == 0){
+            return null;
+        }
+        return cars.get(0);
     }
 
     private void addStation(){

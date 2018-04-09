@@ -186,20 +186,6 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	}
 
 	/**
-	 * 获取车辆运行状态
-	 * @param ctx
-	 */
-	private void report(ChannelHandlerContext ctx, String tid){
-		executor.execute(new Runnable() {
-			@Override
-			public void run() {
-				//返回车辆运行状态
-				clService.report(tid);
-			}
-		});
-	}
-
-	/**
 	 * 服务器向终端发起上传数据请求，根据服务器请求的终端ID，从在线列表中找到该终端，使用终端通道发送数据请求命令
 	 * @param ctx
 	 * @param receiveMsg

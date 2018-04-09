@@ -4,7 +4,11 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.znzp.bean.GpsInfo;
+import com.ldz.znzp.model.ClCl;
+import com.ldz.znzp.model.ClPb;
+import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.XlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,6 +29,9 @@ public class MessageApi {
 
 	@Autowired
 	private ClService clService;
+
+	@Autowired
+	private XlService xlService;
 	/**
 	 * 将校巴实时位置信息发送给智能站牌展示。
 	 * 接收到车辆和位置信息后，需要查询当前车辆是在哪条线路上进行运行，确认运营路线，再通过经纬度解析车辆当前运行到哪个站点
@@ -32,9 +39,18 @@ public class MessageApi {
 	 */
 	@RequestMapping(value="/reporting", method={RequestMethod.POST})
 	public ApiResponse<String> reporting(@RequestBody GpsInfo gpsInfo ){
-		ApiResponse<String> res = clService.updateGps(gpsInfo);
+		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
+		if (car == null)return ApiResponse.fail("未找到车辆");
+
+		ClPb pb = clService.getCarPb(car.getClId());
+		if (pb == null)return ApiResponse.fail("未找到车辆排班");
+
+		ClXl route = xlService.getByCarId(car.getClId());
+		if (route == null)return ApiResponse.fail("未找到车辆线路");
+
+		ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route);
 		if (!res.isSuccess())return res;
-		return clService.report(gpsInfo.getDeviceId());
+		return clService.report(gpsInfo,pb,car,route);
 	}
 	
 	@RequestMapping(value="/media", method={RequestMethod.POST})
