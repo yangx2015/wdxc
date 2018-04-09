@@ -72,19 +72,6 @@
 		  	this.sco()
 		},
 		methods:{
-			cs(){
-				let arr = [9,8,7,6,5,4,3,2]
-				arr.forEach((item,index) => {
-					console.log(item)
-					console.log(index)
-//					if(item==7){
-//						arr.splice(3,1,256)
-//					}
-				})
-				setTimeout(() =>{
-					console.log(arr)
-				},200)
-			},
 			//撒点
 			disDot(list){
 				this.clear()
