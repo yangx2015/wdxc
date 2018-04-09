@@ -32,9 +32,9 @@ import com.ldz.util.commonUtil.JsonUtil;
  */
 public class AppPushUtils {
 
-	private static String appId = "1nNoO189gb5tyCAkWyEVw3";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
-	private static String appKey = "ZPhTdq2iDL9zKJcr5BNoZ5";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
-	private static String masterSecret = "r5AJk6M7wc9D7tOsbdObY2";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
+	private static String appId = "20P0M5r3FJ6DiUA5x2u3w6";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
+	private static String appKey = "9M7caq81LGAiCxFPkhdZW7";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
+	private static String masterSecret = "BaYW4ASGfa9jcbP4jUYTS7";//默认  可提供外部赋值（在app启动完成之后可以读取配置文件得值付给它）
 	private static String url = "http://sdk.open.api.igexin.com/apiex.htm";
 	private static Integer EXP_TIME = 24 * 3600 * 1000;// 消息离线有效时间
 
@@ -300,7 +300,7 @@ public class AppPushUtils {
 
 	public static void main(String[] args) {//87aa0967aa2c2e69c60c045479b40c54  e6feafe1ae47694fbb2e64b77402c60a
 		System.out.println(JsonUtil.toJson(AppPushUtils
-				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039405", "{\"cmdType\":\"11\",\"cmd\":\"865923030039405121521528990985\",\"pcRedirect\":\"/module/task-xjd/taskInstance-find-\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030035668", "{\"cmdType\":\"90\",\"cmd\":\"http://192.168.1.148:8089/app-debug.apk\",\"pcRedirect\":\"/module/task-xjd/taskInstance-find-\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
 	}
 
 	// public static

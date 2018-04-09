@@ -89,7 +89,10 @@
 		},
 		created() {
 			console.log('qweqweqwe', this.$store.state.app.currentPageName)
-			this.mesList = menuList.numList
+            console.log('menuList');
+            console.log(menuList);
+            console.log(menuList.numList);
+            this.mesList = menuList.numList
 		}
 
 	};

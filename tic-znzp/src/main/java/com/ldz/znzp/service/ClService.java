@@ -12,9 +12,9 @@ import java.math.BigDecimal;
 public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> saveEntity(ClCl entity);
 
-    void report(String tid);
+    ApiResponse<String> report(String tid);
 
-    void updateGps(GpsInfo gpsInfo);
+    ApiResponse<String> updateGps(GpsInfo gpsInfo);
 
 
     ClZd findCurrentZd(Gps currentGps, ClCl car);

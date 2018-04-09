@@ -51,8 +51,8 @@ netty:
   keepAlive: true
   backlog: 1024
   
-logging:
-  config: classpath:log4j2.xml
+#logging:
+#  config: classpath:log4j2.xml
   
 mapper:
   mappers:

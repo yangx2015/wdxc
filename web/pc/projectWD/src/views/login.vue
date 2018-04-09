@@ -89,10 +89,10 @@ export default {
         },
         root(){
         	this.$http.get(configApi.USERROOT.QUERY).then((res) =>{
-//      		console.log('权限列表',res)
         		if(res.code===200){
-        			this.session.setItem('userRoot',res.result)
-        		}
+                    this.$store.commit('setFunctions', res.result);
+                    console.log('setFunctions', res.result);
+                }
         	}).catch((error) =>{
         		console.log(error)
         	})

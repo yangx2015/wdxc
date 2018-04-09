@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,8 +73,10 @@ public class BizApiServiceImpl implements BizApiService{
 							try {
 								//将bean对象转成json格式字符串进行数据传输
 								paramJson = mapper.writeValueAsString(dto);
+								Map<String, String> params = new HashMap<String, String>();
+								params.put("content-type", "application/json");
 								//发送数据请求
-								String result = HttpUtil.postJson(apiUrl, null, paramJson);
+								String result = HttpUtil.postJson(apiUrl, params, paramJson);
 								//数据本地日志记录
 								accessLog.debug("请求数据["+paramJson+"],接口响应["+result+"]");
 							} catch (Exception e) {

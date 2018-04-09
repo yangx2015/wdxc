@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 日志级别从低到高分为TRACE < DEBUG < INFO < WARN < ERROR < FATAL -->
 <Configuration status="DEBUG">
-	<properties>  
-        <property name="LOG_HOME">/logs/ldz/znzp</property>
-        <!-- 日志备份目录 -->  
-        <property name="BACKUP_HOME">${LOG_HOME}/backup</property>  
-        <property name="STAT_NAME">{sys:catalina.home}</property>  
-        <property name="SERVER_NAME">global</property>  
-    </properties>  
+	<properties>
+        <property name="LOG_HOME">/var/log/ldz/znzp</property>
+        <!-- 日志备份目录 -->
+        <property name="BACKUP_HOME">${LOG_HOME}/backup</property>
+        <property name="STAT_NAME">{sys:catalina.home}</property>
+        <property name="SERVER_NAME">global</property>
+    </properties>
     <Appenders>
         <!--这个输出控制台的配置-->
         <Console name="Console" target="SYSTEM_OUT">
@@ -38,9 +38,9 @@
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} %l %M -- %msg%xEx%n</pattern>
             </PatternLayout>
             <Policies>
-            	<SizeBasedTriggeringPolicy size="100 MB" /> 
+            	<SizeBasedTriggeringPolicy size="100 MB" />
             </Policies>
-            
+
             <DefaultRolloverStrategy max="20"/>
         </RollingRandomAccessFile>
         <!-- 设置日志格式并配置日志压缩格式.immediateFlush='true'将日志结果立即写入文件中 -->
@@ -64,7 +64,7 @@
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} %l %M -- %msg%xEx%n</pattern>
             </PatternLayout>
             <Policies>
-            	<SizeBasedTriggeringPolicy size="100 MB" /> 
+            	<SizeBasedTriggeringPolicy size="100 MB" />
             </Policies>
             <!-- 归档文件超过30天的将被自动删除 -->
             <DefaultRolloverStrategy>
@@ -97,9 +97,9 @@
                 <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} %l %M -- %msg%xEx%n</pattern>
             </PatternLayout>
             <Policies>
-            	<SizeBasedTriggeringPolicy size="10 MB" /> 
+            	<SizeBasedTriggeringPolicy size="10 MB" />
             </Policies>
-            
+
             <!-- 归档文件超过30天的将被自动删除 -->
             <DefaultRolloverStrategy>
 		        <Delete basePath="${baseDir}">
@@ -117,15 +117,15 @@
         	<appender-ref ref="error_appender"/>
             <appender-ref ref="Console"/>
         </root>-->
-         
+
         <!-- 第三方日志系统 -->
         <logger name="org.springframework.web" level="info"/>
-        
-		<!-- 打印Mybatis SQL日志信息，仅开发测试使用 
+
+		<!-- 打印Mybatis SQL日志信息，仅开发测试使用
 		<logger name="com.xph.module.mapper" level="debug" includeLocation="false" additivity="false">
             <appender-ref ref="Console"/>
         </logger>-->
-        
+
         <logger name="error_info" level="debug" includeLocation="false" additivity="false">
             <!-- <appender-ref ref="debug_appender"/> -->
             <appender-ref ref="errorInfoLog_appender"/>
@@ -138,7 +138,7 @@
         </logger>
         <!-- 日志实例(info),其中'service-log'继承root,但是root将日志输出控制台,而'service-log'将日志输出到文件,通过属性'additivity="false"'将'service-log'的
              的日志不再输出到控制台  -->
-        <logger name="com.ldz" level="debug" includeLocation="false" additivity="false">
+        <logger name="com.ldz.znzp" level="debug" includeLocation="false" additivity="false">
             <appender-ref ref="debug_appender"/>
             <appender-ref ref="Console"/><!--  -->
         </logger>
