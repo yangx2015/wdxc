@@ -30,8 +30,8 @@
 			return {
 				map:'',
 				mapcenter:{
-					lng: 114.372443,
-	    			lat: 30.544572
+					lng: 114.357527,
+	    			lat: 30.550822
 				},
 				zoom:16,
 			}
@@ -40,31 +40,37 @@
 			
 		},
 		mounted(){
-			var v = this
-			// 百度地图API功能
-			this.map = new BMap.Map("allmap");    // 创建Map实例
-			this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-			//添加地图类型控件
-			this.map.addControl(new BMap.MapTypeControl({
-					mapTypes:[
-			            BMAP_NORMAL_MAP
-			        ]
-				})
-			);
-		    this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-		    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-		    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-		    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
-		    
-		    this.map.addEventListener("click",function(e){
-				console.log(e.point.lng + "," + e.point.lat);
-				v.map.clearOverlays();
-				var marker = new BMap.Marker(new BMap.Point(e.point.lng, e.point.lat)); // 创建点
-				v.map.addOverlay(marker);
-				v.$emit('getDot',e)
-			});
-	},
-	methods:{
-	}
-	}
+			this.Buildmap()
+		},
+		methods:{
+			Buildmap(){
+				var v = this
+				// 百度地图API功能
+				this.map = new BMap.Map("allmap");    // 创建Map实例
+				this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+				//添加地图类型控件
+				this.map.addControl(new BMap.MapTypeControl({
+						mapTypes:[
+				            BMAP_NORMAL_MAP
+				        ]
+					})
+				);
+			    this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
+			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+			    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
+			    
+			    this.map.addEventListener("click",function(e){
+//					console.log(e.point.lng + "," + e.point.lat);//打印map点数据
+					v.map.clearOverlays();//清楚数据点
+					let newMapDot = new BMap.Point(e.point.lng, e.point.lat);//点数据
+					var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
+					
+					var marker = new BMap.Marker(newMapDot,{icon:myIcon}); // 创建点
+					v.map.addOverlay(marker);
+					v.$emit('getDot',e)
+				});
+			}
+		}
+}
 </script>

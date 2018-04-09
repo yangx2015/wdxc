@@ -44,8 +44,8 @@
 				scoketMess:[],
 				map:'',
 				mapcenter:{
-					lng: 114.370103,
-	    			lat: 30.544672
+					lng: 114.368383,
+	    			lat: 30.551134
 				},
 				zoom:16
 			}
@@ -68,7 +68,7 @@
 			var v = this
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
-		  	this.mapCenter()
+		  	this.mapCenterF()
 		  	this.sco()
 		},
 		methods:{
@@ -146,7 +146,7 @@
 			    });	
 			},
 			//地图级别中心
-			mapCenter(){
+			mapCenterF(){
 				var v = this
 				var point = new BMap.Point(v.mapcenter.lng, v.mapcenter.lat);
 				this.map.centerAndZoom(point, v.zoom);// 初始化地图,设置中心点坐标和地图级别
