@@ -20,8 +20,8 @@ public class InstructionServiceImpl implements InstructionService {
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 
-		// 临时测试用的url
-		String url = "http://weicy.natapp1.cc/api/push/carcmd";
+		
+		String url = "http://47.98.39.45:8080/tic-server/api/push/carcmd";
 		
 		String postEntity = JsonUtil.toJson(info);
 		String result = "";
