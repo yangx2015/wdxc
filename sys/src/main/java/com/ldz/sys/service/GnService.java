@@ -1,6 +1,7 @@
 package com.ldz.sys.service;
 
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.bean.Menu;
 import com.ldz.sys.model.SysFw;
 import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
@@ -54,4 +55,8 @@ public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> setRoleFunctions(String jsdm, List<String> gndms);
 
     ApiResponse<List<SysGn>> getRoleFunctions(String jsdm);
+
+    List<Menu> getMenuList(SysYh user);
+
+    List<Menu> getMenuTree(SysYh user);
 }

@@ -326,7 +326,6 @@
 		methods:{
 			//选项卡的切换
 			MenuClick(event){
-				console.log(event)
 				this.munName=event
 			},
 			//卡片事件

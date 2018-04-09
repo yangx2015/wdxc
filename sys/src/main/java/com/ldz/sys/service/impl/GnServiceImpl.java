@@ -1,6 +1,7 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.bean.Menu;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.mapper.*;
 import com.ldz.sys.model.*;
@@ -113,6 +114,23 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         List<String> gndms = roleFunctions.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
         List<SysGn> functions = gnService.findIn(SysGn.InnerColumn.gndm,gndms);
         return ApiResponse.success(functions);
+    }
+
+    @Override
+    public List<Menu> getMenuList(SysYh user) {
+        List<SysGn> functions = getUserFunctions(user);
+        if (functions == null || functions.size() == 0)return new ArrayList<>();
+        return null;
+    }
+
+    private List<Menu> buildMenus(List<SysGn> functions){
+        return null;
+    }
+
+
+    @Override
+    public List<Menu> getMenuTree(SysYh user) {
+        return null;
     }
 
 

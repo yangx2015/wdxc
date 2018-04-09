@@ -93,7 +93,6 @@
 		     * 建立成功的回调函数
 		     */
 			    v.socket.onopen = function() {
-			        console.log('开启');
 			    };
 			/**
 		     * 服务器有消息返回的回调函数

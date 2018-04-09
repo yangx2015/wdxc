@@ -57,19 +57,14 @@
 		},
 		watch:{
 			mapDot:function(n,o){
-				console.log('new',n)
-				console.log('old',o)
 				if(n.length==1){
-					console.log('1')
 					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
 					this.zoom = 12
 				}else if(n.length==0){
-					console.log('2')
 					this.mapcenter = {lng: 114.370095,lat: 30.545038}
 					this.zoom = 16
 					this.clear()
 				}else{
-					console.log('3')
 					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
 					this.zoom = 12
 				}
@@ -146,10 +141,6 @@
 				    rectangleOptions: styleOptions //矩形的样式
 				})
 				drawingManager.addEventListener("overlaycomplete", function(e) {
-					console.log(e);
-					console.log(e.drawingMode);
-				    console.log(e.overlay.ia);//区域坐标
-				    console.log(e.calculate);
 				    console.log(e.label);
 				});
 			},

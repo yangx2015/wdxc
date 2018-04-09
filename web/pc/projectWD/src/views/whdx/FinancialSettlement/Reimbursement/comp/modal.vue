@@ -53,7 +53,6 @@
 			colse(){
 				var v = this
 				v.$parent.compName = ''
-				console.log(v.$parent)
 		    }
 		}
 	}
