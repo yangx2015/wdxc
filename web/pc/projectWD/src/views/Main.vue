@@ -126,7 +126,7 @@
         },
         methods: {
         	ButOnmouseover(mes){
-        		console.log(mes)
+        		console.log('ButOnmouseover:',mes)
         	},
             init () {
 //              let pathArr = util.setCurrentPath(this, this.$route.name);

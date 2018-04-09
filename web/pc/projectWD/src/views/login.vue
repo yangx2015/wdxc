@@ -91,7 +91,6 @@ export default {
         	this.$http.get(configApi.USERROOT.QUERY).then((res) =>{
         		if(res.code===200){
                     this.$store.commit('setFunctions', res.result);
-                    console.log('setFunctions', res.result);
                 }
         	}).catch((error) =>{
         		console.log(error)

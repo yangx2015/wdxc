@@ -3,6 +3,7 @@ import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
 import session from '../../libs/session';
+import menuList from '../../../data/list'
 
 const app = {
     state: {
@@ -43,7 +44,8 @@ const app = {
     mutations: {
     	setFunctions (state,data){
             state.functionList = data
-            console.log('state.functionList',state.functionList);
+            console.log('setFunctions');
+            console.log(menuList);
         },
     	socketMessAdd (state,data){
     		state.socketMess = data
@@ -52,8 +54,6 @@ const app = {
             state.tagsList.push(...list);
         },
         updateMenulist (state) {
-            console.log(state);
-            console.log('functions:',state.functionList);
             // state.menuList = [];
         },
         changeMenuTheme (state, theme) {

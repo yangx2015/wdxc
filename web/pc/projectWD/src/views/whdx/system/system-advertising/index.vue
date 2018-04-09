@@ -240,7 +240,6 @@
         },
         watch:{
         	defaultList:function(n,o){
-        		console.log('Filelist',n)
         	}
         },
         created(){

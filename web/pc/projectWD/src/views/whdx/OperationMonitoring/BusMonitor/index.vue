@@ -200,7 +200,6 @@ export default {
     	getXBlineName(){//校巴线路名称
     		var v = this
     		this.$http.post(configApi.XL.QUERY).then((res) =>{
-				console.log('线路名称',res)
 				v.XBlineName = res.page.list
 				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
 			})
@@ -208,7 +207,6 @@ export default {
     	getXBline(id,name){//校巴线路
     		var v = this
     		this.$http.post(configApi.XBDT.QUERY,{"xlId":id}).then((res) =>{
-				console.log('线路数据',res)
 				v.XBline = res.result
 			})
     		v.lineName = name

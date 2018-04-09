@@ -80,10 +80,8 @@ export default {
     },
     watch:{
     	doArray:function(){
-    		console.log(this.doArray)
     	},
     	todoArray:function(){
-    		console.log(this.todoArray)
     	}
     },
     mounted () {
@@ -102,8 +100,6 @@ export default {
             ghostClass: 'placeholder-style',
             fallbackClass: 'iview-admin-cloned-item',
             onRemove (event) {
-            	console.log(event.item.getAttribute('data-index'))
-            	console.log(event)
 //              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 //          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
             }
