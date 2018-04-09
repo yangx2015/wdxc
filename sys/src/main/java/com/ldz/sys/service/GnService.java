@@ -56,7 +56,7 @@ public interface GnService extends BaseService<SysGn, String> {
 
     ApiResponse<List<SysGn>> getRoleFunctions(String jsdm);
 
-    List<Menu> getMenuList(SysYh user);
-
     List<Menu> getMenuTree(SysYh user);
+
+    ApiResponse<String> initMenu(List<Menu> menus);
 }

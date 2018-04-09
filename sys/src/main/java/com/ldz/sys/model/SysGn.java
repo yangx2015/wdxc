@@ -56,6 +56,9 @@ public class SysGn implements Serializable {
     @Column(name = "API_HZ")
     private String apiHz;
 
+    @Column(name = "PX")
+    private Float px;
+
     @Transient
     private String title;
 
@@ -71,6 +74,14 @@ public class SysGn implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public Float getPx() {
+        return px;
+    }
+
+    public void setPx(Float px) {
+        this.px = px;
+    }
 
     public String getTitle() {
         return gnmc;

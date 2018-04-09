@@ -1,83 +1,82 @@
 export default {
-			numList: [
-			{
-				path: '/system',
-				icon: 'android-clipboard',
-				name: 'system',
-				title: '系统管理',
-				children: [
-					{
-						icon: 'android-clipboard',
-						name: 'system-user',
-						title: '用户管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-role',
-						title: '角色管理',
-					},
+	menuTree: [{
+        path: '/system',
+        icon: 'android-clipboard',
+        name: 'system',
+        title: '系统管理',
+        children: [
+            {
+                icon: 'android-clipboard',
+                name: 'system-user',
+                title: '用户管理',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-role',
+                title: '角色管理',
+            },
 //					{
 //						icon: 'android-clipboard',
 //						name: 'system-AP',
 //						title: '分配权限',
 //					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-framework',
-						title: '组织机构',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-dictionary',
-						title: '字典管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-ITSM',
-						title: '服务管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-function',
-						title: '功能管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-daily',
-						title: '日志管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-suggestions',
-						title: '意见反馈',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-notice',
-						title: '设备终端',//活动公告
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-propelling',
-						title: '智能站牌',//推送服务
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'system-advertising',
-						title: '活动管理',
-					}
-				]
-			},
-			{
-				icon: 'android-clipboard',
-				name: 'VehicleScheduling',
-				title: '车辆调度',
-				children: [
-					{
-						icon: 'android-clipboard',
-						name: 'vehicle-management',
-						title: '车辆管理'
-					},
+            {
+                icon: 'android-clipboard',
+                name: 'system-framework',
+                title: '组织机构',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-dictionary',
+                title: '字典管理',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-ITSM',
+                title: '服务管理',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-function',
+                title: '功能管理',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-daily',
+                title: '日志管理',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-suggestions',
+                title: '意见反馈',
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-notice',
+                title: '设备终端',//活动公告
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-propelling',
+                title: '智能站牌',//推送服务
+            },
+            {
+                icon: 'android-clipboard',
+                name: 'system-advertising',
+                title: '活动管理',
+            }
+        ]
+    },
+        {
+            icon: 'android-clipboard',
+            name: 'VehicleScheduling',
+            title: '车辆调度',
+            children: [
+                {
+                    icon: 'android-clipboard',
+                    name: 'vehicle-management',
+                    title: '车辆管理'
+                },
 //					{
 //						icon: 'android-clipboard',
 //						name: 'TemporaryCarManagement',
@@ -94,36 +93,36 @@ export default {
 //							}
 //						]
 //					},
-					{
-						icon: 'android-clipboard',
-						name: 'DriverManagement',
-						title: '驾驶员管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'FleetManagement',
-						title: '车队管理',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'ElectronicFence',
-						title: '电子围栏',
-					},
+                {
+                    icon: 'android-clipboard',
+                    name: 'DriverManagement',
+                    title: '驾驶员管理',
+                },
+                {
+                    icon: 'android-clipboard',
+                    name: 'FleetManagement',
+                    title: '车队管理',
+                },
+                {
+                    icon: 'android-clipboard',
+                    name: 'ElectronicFence',
+                    title: '电子围栏',
+                },
 //					{
 //						icon: 'android-clipboard',
 //						name: 'AccidentManagement',
 //						title: '事故管理',
 //					},
-					{
-						icon: 'android-clipboard',
-						name: 'OverspeedLimit',
-						title: '超速设定',
-					},
-					{
-						icon: 'android-clipboard',
-						name: 'CloudVideo',
-						title: '云视频库',
-					},
+                {
+                    icon: 'android-clipboard',
+                    name: 'OverspeedLimit',
+                    title: '超速设定',
+                },
+                {
+                    icon: 'android-clipboard',
+                    name: 'CloudVideo',
+                    title: '云视频库',
+                },
 //					{
 //						icon: 'android-clipboard',
 //						name: 'ShuttleBus',
@@ -145,27 +144,27 @@ export default {
 //							}
 //						]
 //					},
-					{
-						icon: 'android-clipboard',
-						name: 'ScManage',
-						title: '校巴管理',
-						children: [{
-								icon: 'android-clipboard',
-								name: 'Sc_SiteMaintenance',
-								title: '站点维护',
-							},
-							{
-								icon: 'android-clipboard',
-								name: 'Sc_LineMaintenance',
-								title: '线路维护',
-							},
-							{
-								icon: 'android-clipboard',
-								name: 'Sc_Scheduling',
-								title: '校巴排班',
-							}
-						]
-					},
+                {
+                    icon: 'android-clipboard',
+                    name: 'ScManage',
+                    title: '校巴管理',
+                    children: [{
+                        icon: 'android-clipboard',
+                        name: 'Sc_SiteMaintenance',
+                        title: '站点维护',
+                    },
+                        {
+                            icon: 'android-clipboard',
+                            name: 'Sc_LineMaintenance',
+                            title: '线路维护',
+                        },
+                        {
+                            icon: 'android-clipboard',
+                            name: 'Sc_Scheduling',
+                            title: '校巴排班',
+                        }
+                    ]
+                },
 //					{
 //						icon: 'android-clipboard',
 //						name: 'OrderManagement',
@@ -198,8 +197,8 @@ export default {
 //							}
 //						]
 //					},
-				]
-			},
+            ]
+        },
 //			{
 //				icon: 'android-clipboard',
 //				name: 'FinancialSettlement',
@@ -279,23 +278,22 @@ export default {
 //					},
 //				]
 //			},
-			{
-				path: '/运营监控',
-				icon: 'android-clipboard',
-				name: 'OperationMonitoring',
-				title: '运营监控',
-				children:[
-					{
+        {
+            path: '/运营监控',
+            icon: 'android-clipboard',
+            name: 'OperationMonitoring',
+            title: '运营监控',
+            children:[
+                {
 //						icon: 'android-clipboard',
 //						name: 'VehicleMonitoring',
 //						title: '车辆监控',
 //					},{
-						icon: 'android-clipboard',
-						name: 'BusMonitor',
-						title: '校巴监控',
-					}
-				]
-			}]
-//		}
-//	}
+                    icon: 'android-clipboard',
+                    name: 'BusMonitor',
+                    title: '校巴监控',
+                }
+            ]
+        }],
+	menuList:[]
 }

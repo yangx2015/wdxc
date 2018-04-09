@@ -2,12 +2,14 @@ package com.ldz.sys.controller;
 
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.bean.InitMenuReq;
 import com.ldz.sys.bean.Menu;
 import com.ldz.sys.model.SysFw;
 import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +41,12 @@ public class GnController extends BaseController<SysGn, String> {
         return this.gnService.saveEntity(entity);
     }
 
+    @RequestMapping("initMenu")
+    public ApiResponse<String> initMenu(String menus){
+        List<Menu> menuList = JsonUtil.toList(menus,Menu.class);
+        return gnService.initMenu(menuList);
+    }
+
 
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(SysGn gn){
@@ -48,11 +56,6 @@ public class GnController extends BaseController<SysGn, String> {
     public ApiResponse<List<SysGn>> getUserFunctions(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getUserFunctions(user));
-    }
-    @RequestMapping(value = "getMenuList",method = RequestMethod.GET)
-    public ApiResponse<List<Menu>> getMenuList(){
-        SysYh user = getCurrentUser();
-        return ApiResponse.success(gnService.getMenuList(user));
     }
     @RequestMapping(value = "getMenuTree",method = RequestMethod.GET)
     public ApiResponse<List<Menu>> getMenuTree(){

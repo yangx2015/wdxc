@@ -3,7 +3,6 @@ import Util from '@/libs/util';
 import Cookies from 'js-cookie';
 import Vue from 'vue';
 import session from '../../libs/session';
-import menuList from '../../../data/list'
 
 const app = {
     state: {

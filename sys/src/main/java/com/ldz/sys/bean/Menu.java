@@ -9,15 +9,23 @@ import java.util.List;
 @Getter
 @Setter
 public class Menu {
+    private String id;
+    private String pid;
     private String icon;
-    private String path;
     private String name;
+    private String path;
     private String title;
     private List<Menu> children;
+
+    public Menu(){
+
+    }
     public Menu(SysGn function){
+        this.id = function.getGndm();
+        this.pid = function.getFjd();
         this.icon = function.getTb();
-        this.path = function.getUrl();
         this.name = function.getUrl();
+        this.path = "/"+function.getUrl();
         this.title = function.getGnmc();
     }
 }

@@ -42,6 +42,8 @@
 import Cookies from 'js-cookie';
 import configApi from '@/axios/config.js'
 //import session from '@/libs/session';
+import menuList from '../data/list'
+import {appRouter} from '../router/router';
 export default {
     data () {
         return {
@@ -49,6 +51,7 @@ export default {
                 username: 'admini',
                 password: '123456'
             },
+            menus:[],
             rules: {
                 username: [
                     { required: true, message: '账号不能为空', trigger: 'blur' }
@@ -60,6 +63,7 @@ export default {
         };
     },
     created(){
+        menuList.menuTree = [];
     },
     methods: {
         handleSubmit () {
@@ -67,15 +71,10 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
-//              		console.log('登陆结果',res)
                 		if(res.code===200){
-                			Cookies.set('usermess', this.form.username);
-                			Cookies.set('result', res.result);
-                			v.root()
-//						    this.$router.push({
-//						    	name: 'home_index'
-//						    });
-							v.$router.push('home')
+                            Cookies.set('usermess', this.form.username);
+                            Cookies.set('result', res.result);
+                		    v.getMenuTree();
                 		}else{
                 			v.$router.push({
 						    	name: 'error-500'
@@ -87,14 +86,61 @@ export default {
                 }
             })
         },
-        root(){
-        	this.$http.get(configApi.USERROOT.QUERY).then((res) =>{
+        getMenuTree(){
+        	this.$http.get(configApi.USERROOT.GET_MENU_TREE).then((res) =>{
         		if(res.code===200){
-                    this.$store.commit('setFunctions', res.result);
+                    menuList.menuTree = res.result;
+                    this.addToMenuList(res.result);
+                    this.$router.push('home')
                 }
         	}).catch((error) =>{
         		console.log(error)
         	})
+        },
+        addToMenuList(list){
+            for(let r of list){
+                menuList.menuList.push(r.name);
+                if (r.children){
+                    this.addToMenuList(r.children);
+                }
+            }
+        },
+        getMenuList(){
+        	this.$http.get(configApi.USERROOT.GET_MENU_LIST).then((res) =>{
+        		if(res.code===200){
+                    menuList.menuList = res.result;
+        		    this.getMenuTree();
+                }
+        	}).catch((error) =>{
+        		console.log(error)
+        	})
+        },
+        addToList(list){
+            for (let r of list){
+                this.menus.push(r);
+                if (r.children){
+                    for (let c of r.children){
+                        c.pid = r.name;
+                    }
+                    this.addToList(r.children);
+                }
+            }
+        },
+        initMenu(){
+            this.addToList(appRouter,this.menus);
+            for (let r of this.menus){
+                delete r.children;
+                delete r.component;
+            }
+
+            let params = {menus:JSON.stringify(this.menus)}
+            this.$http.post(configApi.USERROOT.INIT_MENU,params).then((res) =>{
+                if(res.code===200){
+                    console.log(res);
+                }
+            }).catch((error) =>{
+                console.log(error)
+            })
         }
     }
 };

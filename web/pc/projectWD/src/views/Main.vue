@@ -4,8 +4,8 @@
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
         <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
-                <!--:theme="menuTheme"--> 
-            <shrinkable-menu 
+                <!--:theme="menuTheme"-->
+            <shrinkable-menu
                 :shrink="shrink"
                 @on-change="handleSubmenuChange"
                 :before-push="beforePush"
@@ -40,12 +40,12 @@
                             	</span>
                                 <span class="main-user-name">{{ userName }}</span>
                             </span>
-                            <Button 
-                            	size="large" 
-                            	type="primary" 
-                            	shape="circle" 
+                            <Button
+                            	size="large"
+                            	type="primary"
+                            	shape="circle"
                             	@click="handleClickUserDropdown"
-                            	@DOMMouseScroll="ButOnmouseover('移入')" 
+                            	@DOMMouseScroll="ButOnmouseover('移入')"
                             	@mousewheel="ButOnmouseover('移出')">
                             	<span>退出登陆</span>
                             	<Icon type="ios-redo"></Icon>
@@ -77,7 +77,7 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
-    
+
 //  import vx from '../store/modules/app'
     export default {
         components: {
@@ -99,7 +99,6 @@
         },
         computed: {
             menuList () {
-//          	console.log('面包',this.$store.state.app.menuList)
                 return this.$store.state.app.menuList;
             },
             pageTagsList () {

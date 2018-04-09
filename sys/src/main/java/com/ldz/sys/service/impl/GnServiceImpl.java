@@ -74,7 +74,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     @Override
     public ApiResponse<String> setRoleFunctions(String jsdm, List<String> gndms) {
         RuntimeCheck.ifBlank(jsdm,"角色代码不能为空");
-        List<SysJs> roles = jsService.findEq(SysJs.InnerColumn.jgdm,jsdm);
+        List<SysJs> roles = jsService.findEq(SysJs.InnerColumn.jsId,jsdm);
         RuntimeCheck.ifTrue(roles.size() == 0,"未找到记录");
 
         SimpleCondition condition = new SimpleCondition(SysJsGn.class);
@@ -116,21 +116,88 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return ApiResponse.success(functions);
     }
 
-    @Override
-    public List<Menu> getMenuList(SysYh user) {
-        List<SysGn> functions = getUserFunctions(user);
-        if (functions == null || functions.size() == 0)return new ArrayList<>();
-        return null;
-    }
-
-    private List<Menu> buildMenus(List<SysGn> functions){
-        return null;
+    private List<Menu> convertToMenus(List<SysGn> functions){
+        List<Menu> menuList = new ArrayList<>();
+        for (SysGn function : functions) {
+            Menu menu = new Menu(function);
+            menuList.add(menu);
+        }
+        return menuList;
     }
 
 
     @Override
     public List<Menu> getMenuTree(SysYh user) {
-        return null;
+        List<SysGn> functions = getUserFunctions(user);
+        if (functions == null || functions.size() == 0)return new ArrayList<>();
+        functions.sort(Comparator.comparing(SysGn::getPx));
+        List<Menu> menuList = convertToMenus(functions);
+        return buildMenuTree(menuList);
+    }
+
+    @Override
+    public ApiResponse<String> initMenu(List<Menu> menus) {
+        List<SysGn> functions = new ArrayList<>();
+        addToMenuList(menus,functions);
+        for (SysGn function : functions) {
+            SysGn exist = gnMapper.selectByPrimaryKey(function.getGndm());
+            if (exist == null){
+                gnService.save(function);
+            }else{
+                gnService.update(function);
+            }
+        }
+        return ApiResponse.success();
+    }
+
+    private void addToMenuList(List<Menu> menuList,List<SysGn> functionList){
+        List<SysGn> functions = convertToFunctionList(menuList);
+        functionList.addAll(functions);
+        for (Menu menu : menuList) {
+            if (menu.getChildren() != null){
+                addToMenuList(menu.getChildren(),functionList);
+            }
+        }
+    }
+
+    private List<SysGn> convertToFunctionList(List<Menu> menus){
+        List<SysGn> list = new ArrayList<>();
+        String creartor = "初始导入";
+        Date now = new Date();
+        for (Menu menu : menus) {
+            SysGn function = new SysGn();
+            function.setFwdm("1");
+            function.setZt("00");
+            function.setCjr(creartor);
+            function.setCjsj(now);
+            function.setFjd(menu.getPid());
+            function.setGndm(menu.getName());
+            function.setUrl(menu.getName());
+            function.setGnmc(menu.getTitle());
+            function.setTb(menu.getIcon());
+            list.add(function);
+        }
+        return list;
+    }
+    private List<Menu> buildMenuTree(List<Menu> menuList){
+        Map<String,Menu> menuIdMap = menuList.stream().collect(Collectors.toMap(Menu::getId,p->p));
+        List<Menu> root = new ArrayList<>();
+        for (Menu menu : menuList) {
+            if (StringUtils.isEmpty(menu.getPid())){
+                root.add(menu);
+                continue;
+            }
+            Menu father = menuIdMap.get(menu.getPid());
+            if (father == null)continue;
+            if (father.getChildren() == null){
+                List<Menu> children = new ArrayList<>();
+                children.add(menu);
+                father.setChildren(children);
+            }else{
+                father.getChildren().add(menu);
+            }
+        }
+        return root;
     }
 
 

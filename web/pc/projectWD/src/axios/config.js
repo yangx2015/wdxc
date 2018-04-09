@@ -1,6 +1,8 @@
 module.exports = {
 	USERROOT:{
-		QUERY:'/api/gn/getUserFunctions'
+		GET_MENU_LIST:'/api/gn/getUserFunctions',
+        GET_MENU_TREE:'/api/gn/getMenuTree',
+        INIT_MENU:'/api/gn/initMenu',
 	},
 	LOGIN:{
 		QUERY:'login'

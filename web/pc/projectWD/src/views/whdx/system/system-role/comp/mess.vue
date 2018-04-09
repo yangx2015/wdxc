@@ -87,7 +87,7 @@
 		},
 		created(){
 			console.log('数据传输',this.messdata)
-			this.data4 = treelist.numList
+			this.data4 = treelist.menuTree
 		},
         mounted(){
             this.getPermissionTree();
@@ -113,7 +113,7 @@
                 this.choosedIds = '';
                 for(let r of list){
                     if (r.checked){
-                        this.choosedIds += r.gndm;
+                        this.choosedIds += r.gndm+",";
 					}
                     if (r.children){
                         this.getChoosedIds(r.children);

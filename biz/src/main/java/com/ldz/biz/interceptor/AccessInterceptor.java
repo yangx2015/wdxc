@@ -30,7 +30,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	private GnService gnService;
 
 	private YhService yhService;
-	
+
 	private StringRedisTemplate redisDao;
 
 	private List<String> whiteList;
@@ -42,10 +42,10 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
 		this.yhService = SpringContextUtil.getBean(YhService.class);
 		this.redisDao = redisTemp;
-		this.whiteList = Arrays.asList("/api/resource/getOnlineUserPermission","/api/user/getAll","/api/gn/getUserFunctions");
+		this.whiteList = Arrays.asList("/api/gn/getMenuTree");
 
 	}
-	
+
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 		//查看请求类型
@@ -101,7 +101,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}catch(Exception e){
 			return false;
 		}
-		
+
 		return super.preHandle(request, response, handler);
 	}
 

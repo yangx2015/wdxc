@@ -47,7 +47,7 @@
 <script>
 	import treelist from '@/data/list.js'
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name: '',
 		data() {
@@ -125,6 +125,7 @@
 							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('角色修改成功');
+                                    this.setRolePermission();
 									v.$emit('listF',res)
 								}
 							})

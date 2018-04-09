@@ -64,8 +64,8 @@
 					<div class="box">
 						<div style="overflow: auto;">
 							<div class="box-row-z padding-left-right">
-								<Button class="margin-5" 
-									type="primary" 
+								<Button class="margin-5"
+									type="primary"
 									v-for="(item,index) in XBlineName"
 									@click="getXBline(item.id,item.xlmc)">{{item.xlmc}}</Button>
 							</div>
@@ -87,7 +87,7 @@
 						    <div class="carlines">
 						    	<div class="box-row-z">
 						    		<div v-for="(item,index) in XBline">
-						    			<carline 
+						    			<carline
 						    				:zd="item.entryCount!=0"
 						    				:linecar='item.exportCount!=0'
 						    				:siteName="item.zdName"

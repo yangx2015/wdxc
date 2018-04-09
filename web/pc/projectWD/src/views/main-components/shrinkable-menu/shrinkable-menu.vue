@@ -5,17 +5,17 @@
 <template>
     <div :style="{background: bgColor}" class="ivu-shrinkable-menu">
         <slot name="top"></slot>
-            <!--:menu-list="menuList"--> 
-        <sidebar-menu 
+            <!--:menu-list="menuList"-->
+        <sidebar-menu
             v-show="!shrink"
-            :menu-theme="theme" 
+            :menu-theme="theme"
             :open-names="openNames"
             @on-change="handleChange"
         ></sidebar-menu>
-            <!--:menu-list="menuList"--> 
-        <sidebar-menu-shrink 
+            <!--:menu-list="menuList"-->
+        <sidebar-menu-shrink
             v-show="shrink"
-            :menu-theme="theme" 
+            :menu-theme="theme"
             :icon-color="shrinkIconColor"
             @on-change="handleChange"
         ></sidebar-menu-shrink>
