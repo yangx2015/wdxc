@@ -49,7 +49,7 @@
 		    			</Input>
 		    		</Col>
 		    	</Row>
-		    	<div style="height: 300px;">
+		    	<div style="height: 400px;">
 		    		<get-map-dot ref='maps' 
 		    			:center="mapCenter"
 		    			@getDot="getDot"></get-map-dot>

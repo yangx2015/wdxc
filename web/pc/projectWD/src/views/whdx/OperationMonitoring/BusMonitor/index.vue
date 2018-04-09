@@ -55,7 +55,7 @@
 					            地图实时监控
 					        </p>
 						    <div :style="mapheight">
-								<my-map :center='mapCenter'></my-map>
+								<my-map></my-map>
 							</div>
 					    </Card>
 			    	</div>
@@ -156,7 +156,6 @@ export default {
     mixins: [mixins],
     data () {
         return {
-        	mapCenter:{lng: 114.372443, lat: 30.544572},
         	carheight:{
         		height:''
         	},
