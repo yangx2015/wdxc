@@ -8,7 +8,7 @@
   <artifactId>tic-znzp</artifactId>
   <name>tic-znzp</name>
   <version>0.0.1-SNAPSHOT</version>
-  <packaging>war</packaging>
+  <packaging>jar</packaging>
   <description>智能站牌网络服务</description>
 	
   <properties>

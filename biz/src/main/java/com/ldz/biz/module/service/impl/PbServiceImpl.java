@@ -54,7 +54,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
 		Date now = new Date();
 		entity.setCjr(getOperateUser());
-		entity.setClId(genId());
+		entity.setId(genId());
 		entity.setCjsj(now);
 		entity.setJgdm(user.getJgdm());
 		entity.setJgmc(org.getJgmc());

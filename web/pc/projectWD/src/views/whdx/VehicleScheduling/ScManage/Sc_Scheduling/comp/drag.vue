@@ -117,12 +117,12 @@ li{
 //					console.log(event)
 
 	            	//车辆id
-	            	let clid = vm.carList[event.item.getAttribute('data-index')].clId
+	            	let clId = vm.carList[event.item.getAttribute('data-index')].clId
 	            	//线路id
 	            	let linelength = event.to.id
 	            	let lineID = linelength.substring(0,linelength.length-5)
-	            	let xlid = vm.listdata[lineID].id
-	            	vm.AddList(clid,xlid)
+	            	let xlId = vm.listdata[lineID].id
+	            	vm.AddList(clId,xlId)
 	            	vm.SpinShow = true
 	            }
 	        });
@@ -150,7 +150,7 @@ li{
 			},
 			AddList(carID,LineID){
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clid":carID,"xlid":LineID,"date2":'2018-03-26'}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":'2018-03-26'}).then((res) =>{
 					console.log('排版新增',res)
 //					if(res.code==500){
 						v.$parent.domeC()
