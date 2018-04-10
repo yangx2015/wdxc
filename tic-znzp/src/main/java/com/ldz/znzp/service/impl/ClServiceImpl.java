@@ -43,6 +43,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Autowired
     private GpsService gpsService;
     @Autowired
+    private XlService xlService;
+    @Autowired
     private NettyUtil nettyUtil;
     @Autowired
     public SnowflakeIdWorker idGenerator;
@@ -63,12 +65,12 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> report(GpsInfo gpsInfo,ClPb clPb,ClCl car,ClXl xl) {
+    public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl) {
         ApiResponse<String> result = new ApiResponse<>();
         ReportData reportData = new ReportData();
-        reportData.setTid(gpsInfo.getDeviceId());
+        reportData.setTid(tid);
 
-        Channel channel = nettyUtil.getChannelByTid(gpsInfo.getDeviceId());
+        Channel channel = nettyUtil.getChannelByTid(tid);
 //        if (channel == null) return;
         reportData.setRouteId(xl.getId());
         reportData.setRouteName(xl.getXlmc());
@@ -191,8 +193,14 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public void report(String tid) {
-        return ;
+    public ApiResponse<String> report(String tid) {
+        ClCl car = getByDeviceId(tid);
+        if (car == null)return ApiResponse.fail("未找到车辆");
+        ClPb pb = getCarPb(car.getClId());
+        if (pb == null)return ApiResponse.fail("未找到车辆排班");
+        ClXl route = xlService.getByCarId(car.getClId());
+        if (route == null)return ApiResponse.fail("未找到车辆线路");
+        return report(tid,pb,car,route);
     }
 
     @Override

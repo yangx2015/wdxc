@@ -136,8 +136,7 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 				case "reporting":
 					// 校车运行状态反馈
 					report(ctx,tid);
-//
-//					break;
+					break;
 				case "tick":
 					//心跳包，智能站牌主动发送指令
 					online = true;

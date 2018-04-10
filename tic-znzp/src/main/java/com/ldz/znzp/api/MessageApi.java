@@ -50,7 +50,7 @@ public class MessageApi {
 
 		ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route);
 		if (!res.isSuccess())return res;
-		return clService.report(gpsInfo,pb,car,route);
+		return clService.report(gpsInfo.getDeviceId(),pb,car,route);
 	}
 	
 	@RequestMapping(value="/media", method={RequestMethod.POST})

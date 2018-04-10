@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> saveEntity(ClCl entity);
 
-    ApiResponse<String> report(GpsInfo gpsInfo,ClPb pb,ClCl car,ClXl route);
+    ApiResponse<String> report(String tid,ClPb pb,ClCl car,ClXl route);
 
     ApiResponse<String> updateGps(GpsInfo gpsInfo,ClPb pb,ClCl car,ClXl route);
 
@@ -28,5 +28,5 @@ public interface ClService extends BaseService<ClCl,String>{
 
     ClZd getCurrentZd(BigDecimal jd, BigDecimal wd, ClCl car, String currentZdId,ClPb pb);
 
-    void report(String tid);
+    ApiResponse<String> report(String tid);
 }
