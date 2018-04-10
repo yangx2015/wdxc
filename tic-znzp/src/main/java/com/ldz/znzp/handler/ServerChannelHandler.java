@@ -133,9 +133,9 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 					defaultReturn = false;
 					getRouterInfo(ctx, tid);
 					break;
-//				case "reporting":
-//					// 校车运行状态反馈
-//					report(ctx,tid);
+				case "reporting":
+					// 校车运行状态反馈
+					report(ctx,tid);
 //
 //					break;
 				case "tick":
@@ -184,6 +184,20 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 			public void run() {
 				//返回线路信息
 				xlService.getRouterInfo(ctx, tid);
+			}
+		});
+	}
+
+	/**
+	 * 获取车辆运行状态
+	 * @param ctx
+	 */
+	private void report(ChannelHandlerContext ctx, String tid){
+		executor.execute(new Runnable() {
+			@Override
+			public void run() {
+				//返回车辆运行状态
+				clService.report(tid);
 			}
 		});
 	}

@@ -28,4 +28,5 @@ public interface ClService extends BaseService<ClCl,String>{
 
     ClZd getCurrentZd(BigDecimal jd, BigDecimal wd, ClCl car, String currentZdId,ClPb pb);
 
+    void report(String tid);
 }

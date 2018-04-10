@@ -191,6 +191,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
+    public void report(String tid) {
+        return ;
+    }
+
+    @Override
     public ClZd findCurrentZd(Gps currentGps,ClCl car,ClPb pb){
         List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
