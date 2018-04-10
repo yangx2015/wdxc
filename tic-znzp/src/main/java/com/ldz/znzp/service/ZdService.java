@@ -13,4 +13,6 @@ public interface ZdService extends BaseService<ClZd,String>{
     List<ClZd> getByXlIds(List<String> xlIds);
 
     void setStationOrder(ClZd station);
+
+    void setStationOrders(ClZd... stations);
 }

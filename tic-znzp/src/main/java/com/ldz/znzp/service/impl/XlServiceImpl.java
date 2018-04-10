@@ -156,12 +156,9 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
 
     @Override
     public ClXl getByCarId(String carId) {
-	    ClCl car = clService.findById(carId);
-	    if (car == null)return null;
-
         // 获取车辆当天线路信息
         SimpleCondition condition = new SimpleCondition(ClPb.class);
-        condition.eq(ClPb.InnerColumn.clId,car.getClId());
+        condition.eq(ClPb.InnerColumn.clId,carId);
         List<ClPb> clPbs = clPbMapper.selectByExample(condition);
         if (clPbs.size() == 0){
             return null;

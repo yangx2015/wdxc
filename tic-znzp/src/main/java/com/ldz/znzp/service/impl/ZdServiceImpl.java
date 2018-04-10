@@ -13,9 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -69,5 +67,30 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
         if (xlzds.size() == 0)return;
         station.setRouteOrder(xlzds.get(0).getXh());
+    }
+
+    @Override
+    public void setStationOrders(ClZd... stations) {
+        if (stations == null || stations.length == 0){
+            return;
+        }
+        List<String> stationIds = new ArrayList<>();
+        Map<String,ClZd> stationMap = new HashMap<>();
+        String routeId = null;
+        for (ClZd station : stations) {
+            if (routeId == null) routeId = station.getXlId();
+            stationIds.add(station.getId());
+            stationMap.put(station.getId(),station);
+        }
+        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+        condition.eq(ClXlzd.InnerColumn.xlId,routeId);
+        condition.in(ClXlzd.InnerColumn.zdId,stationIds);
+        List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
+        if (xlzds.size() == 0)return;
+        for (ClXlzd xlzd : xlzds) {
+            ClZd station = stationMap.get(xlzd.getZdId());
+            if (station == null)continue;
+            station.setRouteOrder(xlzd.getXh());
+        }
     }
 }

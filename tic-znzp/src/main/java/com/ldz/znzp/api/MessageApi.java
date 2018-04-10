@@ -3,17 +3,22 @@ package com.ldz.znzp.api;
 import javax.servlet.http.HttpServletRequest;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.model.ClCl;
+import com.ldz.znzp.model.ClClyxjl;
 import com.ldz.znzp.model.ClPb;
 import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.ClyxjlService;
 import com.ldz.znzp.service.XlService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
  * 智能站牌对外提供的消息接口，一共提供如下几个接口
@@ -32,6 +37,8 @@ public class MessageApi {
 
 	@Autowired
 	private XlService xlService;
+	@Autowired
+	private ClyxjlService clyxjlService;
 	/**
 	 * 将校巴实时位置信息发送给智能站牌展示。
 	 * 接收到车辆和位置信息后，需要查询当前车辆是在哪条线路上进行运行，确认运营路线，再通过经纬度解析车辆当前运行到哪个站点
@@ -42,24 +49,28 @@ public class MessageApi {
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
 		if (car == null)return ApiResponse.fail("未找到车辆");
 
+		List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
+
 		ClPb pb = clService.getCarPb(car.getClId());
 		if (pb == null)return ApiResponse.fail("未找到车辆排班");
 
-		ClXl route = xlService.getByCarId(car.getClId());
+		ClXl route = xlService.findById(pb.getXlId());
 		if (route == null)return ApiResponse.fail("未找到车辆线路");
 
-		ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route);
+		ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
+
+		ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route,clClyxjl);
 		if (!res.isSuccess())return res;
-		return clService.report(gpsInfo.getDeviceId(),pb,car,route);
+		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 	}
-	
+
 	@RequestMapping(value="/media", method={RequestMethod.POST})
 	public void media(HttpServletRequest request){
-		
+
 	}
 
 	@RequestMapping(value="/led", method={RequestMethod.POST})
 	public void led(HttpServletRequest request){
-		
+
 	}
 }

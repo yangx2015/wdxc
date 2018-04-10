@@ -46,6 +46,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Autowired
     private NettyUtil nettyUtil;
     @Autowired
+    private ClyxjlService clyxjlService;
+    @Autowired
     public SnowflakeIdWorker idGenerator;
     @Override
     protected Mapper<ClCl> getBaseMapper() {
@@ -64,18 +66,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl) {
-        ApiResponse<String> result = new ApiResponse<>();
+    public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl,ClClyxjl clClyxjl) {
         ReportData reportData = new ReportData();
         reportData.setRouteId(xl.getId());
         reportData.setRouteName(xl.getXlmc());
 
         // 获取车辆运行记录
-        SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
-        condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
-        List<ClClyxjl> clClyxjls = clyxjlMapper.selectByExample(condition);
-        if (clClyxjls.size() != 0){
-            ClClyxjl clClyxjl = clClyxjls.get(0);
+        if (clClyxjl != null){
             reportData.setDirect(clClyxjl.getYxfx());
             reportData.setStationNo(clClyxjl.getZdbh());
             reportData.setType(clClyxjl.getZt());
@@ -93,53 +90,66 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> updateGps(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route) {// 站点存储百度位置
+    public ApiResponse<String> updateGps(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route, ClClyxjl record) {// 站点存储百度位置
         // 30.5411624384,114.3167198864（原始点,谷歌地球）
         // 30.5371683904,114.3242740669（原始点,谷歌地球）
-        ApiResponse<String> result;
+        /**
+         * 谷歌地图：30.5288716874,114.4212491503
+         * 百度地图：30.5345399945,114.4278552156
+         * 腾讯高德：30.5288493080,114.4212341309
+         * 图吧地图：30.5271335880,114.4230130709
+         * 谷歌地球：30.5311635880,114.4157130709
+         * 北纬N30°31′52.19″ 东经E114°24′56.57″
+         */
 
         // 原始gps转百度gps
+        log.info("转换前-经度："+gpsInfo.getLongitude()+",纬度："+gpsInfo.getLatitude());
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
+        log.info("转换后-经度："+clGps.getBdjd()+",纬度："+clGps.getBdwd());
 
         // 获取车辆运行记录
-        SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
-        condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
-        List<ClClyxjl> clClyxjls = clyxjlMapper.selectByExample(condition);
         Date now = new Date();
         // 获取当前站点
+        boolean hasRecord = record != null;
         ClZd currentStation = null;
-        ClClyxjl record = null;
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
-        if (clClyxjls.size() == 0){
+        if (record == null){
             currentStation = findCurrentZd(gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
             record.setClId(car.getClId());
             record.setCphm(car.getCph());
             record.setId(""+idGenerator.nextId());
-            if(route!=null){
+            if(route != null){
                 record.setXlId(route.getId());
                 record.setXlmc(route.getXlmc());
             }
         }else {
-            record = clClyxjls.get(0);
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
-            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getJd().doubleValue(),clGps.getWd().doubleValue());
+            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
             if (distance < currentStation.getFw()){
-                zt = "1"; // 进站
+                if (gpsInfo.getEventType().equals("80")){
+                    zt = "off";
+                }else{
+                    zt = "inStation"; // 进站
+                }
                 zdService.setStationOrder(currentStation);
             }else{
                 currentStation = findCurrentZd(gps,car,pb);
             }
         }
         if (zt == null){
-            double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getJd().doubleValue(),clGps.getWd().doubleValue());
-            if (distance < currentStation.getFw()){
-                zt = "1"; // 进站
+            if (gpsInfo.getEventType().equals("80")){
+                zt = "off";
             }else{
-                zt = "1"; // 出站
+                double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+                if (distance < currentStation.getFw()){
+                    zt = "inStation"; // 进站
+                }else{
+                    zt = "runing"; // 正常
+                }
             }
         }
         record.setZdbh(currentStation.getRouteOrder());
@@ -148,10 +158,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         record.setJd(clGps.getBdjd());
         record.setWd(clGps.getBdwd());
         record.setZt(zt);
-        if (clClyxjls.size() == 0){
-            clyxjlMapper.insertSelective(record);
-        }else{
+        if (hasRecord){
             clyxjlMapper.updateByPrimaryKeySelective(record);
+        }else{
+            clyxjlMapper.insertSelective(record);
+        }
+        if (gpsInfo.getEventType().equals("80")){
+            return ApiResponse.fail("设备已离线");
         }
         return ApiResponse.success();
     }
@@ -166,6 +179,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (xlzds.size() == 0){
             return null;
         }
+        Map<String,Short> stationXhMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
 
         List<String> stationIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
         condition = new SimpleCondition(ClZd.class);
@@ -173,6 +187,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         List<ClZd> stations = zdMapper.selectByExample(condition);
         for (ClZd station : stations) {
             station.setXlId(xlId);
+            Short xh = stationXhMap.get(station.getId());
+            if (xh != null)station.setRouteOrder(xh);
         }
         return stations;
     }
@@ -202,7 +218,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (pb == null)return ApiResponse.fail("未找到车辆排班");
         ClXl route = xlService.getByCarId(car.getClId());
         if (route == null)return ApiResponse.fail("未找到车辆线路");
-        return report(tid,pb,car,route);
+        List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
+        return report(tid,pb,car,route,clClyxjls.size() == 0 ? null : clClyxjls.get(0));
     }
 
     @Override
@@ -230,8 +247,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         String id1 = entryList.get(1).getKey();
         ClZd station0 = stationMap.get(id0);
         ClZd station1 = stationMap.get(id1);
-        zdService.setStationOrder(station0);
-        zdService.setStationOrder(station1);
+//        zdService.setStationOrders(station0,station1);
         return station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
     }
 
