@@ -18,6 +18,7 @@ public class Route {
     private String routeType;
     private String runTime;
     private List<Station> stations;
+    private List<Bus> buses;
 
     public Route(ClXl xl){
         if (xl == null)return;

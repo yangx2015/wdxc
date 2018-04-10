@@ -10,10 +10,7 @@ import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.bean.ReportData;
 import com.ldz.znzp.mapper.*;
 import com.ldz.znzp.model.*;
-import com.ldz.znzp.service.ClService;
-import com.ldz.znzp.service.GpsService;
-import com.ldz.znzp.service.XlService;
-import com.ldz.znzp.service.ZdService;
+import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +42,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Autowired
     private XlService xlService;
     @Autowired
+    private ZnzpService znzpService;
+    @Autowired
     private NettyUtil nettyUtil;
     @Autowired
     public SnowflakeIdWorker idGenerator;
@@ -68,10 +67,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl) {
         ApiResponse<String> result = new ApiResponse<>();
         ReportData reportData = new ReportData();
-        reportData.setTid(tid);
-
-        Channel channel = nettyUtil.getChannelByTid(tid);
-//        if (channel == null) return;
         reportData.setRouteId(xl.getId());
         reportData.setRouteName(xl.getXlmc());
 
@@ -84,9 +79,16 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             reportData.setDirect(clClyxjl.getYxfx());
             reportData.setStationNo(clClyxjl.getZdbh());
             reportData.setType(clClyxjl.getZt());
+            reportData.setBus_plate(clClyxjl.getCphm());
+            List<ClZnzp> znzps = znzpService.findEq(ClZnzp.InnerColumn.zdId,clClyxjl.getZdId());
+            if (znzps.size() != 0){
+                reportData.setTid(znzps.get(0).getZdbh());
+            }
         }
         log.info(reportData.toString());
-        writeResult(channel,reportData);
+        List<Channel> channels = nettyUtil.getChannelList(tid);
+//        if (channel == null) return;
+        writeResult(channels,reportData);
         return ApiResponse.success(reportData.toString());
     }
 
@@ -137,7 +139,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             if (distance < currentStation.getFw()){
                 zt = "1"; // 进站
             }else{
-                zt = "2"; // 出站
+                zt = "1"; // 出站
             }
         }
         record.setZdbh(currentStation.getRouteOrder());
@@ -298,5 +300,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
          */
         if (channel == null)return;
         nettyUtil.sendData(channel,reportData);
+    }
+    private void writeResult(List<Channel> channels,ReportData reportData){
+        for (Channel channel : channels) {
+            writeResult(channel,reportData);
+        }
     }
 }

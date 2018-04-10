@@ -4,6 +4,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
+import com.ldz.znzp.bean.Bus;
 import com.ldz.znzp.bean.Route;
 import com.ldz.znzp.bean.RouteInfo;
 import com.ldz.znzp.bean.Station;
@@ -17,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
     private ClService clService;
     @Autowired
     private ClPbMapper clPbMapper;
+    @Autowired
+    private ClyxjlService clyxjlService;
     @Autowired
     private NettyUtil nettyUtil;
 
@@ -121,6 +125,9 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
             Route route = new Route(xl);
             routes.add(route);
             route.setStations(xlZdMap.get(xl.getId()));
+            List<Bus> buses = getBusList(xl);
+            route.setBuses(buses);
+
         }
         routeInfo.setRoutes(routes);
         Map<String,Object> map = new HashMap<>();
@@ -128,6 +135,24 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         nettyUtil.sendData(ctx,map);
 		return ApiResponse.success(routeInfo.toString());
 	}
+
+	private List<Bus> getBusList(ClXl xl){
+        SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+        condition.eq(ClClyxjl.InnerColumn.xlId,xl.getId());
+	    List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
+	    if (clClyxjls.size() == 0)return new ArrayList<>();
+
+	    List<Bus> buses = new ArrayList<>();
+        for (ClClyxjl clClyxjl : clClyxjls) {
+            Bus bus = new Bus();
+            bus.setId(clClyxjl.getClId());
+            bus.setCurrentStationNo(""+clClyxjl.getZdbh());
+            bus.setPlate(clClyxjl.getCphm());
+            bus.setState(clClyxjl.getZt());
+            buses.add(bus);
+        }
+        return buses;
+    }
 
     @Override
     public ClXl getByCarId(String carId) {

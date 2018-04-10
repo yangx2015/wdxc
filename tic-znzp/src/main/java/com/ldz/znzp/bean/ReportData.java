@@ -14,7 +14,6 @@ public class ReportData {
     private String routeId;
     private String direct;
     private String type;
+    private String bus_plate;
     private Short stationNo;
-
-
 }
