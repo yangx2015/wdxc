@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 
+import com.ldz.znzp.util.NettyUtil;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -66,6 +67,8 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	
 	@Autowired
 	SnowflakeIdWorker idWorker;
+	@Autowired
+	private NettyUtil nettyUtil;
 	
 	// 连接成功后，向server发送消息 
 	@Override
@@ -232,16 +235,7 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	 * @param ctx
 	 */
 	private void writeDataByte(ChannelHandlerContext ctx, Map<String, String> sendData){
-		String content = "";
-		try {
-			content = mapper.writeValueAsString(sendData);
-		} catch (JsonProcessingException e) {
-			
-		}
-		String data = "$" + StringUtils.leftPad(content.length()+"", 5, "0") + content;
-		ctx.write(Unpooled.copiedBuffer(data, Charset.forName("GBK")));
-        //发送数据同时刷新通道，数据发送完后，由netty自行负责释放该ByteBuf对象
-		ctx.flush();
+		nettyUtil.sendData(ctx,sendData);
 	}
 	
 	/**

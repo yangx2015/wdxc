@@ -20,10 +20,11 @@ public class Route {
     private List<Station> stations;
 
     public Route(ClXl xl){
+        if (xl == null)return;
         this.routeId = xl.getId();
         this.routeName = xl.getXlmc();
-        this.startTime = getTime(xl.getYxkssj());
-        this.endTime = getTime(xl.getYxjssj());
+        this.startTime = getTime(xl.getYxkssj() == null ? 0 : xl.getYxkssj());
+        this.endTime = getTime(xl.getYxjssj() == null ? 0 : xl.getYxjssj());
         this.routeType = xl.getLx();
         this.runTime = String.valueOf(xl.getPjsj());
     }

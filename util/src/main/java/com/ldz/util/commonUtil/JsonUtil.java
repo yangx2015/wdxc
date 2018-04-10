@@ -1,6 +1,7 @@
 package com.ldz.util.commonUtil;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,6 +23,8 @@ public class JsonUtil {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         //由于vo中缺少json的某个字段属性引起
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+//允许出现特殊字符和转义符
+//        mapper.configure(JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS, true) ;
 
     }
 

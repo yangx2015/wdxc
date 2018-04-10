@@ -84,12 +84,17 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         ClZnzp zp = znzpMapper.selectByPrimaryKey(tid);
         if (zp == null){
             result = ApiResponse.fail("未找到站牌信息");
-            nettyUtil.sendData(ctx,JsonUtil.toJson(result));
+            nettyUtil.sendData(ctx,result);
             return result;
         }
 
         // 获取站点线路
         List<ClXl> xls = getByZdId(zp.getZdId());
+        if (xls.size() == 0){
+            result = ApiResponse.fail("未找到线路信息");
+            nettyUtil.sendData(ctx,result);
+            return result;
+        }
 
         // 获取线路站点
         List<String> xlIds = xls.stream().map(ClXl::getId).collect(Collectors.toList());
@@ -118,8 +123,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
             route.setStations(xlZdMap.get(xl.getId()));
         }
         routeInfo.setRoutes(routes);
-        Map<String,String> map = new HashMap<>();
-        map.put("routes",JsonUtil.toJson(routeInfo));
+        Map<String,Object> map = new HashMap<>();
+        map.put("routes",routeInfo);
         nettyUtil.sendData(ctx,map);
 		return ApiResponse.success(routeInfo.toString());
 	}

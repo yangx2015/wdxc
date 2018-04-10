@@ -85,7 +85,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
         log.info(reportData.toString());
         writeResult(channel,reportData);
-        return result;
+        return ApiResponse.success(reportData.toString());
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             record = clClyxjls.get(0);
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
-            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getJd().doubleValue(),clGps.getWd().doubleValue());
             if (distance < currentStation.getFw()){
                 zt = "1"; // 进站
                 zdService.setStationOrder(currentStation);
@@ -131,7 +131,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             }
         }
         if (zt == null){
-            double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+            double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getJd().doubleValue(),clGps.getWd().doubleValue());
             if (distance < currentStation.getFw()){
                 zt = "1"; // 进站
             }else{
@@ -194,6 +194,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     public ClZd findCurrentZd(Gps currentGps,ClCl car,ClPb pb){
         List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
+        if (stations.size() == 1)return stations.get(0);
         Map<String,ClZd> stationMap = stations.stream().collect(Collectors.toMap(ClZd::getId,p->p));
 
         Map<String,Double> distanceMap = new HashMap<>();
