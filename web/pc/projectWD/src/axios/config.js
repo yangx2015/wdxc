@@ -28,7 +28,8 @@ module.exports = {
 		QUERY:'api/jg/pager',//机构管理
         ADD:'/api/jg/save',
         CHANGE:'/api/jg/update',
-        DELE:'/api/jg/removeIds'
+        DELE:'/api/jg/removeIds',
+		GET_TREE:'/api/jg/getOrgTree'
 	},
 	DICTIONARY:{
 	   QUERY:'/api/zd/pager',// 查询字典

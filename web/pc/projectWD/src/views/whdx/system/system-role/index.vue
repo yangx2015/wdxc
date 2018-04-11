@@ -68,13 +68,13 @@
 	import configApi from '@/axios/config.js'
 	
 	import addrole from './comp/addmess.vue'
-	import mess from './comp/mess.vue'
+	import modifyRolePermission from './comp/modifyRolePermission.vue'
 	export default {
     	name:'char',
     	mixins:[mixins],
     	components: {
     		addrole,
-    		mess
+            modifyRolePermission
 		},
         data () {
             return {
@@ -164,7 +164,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                     		this.RootShowF(params)
+                                            this.messdata = params.row
+                                            this.compName = 'modifyRolePermission'
                                         }
                                     }
                                 }),

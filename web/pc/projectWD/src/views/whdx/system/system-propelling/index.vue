@@ -69,7 +69,7 @@
             	pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
-				choosedRow:{},
+				choosedRow:null,
                 componentName:'',
             	page:{
             		pageNum:1,
@@ -226,7 +226,7 @@
             },
             pageChange(event){
                 this.form.pageNum = event;
-                this.getmess();
+                this.getPageData();
             }
         }
     }

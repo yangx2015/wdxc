@@ -139,9 +139,11 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg,String> implements JgSe
      */
     @Override
     public List<SysJg> findAllSubOrg(String orgCode) {
-        String like = orgCode + "%";
-        String sql = "select * from sys_hdyx where jgdm like "+ like;
-        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-        return jdbcTemplate.queryForList(sql,SysJg.class);
+        return ptjgMapper.selectAll();
+//        String like = "" + orgCode + "%";
+//        String sql = "select * from sys_hdyx where jgdm like "+ like;
+//
+//        JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+//        return jdbcTemplate.queryForList(sql,SysJg.class);
     }
 }

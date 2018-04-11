@@ -308,9 +308,61 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return roleFunctions.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
     }
 
+    private List<SysFw> getAllPermissionTreeWithChecked(List<SysFw> services,List<SysGn> functions){
+        List<SysGn> allFunctions = gnService.findAll();
+        List<SysFw> allServices = fwService.findAll();
+
+        List<String> functionCodes = functions.stream().map(SysGn::getGndm).collect(Collectors.toList());
+
+        Map<String,SysFw> serviceMap = allServices.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
+        Map<String,SysGn> functionMap = allFunctions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+
+        List<String> serviceCodes = new ArrayList<>();
+        for (SysGn function : functions) {
+            String serviceCode = function.getFwdm();
+            if (StringUtils.isEmpty(serviceCode))continue;
+            if (serviceMap.containsKey(serviceCode))continue;
+            serviceCodes.add(serviceCode);
+        }
+        if (serviceCodes.size() != 0){
+            List<SysFw> addServices = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
+            services.addAll(addServices);
+        }
+        for (SysGn function : functions) {
+            if (functionCodes.contains(function.getGndm())){
+                function.setChecked("true");
+            }
+            String fatherCode = function.getFjd();
+            // 如果没有父节点，则代码这是个一级功能
+            if (StringUtils.isEmpty(fatherCode)){
+                SysFw father = serviceMap.get(function.getFwdm());
+                if (father == null)continue;
+                if (father.getFunctions() == null){
+                    List<SysGn> children = new ArrayList<>();
+                    children.add(function);
+                    father.setFunctions(children);
+                }else{
+                    father.getFunctions().add(function);
+                }
+            }else{
+                SysGn father = functionMap.get(fatherCode);
+                if (father == null)continue;
+                if (father.getChildren() == null){
+                    List<SysGn> children = new ArrayList<>();
+                    children.add(function);
+                    father.setChildren(children);
+                }else{
+                    father.getChildren().add(function);
+                }
+            }
+        }
+        return services;
+
+    }
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions){
         Map<String,SysFw> serviceMap = services.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
         Map<String,SysGn> functionMap = functions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+
         List<String> serviceCodes = new ArrayList<>();
         for (SysGn function : functions) {
             String serviceCode = function.getFwdm();
@@ -363,6 +415,14 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     @Override
     public List<SysFw> getUserPermissionTree(SysYh user) {
         List<SysGn> functions = getUserFunctions(user);
+        List<String> serviceCodes = functions.stream().map(SysGn::getFwdm).collect(Collectors.toList());
+        List<SysFw> services = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
+        return getPermissionTree(services,functions);
+    }
+
+    @Override
+    public List<SysFw> getRolePermissionTree(String jsdm) {
+        List<SysGn> functions = getRolesFunctions(Collections.singletonList(jsdm));
         List<String> serviceCodes = functions.stream().map(SysGn::getFwdm).collect(Collectors.toList());
         List<SysFw> services = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
         return getPermissionTree(services,functions);

@@ -100,8 +100,8 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-	
-	import treeList from './comp/treelist.vue'
+    import configApi from '@/axios/config.js'
+    import treeList from './comp/treelist.vue'
     export default {
     	name:'',
     	components:{
@@ -168,7 +168,18 @@
             }]),
             this.rootClick()
         },
+		mounted(){
+            console.log('mounted');
+            this.getTree();
+		},
         methods: {
+    	    getTree(){
+                this.$http.get(configApi.FRAMEWORK.GET_TREE).then((res) =>{
+                    if(res.code===200){
+                        console.log(res);
+                    }
+                })
+			},
         	rootAdd(){
         		var newData = {
         			title:'武汉大学车辆管理平台',
@@ -177,7 +188,6 @@
         		this.dataTree.push(newData)
         	},
         	treeClick(event){
-        		console.log('树节点数据',event)
         		if(event.length>0){
 		      		this.treeMess = event[0]
         		}
@@ -186,7 +196,6 @@
         		if(event.expand){
         			this.treeClick([event])
         		}
-        		console.log('树节点Toggle数据',event)
         	},
         	rootClick(){
         		var v = this

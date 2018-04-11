@@ -73,16 +73,16 @@
                 this.$http.post(url,this.form).then((res) =>{
                     if(res.code===200){
                         var v = this
-                        v.$parent.compName = ''
-                        v.$parent.getmess()
+                        v.$parent.componentName = ''
+                        v.$parent.getPageData()
                         this.$Message.success(res.message);
                     }
                 })
 			},
 			close(){
 		        let v = this;
-                v.$parent.compName = ''
-                v.$parent.getmess()
+                v.$parent.componentName = ''
+                v.$parent.getPageData()
 			}
 
 		}
