@@ -425,7 +425,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         List<SysGn> functions = getRolesFunctions(Collections.singletonList(jsdm));
         List<String> serviceCodes = functions.stream().map(SysGn::getFwdm).collect(Collectors.toList());
         List<SysFw> services = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
-        return getPermissionTree(services,functions);
+        return getAllPermissionTreeWithChecked(services,functions);
     }
 
 

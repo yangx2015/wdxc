@@ -37,28 +37,15 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg,String> implements JgSe
 
     @Override
     public List<SysJg> getOrgTree(List<SysJg> orgList) {
-        List<SysJg> root = new ArrayList<>();
-        Iterator<SysJg> it = orgList.iterator();
-        while(it.hasNext()){
-            SysJg org = it.next();
-            String orgCode = org.getJgdm();
-            int level = OrgUtil.getLevel(orgCode);
-            if (level == 1){
-                root.add(org);
-                it.remove();
-            }
-        }
         Map<String,SysJg> orgMap = orgList.stream().collect(Collectors.toMap(SysJg::getJgdm,p->p));
+        List<SysJg> root = new ArrayList<>();
         for (SysJg org : orgList) {
             String fatherCode = org.getFjgdm();
-            if (StringUtils.isEmpty(fatherCode))continue;
-            SysJg father = orgMap.get(fatherCode);
-            if (father == null)continue;
-            if (father.getChildren() == null){
-                List<SysJg> children = new ArrayList<>();
-                children.add(org);
-                father.setChildren(children);
+            if (StringUtils.isEmpty(fatherCode)){
+                root.add(org);
             }else{
+                SysJg father = orgMap.get(fatherCode);
+                if (father == null)continue;
                 father.getChildren().add(org);
             }
         }

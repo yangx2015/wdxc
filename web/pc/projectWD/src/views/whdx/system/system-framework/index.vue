@@ -60,7 +60,7 @@
 					</div>
 				</div>
 				<div class="body-F frame-mess">
-					<Button v-if="RootTree.length==0" 
+					<Button v-if="RootTree.length==0"
 						class="addTree" type="primary"
 						@click="rootAdd()">
 						<Icon type="android-add" color='#d8d8d8'></Icon>
@@ -71,9 +71,9 @@
 								<b>
 									{{treeMess.title}}
 								</b>
-							    <Button 
+							    <Button
 							    	style="float: right;"
-							    	type="primary" shape="circle" 
+							    	type="primary" shape="circle"
 							    	icon="navicon-round" size="small"></Button>
 							</div>
 							<div class="box-row-list" v-if="treeMess.children">
@@ -91,7 +91,7 @@
 							        </div>
 							    </Card>
 							</div>
-						</div>				
+						</div>
 					</div>
 				</div>
 			</div>
@@ -176,14 +176,15 @@
     	    getTree(){
                 this.$http.get(configApi.FRAMEWORK.GET_TREE).then((res) =>{
                     if(res.code===200){
-                        console.log(res);
+                        this.RootTree.children = res.result;
+                        console.log(this.RootTree);
                     }
                 })
 			},
         	rootAdd(){
         		var newData = {
         			title:'武汉大学车辆管理平台',
-        			children:[]    			
+        			children:[]
         		}
         		this.dataTree.push(newData)
         	},
