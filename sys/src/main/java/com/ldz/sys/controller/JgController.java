@@ -6,8 +6,10 @@ import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
+import lombok.Builder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -35,5 +37,12 @@ public class JgController extends BaseController<SysJg,String> {
         List<SysJg> orgTree = jgService.getOrgTree(orgs);
         return ApiResponse.success(orgTree);
     }
+
+    @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
+    public ApiResponse<String> save(SysJg jg){
+        return jgService.saveEntity(jg);
+    }
+
 
 }

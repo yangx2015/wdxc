@@ -3,8 +3,8 @@
 	@import '../../../../../styles/common.less';
 </style>
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -12,38 +12,36 @@
 				<div style="height: 45px;line-height: 45px;">
 					<Row class="margin-top-10">
 						<Col span="4">
-				        	<span class="titmess">班车线路维护</span>
-				        </Col>
+							<span class="titmess">班车线路维护</span>
+						</Col>
 						<Col span="14">
-				        	<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-				        </Col>
-				        <Col span="6" class="butevent">
-				        	<Button type="primary" @click="findlist()">
-				        		<Icon type="search"></Icon>
+							<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
+						</Col>
+						<Col span="6" class="butevent">
+							<Button type="primary" @click="findlist()">
+								<Icon type="search"></Icon>
 								<!--查询-->
-				        	</Button>
-				        	<Button type="primary" @click="AddSpot()">
+							</Button>
+							<Button type="primary" @click="AddSpot()">
 								<Icon type="plus-round"></Icon>
-				        	</Button>
-				        </Col>
+							</Button>
+						</Col>
 					</Row>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns10" :data="data9"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">{{loading.text}}</div>
-			        </Spin>
+						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">{{loading.text}}</div>
+					</Spin>
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
-		</div>
+		</Card>
 		<component :is="compName"></component>
 	</div>
 </template>

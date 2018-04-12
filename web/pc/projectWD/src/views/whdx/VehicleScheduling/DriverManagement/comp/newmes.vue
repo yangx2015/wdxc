@@ -13,41 +13,65 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;height: 300px;">
-			        <FormItem prop="xm" label='姓名：'>
-			            <Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
-			            </Input>
-			        </FormItem>
-			        <FormItem label="性别： ">
-			            <Select v-model="addmess.xb">
-			                <Option value="1">男</Option>
-			                <Option value="0">女</Option>
-			            </Select>
-			        </FormItem>
-					<FormItem prop="nl" label='年龄：'>
-						<Input type="text" v-model="addmess.nl" placeholder="请输入年龄">
-						</Input>
-					</FormItem>
-			        <FormItem label='驾驶证类型：'>
-			        	<Select v-model="addmess.zjcx">
-			                <Option value="11">类型一</Option>
-			                <Option value="22">类型二</Option>
-			            </Select>
-			        </FormItem>
-					<FormItem prop="sfzhm" label='证件号码：'>
-						<Input type="text" v-model="addmess.sfzhm" placeholder="请输入证件号码">
-						</Input>
-					</FormItem>
-			        <FormItem prop="cdbh" label='车队编号：'>
-			            <Input type="text" v-model="addmess.cdbh" placeholder="请输入车队编号">
-			            </Input>
-			        </FormItem>
-					<FormItem prop="clrq" label='初领日期：'>
-						<DatePicker v-model="clrq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
-					</FormItem>
-			        <FormItem prop="dabh" label='档案编号：'>
-			            <Input type="text" v-model="addmess.dabh" placeholder="请输入档案编号">
-			            </Input>
-			        </FormItem>
+					<Row>
+						<Col span="12">
+							<FormItem prop="xm" label='姓名：'>
+								<Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label="性别： ">
+								<Select v-model="addmess.xb">
+									<Option value="1">男</Option>
+									<Option value="0">女</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem prop="nl" label='年龄：'>
+								<Input type="text" v-model="addmess.nl" placeholder="请输入年龄">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='驾驶证类型：'>
+								<Select v-model="addmess.zjcx">
+									<Option value="11">类型一</Option>
+									<Option value="22">类型二</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem prop="sfzhm" label='证件号码：'>
+								<Input type="text" v-model="addmess.sfzhm" placeholder="请输入证件号码">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="cdbh" label='车队编号：'>
+								<Input type="text" v-model="addmess.cdbh" placeholder="请输入车队编号">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem prop="clrq" label='初领日期：'>
+								<DatePicker v-model="clrq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="dabh" label='档案编号：'>
+								<Input type="text" v-model="addmess.dabh" placeholder="请输入档案编号">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>

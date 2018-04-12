@@ -8,46 +8,44 @@
 </style>
 <!--订单统计-->
 <template>
-    <div class="box boxbackborder">
-    	<div class="tit">
-    		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+    <div class="topDiv">
+		<Card>
+			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-    			<div style="height: 45px;line-height: 45px;">
-    				<Row class="margin-top-10">
-    					<Col span="4">
-				        	<span class="titmess">订单统计</span>
-				        </Col>
-				        <Col span="14">
-				        	<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
-				        </Col>
-				        <Col span="6" class="butevent">
-				        	<Button type="primary" @click="AddDataList()">
-				        		<Icon type="search"></Icon>
+				<div style="height: 45px;line-height: 45px;">
+					<Row class="margin-top-10">
+						<Col span="4">
+							<span class="titmess">订单统计</span>
+						</Col>
+						<Col span="14">
+							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
+						</Col>
+						<Col span="6" class="butevent">
+							<Button type="primary" @click="AddDataList()">
+								<Icon type="search"></Icon>
 								<!--查询-->
-				        	</Button>
-				        </Col>
-				    </Row>
-    			</div>
+							</Button>
+						</Col>
+					</Row>
+				</div>
 			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row>
-	    		<Table
-	    			:row-class-name="rowClassName"
-	    			:columns="tableTiT"
-	    			:data="tableData"></Table>
-	    	</Row>
-	    	<!-- <Row class="margin-top-10" style="text-align: right;">
-		    	<Page :total=pageTotal
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row> -->
-    	</div>
+			<Row>
+				<Table
+						:row-class-name="rowClassName"
+						:columns="tableTiT"
+						:data="tableData"></Table>
+			</Row>
+			<!-- <Row class="margin-top-10" style="text-align: right;">
+                <Page :total=pageTotal
+                    :current=page.pageNum
+                    :page-size=page.pageSize
+                    show-total
+                    show-elevator
+                    @on-change='pageChange'></Page>
+            </Row> -->
+		</Card>
     </div>
 </template>
 

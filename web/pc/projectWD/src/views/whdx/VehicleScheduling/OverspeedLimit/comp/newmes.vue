@@ -13,16 +13,22 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;height: 300px;">
-					<FormItem label='车型：'>
-						<Select v-model="addmess.cx">
-							<Option value="11">类型一</Option>
-							<Option value="22">类型二</Option>
-						</Select>
-					</FormItem>
-			        <FormItem prop="sdsx" label='速度上限：'>
-			            <Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
-			            </Input>
-			        </FormItem>
+					<Row>
+						<Col span="12">
+							<FormItem label='车型：'>
+								<Select v-model="addmess.cx">
+									<Option value="11">类型一</Option>
+									<Option value="22">类型二</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="sdsx" label='速度上限：'>
+								<Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>

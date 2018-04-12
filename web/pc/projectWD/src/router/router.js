@@ -57,7 +57,7 @@ export const otherRouter = {
 };
 
 // 作为Main组件的子页面展示并且在左侧菜单显示的路由写在appRouter里
-export const appRouter = [
+export let appRouter = [
 	{
 		path: '/system',
         icon: 'android-car',
@@ -78,13 +78,6 @@ export const appRouter = [
 				name: 'system-role',
 				title: '角色管理',
 				component: () => import('@/views/whdx/system/system-role')
-			},
-			{
-				path: 'system-AP',
-				icon: 'android-clipboard',
-				name: 'system-AP',
-				title: '分配权限',
-				component: () => import('@/views/whdx/system/system-AP')
 			},
 			{
 				path: 'system-framework',

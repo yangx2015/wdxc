@@ -13,42 +13,69 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;height: 300px;">
-			        <FormItem prop="zh" label='用户名：'>
-			            <Input type="text" v-model="addmess.zh" placeholder="请设置用户帐号">
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="mm" label='密码：'>
-			            <Input type="password" v-model="addmess.mm" placeholder="请设置用户密码">
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="xm" label='姓名：'>
-			            <Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
-			            </Input>
-			        </FormItem>
-			        <FormItem label="性别： ">
-			            <Select v-model="addmess.xb">
-			                <Option value="1">男</Option>
-			                <Option value="0">女</Option>
-			            </Select>
-			        </FormItem>
-			        <FormItem label='类型：'>
-			        	<Select v-model="addmess.lx">
-			                <Option value="11">类型一</Option>
-			                <Option value="22">类型二</Option>
-			            </Select>
-			        </FormItem>
-			        <FormItem label='职务：'>
-			            <Input type="text" v-model="addmess.zw" placeholder="请输入职务">
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="sjh" label='手机号码：'>
-			            <Input type="text" v-model="addmess.sjh" placeholder="请输入手机号码">
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="zjhm" label='证件号码：'>
-			            <Input type="text" v-model="addmess.zjhm" placeholder="请输入证件号码">
-			            </Input>
-			        </FormItem>
+					<Row>
+						<Col span="12">
+							<FormItem prop="zh" label='用户名：'>
+								<Input type="text" v-model="addmess.zh" placeholder="请设置用户帐号">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="mm" label='密码：'>
+								<Input type="password" v-model="addmess.mm" placeholder="请设置用户密码">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="12">
+							<FormItem prop="xm" label='姓名：'>
+								<Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label="性别： ">
+								<Select v-model="addmess.xb">
+									<Option value="1">男</Option>
+									<Option value="0">女</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="12">
+							<FormItem label='类型：'>
+								<Select v-model="addmess.lx">
+									<Option value="11">类型一</Option>
+									<Option value="22">类型二</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='职务：'>
+								<Input type="text" v-model="addmess.zw" placeholder="请输入职务">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="12">
+							<FormItem prop="sjh" label='手机号码：'>
+								<Input type="text" v-model="addmess.sjh" placeholder="请输入手机号码">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zjhm" label='证件号码：'>
+								<Input type="text" v-model="addmess.zjhm" placeholder="请输入证件号码">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>

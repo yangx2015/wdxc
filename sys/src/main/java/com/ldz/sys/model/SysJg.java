@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -60,7 +61,12 @@ public class SysJg implements Serializable {
 
     @Transient
     private List<SysJg> children;
+    @Transient
+    private String title;
 
+    public String getTitle() {
+        return jgmc;
+    }
 
     public Integer getJgdj() {
         return jgdj;
@@ -71,7 +77,7 @@ public class SysJg implements Serializable {
     }
 
     public List<SysJg> getChildren() {
-        return children;
+        return children == null ? new ArrayList<>() : children;
     }
 
     public void setChildren(List<SysJg> children) {

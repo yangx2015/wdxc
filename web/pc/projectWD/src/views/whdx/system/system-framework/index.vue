@@ -26,8 +26,9 @@
 	}
 </style>
 <template>
-	<div class="box boxbackborder">
-		<div class="tit" style="border-bottom: solid 2px #d8d8d8;">
+	<div class="topDiv">
+		<component :is="componentName"></component>
+		<Card >
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -40,9 +41,7 @@
 					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
-			<div class="box-row framework">
+			<div class="box-row framework" style="height: 500px;">
 				<div class='frame-tree'>
 					<div class="box">
 						<div class="tit" style="margin: 6px;">
@@ -54,64 +53,63 @@
 						</div>
 						<div class="body" style="margin: 6px;" :style="RootTree.children.length==0 ? TreeListStyleC : TreeListStyleF">
 							<Tree v-for="(item,index) in RootTree.children" :data="item"
-								@on-select-change="treeClick"
-								@on-toggle-expand="treeToggleClick"></Tree>
+								  @on-select-change="treeClick"
+								  @on-toggle-expand="treeToggleClick"></Tree>
 						</div>
 					</div>
 				</div>
 				<div class="body-F frame-mess">
-					<Button v-if="RootTree.length==0" 
-						class="addTree" type="primary"
-						@click="rootAdd()">
-						<Icon type="android-add" color='#d8d8d8'></Icon>
-					</Button>
-					<div v-else style="padding: 6px;">
+
+					<div style="padding: 6px;">
 						<div class="box">
 							<div class="tit" style="font-size: 16px;border-bottom:solid 2px #989898;height: 35px;">
 								<b>
 									{{treeMess.title}}
 								</b>
-							    <Button 
-							    	style="float: right;"
-							    	type="primary" shape="circle" 
-							    	icon="navicon-round" size="small"></Button>
+								<Button style="float: right;" type="primary" shape="circle" icon="navicon-round" size="small" @click="edit(treeMess)"></Button>
+								<Button style="float: right;" type="primary" shape="circle" icon="android-add" size="small" @click="rootAdd()"></Button>
 							</div>
 							<div class="box-row-list" v-if="treeMess.children">
 								<Card class="bodyC" v-for="(item,index) in treeMess.children">
-							        <p slot="title">
-							            <Icon type="ios-film-outline"></Icon>
-							            {{item.title}}
-							        </p>
-							        <div slot="extra">
-							            <Button type="primary" shape="circle" icon="navicon-round" size="small"></Button>
-										<Button type="error" shape="circle" icon="close" size="small"></Button>
-							        </div>
-							        <div>
-							        	详情
-							        </div>
-							    </Card>
+									<p slot="title">
+										<Icon type="ios-film-outline"></Icon>
+										{{item.title}}
+									</p>
+									<div slot="extra">
+										<Button type="primary" shape="circle" icon="android-add" size="small" @click="add(item)"></Button>
+										<Button type="primary" shape="circle" icon="navicon-round" size="small" @click="edit(item)"></Button>
+										<Button type="error" shape="circle" icon="close" size="small" @click="del(item)"></Button>
+									</div>
+									<div>
+										详情
+									</div>
+								</Card>
 							</div>
-						</div>				
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</Card>
 	</div>
 </template>
 <script>
 	import mixins from '@/mixins'
-	
-	import treeList from './comp/treelist.vue'
+    import configApi from '@/axios/config.js'
+    import treeList from './comp/treelist.vue'
+    import modelForm from './comp/modelForm.vue'
     export default {
     	name:'',
     	components:{
-    		treeList
+    		treeList,modelForm
     	},
     	mixins: [mixins],
         data () {
             return {
             	TreeListStyleC:"text-align: center",
             	TreeListStyleF:"text-align: left",
+                componentName:'',
+				choosedRow:null,
+                jgdm:'',
             	RootTree:{
             		title:'武汉大学',
             		children:[
@@ -165,28 +163,48 @@
                 title: '系统管理',
             },{
                 title: '组织机构',
-            }]),
-            this.rootClick()
+            }])
         },
+		mounted(){
+            this.getTree();
+		},
         methods: {
+    	    getTree(){
+                this.$http.get(configApi.FRAMEWORK.GET_TREE).then((res) =>{
+                    if(res.code===200){
+                        this.RootTree.children = [res.result];
+                        this.rootClick()
+                    }
+                })
+			},
+			add(item){
+    	        this.choosedRow = null;
+                this.jgdm = item.jgdm;
+                this.componentName = 'modelForm';
+			},
+			edit(item){
+    	        this.choosedRow = item;
+                this.componentName = 'modelForm';
+			},
+			del(item){
+    	        this.util.del(this,configApi.FRAMEWORK.DELE,[item.jgdm],()=>{
+                    this.getTree();
+				});
+			},
         	rootAdd(){
-        		var newData = {
-        			title:'武汉大学车辆管理平台',
-        			children:[]    			
-        		}
-        		this.dataTree.push(newData)
+                this.choosedRow = null;
+                this.componentName = 'modelForm';
         	},
         	treeClick(event){
-        		console.log('树节点数据',event)
         		if(event.length>0){
 		      		this.treeMess = event[0]
+					this.jgdm = event[0].jgdm;
         		}
         	},
         	treeToggleClick(event){
-        		if(event.expand){
+                if(event.expand){
         			this.treeClick([event])
         		}
-        		console.log('树节点Toggle数据',event)
         	},
         	rootClick(){
         		var v = this

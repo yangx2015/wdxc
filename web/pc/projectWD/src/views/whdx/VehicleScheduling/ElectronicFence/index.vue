@@ -11,7 +11,7 @@
 	}
 </style>
 <template>
-	<div class="box boxbackborder">
+	<div class="box">
 		<div class="tit" v-show="!RootShow">
     		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -77,7 +77,7 @@
 				</div>
 			</div>
 		</div>
-		
+
 	</div>
 </template>
 

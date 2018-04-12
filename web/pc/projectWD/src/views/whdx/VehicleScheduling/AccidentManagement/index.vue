@@ -9,8 +9,8 @@
 </style>
 <!--事故管理-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -19,48 +19,46 @@
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
 							<span>事故管理</span>
-			    		</div>
+						</div>
 						<div class="body-r-1 inputSty">
-				        	<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
+							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
-				        	<Button type="primary" @click="findMessList()">
-				        		<Icon type="search"></Icon>
+							<Button type="primary" @click="findMessList()">
+								<Icon type="search"></Icon>
 								<!--查询-->
-				        	</Button>
-				        	<Button type="primary" @click="AddDataList()">
+							</Button>
+							<Button type="primary" @click="AddDataList()">
 								<Icon type="plus-round"></Icon>
 							</Button>
-				        </div>
-				    </div>
+						</div>
+					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
-				<Table 
-					:row-class-name="rowClassName" 
-					:columns="tableTiT" 
-					:height="tabHeight"
-					:data="tableData"></Table>
+				<Table
+						:row-class-name="rowClassName"
+						:columns="tableTiT"
+						:height="tabHeight"
+						:data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
 				</div>
 			</Row>
-			 <Row class="margin-top-10 pageSty">
-		    	<Page :total=pageTotal
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row> 
-		</div>
-		<component 
+			<Row class="margin-top-10 pageSty">
+				<Page :total=pageTotal
+					  :current=page.pageNum
+					  :page-size=page.pageSize
+					  show-total
+					  show-elevator
+					  @on-change='pageChange'></Page>
+			</Row>
+		</Card>
+		<component
 			:is="compName" 
 			:mess="mess"
 			:messType="messType"></component>

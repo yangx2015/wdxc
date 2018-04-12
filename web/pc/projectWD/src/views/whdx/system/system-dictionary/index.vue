@@ -3,8 +3,8 @@
 </style>
 <!--字典管理-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit" style="border-bottom: solid 2px #657180;">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -29,82 +29,83 @@
 					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body padding-auto margin-5">
-			<div class="box-row-list">
-				<div class="bodyWidth" v-for="(item,index) in dictionary" :key='index'>
-					<Card style="width:100%">
-				        <p slot="title">
-				            <Icon type="ios-film-outline"></Icon>
-			           		 {{item.lmmc}}
-				        </p>
-				        <span slot="extra">
+			<div class="body padding-auto margin-5">
+				<div class="box-row-list">
+					<div class="bodyWidth" v-for="(item,index) in dictionary" :key='index'>
+						<Card style="width:100%">
+							<p slot="title">
+								<Icon type="ios-film-outline"></Icon>
+								{{item.lmmc}}
+							</p>
+							<span slot="extra">
 					        <a href="#" @click.prevent="AddDcList(item,index)">
 					            <Icon type="plus-circled" size="24"></Icon>
-			            		<!--新增-->
+								<!--新增-->
 					        </a>
 					        <a href="#" @click.prevent="removeDc(item,index)" style="color: red;">
 					            <Icon type="close-circled" size="24"></Icon>
-			            		<!--新增-->
+								<!--新增-->
 					        </a>
 				        </span>
-				        <div style="height: 240px;">
-				        	<div>
-				        		<Row class="margin-bottom-10">
-		           					<Input v-model="dictionaryMess[index]" 
-		           						clearable placeholder="请输入字典信息..."
-		           						@on-change="findDicList(item,index,dictionaryMess[index])"></Input>
-				        		</Row>
-					        	<Row class="padding-2px-5px" style='background-color: #a09d9d;'>
-					        		<Col span="2">
-					        			序号
-					        		</Col>
-					        		<Col span="8">
-					        			类目编码
-					        		</Col>
-					        		<Col span="8">
-					        			类目名称
-					        		</Col>
-					        		<Col span="5" style="text-align: center;">
-					        			操作
-					        		</Col>
-					        	</Row>
-				        	</div>
-				        	<div style="height: 180px;overflow: auto;">
-					        	<Row class="padding-4px-5px" v-for='(items,indexs) in item.zdxmList'>
-					        		<Col span="2">
-					        			{{(indexs+1)}}
-					        		</Col>
-					        		<Col span="8">
-					        			{{items.zddm}}
-					        		</Col>
-					        		<Col span="8">
-					        			{{items.zdmc}}
-					        		</Col>
-					        		<Col span="6" style="text-align: center;">
-					        			<Button type="success" size='small' 
-					        				shape="circle" icon="edit"
-					        				@click="changrDcList(item,items)"></Button>
-										<Button type="error" size='small' 
-											shape="circle" icon="close"
-											@click="removeDcList(item,items)"></Button>
-					        		</Col>
-					        	</Row>
-				        	</div>
-				        </div>
-				    </Card>
+							<div style="height: 240px;">
+								<div>
+									<Row class="margin-bottom-10">
+										<Input v-model="dictionaryMess[index]"
+											   clearable placeholder="请输入字典信息..."
+											   @on-change="findDicList(item,index,dictionaryMess[index])"></Input>
+									</Row>
+									<Row class="padding-2px-5px" style='background-color: #a09d9d;'>
+										<Col span="2">
+											序号
+										</Col>
+										<Col span="8">
+											类目编码
+										</Col>
+										<Col span="8">
+											类目名称
+										</Col>
+										<Col span="5" style="text-align: center;">
+											操作
+										</Col>
+									</Row>
+								</div>
+								<div style="height: 180px;overflow: auto;">
+									<Row class="padding-4px-5px" v-for='(items,indexs) in item.zdxmList'>
+										<Col span="2">
+											{{(indexs+1)}}
+										</Col>
+										<Col span="8">
+											{{items.zddm}}
+										</Col>
+										<Col span="8">
+											{{items.zdmc}}
+										</Col>
+										<Col span="6" style="text-align: center;">
+											<Button type="success" size='small'
+													shape="circle" icon="edit"
+													@click="changrDcList(item,items)"></Button>
+											<Button type="error" size='small'
+													shape="circle" icon="close"
+													@click="removeDcList(item,items)"></Button>
+										</Col>
+									</Row>
+								</div>
+							</div>
+						</Card>
+					</div>
+					<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+						<Spin fix>
+							<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+							<div style="font-size: 30px;">数据加载中请稍后</div>
+						</Spin>
+					</div>
 				</div>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
-				</div>
+				<Row class="margin-top-10 pageSty">
+					<!--<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>-->
+				</Row>
 			</div>
-			<Row class="margin-top-10 pageSty">
-				<!--<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>-->
-			</Row>
-		</div>
+		</Card>
+
 		<component :is="compName" :dicListMess='dicListMess'></component>
 	</div>
 </template>

@@ -69,9 +69,9 @@ export default{
 			return this.getdatePara(newDate);
 		},
     	rowClassName (row, index) {
-            if (index%2 === 0) {
-                return 'demo-table-info-row';
-            } 
+            // if (index%2 === 0) {
+            //     return 'demo-table-info-row';
+            // }
             return '';
         },
         //根据浏览器高度，设置document高度

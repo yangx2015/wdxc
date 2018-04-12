@@ -63,7 +63,18 @@ public class SysGn implements Serializable {
     private String title;
 
     @Transient
+    private String checked;
+
+    @Transient
     private List<SysGn> children;
+
+    public String getChecked() {
+        return checked;
+    }
+
+    public void setChecked(String checked) {
+        this.checked = checked;
+    }
 
     public List<SysGn> getChildren() {
         return children;

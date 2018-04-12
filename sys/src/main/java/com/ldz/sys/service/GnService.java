@@ -49,6 +49,7 @@ public interface GnService extends BaseService<SysGn, String> {
     List<SysFw> getOrgPermissionTree(String jgdm);
 
     List<SysFw> getUserPermissionTree(SysYh user);
+    List<SysFw> getRolePermissionTree(String jsdm);
 
     ApiResponse<String> updateEntity(SysGn gn);
 
@@ -59,4 +60,5 @@ public interface GnService extends BaseService<SysGn, String> {
     List<Menu> getMenuTree(SysYh user);
 
     ApiResponse<String> initMenu(List<Menu> menus);
+
 }

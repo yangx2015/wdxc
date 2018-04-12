@@ -8,7 +8,7 @@ import '@/locale';
 import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import http from './axios/index';
-
+import util from './libs/util';
 import session from './libs/session';
 
 import swal from 'sweetalert'
@@ -19,6 +19,7 @@ Vue.use(iView);
 //替换原始网络框架
 Vue.prototype.session = session
 Vue.prototype.$http = http;
+Vue.prototype.util = util;
 
 new Vue({
     el: '#app',

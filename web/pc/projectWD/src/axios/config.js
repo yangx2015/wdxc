@@ -28,7 +28,8 @@ module.exports = {
 		QUERY:'api/jg/pager',//机构管理
         ADD:'/api/jg/save',
         CHANGE:'/api/jg/update',
-        DELE:'/api/jg/removeIds'
+        DELE:'/api/jg/removeIds',
+		GET_TREE:'/api/jg/getOrgTree'
 	},
 	DICTIONARY:{
 	   QUERY:'/api/zd/pager',// 查询字典
@@ -71,9 +72,9 @@ module.exports = {
 	},
 	ADVERTISING:{
 		QUERY:'api/hd/pager',//活动管理
-        ADD:'/api/yj/save',
-        CHANGE:'/api/yj/update',
-        DELE:'/api/yj/removeIds'
+        ADD:'/api/hd/save',
+        CHANGE:'/api/hd/update',
+        DELE:'/api/hd/removeIds'
 	},
 	//******************车辆管理******************
 	CLOUD:{//云视频库

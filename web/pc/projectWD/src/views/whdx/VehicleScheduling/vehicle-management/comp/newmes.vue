@@ -13,37 +13,50 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;height: 300px;">
-			        <FormItem prop="cph" label='车牌号：'>
-			            <Input type="text" v-model="addmess.cph" placeholder="请设置车牌号">
-			            </Input>
-			        </FormItem>
-					<FormItem label='车型：'>
-						<Select v-model="addmess.cx">
-							<Option value="11">大车</Option>
-							<Option value="22">小车</Option>
-						</Select>
-					</FormItem>
-			        <FormItem prop="dl" label='等级：'>
-			            <Input type="text" v-model="addmess.dl" placeholder="请输入等级">
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="sjxm" label='司机：'>
-						<Select v-model="addmess.sjxm">
-							<Option value="张三">张三</Option>
-							<Option value="李四">李四</Option>
-						</Select>
-			        </FormItem>
-			        <FormItem prop="zt" label='车辆状态：'>
-						<Select v-model="addmess.zt">
-							<Option value="00">正常</Option>
-							<Option value="10">停用</Option>
-						</Select>
-			            </Input>
-			        </FormItem>
-			        <FormItem prop="zdbh" label='终端编号：'>
-			            <Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号">
-			            </Input>
-			        </FormItem>
+					<Row>
+						<Col span="12">
+							<FormItem prop="cph" label='车牌号：'>
+								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='车型：'>
+								<Select v-model="addmess.cx">
+									<Option value="11">大车</Option>
+									<Option value="22">小车</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem prop="sjxm" label='司机：'>
+								<Select v-model="addmess.sjxm">
+									<Option value="张三">张三</Option>
+									<Option value="李四">李四</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zt" label='车辆状态：'>
+								<Select v-model="addmess.zt">
+									<Option value="00">正常</Option>
+									<Option value="10">停用</Option>
+								</Select>
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="24">
+							<FormItem prop="zdbh" label='终端编号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>

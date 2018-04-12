@@ -8,7 +8,7 @@
 				</div>
 				<CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
 					<div v-for="item in roleList" style="margin-left:15px">
-						<Checkbox :label="item.key" :checked="item.checked">{{item.value}}</Checkbox>
+						<Checkbox :label="item.key">{{item.value}}</Checkbox>
 					</div>
 
 				</CheckboxGroup>
@@ -55,9 +55,13 @@
                         this.roleList = [];
                         let list = res.result;
                         for(let r of list){
-                            let t = {key:r.jsId,value:r.jsmc,checked:this.hasRole(r.jsId)};
+                            let t = {key:r.jsId,value:r.jsmc};
 							this.roleList.push(t);
+							if (this.hasRole(r.jsId)){
+							    this.checkAllGroup.push(r.jsId)
+							}
                         }
+                        console.log(this.roleList);
                     }
                 })
 			},

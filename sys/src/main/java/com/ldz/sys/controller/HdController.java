@@ -14,6 +14,7 @@ import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -27,7 +28,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/hd")
-public class HdController {
+public class HdController extends BaseController<SysHdyx,String>{
     @Autowired
     private HdService service;
 
@@ -47,4 +48,15 @@ public class HdController {
         return service.pager(pager);
     }
 
+
+    @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
+    public ApiResponse<String> save(SysHdyx entity) {
+        return service.saveEntity(entity);
+    }
+
+    @Override
+    protected HdService getBaseService() {
+        return service;
+    }
 }
