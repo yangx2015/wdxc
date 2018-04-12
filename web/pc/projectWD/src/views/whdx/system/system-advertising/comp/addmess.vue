@@ -64,7 +64,7 @@
 			</div>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="colse">确定</Button>
+				<Button type="primary" @click="save">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -73,6 +73,7 @@
 <script>
 	import addlistfileImg from './addlistfileImg.vue'
 	import addlistfileVideo from './addlistfileVideo.vue'
+    import configApi from '@/axios/config.js'
 	export default {
 		name: '',
 		components: { 
