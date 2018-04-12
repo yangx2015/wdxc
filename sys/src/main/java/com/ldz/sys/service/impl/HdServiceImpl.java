@@ -14,6 +14,7 @@ import com.ldz.sys.service.HdService;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -58,27 +59,25 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         // 参数检查
         RuntimeCheck.ifBlank(entity.getHdbt(),"请输入活动标题");
         RuntimeCheck.ifBlank(entity.getHdlx(),"请选择活动类型");
-//        RuntimeCheck.ifBlank(entity.getJgdm(),"请选择机构");
-//        SysJg org = jgService.findByOrgCode(entity.getJgdm());
-//        RuntimeCheck.ifNull(org,"机构不存在");
-
         // 执行新增操作
-//        SysYh yh = ContextUtil.getCurrentUser();
-//        entity.setCjr(yh.getYhid());
+        SysYh yh = ContextUtil.getCurrentUser();
+        entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
-//        entity.setJgdm(yh.getJgdm());
+        entity.setJgdm(yh.getJgdm());
+        entity.setHdId(genId());
         entity.setZt(Dict.CommonStatus.VALID.getCode());
         saveFiles(entity);
+        save(entity);
         return ApiResponse.success();
     }
 
     private void saveFiles(SysHdyx hdyx){
         if (hdyx == null)return;
-        List<String> files = hdyx.getFilePaths();
-        if (files == null || files.size() == 0)return;
+        if (StringUtils.isEmpty(hdyx.getFilePaths()))return;
+        String[] paths = hdyx.getFilePaths().split(",");
         Date now = new Date();
         String operator = getOperateUser();
-        for (String file : files) {
+        for (String file : paths) {
             int index = file.lastIndexOf(".");
             if (index <= 0)continue;
             String fileType = file.substring(index+1);

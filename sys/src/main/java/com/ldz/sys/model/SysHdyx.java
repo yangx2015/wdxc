@@ -45,13 +45,13 @@ public class SysHdyx implements Serializable {
     private String url;
 
     @Transient
-    private List<String> filePaths;
+    private String filePaths;
 
-    public List<String> getFilePaths() {
+    public String getFilePaths() {
         return filePaths;
     }
 
-    public void setFilePaths(List<String> filePaths) {
+    public void setFilePaths(String filePaths) {
         this.filePaths = filePaths;
     }
 
