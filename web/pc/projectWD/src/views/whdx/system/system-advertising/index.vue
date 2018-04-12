@@ -3,57 +3,55 @@
     @import '../../../../styles/common.less';
 </style>
 <template>
-	<div class="box boxbackborder">
-    	<div class="tit">
-    		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+	<div class="topDiv">
+		<Card>
+			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-    			<div style="height: 45px;line-height: 45px;">
-    				<div class="margin-top-10 box-row">
+				<div style="height: 45px;line-height: 45px;">
+					<div class="margin-top-10 box-row">
 						<div class="titmess">
 							<span>活动管理</span>
-				        </div>
+						</div>
 						<div class="body-r-1 inputSty">
-				        	<Input v-model="findMess.like_ScName" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>
-				        </div>
+							<Input v-model="findMess.like_ScName" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>
+						</div>
 						<div class="butevent">
-				        	<Button type="primary" @click="findMessList()">
-				        		<Icon type="search"></Icon>
+							<Button type="primary" @click="findMessList()">
+								<Icon type="search"></Icon>
 								<!--查询-->
-				        	</Button>
-				        	<Button type="primary" @click="getDataList()">
-				        		<Icon type="plus-round"></Icon>
-				        	</Button>
-				        </div>
+							</Button>
+							<Button type="primary" @click="getDataList()">
+								<Icon type="plus-round"></Icon>
+							</Button>
+						</div>
 					</div>
-    			</div>
-			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row>
-			    <Table 
-			    	:height="tabHeight"
-			    	:row-class-name="rowClassName"
-			    	:columns="columns10" 
-			    	:data="data9"></Table>
-			    <div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
 				</div>
 			</Row>
-		    <Row class="margin-top-10 pageSty">
-		    	<Page 
-		    		:total=pageTotal 
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row>
-    	</div>
+			<Row>
+				<Table
+						:height="tabHeight"
+						:row-class-name="rowClassName"
+						:columns="columns10"
+						:data="data9"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+					<Spin fix>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
+				</div>
+			</Row>
+			<Row class="margin-top-10 pageSty">
+				<Page
+						:total=pageTotal
+						:current=page.pageNum
+						:page-size=page.pageSize
+						show-total
+						show-elevator
+						@on-change='pageChange'></Page>
+			</Row>
+		</Card>
     	<component :is="compName" @colsemodal='colsemodal'></component>
 	</div>
 </template>
@@ -79,6 +77,7 @@
             	compName: '',
             	//收索
                 datetime:[],
+                choosedRow:null,
                 findMess:{
                 	gte_StartTime:'',
             		lte_StartTime:'',
@@ -147,6 +146,7 @@
 									},
 									on: {
 										click: () => {
+										    this.choosedRow = params.row;
 											this.compName = 'mess'
 										}
 									}
@@ -252,14 +252,13 @@
             }]),
 			this.tabHeight = this.getWindowHeight() - 290
 			this.SpinShow = false;
-//      	this.getmess()
+     		this.getmess()
         },
         methods:{
         	getmess(){
 				var v = this
-				this.$http.get(configApi.SUGGES.QUERY).then((res) =>{
-					console.log('shuju',res)
-					v.tableData = res.page.list
+				this.$http.get(configApi.ADVERTISING.QUERY).then((res) =>{
+					v.data9 = res.page.list
 					v.SpinShow = false;
 				})
 			},
@@ -270,11 +269,11 @@
         	},
         	findMessList(){
         		var v = this
-//      		this.$http.get('','');
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
+				this.$http.get('','');
+				axios.get(configApi.ADVERTISING.QUERY,this.findMess).then((res) => {
+					 v.tableData = res.data
+					 v.pageTotal = res.total
+				 })
         	},
         	getDataList() {
 				var v = this

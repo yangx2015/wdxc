@@ -1,15 +1,10 @@
 <style lang="less">
 	@import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-	.fromTiT {
-		/*text-align: right;*/
-	}
-</style>
 <!--用户管理-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div>
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -35,28 +30,26 @@
 					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row style="position: relative;">
-				<Table 
-					size='large'
-					:height="tabHeight" 
-					:row-class-name="rowClassName" 
-					:columns="tableTiT" 
-					:data="tableData"></Table>
+				<Table
+						size='large'
+						:height="tabHeight"
+						:row-class-name="rowClassName"
+						:columns="tableTiT"
+						:data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
-		</div>
-		<component 
-			:is="compName" 
+		</Card>
+		<component
+			:is="compName"
 			:usermes="usermes"
 			:usermesType="userMesType"
 			@listF='listF'></component>
@@ -66,8 +59,8 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
-	
+
+
 	import newmess from './comp/newmes.vue'
 	import changemes from './comp/changmes.vue'
 	export default {
@@ -190,7 +183,7 @@
 									on: {
 										click: () => {
 											this.RootShowF(params.row)
-											
+
 										}
 									}
 								}),
@@ -256,7 +249,7 @@
 		methods: {
 			enter(mes){
 //				console.log(mes)
-//				
+//
 //				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
 			},
 			getmess(){

@@ -3,9 +3,9 @@
     @import '../../../../../styles/common.less';
 </style>
 <template>
-	<div class="box boxbackborder">
-    	<div class="tit">
-    		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+	<div class="topDiv">
+		<Card>
+			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -30,31 +30,29 @@
 					</div>
 				</div>
 			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row>
-			    <Table
-			    	:height="tabHeight"
-			    	:row-class-name="rowClassName"
-			    	:columns="columns10"
-			    	:data="data9"></Table>
-			    <div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+			<Row>
+				<Table
+						:height="tabHeight"
+						:row-class-name="rowClassName"
+						:columns="columns10"
+						:data="data9"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">{{loading.text}}</div>
-			        </Spin>
+						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">{{loading.text}}</div>
+					</Spin>
 				</div>
 			</Row>
-		    <Row class="margin-top-10" style="text-align: right;">
-		    	<Page
-		    		:total=pageTotal
-		    		:current=findMess.pageNum
-		    		:page-size=findMess.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row>
-    	</div>
+			<Row class="margin-top-10" style="text-align: right;">
+				<Page
+						:total=pageTotal
+						:current=findMess.pageNum
+						:page-size=findMess.pageSize
+						show-total
+						show-elevator
+						@on-change='pageChange'></Page>
+			</Row>
+		</Card>
 		<component :is="componentName"></component>
     </div>
 </template>

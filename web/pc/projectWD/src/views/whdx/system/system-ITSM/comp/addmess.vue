@@ -6,29 +6,52 @@
 		<Modal v-model="showModal" width='900' :closable='mesF' 
 			:mask-closable="mesF" title="新建功能">
 			<div style="overflow: auto;height: 500px;">
-				<Form>
-					<FormItem label='服务名称'>
-						<Input type="text" v-model="addmess.fwmc" placeholder="请填写功能名称...">
-						</Input>
-					</FormItem>
-					<FormItem label='服务代码'>
-						<Input type="text" v-model="addmess.fwdm" placeholder="请填写功能名称...">
-						</Input>
-					</FormItem>
-					<FormItem label='状态'>
-						<Select v-model="addmess.zt" placeholder="请填选着状态...">
-					        <Option value="00">正常</Option>
-					        <Option value="01">停用</Option>
-					    </Select>
-					</FormItem>
-					<FormItem label='API 前缀'>
-						<Input type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
-						</Input>
-					</FormItem>
-					<FormItem label='图标'>
-						<Input type="text" v-model="addmess.tb" placeholder="请填写地址...">
-						</Input>
-					</FormItem>
+				<Form
+						ref="addmess"
+						:model="addmess"
+						:rules="ruleInline"
+						:label-width="100"
+						:styles="{top: '20px'}">
+					<Row>
+						<Col span="12">
+							<FormItem label='服务名称'>
+								<Input type="text" v-model="addmess.fwmc" placeholder="请填写功能名称...">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='服务代码'>
+								<Input type="text" v-model="addmess.fwdm" placeholder="请填写功能名称...">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="12">
+							<FormItem label='状态'>
+								<Select v-model="addmess.zt" placeholder="请填选着状态...">
+									<Option value="00">正常</Option>
+									<Option value="01">停用</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='API 前缀'>
+								<Input type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="24">
+							<FormItem label='图标'>
+								<Input type="text" v-model="addmess.tb" placeholder="请填写地址...">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
 				</Form>
 			</div>
 			</Form>

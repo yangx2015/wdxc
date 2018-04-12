@@ -8,8 +8,8 @@
 </style>
 <!--安全驾驶统计-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -20,7 +20,7 @@
 							<span class="titmess">安全驾驶</span>
 						</Col>
 						<Col span="14">
-						<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
 						</Col>
 						<Col span="6" class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -31,12 +31,10 @@
 					</Row>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
 				<Table :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 			</Row>
-		</div>
+		</Card>
 	</div>
 </template>
 

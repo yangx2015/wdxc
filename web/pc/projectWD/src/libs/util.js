@@ -3,6 +3,7 @@ import env from '../../build/env';
 import semver from 'semver';
 import packjson from '../../package.json';
 
+import swal from 'sweetalert'
 let util = {
 
 };
@@ -23,7 +24,28 @@ util.ajax = axios.create({
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
 });
-
+util.del = function(v,url,ids,callback){
+    swal({
+        title: "是否删除数据?",
+        text: "",
+        icon: "warning",
+        buttons:['取消','确认'],
+    }).then((willDelete) => {
+            if (willDelete) {
+                v.$http.post(url,{'ids':ids}).then((res) =>{
+                    if(res.code===200){
+                        if (callback && typeof callback == 'function'){
+                            callback();
+                        }else{
+                            v.$Message.success(res.message);
+                        }
+                    }else{
+                        v.$Message.success(res.message);
+                    }
+                })
+            }
+        });
+}
 util.inOf = function (arr, targetArr) {
     let res = true;
     arr.forEach(item => {

@@ -8,8 +8,8 @@
 </style>
 <!--收款统计-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
 	    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -33,11 +33,10 @@
 					</Row>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
 				<Table :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 			</Row>
+
 			<!-- <Row class="margin-top-10" style="text-align: right;">
 			    	<Page :total=pageTotal
 			    		:current=page.pageNum
@@ -46,7 +45,7 @@
 			    		show-elevator
 			    		@on-change='pageChange'></Page>
 			    </Row> -->
-		</div>
+		</Card>
 	</div>
 </template>
 

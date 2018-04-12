@@ -8,8 +8,8 @@
 </style>
 <!--车辆事故-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -33,8 +33,6 @@
 					</Row>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
 				<Table :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 			</Row>
@@ -46,7 +44,7 @@
 		    		show-elevator
 		    		@on-change='pageChange'></Page>
 		    </Row> -->
-		</div>
+		</Card>
 	</div>
 </template>
 

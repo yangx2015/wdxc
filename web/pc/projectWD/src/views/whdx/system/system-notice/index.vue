@@ -4,8 +4,8 @@
 </style>
 <!--查询统计-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div class="topDiv">
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -31,8 +31,6 @@
 					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row>
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
@@ -45,7 +43,7 @@
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
-		</div>
+		</Card>
 		<component :is="componentName"></component>
 	</div>
 </template>

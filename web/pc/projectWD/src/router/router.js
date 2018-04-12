@@ -80,13 +80,6 @@ export let appRouter = [
 				component: () => import('@/views/whdx/system/system-role')
 			},
 			{
-				path: 'system-AP',
-				icon: 'android-clipboard',
-				name: 'system-AP',
-				title: '分配权限',
-				component: () => import('@/views/whdx/system/system-AP')
-			},
-			{
 				path: 'system-framework',
 				icon: 'android-clipboard',
 				name: 'system-framework',

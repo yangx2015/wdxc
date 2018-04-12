@@ -72,9 +72,9 @@ module.exports = {
 	},
 	ADVERTISING:{
 		QUERY:'api/hd/pager',//活动管理
-        ADD:'/api/yj/save',
-        CHANGE:'/api/yj/update',
-        DELE:'/api/yj/removeIds'
+        ADD:'/api/hd/save',
+        CHANGE:'/api/hd/update',
+        DELE:'/api/hd/removeIds'
 	},
 	//******************车辆管理******************
 	CLOUD:{//云视频库

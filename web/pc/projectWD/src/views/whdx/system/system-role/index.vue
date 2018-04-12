@@ -4,9 +4,9 @@
 </style>
 <!--角色管理-->
 <template>
-    <div class="box boxbackborder">
-    	<div class="tit">
-    		<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+    <div>
+		<Card>
+			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -22,40 +22,38 @@
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
-									<!--查询-->
+								<!--查询-->
 							</Button>
 							<Button type="primary" @click="AddDataList()">
-									<Icon type="plus-round"></Icon>
+								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row style="position: relative;">
-	    		<Table
-	    			:row-class-name="rowClassName"
-	    			:height="tabHeight"
-	    			:columns="tableTiT"
-	    			:data="tableData"></Table>
-	    		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+			<Row style="position: relative;">
+				<Table
+						:row-class-name="rowClassName"
+						:height="tabHeight"
+						:columns="tableTiT"
+						:data="tableData"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
 				</div>
-	    	</Row>
-	    	<Row class="margin-top-10 pageSty">
-		    	<Page :total=pageTotal
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row>
-    	</div>
-    	<component 
+			</Row>
+			<Row class="margin-top-10 pageSty">
+				<Page :total=pageTotal
+					  :current=page.pageNum
+					  :page-size=page.pageSize
+					  show-total
+					  show-elevator
+					  @on-change='pageChange'></Page>
+			</Row>
+		</Card>
+    	<component
     		:is="compName" 
     		:messdata="messdata"
     		:usermesType="userMesType"
@@ -151,24 +149,24 @@
 										}
 									}
 								}),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        icon:'navicon-round',
-                                        shape:'circle',
-                                        size:'small'
-                                    },
-                                    style: {
-                                        cursor: "pointer",
-                                        margin:'0 8px 0 0'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.messdata = params.row
-                                            this.compName = 'modifyRolePermission'
-                                        }
-                                    }
-                                }),
+                                // h('Button', {
+                                //     props: {
+                                //         type: 'primary',
+                                //         icon:'navicon-round',
+                                //         shape:'circle',
+                                //         size:'small'
+                                //     },
+                                //     style: {
+                                //         cursor: "pointer",
+                                //         margin:'0 8px 0 0'
+                                //     },
+                                //     on: {
+                                //         click: () => {
+                                //             this.messdata = params.row
+                                //             this.compName = 'modifyRolePermission'
+                                //         }
+                                //     }
+                                // }),
                                 h('Button', {
                                     props: {
                                         type: 'error',

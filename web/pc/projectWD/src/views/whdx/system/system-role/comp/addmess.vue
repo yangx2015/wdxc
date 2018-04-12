@@ -12,27 +12,45 @@
 	    			:label-width="100"
 	    			:styles="{top: '20px'}">
 		    		<div style="overflow: auto;height: 300px;">
-				        <FormItem prop="jsmc" label='角色名称：'>
-				            <Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
-				            </Input>
-				        </FormItem>
-				        <FormItem prop="jsmc" label='角色代码：'>
-				            <Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码">
-				            </Input>
-				        </FormItem>
-				        <FormItem label='类型：' placeholder="请选着角色类型...">
-							<Select v-model="addmess.jslx">
-				                <Option value="00">管理</Option>
-				                <Option value="11">员工</Option>
-				            </Select>
-						</FormItem>
-						<FormItem label='备注：'>
-							<Input type="text" v-model="addmess.sm" placeholder="请填写备注信息...">
-							</Input>
-						</FormItem>
-						<FormItem label='权限选着:'>
-							<Tree :data="data4" show-checkbox multiple></Tree>
-						</FormItem>
+						<Row>
+							<Col span="12">
+								<FormItem prop="jsmc" label='角色名称：'>
+									<Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
+									</Input>
+								</FormItem>
+							</Col>
+							<Col span="12">
+								<FormItem prop="jsmc" label='角色代码：'>
+									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码">
+									</Input>
+								</FormItem>
+							</Col>
+						</Row>
+
+						<Row>
+							<Col span="12">
+								<FormItem label='类型：' placeholder="请选着角色类型...">
+									<Select v-model="addmess.jslx">
+										<Option value="00">管理</Option>
+										<Option value="11">员工</Option>
+									</Select>
+								</FormItem>
+							</Col>
+							<Col span="12">
+								<FormItem label='备注：'>
+									<Input type="text" v-model="addmess.sm" placeholder="请填写备注信息...">
+									</Input>
+								</FormItem>
+							</Col>
+						</Row>
+
+						<Row>
+							<Col>
+								<FormItem label='权限选着:'>
+									<Tree :data="data4" show-checkbox multiple></Tree>
+								</FormItem>
+							</Col>
+						</Row>
 		    		</div>
 	    		</Form>
 			</div>
@@ -97,7 +115,7 @@
                 this.getChoosedIds(this.data4);
                 this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':this.choosedIds}).then((res) =>{
                     if(res.code===200){
-                        v.$Message.success('修改成功');
+                        this.$Message.success('修改成功');
                     }
                 })
 			},

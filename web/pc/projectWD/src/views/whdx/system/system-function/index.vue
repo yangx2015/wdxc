@@ -3,8 +3,8 @@
 </style>
 <!--角色管理-->
 <template>
-	<div class="box boxbackborder">
-		<div class="tit">
+	<div>
+		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -15,7 +15,7 @@
 							<span>功能管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-						<Input v-model="findMess.like_CarNumber" placeholder="请填写查询信息..." style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.like_CarNumber" placeholder="请填写查询信息..." style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -29,22 +29,20 @@
 					</div>
 				</div>
 			</Row>
-		</div>
-		<div class="body">
 			<Row style="position: relative;">
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
-			            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-			            <div style="font-size: 30px;">数据加载中请稍后</div>
-			        </Spin>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
-		</div>
-		<component 
+		</Card>
+		<component
 			:is="compName"
 			:chmess="chmess"></component>
 	</div>
@@ -54,13 +52,13 @@
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
 	
-	import addmess from './comp/addmess.vue'
+	import formData from './comp/formData.vue'
 	import mess from './comp/mess.vue'
 	export default {
 		name: 'char',
 		mixins: [mixins],
 		components: {
-			addmess,
+			formData,
 			mess
 		},
 		data() {
@@ -69,6 +67,7 @@
 				tabHeight: 220,
 				compName: '',
 				PickerTime: 2017,
+                choosedRow:null,
 				//分页
 				pageTotal: 1,
 				page: {
@@ -77,62 +76,16 @@
 				},
 				//数据传输
 				chmess:{},
-				tableTiT: [{
-						title: "序号",
-						width: 60,
-						align: 'center',
-						type: 'index',
-						fixed: 'left'
-					},
-					{
-						title: '功能名称',
-						align: 'center',
-						width: 120,
-						key: 'gnmc',
-						fixed: 'left'
-					},
-					{
-						title: '功能代码',
-						align: 'center',
-                        width: 60,
-						key: 'gndm'
-					},
-					{
-						title: '服务代码',
-						align: 'center',
-                        width: 60,
-						key: 'fwdm'
-					},
-					{
-						title: '状态',
-						align: 'center',
-						width: 120,
-						key: 'zt'
-					},
-					{
-						title: '备注',
-						align: 'center',
-						width: 120,
-						key: 'bz'
-					},
-					{
-						title: 'URL',
-						align: 'center',
-						width: 120,
-						key: 'url'
-					},
-					{
-						title: '父节点',
-						align: 'center',
-						width: 120,
-						key: 'fjd'
-					},
-					{
-						title: '跳转地址',
-						align: 'center',
-						width: 120,
-						key: 'tzdz'
-					},
+				tableTiT: [
+				    {title: "序号", width: 60, align: 'center', type: 'index', fixed: 'left'},
+					{title: '功能名称', align: 'center', width: 120, key: 'gnmc', fixed: 'left'},
+					{title: '功能代码', align: 'center', width: 120, key: 'gndm'},
+					{title: '服务代码', align: 'center', width: 120, key: 'fwdm'},
+					{title: '状态', align: 'center', width: 120, key: 'zt'},
+					{title: '备注', align: 'center', width: 120, key: 'bz'},
+					{title: 'URL', align: 'center', width: 120, key: 'url'},
+					{title: '父节点', align: 'center', width: 120, key: 'fjd'},
+					{title: '跳转地址', align: 'center', width: 120, key: 'tzdz'},
 					{
 						title: '图标',
 						align: 'center',
@@ -199,8 +152,8 @@
 									},
 									on: {
 										click: () => {
-											this.compName = 'mess'
-											this.chmess = params.row
+											this.compName = 'formData'
+											this.choosedRow = params.row;
 										}
 									}
 								}),
@@ -308,7 +261,7 @@
 			},
 			getDataList() {
 				var v = this
-				v.compName = 'addmess'
+				v.compName = 'formData'
 				//              axios.get('carLogs/pager',this.page).then((res) => {
 				//                  v.tableData = res.data
 				//                  v.pageTotal = res.total
