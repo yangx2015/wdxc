@@ -1,15 +1,22 @@
 package com.ldz.wechat.api;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+
 import me.chanjar.weixin.cp.api.WxCpService;
 import me.chanjar.weixin.cp.bean.WxCpXmlMessage;
 import me.chanjar.weixin.cp.bean.WxCpXmlOutMessage;
 import me.chanjar.weixin.cp.message.WxCpMessageRouter;
 import me.chanjar.weixin.cp.util.crypto.WxCpCryptUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
 
 /**
  * 
@@ -38,13 +45,16 @@ public class WxPortalController {
 		}
 
 		if (this.wxService.checkSignature(signature, timestamp, nonce, echostr)) {
-			return new WxCpCryptUtil(this.wxService.getWxCpConfigStorage()).decrypt(echostr);
+			String tmp = new WxCpCryptUtil(wxService.getWxCpConfigStorage()).decrypt(echostr);
+			return tmp;
+
 		}
 
 		return "非法请求";
 	}
 
 	@PostMapping(produces = "application/xml; charset=UTF-8")
+	@ResponseBody
 	public String post(@RequestBody String requestBody, @RequestParam("msg_signature") String signature,
 			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce) {
 		this.logger.info("\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ", signature,
@@ -72,5 +82,19 @@ public class WxPortalController {
 
 		return null;
 	}
-
+	/*
+	 * public static void main(String[] args) {
+	 * 
+	 * 
+	 * WxCryptUtil sCryptUtil= new WxCryptUtil();
+	 * 
+	 * String decrypt =
+	 * sCryptUtil.decrypt("tjlq1glUbSsxADd2fsxExFvDUDo1RgdoQveqrSWyhoy");
+	 * 
+	 * System.out.println(decrypt);
+	 * 
+	 * 
+	 * 
+	 * }
+	 */
 }
