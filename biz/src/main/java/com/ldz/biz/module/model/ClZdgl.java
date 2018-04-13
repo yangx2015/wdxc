@@ -80,9 +80,54 @@ public class ClZdgl implements Serializable {
     @Column(name = "ZXSJ")
     private Date zxsj;
 
+    
+    @Column(name = "JSLMD")
+    private String jslmd;
+    
+    @Column(name = "SCMS")
+    private String scms;
+    
+    @Column(name = "CSSD")
+    private String cssd;
+    
+    @Column(name = "PZLMD")
+    private String pzlmd;
+    
     private static final long serialVersionUID = 1L;
 
-    /**
+	public String getJslmd() {
+		return jslmd;
+	}
+
+	public void setJslmd(String jslmd) {
+		this.jslmd = jslmd;
+	}
+
+	public String getPzlmd() {
+		return pzlmd;
+	}
+
+	public void setPzlmd(String pzlmd) {
+		this.pzlmd = pzlmd;
+	}
+
+	public String getScms() {
+		return scms;
+	}
+
+	public void setScms(String scms) {
+		this.scms = scms;
+	}
+
+	public String getCssd() {
+		return cssd;
+	}
+
+	public void setCssd(String cssd) {
+		this.cssd = cssd;
+	}
+
+	/**
      * 获取终端编号
      *
      * @return ZDBH - 终端编号
@@ -280,6 +325,9 @@ public class ClZdgl implements Serializable {
         this.zxsj = zxsj;
     }
 
+    
+    
+    
     public enum InnerColumn {
         zdbh("ZDBH"),
         xh("XH"),
@@ -291,8 +339,12 @@ public class ClZdgl implements Serializable {
         xgr("XGR"),
         xgsj("XGSJ"),
         zxzt("ZXZT"),
-        zxsj("ZXSJ");
-
+        zxsj("ZXSJ"),
+        jslmd("JSLMD"),
+        scms("SCMS"),
+        cssd("CSSD"),
+        pzlmd("PZLMD");
+    	
         private final String column;
 
         public String value() {

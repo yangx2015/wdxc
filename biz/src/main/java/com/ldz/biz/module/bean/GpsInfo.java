@@ -30,7 +30,7 @@ public class GpsInfo {
 	private String taskId;//任务id（用于上传服务器下载命令之后，终端上传之后回调给服务器之后的数据使用）
 	private String cmdType;//命令类型（推送消息时使用）  01：超速设定 02:灵敏度设定(急加速灵敏度)  
 	//11:拍（当前时间前后10s）视频 12:拍图片(实时) 13 合并视频   20 碰撞灵敏度    30 上传模式  40 GPS心跳间隔   50上传视屏模式
-	/**
+	/**  90:下发apk更新命令  91:设置上报数据的url   92:下发播报语音
      cmdType=01
       cmd值（ 1~150之间的数字)
 	
@@ -69,7 +69,13 @@ public class GpsInfo {
 	 * 摄像头参数如下:0 合并前摄像头  1 合并后摄像头  2 合并内置摄像头【内置摄像头这个暂时无法使用】
 	 * 
 	 * cmdType为11 ，12 ，13的时候这样设定     值用cmdParams 里面
-
+       
+      90:
+       cmd:  apk具体下载的url
+      91:
+       cmd:具体的服务器api地址前缀，tic-server的顶级访问目录。如果部署在root下，直接是http://ip+port/ 如果有项目名。则是http://ip+port+项目名称/
+     92:
+       cmd: 具体语音内容
 	 */
 	private String sczt; //该点位的上传状态  10点火上传  20熄火上传
 	private String cmd;//具体命令（推送消息时使用）   
