@@ -1,7 +1,13 @@
 package com.ldz.biz.module.service.impl;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ldz.biz.module.controller.CljsyCtrl;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.service.ClService;
+import com.ldz.util.bean.SimpleCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +25,8 @@ import tk.mybatis.mapper.common.Mapper;
 public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements JsyService{
     @Autowired
     private ClJsyMapper entityMapper;
+    @Autowired
+    private ClService clService;
    
 
     @Override
@@ -52,5 +60,23 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
 	        update(entity);
 		return ApiResponse.success();
 	}
+
+    @Override
+    public ApiResponse<List<ClJsy>> notBindList(SysYh user) {
+        // 查找已绑定的驾驶员
+        SimpleCondition condition = new SimpleCondition(ClCl.class);
+        condition.eq(ClCl.InnerColumn.jgdm,user.getJgdm());
+        List<ClCl> cars = clService.findByCondition(condition);
+        condition = new SimpleCondition(ClJsy.class);
+        condition.eq(ClJsy.InnerColumn.jgdm,user.getJgdm());
+        if (cars.size() != 0){
+            List<String> bindDriverIds = cars.stream().filter(p->p.getSjId() != null).map(ClCl::getSjId).collect(Collectors.toList());
+            if (bindDriverIds.size() != 0){
+                condition.notIn(ClJsy.InnerColumn.sfzhm,bindDriverIds);
+            }
+        }
+        List<ClJsy> drivers = entityMapper.selectByExample(condition);
+        return ApiResponse.success(drivers);
+    }
 
 }
