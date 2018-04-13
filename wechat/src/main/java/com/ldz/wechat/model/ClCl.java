@@ -1,14 +1,13 @@
 package com.ldz.wechat.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -175,7 +174,19 @@ public class ClCl implements Serializable {
     private List<ClDzwl> clDzwl;
     
 	private static final long serialVersionUID = 1L;
+    /**
+     * OBJ编号
+     */
+    @Column(name = "OBJ_CODE")
+    private String objCode;
 
+    public String getObjCode() {
+        return objCode;
+    }
+
+    public void setObjCode(String objCode) {
+        this.objCode = objCode;
+    }
     /**
      * 获取车辆id
      *

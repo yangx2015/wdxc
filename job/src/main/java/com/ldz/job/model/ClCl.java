@@ -153,7 +153,19 @@ public class ClCl implements Serializable {
     private Date nssj;
 
     private static final long serialVersionUID = 1L;
+    /**
+     * OBJ编号
+     */
+    @Column(name = "OBJ_CODE")
+    private String objCode;
 
+    public String getObjCode() {
+        return objCode;
+    }
+
+    public void setObjCode(String objCode) {
+        this.objCode = objCode;
+    }
     /**
      * 获取车辆id
      *
