@@ -30,6 +30,7 @@
                                     <ul id="todoList" class="">
                                         <li v-for="(item, index) in todoArray" :key="index" class="notwrap todolist-item" :data-index="index">
                                             {{ item.content }}
+                                            <!--<Button type="error" size="small" shape="circle" icon="close" @click="delelist('indexs')">1</Button>-->
                                         </li>
                                     </ul>
                                 </div>
@@ -84,6 +85,11 @@ export default {
     	todoArray:function(){
     	}
     },
+    methods:{
+    	delelist(indexs){
+			this.$Message.success('移出成功');
+		},
+    },
     mounted () {
 //      document.body.ondrop = function (event) {
 //          event.preventDefault();
@@ -122,7 +128,7 @@ export default {
 		
 			// Element is chosen
 			onChoose: function (/**Event*/evt) {
-				console.log('2')
+				console.log('2',evt)
 			},
 		
 			// Element dragging started
@@ -157,7 +163,10 @@ export default {
 //				evt.bubbles = false
 //				var ad = evt.item.getAttribute('data-index')
 //				var ad = 
-				evt.item.innerHTML = evt.item.innerHTML + '<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-circle ivu-btn-icon-only"><!----> <i class="ivu-icon ivu-icon-ios-search"></i> <!----></button>'
+				evt.item.innerHTML = evt.item.innerText+
+				'<button type="button" onclick=onRemove class="ivu-btn ivu-btn-error ivu-btn-circle ivu-btn-small" style=""><!----> <i class="ivu-icon ivu-icon-close"></i> <span>1</span></button>'
+//				'<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-circle ivu-btn-icon-only"><!----> <i class="ivu-icon ivu-icon-ios-search"></i> <!----></button>'+
+//				'<button type="button" class="ivu-btn ivu-btn-error ivu-btn-circle ivu-btn-icon-only"><!----> <i class="ivu-icon ivu-icon-close"></i> <!----></button>'
 //				console.log('6',ad)
 				console.log('6',evt)
 			},

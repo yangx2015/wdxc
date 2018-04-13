@@ -6,12 +6,6 @@ li{
 </style>
 <template>
 	<div class="box">
-		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-			<Spin fix style="background-color:#fff">
-	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-	            <div style="font-size: 30px;">排版</div>
-	        </Spin>
-		</div>
 		<div class="tit">
 			<Row class="margin-top-10">
 				<Col span="24" style="text-align:center;">
@@ -26,17 +20,16 @@ li{
 			<div class="box-row">
 				<div style="width: 260px;margin-right:5px;height: 100%;font-size: 16px;border-right: solid 1px #008855;">
 					<Row style="text-align: center;border-bottom: solid 3px #9B9B9B;">
-						<Col span="8">姓名</Col>
-						<Col span="8">车辆</Col>
-						<Col span="8">状态</Col>
+						<Col span="12">姓名</Col>
+						<Col span="12">车辆</Col>
 					</Row>
 					<Row style="text-align: center;font-size: 14px;">
 						<ul id="todoList" class="iview-admin-draggable-list" style="min-height: 300px;">
                             <li v-for="(item,index) in carList" :key="index" :data-index="index">
 		                        <div style="border: solid 1px #9B9B9B;padding: 3px 0;overflow: hidden;">
-		                        	<div style="width: 33.33%;float: left;">{{item.sjxm}}</div>
-		                        	<div style="width: 33.33%;float: left;">{{item.cph}}</div>
-		                        	<div style="width: 33.33%;float: left;">{{item.zt | changeZT}}</div>
+		                        	<div style="width: 50%;float: left;">{{item.sjxm}}</div>
+		                        	<div style="width: 50%;float: left;">{{item.cph}}</div>
+		                        	<!--<div style="width: 33.33%;float: left;">{{item.zt | changeZT}}</div>-->
 								</div>
                             </li>
                         </ul>
@@ -55,18 +48,15 @@ li{
 										            时间
 										        </span>
 								<div style="height: 140px;text-align: center;overflow: auto;" :id="index+'_card'">
-									<div style="overflow: hidden;border: solid 1px #9B9B9B;padding: 3px 0;" v-for="(items,indexs) in item.clList">
-										<div style="float: left;display: block;width: 25%;">
-												{{items.sjxm}}.
+									<div class="xlxq" v-for="(items,indexs) in item.clList">
+										<div class="xlxq-list">
+												{{items.sjxm}}
 										</div>
-										<div style="float: left;width: 25%;">
-												{{items.cph}}.
+										<div class="xlxq-list">
+												{{items.cph}}
 										</div>
-										<div style="float: left;width: 25%;">
-												{{items.zt}}.
-										</div>
-										<div style="float: left;width: 25%;">
-												<Button type="error" shape="circle" icon="ios-search"></Button>
+										<div class="xlxq-list xlxq-but">
+												<Button type="error" size="small" shape="circle" icon="close" @click="delelist(indexs)"></Button>
 										</div>
 									</div>
 								</div>
@@ -78,7 +68,23 @@ li{
 		</div>
 	</div>
 </template>
-
+<style lang="less" scoped="scoped">
+	.xlxq{
+		height: 34px;
+		line-height: 28px;
+		overflow: hidden;
+		border: solid 1px #9B9B9B;
+		padding: 3px 0;
+		.xlxq-list{
+			float: left;
+			width: 33.3%;
+		}
+		.xlxq-but{
+			text-align: right;
+			padding-right: 5px;
+		}
+	}
+</style>
 <script>
 	import Sortable from 'sortablejs';
 	
@@ -88,8 +94,7 @@ li{
 		data(){
 			return{
 				listdata:[],
-				carList:[],
-				SpinShow:false
+				carList:[]
 			}
 		},
 		props: {
@@ -121,10 +126,6 @@ li{
 	            },
 	            animation: 120,
 	            onRemove (event) {
-//	            	console.log(event.item.getAttribute('data-index'))
-//					console.log(vm.carList[event.item.getAttribute('data-index')].clId)
-//					console.log(event)
-
 	            	//车辆id
 	            	let clId = vm.carList[event.item.getAttribute('data-index')].clId
 	            	//线路id
@@ -132,7 +133,6 @@ li{
 	            	let lineID = linelength.substring(0,linelength.length-5)
 	            	let xlId = vm.listdata[lineID].id
 	            	vm.AddList(clId,xlId)
-//	            	vm.SpinShow = true
 	            }
 	        });
 		},
@@ -166,6 +166,9 @@ li{
 //					}
 				})
 			},
+			delelist(indexs){
+				this.$Message.success('移出成功');
+			},
 			okmodel(){
 				this.$emit('okdrag')
 			},
@@ -175,9 +178,33 @@ li{
 					Sortable.create((document.getElementById(i+'_card')), {
 			            group: {
 			                name: 'list',
-			                pull: true
+			                pull: false,
+			                put: true
 			            },
 			            animation: 120,
+			            onSort: function (/**Event*/evt) {
+			            	console.log('6',evt.item)
+							console.log('6',evt.item.textContent.split(" "))
+							
+							
+							var newhtml = '<div style="height: 34px;line-height: 28px;overflow: hidden;border: solid 1px #9B9B9B;padding: 3px 0;">'+
+										'<div style="float: left;width: 33.3%;">'+
+												evt.item.textContent.split(" ")[0]+
+										'</div>'+
+										'<div style="float: left;width: 33.3%;">'+
+												evt.item.textContent.split(" ")[1]+
+										'</div>'+
+										'<div style="float: left;width: 33.3%;text-align: right;padding-right: 5px;">'+
+											'<button type="button" class="ivu-btn ivu-btn-small ivu-btn-error ivu-btn-circle ivu-btn-icon-only">'+
+												'<!----><i class="ivu-icon ivu-icon-close"></i> <!---->'+
+											'</button>'+
+										'</div>'+
+									'</div>'
+							
+							evt.item.innerHTML = newhtml
+							console.log('6',evt)
+							vm.$parent.changeMess()
+						},
 			            onRemove (event) {
 			            	console.log(event.item.getAttribute('data-index'))
 			            	console.log(event)
