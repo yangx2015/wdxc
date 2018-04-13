@@ -216,21 +216,6 @@
 //				alert('132')
 				this.dateMess=false
 			},
-			changeMess(){
-//				debugger
-				this.SpinShowChlid = true//数据加载开启
-//				this.dateMess=false//dome切换
-				this.modalName = ''//组件移出
-				setTimeout(()=>{
-					this.changeMessT()
-					
-				},500)
-			},
-			changeMessT(){
-//				this.dateMess=true
-				this.modalName = 'drag'
-				this.SpinShowChlid = false
-			},
 			getalert(){
         		var windowHeight = window.innerHeight
         		this.tabHeight = windowHeight - 280

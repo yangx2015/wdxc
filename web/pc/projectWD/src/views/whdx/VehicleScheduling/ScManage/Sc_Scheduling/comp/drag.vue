@@ -115,6 +115,7 @@ li{
 		},
 		created(){
 			this.getmess()
+			window.wvm = this
 		},
 		mounted (){
 			let vm = this;
@@ -132,7 +133,7 @@ li{
 	            	let linelength = event.to.id
 	            	let lineID = linelength.substring(0,linelength.length-5)
 	            	let xlId = vm.listdata[lineID].id
-	            	vm.AddList(clId,xlId)
+//	            	vm.AddList(clId,xlId)
 	            }
 	        });
 		},
@@ -195,7 +196,7 @@ li{
 												evt.item.textContent.split(" ")[1]+
 										'</div>'+
 										'<div style="float: left;width: 33.3%;text-align: right;padding-right: 5px;">'+
-											'<button type="button" class="ivu-btn ivu-btn-small ivu-btn-error ivu-btn-circle ivu-btn-icon-only">'+
+											'<button onClick="window.wvm.delelist()" type="button" class="ivu-btn ivu-btn-small ivu-btn-error ivu-btn-circle ivu-btn-icon-only">'+
 												'<!----><i class="ivu-icon ivu-icon-close"></i> <!---->'+
 											'</button>'+
 										'</div>'+
@@ -203,7 +204,6 @@ li{
 							
 							evt.item.innerHTML = newhtml
 							console.log('6',evt)
-							vm.$parent.changeMess()
 						},
 			            onRemove (event) {
 			            	console.log(event.item.getAttribute('data-index'))
