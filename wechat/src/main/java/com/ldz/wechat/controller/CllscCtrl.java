@@ -25,7 +25,7 @@ public class CllscCtrl extends BaseController<ClLsc, String> {
 		
 		return lscService;
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClLsc entity) {
 		return lscService.saveEntity(entity);

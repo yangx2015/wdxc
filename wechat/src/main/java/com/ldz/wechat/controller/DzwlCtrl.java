@@ -27,7 +27,7 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
         return service;
     }
 
-
+    @Override
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClDzwl entity){
         return service.updateEntity(entity);
