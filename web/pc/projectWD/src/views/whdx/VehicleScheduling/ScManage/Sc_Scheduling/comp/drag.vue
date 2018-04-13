@@ -55,11 +55,20 @@ li{
 										            时间
 										        </span>
 								<div style="height: 140px;text-align: center;overflow: auto;" :id="index+'_card'">
-									<Row style="border: solid 1px #9B9B9B;padding: 3px 0;" v-for="(items,indexs) in item.clList">
-										<Col span="8">周师傅</Col>
-										<Col span="8">鄂A12345</Col>
-										<Col span="8">静态</Col>
-									</Row>
+									<div style="overflow: hidden;border: solid 1px #9B9B9B;padding: 3px 0;" v-for="(items,indexs) in item.clList">
+										<div style="float: left;display: block;width: 25%;">
+												{{items.sjxm}}.
+										</div>
+										<div style="float: left;width: 25%;">
+												{{items.cph}}.
+										</div>
+										<div style="float: left;width: 25%;">
+												{{items.zt}}.
+										</div>
+										<div style="float: left;width: 25%;">
+												<Button type="error" shape="circle" icon="ios-search"></Button>
+										</div>
+									</div>
 								</div>
 							</Card>
 						</Col>
@@ -123,7 +132,7 @@ li{
 	            	let lineID = linelength.substring(0,linelength.length-5)
 	            	let xlId = vm.listdata[lineID].id
 	            	vm.AddList(clId,xlId)
-	            	vm.SpinShow = true
+//	            	vm.SpinShow = true
 	            }
 	        });
 		},
@@ -139,7 +148,7 @@ li{
 					console.log('bug')
 				})
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":'2018-03-26'}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
 					console.log('排班数据2',res)
 					v.listdata = res.result
 				}).then((res) =>{
@@ -150,10 +159,10 @@ li{
 			},
 			AddList(carID,LineID){
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":'2018-03-26'}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":v.todaytime}).then((res) =>{
 					console.log('排版新增',res)
 //					if(res.code==500){
-						v.$parent.domeC()
+//						v.$parent.domeC()
 //					}
 				})
 			},

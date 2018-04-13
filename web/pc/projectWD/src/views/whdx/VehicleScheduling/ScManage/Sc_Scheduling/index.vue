@@ -216,8 +216,8 @@
         	},
         	changeClick(){
         		this.dateMess = true
-        		this.modalName = 'drag'
-//				this.modalName = drlist
+//      		this.modalName = 'drag'
+				this.modalName = drlist
         	},
 			dayClick(event) {
 				this.todaytime = this.getdateParaD(event)
