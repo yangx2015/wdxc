@@ -81,7 +81,18 @@
 					{title: '功能名称', align: 'center', width: 120, key: 'gnmc', fixed: 'left'},
 					{title: '功能代码', align: 'center', width: 120, key: 'gndm'},
 					{title: '服务代码', align: 'center', width: 120, key: 'fwdm'},
-					{title: '状态', align: 'center', width: 120, key: 'zt'},
+					{title: '状态', align: 'center', width: 120, key: 'zt',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '00':
+                                    return h('div','正常');
+                                case '10':
+                                default:
+                                    return h('div','停用');
+                            }
+                        }
+
+					},
 					{title: '备注', align: 'center', width: 120, key: 'bz'},
 					{title: 'URL', align: 'center', width: 120, key: 'url'},
 					{title: '父节点', align: 'center', width: 120, key: 'fjd'},
@@ -129,7 +140,7 @@
 						title: '创建时间',
 						width: 100,
 						align: 'center',
-						key: 'sj'
+						key: 'cjsj'
 					},
 					{
 						title: '操作',

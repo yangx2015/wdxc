@@ -18,7 +18,7 @@
 	</select>
 
 	<select id="selectXbPb" resultMap="XBXLPbresultmap" parameterType="com.ldz.biz.module.bean.PbClXlmodel" >
-		select t3.id,t3.xlmc,
+		select t3.id,t3.xlmc,  
 		listagg(t3.cl_id, ',') within group( order by cl_id) as clidlist from
 		(select T1.*,t2.cl_id from CL_XL t1 left join CL_PB t2 on T1."ID"=T2.XL_ID
 		and to_char(t2.cjsj,'yyyy-mm-dd')=#{date2} 

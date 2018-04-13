@@ -34,12 +34,12 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	protected BaseService<ClCl, String> getBaseService() {
 		return clservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClCl entity) {
 		return clservice.updateEntity(entity);
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClCl entity) {
 		return clservice.saveEntity(entity);

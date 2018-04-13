@@ -1,5 +1,6 @@
 package com.ldz.biz.module.controller;
 
+import com.ldz.sys.model.SysYh;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,8 @@ import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+
+import java.util.List;
 
 /**
  * 驾驶员设定
@@ -36,6 +39,11 @@ public class CljsyCtrl extends BaseController<ClJsy, String> {
 	public ApiResponse<String> save(ClJsy entity) {
 		return jsyservice.saveEntity(entity);
 	}
-	
+
+	@RequestMapping("notBindList")
+	public ApiResponse<List<ClJsy>> notBindList(){
+		SysYh user = getCurrentUser();
+		return jsyservice.notBindList(user);
+	}
 	
 }

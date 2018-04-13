@@ -1,14 +1,13 @@
 package com.ldz.biz.module.model;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -161,8 +160,13 @@ public class ClCl implements Serializable {
      */
     @Column(name = "NSSJ")
     private Date nssj;
-    
-     
+    /**
+     * OBJ编号
+     */
+    @Column(name = "OBJ_CODE")
+    private String objCode;
+
+
      /*
       * 车辆电子围栏中间关联表
      */

@@ -9,7 +9,7 @@
 	</parent>
 	<artifactId>wechat</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>wechat</name>
 	<description>Demo project for Spring Boot</description>
@@ -20,21 +20,22 @@
 			<artifactId>sys</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!--移除websocket里面 logging依赖 避免包冲突 -->
-		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework.boot</groupId>
-                    <artifactId>spring-boot-starter-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
+		<!-- logging依赖 避免包冲突 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-websocket</artifactId>
+			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<!--新增java 微信开发工具 -->
+		<dependency>
+			<groupId>com.github.binarywang</groupId>
+			<artifactId>weixin-java-cp</artifactId>
+			<version>3.0.0</version>
 		</dependency>
 	</dependencies>
 

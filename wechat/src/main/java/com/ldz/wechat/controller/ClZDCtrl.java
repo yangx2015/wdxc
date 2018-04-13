@@ -25,12 +25,12 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 
 		return zdservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClZd entity) {
 		return zdservice.updateEntity(entity);
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClZd entity) {
 		return zdservice.saveEntity(entity);

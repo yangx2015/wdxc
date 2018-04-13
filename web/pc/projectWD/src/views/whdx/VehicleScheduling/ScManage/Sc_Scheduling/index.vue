@@ -31,6 +31,12 @@
 </style>
 <template>
 	<div class="SC box">
+		<div v-if="SpinShowChlid" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+			<Spin fix style="background:rgba(255,255,255,0.5)!important">
+	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+	            <div style="font-size: 30px;">排版提交中....</div>
+	        </Spin>
+		</div>
 		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 110;">
 			<Spin fix style="background-color:#fff">
 	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
@@ -114,6 +120,7 @@
 				dateMess: false,
 				modalName: '',
 				SpinShow:false,
+				SpinShowChlid:false,
 				events: [{
 						title: '早班',
 						start: '2018-01-01',
@@ -207,7 +214,7 @@
 			},
 			okdrag(){
 //				alert('132')
-				this.dateMess=!this.dateMess
+				this.dateMess=false
 			},
 			getalert(){
         		var windowHeight = window.innerHeight

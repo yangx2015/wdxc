@@ -140,7 +140,16 @@
                     {
                         title: '车辆状态',
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '00':
+                                    return h('div','正常');
+                                case '10':
+								default:
+                                    return h('div','停用');
+                            }
+                        }
                     },
                     {
                         title: '终端编号',

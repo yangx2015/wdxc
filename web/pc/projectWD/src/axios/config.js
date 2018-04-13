@@ -56,6 +56,7 @@ module.exports = {
         DELE:'/api/gn/removeIds',
 		GET_ORG_PERMISSION_TREE:'/api/gn/getOrgPermissionTree',
 		GET_ALL_PERMISSION_TREE:'/api/gn/getAllPermissionTree',
+		GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
 		SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
 		GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions'
 	},
@@ -108,7 +109,8 @@ module.exports = {
 		QUERY:  '/api/jsy/pager',
         ADD:    '/api/jsy/save',
         CHANGE: '/api/jsy/update',
-        DELE:   '/api/jsy/removeIds'
+        DELE:   '/api/jsy/removeIds',
+        NOT_BIND_LIST:   '/api/jsy/notBindList',
 	},
 	CD:{
 		QUERY:  '/api/cd/pager',

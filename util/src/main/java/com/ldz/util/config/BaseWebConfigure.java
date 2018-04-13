@@ -27,18 +27,23 @@ public class BaseWebConfigure extends WebMvcConfigurerAdapter {
 	@Override
 	public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {		
 		super.configureMessageConverters(converters);
+		StringHttpMessageConverter string = new StringHttpMessageConverter(Charset.forName("UTF-8"));
+		List<MediaType> stringSupportedMediaTypes = new ArrayList<MediaType>();
+		stringSupportedMediaTypes.add(MediaType.TEXT_PLAIN);
+		string.setSupportedMediaTypes(stringSupportedMediaTypes);
+		
 		MappingJackson2HttpMessageConverter json = new MappingJackson2HttpMessageConverter();
 		json.setDefaultCharset(Charset.forName("UTF-8"));
 		List<MediaType> supportedMediaTypes = new ArrayList<MediaType>();
 		supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
 		supportedMediaTypes.add(MediaType.APPLICATION_FORM_URLENCODED);
-		supportedMediaTypes.add(MediaType.TEXT_PLAIN);
+		//supportedMediaTypes.add(MediaType.TEXT_PLAIN);
 		json.setSupportedMediaTypes(supportedMediaTypes);
 		//格式化日期对象。如果字段中有Date类型字段，自动转换为String格式的字符串，防止转成long类型传递至前台
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
 		json.setObjectMapper(mapper);
 		converters.add(json);
-		converters.add(new StringHttpMessageConverter(Charset.forName("UTF-8")));
+		converters.add(string);
 	}
 }

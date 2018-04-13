@@ -26,12 +26,12 @@ public class CljsyCtrl extends BaseController<ClJsy, String> {
 		
 		return jsyservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClJsy entity) {
 		return jsyservice.updateEntity(entity);
 	}
-
+	@Override
 	@PostMapping("/save")
 	public ApiResponse<String> save(ClJsy entity) {
 		return jsyservice.saveEntity(entity);

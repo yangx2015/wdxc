@@ -103,17 +103,37 @@
                     {
                         title: '活动标题',
                         align:'center',
-                        key: 'VehicleUnit'
+                        key: 'hdbt'
                     },
                     {
                         title: '内容/URL',
                         align:'center',
-                        key: 'UseCarPeople'
+                        key: 'url',
+                        render: (h, params) => {
+                            return h('a', {
+                                attrs: {
+                                    href: params.row.url
+                                }
+                            },params.row.url)
+                        }
                     },
                     {
                         title: '活动类型',//微信--自能站牌
                         align:'center',
-                        key: 'phoneNomber'
+                        key: 'hdlx',
+                        render: (h, params) => {
+                            let lx = '';
+                            switch(params.row.hdlx){
+								case '11':
+								    lx = '微信';
+								    break;
+								case '22':
+                                default:
+                                    lx = '智能站牌'
+                                    break;
+							}
+                            return h('div',lx);
+                        }
                     },
 	                    {
                     	title:'附件',
@@ -122,7 +142,7 @@
                         render: (h, params) => {
                             return h(expandRow, {
                                 props: {
-                                    row: params.row
+                                    // row: params.row
                                 }
                             })
                         }
@@ -147,7 +167,7 @@
 									on: {
 										click: () => {
 										    this.choosedRow = params.row;
-											this.compName = 'mess'
+											this.compName = 'addmess'
 										}
 									}
 								}),
@@ -277,6 +297,7 @@
         	},
         	getDataList() {
 				var v = this
+				this.choosedRow = null;
 				v.compName = 'addmess'
 				//              axios.get('carLogs/pager',this.page).then((res) => {
 				//                  v.tableData = res.data

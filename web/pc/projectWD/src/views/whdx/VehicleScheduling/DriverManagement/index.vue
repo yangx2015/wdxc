@@ -126,7 +126,10 @@
                         title: '性别',
                         width:60,
                         align:'center',
-                        key: 'xb'
+                        key: 'xb',
+                        render: (h, params) => {
+                            return h('div',params.row.xb == '1' ? '男' : '女')
+                        }
                     },
                     {
                         title: '年龄',
@@ -144,7 +147,16 @@
                         title: '状态',
                         width:80,
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '00':
+                                    return h('div','正常');
+                                case '10':
+                                default:
+                                    return h('div','休息');
+                            }
+                        }
                     },
                     {
                         title:'驾驶证类型',

@@ -91,7 +91,7 @@
                         align:'center',
                         key: 'zt',
                         render: (h, params) => {
-                        	return params.row.zt=='00' ? "正常":"停用"
+                        	return h('div',params.row.zt=='00' ? "正常":"停用");
                         }
                     },
                     {
