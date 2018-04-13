@@ -109,7 +109,8 @@ module.exports = {
 		QUERY:  '/api/jsy/pager',
         ADD:    '/api/jsy/save',
         CHANGE: '/api/jsy/update',
-        DELE:   '/api/jsy/removeIds'
+        DELE:   '/api/jsy/removeIds',
+        NOT_BIND_LIST:   '/api/jsy/notBindList',
 	},
 	CD:{
 		QUERY:  '/api/cd/pager',

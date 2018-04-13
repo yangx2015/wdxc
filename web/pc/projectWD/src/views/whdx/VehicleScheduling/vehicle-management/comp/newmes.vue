@@ -32,9 +32,8 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
-								<Select v-model="addmess.sjxm">
-									<Option value="张三">张三</Option>
-									<Option value="李四">李四</Option>
+								<Select v-model="addmess.sjId">
+									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -91,9 +90,6 @@
                   dl: [
                       { required: true,message: '请设置密码', trigger: 'blur' }
                   ],
-                  sjxm:[
-                      { required: true,message: '请输入手机号码', trigger: 'blur' }
-                  ],
                   zt:[
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ],
@@ -101,6 +97,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+				drivers:[]
 			}
 		},
 		props:{
@@ -114,10 +111,19 @@
 			}
 		},
 		created(){
-			console.log(this.mess)
 			this.addmess = this.mess
+			this.getDrivers();
 		},
 		methods:{
+		    getDrivers(){
+		        let v = this;
+                v.$http.get(configApi.JSY.NOT_BIND_LIST).then((res) =>{
+                    if(res.code===200){
+                        this.drivers = res.result;
+                        console.log(res);
+                    }
+                })
+			},
 			colse(){
 				var v = this
 				v.$parent.compName = ''

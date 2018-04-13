@@ -3,6 +3,9 @@ package com.ldz.biz.module.service.impl;
 import java.util.Date;
 import java.util.List;
 
+import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.service.JsyService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +28,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     private JgService jgService;
     @Autowired
     private ClService clService;
+    @Autowired
+    private JsyService jsyService;
 
     @Override
     protected Mapper<ClCl> getBaseMapper() {
@@ -59,6 +64,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
          entity.setCjsj(now);
          entity.setJgdm(user.getJgdm());
          entity.setJgmc(org.getJgmc());
+         if (StringUtils.isNotBlank(entity.getSjId())){
+             ClJsy jsy = jsyService.findById(entity.getSjId());
+             entity.setSjxm(jsy.getXm());
+         }
          save(entity);
         return ApiResponse.saveSuccess();
     }

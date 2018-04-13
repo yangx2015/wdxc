@@ -32,6 +32,12 @@ public class SimpleCondition extends Example {
     public void in(Enum key,Iterable val){
         this.in(key.name(),val);
     }
+    public void notIn(String key,Iterable val){
+        this.and().andNotIn(key,val);
+    }
+    public void notIn(Enum key,Iterable val){
+        this.notIn(key.name(),val);
+    }
     public void eq(String key,Object val){
         this.and().andEqualTo(key,val);
     }
