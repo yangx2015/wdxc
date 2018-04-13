@@ -20,8 +20,8 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='内容'>
-								<Input type="text" v-model="formItem.RoleType" placeholder="请填写广告内容...">
+							<FormItem label='URL'>
+								<Input type="text" v-model="formItem.url" placeholder="请填写URL...">
 								</Input>
 							</FormItem>
 						</Col>

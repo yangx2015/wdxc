@@ -96,20 +96,41 @@
 						title: '方向',
 						align: 'center',
 						key: 'yxfx',
-						render:(h,p)=>{
-
-						}
+                        render:(h,p)=>{
+                            switch(p.row.yxfs){
+                                case '10':
+                                    return h('div','上行');
+                                case '20':
+                                    return h('div','下行');
+                            }
+                        }
 					},
 					{
 						title: '状态',
 						align: 'center',
-						key: 'zt'
+						key: 'zt',
+                        render:(h,p)=>{
+                            switch(p.row.yxfs){
+                                case '00':
+                                    return h('div','正常');
+                                case '10':
+                                    return h('div','停用');
+                            }
+                        }
 					},
-					{
-						title: '运行方式',
-						align: 'center',
-						key: 'yxfx'
-					},
+					// {
+					// 	title: '运行方式',
+					// 	align: 'center',
+					// 	key: 'yxfx',
+					// 	render:(h,p)=>{
+					// 	    switch(p.row.yxfs){
+					// 			case '10':
+					// 			    return h('div','上行');
+					// 			case '20':
+					// 			    return h('div','下行');
+					// 		}
+					// 	}
+					// },
 					{
 						title: '创建人',
 						align: 'center',

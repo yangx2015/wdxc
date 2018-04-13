@@ -56,6 +56,7 @@ module.exports = {
         DELE:'/api/gn/removeIds',
 		GET_ORG_PERMISSION_TREE:'/api/gn/getOrgPermissionTree',
 		GET_ALL_PERMISSION_TREE:'/api/gn/getAllPermissionTree',
+		GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
 		SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
 		GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions'
 	},
