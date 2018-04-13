@@ -20,12 +20,12 @@ public class XLZDCtrl extends BaseController<ClXlzd, String> {
 	protected BaseService<ClXlzd, String> getBaseService() {
 		return xlzdservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClXlzd entity) {
 		return xlzdservice.updateEntity(entity);
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClXlzd entity) {
 		return xlzdservice.saveEntity(entity);

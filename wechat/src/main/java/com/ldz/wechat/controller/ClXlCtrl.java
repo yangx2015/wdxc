@@ -20,12 +20,12 @@ public class ClXlCtrl  extends BaseController<ClXl, String>{
 	protected BaseService<ClXl, String> getBaseService() {
 		return xlservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClXl entity) {
 		return xlservice.updateEntity(entity);
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClXl entity) {
 		return xlservice.saveEntity(entity);

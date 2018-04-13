@@ -25,7 +25,7 @@ public class LsdwCtrl extends BaseController<ClLsdw, String> {
 		
 		return service;
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClLsdw entity) {
 		return service.saveEntity(entity);

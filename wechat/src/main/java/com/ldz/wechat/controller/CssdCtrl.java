@@ -32,7 +32,7 @@ public class CssdCtrl extends BaseController<ClCssd,String>{
     public ApiResponse<String> save(ClCssd entity){
         return service.saveEntity(entity);
     }
-
+    @Override
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClCssd entity){
         return service.updateEntity(entity);

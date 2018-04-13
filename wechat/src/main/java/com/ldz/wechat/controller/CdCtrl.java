@@ -24,12 +24,12 @@ public class CdCtrl extends BaseController<ClCd, String> {
 	protected BaseService<ClCd, String> getBaseService() {
 		return cdservice;
 	}
-
+	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClCd entity) {
 		return cdservice.updateEntity(entity);
 	}
-
+	@Override
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(ClCd entity) {
 		return cdservice.saveEntity(entity);
