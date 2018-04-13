@@ -296,15 +296,19 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<SysGn> getRolesFunctions(List<String> jsdms) {
+        if (jsdms == null || jsdms.size() == 0)return new ArrayList<>();
         List<String> functionCodes = getRolesFunctionCodes(jsdms);
+        if (functionCodes.size() == 0)return new ArrayList<>();
         return findIn(SysGn.InnerColumn.gndm,functionCodes);
     }
 
     @Override
     public List<String> getRolesFunctionCodes(List<String> jsdms) {
+        if (jsdms == null || jsdms.size() == 0)return new ArrayList<>();
         SimpleCondition condition = new SimpleCondition(SysJsGn.class);
         condition.in(SysJsGn.InnerColumn.jsdm,jsdms);
         List<SysJsGn> roleFunctions = jsGnMapper.selectByExample(condition);
+        if (roleFunctions.size() == 0)return new ArrayList<>();
         return roleFunctions.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
     }
 
@@ -317,18 +321,18 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         Map<String,SysFw> serviceMap = allServices.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
         Map<String,SysGn> functionMap = allFunctions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
 
-        List<String> serviceCodes = new ArrayList<>();
-        for (SysGn function : functions) {
-            String serviceCode = function.getFwdm();
-            if (StringUtils.isEmpty(serviceCode))continue;
-            if (serviceMap.containsKey(serviceCode))continue;
-            serviceCodes.add(serviceCode);
-        }
-        if (serviceCodes.size() != 0){
-            List<SysFw> addServices = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
-            services.addAll(addServices);
-        }
-        for (SysGn function : functions) {
+//        List<String> serviceCodes = new ArrayList<>();
+//        for (SysGn function : functions) {
+//            String serviceCode = function.getFwdm();
+//            if (StringUtils.isEmpty(serviceCode))continue;
+//            if (serviceMap.containsKey(serviceCode))continue;
+//            serviceCodes.add(serviceCode);
+//        }
+//        if (serviceCodes.size() != 0){
+//            List<SysFw> addServices = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
+//            services.addAll(addServices);
+//        }
+        for (SysGn function : allFunctions) {
             if (functionCodes.contains(function.getGndm())){
                 function.setChecked("true");
             }
@@ -356,7 +360,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
                 }
             }
         }
-        return services;
+        return allServices;
 
     }
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions){
@@ -423,8 +427,13 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     @Override
     public List<SysFw> getRolePermissionTree(String jsdm) {
         List<SysGn> functions = getRolesFunctions(Collections.singletonList(jsdm));
-        List<String> serviceCodes = functions.stream().map(SysGn::getFwdm).collect(Collectors.toList());
-        List<SysFw> services = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
+        List<SysFw> services;
+        if (functions.size() != 0){
+            Set<String> serviceCodes = functions.stream().map(SysGn::getFwdm).collect(Collectors.toSet());
+            services = fwService.findIn(SysFw.InnerColumn.fwdm,serviceCodes);
+        }else{
+            services = new ArrayList<>();
+        }
         return getAllPermissionTreeWithChecked(services,functions);
     }
 

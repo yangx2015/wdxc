@@ -100,7 +100,16 @@
                     {
                         title: '在线状态',
                         align:'center',
-                        key: 'zxzt'
+                        key: 'zxzt',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '00':
+                                    return h('div','在线');
+                                case '10':
+                                default:
+                                    return h('div','不在线');
+                            }
+                        }
                     },
                     {
                         title: '在线时间',

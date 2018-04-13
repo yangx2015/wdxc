@@ -111,7 +111,16 @@
                     {
                         title: '类型',
                         align:'center',
-                        key: 'jslx'
+                        key: 'jslx',
+                        render:(h,p)=>{
+                            switch(p.row.jslx){
+                                case '00':
+                                    return h('div','管理');
+                                case '11':
+                                default:
+                                    return h('div','员工');
+                            }
+                        }
                     },
                     {
                         title: '备注',

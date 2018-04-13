@@ -116,7 +116,7 @@
 						align: 'center',
 						key: 'xb',
 						render: (h, params) => {
-							return params.row.xb == '1' ? '男' : '女'
+							return h('div',params.row.xb == '1' ? '男' : '女')
 						}
 					},
 					{
@@ -133,7 +133,16 @@
 					{
 						title: '类型',
 						align: 'center',
-						key: 'lx'
+						key: 'lx',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '11':
+                                    return h('div','类型一');
+                                case '22':
+                                default:
+                                    return h('div','类型二');
+                            }
+                        }
 					},
 					{
 						title: '创建时件',

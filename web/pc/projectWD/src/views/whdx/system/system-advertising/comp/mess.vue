@@ -64,6 +64,7 @@
 			}
 		},
 		created(){
+		    this.addmess = $parent.choosedRow;
 		},
 		methods: {
 			colse() {

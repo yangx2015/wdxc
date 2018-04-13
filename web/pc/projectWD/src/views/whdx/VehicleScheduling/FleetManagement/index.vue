@@ -114,7 +114,16 @@
                     {
                         title: '状态',
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render:(h,p)=>{
+                            switch(p.row.zt){
+                                case '00':
+                                    return h('div','正常');
+                                case '10':
+                                default:
+                                    return h('div','休息');
+                            }
+                        }
                     },
                     {
                         title: '创建人',

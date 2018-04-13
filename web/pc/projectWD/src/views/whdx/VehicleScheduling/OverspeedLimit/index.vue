@@ -101,7 +101,15 @@
 						title: '车型',
 						align: 'center',
 						width:'120',
-						key: 'cx'
+						key: 'cx',
+                        render:(h,p)=>{
+                            switch(p.row.cx){
+                                case '11':
+                                    return h('div','类型一');
+                                case '22':
+                                    return h('div','类型二');
+                            }
+                        }
 					},
 					{
 						title: '车速上限',

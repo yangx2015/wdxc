@@ -16,13 +16,13 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cdbh" label='车队编号：'>
-								<Input type="text" v-model="addmess.cdbh" placeholder="请设置用户帐号">
+								<Input type="text" v-model="addmess.cdbh" placeholder="请设置车队编号">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="cdmc" label='车队名称：'>
-								<Input type="password" v-model="addmess.cdmc" placeholder="请设置用户密码">
+								<Input type="password" v-model="addmess.cdmc" placeholder="请设置车队名称">
 								</Input>
 							</FormItem>
 						</Col>
@@ -30,7 +30,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="dzxm" label='队长姓名：'>
-								<Input type="text" v-model="addmess.dzxm" placeholder="请输入姓名">
+								<Input type="text" v-model="addmess.dzxm" placeholder="请输入队长姓名">
 								</Input>
 							</FormItem>
 						</Col>

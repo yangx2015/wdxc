@@ -92,20 +92,28 @@
 				type:Boolean,
 				default:true
 			},
-			messdata:{
-				type:Object,
-				default:{}
-			}
+			// messdata:{
+			// 	type:Object,
+			// 	default:{}
+			// }
 		},
 		created(){
-			this.addmess = this.messdata
-		},
+            this.addmess = this.$parent.messdata
+            console.log(this.addmess);
+        },
 		mounted(){
-			this.getPermissionTree();
+			this.getRolePermissionTree();
 		},
 		methods: {
-		    getPermissionTree(){
+		    getAllPermissionTree(){
                 this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
+                    if(res.code===200){
+                        this.data4 = res.result[0].functions;
+                    }
+                })
+			},
+		    getRolePermissionTree(){
+                this.$http.get(configApi.FUNCTION.GET_ROLE_PERMISSION_TREE+"?jsdm="+this.addmess.jsId).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }
@@ -113,7 +121,12 @@
 			},
 		    setRolePermission(){
                 this.getChoosedIds(this.data4);
-                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':this.choosedIds}).then((res) =>{
+                console.log(this.choosedIds);
+                let ids = '';
+                for (let r of this.choosedIds){
+                    ids += r+',';
+				}
+                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success('修改成功');
                     }
