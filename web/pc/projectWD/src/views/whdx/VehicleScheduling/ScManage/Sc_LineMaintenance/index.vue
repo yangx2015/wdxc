@@ -110,7 +110,7 @@
 						align: 'center',
 						key: 'zt',
                         render:(h,p)=>{
-                            switch(p.row.yxfs){
+                            switch(p.row.zt){
                                 case '00':
                                     return h('div','正常');
                                 case '10':
