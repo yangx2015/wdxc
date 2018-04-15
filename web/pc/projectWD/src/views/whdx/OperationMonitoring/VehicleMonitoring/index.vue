@@ -94,8 +94,7 @@
 
 <script>
 
-//import myMap from '../../map/map.vue'
-import myMap from '../../map/schoolMap.vue'
+import myMap from '../../map/carJK.vue'
 export default {
     name: 'VehicleMonitoring',
     components: {

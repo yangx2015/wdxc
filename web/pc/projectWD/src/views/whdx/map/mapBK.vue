@@ -17,6 +17,7 @@
 	    border-radius: 7px;
 	}
 </style>
+<!--电子围栏-->
 <template>
 	<div style="height: 100%;background-color: #00FFFF;position: relative;">
 		<div id="allmap"></div>

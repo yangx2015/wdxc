@@ -17,6 +17,7 @@
 	    border-radius: 7px;
 	}
 </style>
+<!--线路展示-->
 <template>
 	<div style="height: 100%;background-color: #00FFFF;position: relative;">
 		<div :id="mapID" class="allmapSty"></div>

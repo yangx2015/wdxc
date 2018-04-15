@@ -17,6 +17,7 @@
 	    border-radius: 7px;
 	}
 </style>
+<!--校巴监控-->
 <template>
 	<div style="height: 100%;background-color: #00FFFF;position: relative;">
 		<div id="allmap"></div>
