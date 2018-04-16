@@ -16,7 +16,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.mcLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -162,7 +162,7 @@
                 cjsjInRange:[],
 				findMess: {
 					cjsjInRange:'',
-					zjhmLike: '',
+                    mcLike: '',
 					pageNum: 1,
 					pageSize: 5
 				}
@@ -202,7 +202,7 @@
                 })
 			},
         	findMessList(){
-        		alert('查询')
+        	    this.getmess();
         	},
         	AddDataList(){
                 this.choosedRow = null;
