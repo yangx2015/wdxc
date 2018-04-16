@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' 
+		<Modal v-model="showModal" width='900' :closable='mesF'
 			:mask-closable="mesF" :title="operate + entityName">
 			<div style="overflow: auto;height: 500px;">
 				<Form
@@ -32,7 +32,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='状态'>
-								<Select v-model="formItem.zt" placeholder="请填选着状态...">
+								<Select v-model="formItem.zt" placeholder="请填选择状态...">
 									<Option value="00">正常</Option>
 									<Option value="01">停用</Option>
 								</Select>
@@ -101,7 +101,7 @@
 
 <script>
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name: '',
 		data() {

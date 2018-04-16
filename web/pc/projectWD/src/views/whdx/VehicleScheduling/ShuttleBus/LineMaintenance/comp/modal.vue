@@ -10,7 +10,7 @@
 		<Modal
 		    v-model="showModal"
 		    width='900'
-		    :closable='false'   
+		    :closable='false'
 		    :mask-closable="false"
 		    title="新增线路">
 		    <div>
@@ -20,7 +20,7 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="6">
-		    			<Select v-model="addspot.classes"  placeholder="请输选着线路班次...">
+		    			<Select v-model="addspot.classes"  placeholder="请输选择线路班次...">
 					        <Option value="早班">早班</Option>
 					        <Option value="午班">午班</Option>
 					        <Option value="下午班">下午班</Option>
@@ -55,7 +55,7 @@
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
-		    			<Button type="primary" shape="circle" icon="plus" 
+		    			<Button type="primary" shape="circle" icon="plus"
 		    				:disabled="spotName==''"
 		    				@click='addspotlist'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
@@ -95,7 +95,7 @@
 						name:'0075'
 					}
 				]
-				
+
 			}
 		},
 		methods:{

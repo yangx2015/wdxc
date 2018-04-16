@@ -6,10 +6,9 @@ import {router} from '../router/index';
 import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
-// baseURL: 'http://127.0.0.1:80',
-      baseURL: 'http://47.98.39.45:8080/biz',
-//	 baseURL: 'http://192.168.31.228:80',//刘
-//   baseURL: 'http://192.168.31.181:80',//陈
+// baseURL: 'http://127.0.0.1:8080',
+baseURL: 'http://47.98.39.45:8080/biz',
+// 	 baseURL: 'http://192.168.31.228:80',//刘
   timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
@@ -58,8 +57,10 @@ httpInstance.interceptors.response.use((response) => {
 }, function (error) {
     // 对响应错误做点什么
 		if(!Cookies.get('result')){
+			console.log('1')
   		router.push({name: 'error-500'})
     }else if(Cookies.get('result')){
+    	console.log('2')
   		router.push({name: 'errorpage_500'})
     }
     return Promise.reject(error);

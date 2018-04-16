@@ -29,7 +29,7 @@
 
 						<Row>
 							<Col span="12">
-								<FormItem label='类型：' placeholder="请选着角色类型...">
+								<FormItem label='类型：' placeholder="请选择角色类型...">
 									<Select v-model="addmess.jslx">
 										<Option value="00">管理</Option>
 										<Option value="11">员工</Option>
@@ -46,7 +46,7 @@
 
 						<Row>
 							<Col>
-								<FormItem label='权限选着:'>
+								<FormItem label='权限选择:'>
 									<Tree :data="data4" show-checkbox multiple></Tree>
 								</FormItem>
 							</Col>

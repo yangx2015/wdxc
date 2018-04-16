@@ -20,15 +20,12 @@
 								</Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
+						<Col span="12" v-if="showPsd">
 							<FormItem prop="mm" label='密码：'>
 								<Input type="password" v-model="addmess.mm" placeholder="请设置用户密码">
 								</Input>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
 						<Col span="12">
 							<FormItem prop="xm" label='姓名：'>
 								<Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
@@ -43,9 +40,6 @@
 								</Select>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
 						<Col span="12">
 							<FormItem label='类型：'>
 								<Select v-model="addmess.lx">
@@ -60,9 +54,6 @@
 								</Input>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
 						<Col span="12">
 							<FormItem prop="sjh" label='手机号码：'>
 								<Input type="text" v-model="addmess.sjh" placeholder="请输入手机号码">
@@ -88,7 +79,7 @@
 
 <script>
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name:'',
 		data(){
@@ -105,15 +96,13 @@
                     sjh:'',
                     zjhm:''
                 },
+                showPsd:false,
                 ruleInline: {
                   zh: [
                       { required: true, message: '请输入用户名', trigger: 'blur' }
                   ],
                   xm: [
                       { required: true, message: '请输入姓名', trigger: 'blur' }
-                  ],
-                  mm: [
-                      { required: true,message: '请设置密码', trigger: 'blur' }
                   ],
                   sjh:[
                       { required: true,message: '请输入手机号码', trigger: 'blur' }
@@ -137,6 +126,9 @@
 		created(){
 			this.addmess = this.usermes
 			this.fullcal()
+            if(this.usermesType){
+                this.showPsd = true;
+            }
 		},
 		methods:{
 			fullcal(){
@@ -160,6 +152,7 @@
 								}
 							})
                     	}else{
+                    	    delete v.addmess.mm;
                     		v.$http.post(configApi.USER.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('用户修改成功');

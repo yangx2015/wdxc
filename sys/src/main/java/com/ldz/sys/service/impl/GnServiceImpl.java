@@ -11,6 +11,7 @@ import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnService {
 
@@ -128,8 +130,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<Menu> getMenuTree(SysYh user) {
+        log.debug("getMenuTree");
         List<SysGn> functions = getUserFunctions(user);
         if (functions == null || functions.size() == 0)return new ArrayList<>();
+        log.debug("function size:"+functions.size());
         functions.sort(Comparator.comparing(SysGn::getPx));
         List<Menu> menuList = convertToMenus(functions);
         return buildMenuTree(menuList);

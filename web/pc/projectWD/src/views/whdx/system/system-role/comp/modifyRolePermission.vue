@@ -16,7 +16,7 @@
 							<Input type="text" v-model="addmess.jsmc" readonly>
 							</Input>
 						</FormItem>
-						<FormItem label='权限选着:'>
+						<FormItem label='权限选择:'>
 							<Tree :data="data4" show-checkbox multiple></Tree>
 						</FormItem>
 					</div>

@@ -98,7 +98,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())){ // su 用户可访问所有权限
 				if (!checkPermission(userInfo,request)){
 					request.getRequestDispatcher("/403").forward(request,response);
-					return true;
+					return false;
 				}
 			}
 		}catch(Exception e){

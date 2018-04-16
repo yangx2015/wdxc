@@ -2,7 +2,7 @@
 	@import '../../../../../styles/common.less';
 	.headTit {
 		text-align: center;
-	} 
+	}
 	/*5 7 12 20 45 48*/
 </style>
 <template>
@@ -24,7 +24,7 @@
 								<Option v-for="item in unitList" :value="item.value"></Option>
 							</Select>
 						</FormItem>
-					</Col>	
+					</Col>
 					<Col span="8">
 						<FormItem label="">
 							<h3>
@@ -48,7 +48,7 @@
 							</h3>
 							<Input v-model="formItem.starTime" size="large" placeholder="请填写用车时间"></Input>
 						</FormItem>
-					</Col>	
+					</Col>
 					<Col span="8">
 						<FormItem label="">
 							<h3>
@@ -56,7 +56,7 @@
 							</h3>
 							<Input v-model="formItem.starSite" size="large" placeholder="请填写候车地点..."></Input>
 						</FormItem>
-					</Col>	
+					</Col>
 					<Col span="8">
 						<FormItem label="">
 							<h3>
@@ -72,7 +72,7 @@
 									<h3>
 										费用来源
 									</h3>
-									<Select v-model="formItem.fromMoney" size="large" placeholder="请选着费用来源" filterable>
+									<Select v-model="formItem.fromMoney" size="large" placeholder="请选择费用来源" filterable>
 										<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 									</Select>
 								</FormItem>
@@ -82,7 +82,7 @@
 									<h3>
 										单据类型
 									</h3>
-									<Select size="large" placeholder="请选着单据类型" filterable>
+									<Select size="large" placeholder="请选择单据类型" filterable>
 										<Option value="单程"></Option>
 										<Option value="往返"></Option>
 									</Select>
@@ -95,10 +95,10 @@
 									<h3>
 										课题
 									</h3>
-									<Input 
+									<Input
 										v-if="formItem.task=='添加课题'"
-										v-model="formItem.newtask" 
-										size="large" 
+										v-model="formItem.newtask"
+										size="large"
 										placeholder="添加课题"></Input>
 									<Select
 										v-else
@@ -116,7 +116,7 @@
 										<Option v-for="item in carModelList" :value="item.value"></Option>
 									</Select>
 								</FormItem>
-							</Col>	
+							</Col>
 						</Row>
 						<Row v-else	>
 							<FormItem label="">
@@ -128,7 +128,7 @@
 								</Select>
 							</FormItem>
 						</Row>
-					</Col>	
+					</Col>
 					<Col span="16">
 						<FormItem label="">
 							<h3>
@@ -148,7 +148,7 @@
 
 <script>
 	import swal from 'sweetalert'
-	
+
     export default {
     	name:'NewCarList',
         data () {
@@ -234,7 +234,7 @@
             }])
 		},
 		mounted(){
-			
+
 		},
 		methods:{
 			//表单数据提交
