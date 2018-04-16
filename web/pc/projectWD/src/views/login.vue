@@ -90,6 +90,7 @@ export default {
         	this.$http.get(configApi.USERROOT.GET_MENU_TREE).then((res) =>{
         		if(res.code===200){
                     menuList.menuTree = res.result;
+                    console.log(res.result);
                     this.addToMenuList(res.result);
                     this.$router.push('home')
                     

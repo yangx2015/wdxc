@@ -89,8 +89,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 				return false;
 			}
 			request.setAttribute("userInfo", user);
+			log.debug("boundValueOps");
 			String userInfoJson = redisDao.boundValueOps(userid+"-userInfo").get();
+			log.debug("boundValueOps");
 			ObjectMapper mapper = new ObjectMapper();
+			log.debug("userInfoJson:"+userInfoJson);
 			SysYh userInfo = mapper.readValue(userInfoJson, SysYh.class);
 			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())){ // su 用户可访问所有权限
 				if (!checkPermission(userInfo,request)){
