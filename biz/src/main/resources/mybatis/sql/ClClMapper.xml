@@ -23,7 +23,9 @@ CL_CL t1 LEFT JOIN CL_DZWL_CL t2 ON t1.CL_ID=t2.CL_ID  LEFT JOIN CL_DZWL t3 on t
     </select>
 
 
-
+ <select id="seleClInfoByZdbh" parameterType="java.lang.String" resultMap="ClClresultMap">
+ SELECT * FROM CL_CL t WHERE t.zdbh=#{deviceId}
+</select>
 
 
 <resultMap type="com.ldz.biz.module.model.ClCl" id="ClClresultMap">

@@ -24,5 +24,8 @@ public class websocketInfo {
 	
 	private BigDecimal bdwd;
 	
+	private String zdbh;
 	
+	
+	private String cx;
 }

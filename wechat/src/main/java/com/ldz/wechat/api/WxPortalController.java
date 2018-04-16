@@ -54,9 +54,9 @@ public class WxPortalController {
 	}
 
 	@PostMapping(produces = "application/xml; charset=UTF-8")
-	@ResponseBody
 	public String post(@RequestBody String requestBody, @RequestParam("msg_signature") String signature,
 			@RequestParam("timestamp") String timestamp, @RequestParam("nonce") String nonce) {
+		
 		this.logger.info("\n接收微信请求：[signature=[{}], timestamp=[{}], nonce=[{}], requestBody=[\n{}\n] ", signature,
 				timestamp, nonce, requestBody);
 
@@ -82,19 +82,5 @@ public class WxPortalController {
 
 		return null;
 	}
-	/*
-	 * public static void main(String[] args) {
-	 * 
-	 * 
-	 * WxCryptUtil sCryptUtil= new WxCryptUtil();
-	 * 
-	 * String decrypt =
-	 * sCryptUtil.decrypt("tjlq1glUbSsxADd2fsxExFvDUDo1RgdoQveqrSWyhoy");
-	 * 
-	 * System.out.println(decrypt);
-	 * 
-	 * 
-	 * 
-	 * }
-	 */
+
 }

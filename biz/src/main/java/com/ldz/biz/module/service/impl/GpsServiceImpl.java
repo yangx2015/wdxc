@@ -49,10 +49,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	private ClSbyxsjjlMapper clSbyxsjjlMapper;
 	@Autowired
 	private ZdglService zdglservice;
-    @Autowired
-    private SimpMessagingTemplate websocket;
-	
-	
+	@Autowired
+	private SimpMessagingTemplate websocket;
+
 	@Override
 	protected Mapper<ClGps> getBaseMapper() {
 		return entityMapper;
@@ -60,9 +59,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 	@Override
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
-		
-		log.info("上传的gps信息:"+gpsinfo);
-		
+
+		log.info("上传的gps信息:" + gpsinfo);
+
 		// 将原始点位抓换
 		ClGps entity = changeCoordinates(gpsinfo);
 		if (entity == null) {
@@ -70,7 +69,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 
 		// 判断该点位是否携带类型,或者是何种类型分类存储
-		ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo);
+		ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity);
 		if (saveClSbyxsjjl != null) {
 			log.info("该点位属于特殊点位,事件类型为:" + saveClSbyxsjjl.getSjlx());
 		}
@@ -78,11 +77,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 判断redis(实时gps点位)里面是否存在历史gps数据
 		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).get();
 		if (StringUtils.isEmpty(bean)) {
-			redis.boundValueOps(ClGps.class.getSimpleName()+entity.getZdbh()).set(JsonUtil.toJson(entity));
-			
-			//初始化点位时 推送坐标到前端
-			websocket.convertAndSend("/topic/sendgps",JsonUtil.toJson(changeSocket(gpsinfo, entity)));
-			
+			redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
+
+			// 初始化点位时 推送坐标到前端
+			websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity)));
+
 			return ApiResponse.success("初始化点位成功");
 		}
 
@@ -102,13 +101,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(),
 				entity.getGdwd(), entity.getLx(), entity.getDwjd(), entity.getFxj(), entity.getYxsd());
 
-		redis.boundListOps(ClGpsLs.class.getSimpleName()+entity.getZdbh()).leftPush(JsonUtil.toJson(gpsls));
+		redis.boundListOps(ClGpsLs.class.getSimpleName() + entity.getZdbh()).leftPush(JsonUtil.toJson(gpsls));
 		// 更新存入redis(实时点位)
-		redis.boundValueOps(ClGps.class.getSimpleName()+entity.getZdbh()).set(JsonUtil.toJson(entity));
+		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
 
-		//推送坐标去前端
-		websocket.convertAndSend("/topic/sendgps",JsonUtil.toJson(changeSocket(gpsinfo, entity)));
-		
+		// 推送坐标去前端
+		websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity)));
+
 		return ApiResponse.success("该点位redis实时更新,历史存储成功");
 	}
 
@@ -156,14 +155,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public ClGps changeCoordinates(GpsInfo entity) {
 
 		ClGps clGps = new ClGps();
-		if (entity.getLatitude()!=null) {
+		if (entity.getLatitude() != null) {
 			clGps.setWd(new BigDecimal(entity.getLatitude()));
 		}
-		if (entity.getLongitude()!=null) {
+		if (entity.getLongitude() != null) {
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
 		clGps.setCjsj(new Date());
-		if (entity.getGpsjd() != null && entity.getGpsjd().length()<=3) {
+		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
 			clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
 		}
 		if (entity.getFxj() != null) {
@@ -187,11 +186,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public ClSbyxsjjl saveClSbyxsjjl(GpsInfo entity) {
+	public ClSbyxsjjl saveClSbyxsjjl(GpsInfo entity, ClGps clgps) {
 		// 封装设备事件记录表表
 		ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
-		clsbyxsjjl.setJd(new BigDecimal(entity.getLongitude()));
-		clsbyxsjjl.setWd(new BigDecimal(entity.getLatitude()));
+		clsbyxsjjl.setJd(clgps.getBdjd());
+		clsbyxsjjl.setWd(clgps.getBdwd());
 		clsbyxsjjl.setCjsj(new Date());
 		if (entity.getGpsjd() != null) {
 			clsbyxsjjl.setJid(new BigDecimal(entity.getGpsjd()));
@@ -208,7 +207,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 		// 判断该点位是否在电子围栏里面
 		ClDzwl judgePoint = JudgePoint(entity);
-		  if(judgePoint != null) {
+		if (judgePoint != null) {
 			clsbyxsjjl.setId(genId());
 			clsbyxsjjl.setSjlx("70");
 			clsbyxsjjl.setBz(judgePoint.getId());
@@ -262,9 +261,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public websocketInfo changeSocket(GpsInfo gpsinfo ,ClGps clpgs) {
-		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
-		//通过终端id获取车辆信息
+	public websocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs) {
+		ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
+		// 通过终端id获取车辆信息
 		websocketInfo info = new websocketInfo();
 		info.setBdjd(clpgs.getBdjd());
 		info.setBdwd(clpgs.getBdwd());
@@ -273,7 +272,35 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		info.setCph(seleByZdbh.getCph());
 		info.setSpeed(clpgs.getYxsd());
 		info.setTime(clpgs.getCjsj());
+		info.setZdbh(gpsinfo.getDeviceId());
+		info.setCx(seleByZdbh.getCx());
 		return info;
+	}
+
+	@Override
+	public ApiResponse<List<websocketInfo>> inintGps() {
+		ApiResponse<List<websocketInfo>> apiResponse = new ApiResponse<>();
+		List<websocketInfo> list = new ArrayList<>();
+
+		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
+
+		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
+			ClCl seleClInfoByZdbh = clclmapper.seleClInfoByZdbh(clSbyxsjjl.getZdbh());
+			websocketInfo websocketInfo = new websocketInfo();
+			websocketInfo.setBdjd(clSbyxsjjl.getJid());
+			websocketInfo.setBdwd(clSbyxsjjl.getWd());
+			websocketInfo.setClid(seleClInfoByZdbh.getClId());
+			websocketInfo.setCph(seleClInfoByZdbh.getCph());
+			websocketInfo.setEventType(clSbyxsjjl.getSjlx());
+			websocketInfo.setTime(clSbyxsjjl.getCjsj());
+			websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+			websocketInfo.setCx(seleClInfoByZdbh.getCx());
+			list.add(websocketInfo);
+		}
+
+		apiResponse.setResult(list);
+
+		return apiResponse;
 	}
 
 }

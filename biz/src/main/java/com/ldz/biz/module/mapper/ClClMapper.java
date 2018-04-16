@@ -8,7 +8,7 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface ClClMapper extends Mapper<ClCl> {
 	/*
-	 * 通过车辆id找到对应的电子围栏
+	 * 通过车辆终端id找到对应的电子围栏
 	 */
 	ClCl seleByZdbh(String deviceId);
 	
@@ -17,4 +17,6 @@ public interface ClClMapper extends Mapper<ClCl> {
 	 * 
 	 */
 	List<ClCl> getAllClInfo(List<String> list);
+	
+	ClCl seleClInfoByZdbh(String zdbh);
 }
