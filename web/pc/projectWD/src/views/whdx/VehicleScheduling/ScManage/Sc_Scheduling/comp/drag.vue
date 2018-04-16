@@ -56,7 +56,7 @@ li{
 												{{items.cph}}
 										</div>
 										<div class="xlxq-list xlxq-but">
-												<Button type="error" size="small" shape="circle" icon="close" @click="delelist(indexs)"></Button>
+												<Button type="error" size="small" shape="circle" icon="close" @click="deleteById(item.id)"></Button>
 										</div>
 									</div>
 								</div>
@@ -133,7 +133,7 @@ li{
 	            	let linelength = event.to.id
 	            	let lineID = linelength.substring(0,linelength.length-5)
 	            	let xlId = vm.listdata[lineID].id
-//	            	vm.AddList(clId,xlId)
+	            	vm.AddList(clId,xlId)
 	            }
 	        });
 		},
@@ -167,8 +167,9 @@ li{
 //					}
 				})
 			},
-			delelist(indexs){
-				this.$Message.success('移出成功');
+			deleteById(e){
+                console.log(e);
+                this.$Message.success('移出成功');
 			},
 			okmodel(){
 				this.$emit('okdrag')
@@ -185,6 +186,7 @@ li{
 			            animation: 120,
 			            onSort: function (/**Event*/evt) {
 			            	console.log('6',evt.item)
+                            console.log(event.item.getAttribute('data-index'))
 							console.log('6',evt.item.textContent.split(" "))
 							
 							
@@ -196,7 +198,7 @@ li{
 												evt.item.textContent.split(" ")[1]+
 										'</div>'+
 										'<div style="float: left;width: 33.3%;text-align: right;padding-right: 5px;">'+
-											'<button onClick="window.wvm.delelist()" type="button" class="ivu-btn ivu-btn-small ivu-btn-error ivu-btn-circle ivu-btn-icon-only">'+
+											'<button onClick="window.wvm.deleteById('+evt.item+')" type="button" class="ivu-btn ivu-btn-small ivu-btn-error ivu-btn-circle ivu-btn-icon-only">'+
 												'<!----><i class="ivu-icon ivu-icon-close"></i> <!---->'+
 											'</button>'+
 										'</div>'+
@@ -206,6 +208,8 @@ li{
 							console.log('6',evt)
 						},
 			            onRemove (event) {
+                            console.log(event.item);
+                            event.item.setAttribute('style',"display:none");
 			            	console.log(event.item.getAttribute('data-index'))
 			            	console.log(event)
 			           }
