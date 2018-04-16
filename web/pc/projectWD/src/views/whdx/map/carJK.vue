@@ -85,6 +85,7 @@
 			// 编写自定义函数,创建标注
 			function addMarker(point){
 //			  	var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
+			  	
 			  	var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png",  new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)});
 			  	var marker = new BMap.Marker(point,{icon:myIcon});
 				v.map.addOverlay(marker);
