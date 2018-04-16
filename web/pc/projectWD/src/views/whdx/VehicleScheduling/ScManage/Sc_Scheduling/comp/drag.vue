@@ -56,7 +56,7 @@ li{
 												{{items.cph}}
 										</div>
 										<div class="xlxq-list xlxq-but">
-												<Button type="error" size="small" shape="circle" icon="close" @click="deleteById(item.id)"></Button>
+												<Button type="error" size="small" shape="circle" icon="close" @click="deleteById(item.id,items.clId)"></Button>
 										</div>
 									</div>
 								</div>
@@ -149,7 +149,7 @@ li{
 					console.log('bug')
 				})
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
 					console.log('排班数据2',res)
 					v.listdata = res.result
 				}).then((res) =>{
@@ -167,9 +167,12 @@ li{
 //					}
 				})
 			},
-			deleteById(e){
-                console.log(e);
+			deleteById(xlId,clId){
                 this.$Message.success('移出成功');
+                var v = this
+                this.$http.post(configApi.XLPBXX.deleteByXlAndCl,{"xlId":xlId,clId:clId}).then((res) =>{
+                    this.getmess();
+                })
 			},
 			okmodel(){
 				this.$emit('okdrag')

@@ -41,6 +41,11 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 		return pbservice.saveEntity(entity);
 	}
 
+	@RequestMapping("deleteByXlAndCl")
+	public ApiResponse<String> deleteByXlAndCl(String xlId,String clId){
+		return pbservice.deleteByXlAndCl(xlId,clId);
+	}
+
 	@PostMapping("/xbpb/")
 	public ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel  pbclxlmodel) {
 		return pbservice.getPbInfo(pbclxlmodel);

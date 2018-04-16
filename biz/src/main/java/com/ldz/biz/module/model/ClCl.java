@@ -163,8 +163,8 @@ public class ClCl implements Serializable {
     /**
      * OBJ编号
      */
-    @Column(name = "OBJ_CODE")
-    private String objCode;
+    @Column(name = "OBD_CODE")
+    private String obdCode;
 
 
      /*

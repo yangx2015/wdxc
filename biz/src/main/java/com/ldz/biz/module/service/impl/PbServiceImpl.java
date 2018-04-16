@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -114,5 +115,14 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		pbinflist.setResult(selectXbPb);
 
 		return pbinflist;
+	}
+
+	@Override
+	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId) {
+		SimpleCondition condition = new SimpleCondition(ClPb.class);
+		condition.eq(ClPb.InnerColumn.xlId,xlId);
+		condition.eq(ClPb.InnerColumn.clId,clId);
+		entityMapper.deleteByExample(condition);
+		return ApiResponse.success();
 	}
 }

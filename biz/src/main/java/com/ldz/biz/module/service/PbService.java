@@ -30,4 +30,6 @@ public interface PbService extends BaseService<ClPb, String> {
 	             date2; 后台转换日期后的字符串类型
 	 */
 	ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel pbclxlmodel);
+
+	ApiResponse<String> deleteByXlAndCl(String xlId, String clId);
 }

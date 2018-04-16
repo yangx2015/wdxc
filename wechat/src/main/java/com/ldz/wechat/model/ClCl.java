@@ -178,14 +178,14 @@ public class ClCl implements Serializable {
      * OBJ编号
      */
     @Column(name = "OBJ_CODE")
-    private String objCode;
+    private String obdCode;
 
-    public String getObjCode() {
-        return objCode;
+    public String getObdCode() {
+        return obdCode;
     }
 
-    public void setObjCode(String objCode) {
-        this.objCode = objCode;
+    public void setObdCode(String obdCode) {
+        this.obdCode = obdCode;
     }
     /**
      * 获取车辆id
