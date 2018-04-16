@@ -92,6 +92,7 @@ export default {
                     menuList.menuTree = res.result;
                     this.addToMenuList(res.result);
                     this.$router.push('home')
+                    
                 }
         	}).catch((error) =>{
         		console.log(error)
@@ -104,6 +105,7 @@ export default {
                     this.addToMenuList(r.children);
                 }
             }
+            console.log('router',list)
         },
         getMenuList(){
         	this.$http.get(configApi.USERROOT.GET_MENU_LIST).then((res) =>{
