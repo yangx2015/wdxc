@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增超速设定">
+		    :title="operate+'超速设定'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -45,6 +45,7 @@
 		name:'',
 		data(){
 			return {
+                operate:'新建',
 				showModal:true,
 				//新增数据
             	addmess: {
@@ -76,6 +77,10 @@
 			this.addmess = this.mess
 			this.fullcal()
 			this.getCxDict();
+
+            if(!this.messType){
+                this.operate = '编辑'
+            }
 		},
 		methods:{
             getCxDict(){

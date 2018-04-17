@@ -93,28 +93,28 @@
   	                	type:'index',
                       fixed: 'left'
   	                },
-                    {
-                        title: '头像',
-                        width:60,
-                        align:'center',
-                        key: 'tx',
-                        fixed: 'left',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('icon', {
-                                    props: {
-                                        type: params.row.tx,
-                                        size: '22'
-                                    },
-                                    on: {
-                                        click: () => {
-																					console.log('数据调试',params)
-                                        }
-                                    }
-                                })
-                            ]);
-                        }
-                    },
+                    // {
+                    //     title: '头像',
+                    //     width:60,
+                    //     align:'center',
+                    //     key: 'tx',
+                    //     fixed: 'left',
+                    //     render: (h, params) => {
+                    //         return h('div', [
+                    //             h('icon', {
+                    //                 props: {
+                    //                     type: params.row.tx,
+                    //                     size: '22'
+                    //                 },
+                    //                 on: {
+                    //                     click: () => {
+						// 															console.log('数据调试',params)
+                    //                     }
+                    //                 }
+                    //             })
+                    //         ]);
+                    //     }
+                    // },
                     {
                         title: '姓名',
                         width:80,

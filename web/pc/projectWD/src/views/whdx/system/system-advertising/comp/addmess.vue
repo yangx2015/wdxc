@@ -64,7 +64,7 @@
 								<div>
 									添加视频
 								</div>
-								<addlistfileVideo></addlistfileVideo>
+								<addlistfileVideo @addImg="addImg"></addlistfileVideo>
 							</FormItem>
 						</Col>
 					</Row>

@@ -2,7 +2,7 @@
 	<div>
 	    <div class="demo-upload-list" v-for="item in uploadList">
 	        <template v-if="item.status === 'finished'">
-	            <img :src="item.url">
+				<video :src="item.url" controls="false"></video>
 	            <div class="demo-upload-list-cover">
 	                <!--<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>-->
 	                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
@@ -18,12 +18,13 @@
 	        :default-file-list="defaultList"
 	        :on-success="handleSuccess"
 	        :max-size="1024000"
+			:format="['jpg','ogg','mp4']"
 	        :on-format-error="handleFormatError"
 	        :on-exceeded-size="handleMaxSize"
 	        :before-upload="handleBeforeUpload"
 	        multiple
 	        type="drag"
-	        :action="uploadUrl+'?targetPath=hdFile'"
+	        :action="uploadUrl+'?targetPath=movie'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
 	            <Icon type="camera" size="20"></Icon>
@@ -58,14 +59,14 @@
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
             },
             handleSuccess (res, file,fileList) {
-            	alert('上传完成')
-                file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-                file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+                this.$emit('addImg',res.message);
+                console.log(res);
+                file.url = configApi.STATIC_PATH + res.message;
             },
             handleFormatError (file) {
                 this.$Notice.warning({
                     title: '文件格式错误',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    desc: 'File format of ' + file.name + ' is incorrect, please select.'
                 });
             },
             handleMaxSize (file) {

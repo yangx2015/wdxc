@@ -2,6 +2,7 @@ package com.ldz.sys.service.impl;
 
 import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysZdlmMapper;
 import com.ldz.sys.mapper.SysZdxmMapper;
@@ -34,6 +35,12 @@ public class ZdlmServiceImpl extends BaseServiceImpl<SysZdlm,String> implements 
     @Override
     protected Mapper<SysZdlm> getBaseMapper() {
         return zdlmMapper;
+    }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        condition.setOrderByClause("qz desc");
+        return true;
     }
 
 

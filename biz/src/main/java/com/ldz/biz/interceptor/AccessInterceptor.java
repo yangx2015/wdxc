@@ -89,6 +89,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 				return false;
 			}
 			request.setAttribute("userInfo", user);
+			request.setAttribute("orgCode", user.getJgdm());
 			log.debug("boundValueOps");
 			String userInfoJson = redisDao.boundValueOps(userid+"-userInfo").get();
 			log.debug("boundValueOps");

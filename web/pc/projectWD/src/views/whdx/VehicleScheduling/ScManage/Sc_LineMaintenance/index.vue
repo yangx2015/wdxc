@@ -93,6 +93,22 @@
 						key: 'xlmc'
 					},
 					{
+						title: '开始时间',
+						align: 'center',
+						key: 'yxkssj',
+						render:(h,p)=>{
+						    return h('div',p.row.yxkssj+"点");
+						}
+					},
+					{
+						title: '结束时间',
+						align: 'center',
+						key: 'yxjssj',
+                        render:(h,p)=>{
+                            return h('div',p.row.yxjssj+"点");
+                        }
+					},
+					{
 						title: '方向',
 						align: 'center',
 						key: 'yxfx',

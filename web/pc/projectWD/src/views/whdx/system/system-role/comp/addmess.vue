@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" title="新建角色">
+		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'角色'">
 			<div style="overflow: auto;height: 300px;">
 				<Form
 	    			ref="addmess"
@@ -70,6 +70,7 @@
 		data() {
 			return {
 				showModal: true,
+				operate:'新建',
 				mesF: false,
 				addmess: {
 					jsmc: '',
@@ -84,6 +85,8 @@
 				data4: [
                 ],
 				choosedIds :[],
+                Dictionary:[],
+                lmdmDictionary:'ZDCLK0004'
 			}
 		},
 		props:{
@@ -91,19 +94,23 @@
 				type:Boolean,
 				default:true
 			},
-			Dictionary:{
-				type:Array,
-				default:[]
-			}
 		},
 		created(){
             this.addmess = this.$parent.messdata
-            console.log(this.addmess);
+            if(!this.usermesType){
+                this.operate = '编辑';
+            }
         },
 		mounted(){
 			this.getRolePermissionTree();
+            this.getLXDic();
 		},
 		methods: {
+            getLXDic(){
+                console.log('getLXDic');
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+                console.log(this.Dictionary);
+            },
 		    getAllPermissionTree(){
                 this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
                     if(res.code===200){
@@ -120,7 +127,6 @@
 			},
 		    setRolePermission(){
                 this.getChoosedIds(this.data4);
-                console.log(this.choosedIds);
                 let ids = '';
                 for (let r of this.choosedIds){
                     ids += r+',';

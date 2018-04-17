@@ -1,6 +1,7 @@
 module.exports = {
 	UPLOAD:'http://47.98.39.45:8080/biz/upload',
     STATIC_PATH:'http://47.98.39.45:9092/',
+	VIDEO_PATH:'http://47.98.39.45:9091',
 	USERROOT:{
 		GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
@@ -120,7 +121,8 @@ module.exports = {
 		QUERY:  '/api/cd/pager',
 		ADD:    '/api/cd/save',
         CHANGE: '/api/cd/update',
-		DELE:   '/api/cd/removeIds'
+		DELE:   '/api/cd/removeIds',
+		GET_CONDITION:'/api/cd/getCondition'
 	},
 	SG:{
 		QUERY:  '/api/sg/pager',

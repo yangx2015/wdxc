@@ -127,7 +127,7 @@ li{
 	            },
 	            animation: 120,
 	            onRemove (event) {
-                    console.log(event.item);
+                    console.log(event);
                     //车辆id
 	            	let clId = vm.carList[event.item.getAttribute('data-index')].clId
 	            	//线路id
@@ -188,11 +188,7 @@ li{
 			                put: true
 			            },
 			            animation: 120,
-			            onSort: function (/**Event*/evt) {
-			            	console.log('6',evt.item)
-							console.log('6',evt.item.textContent.split(" "))
-							
-							
+			            onSort: function (evt) {
 							var newhtml = '<div style="height: 34px;line-height: 28px;overflow: hidden;border: solid 1px #9B9B9B;padding: 3px 0;">'+
 										'<div style="float: left;width: 33.3%;">'+
 												evt.item.textContent.split(" ")[0]+

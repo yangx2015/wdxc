@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
-			:mask-closable="mesF" title="新建字典">
+			:mask-closable="mesF" title="编辑字典">
 			<div style="overflow: auto;height: 300px;">
 				<Form>
 					<FormItem label='字典名称'>

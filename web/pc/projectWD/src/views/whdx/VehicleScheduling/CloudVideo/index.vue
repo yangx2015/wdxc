@@ -9,6 +9,11 @@
 			margin-bottom: 5px;
 		}
 	}
+	.videoInfo{
+		text-align: center;
+		padding: 16px;
+		margin-bottom: 16px;
+	}
 </style>
 <template>
 	<div class="CloudVideo">
@@ -55,6 +60,9 @@
 								<video class="videoFile"
 									   :src="videoPath+item.dz"
 									   controls="controls"></video>
+								<div class="videoInfo">
+									<span>{{item.cph}} [{{item.cjsj}}]</span>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -89,7 +97,7 @@
         mixins: [mixins],
 		data(){
 			return {
-                videoPath :this.util.videoPath,
+                videoPath :configApi.VIDEO_PATH,
 				activeName:0,
 				cjsjInRange:[],
 				carList:[],
@@ -103,7 +111,7 @@
                     cjsjInRange:'',
                     cphLike:'',
                     pageNum: 1,
-                    pageSize: 8
+                    pageSize: 12
 				}
 			}
 		},

@@ -101,10 +101,10 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 				xlzd.setFx(router.getYxfs());
 				xlzd.setXh((short) m);
 				xlzd.setXlId(router.getId());
-				xlzd.setZdId(xlzds.get(i).getZdId());
+				xlzd.setZdId(stationIds.get(i));
 				xlzd.setId(genId());
 				xlzd.setZt("00");
-				xlzd.setYjdzsj(Short.valueOf(baiDuTime));
+				xlzd.setYjdzsj(getMinutes(baiDuTime));
 				xlzds.add(xlzd);
 
 			} else {
@@ -114,7 +114,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 				xlzd.setFx(router.getYxfs());
 				xlzd.setXh((short) m);
 				xlzd.setXlId(router.getId());
-				xlzd.setZdId(xlzds.get(i).getZdId());
+				xlzd.setZdId(stationIds.get(i));
 				xlzd.setId(genId());
 				xlzd.setZt("00");
 				xlzd.setYjdzsj(null);
@@ -148,6 +148,20 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			return new ArrayList<>();
 		List<String> xlIds = xlzds.stream().map(ClXlzd::getXlId).collect(Collectors.toList());
 		return xlService.findIn(ClXl.InnerColumn.id, xlIds);
+	}
+
+	private short getMinutes(String s){
+		int index = s.length() - 2;
+		String unit = s.substring(index);
+		String num = s.substring(0,index);
+		switch(unit){
+			case "分钟":
+				return new Short(num);
+			case "小时":
+				return new Short(""+Integer.parseInt(num) * 60);
+			default:
+				return 0;
+		}
 	}
 
 	// 获取百度经纬度之间驾车时间

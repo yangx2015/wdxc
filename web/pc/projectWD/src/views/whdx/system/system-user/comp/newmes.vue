@@ -2,10 +2,10 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    width='800'
+			height="400"
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增用户">
+		    :title="operate+'用户'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -85,6 +85,7 @@
 		data(){
 			return {
 				showModal:true,
+				operate:"新增",
 				//新增数据
             	addmess: {
                     zh: '',
@@ -128,7 +129,9 @@
 			this.fullcal()
             if(this.usermesType){
                 this.showPsd = true;
-            }
+            }else{
+                this.operate = '编辑'
+			}
 		},
 		methods:{
 			fullcal(){

@@ -2,6 +2,7 @@ package com.ldz.biz.module.service.impl;
 
 import java.util.Date;
 
+import com.ldz.sys.base.LimitedCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -38,6 +39,11 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
     @Override
     protected Class<?> getEntityCls(){
         return ClSpk.class;
+    }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        return true;
     }
 
     @Override

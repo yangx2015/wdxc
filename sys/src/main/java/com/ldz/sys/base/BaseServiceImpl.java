@@ -10,6 +10,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.ExcelParams;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.SnowflakeIdWorker;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
  * @author Lee
  * @date 2017年7月26日
  */
+@Slf4j
 public abstract class BaseServiceImpl<T, PK extends Serializable> implements BaseService<T, PK> {
 
     @Autowired
@@ -397,6 +399,7 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
             page.setPageNum(1);
         }
         if (StringUtils.isEmpty(condition.getOrderByClause())){
+            log.debug("该分页没有设置排序字段，默认按创建时间倒序，如果有其他需求，请在 fillCondition 方法中申明");
             condition.setOrderByClause("cjsj desc");
         }
         PageInfo<T> resultPage = PageHelper.startPage(page.getPageNum(), page.getPageSize()).doSelectPageInfo(new ISelect() {

@@ -17,7 +17,7 @@ let util = {
 //  : env === 'production'
 //      ? 'https://www.url.com'
 //      : 'https://debug.url.com';
-//util.videoPath = 'http://47.98.39.45:9091';
+// util.videoPath = 'http://47.98.39.45:9091';
 //util.ajax = axios.create({
 //  baseURL: ajaxUrl,
 //  timeout: 30000,

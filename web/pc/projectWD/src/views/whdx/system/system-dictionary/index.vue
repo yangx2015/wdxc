@@ -51,7 +51,7 @@
 								<Row class="margin-bottom-10">
 									<Input v-model="dictionaryMess[index]" clearable placeholder="请输入字典信息..." @on-change="findDicList(item,index,dictionaryMess[index])"></Input>
 								</Row>
-								<Row class="padding-2px-5px" style='background-color: #a09d9d;'>
+								<Row class="padding-2px-5px" style='background-color: #f8f8f9;'>
 									<Col span="2"> 序号
 									</Col>
 									<Col span="8"> 类目编码

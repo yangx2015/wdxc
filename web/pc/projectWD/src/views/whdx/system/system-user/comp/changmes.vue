@@ -1,7 +1,7 @@
 <!--角色分配-->
 <template>
 	<div>
-		<Modal v-model='RootShow' width='800' :closable='false' :mask-closable="false" title="角色分配">
+		<Modal v-model='RootShow'  height="400" :closable='false' :mask-closable="false" title="角色分配">
 			<div style="overflow: auto;height: 300px;">
 				<div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
 					<Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">全选</Checkbox>

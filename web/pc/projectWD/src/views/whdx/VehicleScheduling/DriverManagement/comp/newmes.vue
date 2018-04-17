@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增驾驶员">
+		    :title="operate+'驾驶员'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -95,6 +95,7 @@
         mixins:[mixins],
 		data(){
 			return {
+                operate:'新增',
 				showModal:true,
 				//新增数据
                 clrq:'',
@@ -131,6 +132,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+				fleetList:[],
 			}
 		},
 
@@ -156,8 +158,21 @@
 			this.addmess.xb = '1'
 			this.addmess.zjcx = '11'
 			this.fullcal()
+			this.getFleetList()
+
+            if(!this.messType){
+			    this.operate = '编辑'
+            }
 		},
 		methods:{
+		    getFleetList(){
+				let v = this;
+                v.$http.post(configApi.CD.GET_CONDITION).then((res) =>{
+                    if(res.code===200){
+                        this.fleetList = res.result;
+                    }
+                })
+			},
 			fullcal(){
 				console.log('信息',this.mess)
 			},

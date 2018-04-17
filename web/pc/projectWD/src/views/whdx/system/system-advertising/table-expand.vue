@@ -62,7 +62,7 @@
 				v-for="(item,index) in uploadList" 
 				v-if="(index+1)!=uploadList.length">
 				<div>
-					<video src="static/movie.ogg" height="100%"></video>
+					<video :src="staticPath+imgUrl" controls="controls" height="100%"></video>
 					<div class="demo-upload-list-cover">
 						<Icon type="arrow-right-b" @click.native="handleView(index)"></Icon>
 					</div>
