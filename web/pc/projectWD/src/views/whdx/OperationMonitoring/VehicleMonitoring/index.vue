@@ -31,7 +31,7 @@
 <template>
     <div class="box-row">
     	<div class="body-F" style="height:100%;">
-    		<my-map :center='mapCenter'></my-map>
+    		<my-map :mapCarlist='mapMess'></my-map>
     	</div>
     	<div class="VehicleMonitoringTiT">
     		<div class="box">
@@ -68,20 +68,20 @@
     				</Row>
     			</div>
     			<div class="body">
-					<div class="carlistmess" v-for="(item,index) in carlist">
+					<div class="carlistmess" v-for="(item,index) in carlist" @click="carClick(item)">
 						<div>
 							<span>
-								{{item.deviceID}}
+								{{item.zdbh}}
 							</span>
 							<span style="float: right;">
-								{{item.carId}}
+								{{item.cph}}
 							</span>
 						</div>
-						<div>
+						<div style="overflow: hidden;">
 							<span>
 								{{item.text}}
 							</span>
-							<span>
+							<span style="float: right;">
 								{{item.time}}
 							</span>
 						</div>
@@ -95,6 +95,7 @@
 <script>
 
 import myMap from '../../map/carJK.vue'
+import configApi from '@/axios/config.js'
 export default {
     name: 'VehicleMonitoring',
     components: {
@@ -102,74 +103,27 @@ export default {
     },
     data () {
         return {
-        	mapCenter:{lng: 114.372443, lat: 30.544572},
-        	carlist:[
-        	],
+        	mapMess:[],//地图数据传输
+        	carlist:[],
         	//启动
         	carlaunch:[
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'上线时间'
-        		}
         	],
         	//熄火
         	flameout:[
-				{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'熄火时间'
-        		}
         	],
         	offline:[
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'离线时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'离线时间'
-        		},
-        		{
-        			deviceID:'asdzxc123456',
-        			carId:'鄂A12354',
-        			time:'2017-12-12 08:00:00',
-        			text:'离线时间'
-        		}
         	]
         };
     },
     computed: {
+    	carList(){
+			return this.$store.state.app.socketAllCar
+    	}
+    },
+    watch:{
+    	carList:(n,o)=>{
+    		this.carlaunch = n
+    	}
     },
     created(){
     	this.$store.commit('setCurrentPath', [{
@@ -179,18 +133,29 @@ export default {
         },{
             title: '车辆监控',
         }]),
-        this.carlist = this.carlaunch
+        this.getmess()
     },
     methods: {
-    	carlaunchClick(){
-    		this.carlist = this.carlaunch
+    	carlaunchClick(){//启动
+    		this.mapMess = this.carlist = this.carlaunch
     	},
     	flameoutClick(){
-    		this.carlist = this.flameout
+    		this.mapMess = this.carlist = this.flameout
     	},
     	offlineClick(){
-    		this.carlist = this.offline
-    	}
+    		this.mapMess = this.carlist = this.offline
+    	},
+    	getmess(){
+			var v = this
+			this.$http.get(configApi.CLJK.QUERY).then((res) =>{
+					console.log('123123',res)
+					v.flameout = res.result
+					v.mapMess = v.carlist = v.carlaunch
+			})
+		},
+		carClick(item){
+			this.mapMess=[item]
+		}
     }
 };
 </script>

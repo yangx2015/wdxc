@@ -48,12 +48,23 @@
 			    }
 			}
 		},
+		props:{
+			mapCarlist:{
+				type:Array,
+				default:[]
+			}
+		},
+		watch:{
+			mapCarlist:(n,o)=>{
+				this.disDot(n)
+			}
+		},
 		created(){
 			
 		},
 		mounted(){
 			this.Buildmap()
-			this.disDot(this.dot)
+//			this.disDot(this.dot)
 		},
 		methods:{
 			Buildmap(){
@@ -79,7 +90,7 @@
 			var v = this
 			// 随机向地图添加25个标注
 			for (var i = 0; i < list.length; i ++) {
-				var point = new BMap.Point(list[i].lng, list[i].lat);
+				var point = new BMap.Point(list[i].bdjd, list[i].bdwd);
 				addMarker(point);
 			}
 			// 编写自定义函数,创建标注

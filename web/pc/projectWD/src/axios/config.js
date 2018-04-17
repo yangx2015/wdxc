@@ -162,4 +162,7 @@ module.exports = {
         CHANGE: '/api/zdgl/update',
 		DELE:   '/api/zdgl/removeIds'
 	},
+	CLJK:{
+		QUERY:'/api/cl/InitClGps'
+	}
 }

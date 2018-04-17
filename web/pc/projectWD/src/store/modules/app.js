@@ -6,7 +6,8 @@ import session from '../../libs/session';
 
 const app = {
     state: {
-    	socketMess:[],
+    	socketMess:[],//校巴车辆数据
+    	socketAllCar:[],//监控数据
     	loading:{
     		size:55,
     		text:'数据加载中请稍后...'
@@ -52,6 +53,9 @@ const app = {
         },
     	socketMessAdd (state,data){
     		state.socketMess = data
+    	},
+    	socketAllCarAdd(state,data){
+    		state.socketAllCar = data
     	},
         setTagsList (state, list) {
             state.tagsList.push(...list);

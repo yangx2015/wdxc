@@ -94,9 +94,11 @@
         },
         data () {
             return {
-//          	"47.98.39.45:8080"
-			    socket : new SockJS("http://"+"192.168.31.180:8080"+"/biz/gps"),
+//          	"47.98.39.45:8080/biz"
+			    socket : new SockJS("http://"+"192.168.31.180:80"+"/gps"),
+//				socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
 				scoketMess:[],
+				scoketAllCar:[],
 				
 				shrink: false,
                 userName: '',
@@ -107,6 +109,9 @@
         computed: {
         	GetscoketMess() {
 				return this.$store.state.app.socketMess
+			},
+			GetscoketAllCar() {
+				return this.$store.state.app.socketAllCar
 			},
             menuList () {
                 return this.$store.state.app.menuList;
@@ -141,7 +146,10 @@
             },
             GetscoketMess: function(newQuestion, oldQuestion) {
 				this.scoketMess = newQuestion
-			}
+			},
+            GetscoketAllCar:(newQuestion, oldQuestion)=>{
+            	this.scoketAllCar = newQuestion
+            }
         },
         mounted () {
             this.init();
@@ -179,15 +187,28 @@
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
 			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-			            console.log('soc',JSON.parse(data))
+//			            console.log('soc',data)
+//			            let js = JSON.parse(data.body)
+//			            console.log('soc********************',js)
 			            let jsonMess = JSON.parse(data.body)
-			            v.scoketMess.forEach((item,index) => {
+			            
+			            if(jsonMess.cx==="30"){//校巴
+				            v.scoketMess.forEach((item,index) => {
+								if(item.clid==jsonMess.clid){
+									v.scoketMess.splice(index,1)
+								}
+							})
+					        v.scoketMess.push(jsonMess)
+				            v.$store.commit('socketMessAdd',v.scoketMess)
+			            }
+			            
+			            v.scoketAllCar.forEach((item,index) => {
 							if(item.clid==jsonMess.clid){
-								v.scoketMess.splice(index,1)
+								v.scoketAllCar.splice(index,1)
 							}
 						})
-				        v.scoketMess.push(jsonMess)
-			            v.$store.commit('socketMessAdd',v.scoketMess)
+				        v.scoketAllCar.push(jsonMess)
+			            v.$store.commit('socketAllCarAdd',v.scoketAllCar)
 			        });
 			    });	
 			},
