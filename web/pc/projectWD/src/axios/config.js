@@ -85,7 +85,8 @@ module.exports = {
 		QUERY: '/api/cl/pager',
         ADD:   '/api/cl/save',
         CHANGE:'/api/cl/update',
-        DELE:  '/api/cl/removeIds'
+        DELE:  '/api/cl/removeIds',
+		GET_ORG_CAR_LIST:'/api/cl/getOrgCarList'
 	},
 	XL:{
 		QUERY: '/api/xl/pager',

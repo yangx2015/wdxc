@@ -229,7 +229,6 @@
         		var v = this
         		v.findMess.pageNum = event
                 this.getmess()
-//      		console.log(v.page)
         	},
 		}
 	}
