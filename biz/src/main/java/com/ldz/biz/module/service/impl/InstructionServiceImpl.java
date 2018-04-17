@@ -37,9 +37,7 @@ public class InstructionServiceImpl implements InstructionService {
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
 			
 			ClZdgl clzd = zdglservice.findById(info.getDeviceId());
-			if (info.getCmdType().equals("01")) {
-				clzd.setCssd(info.getCmd());
-			}
+			
 			if (info.getCmdType().equals("02")) {
 				clzd.setJslmd(info.getCmd());
 			}

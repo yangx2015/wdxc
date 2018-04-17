@@ -18,8 +18,8 @@ public class ClCssd implements Serializable {
     /**
      * 车型
      */
-    @Column(name = "CX")
-    private String cx;
+    @Column(name = "CPH")
+    private String cph;
 
     /**
      * 速度上限
@@ -88,18 +88,19 @@ public class ClCssd implements Serializable {
      *
      * @return CX - 车型
      */
-    public String getCx() {
-        return cx;
-    }
-
+    public String getCph() {
+		return cph;
+	}
     /**
      * 设置车型
      *
      * @param cx 车型
      */
-    public void setCx(String cx) {
-        this.cx = cx;
-    }
+    
+
+  	public void setCph(String cph) {
+  		this.cph = cph;
+  	}
 
     /**
      * 获取速度上限
@@ -110,7 +111,9 @@ public class ClCssd implements Serializable {
         return sdsx;
     }
 
-    /**
+
+
+	/**
      * 设置速度上限
      *
      * @param sdsx 速度上限
