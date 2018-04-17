@@ -46,7 +46,8 @@
 		</Card>
 		<component
 			:is="compName"
-			:chmess="chmess"></component>
+			:chmess="chmess"
+			:Dictionary="Dictionary"></component>
 	</div>
 </template>
 
@@ -195,7 +196,9 @@
 					fwmcLike:'',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				Dictionary:[],
+				lmdmDictionary:'ZDCLK0006'
 			}
 		},
 		watch: {
@@ -213,8 +216,13 @@
 			}]),
 			this.tabHeight = this.getWindowHeight() - 290
             this.getmess()
+            this.getLXDic()
 		},
 		methods: {
+			getLXDic(){
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+                console.log('字典',this.Dictionary)
+            },
 			getmess(){
 				var v = this
 				this.$http.get(configApi.ITMS.QUERY).then((res) =>{
