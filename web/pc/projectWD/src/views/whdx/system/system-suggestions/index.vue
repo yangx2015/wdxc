@@ -92,14 +92,15 @@
 						align: 'center',
 						width: '80',
 						key: 'zt',
-						render: (h, params) => {
+						render: (h, p) => {
+							let val = this.dictUtil.getValByCode(this,this.yjztCode,p.row.zt)
 							return h('div', [
 								h('span',{
 									style:{
 										fontWeight:900,
-										color:params.row.zt=='01'?'#279a3b':'#ed3f14',
+										color:p.row.zt=='10'?'#279a3b':'#ed3f14',
 									}
-								},params.row.zt=='01'?'已处理':'待处理')
+								},val)
 							]);
 						}
 					},
@@ -107,7 +108,11 @@
 						title: '反馈类型',
 						width: 100,
 						align: 'center',
-						key: 'yjlx'
+						key: 'yjlx',
+						render: (h, p) => {
+							let val = this.dictUtil.getValByCode(this,this.yjlxCode,p.row.yjlx)
+							return h('div',val)
+						}
 					},
 					{
 						title: '反馈时间',
@@ -134,7 +139,7 @@
 							return h('div', [
 								h('Button', {
 									props: {
-										disabled: params.row.zt=='01'?true:false,
+										disabled: params.row.zt=='10'?true:false,
 										type: 'success',
 										size: 'small'
 									},
@@ -173,7 +178,11 @@
 					zt:'',	
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				yjlxCode:'ZDCLK0009',
+				yjlxDic:[],
+				yjztCode:'ZDCLK0010',
+				yjztDic:[],
 			}
 		},
 		watch: {
@@ -191,8 +200,15 @@
 				}]),
 				this.tabHeight = this.getWindowHeight() - 290
             	this.getmess()
+            	this.getLXDic()//字典数据
 		},
 		methods: {
+			getLXDic(){
+                this.yjlxDic = this.dictUtil.getByCode(this,this.yjlxCode);
+            	console.log('字典',this.yjlxDic)
+            	this.yjztDic = this.dictUtil.getByCode(this,this.yjztCode);
+            	console.log('字典',this.yjztDic)
+			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.SUGGES.QUERY).then((res) =>{
