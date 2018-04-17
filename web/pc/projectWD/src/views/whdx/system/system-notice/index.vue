@@ -46,7 +46,7 @@
 		</Card>
 		<component 
 			:is="componentName"
-			:mess="changeMess"
+			:mess="choosedRow"
 			:dic="ztDictionary"></component>
 	</div>
 </template>
@@ -56,13 +56,11 @@
     import configApi from '@/axios/config.js'
     
 	import formData from './formData'
-	import change from './change'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
             formData,
-            change
 		},
         data () {
             return {
@@ -74,7 +72,7 @@
                 cjsjInRange:'',
                 tabHeight: 220,
                 componentName:'',
-                changeMess:{},
+                choosedRow:{},
             	page:{
             		pageNum:1,
             		pageSize:5
@@ -154,9 +152,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                        	this.changeMess = params.row
-                                        	console.log(this.changeMess)
-                                            this.componentName = 'change'
+                                        	this.choosedRow = params.row
+                                            this.componentName = 'formData'
                                         }
                                     }
                                 }),
@@ -238,7 +235,6 @@
 			//新增数据
 			AddMess(){
 				this.componentName = 'formData'
-//				this.componentName = 'change'
 			},
             //删除数据
             listDele(r){

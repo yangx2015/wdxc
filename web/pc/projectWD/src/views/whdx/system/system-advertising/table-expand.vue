@@ -13,7 +13,7 @@
 		<div>
 			附件：
 		</div>
-		<div class="demo-upload-list" v-for="(item,index) in uploadList">
+		<div class="demo-upload-list" v-for="(item,index) in uploadList" v-if="item.url != null && item.url.length != 0">
 			<div v-if="item.url.substring(item.url.lastIndexOf('.')+1) == 'mp4'">
 				<video src="static/movie.ogg" height="100%"></video>
 				<div class="demo-upload-list-cover">
@@ -45,15 +45,7 @@
 				imgName: '',
 				visible: false,
 				staticPath:configApi.STATIC_PATH,
-				uploadList: [{
-						'name': 'a42bdcc1178e62b4694c830f028db5c0',
-						'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-					},
-					{
-						'name': 'bc7521e033abdd1e92222d733590f104',
-						'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-					}
-				],
+				uploadList: [],
 				paths:[]
 			}
 		},

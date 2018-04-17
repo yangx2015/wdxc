@@ -74,15 +74,18 @@
 			}
 		},
 		created(){
-//			if (this.$parent.choosedRow){
-//				this.form = this.$parent.choosedRow;
-//			}
+			if (this.$parent.choosedRow){
+				this.form = this.$parent.choosedRow;
+			}
 		},
         mounted(){
         },
 		methods: {
 		    save(){
 		        let url = configApi.ZDGL.ADD;
+				if (this.$parent.choosedRow){
+                    url = configApi.ZDGL.CHANGE;
+				}
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
                     this.close();
