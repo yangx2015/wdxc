@@ -15,7 +15,7 @@
 							<span>活动管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.like_ScName" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.hdbtLike" placeholder="请输入活动名称" style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -79,10 +79,7 @@
                 datetime:[],
                 choosedRow:null,
                 findMess:{
-                	gte_StartTime:'',
-            		lte_StartTime:'',
-                	like_CarNumber:'',
-                	like_ScName:'',
+                	hdbtLike:'',
                 	pageNum:1,
             		pageSize:5
                 },
@@ -142,7 +139,7 @@
                         render: (h, params) => {
                             return h(expandRow, {
                                 props: {
-                                    // row: params.row
+                                       row: params.row
                                 }
                             })
                         }
@@ -184,7 +181,7 @@
 									},
 									on: {
 										click: () => {
-											//                                      	this.remove(params.index)
+                                        	this.remove(params.row.hdId)
 										}
 									}
 								})
@@ -192,70 +189,7 @@
 						}
 					}
                 ],
-                data9: [
-                    {
-                        VehicleUnit:'信息学院',//活动标题
-                        UseCarPeople: '毛毛',//内容、URL
-                        phoneNomber: '15113131414',//用车人电话
-                        CarModel: '45人座位',//车型--按座位数分
-                        BillModel: '单程',//单据类型--单程--往返
-                        mileage: '30公里',//行车里程
-                        unit: '15元/公里',//里程单价
-                        mileageMoney: '450元',//里程总金额
-                        Etc: '20分钟',//等时
-                        RoadToll:'10元',//过路费
-                        BridgeFee:'15元',//过桥费
-                        mess:'用车事由',//用车事由
-                        DriverName:'王二毛',//司机姓名
-                        DriverPhone:'13212121212',//司机电话
-                        WaitingPlace:'武汉大学正门',//候车地点
-	                	Destination:'武汉火车站',//目的地
-	                	startTime:'2017-01-02 08:00:00',//出发时间
-                    	addMoney:'470元',//费用合计
-                    	active:'img',
-                    },
-                    {
-                    	VehicleUnit:'信息学院',
-                        UseCarPeople: '毛毛',
-                        phoneNomber: '15113131414',
-                        CarModel: '45人座位',
-                        BillModel: '单程',
-                        mileage: '30公里',
-                        unit: '15元/公里',
-                        mileageMoney: '450元',
-                        Etc: '20分钟',
-                        RoadToll:'10元',
-                        BridgeFee:'15元',
-                        mess:'用车事由',
-                        DriverName:'王二毛',
-                        DriverPhone:'13212121212',
-                        WaitingPlace:'武汉大学正门',
-	                	Destination:'武汉火车站',
-	                	startTime:'2017-01-02 08:00:00',
-                    	addMoney:'470元',
-                    	active:'video',
-                    },
-                    {
-                    	VehicleUnit:'信息学院',
-                        UseCarPeople: '毛毛',
-                        phoneNomber: '15113131414',
-                        CarModel: '45人座位',
-                        BillModel: '单程',
-                        mileage: '30公里',
-                        unit: '15元/公里',
-                        mileageMoney: '450元',
-                        Etc: '20分钟',
-                        RoadToll:'10元',
-                        BridgeFee:'15元',
-                        mess:'用车事由',
-                        DriverName:'王二毛',
-                        DriverPhone:'13212121212',
-                        WaitingPlace:'武汉大学正门',
-	                	Destination:'武汉火车站',
-	                	startTime:'2017-01-02 08:00:00',
-                    	addMoney:'470元',
-                    }
-                ]
+                data9: []
             }
         },
         watch:{
@@ -277,8 +211,10 @@
         methods:{
         	getmess(){
 				var v = this
+				v.SpinShow = true;
 				this.$http.get(configApi.ADVERTISING.QUERY).then((res) =>{
 					v.data9 = res.page.list
+					v.pageTotal = res.total
 					v.SpinShow = false;
 				})
 			},
@@ -289,11 +225,17 @@
         	},
         	findMessList(){
         		var v = this
-				this.$http.get('','');
-				axios.get(configApi.ADVERTISING.QUERY,this.findMess).then((res) => {
-					 v.tableData = res.data
+        		v.SpinShow = true;
+				this.$http.get(configApi.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
+					 v.data9 = res.data
 					 v.pageTotal = res.total
+					 v.SpinShow = false;
 				 })
+        	},
+        	remove(id){
+        		this.util.del(this,configApi.ADVERTISING.DELE,[id],()=>{
+                    this.getmess();
+				});
         	},
         	getDataList() {
 				var v = this

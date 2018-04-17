@@ -117,7 +117,7 @@
                         v.$Message.error(res.message);
                     }
                     v.$parent.componentName = ''
-                    v.$parent.getTree()
+                    v.$parent.getmess()
                 })
             },
 			colse() {

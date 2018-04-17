@@ -22,23 +22,6 @@
 			</div>
 			<Modal class="videoStyle" title="View Image" v-model="visible">
 							<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-				
-    			<!--<Carousel v-model="Carousel" loop style="height: 200px;">
-			        <CarouselItem class="demo-item">
-            			<div class="demo-carousel">
-							<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-            			</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">2</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">3</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">4</div>
-			        </CarouselItem>
-			    </Carousel>-->
 			</Modal>
 		</div>
 		<div v-else-if="row.active==='video'">
