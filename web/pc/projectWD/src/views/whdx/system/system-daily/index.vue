@@ -173,13 +173,14 @@
 				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
+					v.pageTotal = res.page.total;
 					v.SpinShow = false;
 				})
 			},
             pageChange(event){
         		var v = this
-        		v.page.pageNum = event
-        		v.getDataList(v.page)
+        		v.findMess.pageNum = event
+        		v.findMessList()
 //      		console.log(v.page)
         	},
         	findMessList(){
@@ -188,6 +189,7 @@
         		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
+                    v.pageTotal = res.page.total;
 					v.SpinShow = false;
 				})
         	},
