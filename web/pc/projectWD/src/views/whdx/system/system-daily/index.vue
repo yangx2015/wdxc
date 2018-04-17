@@ -15,7 +15,7 @@
 						<div class="titmess">
 							<span>日志管理</span>
 						</div>
-						<div class="body-r-1">
+						<div class="body-r-1 inputSty">
 							<DatePicker v-model="czsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 						</div>
 						<div class="butevent">
@@ -169,7 +169,8 @@
         methods: {
         	getmess(){
 				var v = this
-				this.$http.get(configApi.DAILY.QUERY).then((res) =>{
+				v.SpinShow = true;
+				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
@@ -183,6 +184,7 @@
         	},
         	findMessList(){
         		var v = this
+        		v.SpinShow = true;
         		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list

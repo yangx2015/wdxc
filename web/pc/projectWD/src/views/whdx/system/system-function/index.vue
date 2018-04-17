@@ -15,7 +15,7 @@
 							<span>功能管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.like_CarNumber" placeholder="请填写查询信息..." style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.like_CarNumber" placeholder="请输入功能名称" style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -244,25 +244,9 @@
 			},
 			//删除数据
 			listDele(id){
-				var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(configApi.FUNCTION.DELE,{'ids':[id]}).then((res) =>{
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}
-						v.getmess()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
-				})
+				this.util.del(this,configApi.FUNCTION.DELE,[id],()=>{
+                    this.getmess();
+				});
 			},
 			changeTime(val) {
 				this.findMess.gte_StartTime = val[0]

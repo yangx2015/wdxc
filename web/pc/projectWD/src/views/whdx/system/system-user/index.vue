@@ -281,6 +281,7 @@
 			//收索事件
 			findMessList() {
 				var v = this
+				v.SpinShow = true;
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
 //					console.log(res)
 					v.tableData = res.page.list
@@ -300,25 +301,8 @@
 			},
 			//删除数据
 			listDele(id){
-				var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(configApi.USER.DELE,{'ids':[id]}).then((res) =>{
-//						console.log('删除',res)
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}
-						v.getmess()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
+				this.util.del(this,configApi.USER.DELE,[id],()=>{
+                    this.getmess();
 				});
 			},
 			//分页点击事件按

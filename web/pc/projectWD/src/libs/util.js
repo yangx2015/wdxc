@@ -40,7 +40,7 @@ util.del = function(v,url,ids,callback){
                             v.$Message.success(res.message);
                         }
                     }else{
-                        v.$Message.success(res.message);
+                        v.$Message.warning(res.message);
                     }
                 })
             }

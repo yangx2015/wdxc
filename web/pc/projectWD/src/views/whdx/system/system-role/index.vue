@@ -15,7 +15,7 @@
 						<div class="titmess">
 							<span>角色管理</span>
 						</div>
-						<div class="body-r-1">
+						<div class="body-r-1 inputSty">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.jsmcLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
@@ -158,24 +158,6 @@
 										}
 									}
 								}),
-                                // h('Button', {
-                                //     props: {
-                                //         type: 'primary',
-                                //         icon:'navicon-round',
-                                //         shape:'circle',
-                                //         size:'small'
-                                //     },
-                                //     style: {
-                                //         cursor: "pointer",
-                                //         margin:'0 8px 0 0'
-                                //     },
-                                //     on: {
-                                //         click: () => {
-                                //             this.messdata = params.row
-                                //             this.compName = 'modifyRolePermission'
-                                //         }
-                                //     }
-                                // }),
                                 h('Button', {
                                     props: {
                                         type: 'error',
@@ -191,7 +173,6 @@
                                         click: () => {
                                         	this.listDele(params.row.jsId)
 											this.getmess()
-											this.$Message.success('用户删除成功');
                                         }
                                     }
                                 })
@@ -241,25 +222,22 @@
             this.getmess()
         },
         mounted(){
-//      	this.compName = 'addrole'
         },
         methods: {
         	getmess(){
         		this.$http.get(configApi.ROLE.QUERY).then((res) =>{
-					//console.log('数据请求',res)
 					this.tableData = res.page.list
 					this.SpinShow = false;
 				})
         	},
         	RootShowF(val) {
-//				//console.log(val.row)
 				this.messdata = val.row
 				this.compName = 'mess'
 			},
 			//收索事件
         	findMessList(){
         		var v = this
-				//console.log(this.findMess)
+        		v.SpinShow = true;
 				this.$http.get(configApi.ROLE.QUERY,{params:v.findMess}).then((res) =>{
 					//console.log(res)
 					v.tableData = res.page.list
@@ -268,29 +246,9 @@
         	},
 			//数据删除
         	listDele(id) {
-        		var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(configApi.ROLE.DELE,{'ids':[id]}).then((res) =>{
-//						console.log('删除',res)
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}
-						v.getmess()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
+        		this.util.del(this,configApi.ROLE.DELE,[id],()=>{
+                    this.getmess();
 				});
-//      		this.$http.post(configApi.ROLE.DELE,{'ids':[id]}).then((res) =>{
-//					//console.log('删除',res)
-//				})
             },
             //添加数据
         	AddDataList(){

@@ -9,7 +9,6 @@
 				<Form
 						ref="addmess"
 						:model="addmess"
-						:rules="ruleInline"
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>

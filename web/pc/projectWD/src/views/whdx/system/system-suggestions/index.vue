@@ -15,6 +15,8 @@
 							<span>意见反馈</span>
 						</div>
 						<div class="body-r-1 inputSty">
+							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
+							<Input v-model="findMess.zjhmLike" placeholder="请输入反馈人姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findData()">
@@ -164,16 +166,20 @@
 				//select
 				cityList: [],
 				//收索
-				datetime: [],
+				cjsjInRange:[],
 				findMess: {
-					gte_StartTime: '',
-					lte_StartTime: '',
-					like_CarNumber: '',
-					like_ScName: '',
+					cjsjInRange:'',
+					zjhmLike: '',
+					zt:'',	
 					pageNum: 1,
 					pageSize: 5
 				}
 			}
+		},
+		watch: {
+			cjsjInRange:function(newQuestion, oldQuestion){
+				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+			},
 		},
 		created() {
 			this.$store.commit('setCurrentPath', [{
@@ -201,10 +207,6 @@
 			},
 			findData() {
 				var v = this
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
 			},
 			pageChange(event) {
 				var v = this

@@ -17,7 +17,7 @@
 						<div class="body-r-1 inputSty">
 							<!--<Input v-model="findMess.like_CarNumber" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>-->
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.fwmcLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.fwmcLike" placeholder="请输服务名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -225,26 +225,30 @@
 			},
 			//删除数据
 			listDele(id){
-				var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(configApi.ITMS.DELE,{'ids':[id]}).then((res) =>{
-//						console.log('删除',res)
-						if(res.code===200){
-							v.$Message.success('操作成功');
-						}
-						v.getmess()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
+				this.util.del(this,configApi.ITMS.DELE,[id],()=>{
+                    this.getmess();
 				});
+				
+//				var v = this
+//				swal({
+//				  title: "是删除数据?",
+//				  text: "",
+//				  icon: "warning",
+//				  buttons:['取消','确认'],
+//				})
+//				.then((willDelete) => {
+//				  if (willDelete) {
+//					v.$http.post(configApi.ITMS.DELE,{'ids':[id]}).then((res) =>{
+////						console.log('删除',res)
+//						if(res.code===200){
+//							v.$Message.success('操作成功');
+//						}
+//						v.getmess()
+//					})
+//				  } else {
+//				  	this.$Message.error('操作失败');
+//				  }
+//				});
 			},
 			AddDataList() {
 				var v = this
