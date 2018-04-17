@@ -79,6 +79,14 @@
 		mounted() {
 			this.Buildmap()
 			this.line()
+			let vi = 0
+            if(vi==this.stationList.length){
+            	vi = 0
+            }
+            this.animationDot(this.stationList[vi])
+            setInterval(()=>{
+            	vi ++
+            },500)
 		},
 		methods: {
 			Buildmap() {
@@ -100,7 +108,7 @@
 			line(){
 				var v = this
 				var pois = [];
-                for(let r of this.stationList){
+                for(let r of v.stationList){
                     pois.push(new BMap.Point(r.jd,r.wd));
 				}
                 v.map.setViewport(pois)
@@ -119,9 +127,13 @@
                     strokeColor:"#18a45b" //折线颜色
                 });
                 this.map.addOverlay(polyline);          //增加折线
+                
 			},
-			animationDot(){
-				
+			animationDot(item){
+				var pt = new BMap.Point(item.jd, item.wd);
+				var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
+				var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+				this.map.addOverlay(marker2);  
 			}
 		}
 	}

@@ -78,7 +78,10 @@
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
 
-//  import vx from '../store/modules/app'
+	import SockJS from 'sockjs-client';
+    // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
+    import Stomp from '@stomp/stompjs';
+
     export default {
         components: {
             shrinkableMenu,
@@ -91,13 +94,20 @@
         },
         data () {
             return {
-                shrink: false,
+//          	"47.98.39.45:8080"
+			    socket : new SockJS("http://"+"192.168.31.180:8080"+"/biz/gps"),
+				scoketMess:[],
+				
+				shrink: false,
                 userName: '',
                 isFullScreen: false,
                 openedSubmenuArr: this.$store.state.app.openedSubmenuArr
             };
         },
         computed: {
+        	GetscoketMess() {
+				return this.$store.state.app.socketMess
+			},
             menuList () {
                 return this.$store.state.app.menuList;
             },
@@ -123,16 +133,69 @@
                 return this.$store.state.app.messageCount;
             }
         },
+        watch: {
+            '$route' (to) {
+                this.$store.commit('setCurrentPageName', to.name);
+                this.checkTag(to.name);
+                localStorage.currentPageName = to.name;
+            },
+            GetscoketMess: function(newQuestion, oldQuestion) {
+				this.scoketMess = newQuestion
+			}
+        },
+        mounted () {
+            this.init();
+            this.sco()
+        },
+        created () {
+            // 显示打开的页面的列表
+            this.$store.commit('setOpenedList');
+//          this.sco()
+        },
         methods: {
+        	sco(){
+    		console.log('网络连接')
+    		//数据推送
+				var v = this
+			/**
+		     * 建立成功的回调函数
+		     */
+			    v.socket.onopen = function() {
+			    };
+			/**
+		     * 服务器有消息返回的回调函数
+		     */
+			    v.socket.onmessage = function(e) {
+			        console.log('message', e.data);
+			    };
+		
+		    /**
+		     * websocket链接关闭的回调函数
+		     */
+			    v.socket.onclose = function() {
+			        console.log('关闭');
+			    };
+		
+			    var stompClient = Stomp.over(v.socket);
+			    stompClient.connect({}, function(frame) {
+			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+			            console.log('soc',JSON.parse(data))
+			            let jsonMess = JSON.parse(data.body)
+			            v.scoketMess.forEach((item,index) => {
+							if(item.clid==jsonMess.clid){
+								v.scoketMess.splice(index,1)
+							}
+						})
+				        v.scoketMess.push(jsonMess)
+			            v.$store.commit('socketMessAdd',v.scoketMess)
+			        });
+			    });	
+			},
         	ButOnmouseover(mes){
         		console.log('ButOnmouseover:',mes)
         	},
             init () {
-//              let pathArr = util.setCurrentPath(this, this.$route.name);
                 this.$store.commit('updateMenulist');
-//              if (pathArr.length >= 2) {
-//                  this.$store.commit('addOpenSubmenu', pathArr[1].name);
-//              }
                 this.userName = JSON.parse(Cookies.get('result')).userInfo.xm;
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
@@ -143,12 +206,6 @@
                 this.shrink = !this.shrink;
             },
             handleClickUserDropdown (name) {
-//              if (name === 'ownSpace') {
-//                  util.openNewPage(this, 'ownspace_index');
-//                  this.$router.push({
-//                      name: 'ownspace_index'
-//                  });
-//              } else if (name === 'loginout') {
                     // 退出登录
                     this.$store.commit('logout', this);
                     this.$store.commit('clearOpenedSubmenu');
@@ -172,37 +229,10 @@
 //                 console.log('路由',val)
             },
             beforePush (name) {
-                // if (name === 'accesstest_index') {
-                //     return false;
-                // } else {
-                //     return true;
-                // }
                 return true;
             },
             fullscreenChange (isFullScreen) {
-                // console.log(isFullScreen);
             }
-        },
-        watch: {
-            '$route' (to) {
-                this.$store.commit('setCurrentPageName', to.name);
-//              let pathArr = util.setCurrentPath(this, to.name);
-//              if (pathArr.length > 2) {
-//                  this.$store.commit('addOpenSubmenu', pathArr[1].name);
-//              }
-                this.checkTag(to.name);
-                localStorage.currentPageName = to.name;
-            },
-            lang () {
-//              util.setCurrentPath(this, this.$route.name); // 在切换语言时用于刷新面包屑
-            }
-        },
-        mounted () {
-            this.init();
-        },
-        created () {
-            // 显示打开的页面的列表
-            this.$store.commit('setOpenedList');
         }
     };
 </script>

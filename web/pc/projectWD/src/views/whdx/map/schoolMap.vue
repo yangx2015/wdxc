@@ -70,7 +70,7 @@
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
 		  	this.mapCenterF()
-		  	this.sco()
+//		  	this.sco()
 		},
 		methods:{
 			//撒点
@@ -112,16 +112,7 @@
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
 			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-//						console.log('数据接受1',data);
-//						console.log('数据接受2',data.body);
-//			            console.log('数据接受3',JSON.parse(data.body));
-//			            console.log('数据存储',v.scoketMess)
 			            let jsonMess = JSON.parse(data.body)
-//			           	for( var i = 0 ; i<v.scoketMess.length ; i++){
-//			           		if(v.scoketMess[i].clid==jsonMess.clid){
-//								v.scoketMess.splice(i,1)
-//							}
-//			           	}
 			            v.scoketMess.forEach((item,index) => {
 							if(item.clid==jsonMess.clid){
 								v.scoketMess.splice(index,1)
