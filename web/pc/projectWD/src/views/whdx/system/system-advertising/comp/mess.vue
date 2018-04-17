@@ -5,73 +5,148 @@
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
 			:mask-closable="mesF" title="新建广告">
-			<div style="overflow: auto;height: 300px;">
-				<Form>
-					<FormItem label='广告标题'>
-						<Input type="text" v-model="addmess.RoleName" placeholder="请填写广告标题...">
-						</Input>
-					</FormItem>
-					<FormItem label='内容'>
-						<Input type="text" v-model="addmess.Remarks" placeholder="请填写广告内容...">
-						</Input>
-					</FormItem>
-					<FormItem label='广告类型'>
-						<Input type="text" v-model="addmess.RoleType" placeholder="请填写广告类型...">
-						</Input>
-					</FormItem>
-					<FormItem label='附件'>
-						 <Row>
-				        	<Col span="10">
-				            	<h3>视频</h3>
-				            	<div style="position: relative;">
-				            		<img src="../../../../../images/router.jpg" width="60%"/>
-				            		<span style="cursor:pointer;position: absolute;top: 40%;left: 30%;z-index: 100;">
-				            			<Icon type="play" size ='28' color="red"></Icon>
-				            		</span>
-				            	</div>
-				            </Col>
-				            <Col span="10">
-				            	<h3>图片</h3>
-				            	<div>
-				            		<img src="../../../../../images/router.jpg" width="60%"/>
-				            	</div>
-				            </Col>
-				        </Row>
-					</FormItem>
+			<div style="overflow: auto;height: 440px;">
+				<Form
+						ref="formItem"
+						:model="formItem"
+						:rules="ruleInline"
+						:label-width="100"
+						:styles="{top: '20px'}">
+					<Row>
+						<Col span="12">
+							<FormItem label='活动标题'>
+								<Input type="text" v-model="formItem.hdbt" placeholder="请填写活动标题...">
+								</Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='URL'>
+								<Input type="text" v-model="formItem.url" placeholder="请填写URL...">
+								</Input>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="12">
+							<FormItem label='广告类型'>
+								<DatePicker v-model="cjsjInRange" 
+									format="yyyy-MM-dd" type="daterange" 
+									placement="bottom-end" 
+									placeholder="请输活动时间" 
+									style="width: 100%"></DatePicker>
+								
+								<!--<Input type="text" v-model="formItem.hdlx" placeholder="请填写广告类型...">
+								</Input>-->
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='附件类型'>
+								<Select v-model="formItem.hdlx">
+									<Option value="00">图片</Option>
+									<Option value="01">视频</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+
+					<Row>
+						<Col span="24">
+							<FormItem v-if="formItem.hdlx==='00'">
+								<div>
+									添加图片
+								</div>
+								<addlistfileImg
+									@addImg="addImg"
+								></addlistfileImg>
+							</FormItem>
+							<FormItem v-else-if="formItem.hdlx==='01'">
+								<div>
+									添加视频
+								</div>
+								<addlistfileVideo></addlistfileVideo>
+							</FormItem>
+						</Col>
+					</Row>
 				</Form>
 			</div>
-			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="colse">确定</Button>
+				<Button type="primary" @click="save">确定</Button>
 			</div>
 		</Modal>
 	</div>
 </template>
 
 <script>
+	import mixins from '@/mixins'
+	
+	import addlistfileImg from './addlistfileImg.vue'
+	import addlistfileVideo from './addlistfileVideo.vue'
+    import configApi from '@/axios/config.js'
 	export default {
 		name: '',
+		mixins: [mixins],
+		components: { 
+        	addlistfileImg,
+        	addlistfileVideo
+        },
 		data() {
 			return {
+			    edie:false,
 				showModal: true,
 				mesF: false,
-				addmess: {
-					RoleName: '信息学院公益活动',
-					RoleType: '公益',
-					Remarks: '电脑维护',
-				}
+				formItem: {
+					hdlx:'00',
+					kssj:'',
+					jssj:''
+				},
+                ruleInline:{},
+                cjsjInRange:[]
 			}
 		},
+		watch: {
+			cjsjInRange:function(newQuestion, oldQuestion){
+				this.formItem.kssj = this.getdateParaD(newQuestion[0])
+				this.formItem.jssj = this.getdateParaD(newQuestion[1])
+				console.log(this.formItem)
+			},
+		},
 		created(){
-		    this.addmess = $parent.choosedRow;
+//          if (this.$parent.choosedRow){
+//              this.edit = true;
+//              this.formItem = this.$parent.choosedRow;
+//          }else{
+//              if (this.$parent.jgdm){
+//                  this.formItem.fjgdm = this.$parent.jgdm;
+//              }else{
+//                  console.log("请选择父节点")
+//              }
+//          }
 		},
 		methods: {
+            addImg(path){
+                this.formItem.filePaths += path+",";
+			},
+            save(){
+                var v = this
+                let url = configApi.ADVERTISING.ADD;
+                if (this.edit){
+                    url = configApi.ADVERTISING.CHANGE;
+                }
+                this.$http.post(url,this.formItem).then((res) =>{
+                    if(res.code===200){
+                        v.$Message.success(res.message);
+                    }else{
+                        v.$Message.error(res.message);
+                    }
+                    v.$parent.componentName = ''
+                    v.$parent.getmess()
+                })
+            },
 			colse() {
-				//				var v = this
-				//				v.$parent.compName = ''
-				//				console.log(v.$parent)
-				this.$emit('colsemodal')
+				var v = this
+				v.$parent.compName = ''
 			}
 		}
 	}

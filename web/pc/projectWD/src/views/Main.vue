@@ -32,7 +32,7 @@
                 <div class="header-avator-con">
                     <div class="user-dropdown-menu-con">
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
-                            <span style="margin-right: 15px;">
+                            <span style="margin-right: 30px;">
                             	<span style="font-size: 18px;">
                             		<b>
                             			欢迎
@@ -40,6 +40,7 @@
                             	</span>
                                 <span class="main-user-name">{{ userName }}</span>
                             </span>
+                            <Button type="primary" shape="circle" icon="person" @click="person" style="margin-right: 8px;"></Button>
                             <Button
                             	size="large"
                             	type="primary"
@@ -48,7 +49,7 @@
                             	@DOMMouseScroll="ButOnmouseover('移入')"
                             	@mousewheel="ButOnmouseover('移出')">
                             	<span>退出登陆</span>
-                            	<Icon type="ios-redo"></Icon>
+                            	<!--<Icon type="ios-redo"></Icon>-->
                             </Button>
                         </Row>
                     </div>
@@ -161,6 +162,11 @@
 //          this.sco()
         },
         methods: {
+        	person(){
+        		this.$router.push({
+                        name: 'ownspace_index'
+                    });
+        	},
         	sco(){
     		console.log('网络连接')
     		//数据推送

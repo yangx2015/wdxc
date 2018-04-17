@@ -2,8 +2,51 @@
 <style lang="less">
     @import '../../../../styles/common.less';
 </style>
+<style>
+    .demo-upload-list{
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+    }
+    .demo-upload-list-box{
+    	width: 100%;
+    	height: 100%;
+    }
+    .demo-upload-list img{
+        width: 100%;
+        height: 100%;
+        margin: auto;
+    }
+    .demo-upload-list-cover{
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.6);
+    }
+    .demo-upload-list:hover .demo-upload-list-cover{
+        display: block;
+    }
+    .demo-upload-list-cover i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+</style>
 <template>
-	<div class="boxbackborder">
+	<div class="boxbackborder acdive">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -52,7 +95,9 @@
 						@on-change='pageChange'></Page>
 			</Row>
 		</Card>
-    	<component :is="compName" @colsemodal='colsemodal'></component>
+    	<component :is="compName" 
+    		:mess = 'choosedRow'
+    		@colsemodal='colsemodal'></component>
 	</div>
 </template>
 <script>
@@ -77,7 +122,7 @@
             	compName: '',
             	//收索
                 datetime:[],
-                choosedRow:null,
+                choosedRow:{},
                 findMess:{
                 	hdbtLike:'',
                 	pageNum:1,
@@ -114,35 +159,40 @@
                             },params.row.url)
                         }
                     },
+//                  {
+//                      title: '活动类型',//微信--自能站牌
+//                      align:'center',
+//                      key: 'hdlx',
+//                      render: (h, params) => {
+//                          let lx = '';
+//                          switch(params.row.hdlx){
+//								case '11':
+//								    lx = '微信';
+//								    break;
+//								case '22':
+//                              default:
+//                                  lx = '智能站牌'
+//                                  break;
+//							}
+//                          return h('div',lx);
+//                      }
+//                  },
                     {
-                        title: '活动类型',//微信--自能站牌
+                        title: '创建时间',
                         align:'center',
-                        key: 'hdlx',
-                        render: (h, params) => {
-                            let lx = '';
-                            switch(params.row.hdlx){
-								case '11':
-								    lx = '微信';
-								    break;
-								case '22':
-                                default:
-                                    lx = '智能站牌'
-                                    break;
-							}
-                            return h('div',lx);
-                        }
+                        key: 'cjsj'
                     },
-	                    {
-                    	title:'附件',
-                        type: 'expand',
-                        width: 65,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                       row: params.row
-                                }
-                            })
-                        }
+                    {
+	                	title:'附件',
+	                    type: 'expand',
+	                    width: 65,
+	                    render: (h, params) => {
+                        return h(expandRow, {
+                            props: {
+                                   row: params.row
+                            }
+                        })
+                    }
                     },{
 						title: '操作',
 						key: 'action',
@@ -164,7 +214,7 @@
 									on: {
 										click: () => {
 										    this.choosedRow = params.row;
-											this.compName = 'addmess'
+											this.compName = 'mess'
 										}
 									}
 								}),

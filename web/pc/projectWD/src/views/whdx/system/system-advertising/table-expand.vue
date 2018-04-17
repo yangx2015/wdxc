@@ -7,31 +7,79 @@
 		width: 100%!important;
 		height: 200px;
 	}
+	.ModalSty{
+		position: relative;
+		.goleft{
+			position: absolute;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.6);
+    		border: solid #948787 1px;
+		}
+		.goright{
+			position: absolute;
+			top: 50%;
+			right: 0;
+			transform: translateY(-50%);
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.6);
+    		border: solid #948787 1px;
+		}
+	}
 </style>
 <template>
 	<div>
 		<div>
 			附件：
 		</div>
-		<div class="demo-upload-list" v-for="(item,index) in uploadList" v-if="item.url != null && item.url.length != 0">
-			<div v-if="item.url.substring(item.url.lastIndexOf('.')+1) == 'mp4'">
-				<video src="static/movie.ogg" height="100%"></video>
-				<div class="demo-upload-list-cover">
-					<Icon type="arrow-right-b" @click.native="handleView(item.name)"></Icon>
+		<div v-if="row.hdlx=='00'">
+			<div class="demo-upload-list" 
+				v-for="(item,index) in uploadList"
+				v-if="(index+1)!=uploadList.length">
+				<div class="demo-upload-list-box">
+					<img :src="staticPath+item.url">
+					<div class="demo-upload-list-cover">
+						<Icon type="ios-eye-outline" @click.native="handleView(index)"></Icon>
+					</div>
 				</div>
-				<Modal title="View Image" v-model="visible">
-					<video class="active-video" src="static/movie.ogg" controls="controls"></video>
-				</Modal>
 			</div>
-			<div v-else>
-				<img :src="staticPath+item.url">
-				<div class="demo-upload-list-cover">
-					<Icon type="ios-eye-outline" @click.native="handleView(item.name,index)"></Icon>
+			<Modal class="videoStyle" title="View Image" v-model="visible">
+				<div class="ModalSty">
+					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
+			           <Icon type="arrow-left-b" size='24'></Icon>
+			        </Button>
+					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
+			           <Icon type="arrow-right-b" size='24'></Icon>
+			        </Button>
+					<img :src="staticPath+imgUrl" style="width: 100%">
 				</div>
-				<Modal class="videoStyle" title="View Image" v-model="visible">
-					<img :src="staticPath+item.url" v-if="visible" style="width: 100%">
-				</Modal>
+			</Modal>
+		</div>
+		<div v-else-if="row.hdlx=='01'">
+			<div class="demo-upload-list" 
+				v-for="(item,index) in uploadList" 
+				v-if="(index+1)!=uploadList.length">
+				<div>
+					<video src="static/movie.ogg" height="100%"></video>
+					<div class="demo-upload-list-cover">
+						<Icon type="arrow-right-b" @click.native="handleView(index)"></Icon>
+					</div>
+				</div>
 			</div>
+			<Modal title="View Image" v-model="visible">
+				<div class="ModalSty">
+					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
+			           <Icon type="arrow-left-b" size='24'></Icon>
+			        </Button>
+					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
+			           <Icon type="arrow-right-b" size='24'></Icon>
+			        </Button>
+					<!--<img :src="staticPath+imgUrl" style="width: 100%">-->
+					<video :src="staticPath+imgUrl" controls="controls"></video>
+				</div>
+			</Modal>
 		</div>
 	</div>
 </template>
@@ -41,11 +89,11 @@
 		name: '',
 		data() {
 			return {
-				Carousel:2,
-				imgName: '',
-				visible: false,
+				visible: false,//modal层
 				staticPath:configApi.STATIC_PATH,
 				uploadList: [],
+				Ix:0,
+				imgUrl:'',
 				paths:[]
 			}
 		},
@@ -56,6 +104,7 @@
 			}
 		},
 		created(){
+			console.log('tupian',this.row.filePaths)
             if (this.row.filePaths){
                 let paths = [];
                 this.uploadList = [];
@@ -67,59 +116,29 @@
 			}
         },
 		methods: {
-			handleView(name,index) {
-				if(index){
-					this.CarouselV = index;
-				}
-				this.imgName = name;
+			handleView(index) {
+				this.Ix = index
+				this.imgUrl = this.uploadList[index].url
 				this.visible = true;
+			},
+			leftGo(){
+				if(this.Ix==0){
+					this.Ix = this.uploadList.length-2
+					this.imgUrl = this.uploadList[this.Ix].url
+					return 
+				}
+				this.Ix --
+				this.imgUrl = this.uploadList[this.Ix].url
+			},
+			rightGo(){
+				if(this.Ix==this.uploadList.length-2){
+					this.Ix = 0
+					this.imgUrl = this.uploadList[this.Ix].url
+					return 
+				}
+				this.Ix ++
+				this.imgUrl = this.uploadList[this.Ix].url
 			}
 		}
 	};
 </script>
-<style>
-	.demo-upload-list {
-		display: inline-block;
-		width: 60px;
-		height: 60px;
-		text-align: center;
-		line-height: 60px;
-		border: 1px solid transparent;
-		border-radius: 4px;
-		overflow: hidden;
-		background: #fff;
-		position: relative;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-		margin-right: 4px;
-	}
-	
-	.demo-upload-list img {
-		width: 100%;
-		height: 100%;
-	}
-	
-	.demo-upload-list-cover {
-		display: none;
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background: rgba(0, 0, 0, .6);
-	}
-	
-	.demo-upload-list:hover .demo-upload-list-cover {
-		display: block;
-	}
-	
-	.demo-upload-list-cover i {
-		color: #fff;
-		font-size: 28px;
-		cursor: pointer;
-	    text-align: center;
-    	line-height: 60px
-	}
-	.active-video{
-		width: 100%;
-	}
-</style>
