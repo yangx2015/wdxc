@@ -147,7 +147,7 @@
 		methods: {
 			getmess() {
 				var v = this
-				this.$http.post(configApi.DICTIONARY.QUERY, this.findMess).then((res) => {
+				this.$http.post(configApi.DICTIONARY.QUERY).then((res) => {
 					console.log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;

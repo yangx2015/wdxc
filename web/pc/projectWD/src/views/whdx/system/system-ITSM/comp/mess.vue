@@ -17,9 +17,8 @@
 					</FormItem>
 					<FormItem label='状态'>
 						<Select v-model="addmess.zt" placeholder="请填选择状态...">
-					        <Option value="00">正常</Option>
-					        <Option value="01">停用</Option>
-					    </Select>
+							<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
+						</Select>
 					</FormItem>
 					<FormItem label='API 前缀'>
 						<Input type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
@@ -57,6 +56,10 @@
 			chmess:{
 				type:Object,
 				default:{}
+			},
+			Dictionary:{
+				type:Array,
+				default:[]
 			}
 		},
 		created(){

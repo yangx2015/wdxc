@@ -31,7 +31,7 @@
 							<Col span="12">
 								<FormItem label='类型：' placeholder="请选择角色类型...">
 									<Select v-model="addmess.jslx">
-										<Option v-for = '(item,index) in lxDictionary' :value="item.key">{{item.val}}</Option>
+										<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 									</Select>
 								</FormItem>
 							</Col>
@@ -91,7 +91,7 @@
 				type:Boolean,
 				default:true
 			},
-			lxDictionary:{
+			Dictionary:{
 				type:Array,
 				default:[]
 			}

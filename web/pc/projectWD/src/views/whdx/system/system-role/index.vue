@@ -57,7 +57,7 @@
     		:is="compName" 
     		:messdata="messdata"
     		:usermesType="userMesType"
-    		:lxDictionary="lxDictionary"
+    		:Dictionary="Dictionary"
     		@listF='listF'></component>
     </div>
 </template>
@@ -114,9 +114,8 @@
                         align:'center',
                         key: 'jslx',
                         render:(h,p)=>{
-//                       return	h('div',this.dicJslx(p.row.jslx))
-                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.jslx)
-    					return h('div',val)
+	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.jslx)
+	    					return h('div',val)
                         }
                     },
                     {
@@ -200,7 +199,7 @@
                 	pageNum:1,
             		pageSize:5
                 },
-                lxDictionary:[],
+                Dictionary:[],
 				lmdmDictionary:'ZDCLK0004'
             }
         },
@@ -225,7 +224,7 @@
         },
         methods: {
         	getLXDic(){
-                this.lxDictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
         	getmess(){
         		this.$http.get(configApi.ROLE.QUERY).then((res) =>{
