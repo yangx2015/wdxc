@@ -71,7 +71,7 @@
 									<Col span="8"> {{items.zdmc}}
 									</Col>
 									<Col span="6" style="text-align: center;">
-									<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>
+									<!--<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>-->
 									<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
 									</Col>
 								</Row>

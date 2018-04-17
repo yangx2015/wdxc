@@ -31,8 +31,7 @@
 							<Col span="12">
 								<FormItem label='类型：' placeholder="请选择角色类型...">
 									<Select v-model="addmess.jslx">
-										<Option value="00">管理</Option>
-										<Option value="11">员工</Option>
+										<Option v-for = '(item,index) in lxDictionary' :value="item.key">{{item.val}}</Option>
 									</Select>
 								</FormItem>
 							</Col>
@@ -84,7 +83,7 @@
               	},
 				data4: [
                 ],
-				choosedIds :[]
+				choosedIds :[],
 			}
 		},
 		props:{
@@ -92,10 +91,10 @@
 				type:Boolean,
 				default:true
 			},
-			// messdata:{
-			// 	type:Object,
-			// 	default:{}
-			// }
+			lxDictionary:{
+				type:Array,
+				default:[]
+			}
 		},
 		created(){
             this.addmess = this.$parent.messdata
@@ -128,7 +127,7 @@
 				}
                 this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':ids}).then((res) =>{
                     if(res.code===200){
-                        this.$Message.success('修改成功');
+                        this.$Message.success(res.message);
                     }
                 })
 			},
@@ -147,7 +146,6 @@
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
-			                    	v.$Message.success('角色注册成功');
                                     this.setRolePermission();
 									v.$emit('listF',res)
 								}
@@ -155,7 +153,7 @@
 						}else{
 							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
-									v.$Message.success('角色修改成功');
+									v.$Message.success(res.message);
                                     this.setRolePermission();
 									v.$emit('listF',res)
 								}

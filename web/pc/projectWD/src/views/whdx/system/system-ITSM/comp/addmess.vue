@@ -30,8 +30,7 @@
 						<Col span="12">
 							<FormItem label='状态'>
 								<Select v-model="addmess.zt" placeholder="请填选择状态...">
-									<Option value="00">正常</Option>
-									<Option value="01">停用</Option>
+									<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -73,6 +72,12 @@
 				mesF: false,
 				addmess: {
 				}
+			}
+		},
+		props:{
+			Dictionary:{
+				type:Array,
+				default:[]
 			}
 		},
 		created(){

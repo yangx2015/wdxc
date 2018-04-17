@@ -57,6 +57,7 @@
     		:is="compName" 
     		:messdata="messdata"
     		:usermesType="userMesType"
+    		:lxDictionary="lxDictionary"
     		@listF='listF'></component>
     </div>
 </template>
@@ -113,13 +114,9 @@
                         align:'center',
                         key: 'jslx',
                         render:(h,p)=>{
-                            switch(p.row.jslx){
-                                case '00':
-                                    return h('div','管理');
-                                case '11':
-                                default:
-                                    return h('div','员工');
-                            }
+//                       return	h('div',this.dicJslx(p.row.jslx))
+                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.jslx)
+    					return h('div',val)
                         }
                     },
                     {
@@ -202,7 +199,9 @@
                 	jsmcLike:'',
                 	pageNum:1,
             		pageSize:5
-                }
+                },
+                lxDictionary:[],
+				lmdmDictionary:'ZDCLK0004'
             }
         },
         watch: {
@@ -220,10 +219,14 @@
             }]),
             this.tabHeight = this.getWindowHeight() - 290
             this.getmess()
+            this.getLXDic()//字典数据
         },
         mounted(){
         },
         methods: {
+        	getLXDic(){
+                this.lxDictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+            },
         	getmess(){
         		this.$http.get(configApi.ROLE.QUERY).then((res) =>{
 					this.tableData = res.page.list
