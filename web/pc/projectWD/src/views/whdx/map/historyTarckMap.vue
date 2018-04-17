@@ -119,6 +119,9 @@
                     strokeColor:"#18a45b" //折线颜色
                 });
                 this.map.addOverlay(polyline);          //增加折线
+			},
+			animationDot(){
+				
 			}
 		}
 	}
