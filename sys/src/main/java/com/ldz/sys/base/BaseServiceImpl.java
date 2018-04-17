@@ -396,6 +396,9 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
         if (page.getPageNum() == 0){
             page.setPageNum(1);
         }
+        if (StringUtils.isEmpty(condition.getOrderByClause())){
+            condition.setOrderByClause("cjsj desc");
+        }
         PageInfo<T> resultPage = PageHelper.startPage(page.getPageNum(), page.getPageSize()).doSelectPageInfo(new ISelect() {
             @Override
             public void doSelect() {

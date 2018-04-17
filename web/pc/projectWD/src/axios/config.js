@@ -1,5 +1,6 @@
 module.exports = {
-	UPLOAD:'/upload',
+	UPLOAD:'http://47.98.39.45:8080/biz/upload',
+    STATIC_PATH:'http://47.98.39.45:9092/',
 	USERROOT:{
 		GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',

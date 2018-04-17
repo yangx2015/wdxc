@@ -46,11 +46,13 @@
 
 					<Row>
 						<Col span="24">
-							<FormItem v-if="formItem.active==='img'">
+							<FormItem v-if="formItem.active">
 								<div>
 									添加图片
 								</div>
-								<addlistfileImg></addlistfileImg>
+								<addlistfileImg
+									@addImg="addImg"
+								></addlistfileImg>
 							</FormItem>
 							<FormItem v-else-if="formItem.active==='video'">
 								<div>
@@ -86,7 +88,8 @@
 				showModal: true,
 				mesF: false,
 				formItem: {
-					active:'img'
+					active:'img',
+					filePaths:''
 				},
                 ruleInline:{}
 			}
@@ -104,6 +107,9 @@
             }
 		},
 		methods: {
+            addImg(path){
+                this.formItem.filePaths += path+",";
+			},
             save(){
                 var v = this
                 let url = configApi.ADVERTISING.ADD;

@@ -24,7 +24,7 @@
 	        :before-upload="handleBeforeUpload"
 	        multiple
 	        type="drag"
-	        :action="uploadUrl"
+	        :action="uploadUrl+'?targetPath=hdFile'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
 	            <Icon type="camera" size="20"></Icon>
@@ -67,10 +67,9 @@
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
             },
             handleSuccess (res, file,fileList) {
+                this.$emit('addImg',res.message);
                 console.log(res);
-                alert('上传完成')
-                file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-                file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+                file.url = configApi.STATIC_PATH + res.message;
             },
             handleFormatError (file) {
                 this.$Notice.warning({
@@ -95,7 +94,6 @@
             }
         },
         mounted () {
-        	console.log('fileList',this.$refs.upload.fileList)
             this.uploadList = this.$refs.upload.fileList;
         }
     }

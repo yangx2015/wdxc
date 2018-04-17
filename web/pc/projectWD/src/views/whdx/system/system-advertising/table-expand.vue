@@ -10,38 +10,33 @@
 </style>
 <template>
 	<div>
-		<div v-if="row.active==='img'">
-			<div>
-				附件：图片
-			</div>
-			<div class="demo-upload-list" v-for="(item,index) in uploadList">
-				<img :src="item.url">
-				<div class="demo-upload-list-cover">
-					<Icon type="ios-eye-outline" @click.native="handleView(item.name,index)"></Icon>
-				</div>
-			</div>
-			<Modal class="videoStyle" title="View Image" v-model="visible">
-							<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-			</Modal>
+		<div>
+			附件：
 		</div>
-		<div v-else-if="row.active==='video'">
-			<div>
-				附件：视频
-			</div>
-			<div class="demo-upload-list" v-for="item in uploadList">
+		<div class="demo-upload-list" v-for="(item,index) in uploadList">
+			<div v-if="item.url.substring(item.url.lastIndexOf('.')+1) == 'mp4'">
 				<video src="static/movie.ogg" height="100%"></video>
-				<!--<img :src="item.url">-->
 				<div class="demo-upload-list-cover">
 					<Icon type="arrow-right-b" @click.native="handleView(item.name)"></Icon>
 				</div>
+				<Modal title="View Image" v-model="visible">
+					<video class="active-video" src="static/movie.ogg" controls="controls"></video>
+				</Modal>
 			</div>
-			<Modal title="View Image" v-model="visible">
-				<video class="active-video" src="static/movie.ogg" controls="controls"></video>
-			</Modal>
+			<div v-else>
+				<img :src="staticPath+item.url">
+				<div class="demo-upload-list-cover">
+					<Icon type="ios-eye-outline" @click.native="handleView(item.name,index)"></Icon>
+				</div>
+				<Modal class="videoStyle" title="View Image" v-model="visible">
+					<img :src="staticPath+item.url" v-if="visible" style="width: 100%">
+				</Modal>
+			</div>
 		</div>
 	</div>
 </template>
 <script>
+    import configApi from '@/axios/config.js'
 	export default {
 		name: '',
 		data() {
@@ -49,6 +44,7 @@
 				Carousel:2,
 				imgName: '',
 				visible: false,
+				staticPath:configApi.STATIC_PATH,
 				uploadList: [{
 						'name': 'a42bdcc1178e62b4694c830f028db5c0',
 						'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
@@ -57,7 +53,8 @@
 						'name': 'bc7521e033abdd1e92222d733590f104',
 						'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
 					}
-				]
+				],
+				paths:[]
 			}
 		},
 		props: {
@@ -66,6 +63,17 @@
 				default: {}
 			}
 		},
+		created(){
+            if (this.row.filePaths){
+                let paths = [];
+                this.uploadList = [];
+                paths = this.row.filePaths.split(',');
+                for(let r of paths){
+                    let name = r.substring(r.lastIndexOf("/"));
+                    this.uploadList.push({name:name,url:r});
+				}
+			}
+        },
 		methods: {
 			handleView(name,index) {
 				if(index){
