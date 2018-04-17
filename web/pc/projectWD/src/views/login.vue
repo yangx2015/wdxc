@@ -1,37 +1,51 @@
 <style lang="less">
+	@import '../styles/common.less';
     @import './login.less';
+    .imgLeft{
+    	position: relative;
+    	.loginImg{
+    		width: 90%;
+    		position: absolute;
+    		bottom: 0;
+		    /*left: 50%;*/
+    	}
+    }
 </style>
 
 <template>
     <div class="login" @keydown.enter="handleSubmit">
-    	<!--<img src="../../static/3.png"/>-->
         <div class="login-con">
-            <Card :bordered="false">
-                <p slot="title">
+            <Card :bordered="false" style="width: 100%;">
+                <!--<div slot="extra">
                     <Icon type="log-in"></Icon>
                     欢迎登录
-                </p>
-                <div class="form-con">
-                    <Form ref="loginForm" :model="form" :rules="rules">
-                        <FormItem prop="username">
-                            <Input v-model="form.username" placeholder="请输入用户名">
-                                <span slot="prepend">
-                                    <Icon :size="16" type="person"></Icon>
-                                </span>
-                            </Input>
-                        </FormItem>
-                        <FormItem prop="password">
-                            <Input type="password" v-model="form.password" placeholder="请输入密码">
-                                <span slot="prepend">
-                                    <Icon :size="14" type="locked"></Icon>
-                                </span>
-                            </Input>
-                        </FormItem>
-                        <FormItem>
-                            <Button @click="handleSubmit" type="primary" long>登录</Button>
-                        </FormItem>
-                    </Form>
-                    <p class="login-tip">输入任意用户名和密码即可</p>
+                </div>-->
+                <div class="form-con box-row">
+                	<div class="body-O imgLeft">
+                		<img class="loginImg" src="/static/logo.png" alt="" />
+                	</div>
+                	<div class="body-O">
+	                    <Form ref="loginForm" :model="form" :rules="rules">
+	                        <FormItem prop="username">
+	                            <Input v-model="form.username" placeholder="请输入用户名">
+	                                <span slot="prepend">
+	                                    <Icon :size="16" type="person"></Icon>
+	                                </span>
+	                            </Input>
+	                        </FormItem>
+	                        <FormItem prop="password">
+	                            <Input type="password" v-model="form.password" placeholder="请输入密码">
+	                                <span slot="prepend">
+	                                    <Icon :size="14" type="locked"></Icon>
+	                                </span>
+	                            </Input>
+	                        </FormItem>
+	                        <FormItem>
+	                            <Button @click="handleSubmit" type="primary" long>登录</Button>
+	                        </FormItem>
+	                    </Form>
+	                    <p class="login-tip">输入任意用户名和密码即可</p>
+                	</div>
                 </div>
             </Card>
         </div>
