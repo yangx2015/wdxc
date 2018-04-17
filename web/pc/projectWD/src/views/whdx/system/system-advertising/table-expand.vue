@@ -77,7 +77,7 @@
 			           <Icon type="arrow-right-b" size='24'></Icon>
 			        </Button>
 					<!--<img :src="staticPath+imgUrl" style="width: 100%">-->
-					<video :src="staticPath+imgUrl" controls="controls"></video>
+					<video :src="staticPath+imgUrl" controls="controls"  style="width: 100%"></video>
 				</div>
 			</Modal>
 		</div>
