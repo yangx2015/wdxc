@@ -1,4 +1,5 @@
 module.exports = {
+	UPLOAD:'/upload',
 	USERROOT:{
 		GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',

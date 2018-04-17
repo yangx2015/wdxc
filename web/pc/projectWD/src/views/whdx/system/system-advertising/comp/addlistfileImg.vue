@@ -18,13 +18,13 @@
 	        :default-file-list="defaultList"
 	        :on-success="handleSuccess"
 	        :format="['jpg','jpeg','png']"
-	        :max-size="1"
+	        :max-size="1000"
 	        :on-format-error="handleFormatError"
 	        :on-exceeded-size="handleMaxSize"
 	        :before-upload="handleBeforeUpload"
 	        multiple
 	        type="drag"
-	        action="//jsonplaceholder.typicode.com/posts/"
+	        :action="uploadUrl"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
 	            <Icon type="camera" size="20"></Icon>
@@ -37,6 +37,7 @@
 	</div>
 </template>
 <script>
+    import configApi from '@/axios/config.js'
     export default {
         data () {
             return {
@@ -52,7 +53,8 @@
                 ],
                 imgName: '',
                 visible: false,
-                uploadList: []
+                uploadList: [],
+				uploadUrl:configApi.UPLOAD
             }
         },
         methods: {
@@ -65,7 +67,8 @@
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
             },
             handleSuccess (res, file,fileList) {
-            	alert('上传完成')
+                console.log(res);
+                alert('上传完成')
                 file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
                 file.name = '7eb99afb9d5f317c912f08b5212fd69a';
             },
