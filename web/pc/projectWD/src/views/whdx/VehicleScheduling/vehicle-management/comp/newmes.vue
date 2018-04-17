@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增车辆">
+		    :title="operate+'车辆'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -67,6 +67,7 @@
 		data(){
 			return {
 				showModal:true,
+				operate:'新增',
 				//新增数据
             	addmess: {
                     cph: '',
@@ -108,9 +109,13 @@
 			}
 		},
 		created(){
+            if(!v.messType){
+                this.operate = '编辑';
+            }
 			this.addmess = this.mess
 			this.getDrivers();
 			this.getCxDict();
+			this.getClztDict();
 		},
 		methods:{
             getClztDict(){

@@ -24,6 +24,9 @@ util.ajax = axios.create({
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
 });
+util.initModalTitle = function(v){
+
+}
 util.del = function(v,url,ids,callback){
     swal({
         title: "是否删除数据?",

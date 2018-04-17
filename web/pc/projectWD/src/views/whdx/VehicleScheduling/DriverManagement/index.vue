@@ -3,7 +3,7 @@
 </style>
 <!--驾驶员管理-->
 <template>
-    <div class="topDiv">
+    <div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -149,13 +149,8 @@
                         align:'center',
                         key: 'zt',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '00':
-                                    return h('div','正常');
-                                case '10':
-                                default:
-                                    return h('div','休息');
-                            }
+                            let val = this.dictUtil.getValByCode(this,this.ztDictCode,p.row.zt);
+                            return h('div',val);
                         }
                     },
                     {
@@ -251,7 +246,9 @@
 					xmLike: '',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+                ztDict:[],
+                ztDictCode:'ZDCLK0016',
             }
         },
         watch: {
@@ -270,8 +267,12 @@
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
             this.getmess()
+            this.getClztDict()
         },
         methods: {
+            getClztDict(){
+                this.ztDict = this.dictUtil.getByCode(this,this.ztDictCode);
+            },
         	getmess(){
 				var v = this
 				this.$http.get(configApi.JSY.QUERY,{params:v.findMess}).then((res) =>{

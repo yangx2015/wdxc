@@ -39,8 +39,13 @@
 						<Col span="12">
 							<FormItem label='驾驶证类型：'>
 								<Select v-model="addmess.zjcx">
-									<Option value="11">类型一</Option>
-									<Option value="22">类型二</Option>
+									<Option value="A1">A1</Option>
+									<Option value="A2">A2</Option>
+									<Option value="A3">A3</Option>
+									<Option value="B1">B1</Option>
+									<Option value="B2">B2</Option>
+									<Option value="C1">C1</Option>
+									<Option value="C2">C2</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -193,7 +198,6 @@
             },
 		}
 	}
-//15271928827
 </script>
 
 <style>

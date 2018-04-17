@@ -27,7 +27,7 @@
 	}
 </style>
 <template>
-	<div class="topDiv">
+	<div class="boxbackborder">
 		<component :is="componentName"></component>
 		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 			<Spin fix>
