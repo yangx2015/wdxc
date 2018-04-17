@@ -13,8 +13,10 @@ import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.mapper.ClXlMapper;
 import com.ldz.biz.module.mapper.ClXlzdMapper;
+import com.ldz.biz.module.mapper.ClZdMapper;
 import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.model.ClXlzd;
+import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.XlService;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -42,6 +44,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private XlService xlService;
 	@Autowired
 	private ClXlzdMapper xlzdMapper;
+	@Autowired
+	private ClZdMapper clzdMapper;
 
 	@Override
 	protected Mapper<ClXl> getBaseMapper() {
@@ -75,32 +79,51 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		SimpleCondition condition = new SimpleCondition(ClXlzd.class);
 		condition.eq(ClXlzd.InnerColumn.xlId, router.getId());
 		xlzdMapper.deleteByExample(condition);
-		
-         //获取站点信息
-		
-		
-		/*
+
+		// 获取站点信息
+		List<ClZd> allClzd = clzdMapper.getAllClzd(stationIds);
+
 		String operator = getOperateUser();
 		Date now = new Date();
-		int i = 0;
+
 		List<ClXlzd> xlzds = new ArrayList<>(stationIds.size());
-		for (String stationId : stationIds) {
-			
-			ClXlzd xlzd = new ClXlzd();
-			
-			xlzd.setCjr(operator);
-			xlzd.setCjsj(now);
-			xlzd.setFx(router.getYxfs());
-			xlzd.setXh(new Short("" + (++i)));
-			xlzd.setXlId(router.getId());
-			xlzd.setZdId(stationId);
-			xlzd.setId(genId());
-			// xlzd.setZt(Dict.CommonStatus.VALID.getCode());
-			xlzd.setZt("00");
-			xlzds.add(xlzd);
-		}*/
-		
-		/*xlzdMapper.insertList(xlzds);*/
+		int m =1;
+ 		for (int i = 0; i <allClzd.size(); i++) {
+
+			if (i != 0) {
+				++m;
+				List<String> qidian = Arrays.asList(allClzd.get(i).getWd() + "," + allClzd.get(i).getJd());
+				List<String> zhongdian = Arrays.asList(allClzd.get(i - 1).getWd() + "," + allClzd.get(i - 1).getJd());
+				String baiDuTime = getBaiDuTime(qidian, zhongdian);
+				ClXlzd xlzd = new ClXlzd();
+				xlzd.setCjr(operator);
+				xlzd.setCjsj(now);
+				xlzd.setFx(router.getYxfs());
+				xlzd.setXh((short) m);
+				xlzd.setXlId(router.getId());
+				xlzd.setZdId(xlzds.get(i).getZdId());
+				xlzd.setId(genId());
+				xlzd.setZt("00");
+				xlzd.setYjdzsj(Short.valueOf(baiDuTime));
+				xlzds.add(xlzd);
+
+			} else {
+				ClXlzd xlzd = new ClXlzd();
+				xlzd.setCjr(operator);
+				xlzd.setCjsj(now);
+				xlzd.setFx(router.getYxfs());
+				xlzd.setXh((short) m);
+				xlzd.setXlId(router.getId());
+				xlzd.setZdId(xlzds.get(i).getZdId());
+				xlzd.setId(genId());
+				xlzd.setZt("00");
+				xlzd.setYjdzsj(null);
+				xlzds.add(xlzd);
+
+			}
+		}
+
+		xlzdMapper.insertList(xlzds);
 	}
 
 	@Override
@@ -127,24 +150,55 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		return xlService.findIn(ClXl.InnerColumn.id, xlIds);
 	}
 
-	public static void main(String[] args) {
-         
-		List<String> qidian = new ArrayList<>();
-        String q="30.5307693887,114.3244618270";
-        qidian.add(q);
-		List<String> zhongdian = new ArrayList<>();
-        String z="30.5582816319,114.2131314340";
-        zhongdian.add(z);
-		RouteMatrixBean routematrix = BaiduWebApi.routematrix(qidian, zhongdian, "driving");
-		System.out.println(routematrix);
+	// 获取百度经纬度之间驾车时间
+	public String getBaiDuTime(List<String> qidian, List<String> zd) {
+		String time = null;
+		RouteMatrixBean routematrix = BaiduWebApi.routematrix(qidian, zd, "driving");
+
 		List<RouteMatrixResult> result = routematrix.getResult();
-		System.out.println(result);
 		for (RouteMatrixResult routeMatrixResult : result) {
 			Map<String, String> duration = routeMatrixResult.getDuration();
-			for (Object o : duration.keySet()) {
-				System.out.println("key=" + o + " value=" + duration.get(o));
-			}
+			time = duration.get("text");
 		}
 
+		return time;
+
+	}
+
+	/*
+	 * public static void main(String[] args) {
+	 * 
+	 * List<String> qidian = new ArrayList<>(); String q =
+	 * "30.5307693887,114.3244618270"; qidian.add(q); List<String> zhongdian = new
+	 * ArrayList<>(); String z = "30.5582816319,114.2131314340"; zhongdian.add(z);
+	 * RouteMatrixBean routematrix = BaiduWebApi.routematrix(qidian, zhongdian,
+	 * "driving"); List<RouteMatrixResult> result = routematrix.getResult(); for
+	 * (RouteMatrixResult routeMatrixResult : result) { Map<String, String> duration
+	 * = routeMatrixResult.getDuration(); System.out.println(duration.get("text"));
+	 * }
+	 * 
+	 * }
+	 */
+
+	public static void main(String[] args) {
+        int m =1;
+		List<String> strings = new ArrayList<>();
+
+		strings.add("香蕉");
+		strings.add("苹果");
+		strings.add("橘子");
+		strings.add("火龙果");
+
+		List<String> dsd = new ArrayList<>();
+		for (int i = 0; i < strings.size(); i++) {
+			if (i != 0) {
+				++m;
+				dsd.add(strings.get(i)+"第"+m+"次");
+			} else {
+				dsd.add(strings.get(i)+"第一次");
+			}
+		}
+		
+		System.out.println(dsd);
 	}
 }

@@ -3,12 +3,11 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" title="新建站牌">
+		<Modal v-model="showModal" width='900' :closable='false' :mask-closable="mesF" title="新建终端">
 			<div style="overflow: auto;height: 300px;">
 				<Form
-						ref="addmess"
-						:model="addmess"
-						:rules="ruleInline"
+						ref="form"
+						:model="form"
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>
@@ -19,33 +18,23 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='站牌名称'>
-								<Input type="text" v-model="form.mc" placeholder="请填写站牌名称...">
+							<FormItem label='终端名称'>
+								<Input type="text" v-model="form.mc" placeholder="请填终端名称...">
 								</Input>
 							</FormItem>
 						</Col>
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='型号:' placeholder="请选择站牌型号...">
-								<Select v-model="form.xh">
-									<Option value="10">型号1</Option>
-									<Option value="20">型号2</Option>
+							<FormItem label='设备状态:' placeholder="请选择设备状态">
+								<Select v-model="form.zt">
+									<Option v-for="item in dic" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='厂商：'>
 								<Input type="text" v-model="form.cs" placeholder="请填写厂商信息...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-
-					<Row>
-						<Col span="24">
-							<FormItem label='地址:'>
-								<Input type="text" v-model="form.dz" placeholder="请填写地址...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -71,27 +60,29 @@
 				showModal: true,
                 mesF:false,
 				form: {
-                    zdbh:'',
-					mc: '',
-					xh: '',
-                    cs: '',
-                    dz:'',
+                    zdbh:'',//终端编号
+					mc: '',//名称
+                    cs: '',//厂商
+                    zt:''//终端状态
 				},
 			}
 		},
-		created(){
-			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
+		props:{
+			dic:{
+				type:Array,
+				default:[]
 			}
+		},
+		created(){
+//			if (this.$parent.choosedRow){
+//				this.form = this.$parent.choosedRow;
+//			}
 		},
         mounted(){
         },
 		methods: {
 		    save(){
 		        let url = configApi.ZDGL.ADD;
-				if (this.$parent.choosedRow){
-                    url = configApi.ZNZP.CHANGE;
-				}
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
                     this.close();
