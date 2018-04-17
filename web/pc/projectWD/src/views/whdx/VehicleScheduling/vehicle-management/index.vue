@@ -76,7 +76,10 @@
             	mess:{},
             	messType:true,
             	compName:'',
-            	
+                clztDict:[],
+                clztDictCode:'ZDCLK0016',
+                cxDict:[],
+                cxDictCode:'ZDCLK0019',
             	SpinShow:true,
 				tabHeight: 220,
             	PickerTime:2017,
@@ -108,17 +111,16 @@
                     {
                         title: '车型',
                         align:'center',
-                        key: 'cx'
+                        key: 'cx',
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
+                            return h('div',val)
+                        }
                     },
                     {
                         title: '载客量',
                         align:'center',
                         key: 'zkl'
-                    },
-                    {
-                        title: '等级',
-                        align:'center',
-                        key: 'dl'
                     },
                     {
                         title: '创建人',
@@ -142,13 +144,8 @@
                         align:'center',
                         key: 'zt',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '00':
-                                    return h('div','正常');
-                                case '10':
-								default:
-                                    return h('div','停用');
-                            }
+                            let val = this.dictUtil.getValByCode(this,this.clztDictCode,p.row.zt)
+                            return h('div',val)
                         }
                     },
                     {
@@ -215,7 +212,7 @@
                     cphLike: '',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
             }
         },
         created(){
@@ -229,8 +226,16 @@
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
             this.getmess()
+			this.getCxDict();
+			this.getClztDict();
         },
         methods: {
+            getClztDict(){
+                this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
+            },
+            getCxDict(){
+                this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
+            },
         	getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
         	        this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -255,28 +260,9 @@
                 this.getmess()
         	},
         	listDele(id){
-        		var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
+                this.util.del(this,configApi.CLGL.DELE,[id.clId],()=>{
+                    this.getmess()
 				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(configApi.CLGL.DELE,{'ids':[id.clId]}).then((res) =>{
-//						console.log('删除',res)
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}else{
-							this.$Message.error('操作成功');
-						}
-						v.getmess()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
-				});
 			},
             pageChange(event){
                 this.findMess.pageNum = event

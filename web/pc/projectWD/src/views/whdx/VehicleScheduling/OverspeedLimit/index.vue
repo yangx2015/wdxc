@@ -90,6 +90,8 @@
 					pageNum: 1,
 					pageSize: 5
 				},
+				cxDict:[],
+				cxDictCode:'ZDCLK0002',
 				showModal: false,
 				tableTiT: [{
 						title: "序号",
@@ -103,12 +105,8 @@
 						width:'120',
 						key: 'cx',
                         render:(h,p)=>{
-                            switch(p.row.cx){
-                                case '11':
-                                    return h('div','类型一');
-                                case '22':
-                                    return h('div','类型二');
-                            }
+                            let val = this.dictUtil.getValByCode(this.cxDict,p.row.cx)
+							return h('div',val)
                         }
 					},
 					{
@@ -188,8 +186,12 @@
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
             this.getmess()
+			this.getCxDict();
 		},
 		methods: {
+		    getCxDict(){
+		        this.cxDict = this.dictUtil.getByCode(this.cxDictCode);
+			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
                     this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -198,7 +200,6 @@
                 }
 				var v = this
 				this.$http.get(configApi.CS.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('超速数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;

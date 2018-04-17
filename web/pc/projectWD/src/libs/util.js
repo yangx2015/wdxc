@@ -34,13 +34,12 @@ util.del = function(v,url,ids,callback){
             if (willDelete) {
                 v.$http.post(url,{'ids':ids}).then((res) =>{
                     if(res.code===200){
+                        v.$Message.success(res.message);
                         if (callback && typeof callback == 'function'){
                             callback();
-                        }else{
-                            v.$Message.success(res.message);
                         }
                     }else{
-                        v.$Message.warning(res.message);
+                        v.$Message.error(res.message);
                     }
                 })
             }
