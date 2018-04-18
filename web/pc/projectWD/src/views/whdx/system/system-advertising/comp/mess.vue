@@ -130,11 +130,7 @@
                 this.formItem.filePaths += path+",";
 			},
 			removeFile(url){
-				let s = this.formItem.filePaths;
-				let i = s.indexOf(url+',');
-				s = s.substring(0,i)+s.substring(i,url.length+1);
-                this.formItem.filePaths = s;
-                this.save();
+                this.formItem.filePaths = this.formItem.filePaths.split(',').splice(url+',',1).join(',')
 			},
             save(){
                 var v = this
