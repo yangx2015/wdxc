@@ -78,6 +78,9 @@
             handleRemove (file) {
                 const fileList = this.$refs.upload.fileList;
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+                console.log('移出文件',file)
+//              this.formItem.filePaths.replace(url+',','')
+                this.$emit('removeFile',file.url.replace(configApi.STATIC_PATH,''))
             },
             handleSuccess (res, file,fileList) {
                 this.$emit('addImg',res.message);
