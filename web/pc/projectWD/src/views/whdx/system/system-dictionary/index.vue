@@ -91,18 +91,6 @@
 										<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
 									</div>
 								</div>
-								<!--<Row class="padding-4px-5px" v-for='(items,indexs) in item.zdxmList'>
-									<Col span="2"> {{(indexs+1)}}
-									</Col>
-									<Col span="8"> {{items.zddm}}
-									</Col>
-									<Col span="8"> {{items.zdmc}}
-									</Col>
-									<Col span="6" style="text-align: center;">
-									<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>
-									<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
-									</Col>
-								</Row>-->
 							</div>
 						</div>
 					</Card>
