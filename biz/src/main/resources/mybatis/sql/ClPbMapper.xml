@@ -37,7 +37,7 @@ SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  to_char(t.cjsj,'yyyy-mm-dd')=#
 			and t1.LX=#{lulx}
 		</if>
 		) t3 GROUP BY
-		t3.id,t3.xlmc,t3.yxkssj,t3.yxjssj,
+		t3.id,t3.xlmc,t3.yxkssj,t3.yxjssj
 	</select>
 	<!-- select t1.XLMC,t3.* from CL_XL t1 LEFT JOIN CL_PB T2 ON t1.id=t2.XL_ID 
 		and to_char(t2.cjsj,'yyyy-mm-dd')='2018-03-26' LEFT JOIN CL_CL t3 on t2.CL_ID=t3.CL_ID -->
