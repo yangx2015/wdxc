@@ -20,4 +20,8 @@ public interface ClZdMapper extends Mapper<ClZd> {
             @Result(property = "vehicleScope", column = "FW")
     })
     List<DdClModel> getBySiteVehicleList(@Param("id") String id);
+    
+    
+    //批量获取站点
+    List<ClZd> getAllClzd(@Param("clzds") List<String> clzds);
 }

@@ -66,7 +66,7 @@
 				mess:{
 					cljg:'',
 					yjId:this.pams.yjId,
-					zt:'01'
+					zt:'10'
 				}
 			}
 		},

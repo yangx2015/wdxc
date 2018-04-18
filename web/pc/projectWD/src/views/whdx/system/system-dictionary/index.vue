@@ -3,8 +3,8 @@
 </style>
 <!--字典管理-->
 <template>
-	<div class="topDiv box" style="background-color: #fff;">
-		<Row class="margin-top-30" style='background-color: #fff;position: relative;border-bottom: solid 2px #ededed;'>
+	<div class="boxbackborder box" style="background-color: #fff;">
+		<Row class="margin-top-10" style='background-color: #fff;position: relative;border-bottom: solid 2px #ededed;'>
 			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -51,7 +51,7 @@
 								<Row class="margin-bottom-10">
 									<Input v-model="dictionaryMess[index]" clearable placeholder="请输入字典信息..." @on-change="findDicList(item,index,dictionaryMess[index])"></Input>
 								</Row>
-								<Row class="padding-2px-5px" style='background-color: #a09d9d;'>
+								<Row class="padding-2px-5px" style='background-color: #f8f8f9;'>
 									<Col span="2"> 序号
 									</Col>
 									<Col span="8"> 类目编码
@@ -71,7 +71,7 @@
 									<Col span="8"> {{items.zdmc}}
 									</Col>
 									<Col span="6" style="text-align: center;">
-									<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>
+									<!--<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>-->
 									<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
 									</Col>
 								</Row>
@@ -147,7 +147,7 @@
 		methods: {
 			getmess() {
 				var v = this
-				this.$http.post(configApi.DICTIONARY.QUERY, this.findMess).then((res) => {
+				this.$http.post(configApi.DICTIONARY.QUERY).then((res) => {
 					console.log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;
@@ -191,9 +191,6 @@
 				})
 			},
 			removeDcList(item, items) {
-//				this.util.del(this,configApi.DICTIONARY_LIST.DELE,[item.zdId],()=>{
-//                  this.getmess();
-//				});
 				var v = this
 				swal({
 				  title: "是删除数据?",

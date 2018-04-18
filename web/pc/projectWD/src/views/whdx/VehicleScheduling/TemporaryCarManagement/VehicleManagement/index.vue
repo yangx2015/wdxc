@@ -3,9 +3,9 @@
 </style>
 <!--临时车辆管理-->
 <template>
-    <div class="topDiv">
+    <div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>

@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" title="新建站牌">
+		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'站牌'">
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="addmess"
@@ -68,6 +68,7 @@
 		name: '',
 		data() {
 			return {
+			    operate:'新建',
 				showModal: true,
                 mesF:false,
 				form: {
@@ -82,6 +83,7 @@
 		created(){
 			if (this.$parent.choosedRow){
 				this.form = this.$parent.choosedRow;
+				this.operate = '编辑'
 			}
 		},
         mounted(){

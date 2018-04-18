@@ -12,7 +12,6 @@ import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.ApiResponse;
 
-
 /*
  * 业务系统对外开放的接口
  * 
@@ -21,37 +20,35 @@ import com.ldz.util.bean.ApiResponse;
 @RestController
 @RequestMapping("/pub/")
 public class MessageApi {
-   @Autowired
-   private GpsService gpsservice;
-   @Autowired
-   private SpkService spkservice;
-   @Autowired
-   private InstructionService intstruction;
+	@Autowired
+	private GpsService gpsservice;
+	@Autowired
+	private SpkService spkservice;
+	@Autowired
+	private InstructionService intstruction;
+
 	/*
 	 * 给tic-server提供gps存储接口
 	 */
 	@PostMapping("/gps/save")
-	public ApiResponse<String> filterAndSave(@RequestBody GpsInfo entity){
-		
+	public ApiResponse<String> filterAndSave(@RequestBody GpsInfo entity) {
+
 		return gpsservice.filterAndSave(entity);
 	}
-	
+
 	/*
 	 * 给tic-server提供云视屏存储接口
 	 */
 	@PostMapping("/spk/save")
-	public ApiResponse<String> saveSpk(@RequestBody GpsInfo entity){
-		
+	public ApiResponse<String> saveSpk(@RequestBody GpsInfo entity) {
+
 		return spkservice.saveSpk(entity);
 	}
-	
+
 	@PostMapping("/intstruction/send")
-	public ApiResponse<String> sendinstruction(@RequestBody GpsInfo info){
-		
-		
-		return intstruction.sendinstruction(info);
-		
+	public ApiResponse<String> sendinstruction(@RequestBody GpsInfo info) {
+
+       return  intstruction.sendinstruction(info);
 	}
-	
 
 }

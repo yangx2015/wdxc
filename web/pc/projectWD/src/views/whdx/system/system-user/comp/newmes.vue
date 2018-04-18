@@ -2,10 +2,10 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    width='800'
+			height="400"
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增用户">
+		    :title="operate+'用户'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -43,8 +43,7 @@
 						<Col span="12">
 							<FormItem label='类型：'>
 								<Select v-model="addmess.lx">
-									<Option value="11">类型一</Option>
-									<Option value="22">类型二</Option>
+									<Option v-for="item in yhlxDict" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -85,6 +84,7 @@
 		data(){
 			return {
 				showModal:true,
+				operate:"新增",
 				//新增数据
             	addmess: {
                     zh: '',
@@ -111,6 +111,8 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+                yhlxDict:[],
+                yhlxDictCode:'ZDCLK0003'
 			}
 		},
 		props:{
@@ -128,8 +130,12 @@
 			this.fullcal()
             if(this.usermesType){
                 this.showPsd = true;
-            }
-		},
+            }else{
+                this.operate = '编辑'
+			}
+			this.yhlxDict = this.$parent.yhlxDict
+            console.log(this.yhlxDict);
+        },
 		methods:{
 			fullcal(){
 				console.log('信息',this.usermes)
@@ -143,6 +149,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.usermesType){
                     		v.$http.post(configApi.USER.ADD,v.addmess).then((res) =>{

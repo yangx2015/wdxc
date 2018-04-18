@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" title="新建角色">
+		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'角色'">
 			<div style="overflow: auto;height: 300px;">
 				<Form
 	    			ref="addmess"
@@ -31,8 +31,7 @@
 							<Col span="12">
 								<FormItem label='类型：' placeholder="请选择角色类型...">
 									<Select v-model="addmess.jslx">
-										<Option value="00">管理</Option>
-										<Option value="11">员工</Option>
+										<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 									</Select>
 								</FormItem>
 							</Col>
@@ -71,6 +70,7 @@
 		data() {
 			return {
 				showModal: true,
+				operate:'新建',
 				mesF: false,
 				addmess: {
 					jsmc: '',
@@ -84,7 +84,9 @@
               	},
 				data4: [
                 ],
-				choosedIds :[]
+				choosedIds :[],
+                Dictionary:[],
+                lmdmDictionary:'ZDCLK0004'
 			}
 		},
 		props:{
@@ -92,19 +94,21 @@
 				type:Boolean,
 				default:true
 			},
-			// messdata:{
-			// 	type:Object,
-			// 	default:{}
-			// }
 		},
 		created(){
             this.addmess = this.$parent.messdata
-            console.log(this.addmess);
+            if(!this.usermesType){
+                this.operate = '编辑';
+            }
         },
 		mounted(){
 			this.getRolePermissionTree();
+            this.getLXDic();
 		},
 		methods: {
+            getLXDic(){
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+            },
 		    getAllPermissionTree(){
                 this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
                     if(res.code===200){
@@ -121,14 +125,13 @@
 			},
 		    setRolePermission(){
                 this.getChoosedIds(this.data4);
-                console.log(this.choosedIds);
                 let ids = '';
                 for (let r of this.choosedIds){
                     ids += r+',';
 				}
                 this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':ids}).then((res) =>{
                     if(res.code===200){
-                        this.$Message.success('修改成功');
+                        this.$Message.success(res.message);
                     }
                 })
 			},
@@ -144,10 +147,10 @@
                 var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.$parent.SpinShow = true;
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
-			                    	v.$Message.success('角色注册成功');
                                     this.setRolePermission();
 									v.$emit('listF',res)
 								}
@@ -155,7 +158,7 @@
 						}else{
 							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
-									v.$Message.success('角色修改成功');
+									v.$Message.success(res.message);
                                     this.setRolePermission();
 									v.$emit('listF',res)
 								}

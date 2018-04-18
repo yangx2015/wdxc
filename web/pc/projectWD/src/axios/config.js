@@ -1,4 +1,7 @@
 module.exports = {
+	UPLOAD:'http://47.98.39.45:8080/biz/upload',
+    STATIC_PATH:'http://47.98.39.45:9092/',
+	VIDEO_PATH:'http://47.98.39.45:9091',
 	USERROOT:{
 		GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
@@ -41,7 +44,8 @@ module.exports = {
        QUERY:'/api/zdxm/pager',//查询字典项
        ADD:'/api/zdxm/save',// 新增字典项
        CHANGE:'/api/zdxm/update',// 编辑字典项
-       DELE:'/api/zdxm/removeIds'// 删除字典项
+        DELE:'/api/zdxm/removeIds',// 删除字典项
+        GET_BY_CONDITION:'/api/zdxm/getCondition', // 删除字典
     },
 	ITMS:{
 		QUERY:'api/fw/pager',//服务管理
@@ -117,7 +121,8 @@ module.exports = {
 		QUERY:  '/api/cd/pager',
 		ADD:    '/api/cd/save',
         CHANGE: '/api/cd/update',
-		DELE:   '/api/cd/removeIds'
+		DELE:   '/api/cd/removeIds',
+		GET_CONDITION:'/api/cd/getCondition'
 	},
 	SG:{
 		QUERY:  '/api/sg/pager',

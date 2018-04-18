@@ -78,6 +78,7 @@ export default {
     },
     created(){
         menuList.menuTree = [];
+        this.initDict();
     },
     methods: {
         handleSubmit () {
@@ -149,6 +150,22 @@ export default {
                     this.addToList(r.children);
                 }
             }
+        },
+        initDict(){
+            this.$http.get(configApi.DICTIONARY.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                if(res.code===200){
+                    for (let r of res.page.list){
+                        let a = [];
+                        if (!r.zdxmList)continue
+                        for (let e of r.zdxmList){
+                            a.push({key:e.zddm,val:e.zdmc});
+                        }
+                        this.$store.state.app.dictMap.set(r.lmdm,a)
+                    }
+                }
+            }).catch((error) =>{
+                console.log(error)
+            })
         },
         initMenu(){
             this.addToList(appRouter,this.menus);

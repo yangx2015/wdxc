@@ -9,6 +9,7 @@ import 'iview/dist/styles/iview.css';
 import VueI18n from 'vue-i18n';
 import http from './axios/index';
 import util from './libs/util';
+import dictUtil from './libs/dictUtil';
 import session from './libs/session';
 
 import swal from 'sweetalert'
@@ -20,6 +21,7 @@ Vue.use(iView);
 Vue.prototype.session = session
 Vue.prototype.$http = http;
 Vue.prototype.util = util;
+Vue.prototype.dictUtil = dictUtil;
 
 new Vue({
     el: '#app',

@@ -2,7 +2,7 @@
 	<div>
 	    <div class="demo-upload-list" v-for="item in uploadList">
 	        <template v-if="item.status === 'finished'">
-	            <img :src="item.url">
+				<video :src="item.url" controls="false"></video>
 	            <div class="demo-upload-list-cover">
 	                <!--<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>-->
 	                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
@@ -17,17 +17,17 @@
 	        :show-upload-list="false"
 	        :default-file-list="defaultList"
 	        :on-success="handleSuccess"
-	        :format="['jpg','jpeg','png']"
-	        :max-size="1"
+	        :max-size="1024000"
+			:format="['ogv','ogg','mp4']"
 	        :on-format-error="handleFormatError"
 	        :on-exceeded-size="handleMaxSize"
 	        :before-upload="handleBeforeUpload"
 	        multiple
 	        type="drag"
-	        action="//jsonplaceholder.typicode.com/posts/"
+	        :action="uploadUrl+'?targetPath=movie'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
-	            <Icon type="camera" size="20"></Icon>
+	            <Icon type="videocamera" size="20"></Icon>
 	        </div>
 	    </Upload>
 	    <!--<Modal title="View Image" v-model="visible">
@@ -37,25 +37,34 @@
 	</div>
 </template>
 <script>
+	import configApi from '@/axios/config.js'
     export default {
         data () {
             return {
                 defaultList: [
-                    {
-                        'name': 'a42bdcc1178e62b4694c830f028db5c0',
-                        'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-                    },
-                    {
-                        'name': 'bc7521e033abdd1e92222d733590f104',
-                        'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-                    }
                 ],
                 imgName: '',
                 visible: false,
-                uploadList: []
+                uploadList: [],
+                uploadUrl:configApi.UPLOAD
             }
         },
+         props:{
+			urlList:{
+				type:String,
+				default:''
+			}
+		},
+		created(){
+        	this.dataList()
+        },
         methods: {
+        	dataList(){
+        		let ArrList = this.urlList.split(',')
+	        	for(var i=0;i<ArrList.length-1;i++){
+	        		this.defaultList.push({'url':configApi.STATIC_PATH+ArrList[i]})
+	        	}
+        	},
             handleView (name) {
                 this.imgName = name;
                 this.visible = true;
@@ -65,20 +74,20 @@
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
             },
             handleSuccess (res, file,fileList) {
-            	alert('上传完成')
-                file.url = 'https://o5wwk8baw.qnssl.com/7eb99afb9d5f317c912f08b5212fd69a/avatar';
-                file.name = '7eb99afb9d5f317c912f08b5212fd69a';
+                this.$emit('addImg',res.message);
+                console.log(res);
+                file.url = configApi.STATIC_PATH + res.message;
             },
             handleFormatError (file) {
                 this.$Notice.warning({
                     title: '文件格式错误',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    desc: '视频仅支持 ogv、ogg、mp4'
                 });
             },
             handleMaxSize (file) {
                 this.$Notice.warning({
                     title: '文件太大了',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+                    desc: '文件不能超过18M'
                 });
             },
             handleBeforeUpload () {
@@ -97,41 +106,3 @@
         }
     }
 </script>
-<style>
-    .demo-upload-list{
-        display: inline-block;
-        width: 60px;
-        height: 60px;
-        text-align: center;
-        line-height: 60px;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        overflow: hidden;
-        background: #fff;
-        position: relative;
-        box-shadow: 0 1px 1px rgba(0,0,0,.2);
-        margin-right: 4px;
-    }
-    .demo-upload-list img{
-        width: 100%;
-        height: 100%;
-    }
-    .demo-upload-list-cover{
-        display: none;
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        background: rgba(0,0,0,.6);
-    }
-    .demo-upload-list:hover .demo-upload-list-cover{
-        display: block;
-    }
-    .demo-upload-list-cover i{
-        color: #fff;
-        font-size: 20px;
-        cursor: pointer;
-        margin: 0 2px;
-    }
-</style>

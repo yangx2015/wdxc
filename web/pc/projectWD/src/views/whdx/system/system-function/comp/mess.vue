@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" title="新建功能">
+			:mask-closable="mesF" title="编辑功能">
 			<div style="overflow: auto;height: 500px;">
 				<Form>
 					<FormItem label='功能名称'>
@@ -21,8 +21,7 @@
 					</FormItem>
 					<FormItem label='状态'>
 						<Select v-model="addmess.zt" placeholder="请填选择状态...">
-					        <Option value="00">正常</Option>
-					        <Option value="01">停用</Option>
+							<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 					    </Select>
 					</FormItem>
 					<FormItem label='URL'>
@@ -81,6 +80,10 @@
 			chmess:{
 				type:Object,
 				default:{}
+			},
+			Dictionary:{
+				type:Array,
+				default:[]
 			}
 		},
 		created(){

@@ -32,6 +32,7 @@ public class JsController extends BaseController<SysJs, String> {
     public ApiResponse<String> save(SysJs entity) {
         SysYh user = getCurrentUser();
         entity.setCjr(user.getYhid());
+        entity.setJgdm(user.getJgdm());
         return this.roleService.saveEntity(entity);
     }
 

@@ -1,6 +1,7 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.mapper.SysPtrzMapper;
 import com.ldz.sys.model.SysRz;
 import com.ldz.sys.service.RzService;
@@ -21,5 +22,11 @@ public class RzServiceImpl extends BaseServiceImpl<SysRz,String> implements RzSe
     @Override
     protected Class<?> getEntityCls(){
         return SysRz.class;
+    }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        condition.setOrderByClause("czsj desc");
+        return true;
     }
 }

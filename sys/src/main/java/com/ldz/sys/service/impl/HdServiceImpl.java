@@ -1,5 +1,6 @@
 package com.ldz.sys.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.constant.Dict;
@@ -14,6 +15,7 @@ import com.ldz.sys.service.HdService;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,9 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * @author chenwei
@@ -34,8 +39,6 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
     private SysHdyxMapper hdyxMapper;
     @Autowired
     private SysYxhdwjMapper yxhdwjMapper;
-    @Autowired
-    private JgService jgService;
     @Override
     protected Mapper<SysHdyx> getBaseMapper() {
         return hdyxMapper;
@@ -46,6 +49,31 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
     public boolean fillCondition(LimitedCondition condition){
 
         return true;
+    }
+
+    public void afterPager(PageInfo<SysHdyx> resultPage){
+        setFiles(resultPage.getList());
+    }
+
+    private void setFiles(List<SysHdyx> list){
+        if (list.size() == 0)return;
+        List<String> hdIds = list.stream().map(SysHdyx::getHdId).collect(Collectors.toList());
+        SimpleCondition condition = new SimpleCondition(SysYxhdwj.class);
+        condition.in(SysYxhdwj.InnerColumn.hdId,hdIds);
+        List<SysYxhdwj> files = yxhdwjMapper.selectByExample(condition);
+        if (files.size() == 0)return;
+        Map<String,SysHdyx> hdMap = list.stream().collect(Collectors.toMap(SysHdyx::getHdId,p->p));
+        for (SysYxhdwj file : files) {
+            String hdId = file.getHdId();
+            if (StringUtils.isEmpty(hdId))continue;
+            SysHdyx hd = hdMap.get(hdId);
+            if (hd == null)continue;
+            if (StringUtils.isEmpty(hd.getFilePaths())){
+                hd.setFilePaths(file.getWjlj()+",");
+            }else{
+                hd.setFilePaths(hd.getFilePaths() + file.getWjlj()+",");
+            }
+        }
     }
 
     /**
@@ -108,6 +136,12 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
 
         // 修改数据
         hdyxMapper.updateByPrimaryKeySelective(entity);
+        // 删除旧文件
+        SimpleCondition condition = new SimpleCondition(SysYxhdwj.class);
+        condition.eq(SysYxhdwj.InnerColumn.hdId,entity.getHdId());
+        yxhdwjMapper.deleteByExample(condition);
+
+        saveFiles(entity);
         return ApiResponse.success();
     }
 }

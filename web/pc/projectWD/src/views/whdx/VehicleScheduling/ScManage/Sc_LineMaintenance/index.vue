@@ -3,9 +3,9 @@
 	@import '../../../../../styles/common.less';
 </style>
 <template>
-	<div class="topDiv">
+	<div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -91,6 +91,22 @@
 						title: '线路名称',
 						align: 'center',
 						key: 'xlmc'
+					},
+					{
+						title: '开始时间',
+						align: 'center',
+						key: 'yxkssj',
+						render:(h,p)=>{
+						    return h('div',p.row.yxkssj+"点");
+						}
+					},
+					{
+						title: '结束时间',
+						align: 'center',
+						key: 'yxjssj',
+                        render:(h,p)=>{
+                            return h('div',p.row.yxjssj+"点");
+                        }
 					},
 					{
 						title: '方向',

@@ -4,6 +4,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -106,7 +108,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
 
 		// 推送坐标去前端
-		websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity)));
+		String socket =JsonUtil.toJson(changeSocket(gpsinfo, entity));
+		log.info("推送前端的数据为"+socket);
+		websocket.convertAndSend("/topic/sendgps", socket);
 
 		return ApiResponse.success("该点位redis实时更新,历史存储成功");
 	}
@@ -282,19 +286,24 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ApiResponse<List<websocketInfo>> apiResponse = new ApiResponse<>();
 		List<websocketInfo> list = new ArrayList<>();
 
+		//将终端编号,车辆信息缓存
+		List<ClCl> selectAll = clclmapper.selectAll();
+		Map<String, ClCl> clmap = selectAll.stream().collect(Collectors.toMap(ClCl::getZdbh, ClCl->ClCl));
+		
+		//获取最新设备记录信息
 		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
 
 		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
-			ClCl seleClInfoByZdbh = clclmapper.seleClInfoByZdbh(clSbyxsjjl.getZdbh());
+			ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
 			websocketInfo websocketInfo = new websocketInfo();
 			websocketInfo.setBdjd(clSbyxsjjl.getJid());
 			websocketInfo.setBdwd(clSbyxsjjl.getWd());
-			websocketInfo.setClid(seleClInfoByZdbh.getClId());
-			websocketInfo.setCph(seleClInfoByZdbh.getCph());
+			websocketInfo.setClid(clCl.getClId());
+			websocketInfo.setCph(clCl.getCph());
 			websocketInfo.setEventType(clSbyxsjjl.getSjlx());
 			websocketInfo.setTime(clSbyxsjjl.getCjsj());
 			websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
-			websocketInfo.setCx(seleClInfoByZdbh.getCx());
+			websocketInfo.setCx(clCl.getCx());
 			list.add(websocketInfo);
 		}
 

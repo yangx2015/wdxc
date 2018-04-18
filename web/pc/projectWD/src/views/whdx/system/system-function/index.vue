@@ -5,7 +5,7 @@
 <template>
 	<div>
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -44,7 +44,8 @@
 		</Card>
 		<component
 			:is="compName"
-			:chmess="chmess"></component>
+			:chmess="chmess"
+			:Dictionary="Dictionary"></component>
 	</div>
 </template>
 
@@ -83,13 +84,8 @@
 					{title: '服务代码', align: 'center', width: 120, key: 'fwdm'},
 					{title: '状态', align: 'center', width: 120, key: 'zt',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '00':
-                                    return h('div','正常');
-                                case '10':
-                                default:
-                                    return h('div','停用');
-                            }
+	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zt)
+	    					return h('div',val)
                         }
 
 					},
@@ -218,7 +214,9 @@
 					like_ScName: '',
 					pageNum: 1,
 					pageSize: 8
-				}
+				},
+				Dictionary:[],
+				lmdmDictionary:'ZDCLK0007'
 			}
 		},
 		created() {
@@ -231,8 +229,13 @@
 				}]),
 				this.tabHeight = this.getWindowHeight() - 300
             	this.getmess()
+            	this.getLXDic()//字典数据
 		},
 		methods: {
+			getLXDic(){
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+            	console.log('字典',this.Dictionary)
+			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.FUNCTION.QUERY,{params:this.findMess}).then((res) =>{

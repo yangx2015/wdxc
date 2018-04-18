@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增超速设定">
+		    :title="operate+'超速设定'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -17,8 +17,7 @@
 						<Col span="12">
 							<FormItem label='车型：'>
 								<Select v-model="addmess.cx">
-									<Option value="11">类型一</Option>
-									<Option value="22">类型二</Option>
+									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -46,6 +45,7 @@
 		name:'',
 		data(){
 			return {
+                operate:'新建',
 				showModal:true,
 				//新增数据
             	addmess: {
@@ -60,6 +60,7 @@
                       { required: true, message: '请输入姓名', trigger: 'blur' }
                   ],
               	},
+                cxDict:[]
 			}
 		},
 		props:{
@@ -75,8 +76,16 @@
 		created(){
 			this.addmess = this.mess
 			this.fullcal()
+			this.getCxDict();
+
+            if(!this.messType){
+                this.operate = '编辑'
+            }
 		},
 		methods:{
+            getCxDict(){
+                this.cxDict = this.dictUtil.getByCode("ZDCLK0002");
+            },
 			fullcal(){
 				console.log('信息',this.mess)
 			},

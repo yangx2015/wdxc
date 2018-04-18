@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增用户">
+		    :title="operate+'用户'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -95,6 +95,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+				operate:'新建'
 			}
 		},
 		props:{
@@ -110,6 +111,9 @@
 		created(){
 			this.addmess = this.mess
 			this.fullcal()
+            if(!this.messType){
+			    this.operate = '编辑'
+            }
 		},
 		methods:{
 			fullcal(){

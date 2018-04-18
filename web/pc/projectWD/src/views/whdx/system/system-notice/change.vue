@@ -3,7 +3,8 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='false' :mask-closable="mesF" :title="operate+'终端'">
+		<Modal v-model="showModal" width='900' 
+			:closable='false' :mask-closable="mesF" title="终端设备信息编辑">
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="form"
@@ -57,7 +58,6 @@
 		name: '',
 		data() {
 			return {
-                operate:'新建',
 				showModal: true,
                 mesF:false,
 				form: {
@@ -72,22 +72,20 @@
 			dic:{
 				type:Array,
 				default:[]
+			},
+			mess:{
+				type:Object,
+				default:{}
 			}
 		},
 		created(){
-			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
-				this.operate= '编辑'
-			}
+			this.form = this.mess
 		},
         mounted(){
         },
 		methods: {
 		    save(){
-		        let url = configApi.ZDGL.ADD;
-				if (this.$parent.choosedRow){
-                    url = configApi.ZDGL.CHANGE;
-				}
+		        let url = configApi.ZNZP.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
                     this.close();

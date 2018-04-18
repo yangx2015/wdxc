@@ -3,9 +3,9 @@
 </style>
 <!--服务管理-->
 <template>
-	<div class="topDiv">
+	<div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -46,7 +46,8 @@
 		</Card>
 		<component
 			:is="compName"
-			:chmess="chmess"></component>
+			:chmess="chmess"
+			:Dictionary="Dictionary"></component>
 	</div>
 </template>
 
@@ -99,7 +100,11 @@
 					{
 						title: '状态',
 						align: 'center',
-						key: 'zt'
+						key: 'zt',
+                        render:(h,p)=>{
+	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zt)
+	    					return h('div',val)
+                        }
 					},
 					{
 						title: 'API前缀',
@@ -195,7 +200,9 @@
 					fwmcLike:'',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				Dictionary:[],
+				lmdmDictionary:'ZDCLK0006'
 			}
 		},
 		watch: {
@@ -213,12 +220,16 @@
 			}]),
 			this.tabHeight = this.getWindowHeight() - 290
             this.getmess()
+            this.getLXDic()
 		},
 		methods: {
+			getLXDic(){
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+                console.log('字典',this.Dictionary)
+            },
 			getmess(){
 				var v = this
 				this.$http.get(configApi.ITMS.QUERY).then((res) =>{
-					//console.log('服务管理',res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -228,27 +239,6 @@
 				this.util.del(this,configApi.ITMS.DELE,[id],()=>{
                     this.getmess();
 				});
-				
-//				var v = this
-//				swal({
-//				  title: "是删除数据?",
-//				  text: "",
-//				  icon: "warning",
-//				  buttons:['取消','确认'],
-//				})
-//				.then((willDelete) => {
-//				  if (willDelete) {
-//					v.$http.post(configApi.ITMS.DELE,{'ids':[id]}).then((res) =>{
-////						console.log('删除',res)
-//						if(res.code===200){
-//							v.$Message.success('操作成功');
-//						}
-//						v.getmess()
-//					})
-//				  } else {
-//				  	this.$Message.error('操作失败');
-//				  }
-//				});
 			},
 			AddDataList() {
 				var v = this
@@ -260,6 +250,7 @@
 			},
 			findMessList() {
 				var v = this
+				v.SpinShow = true;
 				this.$http.get(configApi.ITMS.QUERY,{params:v.findMess}).then((res) =>{
 					//console.log(res)
 					v.tableData = res.page.list

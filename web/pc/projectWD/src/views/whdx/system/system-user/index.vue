@@ -3,9 +3,9 @@
 </style>
 <!--用户管理-->
 <template>
-	<div>
+	<div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -135,13 +135,8 @@
 						align: 'center',
 						key: 'lx',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '11':
-                                    return h('div','类型一');
-                                case '22':
-                                default:
-                                    return h('div','类型二');
-                            }
+                            let val = this.dictUtil.getValByCode(this,this.yhlxDictCode,p.row.lx)
+                            return h('div',val)
                         }
 					},
 					{
@@ -236,7 +231,9 @@
 					zjhmLike: '',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				yhlxDict:[],
+				yhlxDictCode:'ZDCLK0003'
 			}
 		},
 		watch: {
@@ -252,10 +249,15 @@
 			}, {
 				title: '用户管理',
 			}]),
-			this.tabHeight = Math.floor((this.getWindowHeight() - 290)/48)*48
+			this.tabHeight = this.getWindowHeight() - 260
             this.getmess()
+            this.getDict()
 		},
 		methods: {
+		    getDict(){
+                this.yhlxDict = this.dictUtil.getByCode(this,this.yhlxDictCode);
+                console.log(this.yhlxDict);
+            },
 			enter(mes){
 //				console.log(mes)
 //

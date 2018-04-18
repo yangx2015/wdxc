@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增驾驶员">
+		    :title="operate+'驾驶员'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -39,8 +39,13 @@
 						<Col span="12">
 							<FormItem label='驾驶证类型：'>
 								<Select v-model="addmess.zjcx">
-									<Option value="11">类型一</Option>
-									<Option value="22">类型二</Option>
+									<Option value="A1">A1</Option>
+									<Option value="A2">A2</Option>
+									<Option value="A3">A3</Option>
+									<Option value="B1">B1</Option>
+									<Option value="B2">B2</Option>
+									<Option value="C1">C1</Option>
+									<Option value="C2">C2</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -90,6 +95,7 @@
         mixins:[mixins],
 		data(){
 			return {
+                operate:'新增',
 				showModal:true,
 				//新增数据
                 clrq:'',
@@ -126,6 +132,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+				fleetList:[],
 			}
 		},
 
@@ -151,8 +158,21 @@
 			this.addmess.xb = '1'
 			this.addmess.zjcx = '11'
 			this.fullcal()
+			this.getFleetList()
+
+            if(!this.messType){
+			    this.operate = '编辑'
+            }
 		},
 		methods:{
+		    getFleetList(){
+				let v = this;
+                v.$http.post(configApi.CD.GET_CONDITION).then((res) =>{
+                    if(res.code===200){
+                        this.fleetList = res.result;
+                    }
+                })
+			},
 			fullcal(){
 				console.log('信息',this.mess)
 			},
@@ -193,7 +213,6 @@
             },
 		}
 	}
-//15271928827
 </script>
 
 <style>

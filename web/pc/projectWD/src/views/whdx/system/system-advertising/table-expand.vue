@@ -7,74 +7,94 @@
 		width: 100%!important;
 		height: 200px;
 	}
+	.ModalSty{
+		position: relative;
+		.goleft{
+			position: absolute;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.6);
+    		border: solid #948787 1px;
+		}
+		.goright{
+			position: absolute;
+			top: 50%;
+			right: 0;
+			transform: translateY(-50%);
+			z-index: 1000;
+			background: rgba(0, 0, 0, 0.6);
+    		border: solid #948787 1px;
+		}
+	}
 </style>
 <template>
 	<div>
-		<div v-if="row.active==='img'">
-			<div>
-				附件：图片
-			</div>
-			<div class="demo-upload-list" v-for="(item,index) in uploadList">
-				<img :src="item.url">
-				<div class="demo-upload-list-cover">
-					<Icon type="ios-eye-outline" @click.native="handleView(item.name,index)"></Icon>
+		<div>
+			附件：
+		</div>
+		<div v-if="row.hdlx=='00'">
+			<div class="demo-upload-list" 
+				v-for="(item,index) in uploadList"
+				v-if="(index+1)!=uploadList.length">
+				<div class="demo-upload-list-box">
+					<img :src="staticPath+item.url">
+					<div class="demo-upload-list-cover">
+						<Icon type="ios-eye-outline" @click.native="handleView(index)"></Icon>
+					</div>
 				</div>
 			</div>
 			<Modal class="videoStyle" title="View Image" v-model="visible">
-							<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-				
-    			<!--<Carousel v-model="Carousel" loop style="height: 200px;">
-			        <CarouselItem class="demo-item">
-            			<div class="demo-carousel">
-							<img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-            			</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">2</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">3</div>
-			        </CarouselItem>
-			        <CarouselItem>
-			            <div class="demo-carousel">4</div>
-			        </CarouselItem>
-			    </Carousel>-->
+				<div class="ModalSty">
+					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
+			           <Icon type="arrow-left-b" size='24'></Icon>
+			        </Button>
+					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
+			           <Icon type="arrow-right-b" size='24'></Icon>
+			        </Button>
+					<img :src="staticPath+imgUrl" style="width: 100%">
+				</div>
 			</Modal>
 		</div>
-		<div v-else-if="row.active==='video'">
-			<div>
-				附件：视频
-			</div>
-			<div class="demo-upload-list" v-for="item in uploadList">
-				<video src="static/movie.ogg" height="100%"></video>
-				<!--<img :src="item.url">-->
-				<div class="demo-upload-list-cover">
-					<Icon type="arrow-right-b" @click.native="handleView(item.name)"></Icon>
+		<div v-else-if="row.hdlx=='01'">
+			<div class="demo-upload-list" 
+				v-for="(item,index) in uploadList" 
+				v-if="(index+1)!=uploadList.length">
+				<div>
+					<video :src="staticPath+imgUrl" controls="controls" height="100%"></video>
+					<div class="demo-upload-list-cover">
+						<Icon type="arrow-right-b" @click.native="handleView(index)"></Icon>
+					</div>
 				</div>
 			</div>
 			<Modal title="View Image" v-model="visible">
-				<video class="active-video" src="static/movie.ogg" controls="controls"></video>
+				<div class="ModalSty">
+					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
+			           <Icon type="arrow-left-b" size='24'></Icon>
+			        </Button>
+					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
+			           <Icon type="arrow-right-b" size='24'></Icon>
+			        </Button>
+					<!--<img :src="staticPath+imgUrl" style="width: 100%">-->
+					<video :src="staticPath+imgUrl" controls="controls"  style="width: 100%"></video>
+				</div>
 			</Modal>
 		</div>
 	</div>
 </template>
 <script>
+    import configApi from '@/axios/config.js'
 	export default {
 		name: '',
 		data() {
 			return {
-				Carousel:2,
-				imgName: '',
-				visible: false,
-				uploadList: [{
-						'name': 'a42bdcc1178e62b4694c830f028db5c0',
-						'url': 'https://o5wwk8baw.qnssl.com/a42bdcc1178e62b4694c830f028db5c0/avatar'
-					},
-					{
-						'name': 'bc7521e033abdd1e92222d733590f104',
-						'url': 'https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar'
-					}
-				]
+				visible: false,//modal层
+				staticPath:configApi.STATIC_PATH,
+				uploadList: [],
+				Ix:0,
+				imgUrl:'',
+				paths:[]
 			}
 		},
 		props: {
@@ -83,60 +103,42 @@
 				default: {}
 			}
 		},
-		methods: {
-			handleView(name,index) {
-				if(index){
-					this.CarouselV = index;
+		created(){
+			console.log('tupian',this.row.filePaths)
+            if (this.row.filePaths){
+                let paths = [];
+                this.uploadList = [];
+                paths = this.row.filePaths.split(',');
+                for(let r of paths){
+                    let name = r.substring(r.lastIndexOf("/"));
+                    this.uploadList.push({name:name,url:r});
 				}
-				this.imgName = name;
+			}
+        },
+		methods: {
+			handleView(index) {
+				this.Ix = index
+				this.imgUrl = this.uploadList[index].url
 				this.visible = true;
+			},
+			leftGo(){
+				if(this.Ix==0){
+					this.Ix = this.uploadList.length-2
+					this.imgUrl = this.uploadList[this.Ix].url
+					return 
+				}
+				this.Ix --
+				this.imgUrl = this.uploadList[this.Ix].url
+			},
+			rightGo(){
+				if(this.Ix==this.uploadList.length-2){
+					this.Ix = 0
+					this.imgUrl = this.uploadList[this.Ix].url
+					return 
+				}
+				this.Ix ++
+				this.imgUrl = this.uploadList[this.Ix].url
 			}
 		}
 	};
 </script>
-<style>
-	.demo-upload-list {
-		display: inline-block;
-		width: 60px;
-		height: 60px;
-		text-align: center;
-		line-height: 60px;
-		border: 1px solid transparent;
-		border-radius: 4px;
-		overflow: hidden;
-		background: #fff;
-		position: relative;
-		box-shadow: 0 1px 1px rgba(0, 0, 0, .2);
-		margin-right: 4px;
-	}
-	
-	.demo-upload-list img {
-		width: 100%;
-		height: 100%;
-	}
-	
-	.demo-upload-list-cover {
-		display: none;
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		background: rgba(0, 0, 0, .6);
-	}
-	
-	.demo-upload-list:hover .demo-upload-list-cover {
-		display: block;
-	}
-	
-	.demo-upload-list-cover i {
-		color: #fff;
-		font-size: 28px;
-		cursor: pointer;
-	    text-align: center;
-    	line-height: 60px
-	}
-	.active-video{
-		width: 100%;
-	}
-</style>

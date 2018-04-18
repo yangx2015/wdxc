@@ -35,7 +35,15 @@
 	    				<Input v-model="form.bz" placeholder="备注信息...">
 		    			</Input>
 		    		</COl>
-		    	</Row>
+				</Row>
+					<Row :gutter='30' style="margin-bottom: 15px;">
+						<Col span="5">
+							<Input type="number" v-model="form.yxkssj" placeholder="开始时间..."></Input>
+						</COl>
+						<Col span="5">
+							<Input type="number" v-model="form.yxjssj" placeholder="结束时间..."></Input>
+						</COl>
+					</Row>
 		    </div>
 		    <div class="box-row">
 		    	<div class="body-F stepsList">
@@ -57,7 +65,6 @@
 		    				:disabled="routerList.length==0" style="float: right;"
 		    				@click='removespot'></Button>
 		    		</div>
-		    		</Row>
 		    	</div>
 			</div>
 		    <div slot='footer'>

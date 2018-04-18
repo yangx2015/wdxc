@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
-			:mask-closable="mesF" title="新建广告">
+			:mask-closable="mesF" title="新建活动">
 			<div style="overflow: auto;height: 440px;">
 				<Form
 						ref="formItem"
@@ -14,8 +14,8 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='广告标题'>
-								<Input type="text" v-model="formItem.hdbt" placeholder="请填写广告标题...">
+							<FormItem label='活动标题'>
+								<Input type="text" v-model="formItem.hdbt" placeholder="请填写活动标题...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -29,16 +29,22 @@
 
 					<Row>
 						<Col span="12">
-							<FormItem label='广告类型'>
-								<Input type="text" v-model="formItem.hdlx" placeholder="请填写广告类型...">
-								</Input>
+							<FormItem label='活动时间'>
+								<DatePicker v-model="cjsjInRange" 
+									format="yyyy-MM-dd" type="daterange" 
+									placement="bottom-end" 
+									placeholder="请输活动时间" 
+									style="width: 100%"></DatePicker>
+								
+								<!--<Input type="text" v-model="formItem.hdlx" placeholder="请填写广告类型...">
+								</Input>-->
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='附件类型'>
-								<Select v-model="formItem.active">
-									<Option value="img">图片</Option>
-									<Option value="video">视频</Option>
+								<Select v-model="formItem.hdlx" @on-change="selectC()">
+									<Option value="00">图片</Option>
+									<Option value="01">视频</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -46,17 +52,19 @@
 
 					<Row>
 						<Col span="24">
-							<FormItem v-if="formItem.active==='img'">
+							<FormItem v-if="formItem.hdlx==='00'">
 								<div>
 									添加图片
 								</div>
-								<addlistfileImg></addlistfileImg>
+								<addlistfileImg
+									@addImg="addImg"
+								></addlistfileImg>
 							</FormItem>
-							<FormItem v-else-if="formItem.active==='video'">
+							<FormItem v-else-if="formItem.hdlx==='01'">
 								<div>
 									添加视频
 								</div>
-								<addlistfileVideo></addlistfileVideo>
+								<addlistfileVideo @addImg="addImg"></addlistfileVideo>
 							</FormItem>
 						</Col>
 					</Row>
@@ -71,11 +79,14 @@
 </template>
 
 <script>
+	import mixins from '@/mixins'
+	
 	import addlistfileImg from './addlistfileImg.vue'
 	import addlistfileVideo from './addlistfileVideo.vue'
     import configApi from '@/axios/config.js'
 	export default {
 		name: '',
+		mixins: [mixins],
 		components: { 
         	addlistfileImg,
         	addlistfileVideo
@@ -86,38 +97,44 @@
 				showModal: true,
 				mesF: false,
 				formItem: {
-					active:'img'
+					hdlx:'00',
+					kssj:'',
+					jssj:'',
+					filePaths:''
 				},
-                ruleInline:{}
+                ruleInline:{},
+                cjsjInRange:[]
 			}
 		},
+		watch: {
+			cjsjInRange:function(newQuestion, oldQuestion){
+				this.formItem.kssj = this.getdateParaD(newQuestion[0])
+				this.formItem.jssj = this.getdateParaD(newQuestion[1])
+				console.log(this.formItem)
+			},
+		},
 		created(){
-            if (this.$parent.choosedRow){
-                this.edit = true;
-                this.formItem = this.$parent.choosedRow;
-            }else{
-                if (this.$parent.jgdm){
-                    this.formItem.fjgdm = this.$parent.jgdm;
-                }else{
-                    console.log("请选择父节点")
-                }
-            }
 		},
 		methods: {
+            addImg(path){
+                this.formItem.filePaths += path+",";
+			},
+			selectC(){
+				console.log(this.formItem.filePaths)
+				this.formItem.filePaths =''
+				console.log(this.formItem.filePaths)
+			},
             save(){
                 var v = this
                 let url = configApi.ADVERTISING.ADD;
-                if (this.edit){
-                    url = configApi.ADVERTISING.CHANGE;
-                }
                 this.$http.post(url,this.formItem).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
                     }else{
                         v.$Message.error(res.message);
                     }
-                    v.$parent.componentName = ''
-                    v.$parent.getTree()
+                    v.$parent.compName = ''
+                    v.$parent.getmess()
                 })
             },
 			colse() {

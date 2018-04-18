@@ -6,6 +6,7 @@ import session from '../../libs/session';
 
 const app = {
     state: {
+        dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
     	socketAllCar:[],//监控数据
     	loading:{

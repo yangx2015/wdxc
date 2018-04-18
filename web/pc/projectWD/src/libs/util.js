@@ -7,23 +7,26 @@ import swal from 'sweetalert'
 let util = {
 
 };
-util.title = function (title) {
-    title = title || '武汉大学车辆管理平台';
-    window.document.title = title;
-};
+//util.title = function (title) {
+//  title = title || '武汉大学车辆管理平台';
+//  window.document.title = title;
+//};
 
-const ajaxUrl = env === 'development'
-    ? 'http://127.0.0.1'
-    : env === 'production'
-        ? 'https://www.url.com'
-        : 'https://debug.url.com';
-util.videoPath = 'http://47.98.39.45:9091';
-util.ajax = axios.create({
-    baseURL: ajaxUrl,
-    timeout: 30000,
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
-    withCredentials:true
-});
+//const ajaxUrl = env === 'development'
+//  ? 'http://127.0.0.1'
+//  : env === 'production'
+//      ? 'https://www.url.com'
+//      : 'https://debug.url.com';
+// util.videoPath = 'http://47.98.39.45:9091';
+//util.ajax = axios.create({
+//  baseURL: ajaxUrl,
+//  timeout: 30000,
+//  headers: {'Content-Type':'application/x-www-form-urlencoded'},
+//  withCredentials:true
+//});
+util.initModalTitle = function(v){
+
+}
 util.del = function(v,url,ids,callback){
     swal({
         title: "是否删除数据?",
@@ -34,13 +37,12 @@ util.del = function(v,url,ids,callback){
             if (willDelete) {
                 v.$http.post(url,{'ids':ids}).then((res) =>{
                     if(res.code===200){
+                        v.$Message.success(res.message);
                         if (callback && typeof callback == 'function'){
                             callback();
-                        }else{
-                            v.$Message.success(res.message);
                         }
                     }else{
-                        v.$Message.warning(res.message);
+                        v.$Message.error(res.message);
                     }
                 })
             }

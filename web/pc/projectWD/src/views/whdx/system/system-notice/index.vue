@@ -4,9 +4,9 @@
 </style>
 <!--查询统计-->
 <template>
-	<div class="topDiv">
+	<div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -24,7 +24,7 @@
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="choosedRow = null;componentName = 'formData'">
+							<Button type="primary" @click="AddMess()">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -44,19 +44,23 @@
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component :is="componentName"></component>
+		<component 
+			:is="componentName"
+			:mess="choosedRow"
+			:dic="ztDictionary"></component>
 	</div>
 </template>
 
 <script>
 	import mixins from '@/mixins'
     import configApi from '@/axios/config.js'
+    
 	import formData from './formData'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData
+            formData,
 		},
         data () {
             return {
@@ -67,8 +71,8 @@
             	pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
-				choosedRow:null,
                 componentName:'',
+                choosedRow:{},
             	page:{
             		pageNum:1,
             		pageSize:5
@@ -102,13 +106,8 @@
                         align:'center',
                         key: 'zxzt',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '00':
-                                    return h('div','在线');
-                                case '10':
-                                default:
-                                    return h('div','不在线');
-                            }
+	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
+	    					return h('div',val)
                         }
                     },
                     {
@@ -117,9 +116,13 @@
                         key: 'zxsj'
                     },
                     {
-                        title: '地址',
+                        title: '终端状态',
                         align:'center',
-                        key: 'dz'
+                        key: 'zt',
+                        render:(h,p)=>{
+	                     	let val = this.dictUtil.getValByCode(this,this.ztlmdmDictionary,p.row.zt)
+	    					return h('div',val)
+                        }
                     },
                     {
                         title: '创建时间',
@@ -139,18 +142,18 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        type: 'primary',
-                                        icon: 'navicon-round',
-                                        shape: 'circle',
-                                        size: 'small'
+                                        type: 'success',
+										icon: 'edit',
+										shape: 'circle',
+										size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            this.choosedRow = params.row;
-                                            this.componentName = 'formData';
+                                        	this.choosedRow = params.row
+                                            this.componentName = 'formData'
                                         }
                                     }
                                 }),
@@ -186,7 +189,11 @@
                     mcLike:'',
                 	pageNum:1,
             		pageSize:5
-                }
+                },
+                Dictionary:[],
+				lmdmDictionary:'ZDCLK0032',//在线状态
+				ztDictionary:[],
+				ztlmdmDictionary:'ZDCLK0031'//设备状态
             }
         },
         created(){
@@ -197,10 +204,15 @@
             },{
                 title: '设备终端',
             }]),
-            this.tabHeight = this.getWindowHeight() - 300,
-			this.getPageData();
+            this.tabHeight = this.getWindowHeight() - 300
+			this.getPageData()
+			this.getLXDic()
         },
         methods: {
+        	getLXDic(){
+                this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
+                this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
+        	},
     	    getPageData(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
                     this.form.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -212,12 +224,17 @@
                     if(res.code===200){
                         this.tableData = res.page.list;
                         this.pageTotal = res.page.total;
+                        console.log('数据结构',this.tableData)
                     }
                 })
 			},
 			pageChange(e){
     	        this.form.pageNum = e;
     	        this.getPageData();
+			},
+			//新增数据
+			AddMess(){
+				this.componentName = 'formData'
 			},
             //删除数据
             listDele(r){

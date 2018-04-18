@@ -10,7 +10,7 @@
         	<Col span="6">
             	<h3>图片</h3>
             	<div>
-            		<!-- {{row.}} -->
+					{{row.tp}}
             	</div>
             </Col>
             <Col span="6">

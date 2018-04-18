@@ -16,4 +16,4 @@ server:
 spk: 
   url: http://127.0.0.1:8080/
   
-staticPath: /develop/static/8081/
+staticPath:  D:\static\common\

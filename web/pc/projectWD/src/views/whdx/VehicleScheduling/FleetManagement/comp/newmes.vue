@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增用户">
+		    :title="operate+'用户'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -69,6 +69,7 @@
 		data(){
 			return {
 				showModal:true,
+                operate:'新增',
 				//新增数据
             	addmess: {
                     cdbh: '',
@@ -109,6 +110,9 @@
 		created(){
 			this.addmess = this.mess
 			this.fullcal()
+            if(!this.messType){
+			    this.operate = '编辑'
+            }
 		},
 		methods:{
 			fullcal(){

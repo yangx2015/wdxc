@@ -5,7 +5,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增车辆">
+		    :title="operate+'车辆'">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -16,20 +16,21 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cph" label='车牌号：'>
-								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号">
-								</Input>
+								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='车型：'>
 								<Select v-model="addmess.cx">
-									<Option value="11">大车</Option>
-									<Option value="22">小车</Option>
+									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
+						<Col span="12">
+							<FormItem prop="cph" label='载客量：'>
+								<Input type="text" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
+							</FormItem>
+						</Col>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
 								<Select v-model="addmess.sjId">
@@ -40,19 +41,28 @@
 						<Col span="12">
 							<FormItem prop="zt" label='车辆状态：'>
 								<Select v-model="addmess.zt">
-									<Option value="00">正常</Option>
-									<Option value="10">停用</Option>
+									<Option v-for="zt in clztDict" :value="zt.key">{{zt.val}}</Option>
 								</Select>
-								</Input>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
-						<Col span="24">
+						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号">
-								</Input>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="scs" label='生产商：'>
+								<Input type="text" v-model="addmess.scs" placeholder="请输入生产商"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zdbh" label='型号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入型号"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zdbh" label='终端编号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -74,6 +84,7 @@
 		data(){
 			return {
 				showModal:true,
+				operate:'新增',
 				//新增数据
             	addmess: {
                     cph: '',
@@ -97,7 +108,11 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
-				drivers:[]
+				drivers:[],
+                clztDict:[],
+                clztDictCode:'ZDCLK0016',
+                cxDict:[],
+                cxDictCode:'ZDCLK0019',
 			}
 		},
 		props:{
@@ -111,16 +126,26 @@
 			}
 		},
 		created(){
+            if(!v.messType){
+                this.operate = '编辑';
+            }
 			this.addmess = this.mess
 			this.getDrivers();
+			this.getCxDict();
+			this.getClztDict();
 		},
 		methods:{
+            getClztDict(){
+                this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
+            },
+            getCxDict(){
+                this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
+            },
 		    getDrivers(){
 		        let v = this;
                 v.$http.get(configApi.JSY.NOT_BIND_LIST).then((res) =>{
                     if(res.code===200){
                         this.drivers = res.result;
-                        console.log(res);
                     }
                 })
 			},

@@ -4,9 +4,9 @@
 </style>
 <!--日志管理-->
 <template>
-    <div class="topDiv">
+    <div class="boxbackborder">
 		<Card>
-			<Row class="margin-top-30" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
@@ -108,7 +108,8 @@
                     {
                         title: '参数',
                         align:'center',
-                        key: 'cs'
+                        key: 'cs',
+                        ellipsis:true,
                     },
                     {
                         title: '执行时间',
@@ -173,13 +174,14 @@
 				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
+					v.pageTotal = res.page.total;
 					v.SpinShow = false;
 				})
 			},
             pageChange(event){
         		var v = this
-        		v.page.pageNum = event
-        		v.getDataList(v.page)
+        		v.findMess.pageNum = event
+        		v.findMessList()
 //      		console.log(v.page)
         	},
         	findMessList(){
@@ -188,6 +190,7 @@
         		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
+                    v.pageTotal = res.page.total;
 					v.SpinShow = false;
 				})
         	},

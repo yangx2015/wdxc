@@ -87,8 +87,7 @@ public class ClZdgl implements Serializable {
     @Column(name = "SCMS")
     private String scms;
     
-    @Column(name = "CSSD")
-    private String cssd;
+  
     
     @Column(name = "PZLMD")
     private String pzlmd;
@@ -119,13 +118,7 @@ public class ClZdgl implements Serializable {
 		this.scms = scms;
 	}
 
-	public String getCssd() {
-		return cssd;
-	}
 
-	public void setCssd(String cssd) {
-		this.cssd = cssd;
-	}
 
 	/**
      * 获取终端编号

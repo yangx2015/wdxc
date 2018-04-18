@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			   :mask-closable="mesF" title="新建机构">
+			   :mask-closable="mesF" :title="operate+'机构'">
 			<div style="overflow: auto;height: 500px;">
 				<Form>
 					<FormItem label='机构名称'>
@@ -30,6 +30,7 @@
         data() {
             return {
                 showModal: true,
+				operate:'新建',
                 mesF: false,
 				edit:false,
                 formItem: {
@@ -41,6 +42,7 @@
         },
 		mounted(){
             if (this.$parent.choosedRow){
+                this.operate = '编辑'
                 this.edit = true;
 				this.formItem = this.$parent.choosedRow;
 			}else{

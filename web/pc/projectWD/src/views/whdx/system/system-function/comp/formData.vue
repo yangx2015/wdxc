@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" :title="operate + entityName">
+			:mask-closable="mesF" :title="operate+'功能'">
 			<div style="overflow: auto;height: 500px;">
 				<Form
 						ref="formItem"
@@ -33,8 +33,7 @@
 						<Col span="12">
 							<FormItem label='状态'>
 								<Select v-model="formItem.zt" placeholder="请填选择状态...">
-									<Option value="00">正常</Option>
-									<Option value="01">停用</Option>
+									<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -106,14 +105,19 @@
 		name: '',
 		data() {
 			return {
-			    operate:'新建',
-				entityName:'功能',
+                operate:'新建',
 				showModal: true,
 				mesF: false,
 				formItem: {
 				},
                 ruleInline:{
 				}
+			}
+		},
+		props:{
+			Dictionary:{
+				type:Array,
+				default:[]
 			}
 		},
 		created(){
@@ -129,6 +133,7 @@
 				if (this.$parent.choosedRow){
                     url = configApi.FUNCTION.CHANGE;
 				}
+                this.$parent.SpinShow = true;
 				this.$http.post(url,this.formItem).then((res) =>{
 					if(res.code===200){
 						v.$Message.success('创建成功');
