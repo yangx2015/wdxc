@@ -34,6 +34,7 @@
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
 								<Select v-model="addmess.sjId">
+									<Option :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
 									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
@@ -43,21 +44,6 @@
 								<Select v-model="addmess.zt">
 									<Option v-for="zt in clztDict" :value="zt.key">{{zt.val}}</Option>
 								</Select>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="scs" label='生产商：'>
-								<Input type="text" v-model="addmess.scs" placeholder="请输入生产商"></Input>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="zdbh" label='型号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入型号"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -92,7 +78,8 @@
                     dl:'',
                     sjxm:'',
                     zt:'',
-                    zdbh:''
+                    zdbh:'',
+                    sjId:''
                 },
                 ruleInline: {
                   cph: [
@@ -126,19 +113,17 @@
 			}
 		},
 		created(){
-            if(!v.messType){
+            if(!this.messType){
                 this.operate = '编辑';
             }
 			this.addmess = this.mess
-			this.getDrivers();
-			this.getCxDict();
-			this.getClztDict();
+            console.log(this.mess);
+            this.getDrivers();
+			this.getDict();
 		},
 		methods:{
-            getClztDict(){
+            getDict(){
                 this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
-            },
-            getCxDict(){
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
             },
 		    getDrivers(){
@@ -158,6 +143,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.messType){
                     		v.$http.post(configApi.CLGL.ADD,v.addmess).then((res) =>{

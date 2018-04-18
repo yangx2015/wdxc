@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * 终端管理
  */
@@ -35,4 +37,15 @@ ZdCtrl extends BaseController<ClZdgl,String> {
     public ApiResponse<String> update(ClZdgl entity){
         return service.updateEntity(entity);
     }
+
+    /**
+     * 查询所有未被绑定的未被停用的终端
+     * @return
+     */
+    @RequestMapping(value="/getunboundlist", method={RequestMethod.POST})
+    public ApiResponse<List<ClZdgl>> UnboundList(){
+        return service.unboundList();
+    }
+
+
 }
