@@ -1,16 +1,23 @@
+<style lang="less">
+	.root{
+		.CheckboxList{
+			
+		}
+	}
+</style>
 <!--角色分配-->
 <template>
-	<div>
+	<div class="root">
 		<Modal v-model='RootShow'  height="400" :closable='false' :mask-closable="false" title="角色分配">
 			<div style="overflow: auto;height: 300px;">
 				<div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
 					<Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">全选</Checkbox>
 				</div>
 				<CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
-					<div v-for="item in roleList" style="margin-left:15px">
+					<div class="CheckboxList" v-for="item in roleList" 
+						style="margin-bottom: 6px;margin-left:15px;">
 						<Checkbox :label="item.key">{{item.value}}</Checkbox>
 					</div>
-
 				</CheckboxGroup>
 			</div>
 			<div slot='footer'>
