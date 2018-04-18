@@ -97,6 +97,15 @@
                         key: 'zdbh'
                     },
                     {
+                        title: '绑定车辆',
+                        align:'center',
+                        key: 'cph',
+						render:(h,p)=>{
+                            let s = p.row.cph ? p.row.cph : '-';
+                            return h('div',s);
+						}
+                    },
+                    {
                         title: '厂商',
                         align:'center',
                         key: 'cs'
