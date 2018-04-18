@@ -97,6 +97,8 @@
 				if (this.$parent.choosedRow){
                     url = configApi.ZDGL.CHANGE;
 				}
+				delete this.form.cl;
+				delete this.form.cph;
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
                     this.close();

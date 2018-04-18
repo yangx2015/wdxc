@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -91,10 +92,34 @@ public class ClZdgl implements Serializable {
     
     @Column(name = "PZLMD")
     private String pzlmd;
-    
+
+    @Transient
+    private ClCl cl;
+    /**
+     * 车牌号码
+     */
+    @Transient
+    private String cph;
+
     private static final long serialVersionUID = 1L;
 
-	public String getJslmd() {
+    public String getCph() {
+        return cph;
+    }
+
+    public void setCph(String cph) {
+        this.cph = cph;
+    }
+
+    public ClCl getCl() {
+        return cl;
+    }
+
+    public void setCl(ClCl cl) {
+        this.cl = cl;
+    }
+
+    public String getJslmd() {
 		return jslmd;
 	}
 
