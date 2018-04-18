@@ -58,6 +58,7 @@
 								</div>
 								<addlistfileImg
 									@addImg="addImg"
+									@removeFile = "removeFile"
 									:urlList = "mess.filePaths"
 								></addlistfileImg>
 							</FormItem>
@@ -127,6 +128,12 @@
 		methods: {
             addImg(path){
                 this.formItem.filePaths += path+",";
+			},
+			removeFile(url){
+				console.log('url**************',url)
+				console.log('dizhi', this.formItem.filePaths)
+				this.formItem.filePaths.replace(url+',','8888888888')
+				console.log('dizhi', this.formItem.filePaths)
 			},
             save(){
                 var v = this
