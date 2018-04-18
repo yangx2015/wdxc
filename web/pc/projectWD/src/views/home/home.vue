@@ -1,11 +1,17 @@
 <style lang="less">
 	@import "../../styles/common.less";
 	.homeE{
+		.indexCarType{
+			border-bottom: solid 1px #C0C0C0;
+			box-shadow: 2px 5px 5px #888888;
+		}
 		.divpadd{
-			padding:5px;
+			box-shadow: 2px 5px 5px #888888;
+    		border: solid 2px #ded9d9;
 			.divbgcolor{
 				height: 260px;
-				background: rgba(0,0,0,0.5);
+				/*background: rgba(0,0,0,0.5);*/
+				background-color: #fff;
 			}
 		}
 	}
@@ -17,8 +23,8 @@
 				<hcl></hcl>
 			</div>
 		</div>
-		<div class="homeE" style="background-color: #fff;padding: 5px 3px;">
-			<Row :gutter="8" class="margin-bottom-10">
+		<div class="homeE" style="padding: 5px 3px;">
+			<Row :gutter="8" class="margin-bottom-10 indexCarType">
 				<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
 				<infor-card id-name="user_created_count" :end-val="count.createUser" iconType="planet" color="#2d8cf0" intro-text="设备总数"></infor-card>
 				</Col>
@@ -32,7 +38,7 @@
 				<infor-card id-name="transfer_count" :end-val="count.transfer" iconType="android-warning" color="#f25e43" intro-text="设备离线数量"></infor-card>
 				</Col>
 			</Row>
-			<Row :gutter="8" class="margin-bottom-10">
+			<Row :gutter="12" class="margin-bottom-15">
 				<Col span="12">
 					<div class="divpadd">
 						<div class="divbgcolor">
@@ -50,7 +56,7 @@
 				</Col>
 				
 			</Row>
-			<Row :gutter="8">
+			<Row :gutter="12" class="margin-bottom-15">
 				<Col span="8">
 				<!--连续加班统计-->
 					<div class="divpadd">
@@ -76,7 +82,7 @@
 					</div>
 				</Col>
 			</Row>
-			<Row :gutter="8">
+			<Row :gutter="12" class="margin-bottom-15">
 				<Col span="16">
 					<div class="divpadd">
 						<div class="divbgcolor">

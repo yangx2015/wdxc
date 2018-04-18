@@ -7,7 +7,7 @@
         <Card>
             <p slot="title">
                 <Icon type="person"></Icon>
-                个人信息
+               		 个人信息
             </p>
             <div>
                 <Form 
@@ -15,18 +15,26 @@
                     :model="userForm" 
                     :label-width="100" 
                     label-position="right"
-                    :rules="inforValidate"
-                >
-                    <FormItem label="用户姓名：" prop="name">
+                    :rules="inforValidate">
+                    <FormItem label="用户名：" prop="user">
                         <div style="display:inline-block;width:300px;">
-                            <Input v-model="userForm.name" ></Input>
+                        	<span>{{ userForm.user }}</span>
                         </div>
                     </FormItem>
-                    <FormItem label="用户手机：" prop="cellphone" >
-                        <div style="display:inline-block;width:204px;">
-                            <Input v-model="userForm.cellphone" @on-keydown="hasChangePhone"></Input>
+                    <!--<FormItem label="姓名：" prop="name">-->
+                    <FormItem label="姓名：">
+                        <div style="display:inline-block;width:300px;">
+                            <!--<Input readonly="readonly" v-model="userForm.name" ></Input>-->
+                            <span>{{ userForm.name }}</span>
                         </div>
-                        <div style="display:inline-block;position:relative;">
+                    </FormItem>
+                    <!--<FormItem label="用户手机：" prop="cellphone" >-->
+                    <FormItem label="用户手机：">
+                        <div style="display:inline-block;width:300px;">
+                            <!--<Input readonly="readonly" v-model="userForm.cellphone" @on-keydown="hasChangePhone"></Input>-->
+                            <span>{{ userForm.cellphone }}</span>
+                        </div>
+                        <!--<div style="display:inline-block;position:relative;">
                             <Button @click="getIdentifyCode" :disabled="canGetIdentifyCode">{{ gettingIdentifyCodeBtnContent }}</Button>
                             <div class="own-space-input-identifycode-con" v-if="inputCodeVisible">
                                 <div style="background-color:white;z-index:110;margin:10px;">
@@ -37,20 +45,22 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
                     </FormItem>
-                    <FormItem label="公司：">
+                    <FormItem label="机构名称：">
                         <span>{{ userForm.company }}</span>
                     </FormItem>
-                    <FormItem label="部门：">
-                        <span>{{ userForm.department }}</span>
-                    </FormItem>
-                    <FormItem label="登录密码：">
+                    <!--<FormItem label="登录密码：">
                         <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
-                    </FormItem>
+                    </FormItem>	-->
                     <div>
-                        <Button type="text" style="width: 100px;" @click="cancelEditUserInfor">取消</Button>
-                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveEdit">保存</Button>
+                    	<Button 
+                    		type="primary" 
+                    		size="small" 
+                    		style="width:300px;"
+                    		@click="showEditPassword">修改密码</Button>
+                        <!--<Button type="text" style="width: 100px;" @click="cancelEditUserInfor">取消</Button>
+                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveEdit">保存</Button>-->
                     </div>
                 </Form>
             </div>
@@ -59,13 +69,13 @@
             <h3 slot="header" style="color:#2D8CF0">修改密码</h3>
             <Form ref="editPasswordForm" :model="editPasswordForm" :label-width="100" label-position="right" :rules="passwordValidate">
                 <FormItem label="原密码" prop="oldPwd" :error="oldPwdError">
-                    <Input v-model="editPasswordForm.oldPwd" placeholder="请输入现在使用的密码" ></Input>
+                    <Input v-model="editPasswordForm.oldPwd" type="password" placeholder="请输入现在使用的密码" ></Input>
                 </FormItem>
                 <FormItem label="新密码" prop="newPwd">
-                    <Input v-model="editPasswordForm.newPwd" placeholder="请输入新密码，至少6位字符" ></Input>
+                    <Input v-model="editPasswordForm.newPwd" type="password" placeholder="请输入新密码，至少6位字符" ></Input>
                 </FormItem>
                 <FormItem label="确认新密码" prop="secPwd">
-                    <Input v-model="editPasswordForm.secPwd" placeholder="请再次输入新密码" ></Input>
+                    <Input v-model="editPasswordForm.secPwd" type="password" placeholder="请再次输入新密码" ></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -79,6 +89,7 @@
 <script>
 
     import configApi from '@/axios/config.js'
+    import Cookies from 'js-cookie';
 export default {
     name: 'ownspace_index',
     data () {
@@ -99,10 +110,10 @@ export default {
         };
         return {
             userForm: {
-                name: '',
-                cellphone: '',
-                company: '',
-                department: ''
+            	user:'',//
+                name: '',//姓名
+                cellphone: '',//手机号
+                company: ''//机构名称
             },
             uid: '', // 登录用户的userId
             securityCode: '', // 验证码
@@ -146,10 +157,37 @@ export default {
             },
             inputCodeVisible: false, // 显示填写验证码box
             initPhone: '',
-            gettingIdentifyCodeBtnContent: '获取验证码' // “获取验证码”按钮的文字
+            gettingIdentifyCodeBtnContent: '获取验证码', // “获取验证码”按钮的文字
+            userInfo:{}
         };
     },
+    created(){
+    	this.$store.commit('setCurrentPath', [{
+            title: '首页',
+        },{
+            title: '个人中心',
+        }]),
+	    this.getCook()
+    },
+    mounted () {
+//      this.init();
+    },
     methods: {
+    	getCook(){
+    		console.log("获取Cook")
+    		this.userInfo = JSON.parse(Cookies.get('result')).userInfo
+			this.userForm.user = this.userInfo.zh
+			this.userForm.name = this.userInfo.xm
+			this.userForm.cellphone = this.userInfo.sjh
+			this.userForm.company = this.userInfo.jgmc
+	    	console.log('数据战死',this.userInfo)
+//	    	userForm: {
+//          	user:'',//
+//              name: '',//姓名
+//              cellphone: '',//手机号
+//              company: ''//机构名称
+//          },
+    	},
         getIdentifyCode () {
             this.hasGetIdentifyCode = true;
             this.$refs['userForm'].validate((valid) => {
@@ -224,16 +262,16 @@ export default {
                 }
             });
         },
-        init () {
-            this.userForm.name = 'Lison';
-            this.userForm.cellphone = '17712345678';
-            this.initPhone = '17712345678';
-            this.userForm.company = 'TalkingData';
-            this.userForm.department = '可视化部门';
-        },
+//      init () {
+//          this.userForm.name = 'Lison';
+//          this.userForm.cellphone = '17712345678';
+//          this.initPhone = '17712345678';
+//          this.userForm.company = 'TalkingData';
+//          this.userForm.department = '可视化部门';
+//      },
         cancelInputCodeBox () {
-            this.inputCodeVisible = false;
-            this.userForm.cellphone = this.initPhone;
+//          this.inputCodeVisible = false;
+//          this.userForm.cellphone = this.initPhone;
         },
         submitCode () {
             let vm = this;
@@ -260,9 +298,6 @@ export default {
                 this.save_loading = false;
             }, 1000);
         }
-    },
-    mounted () {
-        this.init();
     }
 };
 </script>

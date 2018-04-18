@@ -1,9 +1,18 @@
 <style lang="less">
 	@import "../../../styles/common.less";
+	.echartTit{
+		height: 57px;
+		background-image: url('../img/boxTit.png');
+	}
 </style>
 <template>
 	<div style="width: 100%;height: 100%;position: relative;">
-		<div style="width:100%;height:100%;" :id="Eid"></div>
+		<!--<div class="box">
+			<div class="echartTit">1</div>
+			<div class="body">-->
+				<div style="width:100%;height:100%;" :id="Eid"></div>
+			<!--</div>
+		</div>-->
 		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 			<Spin fix>
 	            <Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
