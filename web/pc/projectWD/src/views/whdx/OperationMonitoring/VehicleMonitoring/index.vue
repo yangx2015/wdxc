@@ -116,13 +116,13 @@ export default {
         };
     },
     computed: {
-    	carList(){
+    	carListSco(){
 			return this.$store.state.app.socketAllCar
     	}
     },
     watch:{
-    	carList:(n,o)=>{
-    		this.carlaunch = n
+    	carListSco:function(newQuestion, oldQuestion){
+    		this.carlaunch = newQuestion
     	}
     },
     created(){
@@ -154,6 +154,7 @@ export default {
 			})
 		},
 		carClick(item){
+			console.log(item)
 			this.mapMess=[item]
 		}
     }
