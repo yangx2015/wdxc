@@ -1,11 +1,13 @@
 package com.ldz.biz.module.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ldz.util.bean.SimpleCondition;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import com.ldz.biz.module.bean.PbClXlmodel;
 import com.ldz.biz.module.bean.PbInfo;
 import com.ldz.biz.module.bean.XbXlPb;
+import com.ldz.biz.module.bean.clpbInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClPbMapper;
 import com.ldz.biz.module.mapper.PbInfoMapper;
@@ -51,16 +54,42 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 	@Override
 	public ApiResponse<String> saveEntity(ClPb entity) {
-		SysYh user = getCurrentUser();
-		SysJg org = jgService.findByOrgCode(user.getJgdm());
-		Date now = new Date();
-		entity.setCjr(getOperateUser());
-		entity.setId(genId());
-		entity.setCjsj(now);
-		entity.setJgdm(user.getJgdm());
-		entity.setJgmc(org.getJgmc());
-		save(entity);
-		return ApiResponse.saveSuccess();
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String date = sdf.format(new Date());
+
+		clpbInfo clpbInfo = new clpbInfo();
+		clpbInfo.setDate(date);
+		clpbInfo.setClid(entity.getClId());
+
+		// 通过车辆id找到当天是否有排班线路信息
+		List<PbInfo> findXlCl = pbinfomapper.findXlCl(clpbInfo);
+		if (CollectionUtils.isEmpty(findXlCl)) {
+			SysYh user = getCurrentUser();
+			SysJg org = jgService.findByOrgCode(user.getJgdm());
+			entity.setCjr(getOperateUser());
+			entity.setId(genId());
+			entity.setJgdm(user.getJgdm());
+			entity.setJgmc(org.getJgmc());
+			entity.setCjsj(new Date());
+			save(entity);
+			return ApiResponse.saveSuccess();
+		}
+
+		List<String> xlidList = findXlCl.stream().map(PbInfo::getXlId).collect(Collectors.toList());
+
+		if (!xlidList.contains(entity.getXlId())) {
+			SysYh user = getCurrentUser();
+			SysJg org = jgService.findByOrgCode(user.getJgdm());
+			entity.setCjr(getOperateUser());
+			entity.setId(genId());
+			entity.setJgdm(user.getJgdm());
+			entity.setJgmc(org.getJgmc());
+			entity.setCjsj(new Date());
+			save(entity);
+			return ApiResponse.saveSuccess();
+		}
+
+		return ApiResponse.fail();
 	}
 
 	@Override
@@ -75,8 +104,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 	@Override
 	public ApiResponse<List<PbInfo>> getPbInfo(PbClXlmodel pbclxlmodel) {
-		
-		
+
 		ApiResponse<List<PbInfo>> pbinflist = new ApiResponse<>();
 		// 获取该日车辆已排班信息
 		List<PbInfo> selectBydate = pbinfomapper.selectBydate(pbclxlmodel);
@@ -104,10 +132,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 					List<ClCl> collect = allClInfo.stream().filter(s -> s.getCx().equals(pbclxlmodel.getClcx()))
 							.collect(Collectors.toList());
 					xbXlPb.setClList(collect);
-				}else {
+				} else {
 					xbXlPb.setClList(allClInfo);
 				}
-				
+
 			}
 
 		}
@@ -119,10 +147,38 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 	@Override
 	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId) {
-		SimpleCondition condition = new SimpleCondition(ClPb.class);
-		condition.eq(ClPb.InnerColumn.xlId,xlId);
-		condition.eq(ClPb.InnerColumn.clId,clId);
-		entityMapper.deleteByExample(condition);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String date = sdf.format(new Date());
+
+		clpbInfo clpbInfo = new clpbInfo();
+		clpbInfo.setDate(date);
+		clpbInfo.setClid(clId);
+		clpbInfo.setXlid(xlId);
+		List<PbInfo> findXlCl = pbinfomapper.findXlCl(clpbInfo);
+
+		entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
+
 		return ApiResponse.success();
+	}
+
+	public static void main(String[] args) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String date = sdf.format(new Date());
+		System.out.println(date);
+
+		String aString = "sasd";
+		String bString = "s1asd";
+
+		if (!aString.equals(bString)) {
+			System.out.println("sadsadwsdasd");
+		}
+
+		List<String> ss = new ArrayList<>();
+
+		ss.add("苹果");
+		ss.add("香蕉");
+
+		String sdString = "苹果";
+		System.out.println(ss.contains(sdString));
 	}
 }
