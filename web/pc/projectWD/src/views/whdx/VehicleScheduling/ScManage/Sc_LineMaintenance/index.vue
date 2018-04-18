@@ -172,8 +172,8 @@
 							return h('div', [
 								h('Button', {
 									props: {
-										type: 'primary',
-										icon: 'navicon-round',
+										type: 'success',
+										icon: 'edit',
 										shape: 'circle',
 										size: 'small'
 									},
@@ -266,12 +266,9 @@
 				this.compName = 'compModal'
 			},
 			listDele(id){
-                this.$http.post(configApi.XL.DELE,{ids:[id]}).then((res) =>{
-                    this.SpinShow = false;
-                    if(res.code===200){
-                        this.pageChange(1);
-                    }
-                })
+				this.util.del(this,configApi.XL.DELE,[id],()=>{
+                    this.getmess();
+				});
 			},
 			pageChange(event) {
 				var v = this

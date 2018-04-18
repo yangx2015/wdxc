@@ -21,33 +21,25 @@
 	    		<div style="overflow: auto;height: 360px;">
 					<Row>
 						<Col span="12">
-							<FormItem prop="cdbh" label='车队编号：'>
-								<Input :readonly="!messType" type="text" v-model="addmess.cdbh" placeholder="请设置车队编号">
-								</Input>
-							</FormItem>
-						</Col>
-						<Col span="12">
 							<FormItem prop="cdmc" label='车队名称：'>
 								<Input v-model="addmess.cdmc" placeholder="请设置车队名称">
 								</Input>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem prop="dzxm" label='队长姓名：'>
 								<Input type="text" v-model="addmess.dzxm" placeholder="请输入队长姓名">
 								</Input>
 							</FormItem>
 						</Col>
+					</Row>
+					<Row>
 						<Col span="12">
 							<FormItem prop="sjhm" label='手机号码：'>
 								<Input type="text" v-model="addmess.sjhm" placeholder="请输入手机号码">
 								</Input>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem prop="zt" label='状态：'>
 								<Select v-model="addmess.zt">
@@ -78,16 +70,12 @@
                 operate:'新增',
 				//新增数据
             	addmess: {
-                    cdbh: '',
                     cdmc:'',
                     dzxm:'',
                     sjhm:'',
                     zt:'0'
                 },
                 ruleInline: {
-                  cdbh: [
-                      { required: true, message: '请输入用户名', trigger: 'blur' }
-                  ],
                   cdmc: [
                       { required: true, message: '请输入姓名', trigger: 'blur' }
                   ],
