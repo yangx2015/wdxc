@@ -16,8 +16,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cph" label='车牌号：'>
-								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号">
-								</Input>
+								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -25,6 +24,11 @@
 								<Select v-model="addmess.cx">
 									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="cph" label='载客量：'>
+								<Input type="text" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -39,13 +43,26 @@
 								<Select v-model="addmess.zt">
 									<Option v-for="zt in clztDict" :value="zt.key">{{zt.val}}</Option>
 								</Select>
-								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号">
-								</Input>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="scs" label='生产商：'>
+								<Input type="text" v-model="addmess.scs" placeholder="请输入生产商"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zdbh" label='终端编号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="zdbh" label='终端编号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
 							</FormItem>
 						</Col>
 					</Row>

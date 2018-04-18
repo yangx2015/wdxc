@@ -136,6 +136,12 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
 
         // 修改数据
         hdyxMapper.updateByPrimaryKeySelective(entity);
+        // 删除旧文件
+        SimpleCondition condition = new SimpleCondition(SysYxhdwj.class);
+        condition.eq(SysYxhdwj.InnerColumn.hdId,entity.getHdId());
+        yxhdwjMapper.deleteByExample(condition);
+
+        saveFiles(entity);
         return ApiResponse.success();
     }
 }
