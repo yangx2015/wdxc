@@ -35,6 +35,8 @@ public class YhController extends BaseController<SysYh, String> {
 	@Override
 	public ApiResponse<String> save(SysYh entity) {
 //		entity.setLx(Dict.UserType.ADMIN.getCode());
+		SysYh user = getCurrentUser();
+		entity.setJgdm(user.getJgdm());
 		return this.userService.saveEntity(entity);
 	}
 
