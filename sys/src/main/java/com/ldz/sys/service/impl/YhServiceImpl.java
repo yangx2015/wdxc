@@ -97,11 +97,13 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		Integer count = this.countByCondition(condition);
 		RuntimeCheck.ifTrue(count > 0,"登陆名已存在，请更换别的登陆名！");
 
+		SysYh user = getCurrentUser();
 		entity.setYhid(genId());
 		entity.setMm(EncryptUtil.encryptUserPwd(entity.getMm()));
 		entity.setZt(Dict.UserStatus.VALID.getCode());
 		entity.setSjh(entity.getSjh().trim());
 		entity.setCjsj(new Date());
+		entity.setJgdm(user.getJgdm());
 		this.save(entity);
 		return ApiResponse.saveSuccess();
 	}

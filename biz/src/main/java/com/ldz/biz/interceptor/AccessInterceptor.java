@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * 访问接口控制
+ * 
  * @author 李彬彬
  *
  */
@@ -47,77 +48,84 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	}
 
 	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-		//查看请求类型
+	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+			throws Exception {
+		// 查看请求类型
 		String method = request.getMethod();
-		if (method.equals("OPTIONS")){
-			//如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
+		if (method.equals("OPTIONS")) {
+			// 如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
 			return true;
 		}
-//		if (true)return true;
+		// if (true)return true;
 
-		//访问权限值
-//		String userid = "1";
-//		String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3Y3BtcyIsImF1ZCI6IndjcG1zIiwibG9naW5OYW1lIjoiYWRtaW5pIiwiaXNzIjoid2NwbXMiLCJ1c2VySWQiOiIxIn0.vok82zo-zveVlXrjKxgJiRRdXqKGpv1PFBngxhyR-Cg";
+		// 访问权限值
+		// String userid = "1";
+		// String token =
+		// "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ3Y3BtcyIsImF1ZCI6IndjcG1zIiwibG9naW5OYW1lIjoiYWRtaW5pIiwiaXNzIjoid2NwbXMiLCJ1c2VySWQiOiIxIn0.vok82zo-zveVlXrjKxgJiRRdXqKGpv1PFBngxhyR-Cg";
 		String userid = request.getHeader("userid");
 		String token = request.getHeader("token");
 		String url = request.getHeader("url");
 
-		if (token == null) token = request.getParameter("token");
-		if (userid == null) userid = request.getParameter("userid");
-		if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(token)){
+		if (token == null)
+			token = request.getParameter("token");
+		if (userid == null)
+			userid = request.getParameter("userid");
+		if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(token)) {
 			return false;
 		}
 		log.debug("访问地址[{}], 请求openid[{}],请求token[{},header请求地址[{}]]", request.getRequestURI(), userid, token, url);
 
 		// 验证用户状态
 		SysYh user = yhService.findById(userid);
-		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())){
+		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())) {
 			return false;
 		}
-		try{
-			//验证访问者是否合法
-			String userId = JwtUtil.getClaimAsString(token,"userId");
-			log.debug("userId="+userId);
-			if (!userid.equals(userId)){
+		try {
+			// 验证访问者是否合法
+			String userId = JwtUtil.getClaimAsString(token, "userId");
+			log.debug("userId=" + userId);
+			if (!userid.equals(userId)) {
 				return false;
 			}
 			String value = redisDao.boundValueOps(userid).get();
-			log.debug("value="+value);
-			log.debug("token="+token);
-			if (StringUtils.isEmpty(value) || !value.equals(token)){
+			log.debug("value=" + value);
+			log.debug("token=" + token);
+			if (StringUtils.isEmpty(value) || !value.equals(token)) {
 				return false;
 			}
 			request.setAttribute("userInfo", user);
 			request.setAttribute("orgCode", user.getJgdm());
 			log.debug("boundValueOps");
-			String userInfoJson = redisDao.boundValueOps(userid+"-userInfo").get();
+			String userInfoJson = redisDao.boundValueOps(userid + "-userInfo").get();
 			log.debug("boundValueOps");
 			ObjectMapper mapper = new ObjectMapper();
-			log.debug("userInfoJson:"+userInfoJson);
+			log.debug("userInfoJson:" + userInfoJson);
 			SysYh userInfo = mapper.readValue(userInfoJson, SysYh.class);
-			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())){ // su 用户可访问所有权限
-				if (!checkPermission(userInfo,request)){
-					request.getRequestDispatcher("/403").forward(request,response);
+			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())) { // su 用户可访问所有权限
+				if (!checkPermission(userInfo, request)) {
+					request.getRequestDispatcher("/403").forward(request, response);
 					return false;
 				}
 			}
-		}catch(Exception e){
+		} catch (Exception e) {
 			return false;
 		}
 
 		return super.preHandle(request, response, handler);
 	}
 
-	private boolean checkPermission(SysYh user,HttpServletRequest request) throws IOException {
+	private boolean checkPermission(SysYh user, HttpServletRequest request) throws IOException {
 		List<SysGn> functions = gnService.getUserFunctions(user);
-		if (functions == null || functions.size() == 0)return false;
+		if (functions == null || functions.size() == 0)
+			return false;
 
 		String uri = request.getRequestURI();
-		String apiPrefix = uri.substring(0,uri.indexOf("/",5));
+		String apiPrefix = uri.substring(0, uri.indexOf("/", 5));
 		for (SysGn function : functions) {
-			if (StringUtils.isEmpty(function.getApiQz()))continue;
-			if (function.getApiQz().equals(apiPrefix))return true;
+			if (StringUtils.isEmpty(function.getApiQz()))
+				continue;
+			if (function.getApiQz().equals(apiPrefix))
+				return true;
 		}
 		return false;
 	}
