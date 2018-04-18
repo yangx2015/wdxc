@@ -58,6 +58,7 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	}
 
 	/**
+	 * 车辆类型统计
 	 * 电子围栏，返回左边目录树 车辆类型统计
 	 *[{"children":[{"mapCen":{"lat":30.554572,"lng":114.378443},"title":"鄂A123456"},{"mapCen":{"lat":30.564572,"lng":114.278443},"title":"鄂A123457"}],"expand":true,"title":"公务车"},{"children":[{"mapCen":{"lat":30.554562,"lng":114.378553},"title":"鄂B655552"},{"mapCen":{"lat":30.554372,"lng":114.378233},"title":"鄂A129957"}],"expand":true,"title":"校巴"}]
 	 * 车辆类别(大车、小车)
