@@ -1,3 +1,6 @@
+<style lang="less">
+    @import "../../../../../styles/common.less";
+</style>
 <template>
 	<div>
 		<Modal
@@ -13,23 +16,27 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;height: 300px;">
-					<Row>
-						<Col span="12">
-							<FormItem label='车型：'>
-								<Select v-model="addmess.cx">
-									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
-								</Select>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="sdsx" label='速度上限：'>
+	    			<div class="box-row">
+	    				<div>
+	    					<div v-show="treeList.length==0" style="color: red;">
+	    						*请选车量
+	    					</div>
+	    					<Tree :data="data1"
+						  		show-checkbox
+						 	 	@on-check-change='checkClick'></Tree>
+	    				</div>
+	    				<div class="body-F">
+	    					<FormItem prop="sdsx" label='速度上限：'>
 								<Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
-						</Col>
-					</Row>
+	    				</div>
+	    			</div>
 	    		</div>
     		</Form>
+    		<div>
+    			<span v-for="item in treeList">{{item.title}}</span>
+    		</div>
 		    <div slot='footer'>
 		    	<Button type="ghost" @click="colse">取消</Button>
 	        	<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>
@@ -49,18 +56,16 @@
 				showModal:true,
 				//新增数据
             	addmess: {
-                    cx: '',
+                    cph: '',
                     sdsx:'',
                 },
                 ruleInline: {
-                  zh: [
-                      { required: true, message: '请输入用户名', trigger: 'blur' }
-                  ],
-                  xm: [
-                      { required: true, message: '请输入姓名', trigger: 'blur' }
+                  sdsx: [
+                      { required: true, message: '请输车数上线', trigger: 'blur' }
                   ],
               	},
-                cxDict:[]
+              	data1:[],
+              	treeList:[]
 			}
 		},
 		props:{
@@ -76,16 +81,43 @@
 		created(){
 			this.addmess = this.mess
 			this.fullcal()
-			this.getCxDict();
 
             if(!this.messType){
                 this.operate = '编辑'
             }
+            
+            this.getCarTree()
 		},
 		methods:{
-            getCxDict(){
-                this.cxDict = this.dictUtil.getByCode("ZDCLK0002");
-            },
+			//获取车辆树
+			getCarTree(){
+	    		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
+	    			console.log('数据结构数据',res)
+	    			this.data1 = res.result
+	        	}).catch((error) =>{
+	        		console.log('error',error)
+	        	})
+	    	},
+			//树多选框
+	    	checkClick(event){
+	    		console.log('2',event)
+	    		var v = this
+	    		v.treeList = []
+	    		for( var i = 0 ; i<event.length;i++){
+	    			if(event[i].children){
+	    				console.log('树输出')
+	    			}else{
+	    				v.treeList.push(event[i])
+	    			}
+	    		}
+	    	},
+	    	//树多点击事件
+//	    	treeClick(mess){
+//	    		console.log('1',mess)
+//	    		if(mess[0]){
+//	    			this.treeList = mess
+//	    		}
+//	    	},
 			fullcal(){
 				console.log('信息',this.mess)
 			},
@@ -97,44 +129,30 @@
             AddDataListOk(name){
                 var v = this
                 this.$refs[name].validate((valid) => {
-                    if (valid) {
+                    if (valid && v.treeList.length>0) {
 //                    	新增
-                    	if(v.messType){
-                    		v.$http.post(configApi.CS.ADD,v.addmess).then((res) =>{
+						for(var a=0;a<v.treeList.length;a++){
+	                		v.$http.post(configApi.CS.ADD,{'cph':v.treeList[a].title}).then((res) =>{
 								if(res.code===200){
+									v.$parent.getmess();
 			                    	v.$Message.success(res.message);
 								}else{
-                                    v.$Message.warning(res.message);
+	                                v.$Message.warning(res.message);
 								}
-							}).then((res)=>{
-                                v.$parent.compName = '';
-							    v.$parent.getmess();
 							}).catch((e)=>{
-                                v.$Message.error("失败了！");
+	                            v.$Message.error("失败了！");
 							})
-
-                    	}else{
-                    		v.$http.post(configApi.CS.CHANGE,v.addmess).then((res) =>{
-                                if(res.code===200){
-                                    v.$Message.success(res.message);
-                                }else{
-                                    v.$Message.warning(res.message);
-                                }
-                            }).then((res)=>{
-                                v.$parent.compName = '';
-                                v.$parent.getmess();
-                            }).catch((e)=>{
-                                v.$Message.error("失败了！");
-                            })
-                    	}
+							if(a==v.treeList.length-1){
+								v.$parent.compName = '';
+							}
+						}
                     } else {
                         v.$Message.error('请认真填写超速信息!');
                     }
                 })
-            },
+            }
 		}
 	}
-//15271928827
 </script>
 
 <style>
