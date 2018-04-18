@@ -172,7 +172,6 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         this.getDriverName();
-                        this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.messType){
                     		v.$http.post(configApi.CLGL.ADD,v.addmess).then((res) =>{

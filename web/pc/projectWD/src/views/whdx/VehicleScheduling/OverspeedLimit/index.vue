@@ -191,7 +191,7 @@
 		},
 		methods: {
 		    getCxDict(){
-		        this.cxDict = this.dictUtil.getByCode(this.cxDictCode);
+		        this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
 			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){

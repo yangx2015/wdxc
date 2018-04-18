@@ -190,54 +190,39 @@ export default {
                   time:'20170203 08:20:22'
                 }
             ],
-            data1: [
-                {
-                    title: '车辆',
-                    expand: true,
-                    children: [
-                        {
-                            title: '公务车',
-                            expand: true,
-                            children: [
-                                {
-                                    title: '鄂A123456',
-                                    mapCen:{
-                                    	lng: 114.378443,
-        								lat: 30.554572
-                                    }
-                                },
-                                {
-                                    title: '鄂A123457',
-                                    mapCen:{
-                                    	lng: 114.278443,
-        								lat: 30.564572
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            title: '校巴',
-                            expand: true,
-                            children: [
-                                {
-                                    title: '鄂B655552',
-                                    mapCen:{
-                                    	lng: 114.378553,
-        								lat: 30.554562
-                                    }
-                                },
-                                {
-                                    title: '鄂A129957',
-                                    mapCen:{
-                                    	lng: 114.378233,
-        								lat: 30.554372
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
+            data1:  [{
+                "children": [{
+                    "mapCenMap": {},
+                    "title": "111111"
+                }, {
+                    "mapCenMap": {},
+                    "title": "1212"
+                }, {
+                    "mapCenMap": {},
+                    "title": "121212"
+                }],
+                "expand": true,
+                "title": "小车"
+            }, {
+                "children": [{
+                    "mapCen": {
+                        "lat": "31.3366798136",
+                        "lng": "114.2353441913"
+                    },
+                    "title": "鄂A66771"
+                }, {
+                    "mapCenMap": {
+                        "lat": "31.2173317951",
+                        "lng": "114.1443044286"
+                    },
+                    "title": "鄂A66773"
+                }, {
+                    "mapCenMap": {},
+                    "title": "鄂TEST"
+                }],
+                "expand": true,
+                "title": "校巴"
+            }],
         };
     },
     computed: {

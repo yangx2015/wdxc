@@ -118,6 +118,27 @@ public class ClXl implements Serializable {
     @Transient
     private String zdIds;
 
+    @Transient
+    private ClZd startStation;
+    @Transient
+    private ClZd endStation;
+
+    public ClZd getStartStation() {
+        return startStation;
+    }
+
+    public void setStartStation(ClZd startStation) {
+        this.startStation = startStation;
+    }
+
+    public ClZd getEndStation() {
+        return endStation;
+    }
+
+    public void setEndStation(ClZd endStation) {
+        this.endStation = endStation;
+    }
+
     public String getZdIds() {
         return zdIds;
     }

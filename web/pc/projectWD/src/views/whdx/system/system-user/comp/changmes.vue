@@ -95,8 +95,8 @@
 				v.$parent.compName = ''
 		   },
 			save(){
+		        let v = this;
 				v.SpinShow = true
-                this.$parent.SpinShow = true;
                 let ids = new Array();
                 for (let r of this.checkAllGroup){
                     ids.push(r);

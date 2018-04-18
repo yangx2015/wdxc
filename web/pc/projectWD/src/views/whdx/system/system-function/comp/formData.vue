@@ -147,7 +147,6 @@
                     url = configApi.FUNCTION.CHANGE;
 				}
 				delete this.formItem.children;
-                this.$parent.SpinShow = true;
 				this.$http.post(url,this.formItem).then((res) =>{
 					if(res.code===200){
 						v.$Message.success(res.message);
