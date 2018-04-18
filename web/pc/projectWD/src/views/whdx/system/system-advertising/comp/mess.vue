@@ -130,10 +130,11 @@
                 this.formItem.filePaths += path+",";
 			},
 			removeFile(url){
-				console.log('url**************',url)
-				console.log('dizhi', this.formItem.filePaths)
-				this.formItem.filePaths.replace(url+',','8888888888')
-				console.log('dizhi', this.formItem.filePaths)
+				let s = this.formItem.filePaths;
+				let i = s.indexOf(url+',');
+				s = s.substring(0,i)+s.substring(i,url.length+1);
+                this.formItem.filePaths = s;
+                this.save();
 			},
             save(){
                 var v = this

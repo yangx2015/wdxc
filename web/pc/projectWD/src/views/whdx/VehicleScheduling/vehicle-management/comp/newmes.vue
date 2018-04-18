@@ -56,8 +56,8 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+							<FormItem prop="zdbh" label='型号：'>
+								<Input type="text" v-model="addmess.zdbh" placeholder="请输入型号"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
