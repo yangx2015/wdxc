@@ -89,6 +89,7 @@
                         }
 
 					},
+					{title: '排序', align: 'center', width: 120, key: 'px'},
 					{title: '备注', align: 'center', width: 120, key: 'bz'},
 					{title: 'URL', align: 'center', width: 120, key: 'url'},
 					{title: '父节点', align: 'center', width: 120, key: 'fjd'},

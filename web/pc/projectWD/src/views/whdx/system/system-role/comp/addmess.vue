@@ -155,14 +155,15 @@
                 v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$parent.SpinShow = true;
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
                                     this.setRolePermission();
-                                    v.SpinShow = false
 									v.$emit('listF',res)
+                                }else{
+                                    v.$Message.error(res.message);
 								}
+                                v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
 								v.SpinShow = false
@@ -172,9 +173,11 @@
 								if(res.code===200){
 									v.$Message.success(res.message);
                                     this.setRolePermission();
-                                    v.SpinShow = false
 									v.$emit('listF',res)
+								}else{
+                                    v.$Message.error(res.message);
 								}
+                                v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
 								v.SpinShow = false

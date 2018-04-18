@@ -71,6 +71,13 @@
 								</Input>
 							</FormItem>
 						</Col>
+						<Col span="12">
+							<FormItem prop="jgdm" label='组织机构：'>
+								<Select v-model="addmess.jgdm">
+									<Option v-for="e in orgList" :value="e.jgdm" :key="e.jgdm">{{e.jgmc}}</Option>
+								</Select>
+							</FormItem>
+						</Col>
 					</Row>
 	    		</div>
     		</Form>
@@ -101,7 +108,8 @@
                     xb:'0',
                     zw:'',
                     sjh:'',
-                    zjhm:''
+                    zjhm:'',
+                    jgdm:''
                 },
                 showPsd:false,
                 ruleInline: {
@@ -119,7 +127,8 @@
                   ]
               	},
                 yhlxDict:[],
-                yhlxDictCode:'ZDCLK0003'
+                yhlxDictCode:'ZDCLK0003',
+				orgList:[],
 			}
 		},
 		props:{
@@ -141,9 +150,22 @@
                 this.operate = '编辑'
 			}
 			this.yhlxDict = this.$parent.yhlxDict
-            console.log(this.yhlxDict);
+			this.getOrgList();
         },
 		methods:{
+		    getOrgList(){
+		        let v = this;
+                v.$http.post(configApi.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                    if(res.code===200){
+                        this.orgList = res.page.list;
+                    }else{
+                        v.$Message.error(res.message);
+                    }
+                }).catch((error) =>{
+                    v.$Message.error('出错了！！！');
+                    v.SpinShow = false
+                })
+			},
 			fullcal(){
 				console.log('信息',this.usermes)
 			},
@@ -157,13 +179,14 @@
             	v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.usermesType){
                     		v.$http.post(configApi.USER.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('用户注册成功');
 									v.$emit('listF',res)
+								}else{
+                                    v.$Message.error(res.message);
 								}
 								v.SpinShow = false
 							}).catch((error) =>{
@@ -176,8 +199,10 @@
 								if(res.code===200){
 									v.$Message.success('用户修改成功');
 									v.$emit('listF',res)
-									v.SpinShow = false
+								}else{
+                                    v.$Message.error(res.message);
 								}
+                                v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
 								v.SpinShow = false

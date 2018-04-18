@@ -87,7 +87,12 @@
 						</Col>
 					</Row>
 					<Row>
-						<Col span="24">
+						<Col span="12">
+							<FormItem label='排序'>
+								<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
 							<FormItem label='备注信息'>
 								<Input type="text" v-model="formItem.bz" placeholder="请填写备注信息...">
 								</Input>
@@ -141,12 +146,13 @@
 				if (this.$parent.choosedRow){
                     url = configApi.FUNCTION.CHANGE;
 				}
+				delete this.formItem.children;
                 this.$parent.SpinShow = true;
 				this.$http.post(url,this.formItem).then((res) =>{
 					if(res.code===200){
-						v.$Message.success('创建成功');
+						v.$Message.success(res.message);
 					}else{
-						v.$Message.error('创建失败');
+						v.$Message.error(res.message);
 					}
 					v.$parent.getmess()
 					v.$parent.compName = ''

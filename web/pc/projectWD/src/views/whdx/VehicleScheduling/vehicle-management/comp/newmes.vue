@@ -42,13 +42,22 @@
 						<Col span="12">
 							<FormItem prop="zt" label='车辆状态：'>
 								<Select v-model="addmess.zt">
-									<Option v-for="zt in clztDict" :value="zt.key">{{zt.val}}</Option>
+									<Option v-for="zt in clztDict" :value="zt.key" :key="zt.key">{{zt.val}}</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="cdbh" label='车队：'>
+								<Select v-model="addmess.cdbh">
+									<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+								<Select v-model="addmess.zdbh">
+									<Option v-for="e in deviceList" :value="e.zdbh" :key="e.zdbh">{{e.mc}}</Option>
+								</Select>
 							</FormItem>
 						</Col>
 					</Row>
@@ -86,14 +95,10 @@
                   cph: [
                       { required: true, message: '请输入用户名', trigger: 'blur' }
                   ],
-                  dl: [
-                      { required: true,message: '请设置密码', trigger: 'blur' }
-                  ],
-                  zdbh:[
-                  	{ required: true,message: '请输入终端编号', trigger: 'blur' }
-                  ]
               	},
+				deviceList:[],
 				drivers:[],
+				fleetList:[],
                 clztDict:[],
                 clztDictCode:'ZDCLK0016',
                 cxDict:[],
@@ -118,8 +123,26 @@
 			this.addmess = this.mess
             this.getDrivers();
 			this.getDict();
+			this.getFleetList();
+			this.getDeviceList();
 		},
 		methods:{
+		    getDeviceList(){
+                let v = this;
+                v.$http.get(configApi.ZDGL.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                    if(res.code===200){
+                        this.deviceList = res.page.list;
+                    }
+                })
+			},
+		    getFleetList(){
+                let v = this;
+                v.$http.get(configApi.CD.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                    if(res.code===200){
+                        this.fleetList = res.page.list;
+                    }
+                })
+			},
 		    getDriverName(){
 		      for(let r of this.drivers){
 		          if (r.sfzhm ===  this.addmess.sjId){
