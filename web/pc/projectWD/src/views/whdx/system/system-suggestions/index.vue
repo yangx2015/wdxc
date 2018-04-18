@@ -205,9 +205,7 @@
 		methods: {
 			getLXDic(){
                 this.yjlxDic = this.dictUtil.getByCode(this,this.yjlxCode);
-            	console.log('字典',this.yjlxDic)
             	this.yjztDic = this.dictUtil.getByCode(this,this.yjztCode);
-            	console.log('字典',this.yjztDic)
 			},
 			getmess(){
 				var v = this

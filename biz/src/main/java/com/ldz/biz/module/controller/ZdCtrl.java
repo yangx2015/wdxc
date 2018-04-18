@@ -15,7 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("api/zdgl")
-public class ZdCtrl extends BaseController<ClZdgl,String> {
+public class
+ZdCtrl extends BaseController<ClZdgl,String> {
     @Autowired
     private ZdglService service;
     @Override

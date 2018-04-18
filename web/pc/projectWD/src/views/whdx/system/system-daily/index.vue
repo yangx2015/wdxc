@@ -108,7 +108,8 @@
                     {
                         title: '参数',
                         align:'center',
-                        key: 'cs'
+                        key: 'cs',
+                        ellipsis:true,
                     },
                     {
                         title: '执行时间',

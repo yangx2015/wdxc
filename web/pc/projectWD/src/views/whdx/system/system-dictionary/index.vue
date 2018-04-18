@@ -191,9 +191,6 @@
 				})
 			},
 			removeDcList(item, items) {
-//				this.util.del(this,configApi.DICTIONARY_LIST.DELE,[item.zdId],()=>{
-//                  this.getmess();
-//				});
 				var v = this
 				swal({
 				  title: "是删除数据?",

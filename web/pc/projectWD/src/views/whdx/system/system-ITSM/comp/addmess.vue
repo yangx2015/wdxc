@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" title="新建功能">
+			:mask-closable="mesF" title="新建服务">
 			<div style="overflow: auto;height: 500px;">
 				<Form
 						ref="addmess"

@@ -135,13 +135,8 @@
 						align: 'center',
 						key: 'lx',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '11':
-                                    return h('div','类型一');
-                                case '22':
-                                default:
-                                    return h('div','类型二');
-                            }
+                            let val = this.dictUtil.getValByCode(this,this.yhlxDictCode,p.row.lx)
+                            return h('div',val)
                         }
 					},
 					{
@@ -236,7 +231,9 @@
 					zjhmLike: '',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				yhlxDict:[],
+				yhlxDictCode:'ZDCLK0003'
 			}
 		},
 		watch: {
@@ -254,8 +251,13 @@
 			}]),
 			this.tabHeight = this.getWindowHeight() - 260
             this.getmess()
+            this.getDict()
 		},
 		methods: {
+		    getDict(){
+                this.yhlxDict = this.dictUtil.getByCode(this,this.yhlxDictCode);
+                console.log(this.yhlxDict);
+            },
 			enter(mes){
 //				console.log(mes)
 //
