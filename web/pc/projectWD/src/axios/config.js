@@ -171,5 +171,8 @@ module.exports = {
 	},
 	CLJK:{
 		QUERY:'/api/cl/InitClGps'
+	},
+	CARTREE:{
+		QUERY:'/api/cl/getcltj'
 	}
 }

@@ -93,7 +93,8 @@
 				cxDict:[],
 				cxDictCode:'ZDCLK0002',
 				showModal: false,
-				tableTiT: [{
+				tableTiT: [
+					{
 						title: "序号",
 						width: 80,
 						align: 'center',
@@ -105,7 +106,7 @@
 						width:'120',
 						key: 'cx',
                         render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this.cxDict,p.row.cx)
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
 							return h('div',val)
                         }
 					},
@@ -156,7 +157,7 @@
                                 })
                             ]);
                         }
-                    },
+                    }
 				],
 				tableData: [{
 					numCar: '鄂A12345',
@@ -185,52 +186,52 @@
 			}])
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
-            this.getmess()
-			this.getCxDict();
+//          this.getmess()
+//			this.getCxDict();
 		},
 		methods: {
 		    getCxDict(){
 		        this.cxDict = this.dictUtil.getByCode(this.cxDictCode);
 			},
 			getmess(){
-                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
-                }else{
-                    this.findMess.cjsjInRange = '';
-                }
-				var v = this
-				this.$http.get(configApi.CS.QUERY,{params:v.findMess}).then((res) =>{
-					v.tableData = res.page.list
-					v.pageTotal = res.page.total
-					v.SpinShow = false;
-				})
+//              if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
+//                  this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+//              }else{
+//                  this.findMess.cjsjInRange = '';
+//              }
+//				var v = this
+//				this.$http.get(configApi.CS.QUERY,{params:v.findMess}).then((res) =>{
+//					v.tableData = res.page.list
+//					v.pageTotal = res.page.total
+//					v.SpinShow = false;
+//				})
 			},
-            listF(res){
-                this.getmess()
-                this.compName = ''
-            },
-        	AddDataList() {
-				var v = this
-				v.compName = 'newmes'
-			},
-        	findMessList(){
-        		var v = this
-        	},
-        	listDele(r){
-                this.$http.post(configApi.CS.DELE,{'ids':[r.id]}).then((res) =>{
-                    if(res.code===200){
-                        this.$Message.success('操作成功');
-                    }else{
-                        this.$Message.error('操作成功');
-                    }
-                    this.getmess()
-                })
-        	},
+//          listF(res){
+//              this.getmess()
+//              this.compName = ''
+//          },
+//      	AddDataList() {
+//				var v = this
+//				v.compName = 'newmes'
+//			},
+//      	findMessList(){
+//      		var v = this
+//      	},
+//      	listDele(r){
+//              this.$http.post(configApi.CS.DELE,{'ids':[r.id]}).then((res) =>{
+//                  if(res.code===200){
+//                      this.$Message.success('操作成功');
+//                  }else{
+//                      this.$Message.error('操作成功');
+//                  }
+//                  this.getmess()
+//              })
+//      	},
             pageChange(event){
-        		var v = this
-        		v.findMess.pageNum = event
-                this.getmess()
-        	},
+//      		var v = this
+//      		v.findMess.pageNum = event
+//              this.getmess()
+        	}
 		}
 	}
 </script>

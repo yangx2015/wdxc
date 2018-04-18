@@ -11,23 +11,22 @@
 	}
 </style>
 <template>
-	<div class="box">
+	<div class="box boxbackborder" style="padding: 5px 15px;">
 		<div class="tit" v-show="!RootShow">
     		<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
     			<div style="height: 45px;line-height: 45px;">
-    				<Row class="margin-top-10">
-			    		<Col span="3">
+    				<div class="margin-top-10 box-row">
+			    		<div class="titmess">
 			    			<span class="titmess">电子围栏</span>
-			    		</Col>
-				        <Col span="15">
-				        	<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
-				        	<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-				        	<Input v-model="findMess.like_ScName" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-				        </Col>
-				        <Col span="6" class="butevent">
+			    		</div>
+				        <div class="body-r-1 inputSty">
+				        	<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
+							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+						</div>
+				        <div class="butevent">
 				        	<Button type="success" @click="findList">
 				        		<Icon type="search"></Icon>
 								<!--查询-->
@@ -35,8 +34,8 @@
 				        	<Button type="primary" @click="RootShow = !RootShow">
 				        		<Icon type="plus-round"></Icon>
 				        	</Button>
-				        </Col>
-				    </Row>
+				        </div>
+				    </div>
     			</div>
 			</Row>
     	</div>
@@ -77,12 +76,12 @@
 				</div>
 			</div>
 		</div>
-
 	</div>
 </template>
 
 <script>
 import myMap from '../../map/mapBK.vue'
+import configApi from '@/axios/config.js'
 import mixins from '@/mixins'
 export default {
     name: '',
@@ -92,20 +91,18 @@ export default {
     },
     data () {
         return {
-        	SpinShow:true,
+        	SpinShow:false,
 			tabHeight: 220,
         	mapDot:[],
-        	RootShow:true,
+        	RootShow:false,
 			//收索
-            datetime:[],
-            findMess:{
-            	gte_StartTime:'',
-        		lte_StartTime:'',
-            	like_CarNumber:'',
-            	like_ScName:'',
-            	pageNum:1,
-        		pageSize:5
-            },
+			cjsjInRange:[],
+			findMess: {
+				cjsjInRange:'',
+				zjhmLike: '',
+				pageNum: 1,
+				pageSize: 5
+			},
             columns10: [
                 {
                   title: '序号',
@@ -148,29 +145,38 @@ export default {
                         return h('div', [
                             h('Button', {
                                 props: {
-                                    type: 'primary',
-                                    size: 'small'
-                                },
-                                style: {
-                                    marginRight: '5px'
-                                },
+									type: 'success',
+									icon: 'edit',
+									shape: 'circle',
+									size: 'small'
+								},
+								style: {
+									cursor: "pointer",
+									margin: '0 8px 0 0'
+								},
                                 on: {
                                     click: () => {
                                         this.show(params.index)
                                     }
                                 }
-                            }, '编辑'),
+                            }),
                             h('Button', {
                                 props: {
                                     type: 'error',
-                                    size: 'small'
+                                    icon:'close',
+                                    shape:'circle',
+                                    size:'small'
+                                },
+                                style: {
+                                    cursor: "pointer",
+                                    margin:'0 8px 0 0'
                                 },
                                 on: {
                                     click: () => {
                                         this.remove(params.index)
                                     }
                                 }
-                            }, '删除')
+                            })
                         ]);
                     }
                 }
@@ -236,6 +242,11 @@ export default {
     },
     computed: {
     },
+    watch: {
+		cjsjInRange:function(newQuestion, oldQuestion){
+			this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+		},
+	},
     created(){
 		this.$store.commit('setCurrentPath', [{
 				title: '首页',
@@ -247,9 +258,18 @@ export default {
 		this.tabHeight = this.getWindowHeight() - 212
 		setTimeout(() => {
             this.SpinShow = false;
-        }, 1000);
+        }, 500);
+        this.getCarTree()
     },
     methods: {
+    	getCarTree(){
+    		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
+    			console.log('数据结构数据',res)
+    			this.data1 = res.result
+        	}).catch((error) =>{
+        		console.log('error',error)
+        	})
+    	},
     	//电子围栏
     	AddRali(){
 //  		this.$refs.maps.addPolygonPoint()
