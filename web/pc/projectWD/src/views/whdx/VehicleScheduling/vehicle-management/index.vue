@@ -75,7 +75,7 @@
             return {
             	mess:{},
             	messType:true,
-            	compName:'newmes',
+            	compName:'',
                 clztDict:[],
                 clztDictCode:'ZDCLK0016',
                 cxDict:[],
@@ -180,6 +180,7 @@
                                         click: () => {
                                             this.messType = false
                                         	this.mess = params.row
+                                            console.log(params.row);
                                             this.compName = newmes
                                         }
                                     }
