@@ -214,7 +214,7 @@ export let appRouter = [
 				path: 'OverspeedLimit',
 				icon: 'android-clipboard',
 				name: 'OverspeedLimit',
-				title: '事故管理',
+				title: '超速限定',
 				component: () => import('@/views/whdx/VehicleScheduling/OverspeedLimit')
 			},
 			{
