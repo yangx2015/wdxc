@@ -1,6 +1,7 @@
 package com.ldz.biz.module.service.impl;
 
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -69,13 +70,13 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
         List<ClCl> cars = clService.findByCondition(condition);
         condition = new SimpleCondition(ClJsy.class);
         condition.eq(ClJsy.InnerColumn.jgdm,user.getJgdm());
+        List<ClJsy> drivers = entityMapper.selectByExample(condition);
         if (cars.size() != 0){
             List<String> bindDriverIds = cars.stream().filter(p->p.getSjId() != null).map(ClCl::getSjId).collect(Collectors.toList());
             if (bindDriverIds.size() != 0){
-                condition.notIn(ClJsy.InnerColumn.sfzhm,bindDriverIds);
+                drivers.removeIf(jsy -> bindDriverIds.contains(jsy.getSfzhm()));
             }
         }
-        List<ClJsy> drivers = entityMapper.selectByExample(condition);
         return ApiResponse.success(drivers);
     }
 

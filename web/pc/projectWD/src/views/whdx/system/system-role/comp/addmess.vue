@@ -171,7 +171,6 @@
 						}else{
 							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
-									v.$Message.success(res.message);
                                     this.setRolePermission();
 									v.$emit('listF',res)
 								}else{
