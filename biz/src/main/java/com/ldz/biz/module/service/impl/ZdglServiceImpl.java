@@ -1,7 +1,10 @@
 package com.ldz.biz.module.service.impl;
 
+import com.github.pagehelper.PageInfo;
 import com.ldz.biz.module.mapper.ClZdglMapper;
+import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
@@ -11,11 +14,15 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ZdglService{
     @Autowired
     private ClZdglMapper entityMapper;
+    @Autowired
+    private ClService clService;
 
     @Override
     protected Mapper<ClZdgl> getBaseMapper() {
@@ -60,5 +67,29 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         List<ClZdgl> list=entityMapper.getUnboundList();
         result.setResult(list);
         return result;
+    }
+
+    /**
+     * 自定义分页的对象
+     * @param resultPage
+     */
+    protected void afterPager(PageInfo<ClZdgl> resultPage){
+        if(resultPage!=null){
+            List<ClZdgl> list=resultPage.getList();
+            if(list!=null&&list.size()>0){
+                List<String> listIds = list.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
+                List<ClCl>clList=clService.findIn(ClCl.InnerColumn.zdbh,listIds);
+                Map<String,ClZdgl> zdbhMap = list.stream().collect(Collectors.toMap(ClZdgl::getZdbh, p->p));
+                if(clList!=null&&clList.size()>0){
+                    for(ClCl cl:clList){
+                        ClZdgl zdbh=zdbhMap.get(cl.getZdbh());
+                        if (zdbh == null)continue;
+
+                        zdbh.setCl(cl);
+                        zdbh.setCph(cl.getCph());
+                    }
+                }
+            }
+        }
     }
 }
