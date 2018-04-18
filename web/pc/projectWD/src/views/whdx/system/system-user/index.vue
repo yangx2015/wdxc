@@ -77,7 +77,7 @@
 				//tab高度
 				tabHeight: 220,
 				//动态组建
-				compName: 'changemes',
+				compName: '',
 				//动态组建数据
 				usermes:{},
 				userMesType:true,

@@ -75,7 +75,7 @@
             return {
             	mess:{},
             	messType:true,
-            	compName:'',
+            	compName:'newmes',
                 clztDict:[],
                 clztDictCode:'ZDCLK0016',
                 cxDict:[],
@@ -90,18 +90,24 @@
             		pageSize:5
             	},
                 tableTiT: [
-                    {
-                      title:'#',
-                      type: 'expand',
-                      width: 50,
-                      render: (h, params) => {
-                          return h(expandRow, {
-                              props: {
-                                  row: params.row
-                              }
-                          })
-                      }
-                    },
+//                  {
+//                    title:'#',
+//                    type: 'expand',
+//                    width: 50,
+//                    render: (h, params) => {
+//                        return h(expandRow, {
+//                            props: {
+//                                row: params.row
+//                            }
+//                        })
+//                    }
+//                  },
+					{
+						title: "序号",
+						width: 80,
+						align: 'center',
+						type: 'index'
+					},
                     {
                         title: '车牌号',
                         width:'100',
