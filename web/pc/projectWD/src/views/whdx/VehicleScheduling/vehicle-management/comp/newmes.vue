@@ -27,14 +27,14 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem prop="cph" label='载客量：'>
-								<Input type="text" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
+							<FormItem prop="zkl" label='载客量：'>
+								<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
 								<Select v-model="addmess.sjId">
-									<Option :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
+									<Option v-if="editMode" :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
 									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
@@ -71,6 +71,7 @@
 			return {
 				showModal:true,
 				operate:'新增',
+				editMode :false,
 				//新增数据
             	addmess: {
                     cph: '',
@@ -88,11 +89,8 @@
                   dl: [
                       { required: true,message: '请设置密码', trigger: 'blur' }
                   ],
-                  zt:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ],
                   zdbh:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
+                  	{ required: true,message: '请输入终端编号', trigger: 'blur' }
                   ]
               	},
 				drivers:[],
@@ -115,13 +113,20 @@
 		created(){
             if(!this.messType){
                 this.operate = '编辑';
+                this.editMode = true;
             }
 			this.addmess = this.mess
-            console.log(this.mess);
             this.getDrivers();
 			this.getDict();
 		},
 		methods:{
+		    getDriverName(){
+		      for(let r of this.drivers){
+		          if (r.sfzhm ===  this.addmess.sjId){
+		              this.addmess.sjxm = r.xm;
+				  }
+			  }
+			},
             getDict(){
                 this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
@@ -143,6 +148,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.getDriverName();
                         this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.messType){
