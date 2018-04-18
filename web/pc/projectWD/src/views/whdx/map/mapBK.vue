@@ -142,7 +142,7 @@
 				    rectangleOptions: styleOptions //矩形的样式
 				})
 				drawingManager.addEventListener("overlaycomplete", function(e) {
-				    console.log(e.label);
+				    console.log(e);
 				});
 			},
 			//清除层

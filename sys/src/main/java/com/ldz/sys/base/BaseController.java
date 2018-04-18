@@ -133,6 +133,5 @@ public abstract class BaseController<T, PK extends Serializable> {
 		dateFormat.setLenient(false); 
 		//true:允许输入空值，false:不能为空值 
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
-		binder.setIgnoreInvalidFields(true);
     }
 }
