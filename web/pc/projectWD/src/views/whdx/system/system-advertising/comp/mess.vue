@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
-			:mask-closable="mesF" title="新建广告">
+			:mask-closable="mesF" title="活动编辑">
 			<div style="overflow: auto;height: 440px;">
 				<Form
 						ref="formItem"
@@ -29,7 +29,7 @@
 
 					<Row>
 						<Col span="12">
-							<FormItem label='广告类型'>
+							<FormItem label='活动时间'>
 								<DatePicker v-model="cjsjInRange" 
 									format="yyyy-MM-dd" type="daterange" 
 									placement="bottom-end" 
@@ -58,6 +58,7 @@
 								</div>
 								<addlistfileImg
 									@addImg="addImg"
+									:urlList = "mess.filePaths"
 								></addlistfileImg>
 							</FormItem>
 							<FormItem v-else-if="formItem.hdlx==='01'">
@@ -105,6 +106,12 @@
                 cjsjInRange:[]
 			}
 		},
+		props:{
+			mess:{
+				type:Object,
+				default:{}
+			}
+		},
 		watch: {
 			cjsjInRange:function(newQuestion, oldQuestion){
 				this.formItem.kssj = this.getdateParaD(newQuestion[0])
@@ -113,16 +120,9 @@
 			},
 		},
 		created(){
-//          if (this.$parent.choosedRow){
-//              this.edit = true;
-//              this.formItem = this.$parent.choosedRow;
-//          }else{
-//              if (this.$parent.jgdm){
-//                  this.formItem.fjgdm = this.$parent.jgdm;
-//              }else{
-//                  console.log("请选择父节点")
-//              }
-//          }
+			this.formItem = this.mess
+			this.cjsjInRange = [this.mess.kssj,this.mess.jssj]
+			console.log('时间转换',this.cjsjInRange)
 		},
 		methods: {
             addImg(path){
@@ -130,10 +130,7 @@
 			},
             save(){
                 var v = this
-                let url = configApi.ADVERTISING.ADD;
-                if (this.edit){
-                    url = configApi.ADVERTISING.CHANGE;
-                }
+                let url = configApi.ADVERTISING.CHANGE;
                 this.$http.post(url,this.formItem).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);

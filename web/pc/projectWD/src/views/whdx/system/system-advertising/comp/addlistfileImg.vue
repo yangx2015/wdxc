@@ -30,15 +30,12 @@
 	            <Icon type="camera" size="20"></Icon>
 	        </div>
 	    </Upload>
-	    <!--<Modal title="View Image" v-model="visible">
-	        <img :src="'https://o5wwk8baw.qnssl.com/' + imgName + '/large'" v-if="visible" style="width: 100%">
-	    </Modal>-->
-		
 	</div>
 </template>
 <script>
     import configApi from '@/axios/config.js'
     export default {
+    	name:'',
         data () {
             return {
                 defaultList: [
@@ -57,7 +54,23 @@
 				uploadUrl:configApi.UPLOAD
             }
         },
+        props:{
+			urlList:{
+				type:String,
+				default:''
+			}
+		},
+        created(){
+        	console.log(this.urlList)
+        	this.dataList()
+        },
         methods: {
+        	dataList(){
+        		let ArrList = this.urlList.split(',')
+	        	for(var i=0;i<ArrList.length-1;i++){
+	        		this.defaultList.push({'url':configApi.STATIC_PATH+ArrList[i]})
+	        	}
+        	},
             handleView (name) {
                 this.imgName = name;
                 this.visible = true;
@@ -74,13 +87,13 @@
             handleFormatError (file) {
                 this.$Notice.warning({
                     title: '文件格式错误',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select jpg or png.'
+                    desc: '图片仅支持 jpg、jpeg、png'
                 });
             },
             handleMaxSize (file) {
                 this.$Notice.warning({
                     title: '文件太大了',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+                    desc: '文件不能超过18M'
                 });
             },
             handleBeforeUpload () {

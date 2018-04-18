@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
-			:mask-closable="mesF" title="新建广告">
+			:mask-closable="mesF" title="新建活动">
 			<div style="overflow: auto;height: 440px;">
 				<Form
 						ref="formItem"
@@ -29,7 +29,7 @@
 
 					<Row>
 						<Col span="12">
-							<FormItem label='广告类型'>
+							<FormItem label='活动时间'>
 								<DatePicker v-model="cjsjInRange" 
 									format="yyyy-MM-dd" type="daterange" 
 									placement="bottom-end" 
@@ -42,7 +42,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='附件类型'>
-								<Select v-model="formItem.hdlx">
+								<Select v-model="formItem.hdlx" @on-change="selectC()">
 									<Option value="00">图片</Option>
 									<Option value="01">视频</Option>
 								</Select>
@@ -99,7 +99,8 @@
 				formItem: {
 					hdlx:'00',
 					kssj:'',
-					jssj:''
+					jssj:'',
+					filePaths:''
 				},
                 ruleInline:{},
                 cjsjInRange:[]
@@ -113,20 +114,15 @@
 			},
 		},
 		created(){
-//          if (this.$parent.choosedRow){
-//              this.edit = true;
-//              this.formItem = this.$parent.choosedRow;
-//          }else{
-//              if (this.$parent.jgdm){
-//                  this.formItem.fjgdm = this.$parent.jgdm;
-//              }else{
-//                  console.log("请选择父节点")
-//              }
-//          }
 		},
 		methods: {
             addImg(path){
                 this.formItem.filePaths += path+",";
+			},
+			selectC(){
+				console.log(this.formItem.filePaths)
+				this.formItem.filePaths =''
+				console.log(this.formItem.filePaths)
 			},
             save(){
                 var v = this

@@ -18,7 +18,7 @@
 	        :default-file-list="defaultList"
 	        :on-success="handleSuccess"
 	        :max-size="1024000"
-			:format="['jpg','ogg','mp4']"
+			:format="['ogv','ogg','mp4']"
 	        :on-format-error="handleFormatError"
 	        :on-exceeded-size="handleMaxSize"
 	        :before-upload="handleBeforeUpload"
@@ -27,7 +27,7 @@
 	        :action="uploadUrl+'?targetPath=movie'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
-	            <Icon type="camera" size="20"></Icon>
+	            <Icon type="videocamera" size="20"></Icon>
 	        </div>
 	    </Upload>
 	    <!--<Modal title="View Image" v-model="visible">
@@ -49,7 +49,22 @@
                 uploadUrl:configApi.UPLOAD
             }
         },
+         props:{
+			urlList:{
+				type:String,
+				default:''
+			}
+		},
+		created(){
+        	this.dataList()
+        },
         methods: {
+        	dataList(){
+        		let ArrList = this.urlList.split(',')
+	        	for(var i=0;i<ArrList.length-1;i++){
+	        		this.defaultList.push({'url':configApi.STATIC_PATH+ArrList[i]})
+	        	}
+        	},
             handleView (name) {
                 this.imgName = name;
                 this.visible = true;
@@ -66,13 +81,13 @@
             handleFormatError (file) {
                 this.$Notice.warning({
                     title: '文件格式错误',
-                    desc: 'File format of ' + file.name + ' is incorrect, please select.'
+                    desc: '视频仅支持 ogv、ogg、mp4'
                 });
             },
             handleMaxSize (file) {
                 this.$Notice.warning({
                     title: '文件太大了',
-                    desc: 'File  ' + file.name + ' is too large, no more than 2M.'
+                    desc: '文件不能超过18M'
                 });
             },
             handleBeforeUpload () {
