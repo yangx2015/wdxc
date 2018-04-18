@@ -120,10 +120,10 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        type: 'primary',
-                                        icon: 'navicon-round',
-                                        shape: 'circle',
-                                        size: 'small'
+                                        type: 'success',
+										icon: 'edit',
+										shape: 'circle',
+										size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'

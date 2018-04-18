@@ -4,6 +4,12 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'站牌'">
+			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<Spin fix>
+					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+					<div style="font-size: 30px;">数据加载中请稍后</div>
+				</Spin>
+			</div>
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="addmess"
@@ -68,6 +74,7 @@
 		name: '',
 		data() {
 			return {
+				SpinShow:false,
 			    operate:'新建',
 				showModal: true,
                 mesF:false,
@@ -90,6 +97,8 @@
         },
 		methods: {
 		    save(){
+		    	var v = this
+            	v.SpinShow = true
 		        let url = configApi.ZNZP.ADD;
 				if (this.$parent.choosedRow){
                     url = configApi.ZNZP.CHANGE;
@@ -100,8 +109,12 @@
                         v.$parent.componentName = ''
                         v.$parent.getPageData()
                         this.$Message.success(res.message);
+                        v.SpinShow = false
                     }
-                })
+                }).catch((error) =>{
+					v.$Message.error('出错了！！！');
+					v.SpinShow = false
+				})
 			},
 			close(){
 		        let v = this;

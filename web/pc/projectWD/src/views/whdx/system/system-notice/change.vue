@@ -5,6 +5,12 @@
 	<div>
 		<Modal v-model="showModal" width='900' 
 			:closable='false' :mask-closable="mesF" title="终端设备信息编辑">
+			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<Spin fix>
+					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+					<div style="font-size: 30px;">数据加载中请稍后</div>
+				</Spin>
+			</div>
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="form"
@@ -58,6 +64,7 @@
 		name: '',
 		data() {
 			return {
+				SpinShow:false,
 				showModal: true,
                 mesF:false,
 				form: {
@@ -85,6 +92,8 @@
         },
 		methods: {
 		    save(){
+		    	var v = this
+            	v.SpinShow = true
 		        let url = configApi.ZNZP.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
@@ -92,7 +101,7 @@
                 })
 			},
 			close(){
-		        this.showModal = false;
+				this.SpinShow = false
 		        this.$parent.componentName = '';
 			}
 

@@ -173,6 +173,7 @@
 							})
                     	}
                     } else {
+                    	v.SpinShow = false
                         v.$Message.error('请认真填写用户信息!');
                     }
                 })
