@@ -203,7 +203,6 @@
                 title: '订单管理',
             }])
         	this.tabHeight = this.getWindowHeight() - 290
-            this.SpinShow = true;
             this.getmess()
             this.getClztDict()
         },
@@ -237,15 +236,6 @@
         			v.SpinShow = true;
                     v.getmess();
 				});
-//      		
-//      		this.$http.post(configApi.CD.DELE,{'ids':[id.cdbh]}).then((res) =>{
-//					if(res.code===200){
-//						this.$Message.success('操作成功');
-//					}else{
-//						this.$Message.error('操作失败');
-//					}
-//					this.getmess()
-//				})
         	},
             pageChange(event){
         		var v = this

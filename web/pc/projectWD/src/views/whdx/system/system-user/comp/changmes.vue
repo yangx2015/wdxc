@@ -1,14 +1,13 @@
-<style lang="less">
-	.root{
-		.CheckboxList{
-			
-		}
-	}
-</style>
 <!--角色分配-->
 <template>
 	<div class="root">
 		<Modal v-model='RootShow'  height="400" :closable='false' :mask-closable="false" title="角色分配">
+			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<Spin fix>
+					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+					<div style="font-size: 30px;">数据加载中请稍后</div>
+				</Spin>
+			</div>
 			<div style="overflow: auto;height: 300px;">
 				<div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
 					<Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">全选</Checkbox>
@@ -34,6 +33,7 @@
 		name: '',
 		data() {
 			return {
+				SpinShow:false,
 				RootShow: true,
 				indeterminate: false,
 				checkAll: false,
@@ -95,6 +95,7 @@
 				v.$parent.compName = ''
 		   },
 			save(){
+				v.SpinShow = true
                 this.$parent.SpinShow = true;
                 let ids = new Array();
                 for (let r of this.checkAllGroup){
@@ -104,6 +105,7 @@
                     if(res.code===200){
                         this.$Message.success('操作成功');
                         this.$emit('listF',res)
+                        v.SpinShow = false
                     }
                 })
 			},
