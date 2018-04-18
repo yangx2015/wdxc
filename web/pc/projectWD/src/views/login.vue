@@ -85,14 +85,21 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
-                		if(res.code===200){
+                		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
-                		    v.getMenuTree();
+                            v.getMenuTree();
+                        }else if(res.code===500){
+                            this.$Message.error(res.message);
+                            this.form.username='';
+                            this.form.password='';
                 		}else{
-                			v.$router.push({
-						    	name: 'error-500'
-						    });
+                            this.$Message.error("用户登陆失败，请重试！");
+                            this.form.username='';
+                            this.form.password='';
+//                			v.$router.push({
+//						    	name: 'error-500'
+//						    });
                 		}
                 	}).catch((error) =>{
                 		console.log('error',error)
