@@ -1,8 +1,10 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +36,8 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl,String> implements D
     private ClService clService;
     @Autowired
     private ClDzwlClMapper dzwlClMapper;
+    @Autowired
+    private DzwlService dzwlService;
 
     @Override
     protected Mapper<ClDzwl> getBaseMapper() {
@@ -50,8 +54,8 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl,String> implements D
         SysYh user = getCurrentUser();
         SysJg org = jgService.findByOrgCode(user.getJgdm());
         Date now = new Date();
-        String wlmc = entity.getWlmc();
-        RuntimeCheck.ifTrue(ifExists("wlmc",wlmc),"围栏名称已存在");
+//        String wlmc = entity.getWlmc();
+//        RuntimeCheck.ifTrue(ifExists("wlmc",wlmc),"围栏名称已存在");
         entity.setCjr(getOperateUser());
         entity.setCjsj(now);
         entity.setId(genId());
@@ -59,7 +63,7 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl,String> implements D
         entity.setJgmc(org.getJgmc());
         entity.setZt(Dict.CommonStatus.VALID.getCode());
         save(entity);
-        return ApiResponse.saveSuccess();
+        return ApiResponse.success(entity.getId());
     }
 
     @Override
@@ -97,6 +101,26 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl,String> implements D
             ClDzwlCl dzwlCl = new ClDzwlCl();
             dzwlCl.setClId(clId);
             dzwlCl.setWlId(wlId);
+            dzwlClMapper.insertSelective(dzwlCl);
+        }
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<String> setCarsDzwl(String carIds, String wlid) {
+        RuntimeCheck.ifBlank(carIds,"请选择车辆");
+        RuntimeCheck.ifBlank(wlid,"请选择围栏");
+        List<String> carIdList = Arrays.asList(carIds.split(","));
+        Date now = new Date();
+        String creator = getOperateUser();
+        for (String s : carIdList) {
+            ClDzwlCl dzwlCl = new ClDzwlCl();
+            dzwlCl.setCjr(creator);
+            dzwlCl.setCjsj(now);
+            dzwlCl.setClId(s);
+            dzwlCl.setWlId(wlid);
+            dzwlCl.setId(genId());
+            dzwlCl.setCph(s);
             dzwlClMapper.insertSelective(dzwlCl);
         }
         return ApiResponse.success();

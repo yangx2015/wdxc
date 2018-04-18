@@ -1,9 +1,11 @@
 package com.ldz.biz.module.controller;
 
+import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClDzwl;
 import com.ldz.biz.module.service.DzwlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +28,10 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
         return service;
     }
 
+    @RequestMapping(value="/save", method={RequestMethod.POST})
+    public ApiResponse<String> save(ClDzwl entity){
+        return service.saveEntity(entity);
+    }
 
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClDzwl entity){
@@ -43,4 +49,14 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
         return service.setCarDzwl(clId,wlIds);
     }
 
+    /**
+     * 为多个车辆设置同一个电子围栏
+     * @param carIds
+     * @param wlid
+     * @return
+     */
+    @RequestMapping("setCarsDzwl")
+    public ApiResponse<String> setCarsDzwl(String carIds,String wlid){
+        return service.setCarsDzwl(carIds,wlid);
+    }
 }

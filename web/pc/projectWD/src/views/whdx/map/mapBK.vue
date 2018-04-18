@@ -142,7 +142,7 @@
 				    rectangleOptions: styleOptions //矩形的样式
 				})
 				drawingManager.addEventListener("overlaycomplete", function(e) {
-				    console.log(e);
+				    v.$emit('choosePoint',e.overlay.ia)
 				});
 			},
 			//清除层
