@@ -96,8 +96,8 @@
         data () {
             return {
 //          	"47.98.39.45:8080/biz"
-			    socket : new SockJS("http://"+"192.168.31.180:80"+"/gps"),
-//				socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
+// 			    socket : new SockJS("http://"+"192.168.31.180:80"+"/gps"),
+				socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
 				scoketMess:[],
 				scoketAllCar:[],
 				

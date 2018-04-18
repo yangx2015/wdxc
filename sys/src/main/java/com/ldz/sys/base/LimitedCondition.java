@@ -20,7 +20,7 @@ public class LimitedCondition extends SimpleCondition {
     /**
      * 有些对象在查询的时候并不需要做机构权限处理
      */
-    private static final List<String> excludeEntityName = Arrays.asList("SysZdlm","SysFw","SysGn","SysYjfk","SysRz");
+    private static final List<String> excludeEntityName = Arrays.asList("SysZdlm","SysFw","SysGn","SysYjfk","SysRz","ClZdgl","ClZnzp");
 
     public LimitedCondition(Class<?> entityClass) {
         super(entityClass);

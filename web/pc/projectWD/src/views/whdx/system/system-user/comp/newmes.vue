@@ -43,8 +43,7 @@
 						<Col span="12">
 							<FormItem label='类型：'>
 								<Select v-model="addmess.lx">
-									<Option value="11">类型一</Option>
-									<Option value="22">类型二</Option>
+									<Option v-for="item in yhlxDict" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -112,6 +111,8 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+                yhlxDict:[],
+                yhlxDictCode:'ZDCLK0003'
 			}
 		},
 		props:{
@@ -132,7 +133,9 @@
             }else{
                 this.operate = '编辑'
 			}
-		},
+			this.yhlxDict = this.$parent.yhlxDict
+            console.log(this.yhlxDict);
+        },
 		methods:{
 			fullcal(){
 				console.log('信息',this.usermes)
@@ -146,6 +149,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.$parent.SpinShow = true;
 //                    	新增
                     	if(v.usermesType){
                     		v.$http.post(configApi.USER.ADD,v.addmess).then((res) =>{

@@ -68,7 +68,6 @@
             },
             handleSuccess (res, file,fileList) {
                 this.$emit('addImg',res.message);
-                console.log(res);
                 file.url = configApi.STATIC_PATH + res.message;
             },
             handleFormatError (file) {

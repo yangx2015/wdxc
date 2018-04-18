@@ -4,15 +4,15 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" title="编辑功能">
+			:mask-closable="mesF" title="编辑服务">
 			<div style="overflow: auto;height: 500px;">
 				<Form>
 					<FormItem label='服务名称'>
-						<Input type="text" v-model="addmess.fwmc" placeholder="请填写功能名称...">
+						<Input type="text" v-model="addmess.fwmc" placeholder="请填写服务名称...">
 						</Input>
 					</FormItem>
 					<FormItem label='服务代码'>
-						<Input type="text" v-model="addmess.fwdm" placeholder="请填写功能名称...">
+						<Input type="text" v-model="addmess.fwdm" placeholder="请填写服务名称...">
 						</Input>
 					</FormItem>
 					<FormItem label='状态'>
@@ -72,7 +72,7 @@
 				delete this.addmess.cjsj
 				delete this.addmess.xgsj
 				this.$http.post(configApi.ITMS.CHANGE,this.addmess).then((res) =>{
-					console.log('功能数据',res)
+					console.log('服务数据',res)
 					if(res.code===200){
 						v.$Message.success('操作成功');
 					}else{

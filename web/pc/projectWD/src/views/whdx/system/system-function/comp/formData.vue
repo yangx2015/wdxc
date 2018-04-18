@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" title="新建功能">
+			:mask-closable="mesF" :title="operate+'功能'">
 			<div style="overflow: auto;height: 500px;">
 				<Form
 						ref="formItem"
@@ -105,6 +105,7 @@
 		name: '',
 		data() {
 			return {
+                operate:'新建',
 				showModal: true,
 				mesF: false,
 				formItem: {
@@ -132,6 +133,7 @@
 				if (this.$parent.choosedRow){
                     url = configApi.FUNCTION.CHANGE;
 				}
+                this.$parent.SpinShow = true;
 				this.$http.post(url,this.formItem).then((res) =>{
 					if(res.code===200){
 						v.$Message.success('创建成功');

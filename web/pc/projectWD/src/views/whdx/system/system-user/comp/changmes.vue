@@ -88,6 +88,7 @@
 				v.$parent.compName = ''
 		   },
 			save(){
+                this.$parent.SpinShow = true;
                 let ids = new Array();
                 for (let r of this.checkAllGroup){
                     ids.push(r);
@@ -95,7 +96,7 @@
                 this.$http.post(configApi.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success('操作成功');
-                        this.close();
+                        this.$emit('listF',res)
                     }
                 })
 			},

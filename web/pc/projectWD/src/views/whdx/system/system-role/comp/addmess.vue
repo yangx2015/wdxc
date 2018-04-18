@@ -107,9 +107,7 @@
 		},
 		methods: {
             getLXDic(){
-                console.log('getLXDic');
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
-                console.log(this.Dictionary);
             },
 		    getAllPermissionTree(){
                 this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
@@ -149,6 +147,7 @@
                 var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        this.$parent.SpinShow = true;
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
