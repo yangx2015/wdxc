@@ -36,7 +36,7 @@
 						:row-class-name="rowClassName"
 						:columns="columns10"
 						:data="tableData"></Table>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 1111;">
 					<Spin fix>
 						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
 						<div style="font-size: 30px;">数据加载中请稍后</div>
@@ -56,7 +56,9 @@
 		<component
 			:is="compName" 
 			:mess="mess"
-			:messType="messType"></component>
+			:messType="messType"
+			:ty="ztDict"
+			></component>
     </div>
 </template>
 <script>
@@ -116,13 +118,8 @@
                         align:'center',
                         key: 'zt',
                         render:(h,p)=>{
-                            switch(p.row.zt){
-                                case '00':
-                                    return h('div','正常');
-                                case '10':
-                                default:
-                                    return h('div','休息');
-                            }
+                            let val = this.dictUtil.getValByCode(this,this.ztDictCode,p.row.zt)
+                            return h('div',val)
                         }
                     },
                     {
@@ -187,7 +184,9 @@
 					cdmcLike: '',
 					pageNum: 1,
 					pageSize: 5
-				}
+				},
+				ztDict:[],
+                ztDictCode:'ZDCLK0016',
             }
         },
         watch: {
@@ -204,10 +203,15 @@
                 title: '订单管理',
             }])
         	this.tabHeight = this.getWindowHeight() - 290
-            this.SpinShow = false;
+            this.SpinShow = true;
             this.getmess()
+            this.getClztDict()
         },
         methods:{
+        	getClztDict(){
+                this.ztDict = this.dictUtil.getByCode(this,this.ztDictCode);
+                console.log('字典数据',this.ztDict)
+            },
         	getmess(){
 				var v = this
 				this.$http.get(configApi.CD.QUERY,{params:v.findMess}).then((res) =>{
@@ -228,14 +232,20 @@
         		v.getmess()
         	},
         	listDele(id){
-        		this.$http.post(configApi.CD.DELE,{'ids':[id.cdbh]}).then((res) =>{
-					if(res.code===200){
-						this.$Message.success('操作成功');
-					}else{
-						this.$Message.error('操作失败');
-					}
-					this.getmess()
-				})
+        		var v = this
+        		this.util.del(this,configApi.CD.DELE,[id.cdbh],()=>{
+        			v.SpinShow = true;
+                    v.getmess();
+				});
+//      		
+//      		this.$http.post(configApi.CD.DELE,{'ids':[id.cdbh]}).then((res) =>{
+//					if(res.code===200){
+//						this.$Message.success('操作成功');
+//					}else{
+//						this.$Message.error('操作失败');
+//					}
+//					this.getmess()
+//				})
         	},
             pageChange(event){
         		var v = this

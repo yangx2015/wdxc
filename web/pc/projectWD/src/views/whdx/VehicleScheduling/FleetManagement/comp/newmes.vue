@@ -6,6 +6,12 @@
 		    :closable='false'
 		    :mask-closable="false"
 		    :title="operate+'用户'">
+		    <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<Spin fix>
+					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+					<div style="font-size: 30px;">数据加载中请稍后</div>
+				</Spin>
+			</div>
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -16,13 +22,13 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cdbh" label='车队编号：'>
-								<Input type="text" v-model="addmess.cdbh" placeholder="请设置车队编号">
+								<Input :readonly="!messType" type="text" v-model="addmess.cdbh" placeholder="请设置车队编号">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="cdmc" label='车队名称：'>
-								<Input type="password" v-model="addmess.cdmc" placeholder="请设置车队名称">
+								<Input v-model="addmess.cdmc" placeholder="请设置车队名称">
 								</Input>
 							</FormItem>
 						</Col>
@@ -45,8 +51,7 @@
 						<Col span="12">
 							<FormItem prop="zt" label='状态：'>
 								<Select v-model="addmess.zt">
-									<Option value="11">状态一</Option>
-									<Option value="22">状态二</Option>
+									<Option v-for="item in ty" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -68,6 +73,7 @@
 		name:'',
 		data(){
 			return {
+				SpinShow:false,
 				showModal:true,
                 operate:'新增',
 				//新增数据
@@ -105,9 +111,14 @@
 			mess:{
 				type:Object,
 				default:{}
+			},
+			ty:{
+				type:Array,
+				default:[]
 			}
 		},
 		created(){
+			console.log('字典状态',this.ty)
 			this.addmess = this.mess
 			this.fullcal()
             if(!this.messType){
@@ -125,6 +136,7 @@
 		   //确认添加新用户进行前台表单数据验证
             AddDataListOk(name){
             	var v = this
+            	v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 //                    	新增
@@ -138,9 +150,12 @@
 							}).then((res) =>{
 								v.$parent.getmess()
             					v.$parent.compName = ''
+            					v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
+								v.SpinShow = false
 							})
+							//修改
                     	}else{
                     		v.$http.post(configApi.CD.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
@@ -151,15 +166,17 @@
 							}).then((res) =>{
 								v.$parent.getmess()
             					v.$parent.compName = ''
+            					v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
+								v.SpinShow = false
 							})
                     	}
                     } else {
                         v.$Message.error('请认真填写用户信息!');
                     }
                 })
-            },
+            }
 		}
 	}
 //15271928827
