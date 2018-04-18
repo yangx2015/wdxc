@@ -113,6 +113,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
                 Map<String, Object> childrenMap=new HashMap<String, Object>();//车辆map
                 childrenMap.put("mapCen",mapCenMap);
+                childrenMap.put("clid",l.getClId());
+                childrenMap.put("cx",l.getCx());
                 childrenMap.put("title",l.getCph());
                 childrenList.add(childrenMap);
             }
