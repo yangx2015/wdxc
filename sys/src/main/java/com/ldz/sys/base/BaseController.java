@@ -132,6 +132,6 @@ public abstract class BaseController<T, PK extends Serializable> {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		dateFormat.setLenient(false); 
 		//true:允许输入空值，false:不能为空值 
-		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));   
+		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 }

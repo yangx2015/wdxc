@@ -4,6 +4,12 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'角色'">
+			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<Spin fix>
+					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+					<div style="font-size: 30px;">数据加载中请稍后</div>
+				</Spin>
+			</div>
 			<div style="overflow: auto;height: 300px;">
 				<Form
 	    			ref="addmess"
@@ -69,6 +75,7 @@
 		name: '',
 		data() {
 			return {
+				SpinShow:false,
 				showModal: true,
 				operate:'新建',
 				mesF: false,
@@ -145,15 +152,21 @@
 			},
 			AddDataListOk(name){
                 var v = this
+                v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$parent.SpinShow = true;
 						if(v.usermesType){
 	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
                                     this.setRolePermission();
 									v.$emit('listF',res)
+                                }else{
+                                    v.$Message.error(res.message);
 								}
+                                v.SpinShow = false
+							}).catch((error) =>{
+								v.$Message.error('出错了！！！');
+								v.SpinShow = false
 							})
 						}else{
 							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
@@ -161,10 +174,17 @@
 									v.$Message.success(res.message);
                                     this.setRolePermission();
 									v.$emit('listF',res)
+								}else{
+                                    v.$Message.error(res.message);
 								}
+                                v.SpinShow = false
+							}).catch((error) =>{
+								v.$Message.error('出错了！！！');
+								v.SpinShow = false
 							})
 						}
                     } else {
+                    	v.SpinShow = false
                         v.$Message.error('请认真填写角色信息!');
                     }
                 })

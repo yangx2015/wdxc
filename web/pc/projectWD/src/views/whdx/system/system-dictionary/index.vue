@@ -51,7 +51,7 @@
 								<Row class="margin-bottom-10">
 									<Input v-model="dictionaryMess[index]" clearable placeholder="请输入字典信息..." @on-change="findDicList(item,index,dictionaryMess[index])"></Input>
 								</Row>
-								<Row class="padding-2px-5px" style='background-color: #f8f8f9;'>
+								<!--<Row class="padding-2px-5px" style='background-color: #f8f8f9;'>
 									<Col span="2"> 序号
 									</Col>
 									<Col span="8"> 类目编码
@@ -60,21 +60,37 @@
 									</Col>
 									<Col span="5" style="text-align: center;"> 操作
 									</Col>
-								</Row>
+								</Row>-->
+								<div class="padding-2px-5px box-row-nh" style='background-color: #f8f8f9;text-align: center;'>
+									<div class="body-2" style="min-width: 30px;">
+										序
+									</div>
+									<div class="body-8">
+										类目编码
+									</div>
+									<div class="body-8">
+										类目名称
+									</div>
+									<div class="body-2" style="min-width: 50px;">
+										操作
+									</div>
+								</div>
 							</div>
 							<div style="height: 180px;overflow: auto;">
-								<Row class="padding-4px-5px" v-for='(items,indexs) in item.zdxmList'>
-									<Col span="2"> {{(indexs+1)}}
-									</Col>
-									<Col span="8"> {{items.zddm}}
-									</Col>
-									<Col span="8"> {{items.zdmc}}
-									</Col>
-									<Col span="6" style="text-align: center;">
-									<!--<Button type="success" size='small' shape="circle" icon="edit" @click="changrDcList(item,items)"></Button>-->
-									<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
-									</Col>
-								</Row>
+								<div class="box-row-nh margin-bottom-5" v-for='(items,indexs) in item.zdxmList'  style='text-align: center;'>
+									<div class="body-2" style="min-width: 30px;">
+										{{(indexs+1)}}
+									</div>
+									<div class="body-8">
+										{{items.zddm}}
+									</div>
+									<div class="body-8">
+										{{items.zdmc}}
+									</div>
+									<div class="body-2" style="min-width: 50px;">
+										<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
+									</div>
+								</div>
 							</div>
 						</div>
 					</Card>

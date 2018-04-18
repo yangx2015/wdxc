@@ -1,8 +1,10 @@
 package com.ldz.biz.module.service;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ldz.biz.module.bean.DdClModel;
+import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.model.ClZd;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
@@ -21,4 +23,10 @@ public interface ZdService extends BaseService<ClZd,String>{
      * @return
      */
     ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId);
+    List<ClZd> getNearbyStations(String lng,String lat);
+
+
+    List<ClXl> getNearbyRoutes(String lng, String lat);
+
+    Map<String,Object> getNearbyRoutesAndStations(String lng, String lat);
 }

@@ -54,13 +54,21 @@
 				default:[]
 			}
 		},
-		watch:{
-			mapCarlist:(n,o)=>{
-				this.disDot(n)
-			}
-		},
+	    computed: {
+	    	carListSco(){
+				return this.$store.state.app.socketAllCar
+	    	}
+	    },
+	    watch:{
+	    	mapCarlist:function(newQuestion, oldQuestion){
+	    		this.disDot(newQuestion)
+	    	},
+	    	carListSco:function(newQuestion, oldQuestion){
+	    		this.disDot(oldQuestion)
+	    		this.disDot(newQuestion)
+	    	}
+	    },
 		created(){
-			
 		},
 		mounted(){
 			this.Buildmap()

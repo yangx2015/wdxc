@@ -148,7 +148,7 @@
             GetscoketMess: function(newQuestion, oldQuestion) {
 				this.scoketMess = newQuestion
 			},
-            GetscoketAllCar:(newQuestion, oldQuestion)=>{
+            GetscoketAllCar:function(newQuestion, oldQuestion){
             	this.scoketAllCar = newQuestion
             }
         },

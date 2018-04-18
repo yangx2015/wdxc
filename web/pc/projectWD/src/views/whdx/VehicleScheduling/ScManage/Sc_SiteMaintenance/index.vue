@@ -118,8 +118,8 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-										type: 'primary',
-										icon: 'navicon-round',
+										type: 'success',
+										icon: 'edit',
 										shape: 'circle',
 										size: 'small'
 									},
@@ -210,14 +210,17 @@
         	},
         	//删除数据
             listDele(r){
-                this.$http.post(configApi.ZD.DELE,{'ids':[r.id]}).then((res) =>{
-                    if(res.code===200){
-                        this.$Message.success('操作成功');
-                    }else{
-                        this.$Message.error('操作成功');
-                    }
-                    this.getmess()
-                })
+            	this.util.del(this,configApi.ZD.DELE,[r.id],()=>{
+                    this.getmess();
+				});
+//              this.$http.post(configApi.ZD.DELE,{'ids':[r.id]}).then((res) =>{
+//                  if(res.code===200){
+//                      this.$Message.success('操作成功');
+//                  }else{
+//                      this.$Message.error('操作成功');
+//                  }
+//                  this.getmess()
+//              })
             },
         	pageChange(event){
                 this.findMess.pageNum = event;

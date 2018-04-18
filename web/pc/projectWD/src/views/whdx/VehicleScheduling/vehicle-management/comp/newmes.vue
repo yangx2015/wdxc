@@ -27,14 +27,14 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem prop="cph" label='载客量：'>
-								<Input type="text" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
+							<FormItem prop="zkl" label='载客量：'>
+								<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
 								<Select v-model="addmess.sjId">
-									<Option :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
+									<Option v-if="editMode" :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
 									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
@@ -42,13 +42,22 @@
 						<Col span="12">
 							<FormItem prop="zt" label='车辆状态：'>
 								<Select v-model="addmess.zt">
-									<Option v-for="zt in clztDict" :value="zt.key">{{zt.val}}</Option>
+									<Option v-for="zt in clztDict" :value="zt.key" :key="zt.key">{{zt.val}}</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="cdbh" label='车队：'>
+								<Select v-model="addmess.cdbh">
+									<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Input type="text" v-model="addmess.zdbh" placeholder="请输入终端编号"></Input>
+								<Select v-model="addmess.zdbh">
+									<Option v-for="e in deviceList" :value="e.zdbh" :key="e.zdbh">{{e.mc}}</Option>
+								</Select>
 							</FormItem>
 						</Col>
 					</Row>
@@ -71,6 +80,7 @@
 			return {
 				showModal:true,
 				operate:'新增',
+				editMode :false,
 				//新增数据
             	addmess: {
                     cph: '',
@@ -85,17 +95,10 @@
                   cph: [
                       { required: true, message: '请输入用户名', trigger: 'blur' }
                   ],
-                  dl: [
-                      { required: true,message: '请设置密码', trigger: 'blur' }
-                  ],
-                  zt:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ],
-                  zdbh:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ]
               	},
+				deviceList:[],
 				drivers:[],
+				fleetList:[],
                 clztDict:[],
                 clztDictCode:'ZDCLK0016',
                 cxDict:[],
@@ -115,13 +118,38 @@
 		created(){
             if(!this.messType){
                 this.operate = '编辑';
+                this.editMode = true;
             }
 			this.addmess = this.mess
-            console.log(this.mess);
             this.getDrivers();
 			this.getDict();
+			this.getFleetList();
+			this.getDeviceList();
 		},
 		methods:{
+		    getDeviceList(){
+                let v = this;
+                v.$http.get(configApi.ZDGL.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                    if(res.code===200){
+                        this.deviceList = res.page.list;
+                    }
+                })
+			},
+		    getFleetList(){
+                let v = this;
+                v.$http.get(configApi.CD.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                    if(res.code===200){
+                        this.fleetList = res.page.list;
+                    }
+                })
+			},
+		    getDriverName(){
+		      for(let r of this.drivers){
+		          if (r.sfzhm ===  this.addmess.sjId){
+		              this.addmess.sjxm = r.xm;
+				  }
+			  }
+			},
             getDict(){
                 this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
@@ -143,7 +171,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        this.$parent.SpinShow = true;
+                        this.getDriverName();
 //                    	新增
                     	if(v.messType){
                     		v.$http.post(configApi.CLGL.ADD,v.addmess).then((res) =>{

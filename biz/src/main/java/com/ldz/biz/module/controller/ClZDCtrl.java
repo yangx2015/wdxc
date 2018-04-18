@@ -1,6 +1,7 @@
 package com.ldz.biz.module.controller;
 
 import com.ldz.biz.module.bean.DdClModel;
+import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.ZdService;
 import com.ldz.sys.base.BaseController;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/clzd")
@@ -21,7 +23,6 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 
 	@Override
 	protected BaseService<ClZd, String> getBaseService() {
-
 		return zdservice;
 	}
 
@@ -40,16 +41,28 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 	 * @param xlId	线路ID
 	 * @return
 	 */
-//    @MessageMapping("/getzdcl")
 	@RequestMapping(value = "/getzdcl", method = {RequestMethod.POST})
 	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
 		return zdservice.getBySiteVehicleList(xlId);
 	}
 
-	@RequestMapping("getByXlId")
+	@RequestMapping("/getByXlId")
 	public ApiResponse<List<ClZd>> getByXlId(String xlId){
 		List<ClZd> stations = zdservice.getByXlId(xlId);
 		return ApiResponse.success(stations);
+	}
+
+	@RequestMapping(value = "/getNearbyStations",method =  {RequestMethod.GET})
+	public ApiResponse<List<ClZd>> getNearbyStations(String lng,String lat){
+		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));
+	}
+	@RequestMapping(value = "/getNearbyRoutes",method =  {RequestMethod.GET})
+	public ApiResponse<List<ClXl>> getNearbyRoutes(String lng, String lat){
+		return ApiResponse.success(zdservice.getNearbyRoutes(lng,lat));
+	}
+	@RequestMapping(value = "/getNearbyRoutesAndStations",method =  {RequestMethod.GET})
+	public ApiResponse<Map<String,Object>> getNearbyRoutesAndStations(String lng, String lat){
+		return ApiResponse.success(zdservice.getNearbyRoutesAndStations(lng,lat));
 	}
 
 }

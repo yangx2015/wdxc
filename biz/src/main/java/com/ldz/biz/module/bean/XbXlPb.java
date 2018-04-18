@@ -17,7 +17,7 @@ import lombok.ToString;
 public class XbXlPb {
 
 	/**
-	 * id
+	 * 线路id
 	 */
 	private String id;
 
@@ -25,6 +25,16 @@ public class XbXlPb {
 	 * 线路名称
 	 */
 	private String xlmc;
+	
+	/**
+	 * 线路运行开始时间
+	 */
+	private String yxkssj;
+	
+	/**
+	 * 线路运行结束时间
+	 */
+	private String yxjssj;
 	/**
 	 * 车辆id集合
 	 */
@@ -33,4 +43,5 @@ public class XbXlPb {
 	 * 车辆对象集合
 	 */
 	private List<ClCl> clList;
+	
 }

@@ -102,6 +102,10 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		entity.setZt(Dict.UserStatus.VALID.getCode());
 		entity.setSjh(entity.getSjh().trim());
 		entity.setCjsj(new Date());
+		if (StringUtils.isEmpty(entity.getJgdm())){
+			SysYh user = getCurrentUser();
+			entity.setJgdm(user.getJgdm());
+		}
 		this.save(entity);
 		return ApiResponse.saveSuccess();
 	}

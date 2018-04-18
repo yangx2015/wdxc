@@ -93,7 +93,8 @@
 				cxDict:[],
 				cxDictCode:'ZDCLK0002',
 				showModal: false,
-				tableTiT: [{
+				tableTiT: [
+					{
 						title: "序号",
 						width: 80,
 						align: 'center',
@@ -105,7 +106,7 @@
 						width:'120',
 						key: 'cx',
                         render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this.cxDict,p.row.cx)
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
 							return h('div',val)
                         }
 					},
@@ -156,7 +157,7 @@
                                 })
                             ]);
                         }
-                    },
+                    }
 				],
 				tableData: [{
 					numCar: '鄂A12345',
@@ -190,7 +191,7 @@
 		},
 		methods: {
 		    getCxDict(){
-		        this.cxDict = this.dictUtil.getByCode(this.cxDictCode);
+		        this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
 			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
@@ -230,7 +231,7 @@
         		var v = this
         		v.findMess.pageNum = event
                 this.getmess()
-        	},
+        	}
 		}
 	}
 </script>

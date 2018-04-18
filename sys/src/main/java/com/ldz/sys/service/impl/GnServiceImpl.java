@@ -1,6 +1,7 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.bean.Menu;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.mapper.*;
@@ -53,6 +54,12 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         entity.setCjsj(new Date());
         gnMapper.insert(entity);
         return ApiResponse.success();
+    }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        condition.setOrderByClause("px asc");
+        return true;
     }
 
 
