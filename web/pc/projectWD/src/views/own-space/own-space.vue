@@ -58,14 +58,14 @@
         <Modal v-model="editPasswordModal" :closable='false' :mask-closable=false :width="500">
             <h3 slot="header" style="color:#2D8CF0">修改密码</h3>
             <Form ref="editPasswordForm" :model="editPasswordForm" :label-width="100" label-position="right" :rules="passwordValidate">
-                <FormItem label="原密码" prop="oldPass" :error="oldPassError">
-                    <Input v-model="editPasswordForm.oldPass" placeholder="请输入现在使用的密码" ></Input>
+                <FormItem label="原密码" prop="oldPwd" :error="oldPwdError">
+                    <Input v-model="editPasswordForm.oldPwd" placeholder="请输入现在使用的密码" ></Input>
                 </FormItem>
-                <FormItem label="新密码" prop="newPass">
-                    <Input v-model="editPasswordForm.newPass" placeholder="请输入新密码，至少6位字符" ></Input>
+                <FormItem label="新密码" prop="newPwd">
+                    <Input v-model="editPasswordForm.newPwd" placeholder="请输入新密码，至少6位字符" ></Input>
                 </FormItem>
-                <FormItem label="确认新密码" prop="rePass">
-                    <Input v-model="editPasswordForm.rePass" placeholder="请再次输入新密码" ></Input>
+                <FormItem label="确认新密码" prop="secPwd">
+                    <Input v-model="editPasswordForm.secPwd" placeholder="请再次输入新密码" ></Input>
                 </FormItem>
             </Form>
             <div slot="footer">
@@ -77,6 +77,8 @@
 </template>
 
 <script>
+
+    import configApi from '@/axios/config.js'
 export default {
     name: 'ownspace_index',
     data () {
@@ -88,8 +90,8 @@ export default {
                 callback();
             }
         };
-        const valideRePassword = (rule, value, callback) => {
-            if (value !== this.editPasswordForm.newPass) {
+        const validesecPwdword = (rule, value, callback) => {
+            if (value !== this.editPasswordForm.newPwd) {
                 callback(new Error('两次输入密码不一致'));
             } else {
                 callback();
@@ -109,7 +111,7 @@ export default {
             identifyError: '', // 验证码错误
             editPasswordModal: false, // 修改密码模态框显示
             savePassLoading: false,
-            oldPassError: '',
+            oldPwdError: '',
             identifyCodeRight: false, // 验证码是否正确
             hasGetIdentifyCode: false, // 是否点了获取验证码
             canGetIdentifyCode: false, // 是否可点获取验证码
@@ -124,22 +126,22 @@ export default {
                 ]
             },
             editPasswordForm: {
-                oldPass: '',
-                newPass: '',
-                rePass: ''
+                oldPwd: '',
+                newPwd: '',
+                secPwd: ''
             },
             passwordValidate: {
-                oldPass: [
+                oldPwd: [
                     { required: true, message: '请输入原密码', trigger: 'blur' }
                 ],
-                newPass: [
+                newPwd: [
                     { required: true, message: '请输入新密码', trigger: 'blur' },
                     { min: 6, message: '请至少输入6个字符', trigger: 'blur' },
                     { max: 32, message: '最多输入32个字符', trigger: 'blur' }
                 ],
-                rePass: [
+                secPwd: [
                     { required: true, message: '请再次输入新密码', trigger: 'blur' },
-                    { validator: valideRePassword, trigger: 'blur' }
+                    { validator: validesecPwdword, trigger: 'blur' }
                 ]
             },
             inputCodeVisible: false, // 显示填写验证码box
@@ -211,6 +213,13 @@ export default {
             this.$refs['editPasswordForm'].validate((valid) => {
                 if (valid) {
                     this.savePassLoading = true;
+                    this.$http.post(configApi.USERROOT.MODIFY_PSD,this.editPasswordForm).then((res) => {
+                        if(res.code == 200){
+                            this.$Message.success(res.message);
+                            this.savePassLoading = false;
+                            this.editPasswordModal = false;
+                        }
+                    })
                     // you can write ajax request here
                 }
             });
