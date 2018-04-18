@@ -26,7 +26,7 @@
 								</FormItem>
 							</Col>
 							<Col span="12">
-								<FormItem prop="jsmc" label='角色代码：'>
+								<FormItem prop="jsId" label='角色代码：'>
 									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码">
 									</Input>
 								</FormItem>
@@ -87,6 +87,9 @@
 				ruleInline: {
                   	jsmc: [
                   		{ required: true, message: '请输角色名称', trigger: 'blur' }
+                  	],
+                  	jsId: [
+                  		{ required: true, message: '请输角色代码', trigger: 'blur' }
                   	]
               	},
 				data4: [
@@ -185,7 +188,7 @@
 						}
                     } else {
                     	v.SpinShow = false
-                        v.$Message.error('请认真填写角色信息!');
+                        v.$Message.warning('请认真填写角色信息!');
                     }
                 })
             },
