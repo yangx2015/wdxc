@@ -6,7 +6,9 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.ldz.sys.bean.AccessToken;
 import com.ldz.sys.bean.UserPassCredential;
 import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.YhService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.Des;
@@ -44,6 +46,8 @@ public class MainController {
 
 	@Autowired
 	private YhService userService;
+	@Autowired
+	private JgService jgService;
     @Autowired
     private DefaultKaptcha defaultKaptcha;
     @Autowired
@@ -100,7 +104,11 @@ public class MainController {
 				aToken.setToken(token);
 
 				rMap.put("accessToken", aToken);
-				rMap.put("userInfo", item);
+					rMap.put("userInfo", item);
+				SysJg org = jgService.findByOrgCode(item.getJgdm());
+				if (org != null){
+					rMap.put("jgmc", org.getJgmc());
+				}
 				result.setResult(rMap);
 			} catch (Exception e) {
 				result.setCode(ApiResponse.FAILED);

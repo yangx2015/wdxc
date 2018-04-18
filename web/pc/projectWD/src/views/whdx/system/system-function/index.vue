@@ -3,7 +3,7 @@
 </style>
 <!--角色管理-->
 <template>
-	<div>
+	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">

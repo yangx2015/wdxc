@@ -55,7 +55,6 @@
 <script>
 import Cookies from 'js-cookie';
 import configApi from '@/axios/config.js'
-//import session from '@/libs/session';
 import menuList from '../data/list'
 import {appRouter} from '../router/router';
 export default {
@@ -98,9 +97,6 @@ export default {
                             this.$Message.error("用户登陆失败，请重试！");
                             this.form.username='';
                             this.form.password='';
-//                			v.$router.push({
-//						    	name: 'error-500'
-//						    });
                 		}
                 	}).catch((error) =>{
                 		console.log('error',error)
@@ -112,7 +108,6 @@ export default {
         	this.$http.get(configApi.USERROOT.GET_MENU_TREE).then((res) =>{
         		if(res.code===200){
                     menuList.menuTree = res.result;
-                    console.log(res.result);
                     this.addToMenuList(res.result);
                     this.$router.push('home')
                     
@@ -128,7 +123,6 @@ export default {
                     this.addToMenuList(r.children);
                 }
             }
-            console.log('router',list)
         },
         getMenuList(){
         	this.$http.get(configApi.USERROOT.GET_MENU_LIST).then((res) =>{

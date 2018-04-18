@@ -6,6 +6,7 @@ module.exports = {
 		GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
         INIT_MENU:'/api/gn/initMenu',
+		MODIFY_PSD:'/api/yh/mdfPwd'
 	},
 	LOGIN:{
 		QUERY:'login'

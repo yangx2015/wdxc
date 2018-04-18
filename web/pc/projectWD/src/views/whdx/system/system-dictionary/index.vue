@@ -3,7 +3,7 @@
 </style>
 <!--字典管理-->
 <template>
-	<div class="boxbackborder box" style="background-color: #fff;">
+	<div class="boxbackborder" style="background-color: #fff;">
 		<Row class="margin-top-10" style='background-color: #fff;position: relative;border-bottom: solid 2px #ededed;'>
 			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -147,7 +147,7 @@
 		methods: {
 			getmess() {
 				var v = this
-				this.$http.post(configApi.DICTIONARY.QUERY).then((res) => {
+				this.$http.post(configApi.DICTIONARY.QUERY , this.findMess).then((res) => {
 					console.log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;
