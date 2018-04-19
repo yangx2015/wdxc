@@ -30,6 +30,11 @@
 				},
 				zoom:12,
 				carList:[],
+				fancePoints:[
+					{lng:114.27226, lat:30.608123},
+					{lng:114.157277 , lat:30.544446},
+					{lng:114.418288, lat: 30.526529},
+				]
 			}
 		},
 		created(){
@@ -39,9 +44,18 @@
 		    this.init();
 		},
 		methods:{
+		    showFance(carId){
+                this.addArea(this.fancePoints);
+			},
+		    showPath(carId){
+                this.addLine(this.fancePoints);
+			},
 		    init(){
                 this.carList = this.$parent.mapCarList;
-                this.disDot()
+                if (this.carList.length > 0){
+                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                }
+                this.showCarPosition()
 			},
 			Buildmap(){
 				var v = this
@@ -61,15 +75,30 @@
 			    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
 		},
 		//撒点
-		disDot(){
+		showCarPosition(){
 			this.clear()
 			var v = this
-			// 随机向地图添加25个标注
 			for(let r of this.carList){
                 var point = new BMap.Point(r.lng, r.lat);
                 this.addMarker(r,point);
             }
 		},
+			addLine(points){
+                let ps = [];
+                for (let r of points){
+                    ps.push(new BMap.Point(r.lng,r.lat))
+                }
+                var polygon = new BMap.Polyline(ps, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+                this.map.addOverlay(polygon);
+			},
+			addArea(points){
+		        let ps = [];
+		        for (let r of points){
+		            ps.push(new BMap.Point(r.lng,r.lat))
+				}
+                var polygon = new BMap.Polygon(ps, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+                this.map.addOverlay(polygon);
+			},
             addMarker(item,point){
                 var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150),{anchor: new BMap.Size(130,110)});
                 var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png", new BMap.Size(52,26),  {anchor : new BMap.Size(27, 13)});
@@ -79,13 +108,9 @@
             },
 		addClickHandler(item,marker){
 			var v = this
-			let newHtml = '<input type="button" name="" id="" value="dianji" />'
 			marker.addEventListener("click",function(e){
-                console.log('carInfo');
                 v.componentName = 'carInfo';
                 v.choosedItem = item;
-				// v.openInfo(newHtml,e)
-				console.log('点数据',e)
 			})
 		},
 		clear(){

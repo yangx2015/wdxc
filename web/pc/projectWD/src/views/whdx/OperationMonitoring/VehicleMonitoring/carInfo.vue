@@ -26,9 +26,9 @@
                     <h5>车辆操作</h5>
                 </Row>
                 <Row>
-                    <Button type="primary" @click="close">远程拍照</Button>
-                    <Button type="primary" @click="close">拍摄视频</Button>
-                    <Button type="primary" @click="close">电子围栏</Button>
+                    <Button type="primary" @click="setControl">远程拍照</Button>
+                    <Button type="primary" @click="setControl">拍摄视频</Button>
+                    <Button type="primary" @click="showFance">电子围栏</Button>
                     <Button type="primary" @click="showPathHistory">历史轨迹</Button>
                 </Row>
                 <Row class="padding-top16">
@@ -88,25 +88,43 @@
 
         },
         mounted(){
-            this.car = this.$parent.choosedItem;
+            this.init();
         },
         methods:{
+            init(){
+                setTimeout((h) => {
+                    this.showModal = true;
+                }, 100);
+                this.car = this.$parent.choosedItem;
+            },
             close(){
-
+                this.showModal = false;
+                setTimeout((t) => {
+                    this.$parent.$data.componentName = "";
+                }, 200)
             },
             save(){
-
+                this.SpinShow = true;
+                setTimeout(()=>{
+                    this.$Message.success("操作成功!")
+                    this.SpinShow = false;
+                    this.init();
+                },1000)
             },
-            getCarInfo(){
-                var v = this
-                this.$http.get(configApi.CLJK.GET_CAR_INFO).then((res) =>{
-                    v.flameout = res.result
-                    v.mapMess = v.mapCarList = v.carlaunch
-                })
+            setControl(type){
+                this.SpinShow = true;
+                setTimeout(()=>{
+                    this.$Message.success("发送成功!")
+                    this.SpinShow = false;
+                },1000)
             },
             showPathHistory(){
                 this.$parent.$parent.componentName = 'pathHistory'
-                this.$parent.componentName = ''
+                this.close();
+            },
+            showFance(){
+                this.$parent.showFance()
+                this.close();
             }
         }
     }

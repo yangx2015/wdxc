@@ -10,14 +10,10 @@
 					<div class="margin-top-10 box-row">
 						<div class="">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
-							</Button>
-							<Button type="primary" @click="AddDataList()">
-								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -51,23 +47,59 @@
 					pageNum: 1,
 					pageSize: 5
 				},
-				tableTiT: [{
+				tableTiT: [
+				    {
 						title: "序号",
 						width: 80,
 						align: 'center',
 						type: 'index'
-					}
+					},
+				    {
+						title: "开始时间",
+						width: 200,
+						align: 'center',
+						key: 'kssj'
+					},
+				    {
+						title: "结束时间",
+						width: 200,
+						align: 'center',
+                        key: 'jssj'
+					},
+                    {
+                        title:'操作',
+                        align:'center',
+                        type: 'action',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'success',
+                                        icon: 'navicon-round',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.showPath();
+                                        }
+                                    }
+                                }),
+                            ]);
+                        }
+                    }
 				],
-				tableData: [{
-						zh: '123456',
-						ma: '123123',
-						xm: '毛毛1',
-						xb: '男',
-						sjh: '13114632587',
-						zw: '司机',
-						cjr: '大毛毛',
-						cjsj: '2017-05-02 09:10:00',
-						zjhm:'12'
+				tableData: [
+				    {
+						kssj: '2018-04-01 09:10:00',
+						jssj: '2018-04-01 09:10:00',
+					},
+				    {
+						kssj: '2018-04-01 09:10:00',
+						jssj: '2018-04-01 09:10:00',
 					}
 				],
 				//收索
@@ -95,6 +127,10 @@
 			}])
 		},
 		methods: {
+		    showPath(){
+		      this.$parent.showPath();
+		      this.$parent.componentName = '';
+			},
             findMessList(){
                 var v = this
                 // this.$http.get('/api/clzd/getNearbyStations',{params:{lng:114.36457,lat:30.545504}}).then((res) =>{
