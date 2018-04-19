@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.ldz.sys.bean.AccessToken;
 import com.ldz.sys.bean.UserPassCredential;
+import com.ldz.sys.bean.userInfoModel;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
@@ -102,9 +103,11 @@ public class MainController {
 				aToken.setUserId(item.getYhid());
 				aToken.setUsername(item.getZh());
 				aToken.setToken(token);
-
+				userInfoModel userInfomodel = new userInfoModel();
+				userInfomodel.setXm(item.getXm());
+				userInfomodel.setYhid(item.getYhid());
 				rMap.put("accessToken", aToken);
-					rMap.put("userInfo", item);
+					rMap.put("userInfo", userInfomodel);
 				SysJg org = jgService.findByOrgCode(item.getJgdm());
 				if (org != null){
 					rMap.put("jgmc", org.getJgmc());

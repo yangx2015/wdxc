@@ -81,14 +81,23 @@ public class ClZdgl implements Serializable {
     @Column(name = "ZXSJ")
     private Date zxsj;
 
+    /**
+     * 加速灵敏度
+     */
     
     @Column(name = "JSLMD")
     private String jslmd;
-    
+
+    /**
+     * 上传模式
+     */
     @Column(name = "SCMS")
     private String scms;
     
-  
+
+    /**
+     * 碰撞灵敏度
+     */
     
     @Column(name = "PZLMD")
     private String pzlmd;
