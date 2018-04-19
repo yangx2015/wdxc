@@ -44,8 +44,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
 		this.yhService = SpringContextUtil.getBean(YhService.class);
 		this.redisDao = redisTemp;
-		this.whiteList = Arrays.asList("/api/gn/getMenuTree","/api/zd/pager");
-
 	}
 
 	@Override
