@@ -40,7 +40,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label="性别： ">
-								<Select v-model="addmess.xb">
+								<Select filterable clearable  v-model="addmess.xb">
 									<Option value="1">男</Option>
 									<Option value="0">女</Option>
 								</Select>
@@ -48,7 +48,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='类型：'>
-								<Select v-model="addmess.lx">
+								<Select filterable clearable  v-model="addmess.lx">
 									<Option v-for="item in yhlxDict" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
@@ -73,7 +73,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="jgdm" label='组织机构：'>
-								<Select v-model="addmess.jgdm">
+								<Select filterable clearable  v-model="addmess.jgdm">
 									<Option v-for="e in orgList" :value="e.jgdm" :key="e.jgdm">{{e.jgmc}}</Option>
 								</Select>
 							</FormItem>

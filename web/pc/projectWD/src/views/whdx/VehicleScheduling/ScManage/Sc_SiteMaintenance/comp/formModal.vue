@@ -2,7 +2,7 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    :closable='false'      
+		    :closable='false'
 		    width='800'
 		    :mask-closable="false"
 		    title="新增站点">
@@ -14,7 +14,7 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="6">
-					<Select v-model="formItem.fw"
+					<Select filterable clearable  v-model="formItem.fw"
 							placeholder="请选择站点范围...">
 						<Option value="5">5</Option>
 						<Option value="10">10</Option>
@@ -38,7 +38,7 @@
 		    	</Row>
 		    	<Row :gutter='30' style="margin-bottom: 15px;">
 		    		<Col span="12">
-		    			<Select v-model="formItem.zt"
+		    			<Select filterable clearable  v-model="formItem.zt"
 		    				placeholder="请选择站点状态...">
 					        <Option value="00">正常</Option>
 					        <Option value="10">停用</Option>
@@ -50,7 +50,7 @@
 		    		</Col>
 		    	</Row>
 		    	<div style="height: 400px;">
-		    		<get-map-dot ref='maps' 
+		    		<get-map-dot ref='maps'
 		    			:center="mapCenter"
 		    			@getDot="getDot"></get-map-dot>
 		    	</div>

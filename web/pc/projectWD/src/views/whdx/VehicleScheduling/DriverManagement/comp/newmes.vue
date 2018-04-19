@@ -22,7 +22,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label="性别： ">
-								<Select v-model="addmess.xb">
+								<Select filterable clearable  v-model="addmess.xb">
 									<Option value="1">男</Option>
 									<Option value="0">女</Option>
 								</Select>
@@ -38,7 +38,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='驾驶证类型：'>
-								<Select v-model="addmess.zjcx">
+								<Select filterable clearable  v-model="addmess.zjcx">
 									<Option value="A1">A1</Option>
 									<Option value="A2">A2</Option>
 									<Option value="A3">A3</Option>

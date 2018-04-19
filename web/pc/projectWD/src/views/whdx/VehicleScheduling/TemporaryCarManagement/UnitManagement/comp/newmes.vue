@@ -26,13 +26,13 @@
 			            </Input>
 			        </FormItem>
 			        <FormItem label="性别： ">
-			            <Select v-model="addmess.xb">
+			            <Select filterable clearable  v-model="addmess.xb">
 			                <Option value="1">男</Option>
 			                <Option value="0">女</Option>
 			            </Select>
 			        </FormItem>
 			        <FormItem label='类型：'>
-			        	<Select v-model="addmess.lx">
+			        	<Select filterable clearable  v-model="addmess.lx">
 			                <Option value="11">类型一</Option>
 			                <Option value="22">类型二</Option>
 			            </Select>
@@ -61,7 +61,7 @@
 
 <script>
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name:'',
 		data(){

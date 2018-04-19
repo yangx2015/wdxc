@@ -2,7 +2,7 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    :closable='false'      
+		    :closable='false'
 		    width='800'
 		    :mask-closable="false"
 		    title="新增站点">
@@ -14,7 +14,7 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="6">
-		    			<Select v-model="addspot.spotType">
+		    			<Select filterable clearable  v-model="addspot.spotType">
 					        <Option value="正常">正常</Option>
 					        <Option value="停用">停用</Option>
 					    </Select>
@@ -38,7 +38,7 @@
 
 <script>
 	import myMap from '../../../../map/schoolmap.vue'
-	
+
 	export default{
 		name:'',
 		components: {

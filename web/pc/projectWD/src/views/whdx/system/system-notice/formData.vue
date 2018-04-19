@@ -33,7 +33,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='设备状态:' placeholder="请选择设备状态">
-								<Select v-model="form.zt">
+								<Select filterable clearable  v-model="form.zt">
 									<Option v-for="item in dic" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>

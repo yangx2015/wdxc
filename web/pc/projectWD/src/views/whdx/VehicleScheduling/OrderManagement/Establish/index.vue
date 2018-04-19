@@ -20,7 +20,7 @@
 							<h3>
 								用车单位
 							</h3>
-							<Select v-model="formItem.unit" size="large" placeholder="请选择用车单位" filterable>
+							<Select filterable clearable  v-model="formItem.unit" size="large" placeholder="请选择用车单位" filterable>
 								<Option v-for="item in unitList" :value="item.value"></Option>
 							</Select>
 						</FormItem>
@@ -72,7 +72,7 @@
 									<h3>
 										费用来源
 									</h3>
-									<Select v-model="formItem.fromMoney" size="large" placeholder="请选择费用来源" filterable>
+									<Select filterable clearable  v-model="formItem.fromMoney" size="large" placeholder="请选择费用来源" filterable>
 										<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 									</Select>
 								</FormItem>
@@ -82,7 +82,7 @@
 									<h3>
 										单据类型
 									</h3>
-									<Select size="large" placeholder="请选择单据类型" filterable>
+									<Select filterable clearable  size="large" placeholder="请选择单据类型" filterable>
 										<Option value="单程"></Option>
 										<Option value="往返"></Option>
 									</Select>
@@ -100,7 +100,7 @@
 										v-model="formItem.newtask"
 										size="large"
 										placeholder="添加课题"></Input>
-									<Select
+									<Select filterable clearable
 										v-else
 										v-model="formItem.task" size="large" placeholder="请选择用车单位" filterable>
 										<Option v-for="item in ctasklList" :value="item.value"></Option>
@@ -112,7 +112,7 @@
 									<h3>
 										车型
 									</h3>
-									<Select v-model="formItem.carModel" size="large" placeholder="请选择用车单位" filterable>
+									<Select filterable clearable  v-model="formItem.carModel" size="large" placeholder="请选择用车单位" filterable>
 										<Option v-for="item in carModelList" :value="item.value"></Option>
 									</Select>
 								</FormItem>
@@ -123,7 +123,7 @@
 								<h3>
 									车型
 								</h3>
-								<Select v-model="formItem.carModel" size="large" placeholder="请选择用车单位" filterable>
+								<Select filterable clearable  v-model="formItem.carModel" size="large" placeholder="请选择用车单位" filterable>
 									<Option v-for="item in carModelList" :value="item.value"></Option>
 								</Select>
 							</FormItem>

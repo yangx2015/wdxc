@@ -34,7 +34,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='型号:' placeholder="请选择站牌型号...">
-								<Select v-model="form.xh">
+								<Select filterable clearable  v-model="form.xh">
 									<Option value="10">型号1</Option>
 									<Option value="20">型号2</Option>
 								</Select>

@@ -35,7 +35,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='状态'>
-								<Select v-model="addmess.zt" placeholder="请填选择状态...">
+								<Select filterable clearable  v-model="addmess.zt" placeholder="请填选择状态...">
 									<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>

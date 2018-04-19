@@ -20,7 +20,7 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="6">
-		    			<Select v-model="addspot.classes"  placeholder="请输选择线路班次...">
+		    			<Select filterable clearable  v-model="addspot.classes"  placeholder="请输选择线路班次...">
 					        <Option value="早班">早班</Option>
 					        <Option value="午班">午班</Option>
 					        <Option value="下午班">下午班</Option>
@@ -28,7 +28,7 @@
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="addspot.spotType">
+		    			<Select filterable clearable  v-model="addspot.spotType">
 					        <Option value="正常">正常</Option>
 					        <Option value="停用">停用</Option>
 					    </Select>
@@ -47,7 +47,7 @@
 		    	</div>
 		    	<div style="width: 100px;">
 		    		<div>
-		    			<Select v-model="spotName">
+		    			<Select filterable clearable  v-model="spotName">
 					        <Option value="光谷广场">光谷广场</Option>
 					        <Option value="珞喻路">珞喻路</Option>
 					        <Option value="武汉大学">武汉大学</Option>

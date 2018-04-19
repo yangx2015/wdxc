@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' 
+		<Modal v-model="showModal" width='900'
 			:closable='false' :mask-closable="mesF" title="终端设备信息编辑">
 			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
 				<Spin fix>
@@ -34,7 +34,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='设备状态:' placeholder="请选择设备状态">
-								<Select v-model="form.zt">
+								<Select filterable clearable  v-model="form.zt">
 									<Option v-for="item in dic" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
