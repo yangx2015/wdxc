@@ -177,7 +177,8 @@ module.exports = {
         setCarsDzwl:'/api/dzwl/setCarsDzwl'
 	},
 	CLJK:{
-		QUERY:'/api/cl/InitClGps'
+		QUERY:'/api/cl/InitClGps',
+		GET_CAR_INFO:'/api/cl/getCarInfo'
 	},
 	CARTREE:{
 		QUERY:'/api/cl/getcltj'

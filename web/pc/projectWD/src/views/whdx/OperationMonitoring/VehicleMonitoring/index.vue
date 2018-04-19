@@ -29,6 +29,7 @@
 </style>
 <template>
     <div class="box-row">
+		<component :is="componentName"></component>
     	<div class="body-F" style="height:100%;">
     		<my-map ref="map"></my-map>
     	</div>
@@ -87,28 +88,41 @@
 
 import myMap from '../../map/carJK.vue'
 import configApi from '@/axios/config.js'
+import pathHistory from './pathHistory'
 export default {
     name: 'VehicleMonitoring',
     components: {
-    	myMap
+    	myMap,pathHistory
     },
     data () {
         return {
+            componentName:'',
             rightCarList:[],
             mapCarList:[],
             carArray:[[],[],[]],
 			allCarList:[
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.27226, lat:30.608123},
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.157277 , lat:30.544446},
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng: 114.418288, lat: 30.526529},
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng: 114.321703, lat: 30.477739},
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng: 114.418288, lat: 30.526529},
-				{zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng:114.157277 , lat:30.544446},
-                {zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'离线时间', status:1, lng:114.27226, lat:30.608123},
-				{zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng:114.157277 , lat:30.544446},
-				{zdbh:'asdzxc123456', cph:'鄂A12354', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng: 114.418288, lat: 30.526529}
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.27226, lat:30.608123},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.157277 , lat:30.544446},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng: 114.418288, lat: 30.526529},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng: 114.321703, lat: 30.477739},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng: 114.418288, lat: 30.526529},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng:114.157277 , lat:30.544446},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:1, lng:114.27226, lat:30.608123},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng:114.157277 , lat:30.544446},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng: 114.418288, lat: 30.526529}
 			],
         };
+    },
+    computed: {
+        GetscoketMess() {
+            return this.$store.state.app.socketMess
+        }
+    },
+    watch: {
+        GetscoketMess: function(newQuestion, oldQuestion) {
+            this.tabmess = newQuestion
+            console.log(newQuestion);
+        },
     },
     created(){
     	this.$store.commit('setCurrentPath', [{
