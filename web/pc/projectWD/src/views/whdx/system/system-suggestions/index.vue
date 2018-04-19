@@ -29,12 +29,6 @@
 			</Row>
 			<Row>
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">数据加载中请稍后</div>
-					</Spin>
-				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
