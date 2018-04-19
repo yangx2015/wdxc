@@ -74,7 +74,7 @@
 							<span style="float: right;">{{item.cph}}</span>
 						</div>
 						<div style="overflow: hidden;">
-							<span>{{item.text}}</span>
+							<span >{{item.text}}</span>
 							<span style="float: right;">{{item.time}}</span>
 						</div>
 					</div>

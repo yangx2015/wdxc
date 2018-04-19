@@ -8,59 +8,61 @@
                     <div style="font-size: 30px;">数据加载中请稍后</div>
                 </Spin>
             </div>
-            <Tabs @on-click="tabClick">
-                <Tab-pane label="车辆信息" icon="information-circled">
-                    <Row>
-                        <Col span="2"><span>车牌号:</span></Col>
-                        <Col span="6"><span>{{car.cph}}</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="2"><span>司机:</span></Col>
-                        <Col span="6"><span>{{car.sjxm}}</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="2"><span>时速:</span></Col>
-                        <Col span="6"><span>{{car.speed}}</span></Col>
-                    </Row>
-                </Tab-pane>
-                <Tab-pane label="远程控制" icon="ios-game-controller-b">
-                    <Row>
-                        <Button type="primary" @click="setControl">远程拍照</Button>
-                        <Button type="primary" @click="setControl">拍摄视频</Button>
-                        <Button type="primary" @click="showFance">电子围栏</Button>
-                        <Button type="primary" @click="showPathHistory">历史轨迹</Button>
-                    </Row>
-                </Tab-pane>
-                <Tab-pane label="终端设置" icon="gear-b">
-                    <Row>
-                        <Form :label-width="100">
-                            <Row>
-                                <Col span="12">
-                                    <FormItem label='传感器灵敏度'>
-                                        <Select filterable clearable  v-model="carControl.lmd">
-                                            <Option value="1">低</Option>
-                                            <Option value="2">中</Option>
-                                            <Option value="3">高</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                                <Col span="12">
-                                    <FormItem label='上传模式'>
-                                        <Select filterable clearable  v-model="carControl.scms">
-                                            <Option value="1">仅WIFI</Option>
-                                            <Option value="2">全部</Option>
-                                            <Option value="3">不上传</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                        </Form>
-                    </Row>
-                </Tab-pane>
-            </Tabs>
+            <div>
+                <Tabs @on-click="tabClick">
+                    <Tab-pane label="车辆信息" icon="information-circled">
+                        <Row>
+                            <Col span="2"><span>车牌号:</span></Col>
+                            <Col span="6"><span>{{car.cph}}</span></Col>
+                        </Row>
+                        <Row>
+                            <Col span="2"><span>司机:</span></Col>
+                            <Col span="6"><span>{{car.sjxm}}</span></Col>
+                        </Row>
+                        <Row>
+                            <Col span="2"><span>时速:</span></Col>
+                            <Col span="6"><span>{{car.speed}}</span></Col>
+                        </Row>
+                    </Tab-pane>
+                    <Tab-pane label="远程控制" icon="ios-game-controller-b">
+                        <Row>
+                            <Button  @click="setControl" icon="camera">远程拍照</Button>
+                            <Button  @click="setControl" icon="ios-videocam">拍摄视频</Button>
+                            <Button  @click="showFance" icon="qr-scanner">电子围栏</Button>
+                            <Button  @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+                        </Row>
+                    </Tab-pane>
+                    <Tab-pane label="终端设置" icon="gear-b">
+                        <Row class="height200">
+                            <Form :label-width="100">
+                                <Row>
+                                    <Col span="12">
+                                        <FormItem label='传感器灵敏度'>
+                                            <Select filterable clearable  v-model="carControl.lmd">
+                                                <Option value="1">低</Option>
+                                                <Option value="2">中</Option>
+                                                <Option value="3">高</Option>
+                                            </Select>
+                                        </FormItem>
+                                    </Col>
+                                    <Col span="12">
+                                        <FormItem label='上传模式'>
+                                            <Select filterable clearable  v-model="carControl.scms">
+                                                <Option value="1">仅WIFI</Option>
+                                                <Option value="2">全部</Option>
+                                                <Option value="3">不上传</Option>
+                                            </Select>
+                                        </FormItem>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </Row>
+                    </Tab-pane>
+                </Tabs>
+            </div>
             <div slot='footer'>
                 <Button type="ghost" @click="close">关闭</Button>
-                <Button type="primary" @click="save" v-if="showConfirmButton">确定</Button>
+                <Button type="primary" v-if="showConfirmButton" @click="save">确定</Button>
             </div>
         </Modal>
     </div>
@@ -92,19 +94,17 @@
         },
         methods:{
             tabClick(k){
-                if (k === 2){
-                    this.showConfirmButton = true;
-                }
+                this.showConfirmButton = k === 2
             },
             init(){
-                setTimeout((h) => {
+                setTimeout(() => {
                     this.showModal = true;
                 }, 100);
                 this.car = this.$parent.choosedItem;
             },
             close(){
                 this.showModal = false;
-                setTimeout((t) => {
+                setTimeout(() => {
                     this.$parent.$data.componentName = "";
                 }, 200)
             },
@@ -138,6 +138,9 @@
 <style scoped>
     .padding-top16{
         padding-top: 16px;
+    }
+    .height200{
+        height: 200px;
     }
 
 </style>
