@@ -28,4 +28,6 @@ public class websocketInfo {
 	
 	
 	private String cx;
+	
+	private String sjxm;
 }

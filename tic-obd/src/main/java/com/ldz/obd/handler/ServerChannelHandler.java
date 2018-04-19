@@ -98,6 +98,9 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 				throw new IotException("最后一个字节验证失败");
 			}
 
+			//处理转义字符
+			bs= messageFigurativeSense(bs);
+
 			PackageData packageMsg = this.decoder.queueElement2PackageData(bs);
 
 			packageMsg.setCheckType(true);// TODO: 2018/4/11 测试，将校验暂时注掉，因为目前测试报文都是造的，以获取报文为主
@@ -130,6 +133,8 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 //			writeDataByte(ctx, sendData);
 //		}
 	}
+
+
 	private void processClientMsg(PackageData msg) {
 		// 请求/上传 GPS+OBD 混合信息  0x20 0x04 –> 0x20 0x
 		if (msg.getOrderCode() == 0x2084) {
@@ -226,6 +231,42 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 		}
 		redisDao.delete(delKeys);
 	}
-
+	/**
+	 * 报文转义
+	 * 0x3D 0x15 => 0x28
+	 * 0x3D 0x14=> 0x29
+	 * 0x3D 0x00=> 0x3D
+	 * @param bs
+	 * @return
+	 */
+	private byte[] messageFigurativeSense(byte[] bs){
+		byte[] ret=new byte[bs.length];
+		int k=0;
+		for(int i=0;i<bs.length;i++){
+			if(bs[i]==0x3D){
+				if(bs[i+1]==0x15){
+					ret[k]=0x28;
+					i++;
+				}else if(bs[i+1]==0x14){
+					ret[k]=0x29;
+					i++;
+				}else if(bs[i+1]==0x00){
+					ret[k]=0x3D;
+					i++;
+				}else{
+					ret[k]=bs[i];
+				}
+			}else{
+				ret[k]=bs[i];
+			}
+			k++;
+		}
+		byte[] rets=null;
+		if(k>1){
+			rets=new byte[k];
+			System.arraycopy(ret, 0, rets, 0, k);
+		}
+		return rets;
+	}
 
 }

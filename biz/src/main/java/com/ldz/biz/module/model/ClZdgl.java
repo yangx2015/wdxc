@@ -101,10 +101,26 @@ public class ClZdgl implements Serializable {
     
     @Column(name = "PZLMD")
     private String pzlmd;
+    
+    /**
+     * 设置上报地址
+     */
+    
+    @Column(name = "SBDZ")
+    private String sbdz;
 
     @Transient
     private ClCl cl;
-    /**
+    
+    public String getSbdz() {
+		return sbdz;
+	}
+
+	public void setSbdz(String sbdz) {
+		this.sbdz = sbdz;
+	}
+
+	/**
      * 车牌号码
      */
     @Transient

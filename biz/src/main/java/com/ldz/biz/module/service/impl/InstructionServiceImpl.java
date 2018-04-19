@@ -47,6 +47,10 @@ public class InstructionServiceImpl implements InstructionService {
 			if (info.getCmdType().equals("50")) {
 				clzd.setScms(info.getCmd());
 			}
+			if (info.getCmdType().equals("91")) {
+				clzd.setSbdz(info.getCmd());
+			}
+			
 			zdglservice.update(clzd);
 			
 		} catch (Exception e) {

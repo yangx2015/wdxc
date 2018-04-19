@@ -1,17 +1,15 @@
 package com.ldz.sys.controller;
 
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.model.SysYh;
-import com.ldz.sys.model.SysZdlm;
-import com.ldz.sys.model.SysZdxm;
-import com.ldz.sys.service.ZdlmService;
-import com.ldz.sys.service.ZdxmService;
-import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysZdxm;
+import com.ldz.sys.service.ZdxmService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 平台字典
@@ -33,6 +31,5 @@ public class ZdxmController extends BaseController<SysZdxm, String> {
         this.zdxmService.add(entity);
         return ApiResponse.success();
     }
-
 
 }

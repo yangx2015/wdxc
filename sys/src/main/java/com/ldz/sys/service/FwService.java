@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface FwService extends BaseService<SysFw, String> {
     ApiResponse<String> saveEntity(SysFw entity);
+    ApiResponse<String> updateEntity(SysFw entity);
 
     /**
      * 设置机构服务
