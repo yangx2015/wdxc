@@ -29,6 +29,25 @@
 
 					<Row>
 						<Col span="12">
+							<FormItem label='活动类型'>
+								<Select v-model="formItem.hdlx">
+									<Option value="00">微信</Option>
+									<Option value="01">智能站牌</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='位置'>
+								<Select v-model="formItem.wz">
+									<Option value="00">上</Option>
+									<Option value="01">中</Option>
+									<Option value="02">下</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
 							<FormItem label='活动时间'>
 								<DatePicker v-model="cjsjInRange" 
 									format="yyyy-MM-dd" type="daterange" 
@@ -36,13 +55,13 @@
 									placeholder="请输活动时间" 
 									style="width: 100%"></DatePicker>
 								
-								<!--<Input type="text" v-model="formItem.hdlx" placeholder="请填写广告类型...">
+								<!--<Input type="text" v-model="formItem.wjlx" placeholder="请填写广告类型...">
 								</Input>-->
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='附件类型'>
-								<Select v-model="formItem.hdlx">
+								<Select v-model="formItem.wjlx">
 									<Option value="00">图片</Option>
 									<Option value="01">视频</Option>
 								</Select>
@@ -52,7 +71,7 @@
 
 					<Row>
 						<Col span="24">
-							<FormItem v-if="formItem.hdlx==='00'">
+							<FormItem v-if="formItem.wjlx==='00'">
 								<div>
 									添加图片
 								</div>
@@ -62,7 +81,7 @@
 									:urlList = "mess.filePaths"
 								></addlistfileImg>
 							</FormItem>
-							<FormItem v-else-if="formItem.hdlx==='01'">
+							<FormItem v-else-if="formItem.wjlx==='01'">
 								<div>
 									添加视频
 								</div>
@@ -99,7 +118,7 @@
 				showModal: true,
 				mesF: false,
 				formItem: {
-					hdlx:'00',
+					wjlx:'00',
 					kssj:'',
 					jssj:''
 				},

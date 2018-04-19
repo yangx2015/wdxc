@@ -44,6 +44,12 @@ public class SysHdyx implements Serializable {
     @Column(name = "URL")
     private String url;
 
+    @Column(name = "WJLX")
+    private String wjlx;
+
+    @Column(name = "WZ")
+    private String wz;
+
     @Transient
     private String filePaths;
 
@@ -56,6 +62,22 @@ public class SysHdyx implements Serializable {
     }
 
     private static final long serialVersionUID = 1L;
+
+    public String getWjlx() {
+        return wjlx;
+    }
+
+    public void setWjlx(String wjlx) {
+        this.wjlx = wjlx;
+    }
+
+    public String getWz() {
+        return wz;
+    }
+
+    public void setWz(String wz) {
+        this.wz = wz;
+    }
 
     /**
      * @return HD_ID
