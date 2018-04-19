@@ -1,33 +1,41 @@
 package com.ldz.sys.service.impl;
 
-import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
-import com.ldz.sys.mapper.*;
-import com.ldz.sys.model.*;
-import com.ldz.sys.service.FwService;
-import com.ldz.sys.service.JgService;
-import com.ldz.sys.service.JsService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.entity.Example;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.sys.mapper.SysJgsqlbMapper;
+import com.ldz.sys.mapper.SysPtfwMapper;
+import com.ldz.sys.mapper.SysPtjgMapper;
+import com.ldz.sys.mapper.SysResourceMapper;
+import com.ldz.sys.mapper.SysRsRoleBizMapper;
+import com.ldz.sys.model.SysBiz;
+import com.ldz.sys.model.SysFw;
+import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysJgsq;
+import com.ldz.sys.model.SysResource;
+import com.ldz.sys.model.SysRsRoleBiz;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.FwService;
+import com.ldz.sys.service.JgService;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+
+import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
+
 @Service
 public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwService {
     @Autowired
     private JgService jgService;
-    @Autowired
-    private JsService jsService;
+   
     @Autowired
     private SysPtjgMapper ptjgMapper;
     @Autowired
@@ -45,8 +53,13 @@ public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwS
 
     @Override
     public ApiResponse<String> saveEntity(SysFw entity) {
+    	RuntimeCheck.ifBlank(entity.getFwdm(), "请输入服务代码");
+    	RuntimeCheck.ifBlank(entity.getFwmc(), "请输入服务名称");
+    	RuntimeCheck.ifBlank(entity.getApiQz(), "请输入服务api前缀");
         boolean exists = ifExists(SysFw.InnerColumn.fwdm.name(),entity.getFwdm());
         RuntimeCheck.ifTrue(exists,"服务编号已存在");
+        SysYh user = getCurrentUser();
+        entity.setCjr(user.getYhid());
         entity.setCjsj(new Date());
         entity.setFwId(genId());
         bizMapper.insert(entity);
@@ -126,6 +139,19 @@ public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwS
         roleBizMapper.deleteByExample(roleBizExample);
         return ApiResponse.success();
     }
+
+	@Override
+	public ApiResponse<String> updateEntity(SysFw entity) {
+		RuntimeCheck.ifBlank(entity.getFwdm(), "请输入服务代码");
+    	RuntimeCheck.ifBlank(entity.getFwmc(), "请输入服务名称");
+    	RuntimeCheck.ifBlank(entity.getApiQz(), "请输入服务api前缀");
+        boolean exists = ifExists(SysFw.InnerColumn.fwdm.name(),entity.getFwdm());
+        RuntimeCheck.ifTrue(exists,"服务编号已存在");
+		entity.setXgr(getOperateUser());
+		entity.setXgsj(new Date());
+		update(entity);
+		return ApiResponse.updateSuccess();
+	}
 
 
 }
