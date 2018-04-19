@@ -16,10 +16,6 @@
     <div class="login" @keydown.enter="handleSubmit">
         <div class="login-con">
             <Card :bordered="false" style="width: 100%;">
-                <!--<div slot="extra">
-                    <Icon type="log-in"></Icon>
-                    欢迎登录
-                </div>-->
                 <div class="form-con box-row">
                 	<div class="body-O imgLeft">
                 		<img class="loginImg" src="/static/logo.png" alt="" />
@@ -105,9 +101,11 @@ export default {
             })
         },
         getMenuTree(){
+        	var v = this
         	this.$http.get(configApi.USERROOT.GET_MENU_TREE).then((res) =>{
         		if(res.code===200){
-                    menuList.menuTree = res.result;
+                    v.session.setItem('menuList',res.result)
+//                  menuList.menuTree = res.result;
                     this.addToMenuList(res.result);
                     this.$router.push('home')
                     

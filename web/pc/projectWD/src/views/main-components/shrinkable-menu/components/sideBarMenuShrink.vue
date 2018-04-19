@@ -67,7 +67,9 @@
             }
         },
         created() {
-            this.mesList = menuList.menuTree
+//          this.mesList = menuList.menuTree
+            this.mesList = this.session.getItem('menuList')
+            console.log('菜单数据1',this.session.getItem('menuList'))
         },
         methods: {
             //菜单点击事件
