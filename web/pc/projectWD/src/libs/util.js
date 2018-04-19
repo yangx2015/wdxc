@@ -211,7 +211,12 @@ util.handleTitle = function (vm, item) {
 //  return currentPathArr;
 //};
 
-util.openNewPage = function (vm, name, argu, query) {
+//util.openNewPage = function(vm, name, argu, query){
+//	debugger
+//	console.log('*******')
+//}
+
+util.openNewPage= function (vm, name, argu, query) {
     let pageOpenedList = vm.$store.state.app.pageOpenedList;
     let openedPageLen = pageOpenedList.length;
     let i = 0;

@@ -74,8 +74,8 @@
         methods: {
             //菜单点击事件
             changeMenu (active) {
-                console.log('changeMenu');
-                this.$store.commit('setCurrentPageName',active)
+                console.log('caidan',active);
+//              this.$store.commit('setCurrentPageName',active)
                 this.$emit('on-change', active);
             },
             itemTitle (item) {

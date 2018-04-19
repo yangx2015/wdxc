@@ -20,7 +20,7 @@ export default {
     },
     methods: {
         showMessage () {
-            util.openNewPage(this, 'message_index');
+//          util.openNewPage(this, 'message_index');
             this.$router.push({
                 name: 'message_index'
             });

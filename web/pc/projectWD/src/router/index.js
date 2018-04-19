@@ -5,6 +5,7 @@ import VueRouter from 'vue-router';
 import Cookies from 'js-cookie';
 import {routers, otherRouter, appRouter} from './router';
 import menuList from '../data/list'
+import store from '../store';
 Vue.use(VueRouter);
 
 // 路由配置
@@ -40,6 +41,7 @@ router.beforeEach((to, from, next) => {
 //	next()
 });
 router.afterEach((to) => {
+	console.log(to)
     Util.openNewPage(router.app, to.name, to.params, to.query);
     iView.LoadingBar.finish();
     window.scrollTo(0, 0);

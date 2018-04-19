@@ -68,8 +68,8 @@
         },
         methods: {
             changeMenu(active) {
-                console.log('changeMenuchangeMenu');
-                this.$store.commit('setCurrentPageName', active)
+                console.log('菜单数据',active);
+//              this.$store.commit('setCurrentPageName', active)
                 this.$emit('on-change', active);
             },
             itemTitle(item) {
