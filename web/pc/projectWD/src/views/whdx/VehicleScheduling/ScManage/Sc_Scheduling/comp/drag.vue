@@ -127,7 +127,6 @@ li{
 	            },
 	            animation: 120,
 	            onRemove (event) {
-                    console.log(event);
                     //车辆id
 	            	let clId = vm.carList[event.item.getAttribute('data-index')].clId
 	            	//线路id

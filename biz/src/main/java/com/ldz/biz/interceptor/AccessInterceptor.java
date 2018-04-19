@@ -34,7 +34,8 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 	private StringRedisTemplate redisDao;
 
-	private List<String> whiteList;
+	private List<String> whiteList = Arrays.asList("/api/gn/getMenuTree","/api/jg/pager");
+	private List<String> anonymousList = Arrays.asList("/api/zd/pager");
 
 	public AccessInterceptor() {
 	}
@@ -43,8 +44,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
 		this.yhService = SpringContextUtil.getBean(YhService.class);
 		this.redisDao = redisTemp;
-		this.whiteList = Arrays.asList("/api/gn/getMenuTree");
-
 	}
 
 	@Override
@@ -54,6 +53,9 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		String method = request.getMethod();
 		if (method.equals("OPTIONS")) {
 			// 如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
+			return true;
+		}
+		if (anonymousList.contains(request.getRequestURI())){
 			return true;
 		}
 		// if (true)return true;

@@ -254,33 +254,33 @@ export let appRouter = [
 				]
 			},
       		{
-        		path:'/',
-				icon: 'android-clipboard',
-				name: 'ScManage',
-				title: '校巴管理',
-				component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
-				children: [{
-		            path: 'ScManage/Sc_SiteMaintenance',
+//      		path:'/ScManage',
+//				icon: 'android-clipboard',
+//				name: 'ScManage',
+//				title: '校巴管理',
+//				component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
+//				children: [{
+		            path: 'Sc_SiteMaintenance',
 		            icon: 'android-clipboard',
 		            name: 'Sc_SiteMaintenance',
 		            title: '站点维护',
 		            component: () => import('@/views/whdx/VehicleScheduling/ScManage/Sc_SiteMaintenance')
 		          },
 		          {
-		            path: 'ScManage/Sc_LineMaintenance',
+		            path: 'Sc_LineMaintenance',
 		            icon: 'android-clipboard',
 		            name: 'Sc_LineMaintenance',
 		            title: '线路维护',
 		            component: () => import('@/views/whdx/VehicleScheduling/ScManage/Sc_LineMaintenance')
 		          },
 		          {
-		            path: 'ScManage/Sc_Scheduling',
+		            path: 'Sc_Scheduling',
 		            icon: 'android-clipboard',
 		            name: 'Sc_Scheduling',
 		            title: '校巴排班',
 		            component: () => import('@/views/whdx/VehicleScheduling/ScManage/Sc_Scheduling')
-      					}
-      				]
+//    					}
+//    				]
       },
 			{
         		path:'/',

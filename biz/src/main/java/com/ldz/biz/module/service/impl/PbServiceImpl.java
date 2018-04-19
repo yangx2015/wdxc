@@ -53,9 +53,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	}
 
 	@Override
-	public ApiResponse<String> saveEntity(ClPb entity) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String date = sdf.format(new Date());
+	public ApiResponse<String> saveEntity(ClPb entity,String date) {
+
+		
 
 		clpbInfo clpbInfo = new clpbInfo();
 		clpbInfo.setDate(date);
@@ -146,9 +146,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	}
 
 	@Override
-	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId) {
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String date = sdf.format(new Date());
+	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId,String date) {
 
 		clpbInfo clpbInfo = new clpbInfo();
 		clpbInfo.setDate(date);
@@ -161,7 +159,16 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		return ApiResponse.success();
 	}
 
+	public String getNowDate() {
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String date = sdf.format(new Date());
+
+		return date;
+	}
+
 	public static void main(String[] args) {
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		String date = sdf.format(new Date());
 		System.out.println(date);

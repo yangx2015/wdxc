@@ -60,7 +60,7 @@
 							<Input value="" placeholder="请输入车辆信息..." size="small" style="width: 100%"></Input>
 						</div>
 						<div class="body">
-							<Tree :data="data1"
+							<Tree :data="data1" ref="tree"
 							  show-checkbox
 							  @on-check-change='checkClick'
 							  @on-select-change='treeClick'></Tree>
@@ -70,9 +70,9 @@
 				<div class="body-F carlistBor" style="position: relative;height: 100%;">
 					<div style="position: absolute;top: 3px;right: 2px;z-index: 100;">
 						<Button type="error" size="large" @click="AddRali">电子围栏</Button>
-						<Button type="success" size="large"  @click="RootShow = !RootShow">完成</Button>
+						<Button type="success" size="large"  @click="finish">完成</Button>
 					</div>
-					<my-map ref='maps' :mapDot="mapDot"></my-map>
+					<my-map ref='maps' :mapDot="mapDot" @choosePoint="choosePoint"></my-map>
 				</div>
 			</div>
 		</div>
@@ -94,6 +94,7 @@ export default {
         	SpinShow:false,
 			tabHeight: 220,
         	mapDot:[],
+            points:[],
         	RootShow:false,
 			//收索
 			cjsjInRange:[],
@@ -101,7 +102,8 @@ export default {
 				cjsjInRange:'',
 				zjhmLike: '',
 				pageNum: 1,
-				pageSize: 5
+				pageSize: 5,
+                clIds:''
 			},
             columns10: [
                 {
@@ -111,30 +113,30 @@ export default {
                   align: 'center'
                 },
                 {
-                    title: '车牌号',
-                    align:'center',
-                    key: 'FleetNumber'
-                },
-                {
-                    title: '车型',
-                    align:'center',
-                    key: 'FleetName'
-                },
-                {
                     title: '围栏名称',
                     align:'center',
-                    key: 'captainName'
+                    key: 'wlmc'
+                },
+                {
+                    title: '面积',
+                    align:'center',
+                    key: 'mj'
+                },
+                {
+                    title: '状态',
+                    align:'center',
+                    key: 'zt'
                 },
                 {
                     title: '创建人',
                     align:'center',
-                    key: 'Founder'
+                    key: 'cjr'
                 },
                 {
                     title: '创建时间',
                     width:'100',
                     align:'center',
-                    key: 'time'
+                    key: 'cjsj'
                 },
                 {
                     title: '操作',
@@ -241,27 +243,33 @@ export default {
 				title: '电子围栏',
 		}])
 		this.tabHeight = this.getWindowHeight() - 212
-		setTimeout(() => {
-            this.SpinShow = false;
-        }, 500);
         this.getCarTree()
+        this.findMessList();
     },
     methods: {
+        finish(){
+            this.getChoosedIds();
+            this.saveDzwl();
+            this.RootShow = !this.RootShow
+        },
     	getCarTree(){
     		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
-    			console.log('数据结构数据',res)
     			this.data1 = res.result
         	}).catch((error) =>{
         		console.log('error',error)
         	})
     	},
+        choosePoint(points){
+    	    for(let r of points){
+    	        this.findMess.dlxxzb += r.lng+"-"+r.lat+",";
+            }
+        },
     	//电子围栏
     	AddRali(){
 //  		this.$refs.maps.addPolygonPoint()
     	},
     	//树多选框
     	checkClick(event){
-    		console.log('2',event[0])
     		var v = this
     		v.mapDot = []
     		if(event[0]){
@@ -284,9 +292,26 @@ export default {
     			v.mapDot.push([]);
     		}
     	},
+        getChoosedIds(){
+            let nodes = this.$refs['tree'].getCheckedNodes();
+            for(let r of nodes){
+            }
+        },
+        save(){
+            this.getChoosedIds();
+            var v = this
+            this.$http.post(configApi.DZWL.setCarsDzwl,v.findMess).then((res) =>{
+                v.SpinShow = false;
+            })
+        },
+        saveDzwl(){
+            var v = this
+            this.$http.post(configApi.DZWL.ADD,v.findMess).then((res) =>{
+                v.SpinShow = false;
+            })
+        },
     	//树多点击事件
     	treeClick(mess){
-    		console.log('1',mess)
     		if(mess[0]){
     			this.mapDot = mess
     		}
@@ -294,14 +319,15 @@ export default {
     	changeTime(val){
         },
         findList(){
-        	alert('数据查询')
+    	    this.findMessList();
         },
     	findMessList(){
-    		var v = this
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
+            var v = this
+            this.$http.get(configApi.DZWL.QUERY,{params:v.findMess}).then((res) =>{
+                v.data9 = res.page.list
+                v.pageTotal = res.page.total
+                v.SpinShow = false;
+            })
     	},
     }
 };

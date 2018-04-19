@@ -1,14 +1,8 @@
 
 package com.ldz.sys.controller;
 
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.constant.Dict;
-import com.ldz.sys.exception.RuntimeCheck;
-import com.ldz.sys.model.SysFw;
-import com.ldz.sys.model.SysYh;
-import com.ldz.sys.service.YhService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,7 +10,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.sys.model.SysFw;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.YhService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 用户管理

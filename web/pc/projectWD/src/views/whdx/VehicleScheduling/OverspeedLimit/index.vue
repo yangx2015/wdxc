@@ -101,14 +101,10 @@
 						type: 'index'
 					},
 					{
-						title: '车型',
+						title: '车牌号码',
 						align: 'center',
 						width:'120',
-						key: 'cx',
-                        render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
-							return h('div',val)
-                        }
+						key: 'cph'
 					},
 					{
 						title: '车速上限',
@@ -187,12 +183,8 @@
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
             this.getmess()
-			this.getCxDict();
 		},
 		methods: {
-		    getCxDict(){
-		        this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
-			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
                     this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -218,14 +210,9 @@
         		var v = this
         	},
         	listDele(r){
-                this.$http.post(configApi.CS.DELE,{'ids':[r.id]}).then((res) =>{
-                    if(res.code===200){
-                        this.$Message.success('操作成功');
-                    }else{
-                        this.$Message.error('操作成功');
-                    }
-                    this.getmess()
-                })
+        		this.util.del(this,configApi.CS.DELE,[r.id],()=>{
+                    this.getmess();
+				});
         	},
             pageChange(event){
         		var v = this

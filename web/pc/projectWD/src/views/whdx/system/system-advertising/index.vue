@@ -159,24 +159,47 @@
                             },params.row.url)
                         }
                     },
-//                  {
-//                      title: '活动类型',//微信--自能站牌
-//                      align:'center',
-//                      key: 'hdlx',
-//                      render: (h, params) => {
-//                          let lx = '';
-//                          switch(params.row.hdlx){
-//								case '11':
-//								    lx = '微信';
-//								    break;
-//								case '22':
-//                              default:
-//                                  lx = '智能站牌'
-//                                  break;
-//							}
-//                          return h('div',lx);
-//                      }
-//                  },
+					 {
+						 title: '活动类型',//微信--自能站牌
+						 align:'center',
+						 key: 'hdlx',
+						 render: (h, params) => {
+							 let lx = '';
+							 switch(params.row.hdlx){
+									case '00':
+										lx = '微信';
+										break;
+									case '01':
+								 default:
+									 lx = '智能站牌'
+									 break;
+								}
+							 return h('div',lx);
+						 }
+					 },
+					 {
+						 title: '位置',//微信--自能站牌
+						 align:'center',
+						 key: 'wz',
+						 render: (h, params) => {
+							 let s = '';
+							 switch(params.row.wz){
+									case '00':
+										s = '上';
+										break;
+									case '01':
+									    s = '中';
+                                        break;
+									case '02':
+									    s = '下';
+                                        break;
+								 default:
+                                     s = '上';
+									 break;
+								}
+							 return h('div',s);
+						 }
+					 },
                     {
                         title: '创建时间',
                         align:'center',

@@ -34,7 +34,7 @@
 		<div>
 			附件：
 		</div>
-		<div v-if="row.hdlx=='00'">
+		<div v-if="row.wjlx=='00'">
 			<div class="demo-upload-list" 
 				v-for="(item,index) in uploadList"
 				v-if="(index+1)!=uploadList.length">
@@ -57,7 +57,7 @@
 				</div>
 			</Modal>
 		</div>
-		<div v-else-if="row.hdlx=='01'">
+		<div v-else-if="row.wjlx=='01'">
 			<div class="demo-upload-list" 
 				v-for="(item,index) in uploadList" 
 				v-if="(index+1)!=uploadList.length">

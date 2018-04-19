@@ -35,15 +35,14 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 		return pbservice.updateEntity(entity);
 	}
 	
-	@Override
-	@RequestMapping(value = "/save", method = { RequestMethod.POST })
-	public ApiResponse<String> save(ClPb entity) {
-		return pbservice.saveEntity(entity);
+	@RequestMapping(value = "/savepb", method = { RequestMethod.POST })
+	public ApiResponse<String> save(ClPb entity,String date) {
+		return pbservice.saveEntity(entity,date);
 	}
 
 	@RequestMapping("deleteByXlAndCl")
-	public ApiResponse<String> deleteByXlAndCl(String xlId,String clId){
-		return pbservice.deleteByXlAndCl(xlId,clId);
+	public ApiResponse<String> deleteByXlAndCl(String xlId,String clId,String date){
+		return pbservice.deleteByXlAndCl(xlId,clId,date);
 	}
 
 	@PostMapping("/xbpb/")

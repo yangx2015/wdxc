@@ -1,16 +1,17 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.model.ClDzwl;
-import com.ldz.biz.module.service.DzwlService;
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ldz.biz.module.model.ClDzwl;
+import com.ldz.biz.module.service.DzwlService;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 电子围栏
@@ -25,8 +26,12 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
     protected BaseService<ClDzwl, String> getBaseService() {
         return service;
     }
-
-
+    @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
+    public ApiResponse<String> save(ClDzwl entity){
+        return service.saveEntity(entity);
+    }
+    @Override
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClDzwl entity){
         return service.updateEntity(entity);
@@ -43,4 +48,14 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
         return service.setCarDzwl(clId,wlIds);
     }
 
+    /**
+     * 为多个车辆设置同一个电子围栏
+     * @param carIds
+     * @param wlid
+     * @return
+     */
+    @RequestMapping("setCarsDzwl")
+    public ApiResponse<String> setCarsDzwl(String carIds,String wlid){
+        return service.setCarsDzwl(carIds,wlid);
+    }
 }

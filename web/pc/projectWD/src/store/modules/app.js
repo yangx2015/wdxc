@@ -115,11 +115,13 @@ const app = {
             state.pageOpenedList.splice(get.index, 1, openedPage);
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
+        //关闭所有
         clearAllTags (state) {
             state.pageOpenedList.splice(1);
             state.cachePage.length = 0;
             localStorage.pageOpenedList = JSON.stringify(state.pageOpenedList);
         },
+        //关闭其他
         clearOtherTags (state, vm) {
             let currentName = vm.$route.name;
             let currentIndex = 0;

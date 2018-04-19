@@ -169,6 +169,13 @@ module.exports = {
         CHANGE: '/api/zdgl/update',
 		DELE:   '/api/zdgl/removeIds'
 	},
+	DZWL:{//电子围栏
+		QUERY:  '/api/dzwl/pager',
+		ADD:    '/api/dzwl/save',
+        CHANGE: '/api/dzwl/update',
+		DELE:   '/api/dzwl/removeIds',
+        setCarsDzwl:'/api/dzwl/setCarsDzwl'
+	},
 	CLJK:{
 		QUERY:'/api/cl/InitClGps'
 	},

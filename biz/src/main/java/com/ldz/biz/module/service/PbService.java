@@ -10,7 +10,7 @@ import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
 public interface PbService extends BaseService<ClPb, String> {
-	ApiResponse<String> saveEntity(ClPb entity);
+	ApiResponse<String> saveEntity(ClPb entity,String date);
 
 	ApiResponse<String> updateEntity(ClPb entity);
 
@@ -31,5 +31,5 @@ public interface PbService extends BaseService<ClPb, String> {
 	 */
 	ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel pbclxlmodel);
 
-	ApiResponse<String> deleteByXlAndCl(String xlId, String clId);
+	ApiResponse<String> deleteByXlAndCl(String xlId, String clId,String date);
 }

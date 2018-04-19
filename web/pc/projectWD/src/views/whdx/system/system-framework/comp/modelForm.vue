@@ -4,10 +4,11 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			   :mask-closable="mesF" :title="operate+'机构'">
-			<div style="overflow: auto;height: 500px;">
-				<Form>
-					<FormItem label='机构名称'>
+			   :mask-closable="mesF" 
+			   :title="operate+'机构'">
+			<div style="overflow: auto;">
+				<Form :rules="ruleInline" ref="addmess">
+					<FormItem label='机构名称' prop="jgmc">
 						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称...">
 						</Input>
 					</FormItem>
@@ -16,7 +17,7 @@
 			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -35,7 +36,12 @@
 				edit:false,
                 formItem: {
                     fjgdm:''
-                }
+                },
+                ruleInline: {
+                  	jgmc: [
+                  		{ required: true, message: '请输入机构名称', trigger: 'blur' }
+                  	]
+              	},
             }
         },
         created(){
@@ -54,21 +60,29 @@
 			}
 		},
         methods: {
-            save(){
+            save(name){
                 var v = this
-				let url = configApi.FRAMEWORK.ADD;
-                if (this.edit){
-                    url = configApi.FRAMEWORK.CHANGE;
-				}
-                this.$http.post(url,this.formItem).then((res) =>{
-                    if(res.code===200){
-                        v.$Message.success(res.message);
-                    }else{
-                        v.$Message.error(res.message);
+                v.SpinShow = true
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+						let url = configApi.FRAMEWORK.ADD;
+		                if (this.edit){
+		                    url = configApi.FRAMEWORK.CHANGE;
+						}
+		                this.$http.post(url,this.formItem).then((res) =>{
+		                    if(res.code===200){
+		                        v.$Message.success(res.message);
+		                    }else{
+		                        v.$Message.error(res.message);
+		                    }
+		                    v.$parent.componentName = ''
+		                    v.$parent.getTree()
+		                })
+		            } else {
+                    	v.SpinShow = false
+                        v.$Message.warning('请认真填写相关信息!');
                     }
-                    v.$parent.componentName = ''
-                    v.$parent.getTree()
-                })
+		        })
             },
             colse(){
                 var v = this

@@ -4,7 +4,7 @@ export default{
 			sessionStorage.setItem(key,value)
 		},
 		getItem(key){
-			let sessData = sessionStorage.getItem("sessionStoragekey")
+			let sessData = sessionStorage.getItem(key)
 			return JSON.parse(sessData)
 		}
 }
