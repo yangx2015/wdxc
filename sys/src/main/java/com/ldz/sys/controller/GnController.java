@@ -1,8 +1,17 @@
 package com.ldz.sys.controller;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
-import com.ldz.sys.bean.InitMenuReq;
 import com.ldz.sys.bean.Menu;
 import com.ldz.sys.model.SysFw;
 import com.ldz.sys.model.SysGn;
@@ -10,15 +19,6 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.JsonUtil;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * 平台功能
