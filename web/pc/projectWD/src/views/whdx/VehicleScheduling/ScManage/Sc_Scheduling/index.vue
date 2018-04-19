@@ -16,11 +16,8 @@
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="todaytime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间" style="width: 220px"></DatePicker>
 						</div>
-						<div class="butevent">
-							<Button type="primary" @click="">
-								<Icon type="plus-round"></Icon>
-							</Button>
-						</div>
+						<!--<div class="butevent">
+						</div>-->
 					</div>
 				</div>
 			</Row>
@@ -43,7 +40,8 @@
 			</Row>-->
 		</Card>
 		<component
-			:is="compName"></component>
+			:is="compName"
+			:mess="mess"></component>
 	</div>
 </template>
 
@@ -61,7 +59,8 @@
 		},
 		data() {
 			return {
-				compName:'addmess',
+				compName:'',
+				mess:{},
 				tabHeight:220,
 				SpinShow:true,
 				todaytime:'',
@@ -96,7 +95,6 @@
                         align: 'center',
                         render: (h, params) => {
                         	let cl = params.row.clList
-                        	console.log('***************8',cl)
                         	if(cl===null){
                         		return
                         	}
@@ -112,7 +110,34 @@
                         	}
                         	return h('div', span)
 						}
-                    }],
+                    },{
+						title: '操作',
+						key: 'action',
+						width: 100,
+						align: 'center',
+						render: (h, params) => {
+							return h('div', [
+							h('Button', {
+									props: {
+										type: 'success',
+										icon: 'edit',
+										shape: 'circle',
+										size: 'small'
+									},
+									style: {
+										cursor: "pointer"
+									},
+									on: {
+										click: () => {
+											this.mess = params.row
+											this.compName = 'addmess'
+										}
+									}
+								})
+							]);
+						}
+					}
+				],
 				tableData: []
 			}
 		},
@@ -155,34 +180,9 @@
 //					v.SpinShow = false;
 //				})
 			},
-			okdrag(){
-//				alert('132')
-				this.dateMess=false
-			},
         	changeClick(){
-        		this.dateMess = true
-        		this.modalName = 'drag'
-//				this.modalName = drlist
+        		this.compName='addmess'
         	},
-			dayClick(event) {
-				this.todaytime = this.getdateParaD(event)
-				this.getmess()
-//				console.log('天事件', this.getdateParaD(event))
-//				console.log('天事件', event.toLocaleString())
-//				this.dateMess = true
-			},
-			eventClick(event) {
-				console.log('备注事件', event)
-			},
-			//dome组件刷新
-			domeC(){
-//				debugger
-				this.$refs.pbxx.SpinShow = false
-				this.$router.push({
-					name:'Sc_Scheduling'
-				})
-				this.modalName = 'drag'
-			},
 			//分页点击事件按
 			pageChange(event) {
 				var v = this
