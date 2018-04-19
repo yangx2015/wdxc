@@ -73,7 +73,7 @@
 		data() {
 			return {
 				//加载等候
-				SpinShow:true,
+				SpinShow:false,
 				//tab高度
 				tabHeight: 220,
 				//动态组建

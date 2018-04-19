@@ -53,12 +53,6 @@
 				var v = this
 				this.$http.get(configApi.CLGL.QUERY).then((res) =>{
 					if(res.code == 200){
-//						for(var i=0;i<v.mess.clList.length;i++){
-//							for(var b=0;i<res.page.list.length;b++){
-//								if(res.page.list[b]==v.mess.clList[i])
-//								res.page.list.splice(b,1)
-//							}
-//						}
 						v.chrlist = res.page.list
 					}else{
 						console.log('bug')
