@@ -8,6 +8,10 @@ import router from './router'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 
+import http from './axios/index';
+
+Vue.prototype.$http = http;
+
 Vue.use(VueRouter);
 Vue.use(iView);
 Vue.config.productionTip = true

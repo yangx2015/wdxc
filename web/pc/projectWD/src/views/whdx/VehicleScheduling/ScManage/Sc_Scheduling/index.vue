@@ -1,190 +1,119 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
-	.SC {
-		.full-calendar-header {
-			font-size: 22px;
-		}
-		.day-number {
-			font-size: 18px;
-		}
-		.dates-bg {
-			.today {
-				background: #09b938!important;
-			}
-		}
-		.comp-full-calendar {
-			max-width: 100%!important;
-			margin: 0!important;
-		}
-	}
-	#fullcalendar{
-		.full-calendar-body .dates .dates-events .events-week .events-day{
-			min-height: 74px!important;
-		}
-		.full-calendar-body .dates .week-row .day-cell{
-			min-height: 74px!important;
-		}
-		.comp-full-calendar{
-			padding: 15px!important;
-		}
-	}
 </style>
 <template>
-	<div class="SC box">
-		<div v-if="SpinShowChlid" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-			<Spin fix style="background:rgba(255,255,255,0.5)!important">
-	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-	            <div style="font-size: 30px;">排版提交中....</div>
-	        </Spin>
-		</div>
-		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 110;">
-			<Spin fix style="background-color:#fff">
-	            <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-	            <div style="font-size: 30px;">数据加载中请稍后</div>
-	        </Spin>
-		</div>
-		<div class="body" v-show='dateMess' style="background-color: #fff;">
-			<component 
-				:is="modalName"
-				ref="pbxx"
-				:todaytime='todaytime'
-				@okdrag='okdrag'></component>
-		</div>
-		<div class="body" v-show='!dateMess' style="height: 100%;">
-			<div class="box-row">
-				<div class="body-r-1" style="height:100%;border-right: solid 1px #22CDDE;">
-					<div id="fullcalendar" style="height: 100%;">
-						<fullcalendar :events='events' lang='zh' title='日历标题' @dayClick="dayClick" @eventClick='eventClick'>
-						</fullcalendar>
-					</div>
-						<!-- <div slot="fc-header-left" style="background-color: #f00;">
-									123
-							</div>
-							<div slot="fc-header-right" style="background-color: #f00;">
-									456
-							</div>
-							<div slot="fc-body-card" style="background-color: #f00;">
-							 		798
-							</div> -->
-				</div>
-				<div style="width: 360px;padding: 15px;height: 100%;background-color: #fff;border-left: solid 1px #22CDDE;">
-					<div class="box" style="">
-						<div class="tit">
-							<div style="text-align: center;font-size: 18px;padding: 5px;">
-								<b>
-									{{todaytime}}
-								</b>
-								<span style="font-size: 14px;">
-									排班信息
-								</span>
-							</div>
-							<div style="text-align: right;padding-bottom: 5px;">
-								<Button type="primary" size="small" @click="changeClick">编辑</Button>
-							</div>
+	<div class="boxbackborder">
+		<Card>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+				<span class="tabPageTit">
+    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
+    			</span>
+				<div style="height: 45px;line-height: 45px;">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>校巴排班</span>
 						</div>
-						<div class="body">
-							<Table 
-								border 
-								:height="tabHeight" 
-								:columns="tableTiT" 
-								:data="tableData"></Table>
-							<div>
-								<Button type="warning">复制当日排班信息</Button>
-							</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="todaytime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间" style="width: 220px"></DatePicker>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="">
+								<Icon type="plus-round"></Icon>
+							</Button>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</Row>
+			<Row style="position: relative;">
+				<Table
+						size='large'
+						:height="tabHeight"
+						:row-class-name="rowClassName"
+						:columns="tableTiT"
+						:data="tableData"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+					<Spin fix>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
+				</div>
+			</Row>
+			<!--<Row class="margin-top-10 pageSty">
+				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
+			</Row>-->
+		</Card>
+		<component
+			:is="compName"></component>
 	</div>
 </template>
 
 <script>
-	import fullcalendar from 'vue-fullcalendar'
-	import drag from './comp/drag.vue'
-	import drlist from '../../../components/draggable-list/draggable-list.vue'
 	import mixins from '@/mixins'
-	
 	import configApi from '@/axios/config.js'
+	
+	import addmess from './comp/addmess'
+	
 	export default {
 		name: '',
 		mixins:[mixins],
 		components: {
-			fullcalendar,
-			drag,drlist
+			addmess
 		},
 		data() {
 			return {
-				tabHeight:'',
+				compName:'addmess',
+				tabHeight:220,
+				SpinShow:true,
 				todaytime:'',
-				dateMess: false,
-				modalName: '',
-				SpinShow:false,
-				SpinShowChlid:false,
-				events: [{
-						title: '早班',
-						start: '2018-01-01',
-						cssClass: 'family',
-						YOUR_DATA: {
-							name: 'hello'
-						}
-					},
-					{
-						title: 'event1',
-						start: '2018-01-01',
-						cssClass: 'family',
-						YOUR_DATA: {}
-					},
-					{
-						title: 'event2',
-						start: '2018-01-06',
-						end: '2018-01-08',
-						cssClass: ['family', 'career'],
-						YOUR_DATA: {}
-					}
-				],
+				//分页
+				//---数据总数
+				pageTotal: 2,
+				page: {
+					//---当前页码
+					pageNum: 1,
+					//---每页显示条数
+					pageSize: 5
+				},
 				tableTiT: [
-                	{
+				{
                         type: 'index',
                         width: 40,
                         align: 'center'
                     },
                     {
-                        title: '班次',
-                        key: 'date'
+                        title: '线路名称',
+                        key: 'xlmc'
                     },
                     {
-                        title: '车辆',
+                        title: '运行时间',
                         width: 100,
-                        key: 'cph',
+                        key: 'yxjssj',
                         align: 'center'
                     },
                     {
-                        title: '线路',
-                        key: 'clXl',
+                        title: '车辆信息',
+                        key: 'clList',
                         align: 'center',
                         render: (h, params) => {
-                        	return params.row.clXl.xlmc
-                        }
-                    },
-                    {
-                        title: '状态',
-                        key: 'type',
-                        align: 'center',
-                        render: (h, params) => {
-							return h('div', [
-								h('span',{
-									style:{
-										fontWeight:900,
-										color:params.row.type=='正常'?'#228B22':'#FF4500',
-									}
-								},params.row.type)
-							]);
+                        	let cl = params.row.clList
+                        	console.log('***************8',cl)
+                        	if(cl===null){
+                        		return
+                        	}
+                        	let span = []
+                        	for(var i = 0 ;i<cl.length;i++){
+                        		span.push(
+                        			h('span',{
+										style:{
+											marginRight:'5px',
+										}
+									},cl[i].cph)
+                        		)
+                        	}
+                        	return h('div', span)
 						}
-                    }
-                ],
-                tableData: [
-                ]
+                    }],
+				tableData: []
 			}
 		},
 		created() {
@@ -193,34 +122,43 @@
 			}, {
 				title: '车辆管理',
 			}, {
-				title: '班车管理',
+				title: '校巴管理',
 			}, {
-				title: '班车排班',
+				title: '校巴排班',
 			}]),
 			this.todaytime = this.getdateParaD(this.getdate())
+			this.tabHeight = this.getWindowHeight() - 220
 			this.getmess()
 		},
 		mounted(){
-			this.getalert()
 		},
 		methods: {
 			getmess(){
 				var v = this
 				console.log('排班数据2')
-				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-					console.log('排班数据',res)
+				//线路数据
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
+					console.log('排班数据2',res)
 					v.tableData = res.result
+				}).then((res) =>{
+					v.SpinShow = false;
+				}).catch((err) =>{
+					console.log('bug')
 				})
+				
+				
+				
+//				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+//					console.log('排班数据',res)
+//					v.tableData = res.result
+////					v.pageTotal = res.page.total
+//					v.SpinShow = false;
+//				})
 			},
 			okdrag(){
 //				alert('132')
 				this.dateMess=false
 			},
-			getalert(){
-        		var windowHeight = window.innerHeight
-        		this.tabHeight = windowHeight - 280
-        		console.log('浏览器高',this.tabHeight)
-        	},
         	changeClick(){
         		this.dateMess = true
         		this.modalName = 'drag'
@@ -244,6 +182,12 @@
 					name:'Sc_Scheduling'
 				})
 				this.modalName = 'drag'
+			},
+			//分页点击事件按
+			pageChange(event) {
+				var v = this
+				v.findMess.pageNum = event
+				v.getmess()
 			}
 		}
 	}

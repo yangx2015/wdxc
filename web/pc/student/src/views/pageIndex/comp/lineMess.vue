@@ -28,7 +28,7 @@
 			height: 80px;
 			padding: 15px 0;
 			text-align: center;
-			border-bottom: solid 3px #CCCCCC;
+			/*border-bottom: solid 3px #CCCCCC;*/
 			.body-O{
 				.icon-xinhao{
 					color:#ff7800;
@@ -63,9 +63,9 @@
 	  				<i class="iconfont icon-left"></i>
 	  			</span>
 	  			<span class="tit">001</span>
-	  			<span slot="right" @click="mapmess">
+	  			<!--<span slot="right" @click="mapmess">
 	  				<i class="iconfont icon-ditu"></i>
-	  			</span>
+	  			</span>-->
 	  			</x-header>
 	  	</div>
 	  	<div class="carmess">
@@ -80,7 +80,7 @@
 	  		</div>
 	  	</div>
 	  	<div class="cartime box-row">
-	  		<div class="body-O body-left">
+	  		<!--<div class="body-O body-left">
 	  			<div>
 	  				<i class="iconfont icon-xinhao"></i>
 	  				<span class="text">2</span>
@@ -99,7 +99,7 @@
 	  			<div>
 	  				第二辆车抵达
 	  			</div>
-	  		</div>
+	  		</div>-->
 	  	</div>
 	  	<div class="carlines body">
 	  		<div class="box-row-z">
@@ -123,9 +123,9 @@
 	  			</div>
 	  		</div>
 	  	</div>
-	  	<div class="footer">
+	  	<!--<div class="footer">
 	  		
-	  	</div>
+	  	</div>-->
 	</div>
 </template>
 
