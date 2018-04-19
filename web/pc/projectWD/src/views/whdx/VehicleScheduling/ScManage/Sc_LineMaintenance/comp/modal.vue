@@ -39,6 +39,7 @@
 					<Row :gutter='30' style="margin-bottom: 15px;">
 						<Col span="5">
 							<Input type="number" v-model="form.yxkssj" placeholder="开始时间..."></Input>
+						
 						</COl>
 						<Col span="5">
 							<Input type="number" v-model="form.yxjssj" placeholder="结束时间..."></Input>

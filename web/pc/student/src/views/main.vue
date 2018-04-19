@@ -4,15 +4,15 @@
 </style>
 <template>
   <div class="box main">
-  	<div class="header">
+  	<!--<div class="header">
   		<x-header
   			:left-options="{showBack: false}">
   			with more menu</x-header>
-  	</div>
+  	</div>-->
   	<div class="body center">
   		<router-view></router-view>
   	</div>
-  	<div class="footer">
+  	<!--<div class="footer">
   		<div class="box-row">
   			<div class="body-O">
   				<a>1</a>
@@ -24,7 +24,7 @@
   				<a>3</a>
   			</div>
   		</div>
-  	</div>
+  	</div>-->
   </div>
 </template>
 
