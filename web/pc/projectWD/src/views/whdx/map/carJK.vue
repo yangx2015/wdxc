@@ -22,6 +22,7 @@
 		data(){
 			return {
                 componentName:'',
+				choosedItem:null,
 				map:'',
 				mapcenter:{
 					lng: 114.357527,
@@ -65,25 +66,24 @@
 			var v = this
 			// 随机向地图添加25个标注
 			for(let r of this.carList){
-                console.log(r.lng,r.lat);
                 var point = new BMap.Point(r.lng, r.lat);
-                addMarker(point);
+                this.addMarker(r,point);
             }
-			// 编写自定义函数,创建标注
-			function addMarker(point){
-			  	var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
-			  	var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png",  new BMap.Size(52,26),{anchor : new BMap.Size(27, 13)});
-			  	var marker = new BMap.Marker(point,{icon:myIcon});
-				v.map.addOverlay(marker);
-				v.addClickHandler('content',marker);
-			}
 		},
-		addClickHandler(content,marker){
+            addMarker(item,point){
+                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150),{anchor: new BMap.Size(130,110)});
+                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png", new BMap.Size(52,26),  {anchor : new BMap.Size(27, 13)});
+                var marker = new BMap.Marker(point,{icon:myIcon});
+                this.map.addOverlay(marker);
+                this.addClickHandler(item,marker);
+            },
+		addClickHandler(item,marker){
 			var v = this
 			let newHtml = '<input type="button" name="" id="" value="dianji" />'
 			marker.addEventListener("click",function(e){
                 console.log('carInfo');
                 v.componentName = 'carInfo';
+                v.choosedItem = item;
 				// v.openInfo(newHtml,e)
 				console.log('点数据',e)
 			})

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <component :is="componentName"></component>
         <Modal width='900' v-model="showModal"  title="车辆详情">
             <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
                 <Spin fix>
@@ -8,7 +9,55 @@
                 </Spin>
             </div>
             <div style="overflow: auto;height: 300px;">
+                <Row>
+                    <h5>车辆信息</h5>
+                </Row>
+                <Row>
+                    <Col span="2"><span>车牌号:</span></Col>
+                    <Col span="6"><span>{{car.cph}}</span></Col>
 
+                    <Col span="2"><span>司机:</span></Col>
+                    <Col span="6"><span>{{car.sjxm}}</span></Col>
+
+                    <Col span="2"><span>时速:</span></Col>
+                    <Col span="6"><span>{{car.speed}}</span></Col>
+                </Row>
+                <Row class="padding-top16">
+                    <h5>车辆操作</h5>
+                </Row>
+                <Row>
+                    <Button type="primary" @click="close">远程拍照</Button>
+                    <Button type="primary" @click="close">拍摄视频</Button>
+                    <Button type="primary" @click="close">电子围栏</Button>
+                    <Button type="primary" @click="showPathHistory">历史轨迹</Button>
+                </Row>
+                <Row class="padding-top16">
+                    <h5>远程控制</h5>
+                </Row>
+                <Row>
+                    <Form :label-width="100">
+                        <Row>
+                            <Col span="12">
+                                <FormItem label='传感器灵敏度'>
+                                    <Select v-model="carControl.lmd">
+                                        <Option value="1">低</Option>
+                                        <Option value="2">中</Option>
+                                        <Option value="3">高</Option>
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                            <Col span="12">
+                                <FormItem label='上传模式'>
+                                    <Select v-model="carControl.scms">
+                                        <Option value="1">仅WIFI</Option>
+                                        <Option value="2">全部</Option>
+                                        <Option value="3">不上传</Option>
+                                    </Select>
+                                </FormItem>
+                            </Col>
+                        </Row>
+                    </Form>
+                </Row>
             </div>
             <div slot='footer'>
                 <Button type="ghost" @click="close">取消</Button>
@@ -19,15 +68,27 @@
 </template>
 
 <script>
+    import pathHistory from './pathHistory'
     export default {
         name: "carInfo",
+        components: {
+            pathHistory
+        },
         data(){
             return {
+                componentName:'',
                 showModal:true,
                 SpinShow:false,
-
+                car:'',
+                carControl:{
+                    lmd:1,
+                    scms:1
+                }
             }
 
+        },
+        mounted(){
+            this.car = this.$parent.choosedItem;
         },
         methods:{
             close(){
@@ -35,11 +96,25 @@
             },
             save(){
 
+            },
+            getCarInfo(){
+                var v = this
+                this.$http.get(configApi.CLJK.GET_CAR_INFO).then((res) =>{
+                    v.flameout = res.result
+                    v.mapMess = v.mapCarList = v.carlaunch
+                })
+            },
+            showPathHistory(){
+                this.$parent.$parent.componentName = 'pathHistory'
+                this.$parent.componentName = ''
             }
         }
     }
 </script>
 
 <style scoped>
+    .padding-top16{
+        padding-top: 16px;
+    }
 
 </style>
