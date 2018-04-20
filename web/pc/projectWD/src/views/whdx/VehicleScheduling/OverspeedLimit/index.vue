@@ -63,10 +63,11 @@
 	import configApi from '@/axios/config.js'
 	
 	import newmes from './comp/newmes.vue'
+	import change from './comp/change.vue'
 	export default {
 		name: 'char',
 		components: {
-			newmes
+			newmes,change
         },
 		mixins: [mixins],
 		data() {
@@ -127,7 +128,7 @@
                                         click: () => {
                                         	this.messType = false
                                         	this.mess = params.row
-                                            this.compName = 'newmes'
+                                            this.compName = 'change'
                                         }
                                     }
                                 }),

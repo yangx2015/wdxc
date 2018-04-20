@@ -153,7 +153,8 @@ module.exports = {
 	},
 	CS:{//超速
 		QUERY:  '/api/cssd/pager',
-		ADD:    '/api/cssd/save',
+//		ADD:    '/api/cssd/save',
+		ADD:	'api/cssd/setCssds',
         CHANGE: '/api/cssd/update',
 		DELE:   '/api/cssd/removeIds'
 	},
@@ -180,7 +181,7 @@ module.exports = {
 		QUERY:'/api/cl/InitClGps',
 		GET_CAR_INFO:'/api/cl/getCarInfo'
 	},
-	CARTREE:{
+	CARTREE:{//车辆列表
 		QUERY:'/api/cl/getcltj'
 	},
 	SBZDDZ:{//设备终端接口地址

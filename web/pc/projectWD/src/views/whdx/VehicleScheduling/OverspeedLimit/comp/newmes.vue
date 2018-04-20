@@ -15,9 +15,9 @@
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
-	    		<div style="overflow: auto;height: 300px;">
+	    		<div style="height: 300px;">
 	    			<div class="box-row">
-	    				<div>
+	    				<div style="overflow: auto;padding: 5px 8px;">
 	    					<div v-show="treeList.length==0" style="color: red;">
 	    						*请选车量
 	    					</div>
@@ -34,9 +34,6 @@
 	    			</div>
 	    		</div>
     		</Form>
-    		<div>
-    			<span v-for="item in treeList">{{item.title}}</span>
-    		</div>
 		    <div slot='footer'>
 		    	<Button type="ghost" @click="colse">取消</Button>
 	        	<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>
@@ -68,18 +65,7 @@
               	treeList:[]
 			}
 		},
-		props:{
-			messType:{
-				type:Boolean,
-				default:true
-			},
-			mess:{
-				type:Object,
-				default:{}
-			}
-		},
 		created(){
-			this.addmess = this.mess
 			this.fullcal()
 
             if(!this.messType){
@@ -107,17 +93,12 @@
 	    			if(event[i].children){
 	    				console.log('树输出')
 	    			}else{
-	    				v.treeList.push(event[i])
+	    				v.treeList.push(event[i].title)
+	    				console.log('车牌号',v.treeList)
+	    				console.log('车牌转',v.treeList.join(','))
 	    			}
 	    		}
 	    	},
-	    	//树多点击事件
-//	    	treeClick(mess){
-//	    		console.log('1',mess)
-//	    		if(mess[0]){
-//	    			this.treeList = mess
-//	    		}
-//	    	},
 			fullcal(){
 				console.log('信息',this.mess)
 			},
@@ -131,21 +112,17 @@
                 this.$refs[name].validate((valid) => {
                     if (valid && v.treeList.length>0) {
 //                    	新增
-						for(var a=0;a<v.treeList.length;a++){
-	                		v.$http.post(configApi.CS.ADD,{'cph':v.treeList[a].title}).then((res) =>{
+	                		v.$http.post(configApi.CS.ADD,{'cphs':v.treeList.join(','), 'csz':v.addmess.sdsx}).then((res) =>{
 								if(res.code===200){
 									v.$parent.getmess();
 			                    	v.$Message.success(res.message);
+			                    	v.colse()
 								}else{
 	                                v.$Message.warning(res.message);
 								}
 							}).catch((e)=>{
 	                            v.$Message.error("失败了！");
 							})
-							if(a==v.treeList.length-1){
-								v.$parent.compName = '';
-							}
-						}
                     } else {
                         v.$Message.error('请认真填写超速信息!');
                     }
