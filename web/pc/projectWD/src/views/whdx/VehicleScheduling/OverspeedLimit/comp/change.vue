@@ -58,7 +58,7 @@
                   sdsx: [
                       { required: true, message: '请输车数上线', trigger: 'blur' }
                   ],
-              	},
+              	}
 			}
 		},
 		props:{

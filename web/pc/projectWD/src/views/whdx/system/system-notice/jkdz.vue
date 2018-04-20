@@ -57,11 +57,7 @@
 				</Form>
 			</div>
 			</Form>
-			<div v-show="!dataRead" slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save('addmess')">确定</Button>
-			</div>
-			<div v-show="dataRead" slot='footer'>
+			<div slot='footer'>
 				<Button type="ghost" @click="close">关闭</Button>
 				<Button type="success" @click="seet('addmess')">设置</Button>
 			</div>
@@ -163,19 +159,13 @@
 			},
 			seet(name){
 		    	var v = this
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                    	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
-                    		v.$Message.success(res.message);
-		                    v.$parent.getPageData()
-		                    v.close()
-		                }).catch((error) =>{
-							v.$Message.error('出错了！！！');
-						})
-	    		    } else {
-                    	v.$Message.error('请认真填写用户信息!');
-                    }
-                })
+            	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
+            		v.$Message.success(res.message);
+                    v.$parent.getPageData()
+                    v.close()
+                }).catch((error) =>{
+					v.$Message.error('出错了！！！');
+				})
 			},
 			close(){
 		        this.$parent.componentName = '';

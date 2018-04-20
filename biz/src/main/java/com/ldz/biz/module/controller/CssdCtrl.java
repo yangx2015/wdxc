@@ -18,7 +18,7 @@ import com.ldz.util.bean.ApiResponse;
  * 超速设定
  */
 @RestController
-@RequestMapping("api/cssd")
+@RequestMapping("pub/cssd")
 public class CssdCtrl extends BaseController<ClCssd, String> {
 	@Autowired
 	private CssdService service;
