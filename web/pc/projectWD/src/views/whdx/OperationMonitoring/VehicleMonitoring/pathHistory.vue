@@ -4,7 +4,7 @@
 <!--用户管理-->
 <template>
 	<div class="boxbackborder" style="z-index: 99999">
-		<Modal width='900' v-model="showModal"  title="历史轨迹">
+		<Modal width='1200' v-model="showModal"  title="历史轨迹">
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
@@ -19,12 +19,19 @@
 					</div>
 				</div>
 			</Row>
-			<Row style="position: relative;">
-				<Table
-						size='large'
-						:height="tabHeight"
-						:columns="tableTiT"
-						:data="tableData"></Table>
+			<Row :gutter="16">
+				<Col span="6" v-for="item in tableData">
+					<Card>
+						<Row>
+							<img src="'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd,item.kswd+'&zoom=11&markers='+item.ksjd,item.kswd+'|'+item.ksjd,item.kswd+'&markerStyles=l,0|l,1'" class="imgItem">
+						</Row>
+						<Row>
+							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
+							<Col span="8"><span>结束时间</span></Col><Col span="16"><span class="span_time">{{item.jssj}}</span></Col>
+							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">35分钟</span></Col>
+						</Row>
+					</Card>
+				</Col>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
@@ -95,10 +102,14 @@
 				],
 				tableData: [
 				    {
+				        ksjd:'114.365288',
+						kswd:'30.54485',
 						kssj: '2018-04-01 09:10:00',
 						jssj: '2018-04-01 09:10:00',
 					},
 				    {
+                        ksjd:'114.365252',
+                        kswd:'30.546126',
 						kssj: '2018-04-01 09:10:00',
 						jssj: '2018-04-01 09:10:00',
 					}
@@ -146,3 +157,12 @@
 		}
 	}
 </script>
+<style>
+	.span_time{
+		color: #5cadff;
+	}
+	.imgItem{
+		width: 100%;
+		height: 100%;
+	}
+</style>

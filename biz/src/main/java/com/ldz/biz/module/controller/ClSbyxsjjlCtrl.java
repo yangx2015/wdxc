@@ -30,7 +30,6 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	@PostMapping("/history")
 	public ApiResponse<List<ClSbyxsjjl>> historyTrajectory(@RequestBody gpsSJInfo gpssjinfo) {
 	
-		System.out.println(gpssjinfo);
 		return service.historyTrajectory(gpssjinfo);
 	}
 }
