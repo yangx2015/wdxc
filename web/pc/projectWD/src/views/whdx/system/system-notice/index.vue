@@ -112,7 +112,7 @@
                     {
                         title: '接口地址',
                         align:'center',
-                        key: 'sbdz',
+                        key: 'cmd',
                     },
                     {
                         title: '在线状态',

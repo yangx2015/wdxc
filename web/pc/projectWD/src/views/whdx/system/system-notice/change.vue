@@ -3,23 +3,25 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900'
-			:closable='false' :mask-closable="mesF" title="终端设备信息编辑">
+		<Modal v-model="showModal" width='900' 
+			:closable='false' :mask-closable="mesF" 
+			title="终端设备数据修改">
 			<div style="overflow: auto;height: 300px;">
 				<Form
-						ref="form"
-						:model="form"
-						:label-width="100"
-						:styles="{top: '20px'}">
+					:model="form"
+					:rules="ruleInline"
+					ref="addmess"
+					:label-width="100"
+					:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='终端编号'>
-								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
+							<FormItem prop="zdbh" label='终端编号'>
+								<Input readonly="readonly" type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='终端名称'>
+							<FormItem prop="mc"  label='设备名称:'>
 								<Input type="text" v-model="form.mc" placeholder="请填终端名称...">
 								</Input>
 							</FormItem>
@@ -27,7 +29,7 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='设备状态:' placeholder="请选择设备状态">
+							<FormItem label='设备状态:' >
 								<Select filterable clearable  v-model="form.zt">
 									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
@@ -40,12 +42,24 @@
 							</FormItem>
 						</Col>
 					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem label='型号:'>
+								<Input type="text" v-model="form.xh" placeholder="请输入设备型号..."></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='接口地址:'>
+								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
+							</FormItem>
+						</Col>
+					</Row>
 				</Form>
 			</div>
 			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -58,26 +72,44 @@
 		name: '',
 		data() {
 			return {
+				dataRead:false,
 				showModal: true,
                 mesF:false,
 				form: {
-                    zdbh:'',//终端编号
+                    zdbh:'865923030039405',//终端编号
 					mc: '',//名称
                     cs: '',//厂商
-                    zt:''//终端状态
+                    zt:'',//终端状态
+                    xh:'',//型号
+                    cmd:''//接口地址
 				},
+				ruleInline: {
+                  zdbh: [
+                      { required: true, message: '请输入终端编号', trigger: 'blur' }
+                  ],
+                  mc: [
+                      { required: true, message: '请输入终端名称', trigger: 'blur' }
+                  ],
+                  xh: [
+                      { required: true, message: '请输如设备型号', trigger: 'blur' }
+                  ]
+              	},
 				ztDictionary:[],
 				ztlmdmDictionary:'ZDCLK0031'//设备状态
 			}
 		},
 		props:{
-			mess:{
-				type:Object,
-				default:{}
-			}
+			mess:{}
 		},
 		created(){
-			this.form = this.mess
+			this.form= {
+                    'zdbh':this.mess.zdbh,//终端编号
+					'mc': this.mess.mc,//名称
+                    'cs': this.mess.cs,//厂商
+                    'zt':this.mess.zt,//终端状态
+                    'xh':this.mess.xh,//型号
+                    'cmd':this.mess.cmd//接口地址
+				},
 			this.getLXDic()
 		},
         mounted(){
@@ -85,13 +117,27 @@
 		methods: {
 			getLXDic(){
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
-        	},
-		    save(){
+			},
+		    save(name){
 		    	var v = this
-		        let url = configApi.ZNZP.CHANGE;
-                this.$http.post(url,this.form).then((res) =>{
-                    this.$Message.success(res.message);
-                    this.close();
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                    	let url = configApi.ZDGL.CHANGE;
+		                this.$http.post(url,this.form).then((res) =>{
+		                	if(res.code==200){
+		                		v.$Message.success(res.message);
+		                		v.$parent.componentName = '';
+						        v.$parent.getPageData()
+		                	}else{
+		                		v.$Message.error(res.message);
+		                		v.close()
+		                	}
+		                }).catch((error) =>{
+							v.$Message.error('出错了！！！');
+						})
+	    		    } else {
+                    	v.$Message.error('请认真填写用户信息!');
+                    }
                 })
 			},
 			close(){
