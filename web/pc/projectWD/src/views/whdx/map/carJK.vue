@@ -32,7 +32,7 @@
 				carList:[],
 				fancePoints:[
 					{lng:114.27226, lat:30.608123},
-					{lng:114.157277 , lat:30.544446},
+					{lng:114.157277 ,lat:30.544446},
 					{lng:114.418288, lat: 30.526529},
 				]
 			}
@@ -45,6 +45,14 @@
 		},
 		methods:{
 		    showFance(carId){
+                var v = this
+                this.$http.get(configApi.DZWL.QUERY).then((res) =>{
+                    this.allCarList = res.result;
+                    for(let r of this.allCarList){
+                        this.handleItem(r);
+                    }
+                    this.init();
+                })
                 this.addArea(this.fancePoints);
 			},
 		    showPath(carId){
@@ -52,6 +60,7 @@
 			},
 		    init(){
                 this.carList = this.$parent.mapCarList;
+                console.log(this.carList);
                 if (this.carList.length > 0){
                     this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }
