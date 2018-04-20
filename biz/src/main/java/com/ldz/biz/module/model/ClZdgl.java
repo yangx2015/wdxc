@@ -113,19 +113,21 @@ public class ClZdgl implements Serializable {
      * 设置上报地址
      */
     
-    @Column(name = "SBDZ")
-    private String sbdz;
+    @Column(name = "CMD")
+    private String cmd;
 
     @Transient
     private ClCl cl;
+   
     
-    public String getSbdz() {
-		return sbdz;
+	public String getCmd() {
+		return cmd;
 	}
 
-	public void setSbdz(String sbdz) {
-		this.sbdz = sbdz;
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
 	}
+
 
 	/**
      * 车牌号码

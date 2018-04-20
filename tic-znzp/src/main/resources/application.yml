@@ -62,3 +62,7 @@ mapper:
 
 server:
   port: 9888
+
+# 智能站牌-活动营销-图片推送
+staticUrl: http://127.0.0.1:8080/
+

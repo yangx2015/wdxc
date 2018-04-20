@@ -59,10 +59,10 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public ApiResponse<String> updateEntity(ClZdgl entity) {
-    	ClZdgl findById = findById(entity.getZdbh());
-    	if (findById!=null) {
-			return ApiResponse.fail("终端编号已存在");
-		}
+//    	ClZdgl findById = findById(entity.getZdbh());
+//    	if (findById!=null) {
+//			return ApiResponse.fail("终端编号已存在");
+//		}
         entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);

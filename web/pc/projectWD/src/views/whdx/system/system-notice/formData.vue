@@ -30,7 +30,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='设备状态:' >
-								<Select :readonly="dataRead" filterable clearable  v-model="form.zt">
+								<Select filterable :readonly="dataRead" filterable clearable  v-model="form.zt">
 									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
@@ -110,9 +110,9 @@
 		methods: {
 			getLXDic(){
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
-        		this.form.zt = "00"
+//      		this.form.zt = "00"
         		this.form.zdbh = "865923030039405"
-        		this.form.cmd = "http://47.98.39.45:8080/tic-server/api"
+//      		this.form.cmd = "http://47.98.39.45:8080/tic-server/api"
 			},
 		    save(name){
 		    	var v = this
@@ -123,6 +123,7 @@
 						delete this.form.cph;
 		                this.$http.post(url,this.form).then((res) =>{
 		                	if(res.code==200){
+		                		v.$Message.success(res.message);
 								v.bud()
 						        v.$parent.getPageData()
 		                	}else{
