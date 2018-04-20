@@ -3,7 +3,7 @@
 </style>
 <!--服务管理-->
 <template>
-	<div class="boxbackborder">
+	<div class="boxbackborder box">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
@@ -15,8 +15,6 @@
 							<span>服务管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<!--<Input v-model="findMess.like_CarNumber" placeholder="请输入相关信息..." style="width: 200px" @on-change="findMessList"></Input>-->
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.fwmcLike" placeholder="请输服务名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
@@ -97,7 +95,14 @@
 						key: 'zt',
                         render:(h,p)=>{
 	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zt)
-	    					return h('div',val)
+	    					return h('div', [
+								h('span',{
+									style:{
+										fontWeight:900,
+										color:p.row.zt=='00'?'#279a3b':'#ed3f14',
+									}
+								},val)
+							]);
                         }
 					},
 					{
@@ -188,9 +193,9 @@
 					}
 				],
 				//收索
-				cjsjInRange: [],
+//				cjsjInRange: [],
 				findMess: {
-					cjsjInRange:[],
+//					cjsjInRange:[],
 					fwmcLike:'',
 					pageNum: 1,
 					pageSize: 5
@@ -199,11 +204,11 @@
 				lmdmDictionary:'ZDCLK0006'
 			}
 		},
-		watch: {
-			cjsjInRange:function(newQuestion, oldQuestion){
-				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
-			},
-		},
+//		watch: {
+//			cjsjInRange:function(newQuestion, oldQuestion){
+//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//			},
+//		},
 		created() {
 			this.$store.commit('setCurrentPath', [{
 				title: '首页',

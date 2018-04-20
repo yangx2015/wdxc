@@ -11,7 +11,7 @@
 		    title="车辆限速修改">
     		<Form
     			ref="addmess"
-    			:model="addmess"
+    			:model="mess"
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
@@ -19,13 +19,13 @@
 	    			<Row>
 	    				<Col span="12">
 	    					<FormItem label='车牌号：'>
-								<Input readonly="readonly" type="text" v-model="addmess.cph" placeholder="请设置速度上限">
+								<Input readonly="readonly" type="text" v-model="mess.cph" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
 	    				</Col>
 	    				<Col span="12">
-	    					<FormItem prop="sdsx" label='速度上限：'>
-								<Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
+	    					<FormItem prop="cph" label='速度上限：'>
+								<Input type="text" v-model="mess.sdsx" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
 	    				</Col>
@@ -55,9 +55,9 @@
                     sdsx:'',
                 },
                 ruleInline: {
-                  sdsx: [
-                      { required: true, message: '请输车数上线', trigger: 'blur' }
-                  ],
+                  cph: [
+                      { required: true, message: '请输车速上限', trigger: 'blur' }
+                  ]
               	}
 			}
 		},
@@ -68,20 +68,11 @@
 			}
 		},
 		created(){
-			this.addmess = {
-				'cph':this.mess.cph,
-				'sdsx':this.mess.sdsx
-			}
-			this.fullcal()
-
-            if(!this.messType){
-                this.operate = '编辑'
-            }
+			console.log('数据传输',this.mess)
+			this.addmess.cph = this.mess.cph
+			this.addmess.sdsx = this.mess.sdsx
 		},
 		methods:{
-			fullcal(){
-				console.log('信息',this.mess)
-			},
 			colse(){
 				var v = this
 				v.$parent.compName = ''
@@ -90,9 +81,9 @@
             AddDataListOk(name){
                 var v = this
                 this.$refs[name].validate((valid) => {
-                    if (valid && v.treeList.length>0) {
-//                    	新增
-	                		v.$http.post(configApi.CS.ADD,{'cphs':v.addmess.cph, 'csz':v.addmess.sdsx}).then((res) =>{
+                    if (valid) {
+//                    	修改
+	                		v.$http.post(configApi.CS.ADD,{'cphs':v.mess.cph, 'csz':v.mess.sdsx}).then((res) =>{
 								if(res.code===200){
 									v.$parent.getmess();
 			                    	v.$Message.success(res.message);

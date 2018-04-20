@@ -5,7 +5,7 @@
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
 			:mask-closable="mesF" title="新建字典类目">
-			<div style="overflow: auto;height: 300px;">
+			<div style="overflow: auto;">
 				<Form
 					:model='addmess'
 					:label-width="100"
