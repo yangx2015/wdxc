@@ -163,6 +163,8 @@ export default {
                             a.push({key:e.zddm,val:e.zdmc});
                         }
                         this.$store.state.app.dictMap.set(r.lmdm,a)
+                        this.session.setItem('dictMap',this.$store.state.app.dictMap)
+//						console.log('字典',this.$store.state.app.dictMap)
                     }
                 }
             }).catch((error) =>{

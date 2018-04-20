@@ -20,8 +20,7 @@
 							<span>超速限定</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.cxLike" placeholder="请输入车型" style="width: 200px" @on-keyup.enter="getmess()"></Input>
+							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getmess()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getmess()">
@@ -157,10 +156,8 @@
 					max:"75km/h"
 				}],
 				//收索
-                cjsjInRange:[],
 				findMess: {
-					cjsjInRange:'',
-                    cxLike: '',
+                    cphLike: '',
 					pageNum: 1,
 					pageSize: 5
 				}
@@ -180,11 +177,6 @@
 		},
 		methods: {
 			getmess(){
-                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
-                }else{
-                    this.findMess.cjsjInRange = '';
-                }
 				var v = this
 				this.$http.get(configApi.CS.QUERY,{params:v.findMess}).then((res) =>{
 					v.tableData = res.page.list
