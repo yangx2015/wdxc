@@ -1,25 +1,5 @@
 package com.ldz.znzp.handler;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.TimeUnit;
-
-import com.ldz.znzp.util.NettyUtil;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.util.bean.ApiResponse;
@@ -29,10 +9,10 @@ import com.ldz.znzp.bean.ZnzpOnlineBean;
 import com.ldz.znzp.exception.IotException;
 import com.ldz.znzp.server.IotServer;
 import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.HdService;
 import com.ldz.znzp.service.XlService;
-
+import com.ldz.znzp.util.NettyUtil;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler.Sharable;
@@ -40,6 +20,22 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.ReferenceCountUtil;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
 
 @Component
 @Sharable
@@ -64,6 +60,9 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	private XlService xlService;
 	@Autowired
 	private ClService clService;
+
+	@Autowired
+	private HdService hdService;
 	
 	@Autowired
 	SnowflakeIdWorker idWorker;
@@ -183,6 +182,15 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 			public void run() {
 				//返回线路信息
 				xlService.getRouterInfo(ctx, tid);
+
+				//返回当前站点需要显示的活动信息
+				try{
+					Thread.sleep(1000*3);//暂时3秒
+				}catch(Exception e){}
+
+				hdService.sendActivityNews(ctx,tid);
+
+
 			}
 		});
 	}
