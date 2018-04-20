@@ -1,8 +1,10 @@
 import configApi from '@/axios/config.js'
-
+import session from '@/libs/session.js'
 let dictUtil = {
     getValByCode(v,zdlmCode,zdxmCode){
-        let zdlm = v.$store.state.app.dictMap.get(zdlmCode);
+//      let zdlm = v.$store.state.app.dictMap.get(zdlmCode);
+		let dic	= session.getItem('dictMap')
+		let zdlm = new Map(dic).get(zdlmCode)
         if (!zdlm)return '';
         for (let r of zdlm){
             if (r.key === zdxmCode){
@@ -12,7 +14,9 @@ let dictUtil = {
         return '';
     },
     getByCode(v,code){
-        let val = v.$store.state.app.dictMap.get(code);
+//      let val = v.$store.state.app.dictMap.get(code);
+        let dic	= session.getItem('dictMap')
+        let val = new Map(dic).get(code)
         if (val){
             return val;
         }

@@ -3,7 +3,7 @@
     .historyTarck{
     	.leftMess{
     		width:260px;
-    		background:rgba(0,0,0,0.5);
+    		/*background:rgba(0,0,0,0.5);*/
     		.titTop{
     			.carinput{
     				padding: 8px 10px;
@@ -32,29 +32,31 @@
 </style>
 <template>
 	<div class="historyTarck box-row">
-		<div class="leftMess">
-			<div class="box">
-				<div class="titTop">
-					<div class="carinput">
-						<Input
-							v-model="carNumber" size="large" placeholder="车牌号码"></Input>
+		<Card>
+			<div class="leftMess">
+				<div class="box">
+					<div class="titTop">
+						<div class="carinput">
+							<Input
+									v-model="carNumber" size="large" placeholder="车牌号码"></Input>
+						</div>
+						<div class="carinput" style="text-align: center;">
+							<DatePicker
+									:v-model="seTime"
+									format="yyyy/MM/dd"
+									type="daterange"
+									placement="bottom-start"
+									placeholder="请选这时间"></DatePicker>
+						</div>
 					</div>
-   					<div class="carinput" style="text-align: center;">
-   						<DatePicker 
-   							:v-model="seTime" 
-   							format="yyyy/MM/dd" 
-   							type="daterange" 
-   							placement="bottom-start" 
-   							placeholder="请选这时间"></DatePicker>
-   					</div>
-				</div>
-				<div class="body">
-					<div class="carliststy" v-for="item in [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]">
-						鄂A12345
+					<div class="body">
+						<div class="carliststy" v-for="item in [,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,]">
+							鄂A12345
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		</Card>
 		<div class="body-O" style="background-color: #000000;">
 			<history-map></history-map>
 		</div>

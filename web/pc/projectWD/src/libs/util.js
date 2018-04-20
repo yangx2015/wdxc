@@ -27,7 +27,7 @@ let util = {
 util.initModalTitle = function(v){
 
 }
-util.del = function(v,url,ids,callback){
+util.del = function(v,url,ids,callback){//数据删除方法封装
     swal({
         title: "是否删除数据?",
         text: "",
