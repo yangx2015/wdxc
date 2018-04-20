@@ -15,7 +15,7 @@ public interface CssdService extends BaseService<ClCssd,String>{
     ApiResponse<List<ClCssd>> getByCx(String cx);
     
     
-    ApiResponse<String> setCssds(List<String> cphs,String csz);
+    ApiResponse<String> setCssds(String cphs,String csz);
     
     void insetAndUpdate(ClCssd entity);
     

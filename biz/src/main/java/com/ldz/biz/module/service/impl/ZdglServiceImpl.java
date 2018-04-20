@@ -40,6 +40,10 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	if (findById!=null) {
 			return ApiResponse.fail("终端编号已存在");
 		}
+    	//默认设置终端在线状态为离线
+    	entity.setZxzt("20");
+    	//默认设置终端状态为离线
+    	entity.setZt("00");
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
@@ -59,10 +63,10 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public ApiResponse<String> updateEntity(ClZdgl entity) {
-    	ClZdgl findById = findById(entity.getZdbh());
-    	if (findById!=null) {
-			return ApiResponse.fail("终端编号已存在");
-		}
+//    	ClZdgl findById = findById(entity.getZdbh());
+//    	if (findById!=null) {
+//			return ApiResponse.fail("终端编号已存在");
+//		}
         entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);
