@@ -2,7 +2,6 @@ package com.ldz.znzp.service.impl;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
 import com.ldz.znzp.bean.Bus;
 import com.ldz.znzp.bean.Route;
@@ -18,7 +17,6 @@ import io.netty.channel.ChannelHandlerContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.entity.Example;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -130,9 +128,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
 
         }
         routeInfo.setRoutes(routes);
-        Map<String,Object> map = new HashMap<>();
-        map.put("routes",routeInfo);
-        nettyUtil.sendData(ctx,map);
+        nettyUtil.sendData(ctx,routeInfo);
 		return ApiResponse.success(routeInfo.toString());
 	}
 
