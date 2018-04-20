@@ -68,9 +68,6 @@
     				</Row>
     			</div>
     			<div class="body">
-					<Row>
-						<Input v-model="">
-					</Row>
 					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
 							<span>{{item.zdbh}}</span>
