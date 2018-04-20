@@ -135,11 +135,11 @@
 			}
 		},
 		created(){
-			this.addmess = this.usermes
 			this.fullcal()
             if(this.usermesType){
                 this.showPsd = true;
             }else{
+                this.addmess = this.usermes
                 this.operate = '编辑'
 			}
 			this.yhlxDict = this.$parent.yhlxDict

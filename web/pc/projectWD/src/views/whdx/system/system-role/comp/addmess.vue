@@ -106,8 +106,8 @@
 			},
 		},
 		created(){
-            this.addmess = this.$parent.messdata
             if(!this.usermesType){
+                this.addmess = this.$parent.messdata
                 this.operate = '编辑';
             }
         },
