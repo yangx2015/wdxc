@@ -45,6 +45,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+    	AdddictMap(state,data){
+    		state.state = data
+    	},
     	CloadingType(state,data){
     		state.loadingType = data
     	},
