@@ -7,7 +7,6 @@
     	padding-left: 5px;
     	.boxTiT{
     		height:80px;
-    		border-bottom:solid 5px #b3b3b3;
     		.cartypemess{
     			text-align: center;
     			.cartypebox{
@@ -68,6 +67,9 @@
     				</Row>
     			</div>
     			<div class="body">
+					<Row>
+						<Input type="text" v-model="keyword" placeholder="请填写车牌号码..." @input="filter"></Input>
+					</Row>
 					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
 							<span>{{item.zdbh}}</span>
@@ -88,11 +90,10 @@
 
 import myMap from '../../map/carJK.vue'
 import configApi from '@/axios/config.js'
-import pathHistory from './pathHistory'
 export default {
     name: 'VehicleMonitoring',
     components: {
-    	myMap,pathHistory
+    	myMap
     },
     data () {
         return {
@@ -100,16 +101,18 @@ export default {
             rightCarList:[],
             mapCarList:[],
             carArray:[[],[],[]],
+			status:0,
+			keyword:'',
 			allCarList:[
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.27226, lat:30.608123},
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.157277 , lat:30.544446},
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, lng:114.418288, lat: 30.526529},
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng:114.321703, lat: 30.477739},
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng:114.418288, lat: 30.526529},
-				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, lng:114.157277 , lat:30.544446},
-                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:1, lng:114.27226, lat:30.608123},
-				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng:114.157277 , lat:30.544446},
-				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, lng:114.418288, lat: 30.526529}
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:30.608123, bdwd:114.27226},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.157277 ,bdwd:30.544446},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.418288, bdwd:30.526529},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.321703, bdwd:30.477739},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.418288, bdwd:30.526529},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.157277 ,bdwd:30.544446},
+                {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:1, bdjd:114.27226, bdwd:30.608123},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, bdjd:114.157277 ,bdwd:30.544446},
+				{zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, bdjd:114.418288, bdwd: 30.526529}
 			],
         };
     },
@@ -120,8 +123,7 @@ export default {
     },
     watch: {
         GetscoketMess: function(newQuestion, oldQuestion) {
-            this.tabmess = newQuestion
-            console.log(newQuestion);
+			this.onGpsInfo(newQuestion);
         },
     },
     created(){
@@ -132,16 +134,48 @@ export default {
         },{
             title: '车辆监控',
         }])
-        // this.getmess()
-		this.classify();
-        this.mapCarList = this.carArray[0];
-        this.rightCarList = this.carArray[0];
+        this.initGps()
     },
     methods: {
+        onGpsInfo(m){
+            console.log('onGpsInfo');
+            for(let r of this.allCarList){
+			    if (r.zdbh = m.zdbh){
+                    console.log(r);
+                    r = m;
+                    this.handleItem(r);
+                    this.mapCarList = this.carArray[this.status];
+                    this.$refs.map.init();
+                    return;
+                }
+			}
+		},
+        init(){
+            this.classify();
+            this.mapCarList = this.carArray[0];
+            this.rightCarList = this.carArray[0];
+		},
+        filter(){
+            this.classify();
+            this.rightCarList = this.carArray[this.status];
+            this.mapCarList = this.carArray[this.status];
+            this.$refs.map.init();
+		},
+		initGps(){
+            var v = this
+            this.$http.get(configApi.CLJK.QUERY).then((res) =>{
+                this.allCarList = res.result;
+                for(let r of this.allCarList){
+                    this.handleItem(r);
+				}
+                this.init();
+            })
+		},
         showPath(){
             this.$refs.map.showPath();
         },
         changeStatus(status){
+            this.status = status;
             this.rightCarList = this.carArray[status];
             this.mapCarList = this.carArray[status];
             this.$refs.map.init();
@@ -152,18 +186,31 @@ export default {
             this.carArray[2] = [];
 			for(let r of this.allCarList){
 			    let status = r.status;
-			    this.carArray[status].push(r);
+                if (this.keyword === '' || r.cph.indexOf(this.keyword) > 0){
+                    this.carArray[status].push(r);
+				}
 			}
 		},
-    	getmess(){
-			var v = this
-			this.$http.get(configApi.CLJK.QUERY).then((res) =>{
-					console.log('123123',res)
-					v.flameout = res.result
-					v.mapMess = v.mapCarList = v.carlaunch
-			})
+		handleItem(item){
+            item.lng = item.bdjd;
+            item.lat = item.bdwd;
+            switch(item.eventType){
+				case '50':
+				    item.status = 0;
+				    item.text = '上线时间';
+				    break;
+				case '60':
+                    item.status = 1;
+                    item.text = '熄火时间';
+                    break;
+				case '80':
+				default:
+                    item.status = 2;
+                    item.text = '离线时间';
+			}
 		},
 		rowClick(item){
+            console.log(item);
             this.mapCarList = [item];
             this.$refs.map.init();
 		}

@@ -12,15 +12,15 @@
                 <Card>
                     <p slot="title"><Icon type="information-circled"></Icon>车辆信息</p>
                     <Row>
-                        <Col span="2"><span>车牌号:</span></Col>
+                        <Col span="2"><Icon type="card"></Icon></Col>
                         <Col span="6"><span>{{car.cph}}</span></Col>
                     </Row>
                     <Row>
-                        <Col span="2"><span>司机:</span></Col>
+                        <Col span="2"><Icon type="person"></Icon></Col>
                         <Col span="6"><span>{{car.sjxm}}</span></Col>
                     </Row>
                     <Row>
-                        <Col span="2"><span>时速:</span></Col>
+                        <Col span="2"><Icon type="speedometer"></Icon></Col>
                         <Col span="6"><span>{{car.speed}}</span></Col>
                     </Row>
                 </Card>
@@ -58,6 +58,14 @@
                                         </Select>
                                     </FormItem>
                                 </Col>
+                                <Col span="12">
+                                    <FormItem label='超速设定'>
+                                        <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Button type="primary"  @click="save">确定</Button>
                             </Row>
                         </Form>
                     </Row>
@@ -66,18 +74,15 @@
             </div>
             <div slot='footer'>
                 <Button type="ghost" @click="close">关闭</Button>
-                <Button type="primary" v-if="showConfirmButton" @click="save">确定</Button>
             </div>
         </Modal>
     </div>
 </template>
 
 <script>
-    import pathHistory from './pathHistory'
     export default {
         name: "carInfo",
         components: {
-            pathHistory
         },
         data(){
             return {
@@ -128,7 +133,7 @@
                 },1000)
             },
             showPathHistory(){
-                this.$parent.$parent.componentName = 'pathHistory'
+                this.$router.push({name: 'historypath'});
                 this.close();
             },
             showFance(){

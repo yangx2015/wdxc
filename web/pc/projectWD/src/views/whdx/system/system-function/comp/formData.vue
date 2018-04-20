@@ -113,8 +113,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop='bz' label='备注信息'>
-								<Input type="text" v-model="formItem.bz" placeholder="请填写备注信息...">
-								</Input>
+								<Input type="text" v-model="formItem.bz" placeholder="请填写备注信息..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
