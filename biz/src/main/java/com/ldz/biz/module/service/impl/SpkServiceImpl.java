@@ -83,7 +83,6 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		clSpk.setUrl(path+entity.getFilePath());//url   必传
 		clSpk.setWjm(entity.getFileRealName());//文件名称  必传
 		clSpk.setZdbh(entity.getDeviceId());//设备id  必传
-		clSpk.setSplx(entity.getFilePostfix());//文件后缀 ->视屏类型 必传
 		clSpk.setSplx(entity.getEventType());
 		clSpk.setCjsj(new Date()); //创建时间
 		clSpk.setClId(clinfo.getClId());//车辆id
