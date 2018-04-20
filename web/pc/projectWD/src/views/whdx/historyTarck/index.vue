@@ -3,7 +3,7 @@
     .historyTarck{
     	.leftMess{
     		width:260px;
-    		background:rgba(0,0,0,0.5);
+    		/*background:rgba(0,0,0,0.5);*/
     		.titTop{
     			.carinput{
     				padding: 8px 10px;
