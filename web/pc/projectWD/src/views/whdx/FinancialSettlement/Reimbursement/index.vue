@@ -155,11 +155,6 @@
 			AddDataList() {
 				var v = this
 				v.compName = 'modal'
-
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
 			},
 			//分页点击事件按
 			pageChange(event) {

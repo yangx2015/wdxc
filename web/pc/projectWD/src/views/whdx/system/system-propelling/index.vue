@@ -24,7 +24,7 @@
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="componentName = 'formData'">
+							<Button type="primary" @click="choosedRow = null;componentName = 'formData'">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>

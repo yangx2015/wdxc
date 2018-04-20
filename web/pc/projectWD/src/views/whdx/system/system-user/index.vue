@@ -290,7 +290,7 @@
 				var v = this
 				v.compName = 'newmess'
 				v.userMesType = true
-				this.usermes = {}
+				this.usermes = null
 			},
 			listF(res){
 				this.getmess()

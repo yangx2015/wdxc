@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -26,18 +28,21 @@ public class ClZd implements Serializable {
      * 名称
      */
     @Column(name = "MC")
+    @NotNull(message="站点名称不为空")
     private String mc;
 
     /**
      * 经度
      */
     @Column(name = "JD")
+    @NotNull(message="经度不为空")
     private Double jd;
 
     /**
      * 纬度
      */
     @Column(name = "WD")
+    @NotNull(message="纬度不为空")
     private Double wd;
 
     /**
@@ -80,6 +85,7 @@ public class ClZd implements Serializable {
      * 状态
      */
     @Column(name = "ZT")
+    @NotNull(message="状态不为空")
     private String zt;
 
     /**
@@ -98,6 +104,7 @@ public class ClZd implements Serializable {
      * 范围
      */
     @Column(name = "FW")
+    @NotNull(message="范围不为空")
     private Short fw;
 
     /**

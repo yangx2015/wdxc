@@ -1,23 +1,28 @@
 package com.ldz.sys.model;
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
+import javax.validation.constraints.NotNull;
 
 @Table(name = "SYS_FWGN")
 public class SysGn implements Serializable {
     @Id
     @Column(name = "GNDM")
+    @NotNull(message="功能代码不能为空")
     private String gndm;
 
     @Column(name = "GNMC")
+    @NotNull(message="功能名称不能为空")
     private String gnmc;
 
     @Column(name = "FWDM")
+    @NotNull(message="服务代码不能为空")
     private String fwdm;
 
     @Column(name = "CJSJ")
@@ -33,30 +38,36 @@ public class SysGn implements Serializable {
     private String xgr;
 
     @Column(name = "ZT")
+    @NotNull(message="功能状态不能为空")
     private String zt;
 
     @Column(name = "BZ")
     private String bz;
 
     @Column(name = "URL")
+    @NotNull(message="URL不能为空")
     private String url;
 
     @Column(name = "FJD")
     private String fjd;
 
     @Column(name = "TZDZ")
+    @NotNull(message="跳转地址不能为空")
     private String tzdz;
 
     @Column(name = "TB")
     private String tb;
 
     @Column(name = "API_QZ")
+    @NotNull(message="API前缀不能为空")
     private String apiQz;
 
     @Column(name = "API_HZ")
+    @NotNull(message="api后缀不能为空")
     private String apiHz;
 
     @Column(name = "PX")
+    @NotNull(message="排序不能为空")
     private Float px;
 
     @Transient

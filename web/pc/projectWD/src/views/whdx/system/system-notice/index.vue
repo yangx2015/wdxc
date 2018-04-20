@@ -250,6 +250,7 @@
 			//新增数据
 			AddMess(){
 				this.componentName = 'formData'
+				this.choosedRow = null;
 			},
             //删除数据
             listDele(r){

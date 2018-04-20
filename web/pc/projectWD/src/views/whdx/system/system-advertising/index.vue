@@ -308,11 +308,7 @@
 				var v = this
 				this.choosedRow = null;
 				v.compName = 'addmess'
-				v.choosedRow = {}
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
+				v.choosedRow = null
 			},
 			colsemodal() {
 				this.compName = ''

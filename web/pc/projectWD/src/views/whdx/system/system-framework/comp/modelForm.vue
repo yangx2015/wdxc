@@ -7,7 +7,7 @@
 			   :mask-closable="mesF" 
 			   :title="operate+'机构'">
 			<div style="overflow: auto;">
-				<Form :rules="ruleInline" ref="addmess">
+				<Form :rules="ruleInline" ref="formItem" :model="formItem">
 					<FormItem label='机构名称' prop="jgmc">
 						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称...">
 						</Input>
@@ -17,7 +17,7 @@
 			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="save('addmess')">确定</Button>
+				<Button type="primary" @click="save('formItem')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -38,7 +38,7 @@
                     fjgdm:''
                 },
                 ruleInline: {
-                  	jgmc: [
+                    jgmc: [
                   		{ required: true, message: '请输入机构名称', trigger: 'blur' }
                   	]
               	},

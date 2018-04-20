@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("api/clzd")
 public class ClZDCtrl extends BaseController<ClZd, String> {
@@ -27,12 +29,12 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
-	public ApiResponse<String> update(ClZd entity) {
+	public ApiResponse<String> update(@Valid ClZd entity) {
 		return zdservice.updateEntity(entity);
 	}
 
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
-	public ApiResponse<String> save(ClZd entity) {
+	public ApiResponse<String> save(@Valid ClZd entity) {
 		return zdservice.saveEntity(entity);
 	}
 

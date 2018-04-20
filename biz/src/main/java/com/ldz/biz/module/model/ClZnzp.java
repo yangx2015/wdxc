@@ -3,6 +3,8 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,30 +15,35 @@ public class ClZnzp implements Serializable {
      */
     @Id
     @Column(name = "ZDBH")
+    @NotNull(message="终端编号不能为空")
     private String zdbh;
 
     /**
      * 名称
      */
     @Column(name = "MC")
+    @NotNull(message="名称不能为空")
     private String mc;
 
     /**
      * 型号
      */
     @Column(name = "XH")
+    @NotNull(message="型号不能为空")
     private String xh;
 
     /**
      * 厂商
      */
     @Column(name = "CS")
+    @NotNull(message="厂商不能为空")
     private String cs;
 
     /**
      * 地址
      */
     @Column(name = "DZ")
+    @NotNull(message="地址不能为空")
     private String dz;
 
     /**

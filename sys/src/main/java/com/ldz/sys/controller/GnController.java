@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,10 +37,9 @@ public class GnController extends BaseController<SysGn, String> {
     }
 
     @Override
-    public ApiResponse<String> save(SysGn entity) {
-        SysYh user = getCurrentUser();
-        entity.setCjr(user.getYhid());
-        return this.gnService.saveEntity(entity);
+    public ApiResponse<String> save(@Valid SysGn entity) {
+       
+        return gnService.saveEntity(entity);
     }
 
     @RequestMapping("initMenu")
@@ -49,7 +50,7 @@ public class GnController extends BaseController<SysGn, String> {
 
 
     @RequestMapping(value="/update", method={RequestMethod.POST})
-    public ApiResponse<String> update(SysGn gn){
+    public ApiResponse<String> update(@Valid  SysGn gn){
         return gnService.updateEntity(gn);
     }
     @RequestMapping(value = "getUserFunctions",method = RequestMethod.GET)

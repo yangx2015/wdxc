@@ -1,5 +1,14 @@
 package com.ldz.sys.service.impl;
 
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
@@ -8,24 +17,14 @@ import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysHdyxMapper;
 import com.ldz.sys.mapper.SysYxhdwjMapper;
 import com.ldz.sys.model.SysHdyx;
-import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysYxhdwj;
 import com.ldz.sys.service.HdService;
-import com.ldz.sys.service.JgService;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 /**
  * @author chenwei
@@ -129,6 +128,9 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
      */
     @Override
     public ApiResponse<String> updateEntity(SysHdyx entity) {
+    	 // 参数检查
+        RuntimeCheck.ifBlank(entity.getHdbt(),"请输入活动标题");
+        RuntimeCheck.ifBlank(entity.getHdlx(),"请选择活动类型");
         // 参数检查
         RuntimeCheck.ifBlank(entity.getHdId(),"请选择活动");
         SysHdyx hd = findById(entity.getHdId());

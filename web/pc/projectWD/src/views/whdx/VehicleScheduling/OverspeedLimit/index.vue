@@ -199,6 +199,7 @@
         	AddDataList() {
 				var v = this
 				v.compName = 'newmes'
+                this.messType = true;
 			},
         	findMessList(){
         		var v = this

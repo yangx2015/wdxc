@@ -1,5 +1,15 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
@@ -12,12 +22,8 @@ import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
 
-import java.util.*;
+import tk.mybatis.mapper.common.Mapper;
 @Service
 public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClService{
     @Autowired
@@ -53,7 +59,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ApiResponse<String> saveEntity(ClCl entity) {
+    public ApiResponse<String> saveEntity( ClCl entity) {
     	 SysYh user = getCurrentUser();
          SysJg org = jgService.findByOrgCode(user.getJgdm());
          Date now = new Date();
