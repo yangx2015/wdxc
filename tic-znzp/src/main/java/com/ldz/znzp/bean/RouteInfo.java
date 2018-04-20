@@ -12,6 +12,7 @@ import java.util.List;
 public class RouteInfo {
     private String command = "routeInfo";
     private String tid;
+    private String showName;
     private List<Route> routes;
 
 }

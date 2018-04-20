@@ -31,17 +31,11 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
     @Autowired
     private ClZnzpMapper znzpMapper;
     @Autowired
-    private ZnzpService znzpService;
-    @Autowired
-    private ZpXlService zpXlService;
-    @Autowired
     private XlzdService xlzdService;
     @Autowired
     private XlService xlService;
     @Autowired
     private ZdService zdService;
-    @Autowired
-    private ClService clService;
     @Autowired
     private ClPbMapper clPbMapper;
     @Autowired
@@ -118,6 +112,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         // 数据封装
         RouteInfo routeInfo = new RouteInfo();
         routeInfo.setTid(tid);
+        routeInfo.setShowName(zp.getMc());
         List<Route> routes = new ArrayList<>(xlIds.size());
         for (ClXl xl : xls) {
             Route route = new Route(xl);
