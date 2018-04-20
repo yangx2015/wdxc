@@ -53,12 +53,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	}
 
 	@Override
-	public ApiResponse<String> saveEntity(ClPb entity,String date) {
-
-		
-
+	public ApiResponse<String> saveEntity(ClPb entity) {
 		clpbInfo clpbInfo = new clpbInfo();
-		clpbInfo.setDate(date);
+		clpbInfo.setDate(entity.getDate());
 		clpbInfo.setClid(entity.getClId());
 
 		// 通过车辆id找到当天是否有排班线路信息

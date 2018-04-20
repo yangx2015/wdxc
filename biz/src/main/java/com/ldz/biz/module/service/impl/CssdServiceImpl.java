@@ -1,5 +1,6 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,14 +82,16 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 	}
 
 	@Override
-	public ApiResponse<String> setCssds(List<String> cphs, String csz) {
+	public ApiResponse<String> setCssds(String cphs, String csz) {
 		SysYh user = getCurrentUser();
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
 		// 将车牌号,车辆信息缓存
 		List<ClCl> selectAll = clclmapper.selectAll();
 		Map<String, ClCl> clmap = selectAll.stream().collect(Collectors.toMap(ClCl::getCph, ClCl -> ClCl));
 
-		for (String cph : cphs) {
+		List<String> cphss=Arrays.asList(cphs.split(","));
+		
+		for (String cph : cphss) {
 			GpsInfo gpsInfo = new GpsInfo();
 			ClCssd cssd = new ClCssd();
 

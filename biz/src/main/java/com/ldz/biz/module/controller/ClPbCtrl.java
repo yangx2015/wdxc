@@ -36,8 +36,8 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	}
 	
 	@RequestMapping(value = "/savepb", method = { RequestMethod.POST })
-	public ApiResponse<String> save(ClPb entity,String date) {
-		return pbservice.saveEntity(entity,date);
+	public ApiResponse<String> save(ClPb entity) {
+		return pbservice.saveEntity(entity);
 	}
 
 	@RequestMapping("deleteByXlAndCl")

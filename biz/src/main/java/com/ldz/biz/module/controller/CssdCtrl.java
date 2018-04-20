@@ -51,7 +51,7 @@ public class CssdCtrl extends BaseController<ClCssd, String> {
 	}
 
 	@PostMapping("/setCssds")
-	public ApiResponse<String> setCssds(List<String> cphs, String csz) {
+	public ApiResponse<String> setCssds(String cphs, String csz) {
 
 		return service.setCssds(cphs, csz);
 	}

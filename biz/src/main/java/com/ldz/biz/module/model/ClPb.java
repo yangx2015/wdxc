@@ -3,6 +3,8 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -87,9 +89,23 @@ public class ClPb implements Serializable {
     @Column(name = "XGR")
     private String xgr;
 
+    
+    @Transient
+    private String date;
+    
     private static final long serialVersionUID = 1L;
+  
+    
+    
+    public String getDate() {
+		return date;
+	}
 
-    /**
+	public void setDate(String date) {
+		this.date = date;
+	}
+
+	/**
      * 获取ID
      *
      * @return ID - ID
