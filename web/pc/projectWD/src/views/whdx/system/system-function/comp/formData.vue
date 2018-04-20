@@ -29,12 +29,6 @@
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
 			:mask-closable="mesF" :title="operate+'功能'">
-			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-				<Spin fix>
-					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-					<div style="font-size: 30px;">数据加载中请稍后</div>
-				</Spin>
-			</div>
 			<div style="overflow: auto;height: 500px;">
 				<Form
 						ref="formItem"
@@ -44,19 +38,19 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='功能名称'>
+							<FormItem prop='gnmc' label='功能名称'>
 								<Input type="text" v-model="formItem.gnmc" placeholder="请填写功能名称..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='功能代码'>
+							<FormItem prop='gndm' label='功能代码'>
 								<Input type="text" v-model="formItem.gndm" placeholder="请填写功能名称..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='服务代码'>
+							<FormItem prop='fwdm' label='服务代码'>
 								<Input type="text" v-model="formItem.fwdm" placeholder="请填写功能名称..."></Input>
 							</FormItem>
 						</Col>
@@ -70,7 +64,7 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='URL'>
+							<FormItem prop='url' label='URL'>
 								<Input type="text" v-model="formItem.url" placeholder="请填写地址...">
 								</Input>
 							</FormItem>
@@ -84,13 +78,13 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='父节点'>
+							<FormItem prop='fjd' label='父节点'>
 								<Input type="text" v-model="formItem.fjd" placeholder="请填写父节点...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='跳转地址'>
+							<FormItem prop='tzdz' label='跳转地址'>
 								<Input type="text" v-model="formItem.tzdz" placeholder="请填写跳转地址...">
 								</Input>
 							</FormItem>
@@ -98,13 +92,13 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='API 前缀'>
+							<FormItem prop='apiQz' label='API 前缀'>
 								<Input type="text" v-model="formItem.apiQz" placeholder="请填写API 前缀...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='API 前缀'>
+							<FormItem prop='apiHz' label='API 前缀'>
 								<Input type="text" v-model="formItem.apiHz" placeholder="请填写API 前缀...">
 								</Input>
 							</FormItem>
@@ -112,13 +106,13 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='排序'>
+							<FormItem prop='px' label='排序'>
 								<!--<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>-->
 								<input class="input" type="number"  v-model="formItem.px"  placeholder="请填写排序..."/>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='备注信息'>
+							<FormItem prop='bz' label='备注信息'>
 								<Input type="text" v-model="formItem.bz" placeholder="请填写备注信息...">
 								</Input>
 							</FormItem>
@@ -128,7 +122,7 @@
 			</div>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="primary" @click="save('formItem')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -141,13 +135,44 @@
 		name: '',
 		data() {
 			return {
-				SpinShow:false,
                 operate:'新建',
 				showModal: true,
 				mesF: false,
 				formItem: {
+					px:1,
+					zt:'00'
 				},
                 ruleInline:{
+                	gnmc: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    gndm: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    fwdm: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    url: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    fjd: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    tzdz: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    apiQz: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    apiHz: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    px: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ],
+                    bz: [
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    ]
 				}
 			}
 		},
@@ -164,27 +189,31 @@
 			}
 		},
 		methods: {
-			save(){
+			save(name){
 				var v = this
-				v.SpinShow = true
 				let url = configApi.FUNCTION.ADD;
 				if (this.$parent.choosedRow){
                     url = configApi.FUNCTION.CHANGE;
 				}
 				delete this.formItem.children;
-				this.$http.post(url,this.formItem).then((res) =>{
-					if(res.code===200){
-						v.$Message.success(res.message);
-					}else{
-						v.$Message.error(res.message);
-					}
-					v.$parent.getmess()
-					v.$parent.compName = ''
-					v.SpinShow = false
-				}).catch((error) =>{
-					v.$Message.error('出错了！！！');
-					v.SpinShow = false
-				})
+				this.$refs[name].validate((valid) => {
+                    if (valid) {
+//                    	新增
+						this.$http.post(url,this.formItem).then((res) =>{
+							if(res.code===200){
+								v.$Message.success(res.message);
+							}else{
+								v.$Message.error(res.message);
+							}
+							v.$parent.getmess()
+							v.$parent.compName = ''
+						}).catch((error) =>{
+							v.$Message.error('出错了！！！');
+						})
+					} else {
+                        v.$Message.error('请认真填写用户信息!');
+                    }
+                })
 			},
 			colse() {
                 var v = this
