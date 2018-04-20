@@ -294,7 +294,7 @@
         		var v = this
         		v.SpinShow = true;
 				this.$http.get(configApi.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
-					 v.data9 = res.data
+					 v.data9 = res.page.list
 					 v.pageTotal = res.total
 					 v.SpinShow = false;
 				 })
