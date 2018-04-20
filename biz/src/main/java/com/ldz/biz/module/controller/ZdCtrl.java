@@ -2,6 +2,8 @@ package com.ldz.biz.module.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,13 +31,13 @@ ZdCtrl extends BaseController<ClZdgl,String> {
 
     @Override
     @RequestMapping(value="/save", method={RequestMethod.POST})
-    public ApiResponse<String> save(ClZdgl znzp){
+    public ApiResponse<String> save(@Valid ClZdgl znzp){
         return service.saveEntity(znzp);
     }
 
     @Override
     @RequestMapping(value="/update", method={RequestMethod.POST})
-    public ApiResponse<String> update(ClZdgl entity){
+    public ApiResponse<String> update(@Valid ClZdgl entity){
         return service.updateEntity(entity);
     }
 

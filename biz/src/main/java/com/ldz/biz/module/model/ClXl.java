@@ -4,6 +4,7 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 
 import lombok.ToString;
 
@@ -23,6 +24,7 @@ public class ClXl implements Serializable {
      * 线路名称
      */
     @Column(name = "XLMC")
+    @NotNull(message="线路名称不为空")
     private String xlmc;
 
     /**
@@ -47,12 +49,14 @@ public class ClXl implements Serializable {
      * 运行开始时间
      */
     @Column(name = "YXKSSJ")
+    @NotNull(message="运行开始时间不为空")
     private Short yxkssj;
 
     /**
      * 运行结束时间
      */
     @Column(name = "YXJSSJ")
+    @NotNull(message="运行结束时间不为空")
     private Short yxjssj;
 
     /**
@@ -107,12 +111,14 @@ public class ClXl implements Serializable {
      * 运行方式
      */
     @Column(name = "YXFS")
+    @NotNull(message="运行方式不为空")
     private String yxfs;
 
     /**
      * 类型
      */
     @Column(name = "LX")
+    @NotNull(message="类型不为空")
     private String lx;
 
     @Transient

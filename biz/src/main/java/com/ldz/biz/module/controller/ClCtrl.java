@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 /**
  * 车辆设定
  */
@@ -41,12 +43,12 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
-	public ApiResponse<String> update(ClCl entity) {
+	public ApiResponse<String> update(@Valid ClCl entity) {
 		return clservice.updateEntity(entity);
 	}
 
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
-	public ApiResponse<String> save(ClCl entity) {
+	public ApiResponse<String> save(@Valid ClCl entity) {
 		return clservice.saveEntity(entity);
 	}
 

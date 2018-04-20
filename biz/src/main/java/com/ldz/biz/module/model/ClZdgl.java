@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -14,24 +16,28 @@ public class ClZdgl implements Serializable {
      */
     @Id
     @Column(name = "ZDBH")
+    @NotNull(message="终端编号不能为空")
     private String zdbh;
 
     /**
      * 型号
      */
     @Column(name = "XH")
+    @NotNull(message="型号不能为空")
     private String xh;
 
     /**
      * 名称
      */
     @Column(name = "MC")
+    @NotNull(message="名称不能为空")
     private String mc;
 
     /**
      * 厂商
      */
     @Column(name = "CS")
+    @NotNull(message="厂商不能为空")
     private String cs;
 
     /**
@@ -40,6 +46,7 @@ public class ClZdgl implements Serializable {
      * 10 停用
      */
     @Column(name = "ZT")
+    @NotNull(message="状态不能为空")
     private String zt;
 
     /**
