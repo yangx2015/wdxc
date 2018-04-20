@@ -53,8 +53,7 @@
 		</Card>
 		<component
 			:is="compName" 
-			:mess="mess"
-			:messType="messType"></component>
+			:mess="mess"></component>
 	</div>
 </template>
 
@@ -73,7 +72,6 @@
 		data() {
 			return {
 				mess:{},
-            	messType:true,
             	compName:'',
             	
 				SpinShow:true,
