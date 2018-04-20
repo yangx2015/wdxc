@@ -56,7 +56,7 @@ public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwS
     	RuntimeCheck.ifBlank(entity.getFwdm(), "请输入服务代码");
     	RuntimeCheck.ifBlank(entity.getFwmc(), "请输入服务名称");
     	RuntimeCheck.ifBlank(entity.getApiQz(), "请输入服务api前缀");
-        boolean exists = ifExists(SysFw.InnerColumn.fwdm.name(),entity.getFwdm());
+        boolean exists = ifExists(SysFw.InnerColumn.fwId.name(),entity.getFwId());
         RuntimeCheck.ifTrue(exists,"服务编号已存在");
         SysYh user = getCurrentUser();
         entity.setCjr(user.getYhid());
@@ -141,12 +141,10 @@ public class FwServiceImpl extends BaseServiceImpl<SysFw, String> implements FwS
     }
 
 	@Override
-	public ApiResponse<String> updateEntity(SysFw entity) {
+	public ApiResponse<String> updateEntity(SysFw entity) {  
 		RuntimeCheck.ifBlank(entity.getFwdm(), "请输入服务代码");
     	RuntimeCheck.ifBlank(entity.getFwmc(), "请输入服务名称");
     	RuntimeCheck.ifBlank(entity.getApiQz(), "请输入服务api前缀");
-        boolean exists = ifExists(SysFw.InnerColumn.fwdm.name(),entity.getFwdm());
-        RuntimeCheck.ifTrue(exists,"服务编号已存在");
 		entity.setXgr(getOperateUser());
 		entity.setXgsj(new Date());
 		update(entity);
