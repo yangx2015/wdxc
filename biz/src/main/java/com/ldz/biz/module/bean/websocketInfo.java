@@ -30,4 +30,6 @@ public class websocketInfo {
 	private String cx;
 	
 	private String sjxm;
+	
+	private String obdId;
 }

@@ -7,7 +7,7 @@
 		select * from CL_SBYXSJJL t where t.CJSJ between
 		to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
 		and to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss') and ZDBH=#{zdbh} and
-		(t.SJJB=#{ignition} or t.SJJB=#{brennschluss}) ORDER BY CJSJ ASC
+		(t.SJLX=#{ignition} or t.SJLX=#{brennschluss}) ORDER BY CJSJ ASC
 	</select>
 
 	<select id="gpsInit" resultType="com.ldz.biz.module.model.ClSbyxsjjl">

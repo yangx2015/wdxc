@@ -1,6 +1,30 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
+<style type="text/css">
+	.input{
+		display: inline-block;
+	    width: 100%;
+	    height: 32px;
+	    line-height: 1.5;
+	    padding: 4px 7px;
+	    font-size: 12px;
+	    border: 1px solid #dddee1;
+	    border-radius: 4px;
+	    color: #495060;
+	    background-color: #fff;
+	    background-image: none;
+	    position: relative;
+	    cursor: text;
+	    transition: border .2s ease-in-out,background .2s ease-in-out,box-shadow .2s ease-in-out;
+	}
+	.input::-webkit-input-placeholder{
+		color: #dddee1;
+	}
+	.input::-moz-placeholder{
+		color: #dddee1;
+	}
+</style>
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
@@ -89,7 +113,8 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='排序'>
-								<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>
+								<!--<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>-->
+								<input class="input" type="number"  v-model="formItem.px"  placeholder="请填写排序..."/>
 							</FormItem>
 						</Col>
 						<Col span="12">
