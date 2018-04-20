@@ -46,7 +46,7 @@ const app = {
     },
     mutations: {
     	AdddictMap(state,data){
-    		state.state = data
+    		state.dictMap = data
     	},
     	CloadingType(state,data){
     		state.loadingType = data
