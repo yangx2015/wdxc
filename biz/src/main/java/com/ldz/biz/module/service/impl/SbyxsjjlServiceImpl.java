@@ -36,8 +36,12 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl,String> impl
 
 	@Override
 	public ApiResponse<List<ClSbyxsjjl>> historyTrajectory(gpsSJInfo gpssjinfo) {
+		
 		ApiResponse<List<ClSbyxsjjl>> apiResponse = new ApiResponse<List<ClSbyxsjjl>>();
-		apiResponse.setResult(entityMapper.historyTrajectory(gpssjinfo));
+		
+		List<ClSbyxsjjl> historyTrajectory = entityMapper.historyTrajectory(gpssjinfo);
+		
+		
 		return apiResponse;
 	}
 }

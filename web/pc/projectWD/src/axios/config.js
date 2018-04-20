@@ -175,6 +175,7 @@ module.exports = {
 		ADD:    '/api/dzwl/save',
         CHANGE: '/api/dzwl/update',
 		DELE:   '/api/dzwl/removeIds',
+		GET_BY_ID:'/api/getById',
         setCarsDzwl:'/api/dzwl/setCarsDzwl'
 	},
 	CLJK:{

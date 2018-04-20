@@ -3,8 +3,9 @@
 </style>
 <!--用户管理-->
 <template>
-	<div class="boxbackborder" style="z-index: 99999">
-		<Modal width='1200' v-model="showModal"  title="历史轨迹">
+	<div class="boxbackborder">
+		<component :is="componentName"></component>
+		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
@@ -15,6 +16,9 @@
 							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
 							</Button>
+							<Button type="primary" @click="back()">
+								返回
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -23,7 +27,7 @@
 				<Col span="6" v-for="item in tableData">
 					<Card>
 						<Row>
-							<img src="'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd,item.kswd+'&zoom=11&markers='+item.ksjd,item.kswd+'|'+item.ksjd,item.kswd+'&markerStyles=l,0|l,1'" class="imgItem">
+							<img @click="showMap" :src="'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd+','+item.kswd+'&zoom=11&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=l,0|l,1'" class="imgItem">
 						</Row>
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
@@ -36,16 +40,19 @@
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
-		</Modal>
+		</Card>
 	</div>
 </template>
 
 <script>
+	import historyMap from '../../map/historyTarckMap'
 	import configApi from '@/axios/config.js'
 	export default {
 		name: 'char',
+		components:{historyMap},
 		data() {
 			return {
+                componentName:'',
                 showModal:true,
 				tabHeight: 220,
 				compName: '',
@@ -104,12 +111,16 @@
 				    {
 				        ksjd:'114.365288',
 						kswd:'30.54485',
+				        jsjd:'114.365252',
+						jswd:'30.546126',
 						kssj: '2018-04-01 09:10:00',
 						jssj: '2018-04-01 09:10:00',
 					},
 				    {
                         ksjd:'114.365252',
                         kswd:'30.546126',
+                        jsjd:'114.365288',
+                        jswd:'30.54485',
 						kssj: '2018-04-01 09:10:00',
 						jssj: '2018-04-01 09:10:00',
 					}
@@ -139,6 +150,12 @@
 			}])
 		},
 		methods: {
+		    showMap(){
+		      this.componentName = 'historyMap';
+			},
+		    back(){
+                this.$router.back();
+			},
 		    showPath(){
 		      this.$parent.showPath();
 		      this.$parent.componentName = '';

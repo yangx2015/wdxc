@@ -1,6 +1,8 @@
 <template>
 	<div style="width: 100%;height: 100%;background-color: #00FFFF;">
-		<div id="allmap" style="width: 100%;height: 100%;"></div>
+		<Modal v-model="showModal" width='900'  title="历史轨迹">
+			<div id="allmap" style="width: 100%;height: 600px;"></div>
+		</Modal>
 	</div>
 </template>
 
@@ -9,6 +11,7 @@
 		name: 'historyTarckMap',
 		data() {
 			return {
+                showModal:true,
 				map: '',
 				mapcenter: {
 					lng: 114.357527,
@@ -90,7 +93,7 @@
 		},
 		methods: {
 			Buildmap() {
-				var v = this
+                var v = this
 				// 百度地图API功能
 				this.map = new BMap.Map("allmap"); // 创建Map实例
 				this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom); // 初始化地图,设置中心点坐标和地图级别
@@ -127,13 +130,13 @@
                     strokeColor:"#18a45b" //折线颜色
                 });
                 this.map.addOverlay(polyline);          //增加折线
-                
+
 			},
 			animationDot(item){
 				var pt = new BMap.Point(item.jd, item.wd);
 				var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
 				var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-				this.map.addOverlay(marker2);  
+				this.map.addOverlay(marker2);
 			}
 		}
 	}

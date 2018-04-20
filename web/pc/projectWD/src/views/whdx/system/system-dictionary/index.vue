@@ -1,9 +1,12 @@
 <style lang="less">
 	@import '../../../../styles/common.less';
+	.bodyWidth{
+		box-shadow: 2px 5px 5px #888888
+	}
 </style>
 <!--字典管理-->
 <template>
-	<div class="boxbackborder" style="background-color: #fff;">
+	<div class="boxbackborder box" style="background-color: #fff;">
 		<Row class="margin-top-10" style='background-color: #fff;position: relative;border-bottom: solid 2px #ededed;'>
 			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>

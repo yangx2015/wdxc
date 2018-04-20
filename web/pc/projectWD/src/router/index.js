@@ -33,7 +33,12 @@ router.beforeEach((to, from, next) => {
         //     return;
         // }
     	next()
-    }else{
+    }else if(to.name=='home_index'&&!Cookies.get('usermess')){
+    	next({
+            name: 'login'
+        });
+    }
+    else{
     	iView.Message.error("用户信息丢失，请重新登陆！！！");
     	next({
             name: 'login'
