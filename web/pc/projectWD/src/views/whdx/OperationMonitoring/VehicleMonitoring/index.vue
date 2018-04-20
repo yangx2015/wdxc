@@ -118,7 +118,7 @@ export default {
     },
     computed: {
         GetscoketMess() {
-            return this.$store.state.app.socketMess
+            return this.$store.state.app.scoketAllCar
         }
     },
     watch: {
