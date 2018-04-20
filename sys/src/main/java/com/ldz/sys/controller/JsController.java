@@ -1,18 +1,18 @@
 package com.ldz.sys.controller;
 
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.model.SysJs;
-import com.ldz.sys.model.SysYh;
-import com.ldz.sys.service.JsService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysJs;
+import com.ldz.sys.service.JsService;
+import com.ldz.util.bean.ApiResponse;
 
 /**
  * 平台角色
@@ -30,10 +30,12 @@ public class JsController extends BaseController<SysJs, String> {
 
     @Override
     public ApiResponse<String> save(SysJs entity) {
-        SysYh user = getCurrentUser();
-        entity.setCjr(user.getYhid());
-        entity.setJgdm(user.getJgdm());
-        return this.roleService.saveEntity(entity);
+        return roleService.saveEntity(entity);
+    }
+    
+    @Override
+    public ApiResponse<String> update(SysJs entity) {
+        return roleService.updateEntity(entity);
     }
 
     /**

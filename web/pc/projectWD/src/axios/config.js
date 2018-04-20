@@ -177,9 +177,13 @@ module.exports = {
         setCarsDzwl:'/api/dzwl/setCarsDzwl'
 	},
 	CLJK:{
-		QUERY:'/api/cl/InitClGps'
+		QUERY:'/api/cl/InitClGps',
+		GET_CAR_INFO:'/api/cl/getCarInfo'
 	},
 	CARTREE:{
 		QUERY:'/api/cl/getcltj'
+	},
+	SBZDDZ:{//设备终端接口地址
+		ADD:'/pub/intstruction/send'
 	}
 }

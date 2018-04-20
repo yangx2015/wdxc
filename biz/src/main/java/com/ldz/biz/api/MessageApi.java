@@ -46,7 +46,7 @@ public class MessageApi {
 	}
 
 	@PostMapping("/intstruction/send")
-	public ApiResponse<String> sendinstruction(@RequestBody GpsInfo info) {
+	public ApiResponse<String> sendinstruction( GpsInfo info) {
 
        return  intstruction.sendinstruction(info);
 	}

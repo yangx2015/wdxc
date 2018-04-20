@@ -9,6 +9,7 @@ const app = {
         dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
     	socketAllCar:[],//监控数据
+    	loadingType:false,
     	loading:{
     		size:55,
     		text:'数据加载中请稍后...'
@@ -44,6 +45,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+    	CloadingType(state,data){
+    		state.loadingType = data
+    	},
     	routerMumAdd(state,data){
     		state.routerMum = data
     	},

@@ -64,6 +64,12 @@
                 <keep-alive :include="cachePage" style="position: relative;height: 100%;">
                     <router-view></router-view>
                 </keep-alive>
+                <div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+					<Spin fix>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中...</div>
+					</Spin>
+				</div>
             </div>
         </div>
     </div>
@@ -95,6 +101,7 @@
         },
         data () {
             return {
+            	SpinShow:false,
 //          	"47.98.39.45:8080/biz"
 // 			    socket : new SockJS("http://"+"192.168.31.180:80"+"/gps"),
 				socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
@@ -137,6 +144,9 @@
             },
             mesCount () {
                 return this.$store.state.app.messageCount;
+            },
+            loading(){
+            	return this.$store.state.app.loadingType;
             }
         },
         watch: {
@@ -150,6 +160,10 @@
 			},
             GetscoketAllCar:function(newQuestion, oldQuestion){
             	this.scoketAllCar = newQuestion
+            },
+            loading:function(newQuestion, oldQuestion){
+            	this.SpinShow = newQuestion
+            	
             }
         },
         mounted () {

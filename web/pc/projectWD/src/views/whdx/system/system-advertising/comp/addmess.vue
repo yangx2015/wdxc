@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' 
+		<Modal v-model="showModal" width='900' :closable='mesF'
 			:mask-closable="mesF" title="新建活动">
 			<div style="overflow: auto;height: 440px;">
 				<Form
@@ -30,7 +30,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='活动类型'>
-								<Select v-model="formItem.hdlx">
+								<Select filterable clearable  v-model="formItem.hdlx">
 									<Option value="00">微信</Option>
 									<Option value="01">智能站牌</Option>
 								</Select>
@@ -38,7 +38,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='位置'>
-								<Select v-model="formItem.wz">
+								<Select filterable clearable  v-model="formItem.wz">
 									<Option value="00">上</Option>
 									<Option value="01">中</Option>
 									<Option value="02">下</Option>
@@ -49,19 +49,19 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='活动时间'>
-								<DatePicker v-model="cjsjInRange" 
-									format="yyyy-MM-dd" type="daterange" 
-									placement="bottom-end" 
-									placeholder="请输活动时间" 
+								<DatePicker v-model="cjsjInRange"
+									format="yyyy-MM-dd" type="daterange"
+									placement="bottom-end"
+									placeholder="请输活动时间"
 									style="width: 100%"></DatePicker>
-								
+
 								<!--<Input type="text" v-model="formItem.wjlx" placeholder="请填写广告类型...">
 								</Input>-->
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='附件类型'>
-								<Select v-model="formItem.wjlx" @on-change="selectC()">
+								<Select filterable clearable  v-model="formItem.wjlx" @on-change="selectC()">
 									<Option value="00">图片</Option>
 									<Option value="01">视频</Option>
 								</Select>
@@ -99,14 +99,14 @@
 
 <script>
 	import mixins from '@/mixins'
-	
+
 	import addlistfileImg from './addlistfileImg.vue'
 	import addlistfileVideo from './addlistfileVideo.vue'
     import configApi from '@/axios/config.js'
 	export default {
 		name: '',
 		mixins: [mixins],
-		components: { 
+		components: {
         	addlistfileImg,
         	addlistfileVideo
         },

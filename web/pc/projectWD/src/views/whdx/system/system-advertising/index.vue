@@ -78,12 +78,6 @@
 						:row-class-name="rowClassName"
 						:columns="columns10"
 						:data="data9"></Table>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">数据加载中请稍后</div>
-					</Spin>
-				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page
@@ -314,11 +308,7 @@
 				var v = this
 				this.choosedRow = null;
 				v.compName = 'addmess'
-				v.choosedRow = {}
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
+				v.choosedRow = null
 			},
 			colsemodal() {
 				this.compName = ''

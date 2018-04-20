@@ -6,12 +6,6 @@
 		    :closable='false'
 		    :mask-closable="false"
 		    :title="operate+'用户'">
-		    <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-				<Spin fix>
-					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-					<div style="font-size: 30px;">数据加载中请稍后</div>
-				</Spin>
-			</div>
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -40,7 +34,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label="性别： ">
-								<Select v-model="addmess.xb">
+								<Select filterable clearable  v-model="addmess.xb">
 									<Option value="1">男</Option>
 									<Option value="0">女</Option>
 								</Select>
@@ -48,7 +42,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='类型：'>
-								<Select v-model="addmess.lx">
+								<Select filterable clearable  v-model="addmess.lx">
 									<Option v-for="item in yhlxDict" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
@@ -73,7 +67,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="jgdm" label='组织机构：'>
-								<Select v-model="addmess.jgdm">
+								<Select filterable clearable  v-model="addmess.jgdm">
 									<Option v-for="e in orgList" :value="e.jgdm" :key="e.jgdm">{{e.jgmc}}</Option>
 								</Select>
 							</FormItem>
@@ -96,7 +90,6 @@
 		name:'',
 		data(){
 			return {
-				SpinShow:false,
 				showModal:true,
 				operate:"新增",
 				//新增数据
@@ -163,7 +156,6 @@
                     }
                 }).catch((error) =>{
                     v.$Message.error('出错了！！！');
-                    v.SpinShow = false
                 })
 			},
 			fullcal(){
@@ -176,7 +168,6 @@
 		   //确认添加新用户进行前台表单数据验证
             AddDataListOk(name){
             	var v = this
-            	v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 //                    	新增
@@ -188,10 +179,8 @@
 								}else{
                                     v.$Message.error(res.message);
 								}
-								v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
-								v.SpinShow = false
 							})
                     	}else{
                     	    delete v.addmess.mm;
@@ -202,14 +191,11 @@
 								}else{
                                     v.$Message.error(res.message);
 								}
-                                v.SpinShow = false
 							}).catch((error) =>{
 								v.$Message.error('出错了！！！');
-								v.SpinShow = false
 							})
                     	}
                     } else {
-                    	v.SpinShow = false
                         v.$Message.error('请认真填写用户信息!');
                     }
                 })

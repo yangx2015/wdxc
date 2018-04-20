@@ -4,19 +4,22 @@ import api from './api'
 import Cookies from 'js-cookie';
 import {router} from '../router/index';
 import qs from 'qs';
+import store from '@/store'
 //订单分配权限
 let httpInstance = axios.create({
 //baseURL: 'http://127.0.0.1:80',
    baseURL: 'http://47.98.39.45:8080/biz',
 // 	 baseURL: 'http://192.168.31.181:80',//陈
 // 	 baseURL: 'http://192.168.31.228:80',//羊
-  timeout: 300000,
+// 	 baseURL: 'http://192.168.31.228:80',//羊
+    timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
 });
 // 添加请求拦截器 数据请求之前
 httpInstance.interceptors.request.use((config) => {
-
+	store.commit('CloadingType',true)//全局加载等待
+	
     var headers = config.headers;
     var contentType = headers['Content-Type'];
     if (contentType == "application/x-www-form-urlencoded"){
@@ -44,8 +47,9 @@ httpInstance.interceptors.request.use((config) => {
 
 // 添加响应拦截器 数据响应之后
 httpInstance.interceptors.response.use((response) => {
-		var v = this
+	var v = this
     // 对响应数据做点什么
+    store.commit('CloadingType',false)
     if(response.status===200){
     	return response.data;
     }else if(!Cookies.get('result')||response.status===500){

@@ -10,7 +10,7 @@
 		<Modal
 		    v-model="showModal"
 		    width='900'
-		    :closable='false'   
+		    :closable='false'
 		    :mask-closable="false"
 		    title="新增校巴线路">
 		    <div>
@@ -20,13 +20,13 @@
 		    			</Input>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="form.zt">
+		    			<Select filterable clearable  v-model="form.zt">
 					        <Option value="00">正常</Option>
 					        <Option value="10">停用</Option>
 					    </Select>
 		    		</Col>
 		    		<Col span="5">
-		    			<Select v-model="form.yxfs">
+		    			<Select filterable clearable  v-model="form.yxfs">
 					        <Option value="10">上行</Option>
 					        <Option value="20">下行</Option>
 					    </Select>
@@ -39,7 +39,7 @@
 					<Row :gutter='30' style="margin-bottom: 15px;">
 						<Col span="5">
 							<Input type="number" v-model="form.yxkssj" placeholder="开始时间..."></Input>
-						
+
 						</COl>
 						<Col span="5">
 							<Input type="number" v-model="form.yxjssj" placeholder="结束时间..."></Input>
@@ -54,12 +54,12 @@
 		    	</div>
 		    	<div style="width: 100px;">
 		    		<div>
-		    			<Select v-model="stationId">
+		    			<Select filterable clearable  v-model="stationId">
 					        <Option v-for="r in stationList" :value="r.id">{{r.mc}}</Option>
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
-		    			<Button type="primary" shape="circle" icon="plus" 
+		    			<Button type="primary" shape="circle" icon="plus"
 		    				:disabled="stationId==''"
 		    				@click='addStation'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
@@ -102,7 +102,7 @@
 						name:'0075'
 					}
 				]
-				
+
 			}
 		},
 		mounted(){

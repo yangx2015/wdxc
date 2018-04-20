@@ -8,6 +8,7 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.ZdglService;
@@ -15,10 +16,12 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 @Service
-public class InstructionServiceImpl implements InstructionService {
-    @Autowired
-    private ZdglService zdglservice;
-
+public class InstructionServiceImpl  implements InstructionService {
+	@Autowired
+	private ClZdglMapper mapper;
+	@Autowired
+	private ZdglService service;
+    
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -36,7 +39,7 @@ public class InstructionServiceImpl implements InstructionService {
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
 			
-			ClZdgl clzd = zdglservice.findById(info.getDeviceId());
+			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
 			
 			if (info.getCmdType().equals("02")) {
 				clzd.setJslmd(info.getCmd());
@@ -47,7 +50,11 @@ public class InstructionServiceImpl implements InstructionService {
 			if (info.getCmdType().equals("50")) {
 				clzd.setScms(info.getCmd());
 			}
-			zdglservice.update(clzd);
+			if (info.getCmdType().equals("91")) {
+				clzd.setSbdz(info.getCmd());
+			}
+			
+			service.update(clzd);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

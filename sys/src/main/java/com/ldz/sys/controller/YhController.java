@@ -38,6 +38,13 @@ public class YhController extends BaseController<SysYh, String> {
 		return this.userService.saveEntity(entity);
 	}
 
+	@Override
+	public ApiResponse<String> update(SysYh entity) {
+		
+		return this.userService.updateEntity(entity);
+	}
+	
+	
 	@RequestMapping(value = "mdfPwd",method = RequestMethod.POST)
 	public ApiResponse<String> mdfPwd(@RequestParam(name = "oldPwd")String oldPwd,
 									  @RequestParam(name = "newPwd")String newPwd,

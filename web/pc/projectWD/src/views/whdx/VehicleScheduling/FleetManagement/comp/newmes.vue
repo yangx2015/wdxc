@@ -42,7 +42,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="zt" label='状态：'>
-								<Select v-model="addmess.zt">
+								<Select filterable clearable  v-model="addmess.zt">
 									<Option v-for="item in ty" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
@@ -60,7 +60,7 @@
 
 <script>
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name:'',
 		data(){

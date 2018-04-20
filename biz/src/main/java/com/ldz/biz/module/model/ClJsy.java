@@ -3,6 +3,8 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -17,12 +19,14 @@ public class ClJsy implements Serializable {
      */
     @Id
     @Column(name = "SFZHM")
+    @NotNull(message="身份证号码不为空")
     private String sfzhm;
 
     /**
      * 姓名
      */
     @Column(name = "XM")
+    @NotNull(message="姓名")
     private String xm;
 
     /**
@@ -41,6 +45,7 @@ public class ClJsy implements Serializable {
      * 年龄
      */
     @Column(name = "NL")
+    @NotNull(message="年龄不为空")
     private Short nl;
 
     /**
@@ -107,12 +112,14 @@ public class ClJsy implements Serializable {
      * 档案编号
      */
     @Column(name = "DABH")
+    @NotNull(message="档案编号不为空")
     private String dabh;
 
     /**
      * 初领日期
      */
     @Column(name = "CLRQ")
+    @NotNull(message="初领时间不为空")
     private Date clrq;
 
     private List<ClDd> clDdList;

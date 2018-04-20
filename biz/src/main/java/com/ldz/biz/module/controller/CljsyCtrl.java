@@ -15,6 +15,8 @@ import com.ldz.util.bean.ApiResponse;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 /**
  * 驾驶员设定
  */
@@ -31,12 +33,12 @@ public class CljsyCtrl extends BaseController<ClJsy, String> {
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
-	public ApiResponse<String> update(ClJsy entity) {
+	public ApiResponse<String> update(@Valid ClJsy entity) {
 		return jsyservice.updateEntity(entity);
 	}
 
 	@PostMapping("/save")
-	public ApiResponse<String> save(ClJsy entity) {
+	public ApiResponse<String> save(@Valid ClJsy entity) {
 		return jsyservice.saveEntity(entity);
 	}
 

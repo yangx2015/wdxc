@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface JsService extends BaseService<SysJs, String> {
     ApiResponse<String> saveEntity(SysJs entity);
-
+    ApiResponse<String> updateEntity(SysJs entity);
     /**
      * 获取用户拥有的角色id
      * @param userId 用户id

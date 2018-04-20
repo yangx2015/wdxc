@@ -14,6 +14,12 @@
 
 <template>
     <div class="login" @keydown.enter="handleSubmit">
+    	<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+			<Spin fix>
+				<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+				<div style="font-size: 30px;">数据加载中...</div>
+			</Spin>
+		</div>
         <div class="login-con">
             <Card :bordered="false" style="width: 100%;">
                 <div class="form-con box-row">
@@ -40,7 +46,6 @@
 	                            <Button @click="handleSubmit" type="primary" long>登录</Button>
 	                        </FormItem>
 	                    </Form>
-	                    <p class="login-tip">输入任意用户名和密码即可</p>
                 	</div>
                 </div>
             </Card>
@@ -56,6 +61,7 @@ import {appRouter} from '../router/router';
 export default {
     data () {
         return {
+        	SpinShow:false,
             form: {
                 username: 'admini',
                 password: '123456'
@@ -78,6 +84,7 @@ export default {
     methods: {
         handleSubmit () {
         	var v = this
+        	v.SpinShow = true
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
@@ -85,6 +92,7 @@ export default {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
                             v.getMenuTree();
+                            v.SpinShow = false
                         }else if(res.code===500){
                             this.$Message.error(res.message);
                             this.form.username='';

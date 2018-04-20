@@ -21,7 +21,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='车型：'>
-								<Select v-model="addmess.cx">
+								<Select filterable clearable  v-model="addmess.cx">
 									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 								</Select>
 							</FormItem>
@@ -33,7 +33,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
-								<Select v-model="addmess.sjId">
+								<Select filterable clearable  v-model="addmess.sjId">
 									<Option v-if="editMode" :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
 									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
@@ -41,21 +41,21 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="zt" label='车辆状态：'>
-								<Select v-model="addmess.zt">
+								<Select filterable clearable  v-model="addmess.zt">
 									<Option v-for="zt in clztDict" :value="zt.key" :key="zt.key">{{zt.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="cdbh" label='车队：'>
-								<Select v-model="addmess.cdbh">
+								<Select filterable clearable  v-model="addmess.cdbh">
 									<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Select v-model="addmess.zdbh">
+								<Select filterable clearable  v-model="addmess.zdbh">
 									<Option v-for="e in deviceList" :value="e.zdbh" :key="e.zdbh">{{e.mc}}</Option>
 								</Select>
 							</FormItem>
@@ -73,7 +73,7 @@
 
 <script>
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
 		name:'',
 		data(){

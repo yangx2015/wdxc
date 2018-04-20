@@ -51,6 +51,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public ApiResponse<String> saveEntity(SysGn entity) {
+    	 SysYh user = getCurrentUser();
+        entity.setCjr(user.getYhid());
         entity.setCjsj(new Date());
         gnMapper.insert(entity);
         return ApiResponse.success();

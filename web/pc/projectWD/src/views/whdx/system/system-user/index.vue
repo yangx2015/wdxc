@@ -15,8 +15,8 @@
 							<span>用户管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.sjhLike" placeholder="请输入手机号码" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -37,12 +37,6 @@
 						:row-class-name="rowClassName"
 						:columns="tableTiT"
 						:data="tableData"></Table>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">数据加载中请稍后</div>
-					</Spin>
-				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
@@ -72,8 +66,6 @@
 		mixins: [mixins],
 		data() {
 			return {
-				//加载等候
-				SpinShow:true,
 				//tab高度
 				tabHeight: 220,
 				//动态组建
@@ -225,9 +217,9 @@
 					}
 				],
 				//收索
-				cjsjInRange:[],
+//				cjsjInRange:[],
 				findMess: {
-					cjsjInRange:'',
+					sjhLike:'',
 					zjhmLike: '',
 					pageNum: 1,
 					pageSize: 5
@@ -237,9 +229,9 @@
 			}
 		},
 		watch: {
-			cjsjInRange:function(newQuestion, oldQuestion){
-				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
-			},
+//			cjsjInRange:function(newQuestion, oldQuestion){
+//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//			},
 		},
 		created() {
 			this.$store.commit('setCurrentPath', [{
@@ -275,7 +267,6 @@
 //					console.log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
-					v.SpinShow = false;
 				})
 			},
 			//权限分配
@@ -289,11 +280,9 @@
 			//收索事件
 			findMessList() {
 				var v = this
-				v.SpinShow = true;
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
 //					console.log(res)
 					v.tableData = res.page.list
-					v.SpinShow = false;
 				})
 			},
 			//添加新用户信息
@@ -301,7 +290,7 @@
 				var v = this
 				v.compName = 'newmess'
 				v.userMesType = true
-				this.usermes = {}
+				this.usermes = null
 			},
 			listF(res){
 				this.getmess()

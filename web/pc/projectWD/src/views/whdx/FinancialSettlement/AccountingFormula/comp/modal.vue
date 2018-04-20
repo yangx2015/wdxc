@@ -2,14 +2,14 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    :closable='false'      
+		    :closable='false'
 		    width='800'
 		    :mask-closable="false"
 		    title="核算公式">
 		    <div>
 		    	<Row :gutter= '15'>
 		    		<Col span="6">
-		    			<Select v-model="addlist.carmodal" placeholder="请选择车型...">
+		    			<Select filterable clearable  v-model="addlist.carmodal" placeholder="请选择车型...">
 					        <Option value="5人坐">5人坐</Option>
 					        <Option value="7人坐">7人坐</Option>
 					        <Option value="45人坐">45人坐</Option>
@@ -18,7 +18,7 @@
 		    		</Col>
 		    		<!--类型-->
 		    		<Col span="6">
-		    			<Select v-model="addlist.cartype" placeholder="请选择核算类型...">
+		    			<Select filterable clearable  v-model="addlist.cartype" placeholder="请选择核算类型...">
 					        <Option value="里程">里程</Option>
 					        <Option value="加班">加班</Option>
 					        <Option value="节假日">节假日</Option>
