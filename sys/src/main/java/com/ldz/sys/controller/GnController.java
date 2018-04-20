@@ -37,6 +37,7 @@ public class GnController extends BaseController<SysGn, String> {
     }
 
     @Override
+    @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(@Valid SysGn entity) {
        
         return gnService.saveEntity(entity);

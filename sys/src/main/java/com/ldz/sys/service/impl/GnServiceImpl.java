@@ -1,26 +1,44 @@
 package com.ldz.sys.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.bean.Menu;
 import com.ldz.sys.exception.RuntimeCheck;
-import com.ldz.sys.mapper.*;
-import com.ldz.sys.model.*;
+import com.ldz.sys.mapper.SysFwgnMapper;
+import com.ldz.sys.mapper.SysJgsqlbMapper;
+import com.ldz.sys.mapper.SysJsGnMapper;
+import com.ldz.sys.mapper.SysPtjgMapper;
+import com.ldz.sys.mapper.SysYhJsMapper;
+import com.ldz.sys.model.SysFw;
+import com.ldz.sys.model.SysGn;
+import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysJgsq;
+import com.ldz.sys.model.SysJs;
+import com.ldz.sys.model.SysJsGn;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.model.SysYhJs;
 import com.ldz.sys.service.FwService;
 import com.ldz.sys.service.GnService;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import tk.mybatis.mapper.common.Mapper;
 
 @Slf4j
 @Service
@@ -51,6 +69,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public ApiResponse<String> saveEntity(SysGn entity) {
+    	SysGn selectByPrimaryKey = gnMapper.selectByPrimaryKey(entity.getGndm());
+    	if(selectByPrimaryKey!=null) {
+    		return ApiResponse.fail("功能代码已存在");
+    	}
     	 SysYh user = getCurrentUser();
         entity.setCjr(user.getYhid());
         entity.setCjsj(new Date());
@@ -67,18 +89,18 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public ApiResponse<String> updateEntity(SysGn gn) {
-        SysGn oldRecord = gnMapper.selectByPrimaryKey(gn.getGndm());
-        RuntimeCheck.ifNull(oldRecord,"未找到记录");
-        RuntimeCheck.ifBlank(gn.getGndm(),"功能代码不能为空");
-        if (!gn.getGndm().equals(oldRecord.getGndm())){
-            boolean exists = ifExists(SysGn.InnerColumn.gndm.name(),gn.getGndm());
-            RuntimeCheck.ifTrue(exists,"功能代码已存在");
-        }
-        gn.setXgr(getOperateUser());
-        gn.setXgsj(new Date());
-        BeanUtils.copyProperties(gn,oldRecord);
-        gnMapper.updateByPrimaryKeySelective(oldRecord);
+    	gn.setXgr(getOperateUser());
+    	gn.setXgsj(new Date());
+    	SysGn gndm = gnMapper.selectByPrimaryKey(gn.getGndm());
+    	if (gndm==null) {
+			
+    		save(gndm);
+		}else {
+			update(gndm);
+		}
+        
 
+        
         return ApiResponse.success();
     }
 

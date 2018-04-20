@@ -14,9 +14,9 @@ public class ClLsGjInfo {
 	
 	private String jssj;
 	
-	private String ksjps;
+	private String ksgps;
 	
 	private String jsjps;
 	
-	private String sc;
+	private Long sc;
 }
