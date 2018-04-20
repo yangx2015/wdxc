@@ -55,11 +55,12 @@
     
 	import formData from './formData'
 	import change from './change'
+	import jkdz from './jkdz'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData,change
+            formData,change,jkdz
 		},
         data () {
             return {
@@ -159,6 +160,7 @@
                         title:'操作',
                         align:'center',
                         type: 'action',
+                        width: 130,
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -175,6 +177,23 @@
                                         click: () => {
                                         	this.choosedRow = params.row
                                             this.componentName = 'change'
+                                        }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+										icon: 'ios-pulse-strong',
+										shape: 'circle',
+										size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                        	this.choosedRow = params.row
+                                            this.componentName = 'jkdz'
                                         }
                                     }
                                 }),

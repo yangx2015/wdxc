@@ -80,7 +80,7 @@
 				showModal: true,
                 mesF:false,
 				form: {
-                    zdbh:'865923030039405',//终端编号
+                    zdbh:'',//终端编号
 					mc: '',//名称
                     cs: '',//厂商
                     zt:'',//终端状态
@@ -110,9 +110,6 @@
 		methods: {
 			getLXDic(){
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
-//      		this.form.zt = "00"
-        		this.form.zdbh = "865923030039405"
-//      		this.form.cmd = "http://47.98.39.45:8080/tic-server/api"
 			},
 		    save(name){
 		    	var v = this
@@ -124,12 +121,12 @@
 		                this.$http.post(url,this.form).then((res) =>{
 		                	if(res.code==200){
 		                		v.$Message.success(res.message);
-								v.bud()
+//								v.bud()
 						        v.$parent.getPageData()
 		                	}else{
 		                		v.$Message.error(res.message);
-		                		v.close()
 		                	}
+		                	v.close()
 		                }).catch((error) =>{
 							v.$Message.error('出错了！！！');
 						})
@@ -171,6 +168,7 @@
 			},
 			close(){
 		        this.$parent.componentName = '';
+		        this.$parent.choosedRow = {}
 			}
 
 		}
