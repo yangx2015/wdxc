@@ -34,7 +34,7 @@
 						<Col span="12">
 							<FormItem label='设备状态:' placeholder="请选择设备状态">
 								<Select filterable clearable  v-model="form.zt">
-									<Option v-for="item in dic" :value="item.key">{{item.val}}</Option>
+									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -73,12 +73,8 @@
                     cs: '',//厂商
                     zt:''//终端状态
 				},
-			}
-		},
-		props:{
-			dic:{
-				type:Array,
-				default:[]
+				ztDictionary:[],
+				ztlmdmDictionary:'ZDCLK0031'//设备状态
 			}
 		},
 		created(){
@@ -86,10 +82,14 @@
 				this.form = this.$parent.choosedRow;
 				this.operate= '编辑'
 			}
+			this.getLXDic()
 		},
         mounted(){
         },
 		methods: {
+			getLXDic(){
+                this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
+        	},
 		    save(){
 		    	var v = this
             	v.SpinShow = true

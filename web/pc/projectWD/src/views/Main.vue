@@ -67,7 +67,7 @@
                 <div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
 						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">数据加载中请稍后1111111111111111111</div>
+						<div style="font-size: 30px;">数据加载中...</div>
 					</Spin>
 				</div>
             </div>

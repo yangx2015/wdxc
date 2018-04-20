@@ -5,12 +5,6 @@
 	<div>
 		<Modal v-model="showModal" width='900'
 			:closable='false' :mask-closable="mesF" title="终端设备信息编辑">
-			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-				<Spin fix>
-					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-					<div style="font-size: 30px;">数据加载中请稍后</div>
-				</Spin>
-			</div>
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="form"
@@ -35,7 +29,7 @@
 						<Col span="12">
 							<FormItem label='设备状态:' placeholder="请选择设备状态">
 								<Select filterable clearable  v-model="form.zt">
-									<Option v-for="item in dic" :value="item.key">{{item.val}}</Option>
+									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -64,7 +58,6 @@
 		name: '',
 		data() {
 			return {
-				SpinShow:false,
 				showModal: true,
                 mesF:false,
 				form: {
@@ -73,13 +66,11 @@
                     cs: '',//厂商
                     zt:''//终端状态
 				},
+				ztDictionary:[],
+				ztlmdmDictionary:'ZDCLK0031'//设备状态
 			}
 		},
 		props:{
-			dic:{
-				type:Array,
-				default:[]
-			},
 			mess:{
 				type:Object,
 				default:{}
@@ -87,13 +78,16 @@
 		},
 		created(){
 			this.form = this.mess
+			this.getLXDic()
 		},
         mounted(){
         },
 		methods: {
+			getLXDic(){
+                this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
+        	},
 		    save(){
 		    	var v = this
-            	v.SpinShow = true
 		        let url = configApi.ZNZP.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     this.$Message.success(res.message);
@@ -101,7 +95,6 @@
                 })
 			},
 			close(){
-				this.SpinShow = false
 		        this.$parent.componentName = '';
 			}
 

@@ -46,8 +46,7 @@
 		</Card>
 		<component 
 			:is="componentName"
-			:mess="choosedRow"
-			:dic="ztDictionary"></component>
+			:mess="choosedRow"></component>
 	</div>
 </template>
 
@@ -111,12 +110,39 @@
                         key: 'cs'
                     },
                     {
+                        title: '接口地址',
+                        align:'center',
+                        key: 'jkdz',
+                        render:(h,p)=>{
+                        	return h('div', [
+                                h('span', {
+                                },'http://'),
+                                h('Button', {
+                                    props: {
+                                        type: 'success',
+//                                      icon: 'close',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    on: {
+                                        click: () => {
+                                        }
+                                    }
+                                },'事件')
+                            ]);
+                        }
+                    },
+                    {
                         title: '在线状态',
                         align:'center',
                         key: 'zxzt',
                         render:(h,p)=>{
 	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-	    					return h('div',val)
+	    					return h('div',{
+	    						style:{
+	    							color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+	    						}
+	    					},val)
                         }
                     },
                     {
@@ -130,7 +156,11 @@
                         key: 'zt',
                         render:(h,p)=>{
 	                     	let val = this.dictUtil.getValByCode(this,this.ztlmdmDictionary,p.row.zt)
-	    					return h('div',val)
+	    					return h('div',{
+	    						style:{
+	    							color:p.row.zt=="00" ? '#279a3b':'#ed3f14'
+	    						}
+	    					},val)
                         }
                     },
                     {
