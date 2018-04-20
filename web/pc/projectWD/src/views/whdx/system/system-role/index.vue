@@ -251,7 +251,7 @@
         		var v = this
     			v.compName = 'addrole'
     			this.userMesType = true
-    			this.messdata = {}
+    			this.messdata = null
             },
             listF(res){
             	this.getmess()

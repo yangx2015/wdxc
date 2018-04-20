@@ -16,7 +16,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入反馈人姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.lxrxmLike" placeholder="请输入反馈人姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findData()">
@@ -168,7 +168,7 @@
 				cjsjInRange:[],
 				findMess: {
 					cjsjInRange:'',
-					zjhmLike: '',
+					lxrxmLike: '',
 					zt:'',	
 					pageNum: 1,
 					pageSize: 5
@@ -203,8 +203,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(configApi.SUGGES.QUERY).then((res) =>{
-					console.log('shuju',res)
+				this.$http.get(configApi.SUGGES.QUERY,{params:this.findMess}).then((res) =>{
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -214,13 +213,12 @@
 				this.compName = 'compModal'
 			},
 			findData() {
-				var v = this
+				var v = this.getmess();
 			},
 			pageChange(event) {
 				var v = this
-				v.page.pageNum = event
+				v.findMess.pageNum = event
 				v.findData(v.page)
-				//      		console.log(v.page)
 			},
 
 		}

@@ -255,10 +255,7 @@
 			getDataList() {
 				var v = this
 				v.compName = 'formData'
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
+				this.choosedRow = null;
 			},
 			GetMess(page) {
 				var v = this
