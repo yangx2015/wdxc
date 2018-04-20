@@ -16,7 +16,6 @@
 							<span>设备终端</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="getPageData()" style="width: 220px"></DatePicker>
 							<Input v-model="form.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 						</div>
 						<div class="butevent">
@@ -55,11 +54,12 @@
     import configApi from '@/axios/config.js'
     
 	import formData from './formData'
+	import change from './change'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData,
+            formData,change
 		},
         data () {
             return {
@@ -112,25 +112,7 @@
                     {
                         title: '接口地址',
                         align:'center',
-                        key: 'jkdz',
-                        render:(h,p)=>{
-                        	return h('div', [
-                                h('span', {
-                                },'http://'),
-                                h('Button', {
-                                    props: {
-                                        type: 'success',
-//                                      icon: 'close',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                        }
-                                    }
-                                },'事件')
-                            ]);
-                        }
+                        key: 'sbdz',
                     },
                     {
                         title: '在线状态',
@@ -192,7 +174,7 @@
                                     on: {
                                         click: () => {
                                         	this.choosedRow = params.row
-                                            this.componentName = 'formData'
+                                            this.componentName = 'change'
                                         }
                                     }
                                 }),
@@ -223,7 +205,6 @@
                 cityList: [
                 ],
                 //收索
-                datetime:[],
                 form:{
                     mcLike:'',
                 	pageNum:1,
@@ -253,11 +234,6 @@
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
         	},
     	    getPageData(){
-                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.form.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
-                }else{
-                    this.form.cjsjInRange = '';
-                }
                 this.$http.get(configApi.ZDGL.QUERY,{params:this.form}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){

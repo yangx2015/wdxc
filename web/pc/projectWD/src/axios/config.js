@@ -182,5 +182,8 @@ module.exports = {
 	},
 	CARTREE:{
 		QUERY:'/api/cl/getcltj'
+	},
+	SBZDDZ:{//设备终端接口地址
+		ADD:'/pub/intstruction/send'
 	}
 }

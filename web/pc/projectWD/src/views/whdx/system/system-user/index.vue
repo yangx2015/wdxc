@@ -15,8 +15,8 @@
 							<span>用户管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.sjhLike" placeholder="请输入手机号码" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -217,9 +217,9 @@
 					}
 				],
 				//收索
-				cjsjInRange:[],
+//				cjsjInRange:[],
 				findMess: {
-					cjsjInRange:'',
+					sjhLike:'',
 					zjhmLike: '',
 					pageNum: 1,
 					pageSize: 5
@@ -229,9 +229,9 @@
 			}
 		},
 		watch: {
-			cjsjInRange:function(newQuestion, oldQuestion){
-				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
-			},
+//			cjsjInRange:function(newQuestion, oldQuestion){
+//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//			},
 		},
 		created() {
 			this.$store.commit('setCurrentPath', [{
