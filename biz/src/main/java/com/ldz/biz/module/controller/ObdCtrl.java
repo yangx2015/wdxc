@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * OBD方法
+ * todo 这里是测试的，真实路径是要加api/这个目录的。
  */
 @RestController
-@RequestMapping("api/obd")
+@RequestMapping("obd")
 public class ObdCtrl extends BaseController<ObdMessageBean, String> {
 	 @Autowired
 	 private ObdService obdservice;
