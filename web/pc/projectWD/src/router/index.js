@@ -34,6 +34,7 @@ router.beforeEach((to, from, next) => {
         // }
     	next()
     }else{
+    	iView.Message.error("用户信息丢失，请重新登陆！！！");
     	next({
             name: 'login'
         });

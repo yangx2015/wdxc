@@ -8,7 +8,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    :title="operate+'超速设定'">
+		    title="车辆限速修改">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -16,22 +16,20 @@
     			:label-width="100"
     			:styles="{top: '20px'}">
 	    		<div style="height: 300px;">
-	    			<div class="box-row">
-	    				<div style="overflow: auto;padding: 5px 8px;">
-	    					<div v-show="treeList.length==0" style="color: red;">
-	    						*请选车量
-	    					</div>
-	    					<Tree :data="data1"
-						  		show-checkbox
-						 	 	@on-check-change='checkClick'></Tree>
-	    				</div>
-	    				<div class="body-F">
+	    			<Row>
+	    				<Col span="12">
+	    					<FormItem label='车牌号：'>
+								<Input readonly="readonly" type="text" v-model="addmess.cph" placeholder="请设置速度上限">
+								</Input>
+							</FormItem>
+	    				</Col>
+	    				<Col span="12">
 	    					<FormItem prop="sdsx" label='速度上限：'>
 								<Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
-	    				</div>
-	    			</div>
+	    				</Col>
+	    			</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>
@@ -60,45 +58,27 @@
                   sdsx: [
                       { required: true, message: '请输车数上线', trigger: 'blur' }
                   ],
-              	},
-              	data1:[],
-              	treeList:[]
+              	}
+			}
+		},
+		props:{
+			mess:{
+				type:Object,
+				default:{}
 			}
 		},
 		created(){
+			this.addmess = {
+				'cph':this.mess.cph,
+				'sdsx':this.mess.sdsx
+			}
 			this.fullcal()
 
             if(!this.messType){
                 this.operate = '编辑'
             }
-            
-            this.getCarTree()
 		},
 		methods:{
-			//获取车辆树
-			getCarTree(){
-	    		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
-	    			console.log('数据结构数据',res)
-	    			this.data1 = res.result
-	        	}).catch((error) =>{
-	        		console.log('error',error)
-	        	})
-	    	},
-			//树多选框
-	    	checkClick(event){
-	    		console.log('2',event)
-	    		var v = this
-	    		v.treeList = []
-	    		for( var i = 0 ; i<event.length;i++){
-	    			if(event[i].children){
-	    				console.log('树输出')
-	    			}else{
-	    				v.treeList.push(event[i].title)
-	    				console.log('车牌号',v.treeList)
-	    				console.log('车牌转',v.treeList.join(','))
-	    			}
-	    		}
-	    	},
 			fullcal(){
 				console.log('信息',this.mess)
 			},
@@ -112,7 +92,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid && v.treeList.length>0) {
 //                    	新增
-	                		v.$http.post(configApi.CS.ADD,{'cphs':v.treeList.join(','), 'csz':v.addmess.sdsx}).then((res) =>{
+	                		v.$http.post(configApi.CS.ADD,{'cphs':v.addmess.cph, 'csz':v.addmess.sdsx}).then((res) =>{
 								if(res.code===200){
 									v.$parent.getmess();
 			                    	v.$Message.success(res.message);

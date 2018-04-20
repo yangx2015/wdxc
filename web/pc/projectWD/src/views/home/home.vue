@@ -18,11 +18,6 @@
 </style>
 <template>
 	<div class="" style="height: 100%;">
-		<div class="box" v-show="false">
-			<div class="body">
-				<hcl></hcl>
-			</div>
-		</div>
 		<div class="homeE" style="padding: 5px 3px;">
 			<Row :gutter="8" class="margin-bottom-10 indexCarType">
 				<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
@@ -101,8 +96,6 @@
 </template>
 
 <script>
-	import hcl from '../whdx/components/historyCarlLine.vue'
-	
 	import inforCard from './components/inforCard.vue'
 	import eLine from './compEcharts/line.vue'
 	import yPie from './compEcharts/yearPie.vue'
@@ -116,7 +109,7 @@
 		name: 'home',
 		components: {
 			inforCard,eLine,yPie,
-			safeline,listpie,extra,scbar,risk,hcl
+			safeline,listpie,extra,scbar,risk
 		},
 		data() {
 			return {

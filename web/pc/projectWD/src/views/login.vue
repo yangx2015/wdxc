@@ -102,7 +102,9 @@ export default {
                             this.form.username='';
                             this.form.password='';
                 		}
+                		v.SpinShow = false
                 	}).catch((error) =>{
+                		v.SpinShow = false
                 		console.log('error',error)
                 	})
                 }
@@ -161,6 +163,8 @@ export default {
                             a.push({key:e.zddm,val:e.zdmc});
                         }
                         this.$store.state.app.dictMap.set(r.lmdm,a)
+                        this.session.setItem('dictMap',this.$store.state.app.dictMap)
+//						console.log('字典',this.$store.state.app.dictMap)
                     }
                 }
             }).catch((error) =>{

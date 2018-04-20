@@ -76,6 +76,20 @@ public class ClZnzp implements Serializable {
     @Column(name = "ZD_ID")
     private String zdId;
 
+    /**
+     * 备注
+     */
+    @Column(name = "TIPS")
+    private String tips;
+
+    public String getTips() {
+        return tips;
+    }
+
+    public void setTips(String tips) {
+        this.tips = tips;
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**

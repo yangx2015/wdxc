@@ -48,11 +48,11 @@
 								<Input type="text" v-model="form.xh" placeholder="请输入设备型号..."></Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
+						<!--<Col span="12">
 							<FormItem label='接口地址:'>
 								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
 							</FormItem>
-						</Col>
+						</Col>-->
 					</Row>
 				</Form>
 			</div>
@@ -76,12 +76,11 @@
 				showModal: true,
                 mesF:false,
 				form: {
-                    zdbh:'865923030039405',//终端编号
+                    zdbh:'',//终端编号
 					mc: '',//名称
                     cs: '',//厂商
                     zt:'',//终端状态
                     xh:'',//型号
-                    cmd:''//接口地址
 				},
 				ruleInline: {
                   zdbh: [
@@ -108,7 +107,7 @@
                     'cs': this.mess.cs,//厂商
                     'zt':this.mess.zt,//终端状态
                     'xh':this.mess.xh,//型号
-                    'cmd':this.mess.cmd//接口地址
+//                  'cmd':this.mess.cmd//接口地址
 				},
 			this.getLXDic()
 		},

@@ -18,7 +18,7 @@ import com.ldz.util.bean.ApiResponse;
  * 超速设定
  */
 @RestController
-@RequestMapping("api/cssd")
+@RequestMapping("pub/cssd")
 public class CssdCtrl extends BaseController<ClCssd, String> {
 	@Autowired
 	private CssdService service;
@@ -51,7 +51,7 @@ public class CssdCtrl extends BaseController<ClCssd, String> {
 	}
 
 	@PostMapping("/setCssds")
-	public ApiResponse<String> setCssds(List<String> cphs, String csz) {
+	public ApiResponse<String> setCssds(String cphs, String csz) {
 
 		return service.setCssds(cphs, csz);
 	}

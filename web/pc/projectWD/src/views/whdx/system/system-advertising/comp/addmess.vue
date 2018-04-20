@@ -39,9 +39,9 @@
 						<Col span="12">
 							<FormItem label='位置'>
 								<Select filterable clearable  v-model="formItem.wz">
-									<Option value="00">上</Option>
-									<Option value="01">中</Option>
-									<Option value="02">下</Option>
+									<Option value="10">上</Option>
+									<Option value="20">中</Option>
+									<Option value="30">下</Option>
 								</Select>
 							</FormItem>
 						</Col>

@@ -5,8 +5,8 @@
 	<div>
 		<Modal v-model="showModal" width='900' 
 			:closable='false' :mask-closable="mesF" 
-			title="新建终端设备">
-			<div style="overflow: auto;height: 300px;">
+			title="接口地址设置">
+			<div style="overflow: auto;">
 				<Form
 					:model="form"
 					:rules="ruleInline"
@@ -15,40 +15,40 @@
 					:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem prop="zdbh" label='终端编号'>
+							<FormItem label='终端编号'>
 								<Input :readonly="dataRead" type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem prop="mc"  label='设备名称:'>
+							<FormItem  label='设备名称:'>
 								<Input :readonly="dataRead" type="text" v-model="form.mc" placeholder="请填终端名称...">
 								</Input>
 							</FormItem>
 						</Col>
 					</Row>
-					<Row>
-						<Col span="12">
+					<!--<Row>-->
+						<!--<Col span="12">
 							<FormItem label='设备状态:' >
 								<Select filterable :readonly="dataRead" filterable clearable  v-model="form.zt">
 									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
-						</Col>
-						<Col span="12">
+						</Col>-->
+						<!--<Col span="12">
 							<FormItem label='厂商：'>
 								<Input :readonly="dataRead" type="text" v-model="form.cs" placeholder="请填写厂商信息...">
 								</Input>
 							</FormItem>
-						</Col>
-					</Row>
+						</Col>-->
+					<!--</Row>-->
 					<Row>
-						<Col span="12">
+						<!--<Col span="12">
 							<FormItem label='型号:'>
 								<Input :readonly="dataRead" type="text" v-model="form.xh" placeholder="请输入设备型号..."></Input>
-							</FormItem>
-						</Col>
-						<Col span="12" v-show="dataRead">
+							</FormItem>-->
+						<!--</Col>-->
+						<Col span="24" v-show="dataRead">
 							<FormItem label='接口地址:'>
 								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
 							</FormItem>
@@ -57,11 +57,7 @@
 				</Form>
 			</div>
 			</Form>
-			<div v-show="!dataRead" slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save('addmess')">确定</Button>
-			</div>
-			<div v-show="dataRead" slot='footer'>
+			<div slot='footer'>
 				<Button type="ghost" @click="close">关闭</Button>
 				<Button type="success" @click="seet('addmess')">设置</Button>
 			</div>
@@ -76,7 +72,7 @@
 		name: '',
 		data() {
 			return {
-				dataRead:false,
+				dataRead:true,
 				showModal: true,
                 mesF:false,
 				form: {
@@ -102,7 +98,18 @@
 				ztlmdmDictionary:'ZDCLK0031'//设备状态
 			}
 		},
+		props:{
+			mess:{}
+		},
 		created(){
+			this.form= {
+                    'zdbh':this.mess.zdbh,//终端编号
+					'mc': this.mess.mc,//名称
+                    'cs': this.mess.cs,//厂商
+                    'zt':this.mess.zt,//终端状态
+                    'xh':this.mess.xh,//型号
+                    'cmd':this.mess.cmd//接口地址
+				},
 			this.getLXDic()
 		},
         mounted(){
@@ -121,12 +128,12 @@
 		                this.$http.post(url,this.form).then((res) =>{
 		                	if(res.code==200){
 		                		v.$Message.success(res.message);
-//								v.bud()
+								v.bud()
 						        v.$parent.getPageData()
 		                	}else{
 		                		v.$Message.error(res.message);
+		                		v.close()
 		                	}
-		                	v.close()
 		                }).catch((error) =>{
 							v.$Message.error('出错了！！！');
 						})
@@ -152,23 +159,16 @@
 			},
 			seet(name){
 		    	var v = this
-                this.$refs[name].validate((valid) => {
-                    if (valid) {
-                    	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
-                    		v.$Message.success(res.message);
-		                    v.$parent.getPageData()
-		                    v.close()
-		                }).catch((error) =>{
-							v.$Message.error('出错了！！！');
-						})
-	    		    } else {
-                    	v.$Message.error('请认真填写用户信息!');
-                    }
-                })
+            	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
+            		v.$Message.success(res.message);
+                    v.$parent.getPageData()
+                    v.close()
+                }).catch((error) =>{
+					v.$Message.error('出错了！！！');
+				})
 			},
 			close(){
 		        this.$parent.componentName = '';
-		        this.$parent.choosedRow = {}
 			}
 
 		}

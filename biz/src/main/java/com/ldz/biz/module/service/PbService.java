@@ -10,7 +10,7 @@ import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
 public interface PbService extends BaseService<ClPb, String> {
-	ApiResponse<String> saveEntity(ClPb entity,String date);
+	ApiResponse<String> saveEntity(ClPb entity);
 
 	ApiResponse<String> updateEntity(ClPb entity);
 
