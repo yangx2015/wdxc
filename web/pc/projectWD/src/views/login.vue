@@ -102,7 +102,9 @@ export default {
                             this.form.username='';
                             this.form.password='';
                 		}
+                		v.SpinShow = false
                 	}).catch((error) =>{
+                		v.SpinShow = false
                 		console.log('error',error)
                 	})
                 }
