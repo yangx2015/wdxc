@@ -1,12 +1,12 @@
 package com.ldz.obd.service.impl;
 
-import com.ldz.obd.bean.GpsObdMessageBean;
 import com.ldz.obd.bean.ObdFaultCodeBean;
 import com.ldz.obd.bean.ObdTravelItineraryBean;
 import com.ldz.obd.bean.PackageData;
 import com.ldz.obd.service.QueryService;
 import com.ldz.obd.service.codec.MsgDecoder;
 import com.ldz.obd.util.NettyUtil;
+import com.ldz.util.bean.GpsObdMessageBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -237,7 +237,7 @@ public class QueryServiceImpl implements QueryService {
          */
         obd.setSeq(""+msgDecoder.parseIntFromBytes(bodyBytes,62,1));
         System.out.println(obd.toString());
-        redisDao.opsForSet().add(gpsObdMessage+msg.getEquipmentId(),obd);//写入redis
+        redisDao.opsForValue().set(gpsObdMessage+msg.getEquipmentId(),obd);//写入redis
 //        ChannelHandlerContext ctx=msg.getCtx();
 //        nettyUtil.sendData(ctx,obd.toString());
     }

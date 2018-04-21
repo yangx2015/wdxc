@@ -4,6 +4,7 @@
 <!--用户管理-->
 <template>
 	<div class="boxbackborder">
+		<component :is="componentName"></component>
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<div style="height: 45px;line-height: 45px;">
@@ -26,7 +27,7 @@
 				<Col span="6" v-for="item in tableData">
 					<Card>
 						<Row>
-							<img :src="'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd+','+item.kswd+'&zoom=11&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=l,0|l,1'" class="imgItem">
+							<img @click="showMap" :src="'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd+','+item.kswd+'&zoom=11&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=l,0|l,1'" class="imgItem">
 						</Row>
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
@@ -44,11 +45,14 @@
 </template>
 
 <script>
+	import historyMap from '../../map/historyTarckMap'
 	import configApi from '@/axios/config.js'
 	export default {
 		name: 'char',
+		components:{historyMap},
 		data() {
 			return {
+                componentName:'',
                 showModal:true,
 				tabHeight: 220,
 				compName: '',
@@ -146,8 +150,8 @@
 			}])
 		},
 		methods: {
-		    getImgSrc(item){
-		        return 'http://api.map.baidu.com/staticimage?width=400&height=300&center='+item.ksjd,item.kswd+'&zoom=11&markers='+item.ksjd,item.kswd+'|'+item.ksjd,item.kswd+'&markerStyles=l,0|l,1';
+		    showMap(){
+		      this.componentName = 'historyMap';
 			},
 		    back(){
                 this.$router.back();

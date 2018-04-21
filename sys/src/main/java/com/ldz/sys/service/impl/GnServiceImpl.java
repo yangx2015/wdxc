@@ -14,7 +14,6 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -51,6 +50,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public ApiResponse<String> saveEntity(SysGn entity) {
+    	SysGn selectByPrimaryKey = gnMapper.selectByPrimaryKey(entity.getGndm());
+    	if(selectByPrimaryKey!=null) {
+    		return ApiResponse.fail("功能代码已存在");
+    	}
     	 SysYh user = getCurrentUser();
         entity.setCjr(user.getYhid());
         entity.setCjsj(new Date());
@@ -67,18 +70,18 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public ApiResponse<String> updateEntity(SysGn gn) {
-        SysGn oldRecord = gnMapper.selectByPrimaryKey(gn.getGndm());
-        RuntimeCheck.ifNull(oldRecord,"未找到记录");
-        RuntimeCheck.ifBlank(gn.getGndm(),"功能代码不能为空");
-        if (!gn.getGndm().equals(oldRecord.getGndm())){
-            boolean exists = ifExists(SysGn.InnerColumn.gndm.name(),gn.getGndm());
-            RuntimeCheck.ifTrue(exists,"功能代码已存在");
-        }
-        gn.setXgr(getOperateUser());
-        gn.setXgsj(new Date());
-        BeanUtils.copyProperties(gn,oldRecord);
-        gnMapper.updateByPrimaryKeySelective(oldRecord);
+    	gn.setXgr(getOperateUser());
+    	gn.setXgsj(new Date());
+    	SysGn gndm = gnMapper.selectByPrimaryKey(gn.getGndm());
+    	if (gndm==null) {
+			
+    		save(gn);
+		}else {
+			update(gn);
+		}
+        
 
+        
         return ApiResponse.success();
     }
 
