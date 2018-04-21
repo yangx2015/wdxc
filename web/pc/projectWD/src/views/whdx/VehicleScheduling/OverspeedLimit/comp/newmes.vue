@@ -8,7 +8,7 @@
 		    width='800'
 		    :closable='false'
 		    :mask-closable="false"
-		    :title="operate+'超速设定'">
+		    title="超速设定">
     		<Form
     			ref="addmess"
     			:model="addmess"
@@ -67,11 +67,6 @@
 		},
 		created(){
 			this.fullcal()
-
-            if(!this.messType){
-                this.operate = '编辑'
-            }
-            
             this.getCarTree()
 		},
 		methods:{
