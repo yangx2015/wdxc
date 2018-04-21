@@ -24,26 +24,35 @@ function hasPermission(list,name){
     return false;
 }
 router.beforeEach((to, from, next) => {
+	console.log(to.name)
     iView.LoadingBar.start();
-    if(to.name=='login'||(to.name!='login'&&Cookies.get('usermess'))){
-        // if (!hasPermission(to.name) && to.name !== 'error-403' && to.name !== 'home_index'){
-        //     next({
-        //         name: 'error-403'
-        //     });
-        //     return;
-        // }
+    if(to.name=='login'){
     	next()
-    }else if(to.name=='home_index'&&!Cookies.get('usermess')){
+    }else if(to.name!='login'&&Cookies.get('usermess')){
+    	next()
+    }else if((to.name=='home_index'|| to.name=='error-500')&&!Cookies.get('usermess')){
     	next({
             name: 'login'
         });
-    }
-    else{
+    }else if(to.name!='home_index'&&!Cookies.get('usermess')){
     	iView.Message.error("用户信息丢失，请重新登陆！！！");
     	next({
             name: 'login'
         });
     }
+//  if(to.name=='login'||(to.name!='login'&&Cookies.get('usermess'))){
+//  	next()
+//  }else if(to.name=='home_index'&&!Cookies.get('usermess')){
+//  	next({
+//          name: 'login'
+//      });
+//  }
+//  else{
+//  	iView.Message.error("用户信息丢失，请重新登陆！！！");
+//  	next({
+//          name: 'login'
+//      });
+//  }
 //	next()
 });
 router.afterEach((to) => {
