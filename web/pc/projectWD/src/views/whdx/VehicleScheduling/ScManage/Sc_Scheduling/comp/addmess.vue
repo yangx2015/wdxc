@@ -14,6 +14,7 @@
 			height="400"
 		    :closable='false'
 		    :mask-closable="false"
+		    width='600'
 		    :title="mess.xlmc+'_线路排班__'+pbTime">
 		    <div>
 		    	<div style="height: 200px;border: solid 1px #000;">
@@ -49,7 +50,7 @@
 		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="primary" shape="circle" 
 		    						 	size="small" icon="plus-round"
-		    						 	@click="AddList(item.clId)"></Button>
+		    						 	@click="AddList(item.clId,item.cph)"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
@@ -91,7 +92,7 @@
 			},
 			getCarList(){//获取车辆列表
 				var v = this
-				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'30'}).then((res) =>{
 					if(res.code == 200){
 						console.log('车辆据',res)
 						res.result.forEach(function(item,index){
@@ -106,16 +107,19 @@
 					console.log('bug')
 				})
 			},
-			AddList(carID){
+			AddList(carID,cph){
 				debugger
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
 					console.log('排版新增',res)
-					v.$parent.getmess()
-					v.getCarList()
-//					if(res.code==500){
-//						v.$parent.domeC()
-//					}
+					if(res.code==200){
+						v.$Message.success(res.message);
+						v.$parent.getmess()
+						v.getCarList()
+						v.mess.clList.push({'cph':cph,'clId':carID})
+					}else{
+						v.$Message.error(res.message);
+					}
 				})
 			},
 			deleteById(carID,LineID){

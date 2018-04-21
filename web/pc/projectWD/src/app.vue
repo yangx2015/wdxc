@@ -27,6 +27,11 @@
         watch: {
             loading:function(newQuestion, oldQuestion){
             	this.SpinShow = newQuestion
+            	if(newQuestion==true){
+            		setTimeout(()=>{
+            			this.$store.commit('CloadingType',false)
+            		},500)
+            	}
             }
         },
         mounted () {
