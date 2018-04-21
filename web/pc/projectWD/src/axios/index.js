@@ -7,8 +7,8 @@ import qs from 'qs';
 import store from '@/store'
 //订单分配权限
 let httpInstance = axios.create({
-//baseURL: 'http://127.0.0.1:80',
-   baseURL: 'http://47.98.39.45:8080/biz',
+baseURL: 'http://127.0.0.1:8081',
+   // baseURL: 'http://47.98.39.45:8080/biz',
 // 	 baseURL: 'http://192.168.31.181:80',//陈
 // 	 baseURL: 'http://192.168.31.228:80',//羊
 // 	 baseURL: 'http://192.168.31.228:80',//羊
@@ -19,7 +19,7 @@ let httpInstance = axios.create({
 // 添加请求拦截器 数据请求之前
 httpInstance.interceptors.request.use((config) => {
 	store.commit('CloadingType',true)//全局加载等待
-	
+
     var headers = config.headers;
     var contentType = headers['Content-Type'];
     if (contentType == "application/x-www-form-urlencoded"){

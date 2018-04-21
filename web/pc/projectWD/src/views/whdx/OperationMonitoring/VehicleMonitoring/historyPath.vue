@@ -10,10 +10,10 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
+							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="formItemList()" style="width: 220px"></DatePicker>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="findMessList()">
+							<Button type="primary" @click="formItemList()">
 								<Icon type="search"></Icon>
 							</Button>
 							<Button type="primary" @click="back()">
@@ -127,17 +127,18 @@
 				],
 				//收索
 				cjsjInRange:[],
-				findMess: {
-					cjsjInRange:'',
-					zjhmLike: '',
-					pageNum: 1,
-					pageSize: 5
+				formItem: {
+                    startTime:'2018-01-01',
+                    endTime: '2018-05-05',
+                    zdbh: 1,
+                    ignition: 10,
+                    brennschluss:''
 				},
 			}
 		},
 		// watch: {
 		// 	cjsjInRange:function(newQuestion, oldQuestion){
-		// 		this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+		// 		this.formItem.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 		// 	},
 		// },
 		created() {
@@ -148,6 +149,8 @@
 			}, {
 				title: '用户管理',
 			}])
+			this.formItem.zdbh = this.$route.params.zdbh;
+			this.formItemList();
 		},
 		methods: {
 		    showMap(){
@@ -160,16 +163,16 @@
 		      this.$parent.showPath();
 		      this.$parent.componentName = '';
 			},
-            findMessList(){
+            formItemList(){
                 var v = this
-                // this.$http.get('/api/clzd/getNearbyStations',{params:{lng:114.36457,lat:30.545504}}).then((res) =>{
-                //
-                // })
+                this.$http.get(configApi.CLGL.GPS_HITSOR,{params:this.formItem}).then((res) =>{
+                    console.log(res);
+                })
 			},
 			//分页点击事件按
 			pageChange(event) {
 				var v = this
-				v.findMess.pageNum = event
+				v.formItem.pageNum = event
 			}
 		}
 	}

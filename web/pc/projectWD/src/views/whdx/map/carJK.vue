@@ -13,6 +13,7 @@
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
     import carInfo from '../OperationMonitoring/VehicleMonitoring/carInfo'
 	export default {
 		name:'getmapdot',
@@ -45,13 +46,17 @@
 		},
 		methods:{
 		    showFance(carId){
+                this.fancePoints = [];
                 var v = this
-                this.$http.get(configApi.DZWL.QUERY).then((res) =>{
-                    this.allCarList = res.result;
-                    for(let r of this.allCarList){
-                        this.handleItem(r);
+                this.$http.get(configApi.DZWL.GET_BY_CAR_ID+"?clId="+carId).then((res) =>{
+                    if (res.code === 200){
+                        let s = res.result.dlxxzb;
+                        let ps = s.split(";");
+                        for (let r of ps){
+                            let point = r.split(",");
+                            this.fancePoints.push({lng:point[1],lat:point[0]})
+                        }
                     }
-                    this.init();
                 })
                 this.addArea(this.fancePoints);
 			},

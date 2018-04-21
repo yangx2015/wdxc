@@ -2,6 +2,7 @@ package com.ldz.biz.module.controller;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,7 +53,9 @@ public class CssdCtrl extends BaseController<ClCssd, String> {
 
 	@PostMapping("/setCssds")
 	public ApiResponse<String> setCssds(String cphs, String csz) {
-
+		if (StringUtils.isEmpty(cphs)) {
+			return ApiResponse.error();
+		}
 		return service.setCssds(cphs, csz);
 	}
 

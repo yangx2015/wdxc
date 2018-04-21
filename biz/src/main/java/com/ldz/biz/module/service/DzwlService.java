@@ -19,4 +19,6 @@ public interface DzwlService extends BaseService<ClDzwl,String>{
     ApiResponse<String> setCarDzwl(String clId, List<String> wlIds);
 
     ApiResponse<String> setCarsDzwl(String carIds, String wlid);
+
+    ApiResponse<ClDzwl> getByCarId(String clId);
 }

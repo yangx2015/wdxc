@@ -37,6 +37,11 @@ public class DzwlCtrl extends BaseController<ClDzwl,String>{
         return service.updateEntity(entity);
     }
 
+    @RequestMapping("getByCarId")
+    public ApiResponse<ClDzwl> getByCarId(String clId){
+        return service.getByCarId(clId);
+    }
+
     /**
      * 设置车辆电子围栏
      * @param clId

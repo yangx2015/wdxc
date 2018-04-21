@@ -133,11 +133,11 @@
                 },1000)
             },
             showPathHistory(){
-                this.$router.push({name: 'historypath'});
+                this.$router.push({name: 'historypath',params:{zdbh:this.car.zdbh}});
                 this.close();
             },
             showFance(){
-                this.$parent.showFance()
+                this.$parent.showFance(this.car.clid)
                 this.close();
             }
         }
