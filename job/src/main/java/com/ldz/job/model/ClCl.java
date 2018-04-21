@@ -154,10 +154,11 @@ public class ClCl implements Serializable {
 
     private static final long serialVersionUID = 1L;
     /**
-     * OBJ编号
+     * OBD编号
      */
-    @Column(name = "OBJ_CODE")
+    @Column(name = "OBD_CODE")
     private String obdCode;
+
 
     public String getObdCode() {
         return obdCode;
