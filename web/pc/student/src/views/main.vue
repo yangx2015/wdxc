@@ -4,24 +4,33 @@
 </style>
 <template>
   <div class="box main">
-  	<!--<div class="header">
-  		<x-header
-  			:left-options="{showBack: false}">
-  			with more menu</x-header>
-  	</div>-->
+  	<!--<div class="header">-->
+		<!--<div class="box-row">
+			<div class="titLeft" @click="MyCenter()">
+				<Icon type="person" color="#949494" size='26'></Icon>
+			</div>
+			<div class="titCenter body-O" style="text-align: center;">
+				 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
+			</div>
+			<div class="titRight">
+				<Icon type="ios-compose" color="#949494" size='26'></Icon>
+			</div>
+			
+		</div>-->
+  	<!--</div>-->
   	<div class="body center">
   		<router-view></router-view>
   	</div>
   	<!--<div class="footer">
   		<div class="box-row">
   			<div class="body-O">
-  				<a>1</a>
+  				<a>站点</a>
   			</div>
   			<div class="body-O">
-  				<a>2</a>
+  				<a>反馈</a>
   			</div>
   			<div class="body-O">
-  				<a>3</a>
+  				<a>我的</a>
   			</div>
   		</div>
   	</div>-->
@@ -29,20 +38,19 @@
 </template>
 
 <script>
-	import { Tabbar, TabbarItem, XHeader} from 'vux'
 	export default {
 	  name: 'HelloWorld',
 	  components: {
-	    Tabbar,
-	    TabbarItem,
-	    XHeader
 	  },
 	  data () {
 	    return {
-	      msg: 'Welcome to Your Vue.js App'
+	    	titFind:''
 	    }
 	  },
 	  methods:{
+	  	MyCenter(){
+	  		alert('left')
+	  	},
 	  	back(){
 	  		alert('back')
 	  	}

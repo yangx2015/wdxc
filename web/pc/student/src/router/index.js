@@ -19,6 +19,16 @@ const router = new Router({
 	      	path:'/',
 	      	name:'center',
 	      	component: () => import('@/views/pageIndex'),
+	      },
+	      {
+	      	path:'/myCenter',
+	      	name:'myCenter',
+	      	component: () => import('@/views/myCenter'),
+	      },
+	      {
+	      	path:'/feedback',
+	      	name:'feedback',
+	      	component: () => import('@/views/feedback'),
 	      }
       ]
     },

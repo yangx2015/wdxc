@@ -4,6 +4,20 @@
 </style>
 <template>
 	<div class="box">
+		<div class="header">
+			<div class="box-row">
+				<div class="titLeft" @click="MyCenter()">
+					<Icon type="person" color="#949494" size='26'></Icon>
+				</div>
+				<div class="titCenter body-O" style="text-align: center;">
+					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
+				</div>
+				<div class="titRight" @click="feedback()">
+					<Icon type="ios-compose" color="#949494" size='26'></Icon>
+				</div>
+				
+			</div>
+		</div>
 		<div>
 			<swiper 
 				:list="imglist" 
@@ -21,7 +35,12 @@
 				      <tab-item @on-item-click="onItemClick">通勤巴士</tab-item>
 				    </tab>
 				</div>
-				<div class="body">
+				<div v-if="!school" class="body" style="position: relative;">
+					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
+						功能开发中
+					</div>
+				</div>		
+				<div v-else class="body">
 					<div class="list">
 						<div class="listTiT box-row">
 							<div class="body-O">
@@ -76,6 +95,8 @@
 		 },
 		data(){
 			return{
+				school:true,
+				titFind:'',
 				imglistV:0,
 				imglist: [{
 				  img: 'https://static.vux.li/demo/1.jpg',
@@ -90,6 +111,16 @@
 			
 		},
 		methods:{
+		  	MyCenter(){
+		  		this.$router.push({
+		    		name:'myCenter'
+		    	})
+		  	},
+		  	feedback(){
+		  		this.$router.push({
+		    		name:'feedback'
+		    	})
+		  	},
 			demo01_onIndexChange (index) {
 //				console.log(index)
 		    },
@@ -99,6 +130,11 @@
 		    	})
 		    },
 		    onItemClick(index){
+		    	if(index==1){
+		    		this.school = false
+		    	}else{
+		    		this.school = true
+		    	}
 		    }
 		}
 	}
