@@ -14,7 +14,12 @@
 							<span>校巴排班</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="todaytime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间" style="width: 220px"></DatePicker>
+							<DatePicker v-model="todaytime" 
+								format="yyyy-MM-dd" 
+								type="date" 
+								placement="bottom-end" 
+								placeholder="请输时间" 
+								style="width: 220px"></DatePicker>
 						</div>
 						<!--<div class="butevent">
 						</div>-->
@@ -35,7 +40,8 @@
 		</Card>
 		<component
 			:is="compName"
-			:mess="mess"></component>
+			:mess="mess"
+			:pbTime="giveTime"></component>
 	</div>
 </template>
 
@@ -58,6 +64,7 @@
 				tabHeight:220,
 				SpinShow:true,
 				todaytime:'',
+				giveTime:'',
 				//分页
 				//---数据总数
 				pageTotal: 2,
@@ -123,6 +130,11 @@
 									},
 									on: {
 										click: () => {
+											if(params.row.clList!=null){
+												params.row.clList.forEach(function(item,index){
+													item.ico = false
+												})
+											}
 											this.mess = params.row
 											this.compName = 'addmess'
 										}
@@ -145,9 +157,15 @@
 			}, {
 				title: '校巴排班',
 			}]),
-			this.todaytime = this.getdateParaD(this.getdate())
+			this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
 			this.tabHeight = this.getWindowHeight() - 220
 			this.getmess()
+		},
+		watch:{
+			todaytime:function(n,o){
+				this.giveTime = this.getdateParaD(n)
+				this.getmess()
+			}
 		},
 		mounted(){
 		},
@@ -156,7 +174,7 @@
 				var v = this
 				console.log('排班数据2')
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.giveTime}).then((res) =>{
 					console.log('排班数据2',res)
 					v.tableData = res.result
 				}).then((res) =>{

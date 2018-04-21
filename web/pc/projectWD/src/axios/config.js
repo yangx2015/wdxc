@@ -144,8 +144,10 @@ module.exports = {
 	},
 	XLPBXX:{//车辆排班信息
 		QUERY: '/api/pb/xbbjpb/',
-		ADD:    '/api/pb/save',
-        DELE:   '/api/pb/removeIds',
+//		ADD:    '/api/pb/save',
+		ADD:    '/api/pb/savepb',
+//      DELE:   '/api/pb/removeIds',
+        DELE:   '/api/pb/deleteByXlAndCl',
         deleteByXlAndCl:   '/api/pb/deleteByXlAndCl',
 	},
 	XBDT:{//校巴实时动态
