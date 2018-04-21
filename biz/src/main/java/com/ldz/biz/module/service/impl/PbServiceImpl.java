@@ -58,6 +58,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		RuntimeCheck.ifBlank(entity.getDate(),"排线时间不能为空");
 		RuntimeCheck.ifBlank(entity.getClId(),"车辆ID不能为空");
 		RuntimeCheck.ifBlank(entity.getXlId(),"线路ID不能为空");
+		RuntimeCheck.ifBlank(entity.getCx()," 车型不能为空");
 		Date pbDate=null;
 		try {
 			pbDate=DateUtils.getDate(entity.getDate(),"yyyy-MM-dd");
@@ -78,6 +79,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if(!StringUtils.equals(clZt,"00")){
 			RuntimeCheck.ifBlank(sjId,"该车辆状态异常，无法进行排班");
 		}
+		if(!StringUtils.equals(entity.getCx(),clCl.getCx())){
+			RuntimeCheck.ifBlank(sjId,"该车辆车型异常，无法进行排班");
+		}
+
 
 
 		// 通过车辆id找到当天是否有排班线路信息
@@ -210,9 +215,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		return date;
 	}
 	@Override
-	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date){
+	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
 		RuntimeCheck.ifBlank(xlId,"线路ID不能为空");
 		RuntimeCheck.ifBlank(date,"排班时间不能为空");
+		RuntimeCheck.ifBlank(cx,"车型不能为空");
 		Date pbDate=null;
 		try {
 			pbDate=DateUtils.getDate(date,"yyyy-MM-dd");
@@ -220,7 +226,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if(pbDate==null){
 			RuntimeCheck.ifFalse(false,"排班时间格式异常");
 		}
-		List<ClClModel> clClList=clclmapper.getAllNotPbClList(xlId,pbDate);
+		List<ClClModel> clClList=clclmapper.getAllNotPbClList(xlId,pbDate,cx);
 		return ApiResponse.success(clClList);
 	}
 	public static void main(String[] args) {
