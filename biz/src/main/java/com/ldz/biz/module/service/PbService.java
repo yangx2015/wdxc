@@ -34,5 +34,5 @@ public interface PbService extends BaseService<ClPb, String> {
 
 	ApiResponse<String> deleteByXlAndCl(String xlId, String clId,String date);
 
-	ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date);
+	ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx);
 }

@@ -82,7 +82,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	 * @return
 	 */
 	@RequestMapping(value="/getcllist", method={RequestMethod.POST})
-	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date){
-		return pbservice.getAllNotPbClList(xlId,date);
+	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
+		return pbservice.getAllNotPbClList(xlId,date,cx);
 	}
 }

@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -92,11 +91,20 @@ public class ClPb implements Serializable {
     
     @Transient
     private String date;
-    
+
+    private String cx;
+
     private static final long serialVersionUID = 1L;
-  
-    
-    
+
+
+    public String getCx() {
+        return cx;
+    }
+
+    public void setCx(String cx) {
+        this.cx = cx;
+    }
+
     public String getDate() {
 		return date;
 	}
