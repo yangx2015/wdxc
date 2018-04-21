@@ -19,26 +19,19 @@
 		    <div>
 		    	<div style="height: 200px;border: solid 1px #000;">
 		    		<Row>
-		    			<!--<Col span="4">
-		    				<div class="carListsty" 
-		    					@mouseenter="Rbut('1')"
-		    					@mouseleave="cscs('2')">
-		    					cpamkl
-		    				</div>	    		
-		    			</Col>-->
 		    			<Col span="4" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>
 		    				<div class="carListsty" 
 		    					@mouseenter="item.ico = true"
 		    					@mouseleave="item.ico = false">
 		    					{{item.cph}}
-		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
-		    						 <Button type="primary" shape="circle" 
-		    						 	size="small" icon="plus-round"></Button>
+		    					<span style="position:absolute;top: -6px;right: -10px;z-index: 100;">
+		    						 <Button type="error" shape="circle" 
+		    						 	size="small" icon="minus-round"
+		    						 	@click="deleteById(item.clId,index)"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
 		    		</Row>
-		    		<!--<span class="carListsty" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>{{item.cph}}</span>-->
 		    	</div>
 		    	<div style="height: 200px;border: solid 1px #000;">
 		    		<Row>
@@ -122,11 +115,16 @@
 					}
 				})
 			},
-			deleteById(carID,LineID){
+			deleteById(carID,index){
                 this.$Message.success('移出成功');
                 var v = this
-                this.$http.post(configApi.XLPBXX.DELE,{"clId":carID,"xlId":LineID,"date":v.pbTime}).then((res) =>{
-                    this.getmess();
+                this.$http.post(configApi.XLPBXX.DELE,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
+                    if(res.code==200){
+                    	v.$Message.success(res.message);
+                    	v.$parent.getmess();
+                    	v.getCarList();
+                    	v.mess.clList.splice(index,1)
+                    }
                 })
 			},
 			colse(){
