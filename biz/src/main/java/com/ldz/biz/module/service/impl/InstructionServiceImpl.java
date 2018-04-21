@@ -39,6 +39,10 @@ public class InstructionServiceImpl  implements InstructionService {
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
 			
+			if (apiResponse.getCode()!=200) {
+				return ApiResponse.fail("操作失败");
+			}
+			
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
 			
 			if (info.getCmdType().equals("02")) {
