@@ -182,15 +182,6 @@
 				}).catch((err) =>{
 					console.log('bug')
 				})
-				
-				
-				
-//				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-//					console.log('排班数据',res)
-//					v.tableData = res.result
-////					v.pageTotal = res.page.total
-//					v.SpinShow = false;
-//				})
 			},
         	changeClick(){
         		this.compName='addmess'

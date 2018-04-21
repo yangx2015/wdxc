@@ -50,7 +50,7 @@
 		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="primary" shape="circle" 
 		    						 	size="small" icon="plus-round"
-		    						 	@click="AddList(item.clId,mess.id)"></Button>
+		    						 	@click="AddList(item.clId,item.id)"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
@@ -92,12 +92,13 @@
 			},
 			getCarList(){//获取车辆列表
 				var v = this
-				this.$http.get(configApi.CLGL.QUERY).then((res) =>{
+				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime}).then((res) =>{
 					if(res.code == 200){
-						res.page.list.forEach(function(item,index){
+						console.log('车辆据',res)
+						res.result.forEach(function(item,index){
 							item.ico = false
 						})
-						v.chrlist = res.page.list
+						v.chrlist = res.result
 					}else{
 						console.log('bug')
 					}
@@ -111,6 +112,7 @@
 				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date":v.pbTime}).then((res) =>{
 					console.log('排版新增',res)
 					v.$parent.getmess()
+					v.getCarList()
 //					if(res.code==500){
 //						v.$parent.domeC()
 //					}

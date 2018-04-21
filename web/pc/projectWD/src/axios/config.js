@@ -148,6 +148,7 @@ module.exports = {
 		ADD:    '/api/pb/savepb',
 //      DELE:   '/api/pb/removeIds',
         DELE:   '/api/pb/deleteByXlAndCl',
+        CARLIST:'api/pb/getcllist',//其余车辆
         deleteByXlAndCl:   '/api/pb/deleteByXlAndCl',
 	},
 	XBDT:{//校巴实时动态
