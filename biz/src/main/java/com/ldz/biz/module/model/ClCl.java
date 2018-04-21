@@ -167,7 +167,7 @@ public class ClCl implements Serializable {
     @Column(name = "NSSJ")
     private Date nssj;
     /**
-     * OBJ编号
+     * OBD编号
      */
     @Column(name = "OBD_CODE")
     private String obdCode;
