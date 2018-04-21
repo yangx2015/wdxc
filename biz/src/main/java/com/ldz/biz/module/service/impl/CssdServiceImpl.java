@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -83,14 +84,15 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 
 	@Override
 	public ApiResponse<String> setCssds(String cphs, String csz) {
-		int count =0;
+		int count = 0;
 		SysYh user = getCurrentUser();
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
 		// 将车牌号,车辆信息缓存
 		List<ClCl> selectAll = clclmapper.selectAll();
-		Map<String, ClCl> clmap = selectAll.stream().collect(Collectors.toMap(ClCl::getCph, ClCl -> ClCl));
+		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getCph()))
+				.collect(Collectors.toMap(ClCl::getCph, ClCl -> ClCl));
 
-		List<String> cphss=Arrays.asList(cphs.split(","));
+		List<String> cphss = Arrays.asList(cphs.split(","));
 		for (String cph : cphss) {
 			GpsInfo gpsInfo = new GpsInfo();
 			ClCssd cssd = new ClCssd();
@@ -100,10 +102,10 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 			gpsInfo.setCmdType("01");
 			gpsInfo.setCmd(csz);
 			ApiResponse<String> senZl = senZl(gpsInfo);
-		 if (senZl.getCode()!=200) {
-			 count++;
-			 continue;
-		}
+			if (senZl.getCode() != 200) {
+				count++;
+				continue;
+			}
 			cssd.setCjr(getOperateUser());
 			cssd.setCjsj(new Date());
 			cssd.setCph(cph);
@@ -114,7 +116,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 			insetAndUpdate(cssd);
 
 		}
-		return ApiResponse.success("共计"+cphss.size()+"个"+"-----"+"设定失败了"+count+"个");
+		return ApiResponse.success("共计" + cphss.size() + "个" + "-----" + "设定失败了" + count + "个");
 	}
 
 	@Override
@@ -141,7 +143,9 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse = (ApiResponse<String>) JsonUtil.toBean(result, ApiResponse.class);
-
+			if (apiResponse.getCode() != 200) {
+				return ApiResponse.fail();
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

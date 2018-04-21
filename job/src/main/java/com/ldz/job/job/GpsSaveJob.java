@@ -3,6 +3,7 @@ package com.ldz.job.job;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -39,7 +40,7 @@ public class GpsSaveJob implements Job {
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		// 获取所有的终端编号
 		List<ClCl> gpslist = clclmapper.selectAll();
-		List<String> zubhList = gpslist.stream().map(ClCl::getZdbh).collect(Collectors.toList());
+		List<String> zubhList = gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClCl::getZdbh).collect(Collectors.toList());
 		try {
 			for (String zdbh : zubhList) {
 
