@@ -29,7 +29,7 @@
 		    				<div class="carListsty" 
 		    					@mouseenter="item.ico = true"
 		    					@mouseleave="item.ico = false">
-		    					{{item.cph}}{{item.ico}}
+		    					{{item.cph}}
 		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="primary" shape="circle" 
 		    						 	size="small" icon="plus-round"

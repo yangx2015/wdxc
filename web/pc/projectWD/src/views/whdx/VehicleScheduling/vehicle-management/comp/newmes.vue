@@ -12,7 +12,7 @@
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
-	    		<div style="overflow: auto;height: 300px;">
+	    		<div style="overflow: auto;">
 					<Row>
 						<Col span="12">
 							<FormItem prop="cph" label='车牌号：'>
@@ -28,13 +28,14 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="zkl" label='载客量：'>
-								<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>
+								<!--<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>-->
+								<input class="input" type="number"  v-model="addmess.zkl"  placeholder="请设置载客量"/>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="sjxm" label='司机：'>
 								<Select filterable clearable  v-model="addmess.sjId">
-									<Option v-if="editMode" :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>
+									<!--<Option v-if="editMode" :value="addmess.sjId" :key="addmess.sjId">{{addmess.sjxm}}</Option>-->
 									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
@@ -96,12 +97,12 @@
                       { required: true, message: '请输入用户名', trigger: 'blur' }
                   ],
               	},
-				deviceList:[],
-				drivers:[],
+				deviceList:[],//终端设备
+				drivers:[],//驾驶员
 				fleetList:[],
-                clztDict:[],
+                clztDict:[],//车辆状态
                 clztDictCode:'ZDCLK0016',
-                cxDict:[],
+                cxDict:[],//车量型号
                 cxDictCode:'ZDCLK0019',
 			}
 		},
@@ -113,14 +114,19 @@
 			mess:{
 				type:Object,
 				default:{}
+			},
+			derMess:{
+				type:Object,
+				default:{}
 			}
 		},
 		created(){
             if(!this.messType){
                 this.operate = '编辑';
                 this.editMode = true;
+                this.addmess = this.mess
+                console.log('数据传递',this.derMess)
             }
-			this.addmess = this.mess
             this.getDrivers();
 			this.getDict();
 			this.getFleetList();
@@ -159,6 +165,11 @@
                 v.$http.get(configApi.JSY.NOT_BIND_LIST).then((res) =>{
                     if(res.code===200){
                         this.drivers = res.result;
+                        if(v.derMess.sjId!=null&&!v.messType){
+		                	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
+		                	console.log('驾驶员添加数据',v.drivers)
+		                }
+                        console.log('驾驶员',this.drivers)
                     }
                 })
 			},

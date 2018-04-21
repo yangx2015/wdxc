@@ -15,7 +15,6 @@
 							<span>车辆管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
@@ -49,6 +48,7 @@
     	<component
 			:is="compName" 
 			:mess="mess"
+			:derMess="derMes"
 			:messType="messType"></component>
     </div>
 </template>
@@ -68,6 +68,10 @@
         data () {
             return {
             	mess:{},
+            	derMes:{
+            		sjId:'',
+            		sjxm:''
+            	},
             	messType:true,
             	compName:'',
                 clztDict:[],
@@ -152,6 +156,7 @@
                         title: '终端编号',
                         align:'center',
                         key: 'zdbh'
+//						key:'sjId'
                     },
                     {
                         title: '操作',
@@ -174,7 +179,9 @@
                                         click: () => {
                                             this.messType = false
                                         	this.mess = params.row
-                                            console.log(params.row);
+                                        	this.derMes.sjId = params.row.sjId
+                                        	this.derMes.sjxm = params.row.sjxm
+                                            console.log('index数据传递',this.derMes);
                                             this.compName = newmes
                                         }
                                     }
@@ -207,9 +214,7 @@
 	                }
                 ],
                 //收索
-                cjsjInRange:[],
 				findMess: {
-					cjsjInRange:'',
                     cphLike: '',
 					pageNum: 1,
 					pageSize: 5
@@ -238,11 +243,6 @@
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
             },
         	getmess(){
-                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-        	        this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
-				}else{
-                    this.findMess.cjsjInRange = '';
-				}
 				var v = this
 				this.$http.get(configApi.CLGL.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('车辆数据',res.page.list)
