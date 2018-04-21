@@ -91,7 +91,8 @@ module.exports = {
         ADD:   '/api/cl/save',
         CHANGE:'/api/cl/update',
         DELE:  '/api/cl/removeIds',
-		GET_ORG_CAR_LIST:'/api/cl/getOrgCarList'
+		GET_ORG_CAR_LIST:'/api/cl/getOrgCarList',
+		GPS_HITSOR:'/api/clsbyxsjjl/history'
 	},
 	XL:{
 		QUERY: '/api/xl/pager',
@@ -178,7 +179,7 @@ module.exports = {
 		ADD:    '/api/dzwl/save',
         CHANGE: '/api/dzwl/update',
 		DELE:   '/api/dzwl/removeIds',
-		GET_BY_ID:'/api/getById',
+		GET_BY_CAR_ID:'/api/dzwl/getByCarId',
         setCarsDzwl:'/api/dzwl/setCarsDzwl'
 	},
 	CLJK:{

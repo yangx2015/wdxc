@@ -122,4 +122,15 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements 
 		}
 		return ApiResponse.success();
 	}
+
+	@Override
+	public ApiResponse<ClDzwl> getByCarId(String clId) {
+		RuntimeCheck.ifBlank(clId,"请选择车辆");
+		SimpleCondition condition = new SimpleCondition(ClDzwlCl.class);
+		condition.eq(ClDzwlCl.InnerColumn.clId,clId);
+		List<ClDzwlCl> dzwlClList = dzwlClMapper.selectByExample(condition);
+		if (dzwlClList.size() == 0)return new ApiResponse<>();
+		ClDzwl dzwl = findById(dzwlClList.get(0).getWlId());
+		return ApiResponse.success(dzwl);
+	}
 }

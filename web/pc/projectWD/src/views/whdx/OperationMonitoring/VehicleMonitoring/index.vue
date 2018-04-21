@@ -102,6 +102,7 @@ export default {
             mapCarList:[],
             carArray:[[],[],[]],
 			status:0,
+            choosedCar:null,
 			keyword:'',
 			allCarList:[
                 {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:30.608123, bdwd:114.27226},
@@ -117,37 +118,59 @@ export default {
         };
     },
     computed: {
-        GetscoketMess() {
-            return this.$store.state.app.scoketAllCar
+        GetsocketAllCar() {
+            return this.$store.state.app.socketAllCar
         }
     },
     watch: {
-        GetscoketMess: function(newQuestion, oldQuestion) {
-			this.onGpsInfo(newQuestion);
+        GetsocketAllCar: function(newQuestion, oldQuestion) {
+            this.onGpsInfo(newQuestion);
         },
     },
     created(){
-    	this.$store.commit('setCurrentPath', [{
+        this.$store.commit('setCurrentPath', [{
             title: '首页',
         },{
             title: '运营监控',
         },{
             title: '车辆监控',
         }])
+		// this.init();
         this.initGps()
     },
     methods: {
         onGpsInfo(m){
-            console.log('onGpsInfo');
+            console.log('m:',m);
+            let has = false;
             for(let r of this.allCarList){
-			    if (r.zdbh = m.zdbh){
-                    console.log(r);
+			    if (r.clid = m.clid){
+                    has = true;
                     r = m;
                     this.handleItem(r);
-                    this.mapCarList = this.carArray[this.status];
+                    // this.allCarList.push(r);
+                    this.classify();
+                    if (this.choosedCar){
+                        this.mapCarList = [this.choosedCar];
+                    }else{
+                        this.mapCarList = this.carArray[this.status];
+                    }
+                    this.rightCarList = this.carArray[this.status];
                     this.$refs.map.init();
                     return;
                 }
+			}
+            console.log('has ',has);
+            if (!has){
+                this.handleItem(m);
+                this.allCarList.push(m);
+                this.classify();
+                if (this.choosedCar){
+                    this.mapCarList = [this.choosedCar];
+                }else{
+                    this.mapCarList = this.carArray[this.status];
+                }
+                this.rightCarList = this.carArray[this.status];
+                this.$refs.map.init();
 			}
 		},
         init(){
@@ -164,9 +187,11 @@ export default {
 		initGps(){
             var v = this
             this.$http.get(configApi.CLJK.QUERY).then((res) =>{
-                this.allCarList = res.result;
-                for(let r of this.allCarList){
-                    this.handleItem(r);
+                if (res.code === 200){
+                    this.allCarList = res.result;
+                    for(let r of this.allCarList){
+                        this.handleItem(r);
+                    }
 				}
                 this.init();
             })
@@ -175,6 +200,7 @@ export default {
             this.$refs.map.showPath();
         },
         changeStatus(status){
+            this.choosedCar = null;
             this.status = status;
             this.rightCarList = this.carArray[status];
             this.mapCarList = this.carArray[status];
@@ -210,8 +236,9 @@ export default {
 			}
 		},
 		rowClick(item){
+            this.choosedCar = item;
             console.log(item);
-            this.mapCarList = [item];
+            this.mapCarList = [this.choosedCar];
             this.$refs.map.init();
 		}
     }
