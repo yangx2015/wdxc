@@ -14,12 +14,12 @@
 			and t3.lx=#{lulx}
 		</if>
 		 WHERE
-		to_char(t1.cjsj,'yyyy-mm-dd')=#{date2}
+		t1.PBSJ=#{date2}
 	</select>
 
 <select id="findXlCl"  parameterType="com.ldz.biz.module.bean.clpbInfo" resultMap="ClPBresultMap">
 
-SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  to_char(t.cjsj,'yyyy-mm-dd')=#{date}
+SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  t.PBSJ=#{date}
        <if test="xlid != null">
 			and t.XL_ID=#{xlid}
 		</if>
@@ -32,7 +32,7 @@ SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  to_char(t.cjsj,'yyyy-mm-dd')=#
 		select t3.id,t3.xlmc,t3.yxkssj,t3.yxjssj, 
 		listagg(t3.cl_id, ',') within group( order by cl_id) as clidlist from
 		(select T1.*,t2.cl_id from CL_XL t1 left join CL_PB t2 on T1."ID"=T2.XL_ID
-		and to_char(t2.cjsj,'yyyy-mm-dd')=#{date2} 
+		and t2.PBSJ=#{date2}
 		<if test="lulx != null">
 			and t1.LX=#{lulx}
 		</if>

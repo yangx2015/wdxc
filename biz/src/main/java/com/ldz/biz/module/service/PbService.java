@@ -1,13 +1,14 @@
 package com.ldz.biz.module.service;
 
-import java.util.List;
-
+import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.PbClXlmodel;
 import com.ldz.biz.module.bean.PbInfo;
 import com.ldz.biz.module.bean.XbXlPb;
 import com.ldz.biz.module.model.ClPb;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+
+import java.util.List;
 
 public interface PbService extends BaseService<ClPb, String> {
 	ApiResponse<String> saveEntity(ClPb entity);
@@ -32,4 +33,6 @@ public interface PbService extends BaseService<ClPb, String> {
 	ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel pbclxlmodel);
 
 	ApiResponse<String> deleteByXlAndCl(String xlId, String clId,String date);
+
+	ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date);
 }
