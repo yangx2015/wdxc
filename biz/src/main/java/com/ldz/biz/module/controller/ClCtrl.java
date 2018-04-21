@@ -23,7 +23,7 @@ import javax.validation.Valid;
  * 车辆设定
  */
 @RestController
-@RequestMapping("api/cl")
+@RequestMapping("pub/cl")
 public class ClCtrl extends BaseController<ClCl, String> {
 	@Autowired
 	private ClService clservice;
