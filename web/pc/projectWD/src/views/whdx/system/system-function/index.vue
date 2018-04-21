@@ -67,7 +67,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize: 8
 				},
 				//数据传输
 				chmess:{},
@@ -236,8 +236,8 @@
 				this.$http.get(configApi.FUNCTION.QUERY,{params:this.findMess}).then((res) =>{
 					//console.log('功能数据',res)
 					v.tableData = res.page.list
-					v.SpinShow = false;
-					v.pageTotal = res.page.total;
+					v.SpinShow = false
+					v.pageTotal = res.page.total
 				})
 			},
 			//删除数据

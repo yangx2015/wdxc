@@ -44,7 +44,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop='gndm' label='功能代码'>
-								<Input type="text" v-model="formItem.gndm" placeholder="请填写功能名称..."></Input>
+								<Input :readonly="read" type="text" v-model="formItem.gndm" placeholder="请填写功能名称..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -106,7 +106,7 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem prop='px' label='排序'>
+							<FormItem label='排序'>
 								<!--<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>-->
 								<input class="input" type="number"  v-model="formItem.px"  placeholder="请填写排序..."/>
 							</FormItem>
@@ -137,6 +137,7 @@
                 operate:'新建',
 				showModal: true,
 				mesF: false,
+				read: false,
 				formItem: {
 					px:1,
 					zt:'00'
@@ -185,6 +186,7 @@
 		    if (this.$parent.choosedRow){
 				this.formItem = this.$parent.choosedRow;
                 this.operate = '编辑'
+                this.read = true
 			}
 		},
 		methods: {

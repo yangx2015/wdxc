@@ -231,6 +231,7 @@
 				this.$http.get(configApi.ITMS.QUERY).then((res) =>{
 					v.tableData = res.page.list
 					v.SpinShow = false;
+					v.pageTotal=res.page.total
 				})
 			},
 			//删除数据
