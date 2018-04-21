@@ -38,7 +38,10 @@ export default {
             this.$router.push({
                 name: 'login'
             });
-        }
+        },
+	   	created(){
+	   		this.$store.commit('CloadingType',false)
+	   	}
     }
 };
 </script>

@@ -28,7 +28,10 @@ export default {
             this.$router.push({
                 name: 'home_index'
             });
-        }
+        },
+	   	created(){
+	   		this.$store.commit('CloadingType',false)
+	   	}
     }
 };
 </script>

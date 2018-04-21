@@ -32,8 +32,7 @@
 		    					{{item.cph}}
 		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="primary" shape="circle" 
-		    						 	size="small" icon="plus-round"
-		    						 	@click="AddList(item.clId,mess.id)"></Button>
+		    						 	size="small" icon="plus-round"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
@@ -50,7 +49,7 @@
 		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="primary" shape="circle" 
 		    						 	size="small" icon="plus-round"
-		    						 	@click="AddList(item.clId,item.id)"></Button>
+		    						 	@click="AddList(item.clId)"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
@@ -107,9 +106,10 @@
 					console.log('bug')
 				})
 			},
-			AddList(carID,LineID){
+			AddList(carID){
+				debugger
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date":v.pbTime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime}).then((res) =>{
 					console.log('排版新增',res)
 					v.$parent.getmess()
 					v.getCarList()

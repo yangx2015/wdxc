@@ -31,6 +31,9 @@ export default {
                 name: 'home_index'
             });
         }
-    }
+    },
+   	created(){
+   		this.$store.commit('CloadingType',false)
+   	}
 };
 </script>
