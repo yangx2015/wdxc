@@ -35,13 +35,13 @@
 		    	</div>
 		    	<div style="height: 200px;border: solid 1px #000;">
 		    		<Row>
-		    			<Col span="4" v-for = '(item,index) in chrlist'>
+		    			<Col v-show="chrlist" span="4" v-for = '(item,index) in chrlist'>
 		    				<div class="carListsty" 
 		    					@mouseenter="item.ico = true"
 		    					@mouseleave="item.ico = false">
 		    					{{item.cph}}
-		    					<span v-show="item.ico" style="position:absolute;top: -6px;right: -6px;z-index: 100;">
-		    						 <Button type="primary" shape="circle" 
+		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
+		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle" 
 		    						 	size="small" icon="plus-round"
 		    						 	@click="AddList(item.clId,item.cph)"></Button>
 		    					</span>
@@ -80,18 +80,19 @@
 			this.getCarList()
 		},
 		methods:{
-			Rbut(b,i){
-				this.mess.clList[i].ico = b
-			},
 			getCarList(){//获取车辆列表
 				var v = this
 				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'30'}).then((res) =>{
 					if(res.code == 200){
 						console.log('车辆据',res)
-						res.result.forEach(function(item,index){
-							item.ico = false
-						})
-						v.chrlist = res.result
+//						res.result.forEach(function(item,index){
+//							item.ico = false
+//						})
+						if( res.result){
+							v.chrlist = res.result
+						}else{
+							v.chrlist = [{'cph':'无车辆数据','clId':'000000'}]
+						}
 					}else{
 						console.log('bug')
 					}
@@ -101,22 +102,23 @@
 				})
 			},
 			AddList(carID,cph){
-				debugger
 				var v = this
 				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
 					console.log('排版新增',res)
 					if(res.code==200){
 						v.$Message.success(res.message);
 						v.$parent.getmess()
-						v.getCarList()
 						v.mess.clList.push({'cph':cph,'clId':carID})
+						v.getCarList()
 					}else{
 						v.$Message.error(res.message);
 					}
+					v.getCarList()
+				}).catch((error)=>{
+					v.$Message.error('出错了！！！');
 				})
 			},
 			deleteById(carID,index){
-                this.$Message.success('移出成功');
                 var v = this
                 this.$http.post(configApi.XLPBXX.DELE,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
                     if(res.code==200){
@@ -124,8 +126,12 @@
                     	v.$parent.getmess();
                     	v.getCarList();
                     	v.mess.clList.splice(index,1)
-                    }
-                })
+                    }else{
+						v.$Message.error(res.message);
+					}
+                }).catch((error)=>{
+					v.$Message.error('出错了！！！');
+				})
 			},
 			colse(){
 				var v = this
