@@ -92,6 +92,7 @@ public class ClPb implements Serializable {
     @Transient
     private String date;
 
+    @Transient
     private String cx;
 
     private static final long serialVersionUID = 1L;
