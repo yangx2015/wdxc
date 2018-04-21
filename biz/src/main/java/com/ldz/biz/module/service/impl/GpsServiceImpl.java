@@ -292,23 +292,27 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 		//将终端编号,车辆信息缓存
 		List<ClCl> selectAll = clclmapper.selectAll();
-		Map<String, ClCl> clmap = selectAll.stream().collect(Collectors.toMap(ClCl::getZdbh, ClCl->ClCl));
+		Map<String, ClCl> clmap = selectAll.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).collect(Collectors.toMap(ClCl::getZdbh, ClCl->ClCl));
 		
 		//获取最新设备记录信息
 		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
 
 		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
-			ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
-			websocketInfo websocketInfo = new websocketInfo();
-			websocketInfo.setBdjd(clSbyxsjjl.getJid());
-			websocketInfo.setBdwd(clSbyxsjjl.getWd());
-			websocketInfo.setClid(clCl.getClId());
-			websocketInfo.setCph(clCl.getCph());
-			websocketInfo.setEventType(clSbyxsjjl.getSjlx());
-			websocketInfo.setTime(clSbyxsjjl.getCjsj());
-			websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
-			websocketInfo.setCx(clCl.getCx());
-			list.add(websocketInfo);
+			if (StringUtils.isNotEmpty(clSbyxsjjl.getZdbh())) {
+				ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
+				if (clCl!=null) {
+					websocketInfo websocketInfo = new websocketInfo();
+					websocketInfo.setBdjd(clSbyxsjjl.getJid());
+					websocketInfo.setBdwd(clSbyxsjjl.getWd());
+					websocketInfo.setClid(clCl.getClId());
+					websocketInfo.setCph(clCl.getCph());
+					websocketInfo.setEventType(clSbyxsjjl.getSjlx());
+					websocketInfo.setTime(clSbyxsjjl.getCjsj());
+					websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+					websocketInfo.setCx(clCl.getCx());
+					list.add(websocketInfo);
+				}
+			}
 		}
 
 		apiResponse.setResult(list);
