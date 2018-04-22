@@ -10,7 +10,7 @@
             </div>
             <div>
                 <Card>
-                    <p slot="title"><Icon type="information-circled"></Icon>车辆信息</p>
+                    <p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>
                     <Row>
                         <Col span="2"><Icon type="card"></Icon></Col>
                         <Col span="6"><span>{{car.cph}}</span></Col>
@@ -26,7 +26,7 @@
                 </Card>
                 <br>
                 <Card>
-                    <p slot="title"><Icon type="ios-game-controller-b"></Icon>远程控制</p>
+                    <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
                     <Row>
                         <Button  @click="setControl" icon="camera">远程拍照</Button>
                         <Button  @click="setControl" icon="ios-videocam">拍摄视频</Button>
@@ -36,7 +36,7 @@
                 </Card>
                 <br>
                 <Card>
-                    <p slot="title"><Icon type="gear-b"></Icon>终端设置</p>
+                    <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
                     <Row class="height200">
                         <Form :label-width="100">
                             <Row>
@@ -70,39 +70,28 @@
                         </Form>
                     </Row>
                 </Card>
-                <Card>
-                    <p slot="title"><Icon type="gear-b"></Icon>OBD设置</p>
-                    <Row class="height200">
-                        <Form :label-width="100">
-                            <Row>
-                                <Col span="12">
-                                    <FormItem label='传感器灵敏度'>
-                                        <Select filterable clearable  v-model="carControl.lmd">
-                                            <Option value="1">低</Option>
-                                            <Option value="2">中</Option>
-                                            <Option value="3">高</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                                <Col span="12">
-                                    <FormItem label='上传模式'>
-                                        <Select filterable clearable  v-model="carControl.scms">
-                                            <Option value="1">仅WIFI</Option>
-                                            <Option value="2">全部</Option>
-                                            <Option value="3">不上传</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                                <Col span="12">
-                                    <FormItem label='超速设定'>
-                                        <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
-                                    </FormItem>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Button type="primary"  @click="save">确定</Button>
-                            </Row>
-                        </Form>
+                <br>
+                <Card v-if="obd !== null">
+                    <p slot="title"><Icon type="information-circled"></Icon> OBD信息</p>
+                    <Row>
+                        <Col span="4">创建日期</Col>
+                        <Col span="8"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
+                    </Row>
+                    <Row>
+                        <Col span="4">发动机转速</Col>
+                        <Col span="8"><span>{{obd.engineSpeed}} r/min</span></Col>
+                    </Row>
+                    <Row>
+                        <Col span="4">车速</Col>
+                        <Col span="8"><span>{{obd.obdSpeed}} KM/h</span></Col>
+                    </Row>
+                    <Row>
+                        <Col span="4">剩余油量</Col>
+                        <Col span="8"><span>{{obd.syyl}} L</span></Col>
+                    </Row>
+                    <Row>
+                        <Col span="4">耗油量</Col>
+                        <Col span="8"><span>{{obd.hyl}} L</span></Col>
                     </Row>
                 </Card>
                 <br>
@@ -115,6 +104,7 @@
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
     export default {
         name: "carInfo",
         components: {
@@ -129,7 +119,8 @@
                 carControl:{
                     lmd:1,
                     scms:1
-                }
+                },
+                obd:null
             }
 
         },
@@ -141,6 +132,12 @@
             console.log('mounted');
         },
         methods:{
+            formatDate(date){
+              return date.substring(0,4)+'年'+date.substring(4,6)+"月"+date.substring(6,8)+"日";
+            },
+            formatTime(time){
+              return time.substring(0,2)+':'+time.substring(2,4)+":"+time.substring(4,6);
+            },
             tabClick(k){
                 this.showConfirmButton = k === 2
             },
@@ -151,6 +148,7 @@
                     this.showModal = true;
                 }, 100);
                 this.car = this.$parent.choosedItem;
+                this.car.obdId = '301404140001'
                 if (this.car.obdId){
                     this.getObdInfo();
                 }
@@ -178,11 +176,11 @@
             },
             getObdInfo(){
                 var v = this
-                this.$http.post(configApi.CLJK.GET_OBD_INFO,{obdId:this.car.obdId}).then((res) =>{
+                this.$http.post(configApi.CLJK.getObdTimely,{obdId:this.car.obdId}).then((res) =>{
                     if (res.code === 200){
+                        this.obd = res.result;
                         console.log(res);
                     }
-                    this.init();
                 })
             },
             showPathHistory(){

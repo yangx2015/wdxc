@@ -185,7 +185,8 @@ module.exports = {
 	CLJK:{
 		QUERY:'/api/cl/InitClGps',
 		GET_CAR_INFO:'/api/cl/getCarInfo',
-		GET_OBD_INFO:'/api/cl/getObdInfo',
+		GET_OBD_INFO:'/obd/getObdInfo',
+        getObdTimely:'/obd/getObdTimely',
 	},
 	CARTREE:{//车辆列表
 		QUERY:'/api/cl/getcltj'

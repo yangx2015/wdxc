@@ -45,5 +45,9 @@ mapper:
   identity: MYSQL
        
 server:
-  port: 80
+  port: 9999
   
+
+
+# 微信-活动营销-图片推送
+staticUrl: http://127.0.0.1:8080/

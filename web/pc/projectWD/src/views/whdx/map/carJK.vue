@@ -115,11 +115,21 @@
                 this.map.addOverlay(polygon);
 			},
             addMarker(item,point){
-                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png", new BMap.Size(52,26),  {anchor : new BMap.Size(27, 13)});
+                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(52,56),  {anchor : new BMap.Size(27, 13)});
                 var marker = new BMap.Marker(point,{icon:myIcon});
                 this.map.addOverlay(marker);
                 this.addClickHandler(item,marker);
             },
+			getIcon(car){
+		        switch(car.status){
+					case 0:
+					    return 'http://47.98.39.45:9092/icon/ic_car_online.png';
+					case 1:
+					    return 'http://47.98.39.45:9092/icon/ic_car.png';
+					default:
+					    return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
+				}
+			},
 		addClickHandler(item,marker){
 			var v = this
 			marker.addEventListener("click",function(e){
