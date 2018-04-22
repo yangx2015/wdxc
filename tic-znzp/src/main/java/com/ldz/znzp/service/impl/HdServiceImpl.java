@@ -54,7 +54,13 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         if(list!=null&&list.size()>0){
             for(SysHdyx l:list){
                 Map<String,String> map=new HashMap<String,String>();
-                map.put("path",staticUrl+l.getUrl());//URL地址
+                String tableUrl=l.getUrl();
+                boolean b=(tableUrl.toLowerCase()).startsWith("http");//判断字符串是否已百度二字开头
+                if(b){
+                    map.put("path",l.getUrl());//URL地址
+                }else{
+                    map.put("path",staticUrl+l.getUrl());//URL地址
+                }
                 map.put("size","");
                 map.put("md5","");
                 map.put("group",l.getWz());
