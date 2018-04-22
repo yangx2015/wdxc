@@ -56,9 +56,10 @@
                             let point = r.split(",");
                             this.fancePoints.push({lng:point[1],lat:point[0]})
                         }
+                        console.log(this.fancePoints);
+                        this.addArea(this.fancePoints);
                     }
                 })
-                this.addArea(this.fancePoints);
 			},
 		    showPath(carId){
                 this.addLine(this.fancePoints);
@@ -114,7 +115,6 @@
                 this.map.addOverlay(polygon);
 			},
             addMarker(item,point){
-                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150),{anchor: new BMap.Size(130,110)});
                 var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/car.png", new BMap.Size(52,26),  {anchor : new BMap.Size(27, 13)});
                 var marker = new BMap.Marker(point,{icon:myIcon});
                 this.map.addOverlay(marker);
@@ -123,8 +123,9 @@
 		addClickHandler(item,marker){
 			var v = this
 			marker.addEventListener("click",function(e){
-                v.componentName = 'carInfo';
+                console.log('click');
                 v.choosedItem = item;
+                v.componentName = 'carInfo';
 			})
 		},
 		clear(){

@@ -74,15 +74,15 @@
 			}
 		},
 		created(){
-			
+
 		},
 		mounted(){
 			var v = this
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap"); // 创建Map实例
 			this.mapCenter()
-			
-			              
+
+
 		  	this.bk()
 //		  	this.disDot()
 		},
@@ -95,7 +95,7 @@
 				this.map.addControl(new BMap.MapTypeControl({
 				mapTypes:[
 		            BMAP_NORMAL_MAP
-		        ]}));	  
+		        ]}));
 				//添加地图类型控件
 				this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
 			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
@@ -128,7 +128,7 @@
 				    fillOpacity: 0.6,      //填充的透明度，取值范围0 - 1。
 				    strokeStyle: 'solid' //边线的样式，solid或dashed。
 				}
-			  	
+
 			  	var drawingManager = new BMapLib.DrawingManager(v.map, {
 				    isOpen: false, //是否开启绘制模式
 				    enableDrawingTool: true, //是否显示工具栏
@@ -142,7 +142,8 @@
 				    rectangleOptions: styleOptions //矩形的样式
 				})
 				drawingManager.addEventListener("overlaycomplete", function(e) {
-				    v.$emit('choosePoint',e.overlay.ia)
+                    console.log(e);
+                    v.$emit('choosePoint',e.overlay.ia)
 				});
 			},
 			//清除层

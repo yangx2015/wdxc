@@ -70,6 +70,41 @@
                         </Form>
                     </Row>
                 </Card>
+                <Card>
+                    <p slot="title"><Icon type="gear-b"></Icon>OBD设置</p>
+                    <Row class="height200">
+                        <Form :label-width="100">
+                            <Row>
+                                <Col span="12">
+                                    <FormItem label='传感器灵敏度'>
+                                        <Select filterable clearable  v-model="carControl.lmd">
+                                            <Option value="1">低</Option>
+                                            <Option value="2">中</Option>
+                                            <Option value="3">高</Option>
+                                        </Select>
+                                    </FormItem>
+                                </Col>
+                                <Col span="12">
+                                    <FormItem label='上传模式'>
+                                        <Select filterable clearable  v-model="carControl.scms">
+                                            <Option value="1">仅WIFI</Option>
+                                            <Option value="2">全部</Option>
+                                            <Option value="3">不上传</Option>
+                                        </Select>
+                                    </FormItem>
+                                </Col>
+                                <Col span="12">
+                                    <FormItem label='超速设定'>
+                                        <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
+                                    </FormItem>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Button type="primary"  @click="save">确定</Button>
+                            </Row>
+                        </Form>
+                    </Row>
+                </Card>
                 <br>
             </div>
             <div slot='footer'>
@@ -98,18 +133,27 @@
             }
 
         },
-        mounted(){
+        created(){
+            console.log('created');
             this.init();
+        },
+        mounted(){
+            console.log('mounted');
         },
         methods:{
             tabClick(k){
                 this.showConfirmButton = k === 2
             },
             init(){
+                console.log('init');
                 setTimeout(() => {
+                    console.log(this.showModal);
                     this.showModal = true;
                 }, 100);
                 this.car = this.$parent.choosedItem;
+                if (this.car.obdId){
+                    this.getObdInfo();
+                }
             },
             close(){
                 this.showModal = false;
@@ -131,6 +175,15 @@
                     this.$Message.success("发送成功!")
                     this.SpinShow = false;
                 },1000)
+            },
+            getObdInfo(){
+                var v = this
+                this.$http.post(configApi.CLJK.GET_OBD_INFO,{obdId:this.car.obdId}).then((res) =>{
+                    if (res.code === 200){
+                        console.log(res);
+                    }
+                    this.init();
+                })
             },
             showPathHistory(){
                 this.$router.push({name: 'historypath',params:{zdbh:this.car.zdbh}});
