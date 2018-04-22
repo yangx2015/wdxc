@@ -44,7 +44,32 @@
     }
 </style>
 <template>
-	<div class="box sugges">
+<div style="height: 100%;width: 100%;">
+	<div class="box-row">
+		<div class="body-r-5">
+			<Card>
+		        <p slot="title">
+		            <Icon type="ios-film-outline"></Icon>
+		            地图实时监控
+		        </p>
+			    <div :style="mapheight">
+					<my-map></my-map>
+				</div>
+		    </Card>
+		</div>
+		<div class="body-r-4">
+			<Card>
+		        <p slot="title">
+		            <Icon type="ios-film-outline"></Icon>
+		            	异常行驶记录
+		        </p>
+			    <div :style="mapheight">
+			    	<abnor :tabmess=tabmess></abnor>
+				</div>
+		    </Card>
+		</div>
+	</div>
+	<div class="box sugges" v-if="false">
 		<div class="body height-50">
 			<div class="box-row height-100">
 				<div class="body-r-4 height-100 padding-5px" style="">
@@ -69,18 +94,9 @@
 									v-for="(item,index) in XBlineName"
 									@click="getXBline(item.id,item.xlmc)">{{item.xlmc}}</Button>
 							</div>
-					    	<!--<Menu mode="horizontal" theme="light" active-name="1">
-						        <MenuItem v-for="(item,index) in XBlineName" :name="index">
-						            <Icon type="ios-paper"></Icon>
-					            		{{item.xlmc}}
-						        </MenuItem>
-						    </Menu>-->
 						</div>
 						<div style="border-top: solid 2px #BBBEC4;">
-							<!--线路名称-->
-							 <!--<Button type="success">-->
 							 	当前线路:{{lineName}}
-							 <!--</Button>-->
 
 						</div>
 						<div class="body">
@@ -137,6 +153,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </template>
 
 <script>
@@ -215,7 +232,8 @@ export default {
     		var windowHeight = window.innerHeight
     		this.carheight.height = (windowHeight/2 - 120)+'px'
     		this.SSjk.height = (windowHeight/2 - 120)+'px'
-    		this.mapheight.height = (windowHeight/2 - 120)+'px'
+//  		this.mapheight.height = (windowHeight/2 - 120)+'px'
+    		this.mapheight.height = (windowHeight - 210)+'px'
         },
 	    }
 };
