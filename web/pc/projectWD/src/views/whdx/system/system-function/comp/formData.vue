@@ -2,7 +2,7 @@
 	@import '../../../../../styles/common.less';
 </style>
 <style type="text/css">
-	
+
 </style>
 <template>
 	<div>
@@ -87,7 +87,7 @@
 						<Col span="12">
 							<FormItem label='排序'>
 								<!--<Input type="number" v-model="formItem.px" placeholder="请填写排序..."></Input>-->
-								<input class="input" type="number"  v-model="formItem.px"  placeholder="请填写排序..."/>
+								<input class="input" type="number" min="0"  v-model="formItem.px"  placeholder="请填写排序..."/>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -147,7 +147,8 @@
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
                     ],
                     px: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
+                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' },
+                    	{ min: 0, message: '请将信息填写完整', trigger: 'blur' }
                     ],
                     bz: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' }

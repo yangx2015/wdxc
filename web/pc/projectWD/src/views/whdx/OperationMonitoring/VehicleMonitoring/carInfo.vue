@@ -1,7 +1,7 @@
 <template>
     <div>
         <component :is="componentName"></component>
-        <Modal width='600' v-model="showModal"  title="车辆详情">
+        <Modal width="1000" v-model="showModal"  title="车辆详情">
             <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
                 <Spin fix>
                     <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
@@ -9,91 +9,101 @@
                 </Spin>
             </div>
             <div>
-                <Card>
-                    <p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>
-                    <Row>
-                        <Col span="2"><Icon type="card"></Icon></Col>
-                        <Col span="6"><span>{{car.cph}}</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="2"><Icon type="person"></Icon></Col>
-                        <Col span="6"><span>{{car.sjxm}}</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="2"><Icon type="speedometer"></Icon></Col>
-                        <Col span="6"><span>{{car.speed}}</span></Col>
-                    </Row>
-                </Card>
-                <br>
-                <Card>
-                    <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
-                    <Row>
-                        <Button  @click="setControl" icon="camera">远程拍照</Button>
-                        <Button  @click="setControl" icon="ios-videocam">拍摄视频</Button>
-                        <Button  @click="showFance" icon="qr-scanner">电子围栏</Button>
-                        <Button  @click="showPathHistory" icon="pull-request">历史轨迹</Button>
-                    </Row>
-                </Card>
-                <br>
-                <Card>
-                    <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
-                    <Row class="height200">
-                        <Form :label-width="100">
+                <Row :gutter="16">
+                    <Col span="12">
+                        <Card style="height: 200px">
+                            <p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>
                             <Row>
-                                <Col span="12">
-                                    <FormItem label='传感器灵敏度'>
-                                        <Select filterable clearable  v-model="carControl.lmd">
-                                            <Option value="1">低</Option>
-                                            <Option value="2">中</Option>
-                                            <Option value="3">高</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                                <Col span="12">
-                                    <FormItem label='上传模式'>
-                                        <Select filterable clearable  v-model="carControl.scms">
-                                            <Option value="1">仅WIFI</Option>
-                                            <Option value="2">全部</Option>
-                                            <Option value="3">不上传</Option>
-                                        </Select>
-                                    </FormItem>
-                                </Col>
-                                <Col span="12">
-                                    <FormItem label='超速设定'>
-                                        <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
-                                    </FormItem>
-                                </Col>
+                                <Col span="2"><Icon type="card"></Icon></Col>
+                                <Col span="6"><span>{{car.cph}}</span></Col>
                             </Row>
                             <Row>
-                                <Button type="primary"  @click="save">确定</Button>
+                                <Col span="2"><Icon type="person"></Icon></Col>
+                                <Col span="6"><span>{{car.sjxm}}</span></Col>
                             </Row>
-                        </Form>
-                    </Row>
-                </Card>
+                            <Row>
+                                <Col span="2"><Icon type="speedometer"></Icon></Col>
+                                <Col span="6"><span>{{car.speed}}</span></Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                    <Col span="12">
+                        <Card style="height: 200px">
+                            <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
+                            <Row>
+                                <Button  @click="setControl" icon="camera">远程拍照</Button>
+                                <Button  @click="setControl" icon="ios-videocam">拍摄视频</Button>
+                                <Button  @click="showFance" icon="qr-scanner">电子围栏</Button>
+                                <Button  @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+                            </Row>
+                        </Card>
+                    </Col>
+                </Row>
                 <br>
-                <Card v-if="obd !== null">
-                    <p slot="title"><Icon type="information-circled"></Icon> OBD信息</p>
-                    <Row>
-                        <Col span="4">创建日期</Col>
-                        <Col span="8"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="4">发动机转速</Col>
-                        <Col span="8"><span>{{obd.engineSpeed}} r/min</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="4">车速</Col>
-                        <Col span="8"><span>{{obd.obdSpeed}} KM/h</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="4">剩余油量</Col>
-                        <Col span="8"><span>{{obd.syyl}} L</span></Col>
-                    </Row>
-                    <Row>
-                        <Col span="4">耗油量</Col>
-                        <Col span="8"><span>{{obd.hyl}} L</span></Col>
-                    </Row>
-                </Card>
+                <Row :gutter="16">
+                    <Col span="12">
+                        <Card style="height: 300px">
+                            <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
+                            <Row class="height200">
+                                <Form :label-width="100">
+                                    <Row>
+                                        <Col span="12">
+                                            <FormItem label='传感器灵敏度'>
+                                                <Select filterable clearable  v-model="carControl.lmd">
+                                                    <Option value="1">低</Option>
+                                                    <Option value="2">中</Option>
+                                                    <Option value="3">高</Option>
+                                                </Select>
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="12">
+                                            <FormItem label='上传模式'>
+                                                <Select filterable clearable  v-model="carControl.scms">
+                                                    <Option value="1">仅WIFI</Option>
+                                                    <Option value="2">全部</Option>
+                                                    <Option value="3">不上传</Option>
+                                                </Select>
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="12">
+                                            <FormItem label='超速设定'>
+                                                <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
+                                            </FormItem>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Button type="primary"  @click="save">确定</Button>
+                                    </Row>
+                                </Form>
+                            </Row>
+                        </Card>
+                    </Col>
+                    <Col span="12">
+                        <Card style="height: 300px" v-if="obd !== null">
+                            <p slot="title"><Icon type="information-circled"></Icon> OBD信息</p>
+                            <Row>
+                                <Col span="4">创建日期</Col>
+                                <Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">发动机转速</Col>
+                                <Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">车速</Col>
+                                <Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">剩余油量</Col>
+                                <Col span="10"><span>{{obd.syyl}} L</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">耗油量</Col>
+                                <Col span="10"><span>{{obd.hyl}} L</span></Col>
+                            </Row>
+                        </Card>
+                    </Col>
+                </Row>
                 <br>
             </div>
             <div slot='footer'>

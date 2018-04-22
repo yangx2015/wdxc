@@ -83,7 +83,7 @@
 										{{item.title}}
 									</p>
 									<div slot="extra">
-										<Button type="primary" shape="circle" icon="android-add" size="small" @click="add(item)"></Button>
+										<!--<Button type="primary" shape="circle" icon="android-add" size="small" @click="add(item)"></Button>-->
 										<Button type="primary" shape="circle" icon="navicon-round" size="small" @click="edit(item)"></Button>
 										<Button type="error" shape="circle" icon="close" size="small" @click="del(item)"></Button>
 									</div>
@@ -186,9 +186,9 @@
                 this.$http.get(configApi.FRAMEWORK.GET_TREE).then((res) =>{
                     if(res.code===200){
                         v.RootTree.children = [res.result];
-                        v.rootClick()
+                        v.treeClick(v.RootTree.children[0])
                         v.SpinShow = false
-                        
+
                     }
                 })
 			},
@@ -211,7 +211,7 @@
                 this.componentName = 'modelForm';
         	},
         	treeClick(event){
-        		if(event.length>0){
+                if(event.length>0){
 		      		this.treeMess = event[0]
 					this.jgdm = event[0].jgdm;
         		}
