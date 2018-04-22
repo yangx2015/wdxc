@@ -67,7 +67,8 @@
         methods:{
             getalert(){
                 var windowHeight = window.innerHeight
-                this.tabHeight = windowHeight/2 - 118
+//              this.tabHeight = windowHeight/2 - 118
+				this.tabHeight = windowHeight - 200
                 console.log('浏览器高',this.tabHeight)
             }
         }
