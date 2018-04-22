@@ -1,12 +1,5 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.ldz.biz.module.mapper.ClDzwlClMapper;
 import com.ldz.biz.module.mapper.ClDzwlMapper;
 import com.ldz.biz.module.model.ClCl;
@@ -22,8 +15,15 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements DzwlService {
@@ -110,6 +110,8 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements 
 		List<String> carIdList = Arrays.asList(carIds.split(","));
 		Date now = new Date();
 		String creator = getOperateUser();
+		List<ClCl> carList = clService.findIn(ClCl.InnerColumn.clId,carIdList);
+		Map<String,ClCl> carMap = carList.stream().collect(Collectors.toMap(ClCl::getClId,p->p));
 		for (String s : carIdList) {
 			ClDzwlCl dzwlCl = new ClDzwlCl();
 			dzwlCl.setCjr(creator);
@@ -117,7 +119,10 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements 
 			dzwlCl.setClId(s);
 			dzwlCl.setWlId(wlid);
 			dzwlCl.setId(genId());
-			dzwlCl.setCph(s);
+			ClCl car = carMap.get(s);
+			if (car != null){
+				dzwlCl.setCph(car.getCph());
+			}
 			dzwlClMapper.insertSelective(dzwlCl);
 		}
 		return ApiResponse.success();

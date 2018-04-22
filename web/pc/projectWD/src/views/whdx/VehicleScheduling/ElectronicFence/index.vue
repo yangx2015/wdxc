@@ -51,6 +51,15 @@
 		            <div style="font-size: 30px;">数据加载中请稍后</div>
 		        </Spin>
 			</div>
+			<Row class="margin-top-10 pageSty">
+				<Page
+						:total=pageTotal
+						:current=page.pageNum
+						:page-size=page.pageSize
+						show-total
+						show-elevator
+						@on-change='pageChange'></Page>
+			</Row>
     	</div>
 		<div class="body" v-show="RootShow" style="height: 100%;">
 			<div class="box-row" style="height: 100%;">
@@ -91,6 +100,11 @@ export default {
     },
     data () {
         return {
+            pageTotal:1,
+            page:{
+                pageNum:1,
+                pageSize:5
+            },
         	SpinShow:false,
 			tabHeight: 220,
         	mapDot:[],
@@ -102,9 +116,10 @@ export default {
 				cjsjInRange:'',
 				zjhmLike: '',
 				pageNum: 1,
-				pageSize: 5,
+				pageSize: 8,
                 clIds:''
 			},
+			fanceId:'',
             columns10: [
                 {
                   title: '序号',
@@ -225,6 +240,7 @@ export default {
                 "expand": true,
                 "title": "校巴"
             }],
+			carIds:''
         };
     },
     computed: {
@@ -248,9 +264,7 @@ export default {
     },
     methods: {
         finish(){
-            this.getChoosedIds();
             this.saveDzwl();
-            this.RootShow = !this.RootShow
         },
     	getCarTree(){
     		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
@@ -293,20 +307,33 @@ export default {
     		}
     	},
         getChoosedIds(){
+            this.carIds = '';
             let nodes = this.$refs['tree'].getCheckedNodes();
             for(let r of nodes){
+                this.carIds += r.clid+",";
             }
         },
         save(){
             this.getChoosedIds();
             var v = this
-            this.$http.post(configApi.DZWL.setCarsDzwl,v.findMess).then((res) =>{
+            this.$http.post(configApi.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
+				if (res.code === 200){
+                    this.RootShow = !this.RootShow
+                    this.findMessList();
+				}else{
+				    this.$Message.error(res.message);
+				}
                 v.SpinShow = false;
             })
         },
         saveDzwl(){
             var v = this
             this.$http.post(configApi.DZWL.ADD,v.findMess).then((res) =>{
+                if (res.code === 200){
+                    console.log(res.message);
+                    this.fanceId = res.message;
+                    this.save();
+                }
                 v.SpinShow = false;
             })
         },
@@ -329,6 +356,11 @@ export default {
                 v.SpinShow = false;
             })
     	},
+        pageChange(event){
+            var v = this
+            v.findMess.pageNum = event
+            v.findMessList()
+        },
     }
 };
 </script>
