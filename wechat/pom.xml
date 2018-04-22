@@ -15,12 +15,18 @@
 	<description>Demo project for Spring Boot</description>
 
 	<dependencies>
-		<dependency>
+		<!-- <dependency>
 			<groupId>com.ldz</groupId>
 			<artifactId>sys</artifactId>
 			<version>0.0.1</version>
 		</dependency>
-		<!-- logging依赖 避免包冲突 -->
+		logging依赖 避免包冲突 -->
+		<dependency>
+			<groupId>com.ldz</groupId>
+			<artifactId>util</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
