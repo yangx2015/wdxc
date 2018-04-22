@@ -85,6 +85,7 @@
 
 <script>
 	import { Swiper, SwiperItem, Cell, XButton, Tab, TabItem } from 'vux'
+	import configApi from '@/axios/config.js'
 	export default{
 		name:'',
 		components: {
@@ -108,18 +109,26 @@
 			}
 		},
 		created(){
-			
+			this.getSwiperMess()
 		},
 		methods:{
-		  	MyCenter(){
+		  	MyCenter(){//个人中心
 		  		this.$router.push({
 		    		name:'myCenter'
 		    	})
 		  	},
-		  	feedback(){
+		  	feedback(){//反馈信息
 		  		this.$router.push({
 		    		name:'feedback'
 		    	})
+		  	},
+		  	getSwiperMess(){
+		  		var v = this
+		  		this.$http.post(configApi.SWIPER.QUERTY).then((res)=>{
+		  			console.log('swiper',res)
+		  		}).catch((error) =>{
+	        		console.log(error)
+	        	})
 		  	},
 			demo01_onIndexChange (index) {
 //				console.log(index)

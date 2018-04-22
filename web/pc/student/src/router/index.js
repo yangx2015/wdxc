@@ -25,11 +25,11 @@ const router = new Router({
 	      	name:'myCenter',
 	      	component: () => import('@/views/myCenter'),
 	      },
-	      // {
-	      // 	path:'/feedback',
-	      // 	name:'feedback',
-	      // 	component: () => import('@/views/feedback'),
-	      // }
+	      {
+	       	path:'/feedback',
+	       	name:'feedback',
+	       	component: () => import('@/views/feedback'),
+	      }
       ]
     },
     {

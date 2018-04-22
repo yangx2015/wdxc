@@ -6,11 +6,9 @@ import router from '../router/index';
 import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
-//baseURL: 'http://127.0.0.1:80',
-// baseURL: 'http://47.98.39.45:8080/biz',
-   	 baseURL: 'http://192.168.31.181:80',//刘
-  timeout: 300000,
-    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+   	baseURL: 'http://47.98.39.45:9999',
+    timeout: 300000,
+//  headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
 });
 // 添加请求拦截器 数据请求之前
@@ -28,41 +26,39 @@ httpInstance.interceptors.request.use((config) => {
         }
     }
     // 在发送请求之前做些什么
-//  console.log('拦截数据请求',config)
-//  console.log('123123',Cookies.get('result'))
-    if(Cookies.get('result')){
-    	let accessToken = JSON.parse(Cookies.get('result')).accessToken;
-    	config.headers.token = accessToken.token;
-    	config.headers.userid = accessToken.userId;
-    }
+//  if(Cookies.get('result')){
+//  	let accessToken = JSON.parse(Cookies.get('result')).accessToken;
+//  	config.headers.token = accessToken.token;
+//  	config.headers.userid = accessToken.userId;
+//  }
     return config;
-  }, function (error) {
+}, function (error) {
     // 对请求错误做些什么
     return Promise.reject(error);
-  });
+});
 
 // 添加响应拦截器 数据响应之后
-httpInstance.interceptors.response.use((response) => {
-		var v = this
+//httpInstance.interceptors.response.use((response) => {
+//		var v = this
     // 对响应数据做点什么
-    if(response.status===200){
-    	return response.data;
-    }else if(!Cookies.get('result')||response.status===500){
-  		router.push({name: 'error-500'})
-    }else if(Cookies.get('result')&&response.status===500){
-  		router.push({name: 'errorpage_500'})
-    }else if(response.status===200&&response.data.code===403){
-    	router.push({name: 'error-403'})
-    }
-}, function (error) {
-    // 对响应错误做点什么
-		if(!Cookies.get('result')){
-			console.log('1')
-  		router.push({name: 'error-500'})
-    }else if(Cookies.get('result')){
-    	console.log('2')
-  		router.push({name: 'errorpage_500'})
-    }
-    return Promise.reject(error);
-});
+//  if(response.status===200){
+//  	return response.data;
+//  }else if(!Cookies.get('result')||response.status===500){
+//		router.push({name: 'error-500'})
+//  }else if(Cookies.get('result')&&response.status===500){
+//		router.push({name: 'errorpage_500'})
+//  }else if(response.status===200&&response.data.code===403){
+//  	router.push({name: 'error-403'})
+//  }
+//}, function (error) {
+//  // 对响应错误做点什么
+//		if(!Cookies.get('result')){
+//			console.log('1')
+//		router.push({name: 'error-500'})
+//  }else if(Cookies.get('result')){
+//  	console.log('2')
+//		router.push({name: 'errorpage_500'})
+//  }
+//  return Promise.reject(error);
+//});
 export default httpInstance;
