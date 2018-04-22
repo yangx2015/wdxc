@@ -38,11 +38,12 @@ httpInstance.interceptors.request.use((config) => {
 });
 
 // 添加响应拦截器 数据响应之后
-//httpInstance.interceptors.response.use((response) => {
-//		var v = this
-    // 对响应数据做点什么
+httpInstance.interceptors.response.use((response) => {
+	console.log('数据返回',response)
+		var v = this
+//     对响应数据做点什么
 //  if(response.status===200){
-//  	return response.data;
+    	return response.data;
 //  }else if(!Cookies.get('result')||response.status===500){
 //		router.push({name: 'error-500'})
 //  }else if(Cookies.get('result')&&response.status===500){
@@ -50,15 +51,15 @@ httpInstance.interceptors.request.use((config) => {
 //  }else if(response.status===200&&response.data.code===403){
 //  	router.push({name: 'error-403'})
 //  }
-//}, function (error) {
-//  // 对响应错误做点什么
-//		if(!Cookies.get('result')){
-//			console.log('1')
+}, function (error) {
+    // 对响应错误做点什么
+//	if(!Cookies.get('result')){
+//		console.log('1')
 //		router.push({name: 'error-500'})
 //  }else if(Cookies.get('result')){
 //  	console.log('2')
 //		router.push({name: 'errorpage_500'})
 //  }
-//  return Promise.reject(error);
-//});
+    return Promise.reject(error);
+});
 export default httpInstance;

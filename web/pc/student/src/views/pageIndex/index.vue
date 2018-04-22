@@ -110,6 +110,7 @@
 		},
 		created(){
 			this.getSwiperMess()
+			console.log('12312313131231')
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -125,9 +126,9 @@
 		  	getSwiperMess(){
 		  		var v = this
 		  		this.$http.post(configApi.SWIPER.QUERTY).then((res)=>{
-		  			console.log('swiper',res)
+		  			console.log('图片数据',res)
 		  		}).catch((error) =>{
-	        		console.log(error)
+	        		console.log('出错了',error)
 	        	})
 		  	},
 			demo01_onIndexChange (index) {
