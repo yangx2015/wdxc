@@ -230,6 +230,9 @@
 									},
 									on: {
 										click: () => {
+											if(params.row.filePaths == null){
+												params.row.filePaths = ''
+											}
 										    this.choosedRow = params.row;
 											this.compName = 'mess'
 										}
