@@ -173,7 +173,7 @@ export default {
 								},
                                 on: {
                                     click: () => {
-                                        this.show(params.index)
+                                        // this.show(params.index)
                                     }
                                 }
                             }),

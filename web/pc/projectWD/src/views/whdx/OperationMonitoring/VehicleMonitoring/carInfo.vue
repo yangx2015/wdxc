@@ -40,7 +40,8 @@
                                 <Col span="8">
                                     <Button @click="setControl('12','2-10')" icon="camera">前后摄像头拍照</Button>
                                 </Col>
-                                <br>
+                            </Row>
+                            <Row>
                                 <Col span="8">
                                     <Button @click="setControl('11','0-10')" icon="ios-videocam">前摄像头视频</Button>
                                 </Col>
@@ -50,7 +51,8 @@
                                 <Col span="8">
                                     <Button @click="setControl('11','2-10')" icon="ios-videocam">前后摄像头视频</Button>
                                 </Col>
-                                <br>
+                            </Row>
+                            <Row>
                                 <Col span="8">
                                     <DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >
                                 </Col>
@@ -60,7 +62,8 @@
                                 <Col span="8">
                                     <Button @click="mergeVideo(1)" icon="qr-scanner">合并视频</Button>
                                 </Col>
-                                <br>
+                            </Row>
+                            <Row>
                                 <Col span="8">
                                     <Button @click="showFance" icon="qr-scanner">电子围栏</Button>
                                 </Col>
@@ -116,17 +119,25 @@
                                                 </Select>
                                             </FormItem>
                                         </Col>
+                                    </Row>
+                                    <Row>
                                         <Col span="12">
                                             <FormItem label='超速设定'>
                                                 <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
                                             </FormItem>
-                                            <Button type="primary"  @click="save">确定</Button>
                                         </Col>
+                                        <Col span="12">
+                                            <Button type="primary"  @click="saveCssd">确定</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row>
                                         <Col span="12">
                                             <FormItem label='GPS心跳间隔'>
                                                 <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写超速设定..."></Input>
                                             </FormItem>
-                                            <Button type="primary"  @click="save">确定</Button>
+                                        </Col>
+                                        <Col span="12">
+                                            <Button type="primary"  @click="saveXtjg">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -215,22 +226,23 @@
             tabClick(k){
                 this.showConfirmButton = k === 2
             },
+            saveCssd(){
+                this.setting('01',this.carControl.cssd);
+            },
+            saveXtjg(){
+                this.setting('40',this.carControl.gpsxtjg);
+            },
             selectChange02(e){
-                console.log('selectChange02');
-                console.log(e);
-                // this.setting('02',this.carControl.jjslmd);
+                this.setting('02',e);
             },
             selectChange20(e){
-                console.log('selectChange20');
-                console.log(e);
+                this.setting('20',e);
             },
             selectChange30(e){
-                console.log('selectChange30');
-                console.log(e);
+                this.setting('30',e);
             },
             selectChange50(e){
-                console.log('selectChange50');
-                console.log(e);
+                this.setting('50',e);
             },
             setting(type,param){
                 var v = this

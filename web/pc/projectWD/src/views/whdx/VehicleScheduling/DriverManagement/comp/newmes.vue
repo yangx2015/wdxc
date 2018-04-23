@@ -113,9 +113,6 @@
                   xm: [
                       { required: true, message: '请输入驾驶员名', trigger: 'blur' }
                   ],
-                  nl: [
-                      { required: true, message: '请输入驾驶员名', trigger: 'blur' }
-                  ],
                   zjcx:[
                       { required: true,message: '请输入手机号码', trigger: 'blur' }
                   ],
@@ -185,6 +182,7 @@
             	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        delete v.addmess.clDdList;
 //                    	新增
                     	if(v.messType){
                     		v.$http.post(configApi.JSY.ADD,v.addmess).then((res) =>{
