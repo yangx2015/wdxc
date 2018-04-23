@@ -1,7 +1,6 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.wechat.module.bean.DdClModel;
 import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.SysHdyx;
 import com.ldz.wechat.module.service.HdService;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -34,12 +34,12 @@ public class ClXlCtrl {
 
 	/**
 	 * 获取线路下站点和车辆的信息
-	 * @param xlId	线路ID
+	 * @param xlid	线路ID
 	 * @return
 	 */
 	@RequestMapping(value = "/getzdcl", method = {RequestMethod.POST})
-	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId) {
-		return wxXlService.getBySiteVehicleList(xlId);
+	public ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlid) {
+		return wxXlService.getBySiteVehicleList(xlid);
 	}
 	/**
 	 * 获取活动图片列表 也就是广告位的图片列表

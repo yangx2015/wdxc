@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.wechat.base.BaseServiceImpl;
+import com.ldz.wechat.exception.RuntimeCheck;
 import com.ldz.wechat.module.bean.ClClyxjlModel;
 import com.ldz.wechat.module.bean.DdClModel;
 import com.ldz.wechat.module.mapper.ClXlMapper;
@@ -15,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 
 @Service("wxXlService")
@@ -42,7 +41,9 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	   return findAll();
    }
 
-	public ApiResponse<List<DdClModel>> getBySiteVehicleList(String xlId){
+	public ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlId){
+   		ClXl clXl=findById(xlId);
+		RuntimeCheck.ifNull(clXl,"线路ID有误，请核实！");
 		List<DdClModel> clZds=entityMapper.getBySiteVehicleList(xlId);
 		if(clZds!=null){
 			SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
@@ -87,8 +88,14 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 				}
 			}
 		}
-		ApiResponse<List<DdClModel>> apiResponse=new ApiResponse<List<DdClModel>>();
-		apiResponse.setResult(clZds);
+		ApiResponse<Map<String,Object>> apiResponse=new ApiResponse<Map<String,Object>>();
+		Map<String,Object> map=new HashMap<String,Object>();
+		map.put("list",clZds);
+		map.put("name",clXl.getXlmc());
+		map.put("yxkssj",clXl.getYxkssj());
+		map.put("yxjssj",clXl.getYxjssj());
+
+		apiResponse.setResult(map);
 		return apiResponse;
 	}
 

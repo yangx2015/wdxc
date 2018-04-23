@@ -6,9 +6,10 @@ import router from '../router/index';
 import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
-   	baseURL: 'http://47.98.39.45:9999',
+// 	baseURL: 'http://47.98.39.45:9999',
+	baseURL: 'http://192.168.31.223:9998',
     timeout: 300000,
-//  headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
 });
 // 添加请求拦截器 数据请求之前
@@ -39,7 +40,6 @@ httpInstance.interceptors.request.use((config) => {
 
 // 添加响应拦截器 数据响应之后
 httpInstance.interceptors.response.use((response) => {
-	console.log('数据返回',response)
 		var v = this
 //     对响应数据做点什么
 //  if(response.status===200){

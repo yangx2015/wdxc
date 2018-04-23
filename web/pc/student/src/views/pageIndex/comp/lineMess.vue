@@ -62,7 +62,7 @@
 	  			<span slot="left" @click="back">
 	  				<i class="iconfont icon-left"></i>
 	  			</span>
-	  			<span class="tit">001</span>
+	  			<span class="tit">{{XBline.name}}</span>
 	  			<!--<span slot="right" @click="mapmess">
 	  				<i class="iconfont icon-ditu"></i>
 	  			</span>-->
@@ -70,13 +70,13 @@
 	  	</div>
 	  	<div class="carmess">
 	  		<div class="direction">
-	  			<span>第一食堂</span>
+	  			<span>{{XBline.list[0].zdName}}</span>
 	  			<i class="iconfont icon-xiangyoujiaohuan"></i>
-	  			<span>第五食堂</span>
+	  			<span>{{XBline.list[XBline.list.length-1].zdName}}</span>
 	  		</div>
 	  		<div class="timeMoney">
-	  			<span>运营时间：06:00-21:00</span>
-	  			<span>票价：2.0元</span>
+	  			<span>运营时间：{{XBline.yxkssj}}-{{XBline.yxjssj}}</span>
+	  			<!--<span>票价：2.0元</span>-->
 	  		</div>
 	  	</div>
 	  	<div class="cartime box-row">
@@ -103,7 +103,14 @@
 	  	</div>
 	  	<div class="carlines body">
 	  		<div class="box-row-z">
-	  			<div>
+	  			<div v-for="(item,index) in XBline.list">
+	    			<carline
+	    				:zd="item.entryCount!=0"
+	    				:linecar='item.exportCount!=0'
+	    				:siteName="item.zdName"
+	    				:lineShow="!(index==XBline.list.length-1)"></carline>
+	    		</div>
+	  			<!--<div>
 	  				<carline :linecar="true" siteName="第一食堂第一食堂"></carline>
 	  			</div>
 	  			<div>
@@ -120,7 +127,7 @@
 	  			</div>
 	  			<div>
 	  				<carline siteName="第003食堂第二食堂" :lineShow="false"></carline>
-	  			</div>
+	  			</div>-->
 	  		</div>
 	  	</div>
 	  	<!--<div class="footer">
@@ -132,6 +139,8 @@
 <script>
 	import {XHeader } from 'vux'
 	import carline from './comp/carline'
+	
+	import configApi from '@/axios/config.js'
 	export default {
 		name:'',
 		components: {
@@ -139,10 +148,14 @@
 		},
 		data(){
 			return{
+				XBline:{
+					list:[{}]
+				}
 			}
 		},
 		created(){
-			
+//			console.log(this.$route.query.lineID)	
+			this.lineMess()
 		},
 		mounted(){
 		},
@@ -156,10 +169,24 @@
 				this.$router.push({
 					name:'mapMess'
 				})
+			},
+			lineMess(){
+				var v = this
+				this.$http.post(configApi.LINEMESS.QUERTY,{'xlid':this.$route.query.lineID}).then((res)=>{
+		  			if(res.code ==200){
+		  				console.log('线路详情 ',res)
+		  				v.XBline = res.result
+//		  				v.$Message.success('This is a success tip');
+		  			}else{
+		  				v.$Message.success('线路数据获取失败');
+		  			}
+		  		}).catch((error) =>{
+	        		console.log('出错了',error)
+	        	})
 			}
 		}
 	}
 </script>
 
 <style>
-</style>
+</style> 

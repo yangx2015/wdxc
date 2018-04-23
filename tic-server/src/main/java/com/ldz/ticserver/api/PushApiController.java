@@ -3,6 +3,8 @@ package com.ldz.ticserver.api;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +29,9 @@ import com.ldz.util.commonUtil.JsonUtil;
 @RestController
 @RequestMapping("/api/push")
 public class PushApiController {
-
+	Logger accessLog = LoggerFactory.getLogger("access_info");
+	
+	Logger errorLog = LoggerFactory.getLogger("error_info");
 	//private 
 	@Autowired
 	private StringRedisTemplate redisDao;
@@ -45,7 +49,7 @@ public class PushApiController {
 		dto.setTaskId(taskId);
 		pm.setClientId(dto.getDeviceId());
 		pm.setPushData(dto);
-		System.out.println(dto.toString());
+		accessLog.debug("下发指令：["+dto.toString()+"]");
 		//System.err.println(dto0.toString());
 		if(dto.getCmdType()!=null && dto.getCmdType().equals("11")||dto.getCmdType().equals("12")||dto.getCmdType().equals("13")){//发送拍照或者拍摄视频时的命令会用到
 			ar.setResult(taskId);
@@ -73,6 +77,8 @@ public class PushApiController {
 		if(checkOnline){
 			ar.setMessage("操作成功");
 		}else{
+			
+			accessLog.debug("下发指令失败，设备不在线,指令数据：["+dto.toString()+"]");
 			ar.setCode(ApiResponse.FAILED);
 			ar.setMessage("设备不在线，发送指令失败");
 		}
