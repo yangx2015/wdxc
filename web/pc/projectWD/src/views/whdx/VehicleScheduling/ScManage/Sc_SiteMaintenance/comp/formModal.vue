@@ -6,55 +6,72 @@
 		    width='800'
 		    :mask-closable="false"
 		    title="新增站点">
+			<Form
+					ref="addmess"
+					:model="formItem"
+					:rules="ruleInline"
+					:label-width="100"
+					:styles="{top: '20px'}">
 		    <div>
-		    	<Row :gutter='30' style="margin-bottom: 15px;">
-		    		<Col span="6">
-		    			<Input v-model="formItem.mc"
-		    				placeholder="请输入站点名称...">
-		    			</Input>
-		    		</Col>
-		    		<Col span="6">
-					<Select filterable clearable  v-model="formItem.fw"
-							placeholder="请选择站点范围...">
-						<Option value="5">5</Option>
-						<Option value="10">10</Option>
-						<Option value="20">20</Option>
-						<Option value="30">30</Option>
-						<Option value="30">30</Option>
-					</Select>
-		    		</Col>
-		    		<Col span="6">
-	    				<Input v-model="formItem.jd"
-	    					readonly="readonly"
-	    					placeholder="用鼠标选取站点坐标">
-		    			</Input>
-		    		</Col>
-		    		<Col span="6">
-	    				<Input v-model="formItem.wd"
-	    					readonly="readonly"
-	    					placeholder="用鼠标选取站点坐标">
-		    			</Input>
-		    		</Col>
-		    	</Row>
-		    	<Row :gutter='30' style="margin-bottom: 15px;">
-		    		<Col span="12">
-		    			<Select filterable clearable  v-model="formItem.zt"
-		    				placeholder="请选择站点状态...">
-					        <Option value="00">正常</Option>
-					        <Option value="10">停用</Option>
-					    </Select>
-		    		</Col>
-		    		<Col span="12">
-	    				<Input v-model="formItem.bz" placeholder="备注信息...">
-		    			</Input>
-		    		</Col>
-		    	</Row>
+				<Row>
+					<Col span="8">
+						<FormItem prop="mc" label='站点名称：'>
+							<Input v-model="formItem.mc"
+								   placeholder="请输入站点名称...">
+							</Input>
+						</FormItem>
+					</Col>
+					<Col span="8">
+						<FormItem label='站点范围：'>
+							<Select filterable clearable  v-model="formItem.fw"
+									placeholder="请选择站点范围...">
+								<Option value="5">5</Option>
+								<Option value="10">10</Option>
+								<Option value="20">20</Option>
+								<Option value="30">30</Option>
+								<Option value="30">30</Option>
+							</Select>
+						</FormItem>
+					</Col>
+					<Col span="8">
+						<FormItem prop="zkl" label='纬度：'>
+							<Input v-model="formItem.wd"
+								   readonly="readonly"
+								   placeholder="用鼠标选取站点坐标">
+							</Input>
+						</FormItem>
+					</Col>
+					<Col span="8">
+						<FormItem prop="sjxm" label='经度：'>
+							<Input v-model="formItem.jd"
+								   readonly="readonly"
+								   placeholder="用鼠标选取站点坐标">
+							</Input>
+						</FormItem>
+					</Col>
+					<Col span="8">
+						<FormItem prop="zt" label='站点状态：'>
+							<Select filterable clearable  v-model="formItem.zt"
+									placeholder="请选择站点状态...">
+								<Option value="00">正常</Option>
+								<Option value="10">停用</Option>
+							</Select>
+						</FormItem>
+					</Col>
+					<Col span="8">
+						<FormItem prop="cdbh" label='备注信息：'>
+							<Input v-model="formItem.bz" placeholder="备注信息...">
+							</Input>
+						</FormItem>
+					</Col>
+				</Row>
 		    	<div style="height: 400px;">
 		    		<get-map-dot ref='maps'
 		    			:center="mapCenter"
 		    			@getDot="getDot"></get-map-dot>
 		    	</div>
 		    </div>
+			</Form>
 		    <div slot='footer'>
 		    	<Button type="ghost" @click="close">取消</Button>
 	        	<Button type="primary" @click="save">确定</Button>
@@ -87,6 +104,11 @@
 	        		lng: 114.372443,
 	        		lat: 30.544572
 	        	},
+                ruleInline: {
+                    mc: [
+                    	{ required: true, message: '请输入站点名称', trigger: 'blur' }
+                	],
+            },
 			}
 		},
 		created(){
@@ -104,19 +126,24 @@
 		    },
 			save(){
                 var v = this
-                v.$http.post(configApi.ZD.ADD,v.formItem).then((res) =>{
-                    if(res.code===200){
-                        v.$Message.success(res.message);
-                    }else{
-                        v.$Message.warning(res.message);
+                this.$refs['addmess'].validate((valid) => {
+                    if (valid) {
+                        v.$http.post(configApi.ZD.ADD,v.formItem).then((res) =>{
+                            if(res.code===200){
+                                v.$Message.success(res.message);
+                            }else{
+                                v.$Message.warning(res.message);
+                            }
+                        }).then((res)=>{
+                            v.close();
+                        }).catch((e)=>{
+                            console.log(e);
+                            v.$Message.error("失败了！");
+                        })
+                } else {
+                        v.$Message.error('请认真填写信息!');
                     }
-                }).then((res)=>{
-                    v.close();
-                }).catch((e)=>{
-                    console.log(e);
-                    v.$Message.error("失败了！");
-                })
-
+                    })
             },
 		    getDot(e){
                 this.formItem.jd = e.point.lng
