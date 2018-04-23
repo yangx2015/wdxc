@@ -15,10 +15,10 @@
 							<span>功能管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.like_CarNumber" placeholder="请输入功能名称" style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.gnmcLike" placeholder="请输入功能名称" style="width: 200px" @on-change="getmess()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="findMessList()">
+							<Button type="primary" @click="getmess()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
@@ -203,10 +203,7 @@
 				//收索
 				datetime: [],
 				findMess: {
-					gte_StartTime: '',
-					lte_StartTime: '',
-					like_CarNumber: '',
-					like_ScName: '',
+					gnmcLike:'',
 					pageNum: 1,
 					pageSize: 8
 				},
@@ -249,8 +246,6 @@
 			changeTime(val) {
 				this.findMess.gte_StartTime = val[0]
 				this.findMess.lte_StartTime = val[1]
-				//      		//console.log(this.findMess)
-				this.findMessList()
 			},
 			getDataList() {
 				var v = this
@@ -267,13 +262,13 @@
 				v.getmess()
 				//      		console.log(v.page)
 			},
-			findMessList() {
-				var v = this
-				//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
-			},
+//			findMessList() {
+//				var v = this
+//	      		this.$http.get('carLogs/pager',this.findMess).then((res) => {
+//               	v.tableData = res.data
+//                	v.pageTotal = res.total
+//            	})
+//			},
 
 		}
 	}

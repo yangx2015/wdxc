@@ -76,6 +76,9 @@
 			pbTime:''
 		},
 		created(){
+			if(this.mess.clList==null){
+				this.mess.clList = []
+			}
 			console.log('信息传递',this.mess)
 			this.getCarList()
 		},
@@ -115,7 +118,7 @@
 					}
 					v.getCarList()
 				}).catch((error)=>{
-					v.$Message.error('出错了！！！');
+					v.$Message.error('出错了！！！00000000000000');
 				})
 			},
 			deleteById(carID,index){
