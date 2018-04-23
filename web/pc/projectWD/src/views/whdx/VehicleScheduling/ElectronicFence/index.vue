@@ -85,8 +85,8 @@
 				</div>
 				<div class="body-F carlistBor" style="position: relative;height: 100%;">
 					<div style="position: absolute;top: 3px;right: 202px;z-index: 100;" id="input">
-						<!--<Button type="error" size="large" @click="AddRali">电子围栏</Button>-->
-						<Input type="text" v-model="findMess.wlmc" style="width: 60%"></Input>
+						<Input type="text" v-model="findMess.wlmc" style="width: 40%"></Input>
+						<Button type="error" size="large" @click="AddRali">取消</Button>
 						<Button type="success" size="large"  @click="finish">完成</Button>
 					</div>
 					<my-map ref='maps' :mapDot="mapDot" @choosePoint="choosePoint"></my-map>
@@ -301,7 +301,7 @@ export default {
         },
     	//电子围栏
     	AddRali(){
-//  		this.$refs.maps.addPolygonPoint()
+            this.RootShow = !this.RootShow
     	},
     	//树多选框
     	checkClick(event){

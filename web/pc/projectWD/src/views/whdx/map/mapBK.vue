@@ -8,7 +8,7 @@
 	    width: 64px;
 	    height: 47px;
 	    top: 5px;
-	    right: 470px;
+	    right: 570px;
 	    z-index: 100;
 	    background-color: rgb(255, 255, 255);
 	    text-align: center;
@@ -134,7 +134,7 @@
 				    enableDrawingTool: true, //是否显示工具栏
 				    drawingToolOptions: {
 				        anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
-				        offset: new BMap.Size(533, 5), //偏离值
+				        offset: new BMap.Size(633, 5), //偏离值
 				    },
 				    circleOptions: styleOptions, //圆的样式
 				    polylineOptions: styleOptions, //线的样式
