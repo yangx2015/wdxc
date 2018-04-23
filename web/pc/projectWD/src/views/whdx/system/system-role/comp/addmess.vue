@@ -27,12 +27,11 @@
 							</Col>
 							<Col span="12">
 								<FormItem prop="jsId" label='角色代码：'>
-									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码">
+									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码" :disabled="edit">
 									</Input>
 								</FormItem>
 							</Col>
 						</Row>
-
 						<Row>
 							<Col span="12">
 								<FormItem label='类型：' placeholder="请选择角色类型...">
@@ -96,7 +95,8 @@
                 ],
 				choosedIds :[],
                 Dictionary:[],
-                lmdmDictionary:'ZDCLK0004'
+                lmdmDictionary:'ZDCLK0004',
+				edit:false,
 			}
 		},
 		props:{
@@ -109,6 +109,7 @@
             if(!this.usermesType){
                 this.addmess = this.$parent.messdata
                 this.operate = '编辑';
+                this.edit = true;
             }
         },
 		mounted(){
