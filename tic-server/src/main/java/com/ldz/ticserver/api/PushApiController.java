@@ -77,6 +77,7 @@ public class PushApiController {
 		if(checkOnline){
 			ar.setMessage("操作成功");
 		}else{
+			
 			accessLog.debug("下发指令失败，设备不在线,指令数据：["+dto.toString()+"]");
 			ar.setCode(ApiResponse.FAILED);
 			ar.setMessage("设备不在线，发送指令失败");
