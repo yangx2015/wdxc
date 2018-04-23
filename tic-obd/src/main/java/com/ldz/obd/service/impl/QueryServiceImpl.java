@@ -1,12 +1,12 @@
 package com.ldz.obd.service.impl;
 
-import com.ldz.obd.bean.ObdFaultCodeBean;
-import com.ldz.obd.bean.ObdTravelItineraryBean;
 import com.ldz.obd.bean.PackageData;
 import com.ldz.obd.service.QueryService;
 import com.ldz.obd.service.codec.MsgDecoder;
 import com.ldz.obd.util.NettyUtil;
 import com.ldz.util.bean.GpsObdMessageBean;
+import com.ldz.util.bean.ObdFaultCodeBean;
+import com.ldz.util.bean.ObdTravelItineraryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
