@@ -28,7 +28,7 @@
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
 							<Col span="8"><span>结束时间</span></Col><Col span="16"><span class="span_time">{{item.jssj}}</span></Col>
-							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">{{dateFormat(item.sc)}}</span></Col>
+							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">{{dateFormat(item.sc)}}分钟</span></Col>
 						</Row>
 					</Card>
 				</Col>
@@ -171,10 +171,8 @@
 		methods: {
             dateFormat(longTypeDate){
                 if(!longTypeDate)return;
-				var dateType = "";
-				var date = new Date();
-				date.setTime(longTypeDate);
-                return date.getMinutes();
+                let s = longTypeDate / (1000 * 60)
+                return parseInt(s);
 			},
 		    showMap(item){
 		        this.choosedItem = item;
@@ -189,10 +187,6 @@
 			},
             formItemList(){
                 var v = this
-                // console.log(this.formItem.startTime.replace(/T/g, ' '));
-                // this.formItem.startTime = this.formItem.startTime.replace(/T/g, ' ');
-                // this.formItem.endTime = this.formItem.endTime.replace(/T/g,' ');
-                console.log(this.formItem.startTime.replace(/T/g,' '));
                 let p = {
                     startTime:this.formItem.startTime.replace(/T/g,' '),
                     endTime: this.formItem.endTime.replace(/T/g,' '),
@@ -201,7 +195,6 @@
                     brennschluss:this.formItem.brennschluss
 				}
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
-                    console.log(res);
                     if (res.code === 200){
                         for (let r of res.result){
                             let ksgps = r.ksgps.split(',');
