@@ -113,17 +113,8 @@
                   xm: [
                       { required: true, message: '请输入驾驶员名', trigger: 'blur' }
                   ],
-                  zjcx:[
-                      { required: true,message: '请输入手机号码', trigger: 'blur' }
-                  ],
                   sfzhm:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ],
-                  cdbh:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ],
-                  dabh:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
+                  	{ required: true,message: '请输入身份证号码', trigger: 'blur' }
                   ],
                   clrq:[
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
@@ -135,8 +126,6 @@
 
         watch:{
             clrq:function(n,o){
-                console.log('书剑',n);
-                console.log('书剑',this.getdateParaD(n));
             	this.addmess.clrq = this.getdateParaD(n)
             }
         },
@@ -151,9 +140,7 @@
 			}
 		},
 		created(){
-			this.addmess = this.mess
-			this.addmess.xb = '1'
-			this.addmess.zjcx = '11'
+            this.addmess = this.mess
 			this.fullcal()
 			this.getFleetList()
 
@@ -188,8 +175,8 @@
                     		v.$http.post(configApi.JSY.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('驾驶员注册成功');
-			                    	v.$parent.getmess()
-                					v.$parent.compName = ''
+                                    v.$parent.getmess()
+                                    v.$parent.compName = ''
 								}else{
 									v.$Message.warning(res.message);
 								}
@@ -198,7 +185,8 @@
                     		v.$http.post(configApi.JSY.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('驾驶员修改成功');
-//									v.$emit('listF',res)
+                                    v.$parent.getmess()
+                                    v.$parent.compName = ''
 								}else{
 									v.$Message.error('驾驶员修改失败');
 								}

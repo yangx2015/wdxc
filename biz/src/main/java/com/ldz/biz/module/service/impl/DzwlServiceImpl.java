@@ -68,7 +68,7 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements 
 		ClDzwl oldRecord = findById(entity.getId());
 		RuntimeCheck.ifNull(oldRecord, "记录不存在");
 		String wlmc = entity.getWlmc();
-		if (!oldRecord.getWlmc().equals(entity.getWlmc())) {
+		if (oldRecord.getWlmc() != null && !oldRecord.getWlmc().equals(entity.getWlmc())) {
 			RuntimeCheck.ifTrue(ifExists("wlmc", wlmc), "围栏名称已存在");
 		}
 		entity.setXgr(getOperateUser());

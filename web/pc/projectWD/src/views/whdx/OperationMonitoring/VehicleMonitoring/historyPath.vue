@@ -6,30 +6,29 @@
 	<div class="boxbackborder">
 		<component :is="componentName"></component>
 		<Card>
-			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-				<div style="height: 45px;line-height: 45px;">
-					<div class="margin-top-10 box-row">
-						<div class="">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="formItemList()" style="width: 220px"></DatePicker>
-						</div>
-						<div class="butevent">
-							<Button type="primary" @click="formItemList()">
-								<Icon type="search"></Icon>
-							</Button>
-						</div>
-					</div>
-				</div>
+			<Row class="margin-top-10" style='background-color: #fff'>
+				<Col span="6">
+					<DatePicker v-model="formItem.startTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入开始时间" ></DatePicker>
+				</Col>
+				<Col span="6">
+					<DatePicker v-model="formItem.endTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入结束时间"  ></DatePicker>
+				</Col>
+				<Col span="6">
+					<Button type="primary" @click="formItemList()">
+						<Icon type="search"></Icon>
+					</Button>
+				</Col>
 			</Row>
 			<Row :gutter="16">
 				<Col span="6" v-for="item in tableData">
 					<Card>
 						<Row>
-							<img @click="showMap" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+item.ksjd+','+item.kswd+'&width=300&height=200&zoom=12&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png'" class="imgItem">
+							<img @click="showMap(item)" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+item.ksjd+','+item.kswd+'&width=300&height=200&zoom=12&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png'" class="imgItem">
 						</Row>
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
 							<Col span="8"><span>结束时间</span></Col><Col span="16"><span class="span_time">{{item.jssj}}</span></Col>
-							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">35分钟</span></Col>
+							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">{{dateFormat(item.sc)}}</span></Col>
 						</Row>
 					</Card>
 				</Col>
@@ -42,6 +41,25 @@
 </template>
 
 <script>
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
 	import historyMap from '../../map/historyTarckMap'
 	import configApi from '@/axios/config.js'
 	export default {
@@ -131,6 +149,7 @@
                     ignition: 50,
                     brennschluss:'60'
 				},
+				choosedItem:null
 			}
 		},
 		// watch: {
@@ -150,8 +169,16 @@
 			this.formItemList();
 		},
 		methods: {
-		    showMap(){
-		      this.componentName = 'historyMap';
+            dateFormat(longTypeDate){
+                if(!longTypeDate)return;
+				var dateType = "";
+				var date = new Date();
+				date.setTime(longTypeDate);
+                return date.getMinutes();
+			},
+		    showMap(item){
+		        this.choosedItem = item;
+		      	this.componentName = 'historyMap';
 			},
 		    back(){
                 this.$router.back();
@@ -162,18 +189,29 @@
 			},
             formItemList(){
                 var v = this
-                this.$http.get(configApi.CLGL.GPS_HITSOR,{params:this.formItem}).then((res) =>{
+                // console.log(this.formItem.startTime.replace(/T/g, ' '));
+                // this.formItem.startTime = this.formItem.startTime.replace(/T/g, ' ');
+                // this.formItem.endTime = this.formItem.endTime.replace(/T/g,' ');
+                console.log(this.formItem.startTime.replace(/T/g,' '));
+                let p = {
+                    startTime:this.formItem.startTime.replace(/T/g,' '),
+                    endTime: this.formItem.endTime.replace(/T/g,' '),
+                    zdbh: this.formItem.zdbh,
+                    ignition: this.formItem.ignition,
+                    brennschluss:this.formItem.brennschluss
+				}
+                this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
                     console.log(res);
                     if (res.code === 200){
                         for (let r of res.result){
-                            console.log(r);
                             let ksgps = r.ksgps.split(',');
                             let jsgps = r.jsjps.split(',');
-                            r.ksjd = ksgps[0],
-                            r.kswd = ksgps[1],
-                            r.jsjd = jsgps[0],
-                            r.jswd = jsgps[1]
-						}
+                            r.ksjd = ksgps[1],
+                            r.kswd = ksgps[0],
+                            r.jsjd = jsgps[1],
+                            r.jswd = jsgps[0]
+                            console.log(r);
+                        }
                         this.tableData = res.result;
 					}
                 })

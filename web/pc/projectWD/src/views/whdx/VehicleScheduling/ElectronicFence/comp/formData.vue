@@ -1,5 +1,5 @@
 <style lang="less">
-	@import '../../../../styles/common.less';
+	@import '../../../../../styles/common.less';
 </style>
 <template>
 	<div>
@@ -19,37 +19,16 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='终端编号'>
-								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
-								</Input>
+							<FormItem label='围栏名称'>
+								<Input type="text" v-model="form.wlmc" placeholder="请填写围栏名称..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='站牌名称'>
-								<Input type="text" v-model="form.mc" placeholder="请填写站牌名称...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
-						<Col span="12">
-							<FormItem label='型号:' placeholder="请选择站牌型号...">
-								<Select filterable clearable  v-model="form.xh">
-									<Option value="10">型号1</Option>
-									<Option value="20">型号2</Option>
+							<FormItem label='状态'>
+								<Select v-model="form.zt">
+									<Option value="00">正常</Option>
+									<Option value="10">停用</Option>
 								</Select>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem label='厂商：'>
-								<Input type="text" v-model="form.cs" placeholder="请填写厂商信息..."></Input>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
-						<Col span="24">
-							<FormItem label='地址:'>
-								<Input type="text" v-model="form.dz" placeholder="请填写地址..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -81,6 +60,13 @@
                     cs: '',
                     dz:'',
 				},
+                ruleInline:{
+
+				},
+                addmess:{
+
+				}
+
 			}
 		},
 		created(){
@@ -95,17 +81,18 @@
 		    save(){
 		    	var v = this
             	v.SpinShow = true
-		        let url = configApi.ZNZP.ADD;
+		        let url = configApi.DZWL.ADD;
 				if (this.$parent.choosedRow){
-                    url = configApi.ZNZP.CHANGE;
+                    url = configApi.DZWL.CHANGE;
 				}
+                this.form.wlmj = 1000;
                 this.$http.post(url,this.form).then((res) =>{
                     if(res.code===200){
                         var v = this
-                        v.$parent.componentName = ''
-                        v.$parent.getPageData()
+                        v.$parent.findMessList()
                         this.$Message.success(res.message);
                         v.SpinShow = false
+                        v.$parent.componentName = ''
                     }
                 }).catch((error) =>{
 					v.$Message.error('出错了！！！');

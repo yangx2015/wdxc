@@ -9,9 +9,16 @@
 	.carlistBor{
 		border: solid 1px #bbb3b3;
 	}
+	#input div{
+		float:left
+	}
+	#input button{
+		float:left
+	}
 </style>
 <template>
 	<div class="box boxbackborder" style="padding: 5px 15px;">
+		<component :is="componentName"></component>
 		<div class="tit" v-show="!RootShow">
     		<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -61,8 +68,8 @@
 						@on-change='pageChange'></Page>
 			</Row>
     	</div>
-		<div class="body" v-show="RootShow" style="height: 100%;">
-			<div class="box-row" style="height: 100%;">
+		<div class="body" v-show="RootShow" style="height: 80%;">
+			<div class="box-row" style="height: 80%;">
 				<div class="carlist carlistBor" style="width: 180px;height: 100%;">
 					<div class="box">
 						<div class="tit">
@@ -77,8 +84,9 @@
 					</div>
 				</div>
 				<div class="body-F carlistBor" style="position: relative;height: 100%;">
-					<div style="position: absolute;top: 3px;right: 2px;z-index: 100;">
-						<Button type="error" size="large" @click="AddRali">电子围栏</Button>
+					<div style="position: absolute;top: 3px;right: 202px;z-index: 100;" id="input">
+						<!--<Button type="error" size="large" @click="AddRali">电子围栏</Button>-->
+						<Input type="text" v-model="findMess.wlmc" style="width: 60%"></Input>
 						<Button type="success" size="large"  @click="finish">完成</Button>
 					</div>
 					<my-map ref='maps' :mapDot="mapDot" @choosePoint="choosePoint"></my-map>
@@ -92,11 +100,12 @@
 import myMap from '../../map/mapBK.vue'
 import configApi from '@/axios/config.js'
 import mixins from '@/mixins'
+import formData from './comp/formData'
 export default {
     name: '',
     mixins:[mixins],
     components: {
-    	myMap,
+    	myMap,formData
     },
     data () {
         return {
@@ -110,6 +119,8 @@ export default {
         	mapDot:[],
             points:[],
         	RootShow:false,
+            choosedRow:null,
+            componentName:'',
 			//收索
 			cjsjInRange:[],
 			findMess: {
@@ -140,7 +151,10 @@ export default {
                 {
                     title: '状态',
                     align:'center',
-                    key: 'zt'
+                    key: 'zt',
+					render:(h,p)=>{
+                        return h('div',p.row.zt == '00' ? '正常':'停用')
+					}
                 },
                 {
                     title: '创建人',
@@ -173,7 +187,8 @@ export default {
 								},
                                 on: {
                                     click: () => {
-                                        // this.show(params.index)
+                                        this.choosedRow = params.row;
+                                        this.componentName = 'formData';
                                     }
                                 }
                             }),
@@ -190,7 +205,7 @@ export default {
                                 },
                                 on: {
                                     click: () => {
-                                        this.remove(params.index)
+                                        this.listDele(params.row.id)
                                     }
                                 }
                             })
@@ -263,6 +278,12 @@ export default {
         this.findMessList();
     },
     methods: {
+        //删除数据
+        listDele(id){
+            this.util.del(this,configApi.DZWL.DELE,[id],()=>{
+                this.findMessList();
+            });
+        },
         finish(){
             this.saveDzwl();
         },
@@ -330,7 +351,6 @@ export default {
             var v = this
             this.$http.post(configApi.DZWL.ADD,v.findMess).then((res) =>{
                 if (res.code === 200){
-                    console.log(res.message);
                     this.fanceId = res.message;
                     this.save();
                 }
@@ -350,6 +370,8 @@ export default {
         },
     	findMessList(){
             var v = this
+			delete this.findMess.dlxxzb;
+			delete this.findMess.wlmc;
             this.$http.get(configApi.DZWL.QUERY,{params:v.findMess}).then((res) =>{
                 v.data9 = res.page.list
                 v.pageTotal = res.page.total

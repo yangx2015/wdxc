@@ -7,6 +7,7 @@
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
 	export default {
 		name: 'historyTarckMap',
 		data() {
@@ -17,7 +18,7 @@
 					lng: 114.357527,
 					lat: 30.550822
 				},
-				zoom: 4,
+				zoom: 14,
 				stationList: [
 				{
 					id: "435383685965938688",
@@ -73,30 +74,47 @@
 					mc: "体育馆",
 					jd: 114.367013,
 					wd: 30.544633,
-				}]
+				}],
+                formItem:{}
 			}
 		},
 		created() {
 
 		},
 		mounted() {
-			this.Buildmap()
-			this.line()
-			let vi = 0
-            if(vi==this.stationList.length){
-            	vi = 0
-            }
-            this.animationDot(this.stationList[vi])
-            setInterval(()=>{
-            	vi ++
-            },500)
+		    let item = this.$parent.choosedItem
+            this.formItem = {
+		        startTime : item.kssj,
+		        endTime : item.jssj,
+				zdbh : this.$parent.formItem.zdbh
+			}
+            this.getData();
+            // let vi = 0
+            // if(vi==this.stationList.length){
+            // 	vi = 0
+            // }
+            // this.animationDot(this.stationList[vi])
+            // setInterval(()=>{
+            // 	vi ++
+            // },500)
 		},
 		methods: {
+            getData(){
+                var v = this
+				delete this.formItem.ignition
+				delete this.formItem.brennschluss
+                this.$http.post(configApi.CLGL.GPS_HITSOR_GPS,this.formItem).then((res) =>{
+                    if (res.code === 200){
+                        this.stationList = res.result;
+                        this.Buildmap()
+                    }
+                })
+            },
 			Buildmap() {
                 var v = this
 				// 百度地图API功能
 				this.map = new BMap.Map("allmap"); // 创建Map实例
-				this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom); // 初始化地图,设置中心点坐标和地图级别
+				this.map.centerAndZoom(new BMap.Point(this.stationList[0].bdwd, this.stationList[0].bdjd), this.zoom); // 初始化地图,设置中心点坐标和地图级别
 				//添加地图类型控件
 				this.map.addControl(new BMap.MapTypeControl({
 					mapTypes: [
@@ -107,29 +125,43 @@
 				this.map.addControl(new BMap.ScaleControl()); // 添加比例尺控件
 				this.map.addControl(new BMap.OverviewMapControl()); //添加缩略地图控件
 				this.map.addControl(new BMap.NavigationControl()); // 添加平移缩放控件
+                this.line()
 			},
 			line(){
 				var v = this
 				var pois = [];
                 for(let r of v.stationList){
-                    pois.push(new BMap.Point(r.jd,r.wd));
+                    pois.push(new BMap.Point(r.bdjd,r.bdwd));
 				}
                 v.map.setViewport(pois)
-                var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
-                    scale: 0.6,//图标缩放大小
-                    strokeColor:'#fff',//设置矢量图标的线填充颜色
-                    strokeWeight: '2',//设置线宽
-                });
-                var icons = new BMap.IconSequence(sy, '10', '20');
+                // var sy = new BMap.Symbol(BMap_Symbol_SHAPE_BACKWARD_OPEN_ARROW, {
+                //     scale: 0.6,//图标缩放大小
+                //     strokeColor:'#fff',//设置矢量图标的线填充颜色
+                //     strokeWeight: '2',//设置线宽
+                // });
+                // var icons = new BMap.IconSequence(sy, '10', '20');
                 var polyline = new BMap.Polyline(pois, {
-                    enableEditing: true,//是否启用线编辑，默认为false
-                    enableClicking: true,//是否响应点击事件，默认为true
-                    icons:[icons],
+                    enableEditing: false,//是否启用线编辑，默认为false
+                    enableClicking: false,//是否响应点击事件，默认为true
+                    // icons:[icons],
                     strokeWeight:'8',//折线的宽度，以像素为单位
                     strokeOpacity: 0.8,//折线的透明度，取值范围0 - 1
                     strokeColor:"#18a45b" //折线颜色
                 });
                 this.map.addOverlay(polyline);          //增加折线
+
+				// 增加起点
+                console.log((v.stationList[0].bdjd, v.stationList[0].bdwd));
+                var pt1 = new BMap.Point(v.stationList[0].bdjd, v.stationList[0].bdwd);
+                var myIcon1 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
+                var marker1 = new BMap.Marker(pt1,{icon:myIcon1});  // 创建标注
+                this.map.addOverlay(marker1);
+
+				// 增加终点
+                var pt2 = new BMap.Point(v.stationList[v.stationList.length-1].bdjd, v.stationList[v.stationList.length-1].bdwd);
+                var myIcon2 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_end.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
+                var marker2 = new BMap.Marker(pt2,{icon:myIcon2});  // 创建标注
+                this.map.addOverlay(marker2);
 
 			},
 			animationDot(item){

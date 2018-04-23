@@ -11,12 +11,12 @@
 					:label-width="100"
 					:rules="ruleInline"
 					label-position="right">
+					<FormItem prop='lmdm' label='字典代码：'>
+						<Input type="text" v-model="addmess.lmdm" placeholder="请填写字典编码...">
+						</Input>
+					</FormItem>
 							<FormItem prop='lmmc' label='字典名称：'>
 								<Input type="text" v-model="addmess.lmmc" placeholder="请填写字典名称...">
-								</Input>
-							</FormItem>
-							<FormItem prop='lmdm' label='字典代码：'>
-								<Input type="text" v-model="addmess.lmdm" placeholder="请填写字典编码...">
 								</Input>
 							</FormItem>
 				</Form>
