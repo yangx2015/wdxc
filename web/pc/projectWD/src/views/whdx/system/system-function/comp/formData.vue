@@ -192,7 +192,7 @@
 							v.$Message.error('出错了！！！');
 						})
 					} else {
-                        v.$Message.error('请认真填写用户信息!');
+                        v.$Message.error('请将信息填写完整!');
                     }
                 })
 			},
