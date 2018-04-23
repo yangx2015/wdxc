@@ -11,7 +11,7 @@
             <div>
                 <Row :gutter="16">
                     <Col span="12">
-                        <Card style="height: 200px">
+                        <Card style="height: 300px">
                             <p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>
                             <Row>
                                 <Col span="2"><Icon type="card"></Icon></Col>
@@ -28,13 +28,45 @@
                         </Card>
                     </Col>
                     <Col span="12">
-                        <Card style="height: 200px">
+                        <Card style="height: 300px">
                             <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
                             <Row>
-                                <Button  @click="setControl" icon="camera">远程拍照</Button>
-                                <Button  @click="setControl" icon="ios-videocam">拍摄视频</Button>
-                                <Button  @click="showFance" icon="qr-scanner">电子围栏</Button>
-                                <Button  @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+                                <Col span="8">
+                                    <Button @click="setControl('12','0-10')" icon="camera">前摄像头拍照</Button>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="setControl('12','1-10')" icon="camera">后摄像头拍照</Button>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="setControl('12','2-10')" icon="camera">前后摄像头拍照</Button>
+                                </Col>
+                                <br>
+                                <Col span="8">
+                                    <Button @click="setControl('11','0-10')" icon="ios-videocam">前摄像头视频</Button>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="setControl('11','1-10')" icon="ios-videocam">后摄像头视频</Button>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="setControl('11','2-10')" icon="ios-videocam">前后摄像头视频</Button>
+                                </Col>
+                                <br>
+                                <Col span="8">
+                                    <DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >
+                                </Col>
+                                <Col span="8">
+                                    <DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.endTime" placeholder="请选择结束时间"></DatePicker>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="mergeVideo(1)" icon="qr-scanner">合并视频</Button>
+                                </Col>
+                                <br>
+                                <Col span="8">
+                                    <Button @click="showFance" icon="qr-scanner">电子围栏</Button>
+                                </Col>
+                                <Col span="8">
+                                    <Button @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+                                </Col>
                             </Row>
                         </Card>
                     </Col>
@@ -48,11 +80,14 @@
                                 <Form :label-width="100">
                                     <Row>
                                         <Col span="12">
-                                            <FormItem label='传感器灵敏度'>
-                                                <Select filterable clearable  v-model="carControl.lmd">
-                                                    <Option value="1">低</Option>
-                                                    <Option value="2">中</Option>
-                                                    <Option value="3">高</Option>
+                                            <FormItem label='急加速灵敏度'>
+                                                <Select filterable clearable  v-model="carControl.lmd" @on-change="selectChange">
+                                                    <Option value="1">1</Option>
+                                                    <Option value="2">2</Option>
+                                                    <Option value="3">3</Option>
+                                                    <Option value="4">4</Option>
+                                                    <Option value="5">5</Option>
+                                                    <Option value="6">6</Option>
                                                 </Select>
                                             </FormItem>
                                         </Col>
@@ -130,16 +165,18 @@
                     lmd:1,
                     scms:1
                 },
+                mergeVideoParam:{
+                    startTime:'',
+                    endTime:''
+                },
                 obd:null
             }
 
         },
         created(){
-            console.log('created');
             this.init();
         },
         mounted(){
-            console.log('mounted');
         },
         methods:{
             formatDate(date){
@@ -151,14 +188,15 @@
             tabClick(k){
                 this.showConfirmButton = k === 2
             },
+            selectChange(type){
+
+            },
             init(){
-                console.log('init');
                 setTimeout(() => {
-                    console.log(this.showModal);
                     this.showModal = true;
                 }, 100);
                 this.car = this.$parent.choosedItem;
-                this.car.obdId = '301404140001'
+                this.car.obdId = '101601190228'
                 if (this.car.obdId){
                     this.getObdInfo();
                 }
@@ -177,12 +215,65 @@
                     this.init();
                 },1000)
             },
-            setControl(type){
+            setting(type,param){
+                var v = this
+                let params = {
+                    deviceId:this.car.zdbh,
+                    cmdType:type,
+                    cmd:param
+                }
                 this.SpinShow = true;
-                setTimeout(()=>{
-                    this.$Message.success("发送成功!")
+                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
-                },1000)
+                    if (res.code === 200){
+                        this.$Message.success("设置成功!")
+                    }else{
+                        this.$Message.error(res.message)
+                    }
+                })
+            },
+            /**deviceId:设备id  cmdType:11拍视频  12拍照片 13合并视屏 (三选一)
+             *
+             * 	 * cmdType 为11和12的时候使用
+             * 参数格式为分隔式字符串  如:0-10 前一个0 标识要抓拍的摄像头  后一个10标识当前时间点前后十秒
+             * 摄像头参数如下:0,前后都抓拍, 1表示仅前摄像头, 2表示仅仅后摄像头。当cmdType为12的时候，此参数也是一样，只是抓拍前后多少秒参数无效【客户端自动判断，后台传递参数即可】
+             * cmdType 为13的时候参数是0-0 或者1-0  ，特别注意，为13的时候，startTime和endTime必须有值
+             * 摄像头参数如下:0 合并前摄像头  1 合并后摄像头  2 合并内置摄像头【内置摄像头这个暂时无法使用】
+             */
+            setControl(type,param){
+                var v = this
+                let params = {
+                    deviceId:this.car.zdbh,
+                    cmdType:type,
+                    cmdParams:param
+                }
+                this.SpinShow = true;
+                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                    this.SpinShow = false;
+                    if (res.code === 200){
+                        this.$Message.success("发送成功!")
+                    }else{
+                        this.$Message.error(res.message)
+                    }
+                })
+            },
+            mergeVideo(param){
+                let params = {
+                    deviceId:this.car.zdbh,
+                    cmdType:13,
+                    cmdParams:param,
+                    startTime:this.mergeVideoParam.startTime,
+                    endTime  :this.mergeVideoParam.endTime,
+                }
+                this.SpinShow = true;
+                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                    this.SpinShow = false;
+                    if (res.code === 200){
+                        this.$Message.success("发送成功!")
+                    }else{
+                        this.$Message.error(res.message)
+                    }
+                })
             },
             getObdInfo(){
                 var v = this
@@ -212,5 +303,4 @@
     .height200{
         height: 200px;
     }
-
 </style>

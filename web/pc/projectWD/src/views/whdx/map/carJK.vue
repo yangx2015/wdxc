@@ -94,6 +94,8 @@
 			this.clear()
 			var v = this
 			for(let r of this.carList){
+                console.log(r.lng);
+                console.log(r.lat);
                 var point = new BMap.Point(r.lng, r.lat);
                 this.addMarker(r,point);
             }

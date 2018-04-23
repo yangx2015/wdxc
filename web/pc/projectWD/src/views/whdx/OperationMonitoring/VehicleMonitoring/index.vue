@@ -221,23 +221,22 @@ export default {
             item.lng = item.bdjd;
             item.lat = item.bdwd;
             switch(item.eventType){
-				case '50':
-				    item.status = 0;
-				    item.text = '上线时间';
-				    break;
 				case '60':
                     item.status = 1;
                     item.text = '熄火时间';
                     break;
 				case '80':
-				default:
                     item.status = 2;
                     item.text = '离线时间';
+                    break;
+                case '50':
+				default:
+                    item.status = 0;
+                    item.text = '上线时间';
 			}
 		},
 		rowClick(item){
             this.choosedCar = item;
-            console.log(item);
             this.mapCarList = [this.choosedCar];
             this.$refs.map.init();
 		}
