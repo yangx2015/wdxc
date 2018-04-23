@@ -155,6 +155,8 @@
                 if (this.$parent.currentRow){
                     url = configApi.XL.CHANGE;
                 }
+                delete this.from.startStation
+                delete this.from.endStation
                 this.$http.post(url,this.form).then((res) =>{
                     if(res.code===200){
                         var v = this
