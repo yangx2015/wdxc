@@ -136,20 +136,28 @@
 			cjsjInRange:function(newQuestion, oldQuestion){
 				this.formItem.kssj = this.getdateParaD(newQuestion[0])
 				this.formItem.jssj = this.getdateParaD(newQuestion[1])
-				console.log(this.formItem)
 			},
 		},
 		created(){
 			this.formItem = this.mess
 			this.cjsjInRange = [this.mess.kssj,this.mess.jssj]
-			console.log('时间转换',this.cjsjInRange)
 		},
 		methods: {
             addImg(path){
                 this.formItem.filePaths += path+",";
 			},
 			removeFile(url){
-                this.formItem.filePaths = this.formItem.filePaths.split(',').splice(url+',',1).join(',')
+                console.log('图片',url)
+				console.log('原图片',this.formItem.filePaths)
+				
+                let aindex = this.formItem.filePaths.indexOf(url)//开始的位置
+                let urlLength = url.length//传递的长度
+                let filePath = this.formItem.filePaths//原数据拼接
+                let filelength = filePath.length//原数据长度
+                
+                this.formItem.filePaths = filePath.slice(0,aindex)+filePath.slice(aindex+urlLength,filelength)
+                
+				console.log('修改数据',this.formItem.filePaths)
 			},
             save(){
                 var v = this
@@ -160,7 +168,7 @@
                     }else{
                         v.$Message.error(res.message);
                     }
-                    v.$parent.componentName = ''
+                    v.$parent.compName = ''
                     v.$parent.getmess()
                 })
             },
@@ -171,7 +179,3 @@
 		}
 	}
 </script>
-
-<style>
-
-</style>

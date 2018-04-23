@@ -121,12 +121,11 @@
 		                this.$http.post(url,this.form).then((res) =>{
 		                	if(res.code==200){
 		                		v.$Message.success(res.message);
-//								v.bud()
+								v.close()
 						        v.$parent.getPageData()
 		                	}else{
 		                		v.$Message.error(res.message);
 		                	}
-		                	v.close()
 		                }).catch((error) =>{
 							v.$Message.error('出错了！！！');
 						})

@@ -125,11 +125,11 @@
 				//收索
 				cjsjInRange:[],
 				formItem: {
-                    startTime:'2018-01-01',
-                    endTime: '2018-05-05',
+                    startTime:'2018-01-01 00:00:00',
+                    endTime: '2018-05-05 00:00:00',
                     zdbh: 1,
-                    ignition: 10,
-                    brennschluss:''
+                    ignition: 50,
+                    brennschluss:'60'
 				},
 			}
 		},
@@ -164,6 +164,18 @@
                 var v = this
                 this.$http.get(configApi.CLGL.GPS_HITSOR,{params:this.formItem}).then((res) =>{
                     console.log(res);
+                    if (res.code === 200){
+                        for (let r of res.result){
+                            console.log(r);
+                            let ksgps = r.ksgps.split(',');
+                            let jsgps = r.jsjps.split(',');
+                            r.ksjd = ksgps[0],
+                            r.kswd = ksgps[1],
+                            r.jsjd = jsgps[0],
+                            r.jswd = jsgps[1]
+						}
+                        this.tableData = res.result;
+					}
                 })
 			},
 			//分页点击事件按

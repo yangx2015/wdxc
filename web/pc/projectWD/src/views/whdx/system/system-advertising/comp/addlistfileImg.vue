@@ -5,6 +5,7 @@
 	            <img :src="item.url">
 	            <div class="demo-upload-list-cover">
 	                <!--<Icon type="ios-eye-outline" @click.native="handleView(item.name)"></Icon>-->
+	                <!--文件移除-->
 	                <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
 	            </div>
 	        </template>
@@ -80,7 +81,7 @@
                 this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
                 console.log('移出文件',file)
 //              this.formItem.filePaths.replace(url+',','')
-                this.$emit('removeFile',file.url.replace(configApi.STATIC_PATH,''))
+                this.$emit('removeFile',file.url.replace(configApi.STATIC_PATH,'')+',')
             },
             handleSuccess (res, file,fileList) {
                 this.$emit('addImg',res.message);
