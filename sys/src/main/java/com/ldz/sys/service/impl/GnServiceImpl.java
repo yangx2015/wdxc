@@ -120,6 +120,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     public ApiResponse<List<SysGn>> getRoleFunctions(String jsdm) {
         SimpleCondition condition = new SimpleCondition(SysJsGn.class);
         condition.eq(SysJsGn.InnerColumn.jsdm,jsdm);
+        condition.eq(SysJsGn.InnerColumn.zt,"00");
         List<SysJsGn> roleFunctions = jsGnMapper.selectByExample(condition);
         if (roleFunctions.size() == 0){
             List<SysGn> gnList = new ArrayList<>();
@@ -142,10 +143,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<Menu> getMenuTree(SysYh user) {
-        log.debug("getMenuTree");
         List<SysGn> functions = getUserFunctions(user);
         if (functions == null || functions.size() == 0)return new ArrayList<>();
-        log.debug("function size:"+functions.size());
         functions.sort(Comparator.comparing(SysGn::getPx));
         List<Menu> menuList = convertToMenus(functions);
         return buildMenuTree(menuList);
@@ -281,7 +280,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         }
         List<String> functionCodes = getUserFunctionCodes(user);
         if (functionCodes.size() == 0)return new ArrayList<>();
-        return findIn(SysGn.InnerColumn.gndm,functionCodes);
+        SimpleCondition condition = new SimpleCondition(SysGn.class);
+        condition.in(SysGn.InnerColumn.gndm,functionCodes);
+        condition.eq(SysGn.InnerColumn.zt,"00");
+        return findByCondition(condition);
     }
 
     @Override

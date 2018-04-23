@@ -187,6 +187,7 @@ module.exports = {
 		GET_CAR_INFO:'/api/cl/getCarInfo',
 		GET_OBD_INFO:'/obd/getObdInfo',
         getObdTimely:'/obd/getObdTimely',
+		SEND_CONTROLL:'/pub/intstruction/send'
 	},
 	CARTREE:{//车辆列表
 		QUERY:'/api/cl/getcltj'

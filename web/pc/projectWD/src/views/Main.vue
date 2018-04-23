@@ -212,13 +212,13 @@
 				            v.$store.commit('socketMessAdd',v.scoketMess)
 			            }
 			            
-			            v.scoketAllCar.forEach((item,index) => {
-							if(item.clid==jsonMess.clid){
-								v.scoketAllCar.splice(index,1)
-							}
-						})
-				        v.scoketAllCar.push(jsonMess)
-			            v.$store.commit('socketAllCarAdd',v.scoketAllCar)
+                        // v.scoketAllCar.forEach((item,index) => {
+							// if(item.clid==jsonMess.clid){
+							// 	v.scoketAllCar.splice(index,1)
+							// }
+                        // })
+				        // v.scoketAllCar.push(jsonMess)
+			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			    });	
 			},
