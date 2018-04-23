@@ -4,28 +4,22 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'站牌'">
-			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-				<Spin fix>
-					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-					<div style="font-size: 30px;">数据加载中请稍后</div>
-				</Spin>
-			</div>
 			<div style="overflow: auto;height: 300px;">
 				<Form
 						ref="addmess"
-						:model="addmess"
+						:model="form"
 						:rules="ruleInline"
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='终端编号'>
+							<FormItem prop='zdbh' label='终端编号'>
 								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='站牌名称'>
+							<FormItem prop='mc' label='站牌名称'>
 								<Input type="text" v-model="form.mc" placeholder="请填写站牌名称...">
 								</Input>
 							</FormItem>
@@ -61,7 +55,7 @@
 			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -74,7 +68,6 @@
 		name: '',
 		data() {
 			return {
-				SpinShow:false,
 			    operate:'新建',
 				showModal: true,
                 mesF:false,
@@ -85,6 +78,20 @@
                     cs: '',
                     dz:'',
 				},
+				ruleInline: {
+                  zdbh: [
+                      { required: true, message: '请输入终端编号', trigger: 'blur' }
+                  ],
+                  mc: [
+                      { required: true, message: '请输站牌名称', trigger: 'blur' }
+                  ],
+                  sjh:[
+                      { required: true,message: '请输入手机号码', trigger: 'blur' }
+                  ],
+                  zjhm:[
+                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
+                  ]
+              	},
 			}
 		},
 		created(){
@@ -98,23 +105,26 @@
 		methods: {
 		    save(){
 		    	var v = this
-            	v.SpinShow = true
-		        let url = configApi.ZNZP.ADD;
-				if (this.$parent.choosedRow){
-                    url = configApi.ZNZP.CHANGE;
-				}
-                this.$http.post(url,this.form).then((res) =>{
-                    if(res.code===200){
-                        var v = this
-                        v.$parent.componentName = ''
-                        v.$parent.getPageData()
-                        this.$Message.success(res.message);
-                        v.SpinShow = false
+		    	this.$refs[name].validate((valid) => {
+                    if (valid) {
+				        let url = configApi.ZNZP.ADD;
+						if (this.$parent.choosedRow){
+		                    url = configApi.ZNZP.CHANGE;
+						}
+		                this.$http.post(url,this.form).then((res) =>{
+		                    if(res.code===200){
+		                        var v = this
+		                        v.$parent.componentName = ''
+		                        v.$parent.getPageData()
+		                        this.$Message.success(res.message);
+		                    }
+		                }).catch((error) =>{
+							v.$Message.error('出错了！！！');
+						})
+		            } else {
+                        v.$Message.error('请认真填写用户信息!');
                     }
-                }).catch((error) =>{
-					v.$Message.error('出错了！！！');
-					v.SpinShow = false
-				})
+                })
 			},
 			close(){
 		        let v = this;

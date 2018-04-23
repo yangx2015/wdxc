@@ -11,7 +11,7 @@
 		    title="车辆限速修改">
     		<Form
     			ref="addmess"
-    			:model="mess"
+    			:model="addmess"
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
@@ -19,13 +19,13 @@
 	    			<Row>
 	    				<Col span="12">
 	    					<FormItem label='车牌号：'>
-								<Input readonly="readonly" type="text" v-model="mess.cph" placeholder="请设置速度上限">
+								<Input readonly="readonly" type="text" v-model.trim="addmess.cph" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
 	    				</Col>
 	    				<Col span="12">
 	    					<FormItem prop="cph" label='速度上限：'>
-								<Input type="text" v-model="mess.sdsx" placeholder="请设置速度上限">
+								<Input type="text" v-model="addmess.sdsx" placeholder="请设置速度上限">
 								</Input>
 							</FormItem>
 	    				</Col>
@@ -69,8 +69,7 @@
 		},
 		created(){
 			console.log('数据传输',this.mess)
-			this.addmess.cph = this.mess.cph
-			this.addmess.sdsx = this.mess.sdsx
+			this.addmess = this.mess
 		},
 		methods:{
 			colse(){

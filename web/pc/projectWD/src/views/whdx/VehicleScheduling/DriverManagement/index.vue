@@ -15,7 +15,7 @@
 							<span>驾驶员管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.xmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.xmLike" placeholder="请输入驾驶姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">

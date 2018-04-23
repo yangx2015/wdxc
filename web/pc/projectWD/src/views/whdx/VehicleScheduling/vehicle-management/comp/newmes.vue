@@ -56,8 +56,8 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
-								<Select filterable clearable  v-model="addmess.zdbh">
-									<Option v-for="e in deviceList" :value="e.zdbh" :key="e.zdbh">{{e.mc}}</Option>
+								<Select placement='top' filterable clearable  v-model="addmess.zdbh">
+									<Option v-for="e in deviceList" :value="e.zdbh" :key="e.zdbh">{{e.zdbh}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
