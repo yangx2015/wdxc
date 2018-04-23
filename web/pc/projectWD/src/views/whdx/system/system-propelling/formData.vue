@@ -105,7 +105,7 @@
 		methods: {
 		    save(){
 		    	var v = this
-		    	this.$refs[name].validate((valid) => {
+		    	this.$refs['addmess'].validate((valid) => {
                     if (valid) {
 				        let url = configApi.ZNZP.ADD;
 						if (this.$parent.choosedRow){
