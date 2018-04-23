@@ -6,9 +6,19 @@
 		resultType="com.ldz.biz.module.model.ClSbyxsjjl">
 		select * from CL_SBYXSJJL t where t.CJSJ between
 		to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss')
-		and to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss') and ZDBH=#{zdbh} and
+		and
+		to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss') and ZDBH=#{zdbh} and
 		(t.SJLX=#{ignition} or t.SJLX=#{brennschluss}) ORDER BY CJSJ ASC
 	</select>
+
+<!-- 	<select id="gpsInitSan" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
+		select a.*
+		from CL_SBYXSJJL a
+		where not exists(select 1
+		from CL_SBYXSJJL b
+		where b.ZDBH=a.ZDBH and
+		b.CJSJ>a.CJSJ) AND (CJSJ> (sysdate-(3/1440)))
+	</select> -->
 
 	<select id="gpsInit" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
 		select a.*
@@ -17,6 +27,5 @@
 		from CL_SBYXSJJL b
 		where b.ZDBH=a.ZDBH and b.CJSJ>a.CJSJ)
 	</select>
-
 
 </mapper>
