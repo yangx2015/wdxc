@@ -94,7 +94,10 @@
                 },
                 ruleInline: {
                   cph: [
-                      { required: true, message: '请输入用户名', trigger: 'blur' }
+                      { required: true, message: '请输入车牌号', trigger: 'blur' }
+                  ],
+                  zkl: [
+                      { required: true, message: '请输入载客量', trigger: 'blur' }
                   ],
               	},
 				deviceList:[],//终端设备

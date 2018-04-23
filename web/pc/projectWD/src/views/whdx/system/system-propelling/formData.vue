@@ -14,7 +14,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop='zdbh' label='终端编号'>
-								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
+								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号..." :disabled="edit">
 								</Input>
 							</FormItem>
 						</Col>
@@ -71,6 +71,7 @@
 			    operate:'新建',
 				showModal: true,
                 mesF:false,
+				edit:false,
 				form: {
                     zdbh:'',
 					mc: '',
@@ -98,6 +99,7 @@
 			if (this.$parent.choosedRow){
 				this.form = this.$parent.choosedRow;
 				this.operate = '编辑'
+				this.edit = true;
 			}
 		},
         mounted(){
