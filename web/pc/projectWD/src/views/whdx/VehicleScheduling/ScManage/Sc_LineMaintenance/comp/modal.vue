@@ -179,6 +179,8 @@
 		                    zdIds += r.id+",";
 						}
 		                this.form.zdIds = zdIds;
+                        delete this.from.startStation
+                        delete this.from.endStation
 		                let url = configApi.XL.ADD;
 		                if (this.$parent.currentRow){
 		                    url = configApi.XL.CHANGE;
