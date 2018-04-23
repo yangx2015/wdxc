@@ -81,7 +81,7 @@
                                     <Row>
                                         <Col span="12">
                                             <FormItem label='急加速灵敏度'>
-                                                <Select filterable clearable  v-model="carControl.lmd" @on-change="selectChange">
+                                                <Select filterable clearable  v-model="carControl.jjslmd" @on-change="selectChange02">
                                                     <Option value="1">1</Option>
                                                     <Option value="2">2</Option>
                                                     <Option value="3">3</Option>
@@ -92,11 +92,27 @@
                                             </FormItem>
                                         </Col>
                                         <Col span="12">
+                                            <FormItem label='碰撞灵敏度'>
+                                                <Select filterable clearable  v-model="carControl.pzlmd" @on-change="selectChange20">
+                                                    <Option value="00">低</Option>
+                                                    <Option value="10">中</Option>
+                                                    <Option value="20">高</Option>
+                                                </Select>
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="12">
                                             <FormItem label='上传模式'>
-                                                <Select filterable clearable  v-model="carControl.scms">
-                                                    <Option value="1">仅WIFI</Option>
-                                                    <Option value="2">全部</Option>
-                                                    <Option value="3">不上传</Option>
+                                                <Select filterable clearable  v-model="carControl.scms" @on-change="selectChange30">
+                                                    <Option value="00">全部</Option>
+                                                    <Option value="10">仅WIFI</Option>
+                                                </Select>
+                                            </FormItem>
+                                        </Col>
+                                        <Col span="12">
+                                            <FormItem label='上传视屏模式'>
+                                                <Select filterable clearable  v-model="carControl.scspms" @on-change="selectChange50">
+                                                    <Option value="00">全部</Option>
+                                                    <Option value="10">仅碰撞视屏</Option>
                                                 </Select>
                                             </FormItem>
                                         </Col>
@@ -104,10 +120,16 @@
                                             <FormItem label='超速设定'>
                                                 <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
                                             </FormItem>
+                                            <Button type="primary"  @click="save">确定</Button>
+                                        </Col>
+                                        <Col span="12">
+                                            <FormItem label='GPS心跳间隔'>
+                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写超速设定..."></Input>
+                                            </FormItem>
+                                            <Button type="primary"  @click="save">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Button type="primary"  @click="save">确定</Button>
                                     </Row>
                                 </Form>
                             </Row>
@@ -163,7 +185,12 @@
                 car:'',
                 carControl:{
                     lmd:1,
-                    scms:1
+                    scms:1,
+                    jjslmd:'',
+                    pzlmd:'',
+                    scspms:'',
+                    cssd:'',
+                    gpsxtjg:'',
                 },
                 mergeVideoParam:{
                     startTime:'',
@@ -188,8 +215,39 @@
             tabClick(k){
                 this.showConfirmButton = k === 2
             },
-            selectChange(type){
-
+            selectChange02(e){
+                console.log('selectChange02');
+                console.log(e);
+                // this.setting('02',this.carControl.jjslmd);
+            },
+            selectChange20(e){
+                console.log('selectChange20');
+                console.log(e);
+            },
+            selectChange30(e){
+                console.log('selectChange30');
+                console.log(e);
+            },
+            selectChange50(e){
+                console.log('selectChange50');
+                console.log(e);
+            },
+            setting(type,param){
+                var v = this
+                let params = {
+                    deviceId:this.car.zdbh,
+                    cmdType:type,
+                    cmd:param
+                }
+                this.SpinShow = true;
+                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                    this.SpinShow = false;
+                    if (res.code === 200){
+                        this.$Message.success("设置成功!")
+                    }else{
+                        this.$Message.error(res.message)
+                    }
+                })
             },
             init(){
                 setTimeout(() => {
@@ -214,23 +272,6 @@
                     this.SpinShow = false;
                     this.init();
                 },1000)
-            },
-            setting(type,param){
-                var v = this
-                let params = {
-                    deviceId:this.car.zdbh,
-                    cmdType:type,
-                    cmd:param
-                }
-                this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
-                    this.SpinShow = false;
-                    if (res.code === 200){
-                        this.$Message.success("设置成功!")
-                    }else{
-                        this.$Message.error(res.message)
-                    }
-                })
             },
             /**deviceId:设备id  cmdType:11拍视频  12拍照片 13合并视屏 (三选一)
              *
