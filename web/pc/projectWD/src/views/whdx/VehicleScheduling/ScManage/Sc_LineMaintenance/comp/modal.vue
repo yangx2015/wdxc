@@ -171,7 +171,7 @@
 		        return station.mc;
 			},
 			save(name){
-				var v = this
+                var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 		                let zdIds = '';
@@ -179,13 +179,13 @@
 		                    zdIds += r.id+",";
 						}
 		                this.form.zdIds = zdIds;
-                        delete this.from.startStation
-                        delete this.from.endStation
+                        delete this.form.startStation
+                        delete this.form.endStation
 		                let url = configApi.XL.ADD;
 		                if (this.$parent.currentRow){
 		                    url = configApi.XL.CHANGE;
 		                }
-		                this.$http.post(url,this.form).then((res) =>{
+                        this.$http.post(url,this.form).then((res) =>{
 		                    if(res.code===200){
 		                        var v = this
 		                        v.$parent.compName = ''
