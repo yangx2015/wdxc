@@ -28,7 +28,7 @@ public class WxErrorController implements ErrorController {
   private final static String ERROR_PATH = "/error";
   private static WxErrorController appErrorController;
   /**
-   * Error Attributes in the Application
+   * Error Attributes in the Application123
    */
   @Autowired
   private ErrorAttributes errorAttributes;
