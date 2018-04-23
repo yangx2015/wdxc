@@ -1,4 +1,4 @@
-package com.ldz.obd.bean;
+package com.ldz.util.bean;
 
 import java.io.Serializable;
 import java.util.Date;

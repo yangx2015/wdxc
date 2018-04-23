@@ -71,9 +71,13 @@ public class DateUtils {
 //	}
 	
 	public static void main(String[] args){
-		String dateStr = DateUtils.getDateStr(parseMills(1350994695000l), "yyyy-MM-dd HH:mm:ss");
-		System.out.println(dateStr);
-		
+//		String dateStr = DateUtils.getDateStr(parseMills(1350994695000l), "yyyy-MM-dd HH:mm:ss");
+//		System.out.println(dateStr);
+		try {
+			DateUtils.getDate("2018-04-10","yyyy-MM-dd");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
 	}
 	public static String getNowTime() {
 		return getToday("yyyy-MM-dd HH:mm:ss");
