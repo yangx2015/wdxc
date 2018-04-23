@@ -108,7 +108,7 @@
 	    				:zd="item.entryCount!=0"
 	    				:linecar='item.exportCount!=0'
 	    				:siteName="item.zdName"
-	    				:lineShow="!(index==XBline.length-1)"></carline>
+	    				:lineShow="!(index==XBline.list.length-1)"></carline>
 	    		</div>
 	  			<!--<div>
 	  				<carline :linecar="true" siteName="第一食堂第一食堂"></carline>
@@ -148,7 +148,9 @@
 		},
 		data(){
 			return{
-				XBline:[]
+				XBline:{
+					list:[{}]
+				}
 			}
 		},
 		created(){
