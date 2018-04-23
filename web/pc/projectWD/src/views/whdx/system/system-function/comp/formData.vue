@@ -137,22 +137,10 @@
                     fjd: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
                     ],
-                    tzdz: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    apiQz: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    apiHz: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
                     px: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' },
                     	{ min: 0, message: '请将信息填写完整', trigger: 'blur' }
                     ],
-                    bz: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ]
 				}
 			}
 		},
