@@ -116,7 +116,7 @@
 	                                v.$Message.warning(res.message);
 								}
 							}).catch((e)=>{
-	                            v.$Message.error("失败了！");
+	                            v.$Message.error("失败了！！！");
 							})
                     } else {
                         v.$Message.error('请认真填写超速信息!');
