@@ -42,6 +42,19 @@
 				</div>		
 				<div v-else class="body">
 					<div class="list">
+						<div class="listTiT box-row" 
+							v-for="(item,index) in lineList" 
+							@click="lineMess(item.id)">
+							<div class="body-O">
+								<i class="iconfont icon-003lubiao"></i>
+								{{item.xlmc}}
+							</div>
+							<div>
+								<i class="iconfont icon-right"></i>
+							</div>
+						</div>
+					</div>
+					<div class="list" v-show="false">
 						<div class="listTiT box-row">
 							<div class="body-O">
 								<i class="iconfont icon-003lubiao"></i>
@@ -105,12 +118,13 @@
 				  img: 'https://static.vux.li/demo/2.jpg',
 				}, {
 				  img: 'https://static.vux.li/demo/3.jpg',
-				}]
+				}],
+				lineList:[]
 			}
 		},
 		created(){
 			this.getSwiperMess()
-			console.log('12312313131231')
+			this.getLineMess()
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -126,7 +140,27 @@
 		  	getSwiperMess(){
 		  		var v = this
 		  		this.$http.post(configApi.SWIPER.QUERTY).then((res)=>{
-		  			console.log('图片数据',res)
+		  			if(res.code ==200){
+		  				console.log('图片数据',res)
+//		  				v.$Message.success('This is a success tip');
+		  				v.imglist = res.result
+		  			}else{
+		  				v.$Message.success('图片获取失败');
+		  			}
+		  		}).catch((error) =>{
+	        		console.log('出错了',error)
+	        	})
+		  	},
+		  	getLineMess(){
+		  		var v = this
+		  		this.$http.post(configApi.LINE.QUERTY).then((res)=>{
+		  			if(res.code ==200){
+		  				console.log('线路数据',res)
+//		  				v.$Message.success('This is a success tip');
+		  				v.lineList = res.result
+		  			}else{
+		  				v.$Message.success('线路数据获取失败');
+		  			}
 		  		}).catch((error) =>{
 	        		console.log('出错了',error)
 	        	})
@@ -134,10 +168,8 @@
 			demo01_onIndexChange (index) {
 //				console.log(index)
 		    },
-		    lineMess(){
-		    	this.$router.push({
-		    		name:'lineMess'
-		    	})
+		    lineMess(id){
+		    	this.$router.push('/lineMess?lineID='+id)
 		    },
 		    onItemClick(index){
 		    	if(index==1){
