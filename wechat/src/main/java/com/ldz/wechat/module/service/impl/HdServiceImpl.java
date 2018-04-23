@@ -53,6 +53,7 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
                 if(!b){
                     l.setUrl(staticUrl+l.getUrl());
                 }
+                l.setImg(l.getUrl());
             }
         }
         return list;

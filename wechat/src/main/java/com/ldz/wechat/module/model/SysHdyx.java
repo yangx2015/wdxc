@@ -54,6 +54,8 @@ public class SysHdyx implements Serializable {
 
     @Transient
     private String filePaths;
+    @Transient
+    private String img;
 
     public String getFilePaths() {
         return filePaths;
@@ -79,6 +81,14 @@ public class SysHdyx implements Serializable {
 
     public void setWz(String wz) {
         this.wz = wz;
+    }
+
+    public String getImg() {
+        return img;
+    }
+
+    public void setImg(String img) {
+        this.img = img;
     }
 
     /**
