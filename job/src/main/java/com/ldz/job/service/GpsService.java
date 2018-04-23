@@ -16,4 +16,6 @@ public interface GpsService extends BaseService<ClGps,String>{
      * 根据终端编号 将redis里面的gps缓存存入数据库中
      */
     void InsetRedisToDb(String zdbh);
+    
+ 
 }

@@ -1,10 +1,12 @@
 package com.ldz.job.model;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.Date;
+import javax.persistence.Transient;
 
 @Table(name = "CL_ZDGL")
 public class ClZdgl implements Serializable {
@@ -35,6 +37,8 @@ public class ClZdgl implements Serializable {
 
     /**
      * 状态
+     * 00 正常
+     * 10 停用
      */
     @Column(name = "ZT")
     private String zt;
@@ -65,6 +69,9 @@ public class ClZdgl implements Serializable {
 
     /**
      * 在线状态
+     * 00点火
+     * 10熄火
+     * 20离线
      */
     @Column(name = "ZXZT")
     private String zxzt;
@@ -75,9 +82,98 @@ public class ClZdgl implements Serializable {
     @Column(name = "ZXSJ")
     private Date zxsj;
 
-    private static final long serialVersionUID = 1L;
+    /**
+     * 加速灵敏度
+     */
+    
+    @Column(name = "JSLMD")
+    private String jslmd;
 
     /**
+     * 上传模式
+     */
+    @Column(name = "SCMS")
+    private String scms;
+    
+
+    /**
+     * 碰撞灵敏度
+     */
+    
+    @Column(name = "PZLMD")
+    private String pzlmd;
+    
+    /**
+     * 设置上报地址
+     */
+    
+    @Column(name = "CMD")
+    private String cmd;
+
+    @Transient
+    private ClCl cl;
+   
+    
+	public String getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
+	}
+
+
+	/**
+     * 车牌号码
+     */
+    @Transient
+    private String cph;
+
+    private static final long serialVersionUID = 1L;
+
+    public String getCph() {
+        return cph;
+    }
+
+    public void setCph(String cph) {
+        this.cph = cph;
+    }
+
+    public ClCl getCl() {
+        return cl;
+    }
+
+    public void setCl(ClCl cl) {
+        this.cl = cl;
+    }
+
+    public String getJslmd() {
+		return jslmd;
+	}
+
+	public void setJslmd(String jslmd) {
+		this.jslmd = jslmd;
+	}
+
+	public String getPzlmd() {
+		return pzlmd;
+	}
+
+	public void setPzlmd(String pzlmd) {
+		this.pzlmd = pzlmd;
+	}
+
+	public String getScms() {
+		return scms;
+	}
+
+	public void setScms(String scms) {
+		this.scms = scms;
+	}
+
+
+
+	/**
      * 获取终端编号
      *
      * @return ZDBH - 终端编号
@@ -275,6 +371,9 @@ public class ClZdgl implements Serializable {
         this.zxsj = zxsj;
     }
 
+    
+    
+    
     public enum InnerColumn {
         zdbh("ZDBH"),
         xh("XH"),
@@ -286,8 +385,12 @@ public class ClZdgl implements Serializable {
         xgr("XGR"),
         xgsj("XGSJ"),
         zxzt("ZXZT"),
-        zxsj("ZXSJ");
-
+        zxsj("ZXSJ"),
+        jslmd("JSLMD"),
+        scms("SCMS"),
+        cssd("CSSD"),
+        pzlmd("PZLMD");
+    	
         private final String column;
 
         public String value() {
