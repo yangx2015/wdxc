@@ -16,7 +16,6 @@
 							<span>智能站牌</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="getPageData()" style="width: 220px"></DatePicker>
 							<Input v-model="form.mcLike" placeholder="请输入站牌名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 						</div>
 						<div class="butevent">
