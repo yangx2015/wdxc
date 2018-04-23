@@ -35,7 +35,7 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='API 前缀'>
+							<FormItem  prop="apiQz" label='API 前缀'>
 								<Input type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
 								</Input>
 							</FormItem>
@@ -75,10 +75,13 @@
 				},
 				ruleInline: {
                   fwmc: [
-                      { required: true, message: '请输入用户名', trigger: 'blur' }
+                      { required: true, message: '请输入服务名称', trigger: 'blur' }
                   ],
                   fwdm: [
-                      { required: true, message: '请输入姓名', trigger: 'blur' }
+                      { required: true, message: '请输入服务代码', trigger: 'blur' }
+                  ],
+                  apiQz:[
+                  	  { required: true, message: '请输入API前缀', trigger: 'blur' }
                   ]
               	},
 			}

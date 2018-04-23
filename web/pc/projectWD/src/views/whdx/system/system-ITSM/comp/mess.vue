@@ -15,13 +15,13 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="fwmc" label='服务名称'>
-								<Input type="text" v-model="addmess.fwmc" placeholder="请填写服务名称...">
+								<Input readonly="readonly" type="text" v-model="addmess.fwmc" placeholder="请填写服务名称...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="fwdm" label='服务代码'>
-								<Input type="text" v-model="addmess.fwdm" placeholder="请填写服务名称...">
+								<Input readonly="readonly" type="text" v-model="addmess.fwdm" placeholder="请填写服务名称...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -29,14 +29,14 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='状态'>
-								<Select filterable clearable  v-model="addmess.zt" placeholder="请填选择状态...">
+								<Select disabled="disabled" filterable clearable  v-model="addmess.zt" placeholder="请填选择状态...">
 									<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='API 前缀'>
-								<Input type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
+							<FormItem prop="apiQz" label='API 前缀'>
+								<Input readonly="readonly" type="text" v-model="addmess.apiQz" placeholder="请填写API 前缀...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -73,10 +73,13 @@
 				},
 				ruleInline: {
                   fwmc: [
-                      { required: true, message: '请输入用户名', trigger: 'blur' }
+                      { required: true, message: '请输入服务名称', trigger: 'blur' }
                   ],
                   fwdm: [
-                      { required: true, message: '请输入姓名', trigger: 'blur' }
+                      { required: true, message: '请输入服务代码', trigger: 'blur' }
+                  ],
+                  apiQz:[
+                  	  { required: true, message: '请输入API前缀', trigger: 'blur' }
                   ]
               	},
 			}
