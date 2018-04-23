@@ -227,8 +227,7 @@
 				var v = this
 				v.page.pageNum = event
 				v.AddDc(v.page)
-				//      		console.log(v.page)
-			},
+			}
 		}
 	}
 </script>
