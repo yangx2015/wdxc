@@ -1,14 +1,29 @@
 <style lang="less">
 	@import '../styles/common.less';
     @import './login.less';
-    .imgLeft{
-    	position: relative;
-    	.loginImg{
-    		width: 90%;
-    		position: absolute;
-    		bottom: 0;
-		    /*left: 50%;*/
-    	}
+    .login{
+	    .imgLeft{
+	    	position: relative;
+	    	.loginImg{
+	    		width: 90%;
+	    		position: absolute;
+	    		bottom: 0;
+			    border-radius: 50px;
+	    	}
+	    }
+	    .from{
+	    	/*position: relative;*/
+	    	.loginTiT{
+	    		/*position: absolute;*/
+	    		/*top: -50px;*/
+	    		text-align: center;
+	    		
+	    	}
+	    	.fromList{
+	    		padding-top: 20px;
+	    	}
+	    }
+    	
     }
 </style>
 
@@ -24,24 +39,34 @@
             <Card :bordered="false" style="width: 100%;">
                 <div class="form-con box-row">
                 	<div class="body-O imgLeft">
-                		<img class="loginImg" src="/static/logo.png" alt="" />
+                		<!--<img class="loginImg" src="/static/logo.png" alt="" />-->
+                		<img class="loginImg" src="/static/login-left.png" alt="" />
                 	</div>
-                	<div class="body-O">
+                	<div class="body-O from">
+	                	<div class="loginTiT">
+	                		<h1>
+	                			武汉大学车辆管理信息平台
+	                		</h1>
+	                	</div>
 	                    <Form ref="loginForm" :model="form" :rules="rules">
-	                        <FormItem prop="username">
-	                            <Input v-model="form.username" placeholder="请输入用户名">
-	                                <span slot="prepend">
-	                                    <Icon :size="16" type="person"></Icon>
-	                                </span>
-	                            </Input>
-	                        </FormItem>
-	                        <FormItem prop="password">
-	                            <Input type="password" v-model="form.password" placeholder="请输入密码">
-	                                <span slot="prepend">
-	                                    <Icon :size="14" type="locked"></Icon>
-	                                </span>
-	                            </Input>
-	                        </FormItem>
+	                    	<div class="fromList">
+		                        <FormItem prop="username">
+		                            <Input v-model="form.username" placeholder="请输入用户名">
+		                                <span slot="prepend">
+		                                    <Icon :size="16" type="person"></Icon>
+		                                </span>
+		                            </Input>
+		                        </FormItem>
+	                    	</div>
+	                    	<div class="fromList">
+		                        <FormItem prop="password">
+		                            <Input type="password" v-model="form.password" placeholder="请输入密码">
+		                                <span slot="prepend">
+		                                    <Icon :size="14" type="locked"></Icon>
+		                                </span>
+		                            </Input>
+		                        </FormItem>
+	                    	</div>
 	                        <FormItem>
 	                            <Button @click="handleSubmit" type="primary" long>登录</Button>
 	                        </FormItem>
