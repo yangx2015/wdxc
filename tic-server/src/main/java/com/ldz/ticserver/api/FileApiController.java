@@ -48,6 +48,8 @@ public class FileApiController {
 	private String videoDir;
 	@Value("${interface.imgdir}")
 	private String imgdir;
+	@Value("${interface.filesaveflag}")
+	private Integer filesaveflag;
 	
 	
 	@Autowired
@@ -132,7 +134,7 @@ public class FileApiController {
             file = files.get(i);
             if (!file.isEmpty()) {
                 try {
-                    byte[] bytes = file.getBytes();
+                    //
                  // 获取文件名
                     String fileName = file.getOriginalFilename();
                     logger.info("上传的文件名为：" + fileName);
@@ -152,8 +154,20 @@ public class FileApiController {
                     fileName = "car_"+dto.getDeviceId()+fileName;
                     logger.info("文件保存的名称为：" + suffixName);
                     try {
-                       // file.transferTo(dest);
-                    	FileUtil.uploadFile(bytes, filePath, fileName);
+                    	if(filesaveflag==1){
+                    		byte[] bytes = file.getBytes();
+                    		FileUtil.uploadFile(bytes, filePath, fileName);
+                    	}else if(filesaveflag == 2){
+                    		File targetFile = new File(filePath);
+                    		 if(!targetFile.exists()){
+                    	            targetFile.mkdirs();
+                    	      }
+                    		file.transferTo(new File(filePath+fileName));
+                    	}else{
+                    		FileUtil.uploadCopyFile(file.getInputStream(), filePath, fileName);
+                    	}
+                       // 
+                    	
                     	if(!suffixName.contains("jpg")){
 	                    	dto.setFileLocalPath(filePath+fileName);
 	                    	dto.setFilePath(fileName);
@@ -182,7 +196,8 @@ public class FileApiController {
                     } catch (Exception e) {
             			// TODO: handle exception
                     	 e.printStackTrace();
-            		}
+            		}finally {
+					}
 
                 } catch (Exception e) {
                     sp.setCode(ApiResponse.FAILED);
@@ -202,5 +217,6 @@ public class FileApiController {
         
         return sp;
     }
+	
 	
 }

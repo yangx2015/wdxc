@@ -21,6 +21,9 @@ spring:
     multipart:
       maxFileSize: 200Mb
       maxRequestSize: 200Mb
+      fileSizeThreshold: 5MB
+      location: D://Temp//cache//
+      enabled: true
 #接口配置，接口可以有多个地址，多个地址中间使用';'
 interface:
   #设备状态更新接口，点火、熄火、离线
@@ -41,6 +44,8 @@ interface:
   cacheimgdir: cache
   videodir: video
   imgdir: images
+  #上传文件的保存方式 1 默认存储byte存储， 2 transferTo  3 使用getInputStream读取文件流
+  filesaveflag: 1
   
   #tsconvertmp4cmd: ffmpeg.exe -i "concat:F:\Temp\ffmeg\bin\car_865923030039405F20180322111850.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
   #文件转换基本命令（linux 部署时自己改命令）
