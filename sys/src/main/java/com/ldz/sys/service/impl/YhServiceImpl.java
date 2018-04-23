@@ -1,35 +1,11 @@
 package com.ldz.sys.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.constant.Dict;
 import com.ldz.sys.exception.RuntimeCheck;
-import com.ldz.sys.mapper.SysClkPtyhMapper;
-import com.ldz.sys.mapper.SysPtfwMapper;
-import com.ldz.sys.mapper.SysResourceMapper;
-import com.ldz.sys.mapper.SysRsRoleBizMapper;
-import com.ldz.sys.mapper.SysRsRoleResourceMapper;
-import com.ldz.sys.model.SysFw;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.model.SysResource;
-import com.ldz.sys.model.SysRsRoleBiz;
-import com.ldz.sys.model.SysRsRoleResource;
-import com.ldz.sys.model.SysYh;
+import com.ldz.sys.mapper.*;
+import com.ldz.sys.model.*;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.JsService;
 import com.ldz.sys.service.YhService;
@@ -37,9 +13,22 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.Des;
 import com.ldz.util.commonUtil.EncryptUtil;
-
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhService {
@@ -201,10 +190,17 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		RuntimeCheck.ifBlank(user.getJgdm(),"请选择机构");
 		RuntimeCheck.ifBlank(user.getSjh(),"手机号不能为空");
 		RuntimeCheck.ifFalse(StringUtils.isAlphanumeric(user.getZh()),"登陆名只能是数字和字母组成！");
-		boolean exists = ifExists(SysYh.InnerColumn.zh.name(),user.getZh());
-		RuntimeCheck.ifTrue(exists,"登陆名已存在，请更换别的登陆名！");
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
 		RuntimeCheck.ifNull(org,"机构不存在");
+
+		LimitedCondition condition= new LimitedCondition(SysYh.class);
+		condition.eq(SysYh.InnerColumn.zh, user.getZh());
+		List<SysYh> list=baseMapper.selectByExample(condition);
+
+		if(list==null||list.size()==0){
+			RuntimeCheck.ifTrue(true,"该账户不存在，或该账户不属于本机构，您无法修改！");
+		}
+
 		baseMapper.updateByPrimaryKeySelective(user);
 		return updateSession(user);
 	}
