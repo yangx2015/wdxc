@@ -17,6 +17,7 @@ import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -32,7 +33,8 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 	private JgService jgService;
 	@Autowired
 	private ClClMapper clclmapper;
-
+	@Value("${carcmd-Url}")
+	private String carcmdUrl;
 	@Override
 	protected Mapper<ClCssd> getBaseMapper() {
 		return entityMapper;
@@ -130,7 +132,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> senZl(GpsInfo info) {
-		String url = "http://47.98.39.45:8080/tic-server/api/push/carcmd";
+		String url =carcmdUrl;
 		String postEntity = JsonUtil.toJson(info);
 		String result = "";
 		ApiResponse<String> apiResponse = null;
