@@ -199,8 +199,11 @@
                 })
 			},
 			addStation(){
-		        this.choosedStations.push({id:this.stationId,name:this.getStationNameById(this.stationId)});
-		        this.stationId = '';
+                this.choosedStations.push({id:this.stationId,name:this.getStationNameById(this.stationId)});
+                let station = this.getStationById(this.stationId);
+                let index = this.stationList.indexOf(station);
+                this.stationList.splice(index,1);
+                this.stationId = '';
 			},
 			removespot(){
 				this.choosedStations.pop()
