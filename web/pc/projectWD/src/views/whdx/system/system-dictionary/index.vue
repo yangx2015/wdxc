@@ -17,7 +17,10 @@
 						<span>字典管理</span>
 					</div>
 					<div class="body-r-1 inputSty">
-						<Input v-model="findMess.lmmcLike" placeholder="请输入字典名称..." style="width: 200px"></Input>
+						<Input v-model="findMess.lmmcLike" placeholder="请输入字典名称..." 
+							style="width: 200px"
+							@on-keyup.enter="findMessList()"
+							@on-change="findMessList"></Input>
 					</div>
 					<div class="butevent">
 						<Button type="primary" @click="findMessList()">
@@ -54,16 +57,6 @@
 								<Row class="margin-bottom-10">
 									<Input v-model="dictionaryMess[index]" clearable placeholder="请输入字典信息..." @on-change="findDicList(item,index,dictionaryMess[index])"></Input>
 								</Row>
-								<!--<Row class="padding-2px-5px" style='background-color: #f8f8f9;'>
-									<Col span="2"> 序号
-									</Col>
-									<Col span="8"> 类目编码
-									</Col>
-									<Col span="8"> 类目名称
-									</Col>
-									<Col span="5" style="text-align: center;"> 操作
-									</Col>
-								</Row>-->
 								<div class="padding-2px-5px box-row-nh" style='background-color: #f8f8f9;text-align: center;'>
 									<div class="body-2" style="min-width: 30px;">
 										序

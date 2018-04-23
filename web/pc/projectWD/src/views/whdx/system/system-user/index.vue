@@ -15,8 +15,14 @@
 							<span>用户管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
-							<Input v-model="findMess.sjhLike" placeholder="请输入手机号码" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.xmLike" 
+								placeholder="请输入用户姓名" style="width: 200px" 
+								@on-keyup.enter="findMessList()"
+								@on-change="findMessList"></Input>
+							<Input v-model="findMess.sjhLike" 
+								placeholder="请输入手机号码" style="width: 200px" 
+								@on-keyup.enter="findMessList()"
+								@on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -220,7 +226,7 @@
 //				cjsjInRange:[],
 				findMess: {
 					sjhLike:'',
-					zjhmLike: '',
+					xmLike: '',
 					pageNum: 1,
 					pageSize: 5
 				},
