@@ -14,13 +14,13 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='活动标题'>
+							<FormItem prop="hdbt" label='活动标题'>
 								<Input type="text" v-model="formItem.hdbt" placeholder="请填写活动标题...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='URL'>
+							<FormItem prop="url" label='URL'>
 								<Input type="text" v-model="formItem.url" placeholder="请填写URL...">
 								</Input>
 							</FormItem>
@@ -29,7 +29,7 @@
 
 					<Row>
 						<Col span="12">
-							<FormItem label='活动类型'>
+							<FormItem prop="hdlx" label='活动类型'>
 								<Select filterable clearable  v-model="formItem.hdlx">
 									<Option value="00">微信</Option>
 									<Option value="01">智能站牌</Option>
@@ -48,7 +48,7 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem label='活动时间'>
+							<FormItem prop="cjsjInRange" label='活动时间'>
 								<DatePicker v-model="cjsjInRange"
 									format="yyyy-MM-dd" type="daterange"
 									placement="bottom-end"
@@ -60,7 +60,7 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='附件类型'>
+							<FormItem prop="wjlx" label='附件类型'>
 								<Select filterable clearable  v-model="formItem.wjlx" @on-change="selectC()">
 									<Option value="00">图片</Option>
 									<Option value="01">视频</Option>
@@ -91,7 +91,7 @@
 			</div>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="primary" @click="save('formItem')">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -119,9 +119,26 @@
 					wjlx:'00',
 					kssj:'',
 					jssj:'',
-					filePaths:''
+					filePaths:'',
+					wz:'10'
 				},
-                ruleInline:{},
+                ruleInline:{
+                	hdbt: [
+              	    	{ required: true, message: '请输入活动标题', trigger: 'blur' }
+                    ],
+                    url: [
+                        { required: true, message: '请输入URL地址', trigger: 'blur' }
+                    ],
+                    hdlx:[
+                        { required: true,message: '请选择活动类型', trigger: 'blur' }
+                    ],
+                    cjsjInRange:[
+                  	    { required: true,message: '请选择活动时间', trigger: 'blur' }
+                    ],
+                    wjlx:[
+                  	    { required: true,message: '请选择附件类型', trigger: 'blur' }
+                    ]
+                },
                 cjsjInRange:[]
 			}
 		},
@@ -143,17 +160,23 @@
 				this.formItem.filePaths =''
 				console.log(this.formItem.filePaths)
 			},
-            save(){
+            save(name){
                 var v = this
-                let url = configApi.ADVERTISING.ADD;
-                this.$http.post(url,this.formItem).then((res) =>{
-                    if(res.code===200){
-                        v.$Message.success(res.message);
-                    }else{
-                        v.$Message.error(res.message);
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+		                let url = configApi.ADVERTISING.ADD;
+		                this.$http.post(url,this.formItem).then((res) =>{
+		                    if(res.code===200){
+		                        v.$Message.success(res.message);
+		                    }else{
+		                        v.$Message.error(res.message);
+		                    }
+		                    v.$parent.compName = ''
+		                    v.$parent.getmess()
+		                })
+		            } else {
+                        v.$Message.error('请认真填写用户信息!');
                     }
-                    v.$parent.compName = ''
-                    v.$parent.getmess()
                 })
             },
 			colse() {
