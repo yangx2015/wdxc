@@ -49,7 +49,7 @@ interface:
   
   #tsconvertmp4cmd: ffmpeg.exe -i "concat:F:\Temp\ffmeg\bin\car_865923030039405F20180322111850.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
   #文件转换基本命令（linux 部署时自己改命令）
-  tsconvertmp4cmd: ·fmpeg.exe -i "concat:@localfile" -acodec copy -vcodec copy -absf aac_adtstoasc @newfile
+  tsconvertmp4cmd: D:\ffmpeg\bin\ffmpeg.exe -i "concat:@localfile" -acodec copy -vcodec copy -absf aac_adtstoasc @newfile
   
 logging:
   config: classpath:log4j2.xml
