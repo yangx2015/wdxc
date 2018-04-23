@@ -135,7 +135,8 @@ public class SysJsGn implements Serializable {
         cjsj("CJSJ"),
         cjr("CJR"),
         fwdm("FWDM"),
-        fgndm("FGNDM");
+        fgndm("FGNDM"),
+        zt("ZT");
 
         private final String column;
 
