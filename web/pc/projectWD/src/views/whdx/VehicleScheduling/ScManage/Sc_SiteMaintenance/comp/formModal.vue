@@ -86,7 +86,7 @@
 				mapCenter:{
 	        		lng: 114.372443,
 	        		lat: 30.544572
-	        	}
+	        	},
 			}
 		},
 		created(){
