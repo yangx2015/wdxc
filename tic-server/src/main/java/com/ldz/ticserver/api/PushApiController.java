@@ -3,8 +3,12 @@ package com.ldz.ticserver.api;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +29,9 @@ import com.ldz.util.commonUtil.JsonUtil;
 @RestController
 @RequestMapping("/api/push")
 public class PushApiController {
-
+	Logger accessLog = LoggerFactory.getLogger("access_info");
+	
+	Logger errorLog = LoggerFactory.getLogger("error_info");
 	//private 
 	@Autowired
 	private StringRedisTemplate redisDao;
@@ -43,37 +49,71 @@ public class PushApiController {
 		dto.setTaskId(taskId);
 		pm.setClientId(dto.getDeviceId());
 		pm.setPushData(dto);
-		System.out.println(dto.toString());
+		accessLog.debug("下发指令：["+dto.toString()+"]");
 		//System.err.println(dto0.toString());
 		if(dto.getCmdType()!=null && dto.getCmdType().equals("11")||dto.getCmdType().equals("12")||dto.getCmdType().equals("13")){//发送拍照或者拍摄视频时的命令会用到
 			ar.setResult(taskId);
 			dto.setCmd(taskId);
 			pm.setPushData(dto);
-			AppPushUtils.pushMessageAllOrClientByAlias(pm);
-		}else{
-			Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
-			boolean checkOnline = false;
-			if(resultSet!=null && resultSet.size()>0){
-				Iterator<String> it = resultSet.iterator();
-				while(it.hasNext()){
-					String deviceIdAll = it.next();
-					String[] clientId = deviceIdAll.split(Consts.CAR_SPLITE);
-					if(clientId[0].equals(dto.getDeviceId())){
-						if(AppPushUtils.checkIdMessage(clientId[1]).getCode() == 11){
-							redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
-						}else{
-							checkOnline = true;
-							AppPushUtils.pushMessageAllOrClientByAlias(pm);
-						}
+			//AppPushUtils.pushMessageAllOrClientByAlias(pm);
+		}
+		Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
+		boolean checkOnline = false;
+		if(resultSet!=null && resultSet.size()>0){
+			Iterator<String> it = resultSet.iterator();
+			while(it.hasNext()){
+				String deviceIdAll = it.next();
+				String[] clientId = deviceIdAll.split(Consts.CAR_SPLITE);
+				if(clientId[0].equals(dto.getDeviceId())){
+					if(AppPushUtils.checkIdMessage(clientId[1]).getCode() == 11){
+						redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
+					}else{
+						checkOnline = true;
+						AppPushUtils.pushMessageAllOrClientByAlias(pm);
 					}
 				}
 			}
-			if(checkOnline){
-				ar.setMessage("设置成功");
-			}else{
-				ar.setCode(ApiResponse.FAILED);
-				ar.setMessage("设备不在线，发送指令失败");
+		}
+		if(checkOnline){
+			ar.setMessage("操作成功");
+		}else{
+			
+			accessLog.debug("下发指令失败，设备不在线,指令数据：["+dto.toString()+"]");
+			ar.setCode(ApiResponse.FAILED);
+			ar.setMessage("设备不在线，发送指令失败");
+		}
+		return ar;
+	}
+	
+	/**
+	 * 验证客户端是否在线
+	 * @param dto
+	 * @return
+	 */
+	@GetMapping("/checkOnlin/{deviceId}")
+	public ApiResponse<String> checkClientOnline(@PathVariable("deviceId") String deviceId){
+		ApiResponse<String> ar = new ApiResponse<>();
+		Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
+		boolean checkOnline = false;
+		if(resultSet!=null && resultSet.size()>0){
+			Iterator<String> it = resultSet.iterator();
+			while(it.hasNext()){
+				String deviceIdAll = it.next();
+				String[] clientId = deviceIdAll.split(Consts.CAR_SPLITE);
+				if(clientId[0].equals(deviceId)){
+					if(AppPushUtils.checkIdMessage(clientId[1]).getCode() == 11){
+						redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
+					}else{
+						checkOnline = true;
+					}
+				}
 			}
+		}
+		if(checkOnline){
+			ar.setMessage("设备目前在线");
+		}else{
+			ar.setCode(ApiResponse.FAILED);
+			ar.setMessage("设备不在线");
 		}
 		return ar;
 	}
