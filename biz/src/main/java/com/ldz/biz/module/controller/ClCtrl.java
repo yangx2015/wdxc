@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
 
 /**
  * 车辆设定
@@ -66,14 +65,13 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	 * 车辆类别(大车、小车)
 	 * --车牌号
 	 * -------车辆GPS坐标
+	 * @param zxzt 在线状态 00:查询在线车辆，00点火 10 熄火 20离线
 	 * @return
 	 */
 
 	@GetMapping("/getcltj")
-	public ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics() {
-
-		return clservice.getVehicleTypeStatistics();
-
+	public ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics(String zxzt) {
+		return clservice.getVehicleTypeStatistics(zxzt);
 	}
 
 }

@@ -16,7 +16,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="zh" label='用户名：'>
-								<Input type="text" v-model="addmess.zh" placeholder="请设置用户帐号">
+								<Input :readonly="!usermesType" type="text" v-model="addmess.zh" placeholder="请设置用户帐号">
 								</Input>
 							</FormItem>
 						</Col>

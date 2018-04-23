@@ -31,6 +31,16 @@ public interface ClClMapper extends Mapper<ClCl> {
 			"ORDER BY CL.CX ASC,CL.CPH ASC ")
 	List<ClClModel> getVehicleTypeStatistics(String jgdm);
 
+	@Select("SELECT GPS.BDJD,GPS.BDWD,CL.*,CL.CL_ID AS CLID,CL.SJ_ID AS SJID ,CL.OBD_CODE AS OBDCODE " +
+			"  , NVL((SELECT XM.ZDMC FROM SYS_ZDXM XM WHERE XM.ZDLMDM='ZDCLK0019' AND  XM.ZDDM=CL.CX AND ROWNUM =1),'') AS CXZTMC " +
+			"FROM CL_CL CL,CL_GPS GPS,CL_ZDGL ZDGL " +
+			"WHERE CL.ZDBH=GPS.ZDBH(+) " +
+			"  AND CL.ZDBH=ZDGL.ZDBH" +
+			" AND CL.JGDM LIKE #{jgdm}||'%' " +
+			" AND ZDGL.ZXZT= #{zxzt} " +
+			"ORDER BY CL.CX ASC,CL.CPH ASC ")
+	List<ClClModel> getVehicleTypeZxztStatistics(@Param("jgdm") String jgdm,@Param("zxzt") String zxzt);
+
 	@Select(" SELECT CL.*,CL.CL_ID AS CLID FROM CL_CL CL " +
 			" WHERE CL.ZT='00' AND CL.SJ_ID IS NOT NULL " +
 			" AND CL.CX=#{cx} " +

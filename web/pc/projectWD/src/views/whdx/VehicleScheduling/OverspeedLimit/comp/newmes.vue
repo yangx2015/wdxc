@@ -72,7 +72,7 @@
 		methods:{
 			//获取车辆树
 			getCarTree(){
-	    		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
+	    		this.$http.get(configApi.CARTREE.QUERY,{params:{'zxzt':'00'}}).then((res) =>{
 	    			console.log('数据结构数据',res)
 	    			this.data1 = res.result
 	        	}).catch((error) =>{
