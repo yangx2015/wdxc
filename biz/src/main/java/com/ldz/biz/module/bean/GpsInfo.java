@@ -74,6 +74,7 @@ public class GpsInfo {
        cmd:  apk具体下载的url
       91:
        cmd:具体的服务器api地址前缀，tic-server的顶级访问目录。如果部署在root下，直接是http://ip+port/ 如果有项目名。则是http://ip+port+项目名称/
+            例如:http://47.98.39.45:8080/tic-server/api
      92:
        cmd: 具体语音内容
 	 */

@@ -1,8 +1,10 @@
 package com.ldz.job.job;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -18,7 +20,7 @@ import com.ldz.job.model.ClCl;
 import com.ldz.job.service.GpsService;
 
 /**
- * 定时器说明:每隔10分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
+ * 定时器说明:每隔1分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
  * 
  * @author liuzhihao
  *
@@ -34,15 +36,20 @@ public class GpsSaveJob implements Job {
 	private ClClMapper clclmapper;
 	@Autowired
 	private GpsService GpsService;
-
-
+ 
+	private  List<String> zdbhs= new ArrayList<>();
+	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+		
+	if (CollectionUtils.isEmpty(zdbhs)) {
 		// 获取所有的终端编号
 		List<ClCl> gpslist = clclmapper.selectAll();
 		List<String> zubhList = gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClCl::getZdbh).collect(Collectors.toList());
+		zdbhs.addAll(zubhList);
+	}
 		try {
-			for (String zdbh : zubhList) {
+			for (String zdbh : zdbhs) {
 
 				GpsService.InsetRedisToDb(zdbh);
 			}
