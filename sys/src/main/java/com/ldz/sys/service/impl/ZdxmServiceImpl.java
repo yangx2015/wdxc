@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -40,6 +41,9 @@ public class ZdxmServiceImpl extends BaseServiceImpl<SysZdxm,String> implements 
 
     @Override
     public List<SysZdxm> findByZdlms(List<String> zdlms) {
+        if(zdlms==null||zdlms.size()==0){
+            return new ArrayList<SysZdxm>();
+        }
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
         condition.in(SysZdxm.InnerColumn.zdlmdm,zdlms);
         return zdxmMapper.selectByExample(condition);
