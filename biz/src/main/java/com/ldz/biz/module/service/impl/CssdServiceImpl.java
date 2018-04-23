@@ -1,17 +1,5 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClCssdMapper;
@@ -27,8 +15,14 @@ import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
-
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements CssdService {
@@ -84,6 +78,8 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 
 	@Override
 	public ApiResponse<String> setCssds(String cphs, String csz) {
+		RuntimeCheck.ifNull(cphs,"车牌号码不能为空！");
+		RuntimeCheck.ifNull(csz,"超级值设置不能为空！");
 		int count = 0;
 		SysYh user = getCurrentUser();
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
