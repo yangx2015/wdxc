@@ -1,6 +1,8 @@
 package com.ldz.biz.module.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,6 +53,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	private ClSbyxsjjlMapper clSbyxsjjlMapper;
 	@Autowired
 	private ZdglService zdglservice;
+
 	@Autowired
 	private SimpMessagingTemplate websocket;
 
@@ -108,8 +111,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
 
 		// 推送坐标去前端
-		String socket =JsonUtil.toJson(changeSocket(gpsinfo, entity));
-		log.info("推送前端的数据为"+socket);
+		String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity));
+		log.info("推送前端的数据为" + socket);
 		websocket.convertAndSend("/topic/sendgps", socket);
 
 		return ApiResponse.success("该点位redis实时更新,历史存储成功");
@@ -165,7 +168,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		if (entity.getLongitude() != null) {
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
-		clGps.setCjsj(new Date());
+		// 设备记录时间
+		clGps.setCjsj(simpledate(entity.getStartTime()));
+
 		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
 			clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
 		}
@@ -280,7 +285,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		info.setCx(seleByZdbh.getCx());
 		info.setSjxm(seleByZdbh.getSjxm());
 		if (!StringUtils.isEmpty(seleByZdbh.getObdCode())) {
-			info.setObdId(seleByZdbh.getObdCode());	
+			info.setObdId(seleByZdbh.getObdCode());
 		}
 		return info;
 	}
@@ -290,34 +295,73 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ApiResponse<List<websocketInfo>> apiResponse = new ApiResponse<>();
 		List<websocketInfo> list = new ArrayList<>();
 
-		//将终端编号,车辆信息缓存
+		// 将终端编号,车辆信息缓存
 		List<ClCl> selectAll = clclmapper.selectAll();
-		Map<String, ClCl> clmap = selectAll.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).collect(Collectors.toMap(ClCl::getZdbh, ClCl->ClCl));
-		
-		//获取最新设备记录信息
+		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
+				.collect(Collectors.toMap(ClCl::getZdbh, ClCl -> ClCl));
+
+		// 获取每条设备的最新一条的数据
 		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
 
+		List<ClZdgl> zds = zdglservice.findAll();
+
+		List<String> lostZD = new ArrayList<>();
+
+		for (ClZdgl clZdgl : zds) {
+			if (StringUtils.equals(clZdgl.getZxzt(), "20")) {
+				lostZD.add(clZdgl.getZdbh());
+			}
+
+		}
+  
 		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
 			if (StringUtils.isNotEmpty(clSbyxsjjl.getZdbh())) {
 				ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
-				if (clCl!=null) {
-					websocketInfo websocketInfo = new websocketInfo();
-					websocketInfo.setBdjd(clSbyxsjjl.getJid());
-					websocketInfo.setBdwd(clSbyxsjjl.getWd());
-					websocketInfo.setClid(clCl.getClId());
-					websocketInfo.setCph(clCl.getCph());
-					websocketInfo.setEventType(clSbyxsjjl.getSjlx());
-					websocketInfo.setTime(clSbyxsjjl.getCjsj());
-					websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
-					websocketInfo.setCx(clCl.getCx());
-					list.add(websocketInfo);
+				if (clCl != null) {
+					if (lostZD.contains(clSbyxsjjl.getZdbh())) {
+						websocketInfo websocketInfo = new websocketInfo();
+						websocketInfo.setBdjd(clSbyxsjjl.getJid());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setClid(clCl.getClId());
+						websocketInfo.setCph(clCl.getCph());
+						websocketInfo.setEventType("80");
+						websocketInfo.setTime(clSbyxsjjl.getCjsj());
+						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+						websocketInfo.setCx(clCl.getCx());
+						list.add(websocketInfo);
+					} else {
+						websocketInfo websocketInfo = new websocketInfo();
+						websocketInfo.setBdjd(clSbyxsjjl.getJid());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setClid(clCl.getClId());
+						websocketInfo.setCph(clCl.getCph());
+						websocketInfo.setEventType(clSbyxsjjl.getSjlx());
+						websocketInfo.setTime(clSbyxsjjl.getCjsj());
+						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+						websocketInfo.setCx(clCl.getCx());
+						list.add(websocketInfo);
+					}
 				}
 			}
 		}
 
 		apiResponse.setResult(list);
-
 		return apiResponse;
 	}
 
+	public Date simpledate(String date) {
+
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date date2 = null;
+		try {
+			date2 = simpleDateFormat.parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return date2;
+	}
+
+	public static void main(String[] args) {
+
+	}
 }
