@@ -135,9 +135,10 @@
 		methods:{
 		    getDeviceList(){
                 let v = this;
-                v.$http.get(configApi.ZDGL.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                v.$http.post(configApi.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
-                        this.deviceList = res.page.list;
+                    	console.log('终端数据',res)
+                        this.deviceList = res.result;
                     }
                 })
 			},

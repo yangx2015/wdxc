@@ -169,7 +169,8 @@ module.exports = {
 		DELE:   '/api/znzp/removeIds'
 	},
 	ZDGL:{//终端管理
-		QUERY:  '/api/zdgl/pager',
+		QUERY:  '/api/zdgl/pager',//终端数据列表
+		SXQUERY:'api/zdgl/getunboundlist',//状态 正常 未绑定的终端
 		ADD:    '/api/zdgl/save',
         CHANGE: '/api/zdgl/update',
 		DELE:   '/api/zdgl/removeIds'
