@@ -13,5 +13,5 @@ public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> saveEntity(ClCl entity);
     ApiResponse<String> updateEntity(ClCl entity);
 
-    ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics();
+    ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics(String zxzt);
 }

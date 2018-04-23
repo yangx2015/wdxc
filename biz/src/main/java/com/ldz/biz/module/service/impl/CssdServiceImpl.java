@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+import tk.mybatis.mapper.entity.Example;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -107,7 +108,6 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 			cssd.setCjr(getOperateUser());
 			cssd.setCjsj(new Date());
 			cssd.setCph(cph);
-			cssd.setId(genId());
 			cssd.setJgdm(user.getJgdm());
 			cssd.setJgmc(org.getJgmc());
 			cssd.setSdsx(Short.valueOf(csz));
@@ -122,8 +122,14 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 
 		boolean flag = ifExists("cph", entity.getCph());
 		if (flag == true) {
-			update(entity);
+		entity.setId(null);
+        Example example = new Example(ClCssd.class);
+        example.createCriteria().andCondition(" CPH=",entity.getCph());
+        entityMapper.updateByExample(entity,example);
+//			entityMapper.updateByExample()
+//			update(entity);
 		} else {
+			entity.setId(genId());
 			save(entity);
 		}
 
