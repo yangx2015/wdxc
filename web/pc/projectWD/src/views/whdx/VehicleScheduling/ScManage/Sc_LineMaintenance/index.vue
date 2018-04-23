@@ -32,12 +32,6 @@
 			</Row>
 			<Row>
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns10" :data="data9"></Table>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-					<Spin fix>
-						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">{{loading.text}}</div>
-					</Spin>
-				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
@@ -59,10 +53,9 @@
 		mixins: [mixins],
 		data() {
 			return {
-				SpinShow:true,
-				loading:this.$store.state.app.loading,
 				tabHeight: 220,
 				compName: '',
+				addmessType:true,
                 currentRow:[],
 				pageTotal: 1,
 				page: {
@@ -182,10 +175,9 @@
 									},
 									on: {
 										click: () => {
+											this.addmessType = false
 										    this.currentRow = params.row;
 										    this.compName = 'compModal'
-											//this.show(params.index)
-											// this.$Message.info('编辑')
 										}
 									}
 								}),
@@ -249,7 +241,6 @@
                     this.findMess.cjsjInRange = '';
                 }
                 this.$http.get(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
-                    this.SpinShow = false;
                     if(res.code===200){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;
@@ -262,7 +253,8 @@
 				this.getmess();
 			},
 			AddDataList() {
-                this.currentRow = null;
+				this.addmessType = true
+                this.currentRow = null
 				this.compName = 'compModal'
 			},
 			listDele(id){
