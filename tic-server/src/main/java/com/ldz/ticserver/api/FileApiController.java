@@ -119,10 +119,10 @@ public class FileApiController {
             	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
             	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
             	convertManager.convertMp4OrExtrPic(convsp);
-            	extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+            	extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
             	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
         	}else if(suffixName.contains("mp4")){
-        		extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
+        		extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
         		convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
         	}
         	if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
@@ -206,9 +206,9 @@ public class FileApiController {
 	                        	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
 	                        	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
 	                        	convertManager.convertMp4OrExtrPic(convsp);//转换ts为mp4
-	                        	extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+	                        	extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
 	                    	}else{
-	                    		extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
+	                    		extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
 	                    	}
 	                    	
 	                    	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
