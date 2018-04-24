@@ -307,7 +307,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
 
 		List<ClZdgl> zds = zdglservice.findAll();
-
+		Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
+		.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
+		
 		List<String> lostZD = new ArrayList<>();
 
 		for (ClZdgl clZdgl : zds) {
@@ -327,10 +329,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setEventType("80");
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setZxzt("20");
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
@@ -338,10 +340,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setEventType(clSbyxsjjl.getSjlx());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setZxzt(zdglmap.get(clSbyxsjjl.getZdbh()).getZxzt());
 						list.add(websocketInfo);
 					}
 				}
