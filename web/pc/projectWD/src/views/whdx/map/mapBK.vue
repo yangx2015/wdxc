@@ -8,7 +8,7 @@
 	    width: 64px;
 	    height: 47px;
 	    top: 5px;
-	    right: 570px;
+	    right: 0px;
 	    z-index: 100;
 	    background-color: rgb(255, 255, 255);
 	    text-align: center;
@@ -58,19 +58,19 @@
 		},
 		watch:{
 			mapDot:function(n,o){
-				if(n.length==1){
-					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
-					this.zoom = 12
-				}else if(n.length==0){
-					this.mapcenter = {lng: 114.370095,lat: 30.545038}
-					this.zoom = 16
-					this.clear()
-				}else{
-					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
-					this.zoom = 12
-				}
-				this.disDot(n)
-				this.mapCenter()
+//				if(n.length==1){
+//					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
+//					this.zoom = 12
+//				}else if(n.length==0){
+//					this.mapcenter = {lng: 114.370095,lat: 30.545038}
+//					this.zoom = 16
+//					this.clear()
+//				}else{
+//					this.mapcenter = {lng: n[0].mapCen.lng,lat: n[0].mapCen.lat}
+//					this.zoom = 12
+//				}
+//				this.disDot(n)
+//				this.mapCenter()
 			}
 		},
 		created(){
@@ -134,7 +134,7 @@
 				    enableDrawingTool: true, //是否显示工具栏
 				    drawingToolOptions: {
 				        anchor: BMAP_ANCHOR_TOP_RIGHT, //位置
-				        offset: new BMap.Size(633, 5), //偏离值
+				        offset: new BMap.Size(64, 5), //偏离值
 				    },
 				    circleOptions: styleOptions, //圆的样式
 				    polylineOptions: styleOptions, //线的样式
