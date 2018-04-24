@@ -12,6 +12,7 @@ import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.ClService;
 import com.ldz.znzp.service.ClyxjlService;
 import com.ldz.znzp.service.XlService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -46,6 +47,19 @@ public class MessageApi {
 	 */
 	@RequestMapping(value="/reporting", method={RequestMethod.POST})
 	public ApiResponse<String> reporting(@RequestBody GpsInfo gpsInfo ){
+		if (StringUtils.isEmpty(gpsInfo.getDeviceId())){
+			return ApiResponse.fail("设备id不能为空");
+		}
+		if (StringUtils.isEmpty(gpsInfo.getLongitude())){
+			return ApiResponse.fail("经度不能为空");
+		}
+		if (StringUtils.isEmpty(gpsInfo.getLatitude())){
+			return ApiResponse.fail("纬度不能为空");
+		}
+		if (StringUtils.isEmpty(gpsInfo.getEventType())){
+			return ApiResponse.fail("事件类型不能为空");
+		}
+
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
 		if (car == null)return ApiResponse.fail("未找到车辆");
 
