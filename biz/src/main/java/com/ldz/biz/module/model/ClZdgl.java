@@ -116,10 +116,41 @@ public class ClZdgl implements Serializable {
     @Column(name = "CMD")
     private String cmd;
 
+    
+    /**
+     * 上传视屏模式
+     */
+    
+    @Column(name = "SPSCMS")
+    private String spscms;
+    /**
+     * gps心跳
+     */
+    @Column(name = "GPSXT")
+    private String gpsxt;
+    
     @Transient
     private ClCl cl;
    
     
+    
+    
+	public String getGpsxt() {
+		return gpsxt;
+	}
+
+	public void setGpsxt(String gpsxt) {
+		this.gpsxt = gpsxt;
+	}
+
+	public String getSpscms() {
+		return spscms;
+	}
+
+	public void setSpscms(String spscms) {
+		this.spscms = spscms;
+	}
+
 	public String getCmd() {
 		return cmd;
 	}
