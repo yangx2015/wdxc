@@ -69,41 +69,27 @@
 			</Row>
     	</div>
 		<div class="body" v-show="RootShow" style="height: 80%;">
-			<div class="box">
-				<div style="overflow: hidden;">
-					<h1 style="float: left;">新增电子围栏</h1>
-					<div id="input" style="float: right;padding: 5px;"> 
-						<Input type="text" 
-							v-model="findMess.wlmc"
-							size="large"
-							placeholder='请输入电子围栏名称'
-							style="width: 200px"></Input>
-						<Button type="success" 
-							size="large"  
-							style="margin: 0 8px;"
-							@click="finish">完成</Button>
-						<Button type="primary" size="large" @click="AddRali">取消</Button>
+			<div class="box-row" style="height: 80%;">
+				<div class="carlist carlistBor" style="width: 180px;height: 100%;">
+					<div class="box">
+						<div class="tit">
+							<Input value="" placeholder="请输入车辆信息..." size="small" style="width: 100%"></Input>
+						</div>
+						<div class="body">
+							<Tree :data="data1" ref="tree"
+							  show-checkbox
+							  @on-check-change='checkClick'
+							  @on-select-change='treeClick'></Tree>
+						</div>
 					</div>
 				</div>
-				<div class="body">
-					<div class="box-row" style="height: 100%;">
-						<div class="carlist carlistBor" style="width: 180px;height: 100%;">
-							<div class="box">
-								<div class="tit">
-									<Input value="" placeholder="请输入车辆信息..." size="small" style="width: 100%"></Input>
-								</div>
-								<div class="body">
-									<Tree :data="data1" ref="tree"
-									  show-checkbox
-									  @on-check-change='checkClick'
-									  @on-select-change='treeClick'></Tree>
-								</div>
-							</div>
-						</div>
-						<div class="body-F carlistBor" style="position: relative;height: 100%;">
-							<my-map ref='maps' :mapDot="mapDot" @choosePoint="choosePoint"></my-map>
-						</div>
+				<div class="body-F carlistBor" style="position: relative;height: 100%;">
+					<div style="position: absolute;top: 3px;right: 202px;z-index: 100;" id="input">
+						<Input type="text" v-model="findMess.wlmc" style="width: 40%"></Input>
+						<Button type="error" size="large" @click="AddRali">取消</Button>
+						<Button type="success" size="large"  @click="finish">完成</Button>
 					</div>
+					<my-map ref='maps' :mapDot="mapDot" @choosePoint="choosePoint"></my-map>
 				</div>
 			</div>
 		</div>
