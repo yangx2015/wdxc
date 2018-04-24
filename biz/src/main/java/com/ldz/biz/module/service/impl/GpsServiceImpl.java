@@ -313,7 +313,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			}
 
 		}
-  
+  if (CollectionUtils.isNotEmpty(gpsInit)) {
 		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
 			if (StringUtils.isNotEmpty(clSbyxsjjl.getZdbh())) {
 				ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
@@ -344,7 +344,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				}
 			}
 		}
-
+  }
 		apiResponse.setResult(list);
 		return apiResponse;
 	}
