@@ -12,6 +12,8 @@ public class RequestCommonParamsDto implements Serializable {
 	/**
 	 * 
 	 */
+	private String id;
+	
 	private static final long serialVersionUID = 1L;
 	private String deviceId;//设备id（每次都必须上传）
 	private String channelId;//用于推送（每次都必须上传）
@@ -228,15 +230,23 @@ public class RequestCommonParamsDto implements Serializable {
 	public void setSczt(String sczt) {
 		this.sczt = sczt;
 	}
+	
+	public String getId() {
+		return id;
+	}
+	public void setId(String id) {
+		this.id = id;
+	}
 	@Override
 	public String toString() {
-		return "RequestCommonParamsDto [deviceId=" + deviceId + ", channelId=" + channelId + ", deviceTag=" + deviceTag
-				+ ", startTime=" + startTime + ", endTime=" + endTime + ", longitude=" + longitude + ", latitude="
-				+ latitude + ", speed=" + speed + ", eventType=" + eventType + ", filePath=" + filePath
-				+ ", fileLocalPath=" + fileLocalPath + ", fileRealName=" + fileRealName + ", fileSize=" + fileSize
-				+ ", filePostfix=" + filePostfix + ", taskId=" + taskId + ", cmdType=" + cmdType + ", cmd=" + cmd
-				+ ", cmdParams=" + cmdParams + ", gpsjd=" + gpsjd + ", fxj=" + fxj + "]";
+		return "RequestCommonParamsDto [id=" + id + ", deviceId=" + deviceId + ", channelId=" + channelId
+				+ ", deviceTag=" + deviceTag + ", startTime=" + startTime + ", endTime=" + endTime + ", longitude="
+				+ longitude + ", latitude=" + latitude + ", speed=" + speed + ", eventType=" + eventType + ", filePath="
+				+ filePath + ", fileLocalPath=" + fileLocalPath + ", fileRealName=" + fileRealName + ", fileSize="
+				+ fileSize + ", filePostfix=" + filePostfix + ", taskId=" + taskId + ", sczt=" + sczt + ", cmdType="
+				+ cmdType + ", cmd=" + cmd + ", cmdParams=" + cmdParams + ", gpsjd=" + gpsjd + ", fxj=" + fxj + "]";
 	}
+	
 
 	
 	
