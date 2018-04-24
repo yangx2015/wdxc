@@ -25,23 +25,23 @@
                                 <Col span="2"><Icon type="speedometer"></Icon></Col>
                                 <Col span="6"><span>{{car.speed}} KM/h</span></Col>
                             </Row>
-                            <Row>
-                                <Col span="4">创建日期</Col>
+                            <Row v-if="obd != null">
+                                <Col span="4">更新日期</Col>
                                 <Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
                             </Row>
-                            <Row>
+                            <Row v-if="obd != null">
                                 <Col span="4">发动机转速</Col>
                                 <Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>
                             </Row>
-                            <Row>
+                            <Row v-if="obd != null">
                                 <Col span="4">车速</Col>
                                 <Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>
                             </Row>
-                            <Row>
+                            <Row v-if="obd != null">
                                 <Col span="4">剩余油量</Col>
                                 <Col span="10"><span>{{obd.syyl}} L</span></Col>
                             </Row>
-                            <Row>
+                            <Row v-if="obd != null">
                                 <Col span="4">耗油量</Col>
                                 <Col span="10"><span>{{obd.hyl}} L</span></Col>
                             </Row>
@@ -97,7 +97,7 @@
                 <br>
                 <Row :gutter="16">
                     <Col span="12">
-                        <Card style="height: 300px">
+                        <Card style="height: 400px">
                             <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
                             <Row class="height300">
                                 <Form :label-width="100">
@@ -114,7 +114,7 @@
                                                 <!--</Select>-->
                                             <!--</FormItem>-->
                                         <!--</Col>-->
-                                        <Col span="12">
+                                        <Col span="20">
                                             <FormItem label='碰撞灵敏度'>
                                                 <Select filterable clearable  v-model="carControl.pzlmd">
                                                     <Option value=""></Option>
@@ -124,12 +124,12 @@
                                                 </Select>
                                             </FormItem>
                                         </Col>
-                                        <Col span="12">
+                                        <Col span="4">
                                             <Button type="primary"  @click="selectChange20">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span="12">
+                                        <Col span="20">
                                             <FormItem label='上传模式'>
                                                 <Select filterable clearable  v-model="carControl.scms">
                                                     <Option value=""></Option>
@@ -138,12 +138,12 @@
                                                 </Select>
                                             </FormItem>
                                         </Col>
-                                        <Col span="12">
+                                        <Col span="4">
                                             <Button type="primary"  @click="selectChange30">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span="12">
+                                        <Col span="20">
                                             <FormItem label='上传视屏模式'>
                                                 <Select filterable clearable  v-model="carControl.scspms">
                                                     <Option value=""></Option>
@@ -152,27 +152,27 @@
                                                 </Select>
                                             </FormItem>
                                         </Col>
-                                        <Col span="12">
+                                        <Col span="4">
                                             <Button type="primary"  @click="selectChange50">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span="12">
+                                        <Col span="20">
                                             <FormItem label='超速设定'>
-                                                <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."></Input>
+                                                <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
                                             </FormItem>
                                         </Col>
-                                        <Col span="12">
+                                        <Col span="4">
                                             <Button type="primary"  @click="saveCssd">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
-                                        <Col span="12">
+                                        <Col span="20">
                                             <FormItem label='GPS心跳间隔'>
-                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."></Input>秒
+                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."><span slot="append">秒</span></Input>
                                             </FormItem>
                                         </Col>
-                                        <Col span="12">
+                                        <Col span="4">
                                             <Button type="primary"  @click="saveXtjg">确定</Button>
                                         </Col>
                                     </Row>
@@ -246,14 +246,14 @@
             selectChange02(e){
                 this.setting('02',e);
             },
-            selectChange20(e){
-                this.setting('20',e);
+            selectChange20(){
+                this.setting('20',this.carControl.pzlmd);
             },
-            selectChange30(e){
-                this.setting('30',e);
+            selectChange30(){
+                this.setting('30',this.carControl.scms);
             },
-            selectChange50(e){
-                this.setting('50',e);
+            selectChange50(){
+                this.setting('50',this.carControl.scspms);
             },
             setting(type,param){
                 var v = this

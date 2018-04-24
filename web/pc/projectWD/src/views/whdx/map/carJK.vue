@@ -134,7 +134,6 @@
 		addClickHandler(item,marker){
 			var v = this
 			marker.addEventListener("click",function(e){
-                console.log('click');
                 v.choosedItem = item;
                 v.componentName = 'carInfo';
 			})
