@@ -7,9 +7,12 @@ import java.nio.charset.Charset;
 import java.util.concurrent.Executor;
 
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.ldz.ticserver.api.DeviceApiConteroller;
 import com.ldz.util.bean.RequestCommonParamsDto;
 
 /**
@@ -19,7 +22,7 @@ import com.ldz.util.bean.RequestCommonParamsDto;
  */
 @Component
 public class FileConvertManager {
-
+	private static final Logger logger = LoggerFactory.getLogger(FileConvertManager.class);
 	@Autowired
 	private Executor executor;
 	/**
@@ -53,6 +56,7 @@ public class FileConvertManager {
 			super.run();
 			BufferedReader br = null;
 			 try {  
+				 logger.debug(cmdStr);
 		            Process p = Runtime.getRuntime().exec(cmdStr); 
 		            br = new BufferedReader(new InputStreamReader(p.getInputStream(),Charset.forName("UTF-8"))); 
 		            String line = null;  
@@ -60,10 +64,10 @@ public class FileConvertManager {
 		            while ((line = br.readLine()) != null) {
 		                sb.append(line + "\n");  
 		            }
-		           System.out.println(sb.toString());
+		            logger.debug(sb.toString());
 			 }catch (Exception e) {  
 		            e.printStackTrace(); 
-		            System.err.println("exeCmd error:"+e);
+		            logger.error("exeCmd error:"+e);
 		        }
 		        finally  
 		        {  
