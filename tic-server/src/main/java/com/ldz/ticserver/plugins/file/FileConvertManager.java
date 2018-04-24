@@ -56,7 +56,7 @@ public class FileConvertManager {
 			super.run();
 			BufferedReader br = null;
 			 try {  
-				 logger.debug(cmdStr);
+				 logger.debug(cmdStr); 
 		            Process p = Runtime.getRuntime().exec(cmdStr); 
 		            br = new BufferedReader(new InputStreamReader(p.getInputStream(),Charset.forName("UTF-8"))); 
 		            String line = null;  
