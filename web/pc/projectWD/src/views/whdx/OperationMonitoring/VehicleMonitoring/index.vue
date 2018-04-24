@@ -220,19 +220,36 @@ export default {
 		handleItem(item){
             item.lng = item.bdjd;
             item.lat = item.bdwd;
-            switch(item.eventType){
-				case '60':
-                    item.status = 1;
-                    item.text = '熄火时间';
-                    break;
-				case '80':
-                    item.status = 2;
-                    item.text = '离线时间';
-                    break;
-                case '50':
-				default:
-                    item.status = 0;
-                    item.text = '上线时间';
+            if (item.zxzt){
+                switch(item.zxzt){
+                    case '10':
+                        item.status = 1;
+                        item.text = '熄火时间';
+                        break;
+                    case '20':
+                        item.status = 2;
+                        item.text = '离线时间';
+                        break;
+                    case '00':
+                    default:
+                        item.status = 0;
+                        item.text = '上线时间';
+                }
+			}else{
+                switch(item.eventType){
+                    case '60':
+                        item.status = 1;
+                        item.text = '熄火时间';
+                        break;
+                    case '80':
+                        item.status = 2;
+                        item.text = '离线时间';
+                        break;
+                    case '50':
+                    default:
+                        item.status = 0;
+                        item.text = '上线时间';
+                }
 			}
 		},
 		rowClick(item){
