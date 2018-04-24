@@ -11,6 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class GpsInfo {
+	private String id;
 	private String deviceId;//设备id（每次都必须上传）
 	private String channelId;//用于推送（每次都必须上传）
 	private String deviceTag;//设备tag主要也是 用于推送（每次都必须上传）
