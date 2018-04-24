@@ -26,18 +26,24 @@ public class FileConvertManager {
 	 * 一个简单的通过命令行转换文件的方法
 	 * @param cmd
 	 */
-	public void convertMp4(String cmd){
+	public void convertMp4OrExtrPic(String cmd){
 		if(StringUtils.isNotBlank(cmd)){
-			executor.execute(new ThreedTsConvertMp4(cmd));
+			executor.execute(new ThreedTsConvertMp4OrExtrPic(cmd));
 		}
 	}
 	
-	class ThreedTsConvertMp4 extends Thread{
+	
+	/**
+	 * ts转换mp4 以及视屏抽取图片的线程
+	 * @author admins
+	 *
+	 */
+	class ThreedTsConvertMp4OrExtrPic extends Thread{
 		String cmdStr = "";
-		public ThreedTsConvertMp4(){
+		public ThreedTsConvertMp4OrExtrPic(){
 			
 		}
-		public ThreedTsConvertMp4(String cmd){
+		public ThreedTsConvertMp4OrExtrPic(String cmd){
 			cmdStr = cmd;
 		}
 		

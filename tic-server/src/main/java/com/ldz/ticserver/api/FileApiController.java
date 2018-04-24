@@ -50,7 +50,10 @@ public class FileApiController {
 	private String imgdir;
 	@Value("${interface.filesaveflag}")
 	private Integer filesaveflag;
-	
+	@Value("${interface.mp4cacheimg}")
+	private String mp4cacheimg;
+	@Value("${interface.logdir}")
+	private String logdir;
 	
 	@Autowired
 	private BizApiService bizApiService;
@@ -79,6 +82,8 @@ public class FileApiController {
         String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
         if(suffixName.contains("jpg")){
         	filePath += imgdir+File.separator;
+        }else if(suffixName.contains("txt")){
+        	filePath += logdir + File.separator;
         }
         //if()
         // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
@@ -87,20 +92,38 @@ public class FileApiController {
         logger.info("文件保存的名称为：" + suffixName);
         try {
            // file.transferTo(dest);
-        	FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        	//FileUtil.uploadFile(file.getBytes(), filePath, fileName);
+        	if(filesaveflag==1){
+        		byte[] bytes = file.getBytes();
+        		FileUtil.uploadFile(bytes, filePath, fileName);
+        	}else if(filesaveflag == 2){
+        		File targetFile = new File(filePath);
+        		 if(!targetFile.exists()){
+        	            targetFile.mkdirs();
+        	      }
+        		file.transferTo(new File(filePath+fileName));
+        	}else{
+        		FileUtil.uploadCopyFile(file.getInputStream(), filePath, fileName);
+        	}
         	dto.setFileLocalPath(filePath+fileName);
         	dto.setFilePath(fileName);
         	dto.setFilePostfix(suffixName);
         	dto.setFileRealName(file.getOriginalFilename());
         	dto.setFileSize(file.getSize()+"");
         	//dto.setEventType(eventType);
+        	String extpic = mp4cacheimg.replace("@videofile", filePath+fileName);
         	if(suffixName.contains("ts")){//只有ts文件才转换
         		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
             	dto.setFilePath(fileName.replace(".ts", ".mp4"));
             	dto.setFilePostfix("mp4");
             	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
             	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
-            	convertManager.convertMp4(convsp);
+            	convertManager.convertMp4OrExtrPic(convsp);
+            	extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+            	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
+        	}else if(suffixName.contains("mp4")){
+        		extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
+        		convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
         	}
         	if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
         		bizApiService.pushFileData(dto);
@@ -175,17 +198,24 @@ public class FileApiController {
 	                    	dto.setFileRealName(file.getOriginalFilename());
 	                    	dto.setFileSize(file.getSize()+"");
 	                    	//dto.setEventType(eventType);
+	                    	String extpic = mp4cacheimg.replace("@videofile", filePath+fileName);
 	                    	if(suffixName.contains("ts")){//只有ts文件才转换
 	                    		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
 	                        	dto.setFilePath(fileName.replace(".ts", ".mp4"));
 	                        	dto.setFilePostfix("mp4");
 	                        	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
 	                        	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
-	                        	convertManager.convertMp4(convsp);
+	                        	convertManager.convertMp4OrExtrPic(convsp);//转换ts为mp4
+	                        	extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+	                    	}else{
+	                    		extpic = mp4cacheimg.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
 	                    	}
+	                    	
+	                    	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
 	                    	//if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
 	                    		bizApiService.pushFileData(dto);
 	                    	//}
+	                    	
 	                    	sp.setMessage(file.getOriginalFilename());
 	                    	sp.setResult(dto);
                     	}

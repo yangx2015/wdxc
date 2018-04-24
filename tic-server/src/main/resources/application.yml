@@ -23,7 +23,7 @@ spring:
       maxRequestSize: 200Mb
       fileSizeThreshold: 5MB
       location: D://Temp//cache//
-      enabled: true
+      #enabled: true
 #接口配置，接口可以有多个地址，多个地址中间使用';'
 interface:
   #设备状态更新接口，点火、熄火、离线
@@ -40,7 +40,7 @@ interface:
   serversecurity: ldzticserver
   #文件存储的本地路径
   filelocalpath: D://Temp//test//
-  
+  logdir: log
   cacheimgdir: cache
   videodir: video
   imgdir: images
@@ -50,6 +50,8 @@ interface:
   #tsconvertmp4cmd: ffmpeg.exe -i "concat:F:\Temp\ffmeg\bin\car_865923030039405F20180322111850.ts" -acodec copy -vcodec copy -absf aac_adtstoasc output.mp4
   #文件转换基本命令（linux 部署时自己改命令）
   tsconvertmp4cmd: D:\ffmpeg\bin\ffmpeg.exe -i "concat:@localfile" -acodec copy -vcodec copy -absf aac_adtstoasc @newfile
+  #视屏文件抽取截图
+  mp4cacheimg: D:\ffmpeg\bin\ffmpeg.exe -ss 00:00 -i @videofile -y -f image2 -r 1 -t 00:01 @cachefile
   
 logging:
   config: classpath:log4j2.xml

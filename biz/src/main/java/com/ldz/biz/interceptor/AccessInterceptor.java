@@ -34,8 +34,8 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 	private StringRedisTemplate redisDao;
 
-	private List<String> whiteList = Arrays.asList("/api/gn/getMenuTree","/api/jg/pager");
-	private List<String> anonymousList = Arrays.asList("/api/zd/pager");
+	private List<String> whiteList = Arrays.asList("/biz/api/gn/getMenuTree","/biz/api/jg/pager");
+	private List<String> anonymousList = Arrays.asList("/biz/api/zd/pager");
 
 	public AccessInterceptor() {
 	}
@@ -57,6 +57,10 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}
 		if (anonymousList.contains(request.getRequestURI())){
 			return true;
+		}
+		log.debug("whiteList");
+		for (String s : whiteList) {
+			log.debug(s);
 		}
 		// if (true)return true;
 
