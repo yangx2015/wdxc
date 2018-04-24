@@ -1,6 +1,8 @@
 package com.ldz.biz.module.service.impl;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -170,7 +172,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
 		// 设备记录时间
-		clGps.setCjsj(new Date());
+		if (StringUtils.isNotEmpty(entity.getStartTime())) {
+			
+			clGps.setCjsj(simpledate(entity.getStartTime()));
+		}
 		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
 			clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
 		}
@@ -325,7 +330,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				if (clCl != null) {
 					if (lostZD.contains(clSbyxsjjl.getZdbh())) {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJid());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd());
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
@@ -336,7 +341,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJid());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd());
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
@@ -353,8 +358,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		apiResponse.setResult(list);
 		return apiResponse;
 	}
-/*
-	public Date simpledate(String date) {
+
+	public static Date simpledate(String date) {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date2 = null;
@@ -364,7 +369,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			e.printStackTrace();
 		}
 		return date2;
-	}*/
-
+	}
+public static void main(String[] args) {
+	
+	  Date simpledate = simpledate("2018-04-24 15:50:39");
+	  System.out.println(simpledate);
+}
 	
 }
