@@ -36,7 +36,7 @@ public class DeviceApiConteroller {
 	@RequestMapping("/gps")
 	public ApiResponse<String> postGpsData(@RequestBody RequestCommonParamsDto dto){
 		ApiResponse<String> ar = new ApiResponse<>();
-		logger.debug("请求了GPS上传的方法");
+		//logger.debug("请求了GPS上传的方法");
 		bizApiService.pushData(dto);
 		
 		//if(dto!=null && dto.getEventType()!=null && dto.getEventType().equals("60")){
@@ -56,7 +56,7 @@ public class DeviceApiConteroller {
 	@RequestMapping("/dbgps")
 	public ApiResponse<String> postGpsDataAll(@RequestBody List<RequestCommonParamsDto> dtos){
 		ApiResponse<String> ar = new ApiResponse<>();
-		logger.debug("请求了批量GPS上传的方法");
+		//logger.debug("请求了批量GPS上传的方法");
 		
 		for (RequestCommonParamsDto requestCommonParamsDto : dtos) {
 			bizApiService.pushData(requestCommonParamsDto);
