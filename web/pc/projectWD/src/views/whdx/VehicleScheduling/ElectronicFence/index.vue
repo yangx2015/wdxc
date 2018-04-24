@@ -308,6 +308,7 @@ export default {
     	},
     	//树多选框
     	checkClick(event){
+    		console.log(event)
     		var v = this
     		v.mapDot = []
     		if(event[0]){
@@ -362,6 +363,7 @@ export default {
         },
     	//树多点击事件
     	treeClick(mess){
+    		console.log(mess)
     		if(mess[0]){
     			this.mapDot = mess
     		}

@@ -4,19 +4,13 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'站牌'">
-			<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-				<Spin fix>
-					<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-					<div style="font-size: 30px;">数据加载中请稍后</div>
-				</Spin>
-			</div>
-			<div style="overflow: auto;height: 300px;">
+			<div>
 				<Form
-						ref="addmess"
-						:model="addmess"
-						:rules="ruleInline"
-						:label-width="100"
-						:styles="{top: '20px'}">
+					ref="addmess"
+					:model="addmess"
+					:rules="ruleInline"
+					:label-width="100"
+					:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
 							<FormItem label='围栏名称'>
@@ -34,6 +28,9 @@
 					</Row>
 				</Form>
 			</div>
+			<div :style="divheight">
+				<mapbkzs :mapDot = 'this.$parent.choosedRow' @choosePoint="choosePoint"></mapbkzs>
+			</div>
 			<div slot='footer'>
 				<Button type="ghost" @click="close">取消</Button>
 				<Button type="primary" @click="save">确定</Button>
@@ -45,11 +42,18 @@
 <script>
 	import treelist from '@/data/list.js'
     import configApi from '@/axios/config.js'
+    import mixins from '@/mixins'
+    
+    import mapbkzs from '../../../map/mapBKZS.vue'
 	export default {
 		name: '',
+		components: {
+			mapbkzs
+		},
+		mixins: [mixins],
 		data() {
 			return {
-				SpinShow:false,
+				divheight:{height:'220px'},
 			    operate:'新建',
 				showModal: true,
                 mesF:false,
@@ -70,6 +74,7 @@
 			}
 		},
 		created(){
+			this.divheight.height = (this.getWindowHeight() - 360)+'px'
 			if (this.$parent.choosedRow){
 				this.form = this.$parent.choosedRow;
 				this.operate = '编辑'
@@ -80,7 +85,6 @@
 		methods: {
 		    save(){
 		    	var v = this
-            	v.SpinShow = true
 		        let url = configApi.DZWL.ADD;
 				if (this.$parent.choosedRow){
                     url = configApi.DZWL.CHANGE;
@@ -91,18 +95,23 @@
                         var v = this
                         v.$parent.findMessList()
                         this.$Message.success(res.message);
-                        v.SpinShow = false
                         v.$parent.componentName = ''
                     }
                 }).catch((error) =>{
 					v.$Message.error('出错了！！！');
-					v.SpinShow = false
 				})
 			},
+			choosePoint(points){
+	            this.findMess.dlxxzb = '';
+	            for(let r of points){
+	    	        this.findMess.dlxxzb += r.lng+","+r.lat+";";
+	            }
+	            console.log(this.findMess.dlxxzb);
+	        },
 			close(){
 		        let v = this;
                 v.$parent.componentName = ''
-                v.$parent.getPageData()
+                v.$parent.findMessList()
 			}
 
 		}
