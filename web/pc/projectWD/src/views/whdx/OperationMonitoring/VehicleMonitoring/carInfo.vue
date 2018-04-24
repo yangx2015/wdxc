@@ -23,7 +23,27 @@
                             </Row>
                             <Row>
                                 <Col span="2"><Icon type="speedometer"></Icon></Col>
-                                <Col span="6"><span>{{car.speed}}</span></Col>
+                                <Col span="6"><span>{{car.speed}} KM/h</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">创建日期</Col>
+                                <Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">发动机转速</Col>
+                                <Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">车速</Col>
+                                <Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">剩余油量</Col>
+                                <Col span="10"><span>{{obd.syyl}} L</span></Col>
+                            </Row>
+                            <Row>
+                                <Col span="4">耗油量</Col>
+                                <Col span="10"><span>{{obd.hyl}} L</span></Col>
                             </Row>
                         </Card>
                     </Col>
@@ -52,17 +72,17 @@
                                     <Button @click="setControl('11','2-10')" icon="ios-videocam">前后摄像头视频</Button>
                                 </Col>
                             </Row>
-                            <Row>
-                                <Col span="8">
-                                    <DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >
-                                </Col>
-                                <Col span="8">
-                                    <DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.endTime" placeholder="请选择结束时间"></DatePicker>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="mergeVideo(1)" icon="qr-scanner">合并视频</Button>
-                                </Col>
-                            </Row>
+                            <!--<Row>-->
+                                <!--<Col span="8">-->
+                                    <!--<DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >-->
+                                <!--</Col>-->
+                                <!--<Col span="8">-->
+                                    <!--<DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.endTime" placeholder="请选择结束时间"></DatePicker>-->
+                                <!--</Col>-->
+                                <!--<Col span="8">-->
+                                    <!--<Button @click="mergeVideo(1)" icon="qr-scanner">合并视频</Button>-->
+                                <!--</Col>-->
+                            <!--</Row>-->
                             <Row>
                                 <Col span="8">
                                     <Button @click="showFance" icon="qr-scanner">电子围栏</Button>
@@ -79,24 +99,25 @@
                     <Col span="12">
                         <Card style="height: 300px">
                             <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
-                            <Row class="height200">
+                            <Row class="height300">
                                 <Form :label-width="100">
                                     <Row>
-                                        <Col span="12">
-                                            <FormItem label='急加速灵敏度'>
-                                                <Select filterable clearable  v-model="carControl.jjslmd" @on-change="selectChange02">
-                                                    <Option value="1">1</Option>
-                                                    <Option value="2">2</Option>
-                                                    <Option value="3">3</Option>
-                                                    <Option value="4">4</Option>
-                                                    <Option value="5">5</Option>
-                                                    <Option value="6">6</Option>
-                                                </Select>
-                                            </FormItem>
-                                        </Col>
+                                        <!--<Col span="12">-->
+                                            <!--<FormItem label='急加速灵敏度'>-->
+                                                <!--<Select filterable clearable  v-model="carControl.jslmd" @on-change="selectChange02">-->
+                                                    <!--<Option value="1">1</Option>-->
+                                                    <!--<Option value="2">2</Option>-->
+                                                    <!--<Option value="3">3</Option>-->
+                                                    <!--<Option value="4">4</Option>-->
+                                                    <!--<Option value="5">5</Option>-->
+                                                    <!--<Option value="6">6</Option>-->
+                                                <!--</Select>-->
+                                            <!--</FormItem>-->
+                                        <!--</Col>-->
                                         <Col span="12">
                                             <FormItem label='碰撞灵敏度'>
-                                                <Select filterable clearable  v-model="carControl.pzlmd" @on-change="selectChange20">
+                                                <Select filterable clearable  v-model="carControl.pzlmd">
+                                                    <Option value=""></Option>
                                                     <Option value="00">低</Option>
                                                     <Option value="10">中</Option>
                                                     <Option value="20">高</Option>
@@ -104,20 +125,35 @@
                                             </FormItem>
                                         </Col>
                                         <Col span="12">
+                                            <Button type="primary"  @click="selectChange20">确定</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span="12">
                                             <FormItem label='上传模式'>
-                                                <Select filterable clearable  v-model="carControl.scms" @on-change="selectChange30">
-                                                    <Option value="00">全部</Option>
+                                                <Select filterable clearable  v-model="carControl.scms">
+                                                    <Option value=""></Option>
+                                                    <Option value="00">实时</Option>
                                                     <Option value="10">仅WIFI</Option>
                                                 </Select>
                                             </FormItem>
                                         </Col>
                                         <Col span="12">
+                                            <Button type="primary"  @click="selectChange30">确定</Button>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col span="12">
                                             <FormItem label='上传视屏模式'>
-                                                <Select filterable clearable  v-model="carControl.scspms" @on-change="selectChange50">
-                                                    <Option value="00">全部</Option>
+                                                <Select filterable clearable  v-model="carControl.scspms">
+                                                    <Option value=""></Option>
+                                                    <Option value="00">全部视屏</Option>
                                                     <Option value="10">仅碰撞视屏</Option>
                                                 </Select>
                                             </FormItem>
+                                        </Col>
+                                        <Col span="12">
+                                            <Button type="primary"  @click="selectChange50">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -133,7 +169,7 @@
                                     <Row>
                                         <Col span="12">
                                             <FormItem label='GPS心跳间隔'>
-                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写超速设定..."></Input>
+                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."></Input>秒
                                             </FormItem>
                                         </Col>
                                         <Col span="12">
@@ -143,31 +179,6 @@
                                     <Row>
                                     </Row>
                                 </Form>
-                            </Row>
-                        </Card>
-                    </Col>
-                    <Col span="12">
-                        <Card style="height: 300px" v-if="obd !== null">
-                            <p slot="title"><Icon type="information-circled"></Icon> OBD信息</p>
-                            <Row>
-                                <Col span="4">创建日期</Col>
-                                <Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="4">发动机转速</Col>
-                                <Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="4">车速</Col>
-                                <Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="4">剩余油量</Col>
-                                <Col span="10"><span>{{obd.syyl}} L</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="4">耗油量</Col>
-                                <Col span="10"><span>{{obd.hyl}} L</span></Col>
                             </Row>
                         </Card>
                     </Col>
@@ -197,7 +208,7 @@
                 carControl:{
                     lmd:1,
                     scms:1,
-                    jjslmd:'',
+                    jslmd:'',
                     pzlmd:'',
                     scspms:'',
                     cssd:'',
@@ -267,6 +278,7 @@
                 }, 100);
                 this.car = this.$parent.choosedItem;
                 this.car.obdId = '101601190228'
+                this.getDeviceInfo();
                 if (this.car.obdId){
                     this.getObdInfo();
                 }
@@ -337,6 +349,16 @@
                     }
                 })
             },
+            getDeviceInfo(){
+                var v = this
+                this.$http.get(configApi.ZDGL.GET_BY_ID+this.car.zdbh).then((res) =>{
+                    console.log('getDeviceInfo');
+                    if (res.code === 200){
+                        this.carControl = res.result;
+                        console.log(res);
+                    }
+                })
+            },
             showPathHistory(){
                 this.$router.push({name: 'historypath',params:{zdbh:this.car.zdbh}});
                 this.close();
@@ -355,5 +377,8 @@
     }
     .height200{
         height: 200px;
+    }
+    .height300{
+        height: 300px;
     }
 </style>

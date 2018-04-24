@@ -58,7 +58,7 @@
     								<div>{{carArray[2].length}}</div>
     								<div>
     									<span style="font-size: 8px;">
-    										离线30天
+    										离线
     									</span>
     								</div>
     							</Button>

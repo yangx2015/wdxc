@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -44,6 +45,18 @@ public class ClDzwlCl implements Serializable {
      */
     @Column(name = "CJR")
     private String cjr;
+
+    @Transient
+    private String wlmc;
+
+
+    public String getWlmc() {
+        return wlmc;
+    }
+
+    public void setWlmc(String wlmc) {
+        this.wlmc = wlmc;
+    }
 
     private static final long serialVersionUID = 1L;
 

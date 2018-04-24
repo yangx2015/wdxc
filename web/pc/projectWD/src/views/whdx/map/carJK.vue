@@ -56,7 +56,6 @@
                             let point = r.split(",");
                             this.fancePoints.push({lng:point[1],lat:point[0]})
                         }
-                        console.log(this.fancePoints);
                         this.addArea(this.fancePoints);
                     }
                 })
@@ -66,7 +65,6 @@
 			},
 		    init(){
                 this.carList = this.$parent.mapCarList;
-                console.log(this.carList);
                 if (this.carList.length > 0){
                     this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }
@@ -94,6 +92,7 @@
 			this.clear()
 			var v = this
 			for(let r of this.carList){
+                console.log('showCarPosition');
                 console.log(r.lng);
                 console.log(r.lat);
                 var point = new BMap.Point(r.lng, r.lat);
