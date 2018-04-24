@@ -1,8 +1,6 @@
 package com.ldz.biz.module.service.impl;
 
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -172,9 +170,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
 		// 设备记录时间
-	/*	if (StringUtils.isNotEmpty(entity.getStartTime())) {
-			clGps.setCjsj(simpledate(entity.getStartTime()));
-		}*/
 		clGps.setCjsj(new Date());
 		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
 			clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
@@ -353,7 +348,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		apiResponse.setResult(list);
 		return apiResponse;
 	}
-
+/*
 	public Date simpledate(String date) {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -364,9 +359,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			e.printStackTrace();
 		}
 		return date2;
-	}
+	}*/
 
-	public static void main(String[] args) {
-
-	}
+	
 }
