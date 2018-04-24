@@ -42,8 +42,20 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 		}
     	//默认设置终端在线状态为离线
     	entity.setZxzt("20");
-    	//默认设置终端状态为离线
+    	//默认设置终端状态为停用
     	entity.setZt("00");
+    	
+    	//默认设备碰撞灵敏度
+    	entity.setPzlmd("10");
+    	//默认设备急加速灵敏度
+    	entity.setJslmd("2");
+    	//默认设备数据上传模式
+    	entity.setScms("10");
+    	//默认设备视屏上传模式
+    	entity.setSpscms("10");
+    	//默认设备的心跳
+    	entity.setGpsxt("10");
+    	
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
