@@ -147,8 +147,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				polygonYA.add(area.getWgLat());
 			}
 			// 判断位置点是否在电子围栏内
-			Boolean flag = PositionUtil.isPointInPolygon(changeCoordinates2.getBdjd().doubleValue(),
-					changeCoordinates2.getBdwd().doubleValue(), polygonXA, polygonYA);
+			Boolean flag = PositionUtil.isPointInPolygon(changeCoordinates2.getBdwd().doubleValue(),
+					changeCoordinates2.getBdjd().doubleValue(), polygonXA, polygonYA);
 
 			if (flag == false) {
 
