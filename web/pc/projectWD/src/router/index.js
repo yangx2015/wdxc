@@ -40,20 +40,6 @@ router.beforeEach((to, from, next) => {
             name: 'login'
         });
     }
-//  if(to.name=='login'||(to.name!='login'&&Cookies.get('usermess'))){
-//  	next()
-//  }else if(to.name=='home_index'&&!Cookies.get('usermess')){
-//  	next({
-//          name: 'login'
-//      });
-//  }
-//  else{
-//  	iView.Message.error("用户信息丢失，请重新登陆！！！");
-//  	next({
-//          name: 'login'
-//      });
-//  }
-//	next()
 });
 router.afterEach((to) => {
 	console.log(to)
