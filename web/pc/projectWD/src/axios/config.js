@@ -174,7 +174,8 @@ module.exports = {
 		SXQUERY:'api/zdgl/getunboundlist',//状态 正常 未绑定的终端
 		ADD:    '/api/zdgl/save',
         CHANGE: '/api/zdgl/update',
-		DELE:   '/api/zdgl/removeIds'
+		DELE:   '/api/zdgl/removeIds',
+		GET_BY_ID:'/api/zdgl/'
 	},
 	DZWL:{//电子围栏
 		QUERY:  '/api/dzwl/pager',
@@ -183,6 +184,12 @@ module.exports = {
 		DELE:   '/api/dzwl/removeIds',
 		GET_BY_CAR_ID:'/api/dzwl/getByCarId',
         setCarsDzwl:'/api/dzwl/setCarsDzwl'
+	},
+	DZWL_CL:{//电子围栏车辆
+		QUERY:  '/api/dzwlCl/pager',
+		ADD:    '/api/dzwlCl/save',
+        CHANGE: '/api/dzwlCl/update',
+		DELE:   '/api/dzwlCl/removeIds',
 	},
 	CLJK:{
 		QUERY:'/api/cl/InitClGps',

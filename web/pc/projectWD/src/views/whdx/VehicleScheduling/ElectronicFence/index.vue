@@ -31,7 +31,7 @@
 			    		</div>
 				        <div class="body-r-1 inputSty">
 				        	<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.zjhmLike" placeholder="请输入电子围栏名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 				        <div class="butevent">
 				        	<Button type="success" @click="findList">
@@ -125,7 +125,7 @@ export default {
 			cjsjInRange:[],
 			findMess: {
 				cjsjInRange:'',
-				zjhmLike: '',
+				cphLike: '',
 				pageNum: 1,
 				pageSize: 8,
                 dlxxzb:'',
@@ -140,14 +140,14 @@ export default {
                   align: 'center'
                 },
                 {
+                    title: '车牌号',
+                    align:'center',
+                    key: 'cph'
+                },
+                {
                     title: '围栏名称',
                     align:'center',
                     key: 'wlmc'
-                },
-                {
-                    title: '面积',
-                    align:'center',
-                    key: 'mj'
                 },
                 {
                     title: '状态',
@@ -175,24 +175,24 @@ export default {
                     align: 'center',
                     render: (h, params) => {
                         return h('div', [
-                            h('Button', {
-                                props: {
-									type: 'success',
-									icon: 'edit',
-									shape: 'circle',
-									size: 'small'
-								},
-								style: {
-									cursor: "pointer",
-									margin: '0 8px 0 0'
-								},
-                                on: {
-                                    click: () => {
-                                        this.choosedRow = params.row;
-                                        this.componentName = 'formData';
-                                    }
-                                }
-                            }),
+                            // h('Button', {
+                            //     props: {
+								// 	type: 'success',
+								// 	icon: 'edit',
+								// 	shape: 'circle',
+								// 	size: 'small'
+								// },
+								// style: {
+								// 	cursor: "pointer",
+								// 	margin: '0 8px 0 0'
+								// },
+                            //     on: {
+                            //         click: () => {
+                            //             this.choosedRow = params.row;
+                            //             this.componentName = 'formData';
+                            //         }
+                            //     }
+                            // }),
                             h('Button', {
                                 props: {
                                     type: 'error',
@@ -281,7 +281,7 @@ export default {
     methods: {
         //删除数据
         listDele(id){
-            this.util.del(this,configApi.DZWL.DELE,[id],()=>{
+            this.util.del(this,configApi.DZWL_CL.DELE,[id],()=>{
                 this.findMessList();
             });
         },
@@ -308,7 +308,6 @@ export default {
     	},
     	//树多选框
     	checkClick(event){
-    		console.log(event)
     		var v = this
     		v.mapDot = []
     		if(event[0]){
@@ -363,7 +362,6 @@ export default {
         },
     	//树多点击事件
     	treeClick(mess){
-    		console.log(mess)
     		if(mess[0]){
     			this.mapDot = mess
     		}
@@ -377,7 +375,7 @@ export default {
             var v = this
 			delete this.findMess.dlxxzb;
 			delete this.findMess.wlmc;
-            this.$http.get(configApi.DZWL.QUERY,{params:v.findMess}).then((res) =>{
+            this.$http.get(configApi.DZWL_CL.QUERY,{params:v.findMess}).then((res) =>{
                 v.data9 = res.page.list
                 v.pageTotal = res.page.total
                 v.SpinShow = false;

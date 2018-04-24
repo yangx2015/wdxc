@@ -56,13 +56,15 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
                 Map<String,String> map=new HashMap<String,String>();
                 String tableUrl=l.getUrl();
                 boolean b=(tableUrl.toLowerCase()).startsWith("http");//判断字符串是否已百度二字开头
+                String path = "";
                 if(b){
-                    map.put("path",l.getUrl());//URL地址
+                    path = l.getUrl();
                 }else{
-                    map.put("path",staticUrl+l.getUrl());//URL地址
+                    path = staticUrl + l.getUrl();
                 }
+                map.put("path",path);
+                map.put("md5",path);
                 map.put("size","");
-                map.put("md5","");
                 map.put("group",l.getWz());
                 urlList.add(map);
                 //size":"123","md5":"123456","group":"1"
