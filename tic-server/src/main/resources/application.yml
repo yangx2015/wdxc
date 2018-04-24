@@ -40,7 +40,7 @@ interface:
   serversecurity: ldzticserver
   #文件存储的本地路径
   filelocalpath: D://Temp//test//
-  
+  logdir: log
   cacheimgdir: cache
   videodir: video
   imgdir: images

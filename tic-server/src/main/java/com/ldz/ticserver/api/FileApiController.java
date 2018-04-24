@@ -52,7 +52,8 @@ public class FileApiController {
 	private Integer filesaveflag;
 	@Value("${interface.mp4cacheimg}")
 	private String mp4cacheimg;
-	
+	@Value("${interface.logdir}")
+	private String logdir;
 	
 	@Autowired
 	private BizApiService bizApiService;
@@ -81,6 +82,8 @@ public class FileApiController {
         String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
         if(suffixName.contains("jpg")){
         	filePath += imgdir+File.separator;
+        }else if(suffixName.contains("txt")){
+        	filePath += logdir + File.separator;
         }
         //if()
         // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
