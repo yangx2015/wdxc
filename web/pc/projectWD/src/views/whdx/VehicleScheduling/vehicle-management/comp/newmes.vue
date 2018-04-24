@@ -124,11 +124,12 @@
 			}
 		},
 		created(){
+			console.log('详细信息',this.mess)
             if(!this.messType){
                 this.operate = '编辑';
                 this.editMode = true;
                 this.addmess = this.mess
-                console.log('数据传递',this.derMess)
+//              console.log('数据传递',this.derMess)
             }
             this.getDrivers();
 			this.getDict();
@@ -141,7 +142,10 @@
                 v.$http.post(configApi.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
                     	console.log('终端数据',res)
-                        this.deviceList = res.result;
+                    	if(res.result){
+                    		v.deviceList = res.result;
+                    	}
+                        v.deviceList.push({'zdbh':this.mess.zdbh})
                     }
                 })
 			},
