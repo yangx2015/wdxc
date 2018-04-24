@@ -213,6 +213,18 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClZdgl zdgl = new ClZdgl();
 		zdgl.setZdbh(entity.getDeviceId());
 		zdgl.setXgsj(new Date());
+		
+		//根据传入的sczt判断终段在线状态
+		if (StringUtils.equals(entity.getSczt(), "10")) {
+			zdgl.setZt("00");
+			zdgl.setZxzt("00");
+			zdglservice.insetAndUpdate(zdgl);
+		}
+		if (StringUtils.equals(entity.getSczt(), "20")) {
+			zdgl.setZt("00");
+			zdgl.setZxzt("10");
+			zdglservice.insetAndUpdate(zdgl);
+		}
 
 		// 判断该点位是否在电子围栏里面
 		ClDzwl judgePoint = JudgePoint(entity);
@@ -233,9 +245,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clsbyxsjjl.setId(genId());
 			clsbyxsjjl.setSjlx(entity.getEventType());
 			clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-			zdgl.setZt("10");
-			zdgl.setZxzt("20");
-			zdglservice.insetAndUpdate(zdgl);
 			return clsbyxsjjl;
 		}
 
@@ -245,9 +254,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clsbyxsjjl.setSjjb("10");
 			clsbyxsjjl.setSjlx(entity.getEventType());
 			clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-			zdgl.setZt("00");
-			zdgl.setZxzt("00");
-			zdglservice.insetAndUpdate(zdgl);
 			return clsbyxsjjl;
 		}
 
@@ -257,9 +263,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clsbyxsjjl.setSjjb("10");
 			clsbyxsjjl.setSjlx(entity.getEventType());
 			clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-			zdgl.setZt("00");
-			zdgl.setZxzt("10");
-			zdglservice.insetAndUpdate(zdgl);
 			return clsbyxsjjl;
 		}
 		// 其余异常类型
@@ -304,7 +307,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
 
 		List<ClZdgl> zds = zdglservice.findAll();
-
+		Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
+		.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
+		
 		List<String> lostZD = new ArrayList<>();
 
 		for (ClZdgl clZdgl : zds) {
@@ -324,10 +329,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setEventType("80");
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setZxzt("20");
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
@@ -335,10 +340,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setBdwd(clSbyxsjjl.getWd());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setEventType(clSbyxsjjl.getSjlx());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setZxzt(zdglmap.get(clSbyxsjjl.getZdbh()).getZxzt());
 						list.add(websocketInfo);
 					}
 				}

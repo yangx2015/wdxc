@@ -128,6 +128,7 @@ export default {
 				zjhmLike: '',
 				pageNum: 1,
 				pageSize: 8,
+                dlxxzb:'',
                 clIds:''
 			},
 			fanceId:'',
@@ -295,9 +296,11 @@ export default {
         	})
     	},
         choosePoint(points){
-    	    for(let r of points){
+            this.findMess.dlxxzb = '';
+            for(let r of points){
     	        this.findMess.dlxxzb += r.lng+","+r.lat+";";
             }
+            console.log(this.findMess.dlxxzb);
         },
     	//电子围栏
     	AddRali(){
