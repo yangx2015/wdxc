@@ -109,9 +109,9 @@ export default {
     methods: {
         handleSubmit () {
         	var v = this
-        	v.SpinShow = true
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
+                	v.SpinShow = true
                 	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
@@ -133,7 +133,10 @@ export default {
                 		console.log('error',error)
                 	})
                 }
-            })
+            }),
+            setTimeout(()=>{
+            	v.SpinShow = false
+            },500)
         },
         getMenuTree(){
         	var v = this

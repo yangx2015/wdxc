@@ -30,11 +30,11 @@ router.beforeEach((to, from, next) => {
     	next()
     }else if(to.name!='login'&&Cookies.get('usermess')){
     	next()
-    }else if((to.name=='home_index'|| to.name=='error-500')&&!Cookies.get('usermess')){
+    }else if((to.name=='home_index'|| from.name=='login')&&!Cookies.get('usermess')){
     	next({
             name: 'login'
         });
-    }else if(to.name!='home_index'&&!Cookies.get('usermess')){
+    }else if(from.name!='login'&&!Cookies.get('usermess')){
     	iView.Message.error("用户信息丢失，请重新登陆！！！");
     	next({
             name: 'login'
