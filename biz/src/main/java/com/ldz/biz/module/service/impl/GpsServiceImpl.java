@@ -64,7 +64,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 	@Override
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
-
+      
+		if (gpsinfo==null) {
+			return ApiResponse.error();
+		}
 		log.info("上传的gps信息:" + gpsinfo);
 
 		// 将原始点位抓换
@@ -169,7 +172,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
 		// 设备记录时间
-		clGps.setCjsj(simpledate(entity.getStartTime()));
+		if (StringUtils.isNotEmpty(entity.getStartTime())) {
+			clGps.setCjsj(simpledate(entity.getStartTime()));
+		}
 
 		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
 			clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
