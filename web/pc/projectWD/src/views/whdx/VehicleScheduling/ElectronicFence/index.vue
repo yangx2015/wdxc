@@ -296,7 +296,7 @@ export default {
     	},
         choosePoint(points){
     	    for(let r of points){
-    	        this.findMess.dlxxzb += r.lng+"-"+r.lat+",";
+    	        this.findMess.dlxxzb += r.lng+","+r.lat+";";
             }
         },
     	//电子围栏
