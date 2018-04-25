@@ -5,20 +5,21 @@
 <template>
 	<div class="boxbackborder">
 		<component :is="componentName"></component>
-		<Card>
+		<Card style="height:600px">
 			<Row class="margin-top-10" style='background-color: #fff'>
-				<Col span="6">
+				<Col span="3">
 					<DatePicker v-model="formItem.startTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入开始时间" ></DatePicker>
 				</Col>
-				<Col span="6">
+				<Col span="3">
 					<DatePicker v-model="formItem.endTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入结束时间"  ></DatePicker>
 				</Col>
-				<Col span="6">
+				<Col span="3">
 					<Button type="primary" @click="formItemList()">
 						<Icon type="search"></Icon>
 					</Button>
 				</Col>
 			</Row>
+			<br>
 			<Row :gutter="16">
 				<Col span="6" v-for="item in tableData">
 					<Card>
@@ -150,8 +151,8 @@
 				title: '用户管理',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
-            // this.formItem.startTime = this.getTodayDate() + " 00:00:00";
-            // this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            this.formItem.startTime = this.getTodayDate() + " 00:00:00";
+            this.formItem.endTime = this.getTodayDate() + " 23:59:59";
 			this.formItemList();
 		},
 		methods: {
@@ -159,7 +160,7 @@
                 if(!longTypeDate)return;
                 let hour = parseInt(longTypeDate / (1000*60*60));
                 let min = parseInt((longTypeDate - hour*1000*60*60) / (1000 * 60));
-                let sec = parseInt((longTypeDate - min*1000*60) / (1000));
+                let sec = parseInt((longTypeDate - hour*1000*60*60 - min*1000*60) / (1000));
                 let s = '';
                 if (hour > 0){
                     s += hour + '小时';
@@ -189,9 +190,17 @@
 			},
             formItemList(){
                 var v = this
+				let startTime = this.formItem.startTime;
+				let endTime = this.formItem.endTime;
+                if (typeof startTime === 'object'){
+                    startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
                 let p = {
-                    startTime:this.formItem.startTime.replace(/T/g,' '),
-                    endTime: this.formItem.endTime.replace(/T/g,' '),
+                    startTime:startTime,
+                    endTime: endTime,
                     zdbh: this.formItem.zdbh,
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
