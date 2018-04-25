@@ -1,150 +1,179 @@
 <style type="text/css">
-	#allmap{
-		height: 100%;
-		width: 100%;
-	}
+    #allmap {
+        height: 100%;
+        width: 100%;
+    }
 </style>
 <!--地图选点-->
 <template>
-	<div style="height: 100%;background-color: #00FFFF;">
-		<component :is="componentName"></component>
-		<div id="allmap"></div>
-	</div>
+    <div style="height: 100%;background-color: #00FFFF;">
+        <component :is="componentName"></component>
+        <div id="allmap"></div>
+    </div>
 </template>
 
 <script>
     import configApi from '@/axios/config.js'
     import carInfo from '../OperationMonitoring/VehicleMonitoring/carInfo'
-	export default {
-		name:'getmapdot',
+
+    export default {
+        name: 'getmapdot',
         components: {
             carInfo
         },
-		data(){
-			return {
-                componentName:'',
-				choosedItem:null,
-				map:'',
-				mapcenter:{
-					lng: 114.357527,
-	    			lat: 30.550822
-				},
-				zoom:12,
-				carList:[],
-				fancePoints:[
-					{lng:114.27226, lat:30.608123},
-					{lng:114.157277 ,lat:30.544446},
-					{lng:114.418288, lat: 30.526529},
-				]
-			}
-		},
-		created(){
-		},
-		mounted(){
+        data() {
+            return {
+                componentName: '',
+                choosedItem: null,
+                map: '',
+                mapcenter: {
+                    lng: 114.357527,
+                    lat: 30.550822
+                },
+                zoom: 12,
+                carList: [],
+                fancePoints: [
+                    {lng: 114.27226, lat: 30.608123},
+                    {lng: 114.157277, lat: 30.544446},
+                    {lng: 114.418288, lat: 30.526529},
+                ]
+            }
+        },
+        created() {
+        },
+        mounted() {
             this.Buildmap()
-		    this.init();
-		},
-		methods:{
-		    showFance(carId){
+            this.init();
+        },
+        methods: {
+            showFance(carId) {
                 this.fancePoints = [];
                 var v = this
-                this.$http.get(configApi.DZWL.GET_BY_CAR_ID+"?clId="+carId).then((res) =>{
-                    if (res.code === 200){
+                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + carId).then((res) => {
+                    if (res.code === 200) {
                         let s = res.result.dlxxzb;
                         let ps = s.split(";");
-                        for (let r of ps){
+                        for (let r of ps) {
                             let point = r.split(",");
-                            this.fancePoints.push({lng:point[1],lat:point[0]})
+                            this.fancePoints.push({lng: point[1], lat: point[0]})
                         }
                         this.addArea(this.fancePoints);
                     }
                 })
-			},
-		    showPath(carId){
+            },
+            showPath(carId) {
                 this.addLine(this.fancePoints);
-			},
-			update(){
+            },
+            update() {
                 this.carList = this.$parent.mapCarList;
-		        this.showCarPosition();
-			},
-		    init(){
+                this.showCarPosition();
+            },
+            init() {
                 this.carList = this.$parent.mapCarList;
-                if (this.carList.length > 0){
-                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                if (this.carList.length > 0) {
+                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }
                 this.showCarPosition()
-			},
-			Buildmap(){
-				var v = this
-				// 百度地图API功能
-				this.map = new BMap.Map("allmap");    // 创建Map实例
-				this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat),this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-				//添加地图类型控件
-				this.map.addControl(new BMap.MapTypeControl({
-						mapTypes:[
-				            BMAP_NORMAL_MAP
-				        ]
-					})
-				);
-			    this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-			    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
-		},
-		//撒点
-		showCarPosition(){
-			this.clear()
-			var v = this
-			for(let r of this.carList){
-                console.log('showCarPosition');
-                console.log(r.lng);
-                console.log(r.lat);
-                var point = new BMap.Point(r.lng, r.lat);
-                this.addMarker(r,point);
-            }
-		},
-			addLine(points){
-                let ps = [];
-                for (let r of points){
-                    ps.push(new BMap.Point(r.lng,r.lat))
-                }
-                var polygon = new BMap.Polyline(ps, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
-                this.map.addOverlay(polygon);
-			},
-			addArea(points){
-		        let ps = [];
-		        for (let r of points){
-		            ps.push(new BMap.Point(r.lng,r.lat))
-				}
-                var polygon = new BMap.Polygon(ps, {strokeColor:"red", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
-                this.map.addOverlay(polygon);
-			},
-            addMarker(item,point){
-                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32,32),  {anchor : new BMap.Size(16, 32)});
-                var marker = new BMap.Marker(point,{icon:myIcon});
-                this.map.addOverlay(marker);
-                this.addClickHandler(item,marker);
             },
-			getIcon(car){
-		        switch(car.status){
-					case 0:
-					    return 'http://47.98.39.45:9092/icon/running.png';
-					case 1:
-					    return 'http://47.98.39.45:9092/icon/ic_car.png';
-					default:
-					    return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
-				}
-			},
-		addClickHandler(item,marker){
-			var v = this
-			marker.addEventListener("click",function(e){
-                v.choosedItem = item;
-                v.componentName = 'carInfo';
-			})
-		},
-		clear(){
-			this.map.clearOverlays();//清楚数据点
-		}
-	}
-}
+            Buildmap() {
+                var v = this
+                // 百度地图API功能
+                this.map = new BMap.Map("allmap");    // 创建Map实例
+                this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                //添加地图类型控件
+                this.map.addControl(new BMap.MapTypeControl({
+                        mapTypes: [
+                            BMAP_NORMAL_MAP
+                        ]
+                    })
+                );
+                this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
+                this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+                this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+                this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
+            },
+            //撒点
+            showCarPosition() {
+                this.clear()
+                var v = this
+                for (let r of this.carList) {
+                    console.log('showCarPosition');
+                    console.log(r.lng);
+                    console.log(r.lat);
+                    var point = new BMap.Point(r.lng, r.lat);
+                    this.addMarker(r, point);
+                    this.addLabel(r, point);
+                }
+            },
+            addLabel(item,point) {
+                let html = '<div style="width: 160px;height: 28px;padding:4px;">' +
+                        '<span>['+item.cph+']</span> ' +
+                        '<span style="float: right">'+item.speed+' km/h</span>' +
+                    '</div>'
+                var myLabel = new BMap.Label(html,     //为lable填写内容
+                    {
+                        offset: new BMap.Size(-80, -70),                  //label的偏移量，为了让label的中心显示在点上
+                        position: point
+                    });                                //label的位置
+                myLabel.setStyle({                                   //给label设置样式，任意的CSS都是可以的
+                    // color:"red",                   //颜色
+                    fontSize:"16px",               //字号
+                    // opacity:0.5,
+                    'background-color': 'rgba(255,255,255,0.6)',
+                    // border:"none",                    //边
+                    'border-radius': '4px',
+                    // height:"120px",                //高度
+                    // width:"125px",                 //宽
+                    // textAlign:"center",            //文字水平居中显示
+                    // lineHeight:"120px",            //行高，文字垂直居中显示
+                    // background:"url(http://cdn1.iconfinder.com/data/icons/CrystalClear/128x128/actions/gohome.png)",    //背景图片，这是房产标注的关键！
+                    // cursor:"pointer"
+                });
+                myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
+                this.map.addOverlay(myLabel);
+            },
+            addLine(points) {
+                let ps = [];
+                for (let r of points) {
+                    ps.push(new BMap.Point(r.lng, r.lat))
+                }
+                var polygon = new BMap.Polyline(ps, {strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5});  //创建多边形
+                this.map.addOverlay(polygon);
+            },
+            addArea(points) {
+                let ps = [];
+                for (let r of points) {
+                    ps.push(new BMap.Point(r.lng, r.lat))
+                }
+                var polygon = new BMap.Polygon(ps, {strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5});  //创建多边形
+                this.map.addOverlay(polygon);
+            },
+            addMarker(item, point) {
+                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+                var marker = new BMap.Marker(point, {icon: myIcon});
+                this.map.addOverlay(marker);
+                this.addClickHandler(item, marker);
+            },
+            getIcon(car) {
+                switch (car.status) {
+                    case 0:
+                        return 'http://47.98.39.45:9092/icon/running.png';
+                    case 1:
+                        return 'http://47.98.39.45:9092/icon/ic_car.png';
+                    default:
+                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
+                }
+            },
+            addClickHandler(item, marker) {
+                var v = this
+                marker.addEventListener("click", function (e) {
+                    v.choosedItem = item;
+                    v.componentName = 'carInfo';
+                })
+            },
+            clear() {
+                this.map.clearOverlays();//清楚数据点
+            }
+        }
+    }
 </script>
