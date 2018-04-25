@@ -2,6 +2,7 @@ package com.ldz.ticserver.api;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,14 @@ public class DeviceApiConteroller {
 	public ApiResponse<String> postGpsData(@RequestBody RequestCommonParamsDto dto){
 		ApiResponse<String> ar = new ApiResponse<>();
 		//logger.debug("请求了GPS上传的方法");
-		bizApiService.pushData(dto);
+		if(dto!=null && StringUtils.isNotBlank(dto.getDeviceId())){
+			if(StringUtils.isNotBlank(dto.getSpeed())){
+				if(Integer.parseInt(dto.getSpeed())>10 && dto.getSczt().equals("20")){//如果速度大于10 并且设备行驶状态是20【熄火】得时候，更改状态为行驶中
+					dto.setSczt("10");
+				}
+			}
+			bizApiService.pushData(dto);
+		}
 		
 		//if(dto!=null && dto.getEventType()!=null && dto.getEventType().equals("60")){
 		//	redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(dto.getDeviceId()+Consts.CAR_SPLITE+dto.getChannelId());
@@ -59,7 +67,14 @@ public class DeviceApiConteroller {
 		//logger.debug("请求了批量GPS上传的方法");
 		
 		for (RequestCommonParamsDto requestCommonParamsDto : dtos) {
-			bizApiService.pushData(requestCommonParamsDto);
+			if(requestCommonParamsDto!=null && StringUtils.isNotBlank(requestCommonParamsDto.getDeviceId())){
+				if(StringUtils.isNotBlank(requestCommonParamsDto.getSpeed())){
+					if(Integer.parseInt(requestCommonParamsDto.getSpeed())>10 && requestCommonParamsDto.getSczt().equals("20")){//如果速度大于10 并且设备行驶状态是20【熄火】得时候，更改状态为行驶中
+						requestCommonParamsDto.setSczt("10");
+					}
+				}
+				bizApiService.pushData(requestCommonParamsDto);
+			}
 		}
 		if(dtos!=null){
 			redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).add(dtos.get(0).getDeviceId()+Consts.CAR_SPLITE+dtos.get(0).getChannelId());

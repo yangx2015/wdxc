@@ -19,6 +19,9 @@ let dictUtil = {
         let val = new Map(dic).get(code)
         if (val){
             return val;
+        }else{
+            console.log('字典加载失败，重新登陆');
+            v.$router.push({ name: 'login' });
         }
     },
 }

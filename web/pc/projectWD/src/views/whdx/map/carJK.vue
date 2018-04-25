@@ -63,6 +63,10 @@
 		    showPath(carId){
                 this.addLine(this.fancePoints);
 			},
+			update(){
+                this.carList = this.$parent.mapCarList;
+		        this.showCarPosition();
+			},
 		    init(){
                 this.carList = this.$parent.mapCarList;
                 if (this.carList.length > 0){
@@ -116,7 +120,7 @@
                 this.map.addOverlay(polygon);
 			},
             addMarker(item,point){
-                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(52,56),  {anchor : new BMap.Size(27, 13)});
+                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32,32),  {anchor : new BMap.Size(16, 32)});
                 var marker = new BMap.Marker(point,{icon:myIcon});
                 this.map.addOverlay(marker);
                 this.addClickHandler(item,marker);

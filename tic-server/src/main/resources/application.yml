@@ -17,6 +17,7 @@ spring:
     maxIdle: 200
     maxActive: 1024
     maxWait: 1000
+    database: 1
   http:
     multipart:
       maxFileSize: 200Mb

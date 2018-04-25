@@ -40,7 +40,7 @@ public class InstructionServiceImpl  implements InstructionService {
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
 			
 			if (apiResponse.getCode()!=200) {
-				return ApiResponse.fail("操作失败");
+				return apiResponse;
 			}
 			
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());

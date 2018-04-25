@@ -282,14 +282,15 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
 		// 通过终端id获取车辆信息
 		websocketInfo info = new websocketInfo();
-		info.setBdjd(clpgs.getBdjd());
-		info.setBdwd(clpgs.getBdwd());
+		info.setBdjd(clpgs.getBdjd().toString());
+		info.setBdwd(clpgs.getBdwd().toString());
 		info.setEventType(gpsinfo.getEventType());
 		info.setClid(seleByZdbh.getClId());
 		info.setCph(seleByZdbh.getCph());
 		info.setSpeed(clpgs.getYxsd());
 		info.setTime(clpgs.getCjsj());
 		info.setZdbh(gpsinfo.getDeviceId());
+		info.setSjxm(seleByZdbh.getSjxm());
 		info.setCx(seleByZdbh.getCx());
 		info.setSjxm(seleByZdbh.getSjxm());
 		if (!StringUtils.isEmpty(seleByZdbh.getObdCode())) {
@@ -330,24 +331,26 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				if (clCl != null) {
 					if (lostZD.contains(clSbyxsjjl.getZdbh())) {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setSjxm(clCl.getSjxm());
 						websocketInfo.setZxzt("20");
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setSjxm(clCl.getSjxm());
 						websocketInfo.setZxzt(zdglmap.get(clSbyxsjjl.getZdbh()).getZxzt());
 						list.add(websocketInfo);
 					}

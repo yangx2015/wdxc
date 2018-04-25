@@ -79,12 +79,16 @@ public class FileApiController {
         String suffixName = fileName.substring(fileName.lastIndexOf("."));
         logger.info("上传的后缀名为：" + suffixName);
         // 文件上传后的路径
-        String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+        String uriPath = dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+       
         if(suffixName.contains("jpg")){
-        	filePath += imgdir+File.separator;
+        	uriPath += imgdir+File.separator;
         }else if(suffixName.contains("txt")){
-        	filePath += logdir + File.separator;
+        	uriPath += logdir + File.separator;
+        }else if(suffixName.contains("mp4")||suffixName.contains("ts")){
+        	uriPath += videoDir + File.separator;
         }
+        String filePath = filelocalpath + uriPath;
         //if()
         // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
         // fileName = UUID.randomUUID() + suffixName;
@@ -106,7 +110,7 @@ public class FileApiController {
         		FileUtil.uploadCopyFile(file.getInputStream(), filePath, fileName);
         	}
         	dto.setFileLocalPath(filePath+fileName);
-        	dto.setFilePath(fileName);
+        	dto.setFilePath(uriPath+fileName);
         	dto.setFilePostfix(suffixName);
         	dto.setFileRealName(file.getOriginalFilename());
         	dto.setFileSize(file.getSize()+"");
@@ -165,12 +169,14 @@ public class FileApiController {
                     String suffixName = fileName.substring(fileName.lastIndexOf("."));
                     logger.info("上传的后缀名为：" + suffixName);
                     // 文件上传后的路径
-                    String filePath = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+                    String uriPath = dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator;
+                    
                     if(suffixName.contains("jpg")){
-                    	filePath += cacheImgDir+File.separator;
+                    	uriPath += cacheImgDir+File.separator;
                     }else{
-                    	filePath += videoDir+File.separator;
+                    	uriPath += videoDir+File.separator;
                     }
+                    String filePath = filelocalpath+uriPath;
                     //if()
                     // 解决中文问题，liunx下中文路径，图片显示问题 ，因为这里几乎不可能出现中文，所以这里先不用管
                     // fileName = UUID.randomUUID() + suffixName;
@@ -193,7 +199,7 @@ public class FileApiController {
                     	
                     	if(!suffixName.contains("jpg")){
 	                    	dto.setFileLocalPath(filePath+fileName);
-	                    	dto.setFilePath(fileName);
+	                    	dto.setFilePath(uriPath+fileName);
 	                    	dto.setFilePostfix(suffixName);
 	                    	dto.setFileRealName(file.getOriginalFilename());
 	                    	dto.setFileSize(file.getSize()+"");
@@ -201,7 +207,7 @@ public class FileApiController {
 	                    	String extpic = mp4cacheimg.replace("@videofile", filePath+fileName);
 	                    	if(suffixName.contains("ts")){//只有ts文件才转换
 	                    		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
-	                        	dto.setFilePath(fileName.replace(".ts", ".mp4"));
+	                        	dto.setFilePath(uriPath+fileName.replace(".ts", ".mp4"));
 	                        	dto.setFilePostfix("mp4");
 	                        	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
 	                        	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
