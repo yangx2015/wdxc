@@ -282,8 +282,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
 		// 通过终端id获取车辆信息
 		websocketInfo info = new websocketInfo();
-		info.setBdjd(clpgs.getBdjd());
-		info.setBdwd(clpgs.getBdwd());
+		info.setBdjd(clpgs.getBdjd().toString());
+		info.setBdwd(clpgs.getBdwd().toString());
 		info.setEventType(gpsinfo.getEventType());
 		info.setClid(seleByZdbh.getClId());
 		info.setCph(seleByZdbh.getCph());
@@ -330,8 +330,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				if (clCl != null) {
 					if (lostZD.contains(clSbyxsjjl.getZdbh())) {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
@@ -341,8 +341,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd());
+						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
+						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
