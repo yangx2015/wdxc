@@ -39,6 +39,11 @@ public class DeviceApiConteroller {
 		ApiResponse<String> ar = new ApiResponse<>();
 		//logger.debug("请求了GPS上传的方法");
 		if(dto!=null && StringUtils.isNotBlank(dto.getDeviceId())){
+			if(StringUtils.isNotBlank(dto.getSpeed())){
+				if(Integer.parseInt(dto.getSpeed())>10 && dto.getSczt().equals("20")){//如果速度大于10 并且设备行驶状态是20【熄火】得时候，更改状态为行驶中
+					dto.setSczt("10");
+				}
+			}
 			bizApiService.pushData(dto);
 		}
 		
@@ -63,6 +68,11 @@ public class DeviceApiConteroller {
 		
 		for (RequestCommonParamsDto requestCommonParamsDto : dtos) {
 			if(requestCommonParamsDto!=null && StringUtils.isNotBlank(requestCommonParamsDto.getDeviceId())){
+				if(StringUtils.isNotBlank(requestCommonParamsDto.getSpeed())){
+					if(Integer.parseInt(requestCommonParamsDto.getSpeed())>10 && requestCommonParamsDto.getSczt().equals("20")){//如果速度大于10 并且设备行驶状态是20【熄火】得时候，更改状态为行驶中
+						requestCommonParamsDto.setSczt("10");
+					}
+				}
 				bizApiService.pushData(requestCommonParamsDto);
 			}
 		}
