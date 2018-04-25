@@ -45,12 +45,12 @@
 			    		</Col>
 						<Col span="5">
 							<FormItem>
-								<Input :number='true' v-model="form.yxkssj" placeholder="开始时间..."></Input>
+								<Input type="text" v-model="form.yxkssj" placeholder="开始时间..."></Input>
 							</FormItem>
 						</COl>
 						<Col span="5">
 							<FormItem>
-								<Input :number='true' v-model="form.yxjssj" placeholder="结束时间..."></Input>
+								<Input type="text" v-model="form.yxjssj" placeholder="结束时间..."></Input>
 							</FormItem>
 						</COl>
 					</Row>
