@@ -290,6 +290,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		info.setSpeed(clpgs.getYxsd());
 		info.setTime(clpgs.getCjsj());
 		info.setZdbh(gpsinfo.getDeviceId());
+		info.setSjxm(seleByZdbh.getSjxm());
 		info.setCx(seleByZdbh.getCx());
 		info.setSjxm(seleByZdbh.getSjxm());
 		if (!StringUtils.isEmpty(seleByZdbh.getObdCode())) {
@@ -337,6 +338,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setSjxm(clCl.getSjxm());
 						websocketInfo.setZxzt("20");
 						list.add(websocketInfo);
 					} else {
@@ -348,6 +350,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setTime(clSbyxsjjl.getCjsj());
 						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setSjxm(clCl.getSjxm());
 						websocketInfo.setZxzt(zdglmap.get(clSbyxsjjl.getZdbh()).getZxzt());
 						list.add(websocketInfo);
 					}
