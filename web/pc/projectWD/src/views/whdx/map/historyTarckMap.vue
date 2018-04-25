@@ -1,6 +1,6 @@
 <template>
 	<div style="width: 100%;height: 100%;background-color: #00FFFF;">
-		<Modal v-model="showModal" width='900'  title="历史轨迹">
+		<Modal v-model="showModal" width='900'  title="历史轨迹" :closable="false" @on-cancel="close" @on-ok="close">
 			<div id="allmap" style="width: 100%;height: 600px;"></div>
 		</Modal>
 	</div>
@@ -99,6 +99,13 @@
             // },500)
 		},
 		methods: {
+            close(){
+                console.log('close');
+                this.showModal = false;
+                setTimeout(() => {
+                    this.$parent.$data.componentName = "";
+                }, 200)
+            },
             getData(){
                 var v = this
 				delete this.formItem.ignition

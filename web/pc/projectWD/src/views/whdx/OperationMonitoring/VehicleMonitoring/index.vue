@@ -105,7 +105,7 @@
 						<input type="text" class="search_input" v-model="keyword" placeholder="请填写车牌号码..." @input="filter"></input>
 					</div>
 
-					<div class="carlistmess" v-for="(item,index) in rightCarList">
+					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
 							<span class="_18pt">{{item.zdbh}}</span>
 						</div>
