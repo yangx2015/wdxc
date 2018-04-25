@@ -25,6 +25,11 @@
     		border-bottom: solid 2px #B3B3B3;
     	}
     }
+	.btn_obd{
+		padding: 2px;
+		border: 1px solid #5cadff;
+		border-radius: 4px;
+	}
 </style>
 <template>
     <div class="box-row">
@@ -70,15 +75,38 @@
 					<Row>
 						<Input type="text" v-model="keyword" placeholder="请填写车牌号码..." @input="filter"></Input>
 					</Row>
-					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
-						<div>
-							<span>{{item.zdbh}}</span>
-							<span style="float: right;">{{item.cph}}</span>
-						</div>
-						<div style="overflow: hidden;">
-							<span >{{item.text}}</span>
-							<span style="float: right;">{{item.time}}</span>
-						</div>
+
+					<div class="carlistmess" v-for="(item,index) in rightCarList">
+						<Row>
+							<Col span="15">
+								<span  @click="rowClick(item)">{{item.zdbh}}</span>
+							</Col>
+							<Col span="9">
+								<span  @click="rowClick(item)" style="float: right;">{{item.cph}}</span>
+							</Col>
+						</Row>
+						<Row>
+							<Col span="8">
+								<span  @click="rowClick(item)">{{item.sjxm ? item.sjxm : '未绑定司机'}}</span>
+							</Col>
+							<Col span="8">
+								<span  @click="rowClick(item)" style="float: right;">{{item.speed ? item.speed : 0}} KM/h</span>
+							</Col>
+							<Col span="8">
+								<Poptip title="OBD信息" content="myMap">
+									<Button>OBD信息</Button>
+								</Poptip>
+								<!--<span style="float: right;" class="btn_obd" @click="showObd">OBD信息</span>-->
+							</Col>
+						</Row>
+						<Row  @click="rowClick(item)">
+							<Col span="8">
+								<span >{{item.text}}</span>
+							</Col>
+							<Col span="16">
+								<span style="float: right;">{{item.time}}</span>
+							</Col>
+						</Row>
 					</div>
     			</div>
     		</div>
@@ -139,8 +167,11 @@ export default {
         this.initGps()
     },
     methods: {
+        showObd(){
+
+		},
         onGpsInfo(m){
-            console.log('m:',m);
+            console.log('onGpsInfo:',m);
             let has = false;
             for(let r of this.allCarList){
 			    if (r.clid = m.clid){
@@ -155,7 +186,7 @@ export default {
                         this.mapCarList = this.carArray[this.status];
                     }
                     this.rightCarList = this.carArray[this.status];
-                    this.$refs.map.init();
+                    this.$refs.map.update();
                     return;
                 }
 			}
@@ -260,3 +291,4 @@ export default {
     }
 };
 </script>
+

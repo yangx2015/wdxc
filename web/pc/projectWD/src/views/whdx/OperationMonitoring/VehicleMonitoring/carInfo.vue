@@ -1,7 +1,7 @@
 <template>
     <div>
         <component :is="componentName"></component>
-        <Modal width="1000" v-model="showModal"  title="车辆详情">
+        <Modal width="1000" v-model="showModal"  title="车辆详情" :closable="false">
             <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
                 <Spin fix>
                     <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
@@ -10,45 +10,45 @@
             </div>
             <div>
                 <Row :gutter="16">
+                    <!--<Col span="12">-->
+                        <!--<Card style="height: 300px">-->
+                            <!--<p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>-->
+                            <!--<Row>-->
+                                <!--<Col span="2"><Icon type="card"></Icon></Col>-->
+                                <!--<Col span="6"><span>{{car.cph}}</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row>-->
+                                <!--<Col span="2"><Icon type="person"></Icon></Col>-->
+                                <!--<Col span="6"><span>{{car.sjxm}}</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row>-->
+                                <!--<Col span="2"><Icon type="speedometer"></Icon></Col>-->
+                                <!--<Col span="6"><span>{{car.speed}} KM/h</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row v-if="obd != null">-->
+                                <!--<Col span="4">更新日期</Col>-->
+                                <!--<Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row v-if="obd != null">-->
+                                <!--<Col span="4">发动机转速</Col>-->
+                                <!--<Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row v-if="obd != null">-->
+                                <!--<Col span="4">车速</Col>-->
+                                <!--<Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row v-if="obd != null">-->
+                                <!--<Col span="4">剩余油量</Col>-->
+                                <!--<Col span="10"><span>{{obd.syyl}} L</span></Col>-->
+                            <!--</Row>-->
+                            <!--<Row v-if="obd != null">-->
+                                <!--<Col span="4">耗油量</Col>-->
+                                <!--<Col span="10"><span>{{obd.hyl}} L</span></Col>-->
+                            <!--</Row>-->
+                        <!--</Card>-->
+                    <!--</Col>-->
                     <Col span="12">
-                        <Card style="height: 300px">
-                            <p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>
-                            <Row>
-                                <Col span="2"><Icon type="card"></Icon></Col>
-                                <Col span="6"><span>{{car.cph}}</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="2"><Icon type="person"></Icon></Col>
-                                <Col span="6"><span>{{car.sjxm}}</span></Col>
-                            </Row>
-                            <Row>
-                                <Col span="2"><Icon type="speedometer"></Icon></Col>
-                                <Col span="6"><span>{{car.speed}} KM/h</span></Col>
-                            </Row>
-                            <Row v-if="obd != null">
-                                <Col span="4">更新日期</Col>
-                                <Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>
-                            </Row>
-                            <Row v-if="obd != null">
-                                <Col span="4">发动机转速</Col>
-                                <Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>
-                            </Row>
-                            <Row v-if="obd != null">
-                                <Col span="4">车速</Col>
-                                <Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>
-                            </Row>
-                            <Row v-if="obd != null">
-                                <Col span="4">剩余油量</Col>
-                                <Col span="10"><span>{{obd.syyl}} L</span></Col>
-                            </Row>
-                            <Row v-if="obd != null">
-                                <Col span="4">耗油量</Col>
-                                <Col span="10"><span>{{obd.hyl}} L</span></Col>
-                            </Row>
-                        </Card>
-                    </Col>
-                    <Col span="12">
-                        <Card style="height: 300px">
+                        <Card style="height: 400px">
                             <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
                             <Row>
                                 <Col span="8">
@@ -93,9 +93,6 @@
                             </Row>
                         </Card>
                     </Col>
-                </Row>
-                <br>
-                <Row :gutter="16">
                     <Col span="12">
                         <Card style="height: 400px">
                             <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
