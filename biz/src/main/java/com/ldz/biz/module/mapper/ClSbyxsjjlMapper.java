@@ -11,6 +11,6 @@ public interface ClSbyxsjjlMapper extends Mapper<ClSbyxsjjl> {
 	
 	List<ClSbyxsjjl> historyTrajectory(gpsSJInfo gpssjinfo);
 	
-	
-	List<ClSbyxsjjl> gpsInit();
+/*	
+	List<ClSbyxsjjl> gpsInit();*/
 }

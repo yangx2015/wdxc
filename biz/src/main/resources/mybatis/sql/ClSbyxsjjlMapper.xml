@@ -11,21 +11,16 @@
 		(t.SJLX=#{ignition} or t.SJLX=#{brennschluss}) ORDER BY CJSJ ASC
 	</select>
 
-<!-- 	<select id="gpsInitSan" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
-		select a.*
-		from CL_SBYXSJJL a
-		where not exists(select 1
-		from CL_SBYXSJJL b
-		where b.ZDBH=a.ZDBH and
-		b.CJSJ>a.CJSJ) AND (CJSJ> (sysdate-(3/1440)))
-	</select> -->
+	<!-- <select id="gpsInitSan" resultType="com.ldz.biz.module.model.ClSbyxsjjl"> 
+		select a.* from CL_SBYXSJJL a where not exists(select 1 from CL_SBYXSJJL 
+		b where b.ZDBH=a.ZDBH and b.CJSJ>a.CJSJ) AND (CJSJ> (sysdate-(3/1440))) </select> -->
 
-	<select id="gpsInit" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
-		select a.*
-		from CL_SBYXSJJL a
-		where not exists(select 1
-		from CL_SBYXSJJL b
-		where b.ZDBH=a.ZDBH and b.CJSJ>a.CJSJ)
-	</select>
+<!-- 	<select id="gpsInit" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
+		select * from (
+		select l.*,row_number() OVER(PARTITION BY zdbh ORDER BY l.cjsj desc) as
+		row_flg
+		from CL_SBYXSJJL L
+		) where row_flg =1
+	</select> -->
 
 </mapper>

@@ -205,7 +205,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
 		clsbyxsjjl.setJd(clgps.getBdjd());
 		clsbyxsjjl.setWd(clgps.getBdwd());
-		clsbyxsjjl.setCjsj(new Date());
+		//获取设备的记录时间
+		clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
 		if (entity.getGpsjd() != null) {
 			clsbyxsjjl.setJid(new BigDecimal(entity.getGpsjd()));
 		}
@@ -309,13 +310,16 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 				.collect(Collectors.toMap(ClCl::getZdbh, ClCl -> ClCl));
 
-		// 获取每条设备的最新一条的数据
-		List<ClSbyxsjjl> gpsInit = clSbyxsjjlMapper.gpsInit();
+		//获取实时点位gps信息
+		List<ClGps> gpsInit = entityMapper.selectAll();
 
+		//获取终端状态
 		List<ClZdgl> zds = zdglservice.findAll();
+		//将终端状态数据缓存
 		Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 		.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
 		
+		//获取不在线的终端id集合
 		List<String> lostZD = new ArrayList<>();
 
 		for (ClZdgl clZdgl : zds) {
@@ -324,34 +328,37 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			}
 
 		}
+		
   if (CollectionUtils.isNotEmpty(gpsInit)) {
-		for (ClSbyxsjjl clSbyxsjjl : gpsInit) {
-			if (StringUtils.isNotEmpty(clSbyxsjjl.getZdbh())) {
-				ClCl clCl = clmap.get(clSbyxsjjl.getZdbh());
+		for (ClGps clgps : gpsInit) {
+			if (StringUtils.isNotEmpty(clgps.getZdbh())) {
+				ClCl clCl = clmap.get(clgps.getZdbh());
 				if (clCl != null) {
-					if (lostZD.contains(clSbyxsjjl.getZdbh())) {
+					if (lostZD.contains(clgps.getZdbh())) {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
+						websocketInfo.setBdjd(clgps.getBdjd().toString());
+						websocketInfo.setBdwd(clgps.getBdwd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setTime(clSbyxsjjl.getCjsj());
-						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+						websocketInfo.setTime(clgps.getCjsj());
+						websocketInfo.setZdbh(clgps.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
 						websocketInfo.setSjxm(clCl.getSjxm());
+						websocketInfo.setSpeed(clgps.getYxsd());
 						websocketInfo.setZxzt("20");
 						list.add(websocketInfo);
 					} else {
 						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clSbyxsjjl.getJd().toString());
-						websocketInfo.setBdwd(clSbyxsjjl.getWd().toString());
+						websocketInfo.setBdjd(clgps.getBdjd().toString());
+						websocketInfo.setBdwd(clgps.getBdwd().toString());
 						websocketInfo.setClid(clCl.getClId());
 						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setTime(clSbyxsjjl.getCjsj());
-						websocketInfo.setZdbh(clSbyxsjjl.getZdbh());
+						websocketInfo.setTime(clgps.getCjsj());
+						websocketInfo.setZdbh(clgps.getZdbh());
 						websocketInfo.setCx(clCl.getCx());
 						websocketInfo.setSjxm(clCl.getSjxm());
-						websocketInfo.setZxzt(zdglmap.get(clSbyxsjjl.getZdbh()).getZxzt());
+						websocketInfo.setSpeed(clgps.getYxsd());
+						websocketInfo.setZxzt(zdglmap.get(clgps.getZdbh()).getZxzt());
 						list.add(websocketInfo);
 					}
 				}

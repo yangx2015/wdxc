@@ -66,13 +66,16 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl,String> impl
 		}
 		List<ClLsGjInfo> cclLsGjInfos = new  ArrayList<>();
 		for (List<ClSbyxsjjl> clLsGjInfo : clLsGjInfos) {
+			long a =clLsGjInfo.get(1).getCjsj().getTime()-clLsGjInfo.get(0).getCjsj().getTime();
+			if (a>=10000) {
 			ClLsGjInfo clLsGjInfoIn=new ClLsGjInfo();
 			clLsGjInfoIn.setJsjps(clLsGjInfo.get(1).getWd()+","+clLsGjInfo.get(1).getJd());
 			clLsGjInfoIn.setKsgps(clLsGjInfo.get(0).getWd()+","+clLsGjInfo.get(0).getJd());
 			clLsGjInfoIn.setKssj(simpledate(clLsGjInfo.get(0).getCjsj()));
 			clLsGjInfoIn.setJssj(simpledate(clLsGjInfo.get(1).getCjsj()));
-			clLsGjInfoIn.setSc(clLsGjInfo.get(1).getCjsj().getTime()-clLsGjInfo.get(0).getCjsj().getTime());
+			clLsGjInfoIn.setSc(a);
 			cclLsGjInfos.add(clLsGjInfoIn);
+			}
 		}
 		
 		apiResponse.setResult(cclLsGjInfos);
