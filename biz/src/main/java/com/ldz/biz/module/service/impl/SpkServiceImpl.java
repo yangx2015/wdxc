@@ -1,13 +1,13 @@
 package com.ldz.biz.module.service.impl;
 
 import java.util.Date;
+import java.util.List;
 
-import com.ldz.sys.base.LimitedCondition;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.ldz.sys.exception.RuntimeCheck;
+import com.github.pagehelper.PageInfo;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClSpkMapper;
@@ -15,6 +15,8 @@ import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClSpk;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 
@@ -25,8 +27,8 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
     @Autowired
     private ClSpkMapper entityMapper;
      
-    @Value("${spk.url}")
-	private String path;
+  /*  @Value("${spk.url}")
+	private String path;*/
     
     @Autowired
     private ClClMapper clclmapper;
@@ -45,6 +47,18 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
     public boolean fillCondition(LimitedCondition condition){
         condition.and().andLike(ClSpk.InnerColumn.wjm.name(),"%.mp4");
         return true;
+    }
+    @Override
+    protected void afterPager(PageInfo<ClSpk> resultPage){
+    	
+    	List<ClSpk> list = resultPage.getList();
+    	
+    	if (CollectionUtils.isNotEmpty(list)) {
+			
+    		list.stream().forEach(s->s.setDz(null));
+		}
+    	
+        return;
     }
 
     @Override
@@ -81,7 +95,9 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		ClCl clinfo = clclmapper.selectOne(selectOne);
 		
 		clSpk.setDz(entity.getFileLocalPath());//本地地址 必传
-		clSpk.setUrl(path+entity.getFilePath());//url   必传
+		
+		clSpk.setUrl(entity.getFilePath());//url   必传
+		
 		clSpk.setWjm(entity.getFileRealName());//文件名称  必传
 		clSpk.setZdbh(entity.getDeviceId());//设备id  必传
 		clSpk.setSplx(entity.getEventType());
