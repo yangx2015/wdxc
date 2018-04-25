@@ -1,6 +1,5 @@
 package com.ldz.biz.module.bean;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Getter;
@@ -20,9 +19,9 @@ public class websocketInfo {
 	
 	private Date  time;
 	
-	private BigDecimal bdjd;
+	private String bdjd;
 	
-	private BigDecimal bdwd;
+	private String bdwd;
 	
 	private String zdbh;
 	
