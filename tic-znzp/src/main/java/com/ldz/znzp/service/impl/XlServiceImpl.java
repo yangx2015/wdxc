@@ -14,6 +14,7 @@ import com.ldz.znzp.model.*;
 import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -94,20 +95,33 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
 
         // 获取线路站点
         List<String> xlIds = xls.stream().map(ClXl::getId).collect(Collectors.toList());
-        List<ClZd> zds = zdService.getByXlIds(xlIds);
-        Map<String,List<Station>> xlZdMap = new HashMap<>(xlIds.size());
-        for (ClZd clZd : zds) {
-            zdService.setStationOrder(clZd);
-            String xlId = clZd.getXlId();
-            Station station = new Station(clZd);
-            if (xlZdMap.containsKey(xlId)){
-                xlZdMap.get(xlId).add(station);
-            }else{
-                List<Station> list = new ArrayList<>();
-                list.add(station);
-                xlZdMap.put(xlId,list);
+        List<ClXlzd> xlzds = xlzdService.findIn(ClXlzd.InnerColumn.xlId,xlIds);
+
+        Map<String,List<Station>> xlZdMap = null;
+        if (xlIds.size() != 0){
+            xlZdMap = new HashMap<>(xlIds.size());
+            List<String> zdIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
+            List<ClZd> zds = zdService.findIn(ClZd.InnerColumn.id,zdIds);
+            Map<String,ClZd> zdMap = zds.stream().collect(Collectors.toMap(ClZd::getId,p->p));
+
+            for (ClXlzd xlzd : xlzds) {
+                String xlId = xlzd.getXlId();
+                String zdId = xlzd.getZdId();
+                if (StringUtils.isEmpty(xlId) || StringUtils.isEmpty(zdId))continue;
+                ClZd zd = zdMap.get(zdId);
+                zd.setXlId(xlId);
+                zdService.setStationOrder(zd);
+                Station station = new Station(zd);
+                if (xlZdMap.containsKey(xlId)){
+                    xlZdMap.get(xlId).add(station);
+                }else{
+                    List<Station> list = new ArrayList<>();
+                    list.add(station);
+                    xlZdMap.put(xlId,list);
+                }
             }
         }
+
 
         // 数据封装
         RouteInfo routeInfo = new RouteInfo();
@@ -117,7 +131,9 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         for (ClXl xl : xls) {
             Route route = new Route(xl);
             routes.add(route);
-            route.setStations(xlZdMap.get(xl.getId()));
+            if (xlZdMap != null){
+                route.setStations(xlZdMap.get(xl.getId()));
+            }
             List<Bus> buses = getBusList(xl);
             route.setBuses(buses);
 

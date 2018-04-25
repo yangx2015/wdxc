@@ -131,12 +131,10 @@
 	import configApi from '@/axios/config.js'
     import mixins from '@/mixins'
     
-    import svideo from './comp/showVideo.vue'
 	export default{
 		name:'',
         mixins: [mixins],
         components: {
-	        svideo
       	},
 		data(){
 			return {

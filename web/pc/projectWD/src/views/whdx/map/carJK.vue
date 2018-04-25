@@ -128,7 +128,7 @@
 			getIcon(car){
 		        switch(car.status){
 					case 0:
-					    return 'http://47.98.39.45:9092/icon/ic_car_online.png';
+					    return 'http://47.98.39.45:9092/icon/running.png';
 					case 1:
 					    return 'http://47.98.39.45:9092/icon/ic_car.png';
 					default:

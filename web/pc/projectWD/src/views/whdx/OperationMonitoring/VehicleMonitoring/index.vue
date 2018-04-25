@@ -16,15 +16,10 @@
     			}
     		}
     	}
-    	.boxTiTnow{
-    		background-color: #0000CC;
-    		color: #fff;
-    		height: 55px;
-    	}
     	.carlistmess{
-			height: 184px;
+			height: 214px;
     		cursor: pointer;
-    		padding: 8px 5px 4px 5px;
+    		padding: 6px 16px 18px 16px;
     		border-bottom: solid 1px #919191;
     	}
     }
@@ -38,16 +33,41 @@
 		height: 76px;
 		color:white;
 		border-radius: 10px;
+		font-size: 18px;
 	}
 	.search_input{
 		background-color: #cccccc;
 		border-radius: 10px;
-		font-size: 18pt;
+		border:none;
+		padding: 8px;
+		font-size: 15pt;
+		margin-left: 17px;
 		appearance: none;
 		-web-kit-appearance:none;
 		-moz-appearance: none;
 		outline:none;
 		text-decoration:none;
+	}
+	._18pt{
+		font-size: 18pt;
+	}
+	._16pt{
+		font-size: 16pt;
+	}
+	._14pt{
+		font-size: 14pt;
+	}
+	::-webkit-input-placeholder { /* WebKit browsers */
+		color: #999;
+	}
+	:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+		color: #999;
+	}
+	::-moz-placeholder { /* Mozilla Firefox 19+ */
+		color: #999;
+	}
+	:-ms-input-placeholder { /* Internet Explorer 10+ */
+		color: #999;
 	}
 </style>
 <template>
@@ -72,45 +92,42 @@
 								<div>熄火</div>
 							</Button>
 						</div>
-						<div class="cartypebox" @click="changeStatus(2)">
-							<Button style="background-color: #8190ff;" class="top_btn" >
+						<div class="cartypebox">
+							<Button style="background-color: #8190ff;" class="top_btn" @click="changeStatus(2)">
 								<div>{{carArray[2].length}}</div>
-								<div>
-    									<span style="font-size: 8px;">
-    										离线
-    									</span>
-								</div>
+								<div>离线</div>
 							</Button>
 						</div>
     				</div>
     			</div>
     			<div class="body">
-					<Row>
+					<div style="margin-top: 18px">
 						<input type="text" class="search_input" v-model="keyword" placeholder="请填写车牌号码..." @input="filter"></input>
-					</Row>
+					</div>
 
 					<div class="carlistmess" v-for="(item,index) in rightCarList">
 						<div>
-							{{item.zdbh}}
+							<span class="_18pt">{{item.zdbh}}</span>
 						</div>
 						<div>
-							<span>司机</span>
-							<span>{{item.sjxm ? item.sjxm : '未绑定司机'}}</span>
+							<span class="_16pt">司机：</span>
+							<span class="_16pt">{{item.sjxm ? item.sjxm : '未绑定司机'}}</span>
 						</div>
 						<div>
-							<span>车牌号</span>
-							<span>{{item.cph}}</span>
+							<span class="_16pt">车牌号：</span>
+							<span class="_16pt">{{item.cph}}</span>
 						</div>
 						<div>
-							<span>行驶速度</span>
-							<span>{{item.speed ? item.speed : 0}} KM/h</span>
+							<span class="_16pt">行驶速度：</span>
+							<span class="_16pt">{{item.speed ? item.speed : 0}} km/h</span>
 						</div>
-						<div>
-							<span >{{item.text}}</span>
-							<span style="float: right;">{{item.time}}</span>
+						<div style="margin-top: 18px">
+							<span  class="_14pt" style="color: #919191">{{item.text}}</span><br>
+							<span  class="_14pt" style="color: #919191">{{formateLongDate(item.time)}}</span>
 						</div>
 					</div>
     			</div>
+    		</div>
     		</div>
     	</div>
     </div>
@@ -171,6 +188,11 @@ export default {
         this.initGps()
     },
     methods: {
+        formateLongDate(long){
+            if (long.indexOf('-')>0) return long;
+          	let d = new Date(long);
+          	return d.getFullYear()+'年'+d.getMonth()+'月'+d.getDate() + " "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
+		},
         formatDate(date){
             return date.substring(0,4)+'年'+date.substring(4,6)+"月"+date.substring(6,8)+"日";
         },
@@ -185,47 +207,34 @@ export default {
             this.$http.post(configApi.CLJK.getObdTimely,{obdId:item.obdId}).then((res) =>{
                 if (res.code === 200){
                     this.obd = res.result;
-                    console.log(res);
                 }
                 this.SpinShow = false;
             })
         },
         onGpsInfo(m){
-            console.log('onGpsInfo:',m);
             let has = false;
-            let c = null;
+            let exist = null;
             for(let r of this.allCarList){
-			    if (r.clid = m.clid){
-                    has = true;
-                    c = r;
+			    if (r.zdbh === m.zdbh){
+                    exist = r;
                     break;
                 }
 			}
-            console.log('has ',has);
-            if (!has){
-                this.handleItem(m);
-                this.allCarList.push(m);
-                this.classify();
-                if (this.choosedCar){
-                    this.mapCarList = [this.choosedCar];
-                }else{
-                    this.mapCarList = this.carArray[this.status];
-                }
-                this.rightCarList = this.carArray[this.status];
-                this.$refs.map.update();
-			}else{
-                this.handleItem(m);
-                let index  = this.allCarList.indexOf(c);
+            this.handleItem(m);
+            if (exist){
+                let index  = this.allCarList.indexOf(exist);
                 this.allCarList.splice(index,1,m);
-                this.classify();
-                if (this.choosedCar){
-                    this.mapCarList = [this.choosedCar];
-                }else{
-                    this.mapCarList = this.carArray[this.status];
-                }
-                this.rightCarList = this.carArray[this.status];
-                this.$refs.map.update();
+			}else{
+                this.allCarList.push(m);
 			}
+            this.classify();
+            if (this.choosedCar){
+                this.mapCarList = [this.choosedCar];
+            }else{
+                this.mapCarList = this.carArray[this.status];
+            }
+            this.rightCarList = this.carArray[this.status];
+            this.$refs.map.update();
 		},
         init(){
             this.classify();
@@ -239,6 +248,7 @@ export default {
             this.$refs.map.init();
 		},
 		initGps(){
+            console.log('initGps');
             var v = this
             this.$http.get(configApi.CLJK.QUERY).then((res) =>{
                 if (res.code === 200){

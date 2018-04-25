@@ -28,7 +28,7 @@
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
 							<Col span="8"><span>结束时间</span></Col><Col span="16"><span class="span_time">{{item.jssj}}</span></Col>
-							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">{{dateFormat(item.sc)}}分钟</span></Col>
+							<Col span="8"><span>时长</span></Col><Col span="16"><span class="span_time">{{dateFormat(item.sc)}}</span></Col>
 						</Row>
 					</Card>
 				</Col>
@@ -123,22 +123,6 @@
                     }
 				],
 				tableData: [
-				    {
-				        ksjd:'114.365288',
-						kswd:'30.54485',
-				        jsjd:'114.374252',
-						jswd:'30.546126',
-						kssj: '2018-04-01 09:10:00',
-						jssj: '2018-04-01 09:10:00',
-					},
-				    {
-                        ksjd:'114.365252',
-                        kswd:'30.546126',
-                        jsjd:'114.353288',
-                        jswd:'30.54485',
-						kssj: '2018-04-01 09:10:00',
-						jssj: '2018-04-01 09:10:00',
-					}
 				],
 				//收索
 				cjsjInRange:[],
@@ -166,13 +150,31 @@
 				title: '用户管理',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
+            // this.formItem.startTime = this.getTodayDate() + " 00:00:00";
+            // this.formItem.endTime = this.getTodayDate() + " 23:59:59";
 			this.formItemList();
 		},
 		methods: {
             dateFormat(longTypeDate){
                 if(!longTypeDate)return;
-                let s = longTypeDate / (1000 * 60)
-                return parseInt(s);
+                let hour = parseInt(longTypeDate / (1000*60*60));
+                let min = parseInt((longTypeDate - hour*1000*60*60) / (1000 * 60));
+                let sec = parseInt((longTypeDate - min*1000*60) / (1000));
+                let s = '';
+                if (hour > 0){
+                    s += hour + '小时';
+				}
+				if (min > 0){
+                    s += min + '分';
+				}
+				if (sec > 0){
+                    s += sec + '秒';
+				}
+                return s;
+			},
+			getTodayDate(){
+				let now = new Date();
+				return now.format("yyyy-MM-dd");
 			},
 		    showMap(item){
 		        this.choosedItem = item;
