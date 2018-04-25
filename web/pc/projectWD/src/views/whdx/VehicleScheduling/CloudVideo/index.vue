@@ -4,6 +4,35 @@
 		background-color: #fff;
 		.videoSty{
 			border-bottom:solid 1px #dedede;
+			position:relative;
+			.videoBF{
+				cursor: pointer;
+				position: absolute;
+				top: 0;
+				left: 0;
+				right: 0;
+				bottom: 0;
+				background:rgba(0,0,0,0.5);
+				z-index: 100;
+			}
+			.icon{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform:translate(-50%,-50%);
+				z-index: 101;
+			}
+			.VideoTit{
+				position: absolute;
+				top: 3px;
+				left: 0;
+				z-index: 102;
+				color: #fff;
+				background: rgba(0,0,0,0.5);
+				padding: 3px 5px;
+				width: 100%;
+				
+			}
 		}
 		.inputTit{
 			margin-bottom: 5px;
@@ -16,13 +45,12 @@
 	}
 </style>
 <template>
-	<div class="CloudVideo">
-		<Card>
+	<div class="CloudVideo boxbackborder box">
 			<div class="tit">
 				<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-				<span class="tabPageTit">
-    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
-    			</span>
+					<span class="tabPageTit">
+	    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
+	    			</span>
 					<div style="height: 45px;line-height: 45px;">
 						<div class="margin-top-10 box-row">
 							<div class="titmess">
@@ -36,10 +64,16 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
-								<Input v-model="findMess.cphLike"
+								<!--<Input v-model="findMess.cphLike"
 									   placeholder="请输入车辆编号"
 									   style="width: 200px"
-									   @on-keyup.enter="findMessList()"></Input>
+									   @on-keyup.enter="findMessList()"></Input>-->
+							   	<Select v-model="findMess.cphLike" filterable 
+							   		@on-change="findMessList()"
+							   		style="width: 200px;text-align: left;">
+					                <Option  v-for="(item,index) in carList" 
+					                	:value="item.cph" :key="index">{{item.cph}}</Option>
+					            </Select>
 							</div>
 							<div class="butevent">
 								<Button type="primary" @click="findMessList()">
@@ -51,32 +85,35 @@
 					</div>
 				</Row>
 			</div>
-			<div class="body">
-				<div class="box-row">
-
-					<div class="body-F">
-						<div class="box-row-list">
-							<div class="bodyC videoSty" v-for="item in videoList">
-								<video class="videoFile"
-									   :src="videoPath+item.dz"
-									   controls="controls"></video>
-								<div class="videoInfo">
-									<span>{{item.cph}} [{{item.cjsj}}]</span>
-								</div>
+			<div class="body" style="border: 1px solid #dddee1">
+				<div class="box-row-list">
+					<div class="bodyC videoSty" 
+						v-for="(item,index) in videoList">
+    					<div v-if="!item.video">
+							<div class="videoBF" @click="videoS(item.video,item,index)">
+								<Icon class="icon" type="arrow-right-b" 
+									 @click="videoS(item.video,item,index)"
+									color="#b5b5b5" size='38'></Icon>
 							</div>
-						</div>
-					</div>
-					<div class="" style="width:160px;height:100%;overflow:auto;padding-top:8px;margin: 0 3px;">
-						<Menu theme="dark" :active-name="activeName" @on-select="MenuClick" style="width: 100%;">
-							<MenuItem v-for="(item,index) in carList" :name="item.cph">
-								<Icon type="model-s"></Icon>
-								{{item.cph}}
-							</MenuItem>
-						</Menu>
+							<img
+								style="width: 100%;"
+								:src="videoPath+'/test/'+item.imgdz"/>
+    					</div>
+						<video v-else
+							style="width: 100%;"
+					       :src="videoPath+'/test/'+item.url"
+					       autoplay="autoplay"
+					       controls="controls"></video>
+					    <div class="VideoTit">
+					    	{{item.cph}} [{{item.cjsj}}]
+					    	<span v-show="item.video" style="cursor: pointer;" @click="videoF(item.video,item,index)">
+					    		<Icon type="close-circled" style="float: right"></Icon>
+					    	</span>
+					    </div>
 					</div>
 				</div>
 			</div>
-			<Row class="margin-top-10 pageSty">
+			<div class="margin-top-10 pageSty" style="height: 60px;">
 				<Page
 						:total=pageTotal
 						:current=page.pageNum
@@ -84,17 +121,23 @@
 						show-total
 						show-elevator
 						@on-change='pageChange'></Page>
-			</Row>
-		</Card>
+			</div>
+			<!--<component
+			:is="'svideo'"></component>-->
 	</div>
 </template>
 
 <script>
 	import configApi from '@/axios/config.js'
     import mixins from '@/mixins'
+    
+    import svideo from './comp/showVideo.vue'
 	export default{
 		name:'',
         mixins: [mixins],
+        components: {
+	        svideo
+      	},
 		data(){
 			return {
                 videoPath :configApi.VIDEO_PATH,
@@ -104,7 +147,7 @@
                 pageTotal: 1,
                 page: {
                     pageNum: 1,
-                    pageSize: 5
+                    pageSize:12
                 },
 				videoList:[],
                 findMess:{
@@ -120,6 +163,12 @@
 			this.getCarList();
 		},
 		methods:{
+			videoS(type,item,index){
+				this.videoList[index].video = true
+			},
+			videoF(type,item,index){
+				this.videoList[index].video = false
+			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
                     this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -128,26 +177,33 @@
                 }
 				var v = this
 				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
-					this.videoList = res.page.list
-                    v.pageTotal = res.page.total
-					for (let r of this.videoList){
-					    if (r.dz){
-                            r.dz = r.dz.substring(9);
+//					this.videoList = res.page.list
+//					this.videoList.forEach(function(item,index){
+//						item.video = false
+//				    	item.bf = false
+//				    	if (item.url){
+//                          item.imgdz = item.url.replace('video','cache');
+//                          item.imgdz = item.imgdz.replace('mp4','jpg')
+//                      }
+//					})
+            	    v.pageTotal = res.page.total
+					for (let r of res.page.list){
+					    if (r.url){
+							r.video = false
+                            r.imgdz = r.url.replace('video','cache');
+                            r.imgdz = r.imgdz.replace('mp4','jpg')
                         }
 					}
-					v.SpinShow = false;
+					this.videoList = res.page.list
 				})
 			},
 			getCarList(){
                 var v = this
                 this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
+                    this.findMess.cphLike = this.carList[0].cph
                     v.SpinShow = false;
                 })
-			},
-			MenuClick(name){
-                this.findMess.cphLike = name;
-                this.getmess()
 			},
 			findMessList(){
                 this.getmess();

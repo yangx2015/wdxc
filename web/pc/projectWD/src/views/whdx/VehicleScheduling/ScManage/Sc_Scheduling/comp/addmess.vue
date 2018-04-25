@@ -20,9 +20,7 @@
 		    	<div style="height: 200px;border: solid 1px #000;">
 		    		<Row>
 		    			<Col span="4" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>
-		    				<div class="carListsty" 
-		    					@mouseenter="item.ico = true"
-		    					@mouseleave="item.ico = false">
+		    				<div class="carListsty">
 		    					{{item.cph}}
 		    					<span style="position:absolute;top: -6px;right: -10px;z-index: 100;">
 		    						 <Button type="error" shape="circle" 
