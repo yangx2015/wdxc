@@ -50,7 +50,7 @@ httpInstance.interceptors.response.use((response) => {
 	var v = this
     // 对响应数据做点什么
     store.commit('CloadingType',false)
-    if(response.status===200){
+    if(response.status===200&&response.data.code===200){
     	return response.data;
     }else if(!Cookies.get('result')||response.status===500){
   		router.push({name: 'error-500'})
@@ -58,6 +58,8 @@ httpInstance.interceptors.response.use((response) => {
   		router.push({name: 'errorpage_500'})
     }else if(response.status===200&&response.data.code===403){
     	router.push({name: 'error-403'})
+    }else if(response.status===200&&response.data.code===500){
+    	router.push({name: 'errorpage_500'})
     }
 }, function (error) {
     // 对响应错误做点什么
