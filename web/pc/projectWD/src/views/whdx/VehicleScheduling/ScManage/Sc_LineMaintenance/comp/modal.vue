@@ -65,13 +65,13 @@
 		    	<div style="width: 100px;">
 		    		<div>
 		    			<Select filterable clearable  v-model="stationId">
-					        <Option v-for="r in stationList" :value="r.id">{{r.mc}}</Option>
+					        <Option v-for="(r,index) in stationList" :value="index+1">{{r.mc}}</Option>
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
 		    			<Button type="primary" shape="circle" icon="plus"
 		    				:disabled="stationId==''"
-		    				@click='addStation'></Button>
+		    				@click='addStation(stationId-1)'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
 		    				:disabled="routerList.length==0" style="float: right;"
 		    				@click='removespot'></Button>
@@ -94,7 +94,7 @@
 			return{
 				showModal:true,
 				tit:'新增',
-                stationId:'',
+                stationId:0,
 				choosedStations:[],
 				form:{
 				    id:'',
@@ -134,7 +134,7 @@
 				this.tit = '编辑'
 				this.form = this.$parent.currentRow;
 			}
-		  this.getAllStation();
+			this.getAllStation();
 		},
 		methods:{
 		    getStations(){
@@ -147,12 +147,26 @@
                 })
 			},
 			addByStationId(stationId){
+				console.log('数据',stationId)
+				var v = this
                 this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
+                for(var i = 0 ; i<this.stationList.length ; i++){
+                	if(v.stationList[i].id = stationId){
+                		v.stationList.splice(i,1)
+                		return
+                	}
+                }
+//              this.stationList.forEach(function(item,index){
+//              	if(item.id = stationId){
+//						v.stationList.splice(index,1)
+//					}
+//              })
 			},
 		    getAllStation(){
                 this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
+                        console.log('站点列表',res)
                         if (this.$parent.currentRow){
                             this.getStations();
                         }
@@ -198,12 +212,11 @@
                     }
                 })
 			},
-			addStation(){
-                this.choosedStations.push({id:this.stationId,name:this.getStationNameById(this.stationId)});
-                let station = this.getStationById(this.stationId);
-                let index = this.stationList.indexOf(station);
+			addStation(index){
+				alert(index)
+                this.choosedStations.push({id:this.stationList[index].id,name:this.stationList[index].mc});//向线路插入数据
                 this.stationList.splice(index,1);
-                this.stationId = '';
+                this.stationId = 0;
 			},
 			removespot(){
 				this.choosedStations.pop()
