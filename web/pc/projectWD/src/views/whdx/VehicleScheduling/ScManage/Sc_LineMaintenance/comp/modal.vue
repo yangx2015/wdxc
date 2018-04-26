@@ -65,7 +65,9 @@
 		    	<div style="width: 100px;">
 		    		<div>
 		    			<Select filterable clearable  v-model="stationId">
-					        <Option v-for="(r,index) in stationList" :value="index+1">{{r.mc}}</Option>
+					        <Option v-for="(item,index) in stationList" 
+					        	:disabled='item.disabled'
+					        	:value="index+1">{{item.mc}}</Option>
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
@@ -74,7 +76,7 @@
 		    				@click='addStation(stationId-1)'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
 		    				:disabled="routerList.length==0" style="float: right;"
-		    				@click='removespot'></Button>
+		    				@click='removespot(stationId-1)'></Button>
 		    		</div>
 		    	</div>
 			</div>
@@ -103,6 +105,7 @@
                     yxfs:'10',
 				},
 				stationList:[],
+				stationList_O:[],
 				spotName:'',
 				routerList:[
 					{
@@ -127,6 +130,17 @@
 
 			}
 		},
+		watch:{
+			stationList_O:function(n,o){
+				var v = this
+				console.log('数据更新',n)
+//				this.stationList = []
+				setTimeout(function(){
+					v.stationList = n
+				},500)
+//				this.stationList = n
+			}
+		},
 		mounted(){
 			if(this.$parent.addmessType){
 				this.tit = '新增'
@@ -147,25 +161,19 @@
                 })
 			},
 			addByStationId(stationId){
-				console.log('数据',stationId)
 				var v = this
                 this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
                 for(var i = 0 ; i<this.stationList.length ; i++){
                 	if(v.stationList[i].id = stationId){
-                		v.stationList.splice(i,1)
+                		v.stationList[i].disabled = true
                 		return
                 	}
                 }
-//              this.stationList.forEach(function(item,index){
-//              	if(item.id = stationId){
-//						v.stationList.splice(index,1)
-//					}
-//              })
 			},
 		    getAllStation(){
                 this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
                     if(res.code===200){
-                        this.stationList = res.result;
+                        this.stationList = this.stationList_O = res.result;
                         console.log('站点列表',res)
                         if (this.$parent.currentRow){
                             this.getStations();
@@ -213,12 +221,21 @@
                 })
 			},
 			addStation(index){
-				alert(index)
-                this.choosedStations.push({id:this.stationList[index].id,name:this.stationList[index].mc});//向线路插入数据
-                this.stationList.splice(index,1);
+//				debugger
+                this.choosedStations.push({
+                	id:this.stationList[index].id,
+                	name:this.stationList[index].mc,
+                	'index':index
+                });//向线路插入数据
+//              this.stationList_O.splice(index,1);
+				this.stationList_O[index].disabled = true
+                console.log(this.stationList)
                 this.stationId = 0;
 			},
 			removespot(){
+				var chLength = this.choosedStations.length-1
+				var chindex = this.choosedStations[chLength].index
+				this.stationList_O[chindex].disabled = false
 				this.choosedStations.pop()
 			},
 			colse(){
