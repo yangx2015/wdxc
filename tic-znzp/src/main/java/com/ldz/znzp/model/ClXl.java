@@ -45,13 +45,13 @@ public class ClXl implements Serializable {
      * 运行开始时间
      */
     @Column(name = "YXKSSJ")
-    private Short yxkssj;
+    private String yxkssj;
 
     /**
      * 运行结束时间
      */
     @Column(name = "YXJSSJ")
-    private Short yxjssj;
+    private String yxjssj;
 
     /**
      * 创建人
@@ -131,19 +131,19 @@ public class ClXl implements Serializable {
 		this.pjsj = pjsj;
 	}
 
-	public Short getYxkssj() {
+	public String getYxkssj() {
 		return yxkssj;
 	}
 
-	public void setYxkssj(Short yxkssj) {
+	public void setYxkssj(String yxkssj) {
 		this.yxkssj = yxkssj;
 	}
 
-	public Short getYxjssj() {
+	public String getYxjssj() {
 		return yxjssj;
 	}
 
-	public void setYxjssj(Short yxjssj) {
+	public void setYxjssj(String yxjssj) {
 		this.yxjssj = yxjssj;
 	}
 

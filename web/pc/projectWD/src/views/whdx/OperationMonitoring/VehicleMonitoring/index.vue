@@ -69,6 +69,15 @@
 	:-ms-input-placeholder { /* Internet Explorer 10+ */
 		color: #999;
 	}
+	.obdFaultStatus{
+		float: right;
+	}
+	.obdFaultHandled{
+		color: dodgerblue;
+	}
+	.obdFaultNotHandle{
+		color: red;
+	}
 </style>
 <template>
     <div class="box-row">
@@ -107,7 +116,44 @@
 
 					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
-							<span class="_18pt">{{item.zdbh}}</span>
+							<span class="_16pt">{{item.zdbh}}</span>
+							<Poptip title="OBD信息"  placement="left" width="300"  style="float: right">
+								<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
+								<div slot="content">
+									<Row v-if="gpsObdMessage != null">
+										<Col span="8">更新日期</Col>
+										<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
+									</Row>
+									<Row v-if="gpsObdMessage != null">
+										<Col span="8">发动机转速</Col>
+										<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
+									</Row>
+									<Row v-if="gpsObdMessage != null">
+										<Col span="8">车速</Col>
+										<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
+									</Row>
+									<Row v-if="gpsObdMessage != null">
+										<Col span="8">剩余油量</Col>
+										<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
+									</Row>
+									<Row v-if="gpsObdMessage != null">
+										<Col span="8">耗油量</Col>
+										<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
+									</Row>
+									<Row v-if="obdFaultCode && obdFaultCode.length != 0">
+										<Col style="border-bottom: 1px solid #cccccc"></Col>
+										<Col span="8">故障报告</Col>
+										<Col span="16">
+											<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
+												<span>{{item.faultCode}}</span>
+												<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>
+												<br>
+												<span>{{item.creationTime}}</span>
+											</div>
+										</Col>
+									</Row>
+								</div>
+							</Poptip>
 						</div>
 						<div>
 							<span class="_16pt">司机：</span>
@@ -119,7 +165,6 @@
 						</div>
 					</div>
     			</div>
-    		</div>
     		</div>
     	</div>
     </div>
@@ -145,6 +190,8 @@ export default {
             choosedCar:null,
 			keyword:'',
             obd:{},
+            gpsObdMessage:null,
+            obdFaultCode:[],
 			allCarList:[
                 // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:30.608123, bdwd:114.27226},
                 // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.157277 ,bdwd:30.544446},
@@ -181,24 +228,37 @@ export default {
     },
     methods: {
         formateLongDate(long){
-            if (long.indexOf('-')>0) return long;
+            console.log(typeof long);
+            if (typeof long == 'string'){
+                return long;
+			}
           	let d = new Date(long);
           	return d.getFullYear()+'年'+d.getMonth()+'月'+d.getDate() + " "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
 		},
         formatDate(date){
-            return date.substring(0,4)+'年'+date.substring(4,6)+"月"+date.substring(6,8)+"日";
+            console.log(date);
+            if (!date)return '';
+            return date.substring(0,4)+'-'+date.substring(4,6)+"-"+date.substring(6,8)+"-";
         },
         formatTime(time){
+            console.log(time);
+            if (!time)return '';
             return time.substring(0,2)+':'+time.substring(2,4)+":"+time.substring(4,6);
         },
         getObdInfo(item){
-            console.log(item);
             this.SpinShow = true;
             var v = this
-            this.obd = {};
+            this.gpsObdMessage = null;
+            this.obdFaultCode = [];
+            item.obdId = '101601190228'
             this.$http.post(configApi.CLJK.getObdTimely,{obdId:item.obdId}).then((res) =>{
                 if (res.code === 200){
-                    this.obd = res.result;
+                    if (res.result.gpsObdMessage){
+                        this.gpsObdMessage = res.result.gpsObdMessage;
+					}
+                    if (res.result.obdFaultCode){
+                        this.obdFaultCode = res.result.obdFaultCode;
+					}
                 }
                 this.SpinShow = false;
             })
