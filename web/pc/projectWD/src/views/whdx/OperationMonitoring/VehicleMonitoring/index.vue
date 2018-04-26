@@ -228,12 +228,11 @@ export default {
     },
     methods: {
         formateLongDate(long){
-            console.log(typeof long);
             if (typeof long == 'string'){
                 return long;
 			}
           	let d = new Date(long);
-          	return d.getFullYear()+'年'+d.getMonth()+'月'+d.getDate() + " "+d.getHours()+":"+d.getMinutes()+":"+d.getSeconds()
+            return d.format("yyyy-MM-dd hh:mm:ss");
 		},
         formatDate(date){
             console.log(date);
