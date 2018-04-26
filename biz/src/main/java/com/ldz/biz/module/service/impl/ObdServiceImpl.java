@@ -52,6 +52,6 @@ public class ObdServiceImpl extends BaseServiceImpl<ObdMessageBean,String> imple
         Map ret= new HashMap();
         ret.put("gpsObdMessage",obds);
         ret.put("obdFaultCode",list);
-        return ApiResponse.success(obds);
+        return ApiResponse.success(ret);
     }
 }

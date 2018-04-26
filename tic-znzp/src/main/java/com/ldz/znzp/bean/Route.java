@@ -24,16 +24,10 @@ public class Route {
         if (xl == null)return;
         this.routeId = xl.getId();
         this.routeName = xl.getXlmc();
-        this.startTime = getTime(xl.getYxkssj() == null ? 0 : xl.getYxkssj());
-        this.endTime = getTime(xl.getYxjssj() == null ? 0 : xl.getYxjssj());
+        this.startTime = xl.getYxkssj();
+        this.endTime = xl.getYxkssj();
         this.routeType = xl.getLx();
         this.runTime = String.valueOf(xl.getPjsj());
     }
 
-
-    private String getTime(short t){
-        String s = "";
-        if (t < 10)s = "0";
-        return s+t+":00";
-    }
 }

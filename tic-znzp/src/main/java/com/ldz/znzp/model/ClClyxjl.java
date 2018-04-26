@@ -1,5 +1,7 @@
 package com.ldz.znzp.model;
 
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -7,6 +9,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+@ToString
 @Table(name = "CL_CLYXJL")
 public class ClClyxjl implements Serializable {
     /**

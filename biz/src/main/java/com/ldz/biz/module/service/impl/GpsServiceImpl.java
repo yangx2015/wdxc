@@ -65,60 +65,94 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Override
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
 		log.info("上传的gps信息:" + gpsinfo);
-      
-		if (StringUtils.isEmpty(gpsinfo.getLatitude())||StringUtils.isEmpty(gpsinfo.getLongitude())||StringUtils.isEmpty(gpsinfo.getDeviceId())) {
-			return ApiResponse.error();
+		if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+			if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
+				return justDoThat(gpsinfo);
+			}
 		}
 
-		// 将原始点位抓换
-		ClGps entity = changeCoordinates(gpsinfo);
-		if (entity == null) {
-			return ApiResponse.fail("传入的数据有问题");
+		if (StringUtils.isEmpty(gpsinfo.getLatitude()) || StringUtils.isEmpty(gpsinfo.getLongitude())
+				|| StringUtils.isEmpty(gpsinfo.getDeviceId())) {
+			return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
 		}
 
-		// 判断该点位是否携带类型,或者是何种类型分类存储
-		ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity);
-		if (saveClSbyxsjjl != null) {
-			log.info("该点位属于特殊点位,事件类型为:" + saveClSbyxsjjl.getSjlx());
-		}
+		return justDoIt(gpsinfo);
+	}
 
-		// 判断redis(实时gps点位)里面是否存在历史gps数据
-		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).get();
-		if (StringUtils.isEmpty(bean)) {
-			redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
-
-			// 初始化点位时 推送坐标到前端
-			websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity)));
-
-			return ApiResponse.success("初始化点位成功");
-		}
-
+	public ApiResponse<String> justDoThat(GpsInfo gpsinfo) {
 		// 从redis(实时gps点位)里面取出历史数据
-		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).get();
+		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
-
-		// 比较redis(实时gps点位)历史数据和这次接收到的数据距离
-		double shortDistance = DistanceUtil.getShortDistance(object2.getBdwd().doubleValue(),
-				object2.getBdjd().doubleValue(), entity.getBdwd().doubleValue(), entity.getBdjd().doubleValue());
-
-		// 两次距离大于10米才存入redis(存储历史gps点位)
-		if (shortDistance < 10) {
-			return ApiResponse.success("距离上一次点位太近,该点位不存储");
-		}
-		ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
-				entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(),
-				entity.getGdwd(), entity.getLx(), entity.getDwjd(), entity.getFxj(), entity.getYxsd());
-
-		redis.boundListOps(ClGpsLs.class.getSimpleName() + entity.getZdbh()).leftPush(JsonUtil.toJson(gpsls));
-		// 更新存入redis(实时点位)
-		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
-
+		// 记录事件
+		ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
+		clSbyxsjjl.setCjsj(object2.getCjsj());
+		clSbyxsjjl.setId(genId());
+		clSbyxsjjl.setJd(object2.getBdjd());
+		clSbyxsjjl.setWd(object2.getBdwd());
+		clSbyxsjjl.setJid(new BigDecimal(object2.getDwjd()));
+		clSbyxsjjl.setSjjb("10");
+		clSbyxsjjl.setSjlx("80");
+		clSbyxsjjl.setYxfx(object2.getFxj().doubleValue());
+		clSbyxsjjl.setZdbh(object2.getZdbh());
+		clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
 		// 推送坐标去前端
-		String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity));
+		String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
 		log.info("推送前端的数据为" + socket);
 		websocket.convertAndSend("/topic/sendgps", socket);
+		return ApiResponse.success();
+	}
 
-		return ApiResponse.success("该点位redis实时更新,历史存储成功");
+	public ApiResponse<String> justDoIt(GpsInfo gpsinfo) {
+		ClGps entity =null;
+		try {
+			// 将原始点位抓换
+			 entity = changeCoordinates(gpsinfo);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+			return ApiResponse.fail("传入的数据有问题");
+		}
+	
+
+	// 判断该点位是否携带类型,或者是何种类型分类存储
+	ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity);
+	if(saveClSbyxsjjl!=null){
+		
+		log.info("该点位属于特殊点位,事件类型为:" + saveClSbyxsjjl.getSjlx());
+	}
+
+	// 推送坐标去前端
+	String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity,null));
+	log.info("推送前端的数据为"+socket);websocket.convertAndSend("/topic/sendgps",socket);
+	// 判断redis(实时gps点位)里面是否存在历史gps数据
+	String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).get();
+	
+	if(StringUtils.isEmpty(bean)){
+		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
+		// 初始化点位时 推送坐标到前端
+		websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity, null)));
+		return ApiResponse.success("初始化点位成功");
+	}
+	
+	ClGps object2 = JsonUtil.toBean(bean, ClGps.class);
+
+	// 比较redis(实时gps点位)历史数据和这次接收到的数据距离
+	double shortDistance = DistanceUtil.getShortDistance(object2.getBdwd().doubleValue(),
+			object2.getBdjd().doubleValue(), entity.getBdwd().doubleValue(), entity.getBdjd().doubleValue());
+
+	// 两次距离大于10米才存入redis(存储历史gps点位)
+	if(shortDistance<10){
+		return ApiResponse.success("距离上一次点位太近,该点位不存储");
+	}
+	
+	ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
+			entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(), entity.getGdwd(),
+			entity.getLx(), entity.getDwjd(), entity.getFxj(), entity.getYxsd());
+
+	redis.boundListOps(ClGpsLs.class.getSimpleName()+entity.getZdbh()).leftPush(JsonUtil.toJson(gpsls));
+	// 更新存入redis(实时点位)
+	redis.boundValueOps(ClGps.class.getSimpleName()+entity.getZdbh()).set(JsonUtil.toJson(entity));
+
+	return ApiResponse.success("该点位redis实时更新,历史存储成功");
 	}
 
 	@Override
@@ -162,7 +196,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public ClGps changeCoordinates(GpsInfo entity){
+	public ClGps changeCoordinates(GpsInfo entity) {
 
 		ClGps clGps = new ClGps();
 		if (entity.getLatitude() != null) {
@@ -173,7 +207,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 		// 设备记录时间
 		if (StringUtils.isNotEmpty(entity.getStartTime())) {
-			
+
 			clGps.setCjsj(simpledate(entity.getStartTime()));
 		}
 		if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
@@ -205,7 +239,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
 		clsbyxsjjl.setJd(clgps.getBdjd());
 		clsbyxsjjl.setWd(clgps.getBdwd());
-		//获取设备的记录时间
+		// 获取设备的记录时间
 		clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
 		if (entity.getGpsjd() != null) {
 			clsbyxsjjl.setJid(new BigDecimal(entity.getGpsjd()));
@@ -219,8 +253,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ClZdgl zdgl = new ClZdgl();
 		zdgl.setZdbh(entity.getDeviceId());
 		zdgl.setXgsj(new Date());
-		
-		//根据传入的sczt判断终段在线状态
+
+		// 根据传入的sczt判断终段在线状态
 		if (StringUtils.equals(entity.getSczt(), "10")) {
 			zdgl.setZt("00");
 			zdgl.setZxzt("00");
@@ -279,22 +313,49 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public websocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs) {
+	public websocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs, ClGps gpsss) {
 		ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
 		// 通过终端id获取车辆信息
 		websocketInfo info = new websocketInfo();
-		info.setBdjd(clpgs.getBdjd().toString());
-		info.setBdwd(clpgs.getBdwd().toString());
-		info.setEventType(gpsinfo.getEventType());
+
+		if (clpgs != null) {
+			if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
+				if (StringUtils.equals(gpsinfo.getSczt(), "10")) {
+					info.setZxzt("00");
+					info.setBdjd(clpgs.getBdjd().toString());
+					info.setBdwd(clpgs.getBdwd().toString());
+					info.setTime(simpledate(gpsinfo.getStartTime()));
+					info.setSpeed(clpgs.getYxsd());
+				}
+				if (StringUtils.equals(gpsinfo.getSczt(), "20")) {
+					info.setZxzt("10");
+					info.setBdjd(clpgs.getBdjd().toString());
+					info.setBdwd(clpgs.getBdwd().toString());
+					info.setTime(simpledate(gpsinfo.getStartTime()));
+					info.setSpeed(clpgs.getYxsd());
+				}
+
+			}
+		}
+		if (gpsss != null) {
+			if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+				if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
+					info.setZxzt("20");
+					info.setBdjd(gpsss.getBdjd().toString());
+					info.setBdwd(gpsss.getBdwd().toString());
+					info.setTime(gpsss.getCjsj());
+					info.setSpeed(gpsss.getYxsd());
+				}
+
+			}
+		}
 		info.setClid(seleByZdbh.getClId());
 		info.setCph(seleByZdbh.getCph());
-		info.setSpeed(clpgs.getYxsd());
-		info.setTime(clpgs.getCjsj());
-		info.setZdbh(gpsinfo.getDeviceId());
+		info.setZdbh(seleByZdbh.getZdbh());
 		info.setSjxm(seleByZdbh.getSjxm());
 		info.setCx(seleByZdbh.getCx());
 		info.setSjxm(seleByZdbh.getSjxm());
-		if (!StringUtils.isEmpty(seleByZdbh.getObdCode())) {
+		if (StringUtils.isNotEmpty(seleByZdbh.getObdCode())) {
 			info.setObdId(seleByZdbh.getObdCode());
 		}
 		return info;
@@ -310,16 +371,16 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 				.collect(Collectors.toMap(ClCl::getZdbh, ClCl -> ClCl));
 
-		//获取实时点位gps信息
+		// 获取实时点位gps信息
 		List<ClGps> gpsInit = entityMapper.selectAll();
 
-		//获取终端状态
+		// 获取终端状态
 		List<ClZdgl> zds = zdglservice.findAll();
-		//将终端状态数据缓存
+		// 将终端状态数据缓存
 		Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
-		.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
-		
-		//获取不在线的终端id集合
+				.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
+
+		// 获取不在线的终端id集合
 		List<String> lostZD = new ArrayList<>();
 
 		for (ClZdgl clZdgl : zds) {
@@ -328,13 +389,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			}
 
 		}
-		
-  if (CollectionUtils.isNotEmpty(gpsInit)) {
-		for (ClGps clgps : gpsInit) {
-			if (StringUtils.isNotEmpty(clgps.getZdbh())) {
-				ClCl clCl = clmap.get(clgps.getZdbh());
-				if (clCl != null) {
-					if (lostZD.contains(clgps.getZdbh())) {
+
+		if (CollectionUtils.isNotEmpty(gpsInit)) {
+			for (ClGps clgps : gpsInit) {
+				if (StringUtils.isNotEmpty(clgps.getZdbh())) {
+					ClCl clCl = clmap.get(clgps.getZdbh());
+					if (clCl != null) {
 						websocketInfo websocketInfo = new websocketInfo();
 						websocketInfo.setBdjd(clgps.getBdjd().toString());
 						websocketInfo.setBdwd(clgps.getBdwd().toString());
@@ -345,26 +405,22 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						websocketInfo.setCx(clCl.getCx());
 						websocketInfo.setSjxm(clCl.getSjxm());
 						websocketInfo.setSpeed(clgps.getYxsd());
-						websocketInfo.setZxzt("20");
-						list.add(websocketInfo);
-					} else {
-						websocketInfo websocketInfo = new websocketInfo();
-						websocketInfo.setBdjd(clgps.getBdjd().toString());
-						websocketInfo.setBdwd(clgps.getBdwd().toString());
-						websocketInfo.setClid(clCl.getClId());
-						websocketInfo.setCph(clCl.getCph());
-						websocketInfo.setTime(clgps.getCjsj());
-						websocketInfo.setZdbh(clgps.getZdbh());
-						websocketInfo.setCx(clCl.getCx());
-						websocketInfo.setSjxm(clCl.getSjxm());
-						websocketInfo.setSpeed(clgps.getYxsd());
-						websocketInfo.setZxzt(zdglmap.get(clgps.getZdbh()).getZxzt());
-						list.add(websocketInfo);
+						if (StringUtils.isNotEmpty(clCl.getObdCode())) {
+							websocketInfo.setObdId(clCl.getObdCode());
+						}
+						
+						
+						if (lostZD.contains(clgps.getZdbh())) {
+							websocketInfo.setZxzt("20");
+							list.add(websocketInfo);
+						} else {
+							websocketInfo.setZxzt(zdglmap.get(clgps.getZdbh()).getZxzt());
+							list.add(websocketInfo);
+						}
 					}
 				}
 			}
 		}
-  }
 		apiResponse.setResult(list);
 		return apiResponse;
 	}
@@ -380,10 +436,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 		return date2;
 	}
-public static void main(String[] args) {
-	
-	  Date simpledate = simpledate("2018-04-24 15:50:39");
-	  System.out.println(simpledate);
-}
-	
+
+	public static void main(String[] args) {
+
+		Date simpledate = simpledate("2018-04-24 15:50:39");
+		System.out.println(simpledate);
+	}
+
 }

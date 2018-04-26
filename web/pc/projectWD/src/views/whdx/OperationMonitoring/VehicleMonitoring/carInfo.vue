@@ -160,7 +160,7 @@
                                             </FormItem>
                                         </Col>
                                         <Col span="4">
-                                            <Button type="primary"  @click="saveCssd">确定</Button>
+                                            <Button type="primary"  @click="setCssd">确定</Button>
                                         </Col>
                                     </Row>
                                     <Row>
@@ -233,6 +233,22 @@
             },
             tabClick(k){
                 this.showConfirmButton = k === 2
+            },
+            setCssd(){
+                var v = this
+                let params = {
+                    cphs:this.car.cph,
+                    csz:this.carControl.cssd,
+                }
+                this.SpinShow = true;
+                this.$http.post(configApi.CS.ADD,params).then((res) =>{
+                    this.SpinShow = false;
+                    if (res.code === 200){
+                        this.$Message.success("设置成功!")
+                    }else{
+                        this.$Message.error(res.message)
+                    }
+                })
             },
             saveCssd(){
                 this.setting('01',this.carControl.cssd);
