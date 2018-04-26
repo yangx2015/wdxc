@@ -11,22 +11,31 @@ import org.springframework.util.FileCopyUtils;
  */
 public class FileUtil {
     public static void uploadFile(byte[] file, String filePath, String fileName) throws Exception {
-        File targetFile = new File(filePath);
-        if(!targetFile.exists()){
-            targetFile.mkdirs();
-        }
+    	fileExistsDir(filePath);
         FileOutputStream out = new FileOutputStream(filePath+fileName);
         out.write(file);
         out.flush();
         out.close();
     }
     
+    /**
+     * 判断目录是否存在，不在就创建
+     * @param filePath
+     */
+    public static void fileExistsDir(String filePath){
+    	File targetFile = new File(filePath);
+    	try {
+    		if(!targetFile.exists()){
+                targetFile.mkdirs();
+            }
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+        
+    }
     
     public static void uploadCopyFile(InputStream  f,String filePath, String fileName) throws Exception {
-        File targetFile = new File(filePath);
-        if(!targetFile.exists()){
-            targetFile.mkdirs();
-        }
+    	fileExistsDir(filePath);
         FileOutputStream out = new FileOutputStream(filePath+fileName);
         //File out = new File(filePath+fileName);
         FileCopyUtils.copy(f,out);

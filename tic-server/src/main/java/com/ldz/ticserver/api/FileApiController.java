@@ -116,6 +116,7 @@ public class FileApiController {
         	dto.setFileSize(file.getSize()+"");
         	//dto.setEventType(eventType);
         	String extpic = mp4cacheimg.replace("@videofile", filePath+fileName);
+        	String cpimgDir = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator;
         	if(suffixName.contains("ts")){//只有ts文件才转换
         		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
             	dto.setFilePath(fileName.replace(".ts", ".mp4"));
@@ -123,11 +124,14 @@ public class FileApiController {
             	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
             	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
             	convertManager.convertMp4OrExtrPic(convsp);
-            	extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+            	FileUtil.fileExistsDir(cpimgDir);
+            	extpic = extpic.replace("@cachefile", cpimgDir+fileName.replace(".ts", ".jpg"));
             	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
         	}else if(suffixName.contains("mp4")){
-        		extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
+        		extpic = extpic.replace("@cachefile", cpimgDir+fileName.replace(".mp4", ".jpg"));
+        		FileUtil.fileExistsDir(cpimgDir);
         		convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
+        		
         	}
         	if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
         		bizApiService.pushFileData(dto);
@@ -187,10 +191,7 @@ public class FileApiController {
                     		byte[] bytes = file.getBytes();
                     		FileUtil.uploadFile(bytes, filePath, fileName);
                     	}else if(filesaveflag == 2){
-                    		File targetFile = new File(filePath);
-                    		 if(!targetFile.exists()){
-                    	            targetFile.mkdirs();
-                    	      }
+                    		FileUtil.fileExistsDir(filePath);
                     		file.transferTo(new File(filePath+fileName));
                     	}else{
                     		FileUtil.uploadCopyFile(file.getInputStream(), filePath, fileName);
@@ -204,6 +205,8 @@ public class FileApiController {
 	                    	dto.setFileRealName(file.getOriginalFilename());
 	                    	dto.setFileSize(file.getSize()+"");
 	                    	//dto.setEventType(eventType);
+	                       	String cpimgDir = filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator;
+	                        
 	                    	String extpic = mp4cacheimg.replace("@videofile", filePath+fileName);
 	                    	if(suffixName.contains("ts")){//只有ts文件才转换
 	                    		dto.setFileLocalPath(filePath+fileName.replace(".ts", ".mp4"));
@@ -212,11 +215,11 @@ public class FileApiController {
 	                        	String convsp = tsconvertmp4.replace("@localfile", filePath+fileName);
 	                        	convsp = convsp.replace("@newfile", filePath+fileName.replace(".ts", ".mp4"));
 	                        	convertManager.convertMp4OrExtrPic(convsp);//转换ts为mp4
-	                        	extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".ts", ".jpg"));
+	                        	extpic = extpic.replace("@cachefile", cpimgDir+fileName.replace(".ts", ".jpg"));
 	                    	}else{
-	                    		extpic = extpic.replace("@cachefile", filelocalpath+dto.getDeviceId()+File.separator+DateUtils.getToday()+File.separator+cacheImgDir+File.separator+fileName.replace(".mp4", ".jpg"));
+	                    		extpic = extpic.replace("@cachefile", cpimgDir+fileName.replace(".mp4", ".jpg"));
 	                    	}
-	                    	
+	                    	FileUtil.fileExistsDir(cpimgDir);
 	                    	convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
 	                    	//if(StringUtils.isBlank(dto.getEventType()) || !dto.getEventType().equals("99")){//上传的是缓存图片，不用上传到对应的服务器
 	                    		bizApiService.pushFileData(dto);
