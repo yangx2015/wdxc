@@ -40,6 +40,10 @@ public class GpsObdMessageBean implements Serializable {
      */
     private String indication;
     /**
+     * 速度 1 当前 GPS 速度,以 km/h 为单位
+     */
+    private String gpsTempo;
+    /**
      * 方向 长度：1 当前方向,以度为单位,设备在上传对其进行了除 2 处理,所以,系统需 乘以 2,则还原为实际方向角度
      * 公式 *2
      */
@@ -143,6 +147,14 @@ public class GpsObdMessageBean implements Serializable {
      * 流水号 1 从 0 -255 一直循环累加，可以用来检测是否有包丢失
      */
     private String seq;
+
+    public String getGpsTempo() {
+        return gpsTempo;
+    }
+
+    public void setGpsTempo(String gpsTempo) {
+        this.gpsTempo = gpsTempo;
+    }
 
     public String getDataType() {
         return dataType;
@@ -394,6 +406,7 @@ public class GpsObdMessageBean implements Serializable {
                 ",纬度[latitude]='" + latitude + '\'' +
                 ", 经度[longitude]='" + longitude + '\'' +
                 ",位指示[indication]='" + indication + '\'' +
+                ",速度[gpsTempo]='" + gpsTempo + '\'' +
                 ", 方向[direction]='" + direction + '\'' +
                 ", GPS卫星个数[gpsCount]='" + gpsCount + '\'' +
                 ", GSM信号质量[gpsSignalIntensity]='" + gpsSignalIntensity + '\'' +
