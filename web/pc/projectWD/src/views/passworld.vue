@@ -87,8 +87,7 @@
 					                'newPwd': '',
 					                'secPwd': ''
 					            }
-	                            this.handleClickUserDropdown()
-//	                            Cookies.set('usermess', '');
+	                            this.$parent.handleClickUserDropdown()
 	                        }else{
 	                        	this.$Message.error(res.message);
 	                        }

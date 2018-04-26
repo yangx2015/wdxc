@@ -174,14 +174,25 @@
 			},
 			videoColse(item,index){
 				var v = this
-				this.$http.post(configApi.CLOUD.DELE+'/'+item.id).then((res) =>{
-					if(res.code==200){
-						v.$Message.success(res.message);
-					}else{
-						v.$Message.error(res.message);
-					}
-					v.getmess()
-				})
+				swal({
+			        title: "是否删除数据?",
+			        text: "",
+			        icon: "warning",
+			        buttons:['取消','确认'],
+			    }).then((willDelete) => {
+		            if (willDelete) {
+		                this.$http.post(configApi.CLOUD.DELE+'/'+item.id).then((res) =>{
+							if(res.code==200){
+								v.$Message.success(res.message);
+							}else{
+								v.$Message.error(res.message);
+							}
+							v.getmess()
+						}).catch((error)=>{
+							v.$Message.error('出错了！！！');
+						})
+		            }
+		        });
 			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
