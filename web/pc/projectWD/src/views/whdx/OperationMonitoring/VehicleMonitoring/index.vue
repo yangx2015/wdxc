@@ -117,7 +117,7 @@
 					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
 							<span class="_16pt">{{item.zdbh}}</span>
-							<Poptip title="OBD信息"  placement="left" width="300"  style="float: right">
+							<Poptip v-if="gpsObdMessage != null" title="OBD信息"  placement="left" width="300"  style="float: right">
 								<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
 								<div slot="content">
 									<Row v-if="gpsObdMessage != null">
@@ -172,6 +172,25 @@
 
 <script>
 
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
 import myMap from '../../map/carJK.vue'
 import configApi from '@/axios/config.js'
 export default {
@@ -229,10 +248,12 @@ export default {
     },
     methods: {
         formateLongDate(long){
+            console.log(long);
             if (typeof long == 'string'){
                 return long;
 			}
           	let d = new Date(long);
+            console.log(d);
             return d.format("yyyy-MM-dd hh:mm:ss");
 		},
         formatDate(date){
@@ -250,7 +271,6 @@ export default {
             var v = this
             this.gpsObdMessage = null;
             this.obdFaultCode = [];
-            item.obdId = '101601190228'
             this.$http.post(configApi.CLJK.getObdTimely,{obdId:item.obdId}).then((res) =>{
                 if (res.code === 200){
                     if (res.result.gpsObdMessage){
@@ -339,21 +359,28 @@ export default {
             let r = {};
             r.lnt = n.lng;
             r.lat = n.lat;
+            r.zdbh = n.zdbh;
             r.bdjd = n.bdjd;
             r.bdwd = n.bdwd;
+            r.cph = o.cph;
+            r.sjxm = o.sjxm;
+            r.obdId = o.obdId;
             switch(n.zxzt){
                 case '10':
                     r.status = 1;
                     r.text = '熄火时间';
                     r.speed = 0;
+                    r.time = o.time;
                     break;
                 case '20':
                     r.status = 2;
                     r.text = '离线时间';
                     r.speed = 0;
+                    r.time = o.time;
                     break;
                 case '00':
                 default:
+                    r.time = n.time;
                     r.speed = n.speed;
                     r.status = 0;
                     r.text = '更新时间';
