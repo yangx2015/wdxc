@@ -357,11 +357,14 @@ export default {
 		},
 		updateItem(o,n){
             let r = {};
+            r.cx = n.cx;
             r.lnt = n.lng;
             r.lat = n.lat;
+            r.clid = n.clid;
             r.zdbh = n.zdbh;
             r.bdjd = n.bdjd;
             r.bdwd = n.bdwd;
+            r.zxzt = n.zxzt;
             r.cph = o.cph;
             r.sjxm = o.sjxm;
             r.obdId = o.obdId;
