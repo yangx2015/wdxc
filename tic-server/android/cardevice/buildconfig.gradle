@@ -1,0 +1,85 @@
+//android ext config
+// AndridMinSdkVersion : 9,
+ext {
+    android = [
+            AndroidBuildToolsVersion : "25.0.2",
+            AndridMinSdkVersion : 18,
+            AndroidTargetSdkVersion : 25,
+            AndroidCompileSdkVersion : 25,
+            applicationId : "cn.bidostar.ticserver",
+            versionCode:6,
+            versionName:"0.0.6",
+            testInstrumentationRunner:"android.support.test.runner.AndroidJUnitRunner",
+            corLibVCode:6,
+            corLibVName:"0.0.6"
+    ]
+
+
+    //LibrariesVersion  23.1.1
+    googlesupportVersion="25.1.0"
+
+
+    goodleDependencies =[
+            appcompat_v7: "com.android.support:appcompat-v7:${googlesupportVersion}",
+            design : "com.android.support:design:${googlesupportVersion}",
+            support_v4 :"com.android.support:support-v4:${googlesupportVersion}",
+            recyclerview_v7: "com.android.support:recyclerview-v7:${googlesupportVersion}",
+            cardview_v7 :"com.android.support:cardview-v7:${googlesupportVersion}"
+    ]
+
+    otherDependdencies=[
+            butterknife :"com.jakewharton:butterknife:8.4.0",
+            butterapt:"com.jakewharton:butterknife-compiler:8.4.0",
+            glide :"com.github.bumptech.glide:glide:3.7.0",
+            eventbus:"de.greenrobot:eventbus:3.0.0-beta1",
+            materialish_progress:"com.pnikosis:materialish-progress:1.5+",
+            circleimageview :"de.hdodenhof:circleimageview:1.3.0+",
+            licensesdialog :"de.psdev.licensesdialog:licensesdialog:1.8.0+",
+            fir_sdk:"im.fir:sdk:latest.integration@aar",
+            retrofit_2_0:"com.squareup.retrofit:retrofit:2.0.0-beta2",
+            retrofit_converter_gson:"com.squareup.retrofit:converter-gson:2.0.0-beta2",
+            leakcanary_debug:"com.squareup.leakcanary:leakcanary-android:1.3.1",
+            leakcanary_release:"com.squareup.leakcanary:leakcanary-android-no-op:1.3.1",
+            adapter_rxjava:"com.squareup.retrofit:adapter-rxjava:2.0.0-beta2",
+            rxandroid:"io.reactivex:rxandroid:1.2.1",
+            rxjava:"io.reactivex:rxjava:1.1.8",
+            greendao:"de.greenrobot:greendao:2.1.0",
+            pickview:"com.brucetoo.pickview:library:1.1.1",
+            finestwebview:"com.thefinestartist:finestwebview:1.1.2",
+            fastjson:"com.alibaba:fastjson:1.2.23",
+            jsoup:'org.jsoup:jsoup:1.10.2',
+            junit:"junit:junit:4.12",
+            retrofit2:"com.squareup.retrofit2:retrofit:2.1.0",
+            retrofit2_converter_gson:"com.squareup.retrofit2:converter-gson:2.1.0",
+            retrofit2_adapter_rxjava:"com.squareup.retrofit2:adapter-rxjava:2.1.0",
+            okhttp3:"com.squareup.okhttp3:okhttp:3.8.0",
+            okhttp3_logging_interceptor:"com.squareup.okhttp3:logging-interceptor:3.8.0",
+            okio:'com.squareup.okio:okio:1.10.0',
+            androidannotations:"org.androidannotations:androidannotations:4.2.0",
+            xutils:"org.xutils:xutils:3.3.40",
+            sweetalert:"cn.pedant.sweetalert:library:1.3",
+            circleimageview:"de.hdodenhof:circleimageview:2.0.0",
+            genius_graphics:"net.qiujuer.genius:graphics:latest.integration",
+            genius_res:"net.qiujuer.genius:res:latest.integration",
+            genius_ui:"net.qiujuer.genius:ui:latest.integration",
+            coverflow:"com.dalong.coverflow:coverflow:1.0.0",
+            qczxing:"com.google.zxing:core:3.2.1",
+            qcjourneyapps_embedded:"com.journeyapps:zxing-android-embedded:3.3.0",
+            //无限轮播的Viewpager
+            rollviewpager:'com.jude:rollviewpager:1.4.5',
+            //上下滑动的Viewpager
+            verticalviewpager:'com.github.castorflex.verticalviewpager:library:19.0.1',
+            //检测内存泄漏的java库，需要在application的oncreate方法中声明： LeakCanary.install(this);
+            leakcanary:'com.squareup.leakcanary:leakcanary-android:1.5',
+            debugCompileLeakcanary:'com.squareup.leakcanary:leakcanary-android:1.5',
+            releaseCompileLeakcanary:'com.squareup.leakcanary:leakcanary-android-no-op:1.5',
+            multidex:'com.android.support:multidex:1.0.1',
+            jsbridge:'com.netease.nimlib:jsbridge:1.3.0',
+            googleGson:'com.google.code.gson:gson:2.8.0',
+            swipebacklayout:'me.imid.swipebacklayout.lib:library:1.0.0',
+            universalimageloader:'com.nostra13.universalimageloader:universal-image-loader:1.9.4',
+            WebSocket:'org.java-websocket:java-websocket:1.3.2',
+            nettyIo: 'io.netty:netty-all:5.0.0.Alpha2'
+    ]
+
+}
