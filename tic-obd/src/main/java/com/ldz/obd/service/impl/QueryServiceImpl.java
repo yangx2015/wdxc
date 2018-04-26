@@ -1,5 +1,6 @@
 package com.ldz.obd.service.impl;
 
+import com.alibaba.druid.support.json.JSONUtils;
 import com.ldz.obd.bean.PackageData;
 import com.ldz.obd.service.QueryService;
 import com.ldz.obd.service.codec.MsgDecoder;
@@ -7,18 +8,24 @@ import com.ldz.obd.util.NettyUtil;
 import com.ldz.util.bean.GpsObdMessageBean;
 import com.ldz.util.bean.ObdFaultCodeBean;
 import com.ldz.util.bean.ObdTravelItineraryBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/4/11.
  */
 @Service
 public class QueryServiceImpl implements QueryService {
+    Logger accessLog = LoggerFactory.getLogger("access_info");
     Map<String, String> params = new HashMap<String, String>(){{
         put("0","P0");
         put("1","P1");
@@ -108,107 +115,110 @@ public class QueryServiceImpl implements QueryService {
          * 这里不清楚
          */
         String indication=longitude.substring(9);
-
+        /**
+         * 速度 1 当前 GPS 速度,以 km/h 为单位
+         */
+        obd.setGpsTempo(msgDecoder.parseIntFromBytes(bodyBytes,18,1)+"");
         /**
          * 方向 长度：1 当前方向,以度为单位,设备在上传对其进行了除 2 处理,所以,系统需 乘以 2,则还原为实际方向角度
          * 公式 *2
          */
-        obd.setDirection(""+(msgDecoder.parseIntFromBytes(bodyBytes,18,1)*2));
+        obd.setDirection(""+(msgDecoder.parseIntFromBytes(bodyBytes,19,1)*2));
         /**
          * GPS 卫星个数 长度：1 当前 GPS 卫星的个数
          */
-        obd.setGpsCount(""+msgDecoder.parseIntFromBytes(bodyBytes,19,1));
+        obd.setGpsCount(""+msgDecoder.parseIntFromBytes(bodyBytes,20,1));
         /**
          * GSM 信号质量 长度：1 表明当前 GSM 的信号强弱,GSM 信号强度最大为 31
          */
-        obd.setGpsSignalIntensity(""+msgDecoder.parseIntFromBytes(bodyBytes,20,1));
+        obd.setGpsSignalIntensity(""+msgDecoder.parseIntFromBytes(bodyBytes,21,1));
         /**
          * 里程 长度：4 当设备能读到原车里程的时候，该里程为仪表盘里程。否则为标定的 里程 + OBD 累加里程,单位 KM
          */
-        obd.setMileage(""+msgDecoder.parseIntFromBytes(bodyBytes,21,4));
+        obd.setMileage(""+msgDecoder.parseIntFromBytes(bodyBytes,22,4));
             /**
              * 设备状态 长度：4 4 个字节，其中第一个字节暂时保留，第二个字节的定义如(表十)
              *  所示，第三个字节的定义如(表十一)所示，第四个字节(表十二)所示 暂时没有处理
              */
-//        msgDecoder.parseIntFromBytes(bodyBytes,25,4)
+//        msgDecoder.parseIntFromBytes(bodyBytes,26,4)
 
         /**
          * 负荷计算值。 长度：1  先进行10进制转换，然后使用公式：BYTE*100/255（165*100/255）=64（取整）
          */
-        double loadVlue=msgDecoder.parseIntFromBytes(bodyBytes,29,1);
+        double loadVlue=msgDecoder.parseIntFromBytes(bodyBytes,30,1);
         obd.setLoadValue(""+(loadVlue*100/255));
         /**
          * 冷却液温度  长度：1 BYTE – 40，单位℃
          */
-        obd.setCoolantTemperature(""+(msgDecoder.parseIntFromBytes(bodyBytes,30,1)-40));
+        obd.setCoolantTemperature(""+(msgDecoder.parseIntFromBytes(bodyBytes,31,1)-40));
         /**
          * 发动机转速  长度：2 ((BYTE1*256)+BYTE2)/4，(如 0x30 0x08 则 0x30 表示 BYTE1，
          0x08 表示 BYTE2，以下类同，不再重复)，单位 RPM
          */
-        double engineSpeedByte1=msgDecoder.parseIntFromBytes(bodyBytes,31,1);
-        double engineSpeedByte2=msgDecoder.parseIntFromBytes(bodyBytes,32,1);
+        double engineSpeedByte1=msgDecoder.parseIntFromBytes(bodyBytes,32,1);
+        double engineSpeedByte2=msgDecoder.parseIntFromBytes(bodyBytes,33,1);
         obd.setEngineSpeed(""+((engineSpeedByte1*256)+engineSpeedByte2)/4);
         /**
          * OBD 车速 长度：1 单位 KM/H
          */
-        obd.setObdSpeed(""+msgDecoder.parseIntFromBytes(bodyBytes,33,1));
+        obd.setObdSpeed(""+msgDecoder.parseIntFromBytes(bodyBytes,34,1));
         /**
          * 点火提前角 1 BYTE – 64，单位
          */
-        int ignitionAngleByte1=msgDecoder.parseIntFromBytes(bodyBytes,34,1);
+        int ignitionAngleByte1=msgDecoder.parseIntFromBytes(bodyBytes,35,1);
         obd.setIgnitionAngle(""+(ignitionAngleByte1-64));
 
         /**
          * 进气歧管绝对压力 1 BYTE，单位 kpa
          */
-        obd.setIntakePressure(""+msgDecoder.parseIntFromBytes(bodyBytes,35,1));
+        obd.setIntakePressure(""+msgDecoder.parseIntFromBytes(bodyBytes,36,1));
 
         /**
          * 控制模块电压 1 BYTE/10，单位 V
          */
-        double controlVoltage=msgDecoder.parseIntFromBytes(bodyBytes,36,1);
+        double controlVoltage=msgDecoder.parseIntFromBytes(bodyBytes,37,1);
         obd.setControlVoltage(""+(controlVoltage/10));
         /**
          * 进气温度 1 BYTE-40，单位℃
          */
-        int intakeTemperature=msgDecoder.parseIntFromBytes(bodyBytes,37,1);
+        int intakeTemperature=msgDecoder.parseIntFromBytes(bodyBytes,38,1);
         obd.setIntakeTemperature(""+intakeTemperature);
         /**
          * 空气流量 2 ((BYTE1*256)+BYTE2)/100，单位 g/s
          */
-        double intakeFlux1=msgDecoder.parseIntFromBytes(bodyBytes,38,1);
-        double intakeFlux2=msgDecoder.parseIntFromBytes(bodyBytes,39,1);
+        double intakeFlux1=msgDecoder.parseIntFromBytes(bodyBytes,39,1);
+        double intakeFlux2=msgDecoder.parseIntFromBytes(bodyBytes,40,1);
         obd.setIntakeFlux(""+((intakeFlux1*256)+intakeFlux2)/100);
         /**
          * 节气门相对位置 1 BYTE*100/255，单位%
          */
-        double jqmxdwz=msgDecoder.parseIntFromBytes(bodyBytes,40,1);
+        double jqmxdwz=msgDecoder.parseIntFromBytes(bodyBytes,41,1);
         obd.setJqmxdwz(""+(jqmxdwz*100/255));
         /**
          * 长期燃油修正 1 (BYTE1-128)*100/128，单位%
          */
-        double chryxz=msgDecoder.parseIntFromBytes(bodyBytes,41,1);
+        double chryxz=msgDecoder.parseIntFromBytes(bodyBytes,42,1);
         obd.setChryxz(""+((chryxz-128)*100/128));
         /**
          * 空燃比系数 2 ((BYTE1*256)+BYTE2)*0.0000305
          */
-        double klbxs1=msgDecoder.parseIntFromBytes(bodyBytes,42,1);
-        double klbxs2=msgDecoder.parseIntFromBytes(bodyBytes,43,1);
+        double klbxs1=msgDecoder.parseIntFromBytes(bodyBytes,43,1);
+        double klbxs2=msgDecoder.parseIntFromBytes(bodyBytes,44,1);
         obd.setKlbxs(""+((klbxs1*256)+klbxs2)*0.0000305);
         /**
          * 节气门绝对位置 1 BYTE*100/255，单位%
          */
-        double jqmxjwz=msgDecoder.parseIntFromBytes(bodyBytes,44,1);
+        double jqmxjwz=msgDecoder.parseIntFromBytes(bodyBytes,45,1);
         obd.setJqmxjwz(""+(jqmxjwz*100/255));
         /**
          * 燃油压力 1 BYTE*3,单位 kpa
          */
-        obd.setRyyl(""+msgDecoder.parseIntFromBytes(bodyBytes,45,1)*3);
+        obd.setRyyl(""+msgDecoder.parseIntFromBytes(bodyBytes,46,1)*3);
         /**
          * 瞬间油耗 L/H 2 ((BYTE1*256)+BYTE2)*0.1,单位 L/H
          */
-        double sjyh1=msgDecoder.parseIntFromBytes(bodyBytes,46,1);
-        double sjyh2=msgDecoder.parseIntFromBytes(bodyBytes,47,1);
+        double sjyh1=msgDecoder.parseIntFromBytes(bodyBytes,47,1);
+        double sjyh2=msgDecoder.parseIntFromBytes(bodyBytes,48,1);
         obd.setSjyh(""+((sjyh1*256)+sjyh2)*0.1);
 
         /**
@@ -218,24 +228,25 @@ public class QueryServiceImpl implements QueryService {
          */
         double syyl;
         if((bodyBytes[48]&0X80)==0X80){
-            syyl = (((bodyBytes[48]-0X80)*256)+bodyBytes[49])*0.1;
+            syyl = (((bodyBytes[49]-0X80)*256)+bodyBytes[50])*0.1;
         }else{
-            syyl = (bodyBytes[48] * 256 + bodyBytes[49]) * 0.1;
+            syyl = (bodyBytes[49] * 256 + bodyBytes[50]) * 0.1;
         }
         obd.setSyyl(""+syyl);
 
         /**
          *基站 8 4 字节运营商代码(IMSI 前 5 位),2 字节 LAC,2 字节 CELL
          */
-//        String jz=msgDecoder.parseIntFromBytes(bodyBytes,50,8);
+//        String jz=msgDecoder.parseIntFromBytes(bodyBytes,51,8);
         /**
          *耗油量 4 OBD 累计耗油量,单位 L
          */
-        obd.setHyl(""+msgDecoder.parseIntFromBytes(bodyBytes,58,4));
+        obd.setHyl(""+msgDecoder.parseIntFromBytes(bodyBytes,59,4));
         /**
          * 流水号 1 从 0 -255 一直循环累加，可以用来检测是否有包丢失
          */
-        obd.setSeq(""+msgDecoder.parseIntFromBytes(bodyBytes,62,1));
+        obd.setSeq(""+msgDecoder.parseIntFromBytes(bodyBytes,63,1));
+        accessLog.debug("    请求/上传 GPS+OBD 混合信息:返回的结果："+obd.toString());
         System.out.println(obd.toString());
         redisDao.opsForValue().set(gpsObdMessage+msg.getEquipmentId(),obd);//写入redis
 //        ChannelHandlerContext ctx=msg.getCtx();
@@ -410,7 +421,6 @@ public class QueryServiceImpl implements QueryService {
      */
     @Override
     public void uploadFaultCodeMessage(PackageData msg) {
-        List<ObdFaultCodeBean> list=new ArrayList<ObdFaultCodeBean>();
         byte[] bodyBytes=msg.getBodyBytes();
         int bodyLength=msg.getBodyLength();
         for (int i=0;i<bodyLength/3;i++){
@@ -432,10 +442,8 @@ public class QueryServiceImpl implements QueryService {
             obj.setFaultType(faultType);
             obj.setCreationTime(new Date());
             obj.setFaultCode(params.get(faultCode1.substring(0,1).toUpperCase())+faultCode1.substring(1)+faultCode2);
-            list.add(obj);
+            redisDao.opsForList().leftPushAll(obdFaultCodeListKey+msg.getEquipmentId(), obj);
         }
-
-        redisDao.opsForList().leftPushAll(obdFaultCodeListKey+msg.getEquipmentId(), list);
 
 //        System.out.println(redisDao.opsForList().range(obdFaultCodeListKey+msg.getEquipmentId(),0,-1).toString());
 
@@ -444,5 +452,31 @@ public class QueryServiceImpl implements QueryService {
             System.out.println(l.toString());
         }
 
+    }
+
+    /**
+     * 设备在线(开机)状态
+     * @param msg
+     */
+    @Override
+    public void deviceOnLineType(PackageData msg) {
+        Map<String,String> map=new HashMap<String,String>();
+        byte[] bodyBytes=msg.getBodyBytes();
+        double onLineType=msgDecoder.parseIntFromBytes(bodyBytes,0,1);
+        if(onLineType==0x01){//在线
+
+        }else if(onLineType==0x00){//离线
+
+        }
+        map.put("onLineType",onLineType+"");
+        //唤醒方式 0、上电 1、电压波动唤醒 2、电话短信唤醒  3、震动唤醒  4、RTC唤醒（定时启动）
+        double onLineTypeMode=msgDecoder.parseIntFromBytes(bodyBytes,1,1);
+        map.put("onLineTypeMode",onLineTypeMode+"");
+        String creatorDate=msgDecoder.parseBcdStringFromBytes(bodyBytes,2,3);
+        String creatortime=msgDecoder.parseBcdStringFromBytes(bodyBytes,5,3);
+        map.put("creatorDate","20"+creatorDate.substring(4,6)+creatorDate.substring(2,4)+creatorDate.substring(0,2)+" "+creatortime);
+        redisDao.opsForValue().set("gpsObdOnLine_"+msg.getEquipmentId(),map);//写入redis
+        redisDao.opsForValue().set("gpsObdOnLineJSON_"+msg.getEquipmentId(),JSONUtils.toJSONString(map));//写入redis
+        System.out.println(JSONUtils.toJSONString(map));
     }
 }

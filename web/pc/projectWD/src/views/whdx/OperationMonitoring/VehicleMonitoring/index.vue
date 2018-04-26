@@ -192,6 +192,7 @@ export default {
             obd:{},
             gpsObdMessage:null,
             obdFaultCode:[],
+			initTime:'',
 			allCarList:[
                 // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:30.608123, bdwd:114.27226},
                 // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.157277 ,bdwd:30.544446},
@@ -271,11 +272,12 @@ export default {
                     break;
                 }
 			}
-            this.handleItem(m);
             if (exist){
+                let n = this.updateItem(exist,m);
                 let index  = this.allCarList.indexOf(exist);
-                this.allCarList.splice(index,1,m);
+                this.allCarList.splice(index,1,n);
 			}else{
+                this.handleItem(m);
                 this.allCarList.push(m);
 			}
             this.classify();
@@ -303,6 +305,7 @@ export default {
             var v = this
             this.$http.get(configApi.CLJK.QUERY).then((res) =>{
                 if (res.code === 200){
+                    this.initTime = new Date().getTime();
                     this.allCarList = res.result;
                     for(let r of this.allCarList){
                         this.handleItem(r);
@@ -331,6 +334,32 @@ export default {
                     this.carArray[status].push(r);
 				}
 			}
+		},
+		updateItem(o,n){
+            let r = {};
+            r.lnt = n.lng;
+            r.lat = n.lat;
+            r.bdjd = n.bdjd;
+            r.bdwd = n.bdwd;
+            switch(n.zxzt){
+                case '10':
+                    r.status = 1;
+                    r.text = '熄火时间';
+                    r.speed = 0;
+                    break;
+                case '20':
+                    r.status = 2;
+                    r.text = '离线时间';
+                    r.speed = 0;
+                    break;
+                case '00':
+                default:
+                    r.speed = n.speed;
+                    r.status = 0;
+                    r.text = '更新时间';
+            }
+            console.log(r);
+            return r;
 		},
 		handleItem(item){
             item.lng = item.bdjd;

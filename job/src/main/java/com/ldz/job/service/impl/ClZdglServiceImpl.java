@@ -1,5 +1,6 @@
 package com.ldz.job.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -9,8 +10,10 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
+import com.ldz.job.bean.GpsInfo;
 import com.ldz.job.mapper.ClZdglMapper;
 import com.ldz.job.model.ClZdgl;
 import com.ldz.job.service.ClZdglService;
@@ -26,6 +29,8 @@ public class ClZdglServiceImpl implements ClZdglService {
 
 	private String url = "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
 
+	private String gpsSaveUrl="http://47.98.39.45:8080/biz/pub/gps/save";
+	
 	@Autowired
 	private ClZdglMapper clZdglMapper;
 
@@ -58,12 +63,37 @@ public class ClZdglServiceImpl implements ClZdglService {
 				ClZdgl clZdgl2 = collect.get(zdbh);
 				clZdgl2.setZxzt("20");
 				clZdglMapper.updateByPrimaryKeySelective(clZdgl2);
-				log.info("更新了一条正常的设备状态:"+zdbh);
+				//并将离线消息通知到gps上传
+				  ApiResponse<String> senML = senML(zdbh);
+				  if (senML.getCode()==200) {
+					  log.info("上传离线信息到服务器成功终端编号为:"+zdbh);
+				}
+				
+				log.info("更新了一条正常的设备状态终端编号为:"+zdbh);
 			}
 
 		}
 		return ApiResponse.success();
 
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ApiResponse<String> senML(String zdbh) {
+		GpsInfo gpsinfo = new GpsInfo();
+		gpsinfo.setDeviceId(zdbh);
+		gpsinfo.setEventType("80");
+		
+		String postEntity = JsonUtil.toJson(gpsinfo);
+		ApiResponse<String> apiResponse = null;
+			Map<String, String> postHeaders = new HashMap<String, String>();
+			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+			try {
+				 String postJson = HttpUtil.postJson(gpsSaveUrl, postHeaders, postEntity);
+				 apiResponse=(ApiResponse<String>)JsonUtil.toBean(postJson, ApiResponse.class);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return apiResponse;
 	}
 	
 	public static void main(String[] args) {

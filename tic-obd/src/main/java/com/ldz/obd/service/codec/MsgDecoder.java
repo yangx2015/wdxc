@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MsgDecoder {
     Logger log = LoggerFactory.getLogger("error_info");
+    Logger accessLog = LoggerFactory.getLogger("access_info");
     private BitOperator bitOperator;
     private BCDOperater bcdOperater;
 
@@ -42,11 +43,13 @@ public class MsgDecoder {
         int checkSumInPkg = data[data.length - 2];
         ret.setCheckSum(checkSumInPkg);
 
-        int calculatedCheckSum = this.bitOperator.getCheckSum4JT808(data, 1, data.length - 3);
+        int calculatedCheckSum = this.bitOperator.getCheckSum4JT808(data, 1, data.length - 2);
         if (checkSumInPkg != calculatedCheckSum) {
             ret.setCheckType(false);
             log.warn("检验码不一致,设备ID:{},报文中的校验码(转为十进制后):{},做了异或后的值：{}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", ret.getEquipmentId(), checkSumInPkg, calculatedCheckSum);
+            accessLog.debug("检验码不一致,设备ID:{},报文中的校验码(转为十进制后):{},做了异或后的值：{}>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", ret.getEquipmentId(), checkSumInPkg, calculatedCheckSum);
         }else {
+            log.warn("检验码通过--------------");
             ret.setCheckType(true);
         }
         return ret;

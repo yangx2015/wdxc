@@ -12,4 +12,6 @@ public interface QueryService {
     void uploadTravelItineraryMessage(PackageData msg);
 //    发动机故障码上传
     void uploadFaultCodeMessage(PackageData msg);
+//      设备在线(开机)状态
+    void deviceOnLineType(PackageData msg);
 }
