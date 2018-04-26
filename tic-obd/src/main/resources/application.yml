@@ -12,7 +12,6 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
-    database: 8
     otherDatabase: 11
     maxIdle: 200
     maxTotal: 1024
@@ -20,7 +19,7 @@ spring:
 #socket配置信息
 netty: 
   ip: 127.0.0.1
-  port: 8899
+  port: 9098
   bossGroupCount: 4
   wokerGroupCount: 8
   keepAlive: true
@@ -30,7 +29,7 @@ logging:
   config: classpath:log4j2.xml
 
 server:
-  port: 9888
+  port: 9180
 
 #GPS+OBD 混合信息 redis key值
 gpsObdMessage-key: gpsObdMessage_

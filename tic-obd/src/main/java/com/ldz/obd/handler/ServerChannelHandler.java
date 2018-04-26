@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -35,7 +36,7 @@ import java.util.Map;
 @Sharable
 @SuppressWarnings("rawtypes")
 public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
-
+	Logger accessLog = LoggerFactory.getLogger("access_info");
 	Logger log = LoggerFactory.getLogger("error_info");
 	
 	private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -86,13 +87,21 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 		String equipmentId=null;//设备ID
 		try{
 			ByteBuf buf = (ByteBuf) msg;
+
 			if (buf.readableBytes() <= 0) {//验证报文是不是为空
 				return;
 			}
 			byte[] bs = new byte[buf.readableBytes()];
 			buf.readBytes(bs);
+
+			//将接收到的字节数据转换为指定编码的字符串
+			String dataStr = DatatypeConverter.printHexBinary(bs);
+			String regex = "(.{2})";
+			dataStr = dataStr.replaceAll (regex, "$1 ");
+			accessLog.debug("通道["+ctx.channel().id().asShortText()+"]接收数据:"+dataStr);
+
 			if(bs[0]!=0x28){
-				throw new IotException("第一个字节验证失败");
+				throw new IotException("第一个字节验证失败"+bs[0]);
 			}
 			if(bs[bs.length-1]!=0x29){
 				throw new IotException("最后一个字节验证失败");
@@ -138,27 +147,50 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	private void processClientMsg(PackageData msg) {
 		// 请求/上传 GPS+OBD 混合信息  0x20 0x04 –> 0x20 0x
 		if (msg.getOrderCode() == 0x2084) {
+			accessLog.debug("    请求/上传 GPS+OBD 混合信息");
 			if(msg.getBodyLength()!=0x0040){
 				throw new IotException("请求/上传 GPS+OBD 混合信息正文长度异常正常是 64字节 请求来的长度是："+msg.getBodyLength());
 			}
 			// 请求/上传 GPS+OBD 混合信息
 			getGpsObdMessage(msg);
 		} else if (msg.getOrderCode() == 0x3088) {//0x30 0x88  4.4.4 行程报告上传
+			accessLog.debug("    4.4.4 行程报告上传");
 			// 行程报告上传
 			if(msg.getBodyLength()!=0x004D){
 				throw new IotException("行程报告上传正文长度异常正常是 77字节 请求来的长度是："+msg.getBodyLength());
 			}
 			uploadTravelItineraryMessage(msg);
 		}else if(msg.getOrderCode() == 0x3087){//0x30 0x87 查询发动机系统的故障码
+			accessLog.debug("    查询发动机系统的故障码");
 			//查询发动机系统的故障码
 			if(msg.getBodyLength()%3!=0){//指令的内容长度一定是 3个倍数
 				throw new IotException("发动机系统的故障码上传正文长度异常正常是 3的倍数 请求来的长度是："+msg.getBodyLength());
 			}
 			uploadFaultCodeMessage(msg);
+		}else if(msg.getOrderCode() == 0x008E){//0x00 0x8E 4.1.12 唤醒/休眠报告
+			accessLog.debug("    4.1.12 唤醒/休眠报告");
+			// 当前设备是处理：唤醒/休眠报告
+			if(msg.getBodyLength()!=0x0008){
+				throw new IotException("唤醒/休眠报告 正文长度异常正常是 8字节 请求来的长度是："+msg.getBodyLength());
+			}
+//			deviceOnLineType  设备开机状态。
+			deviceOnLineType(msg);
+
+
+
 		}
 		else {
+			accessLog.debug("    该,消息业务ID："+msg.getOrderCode());
 			log.error("该,消息ID={}", msg.getOrderCode());
 		}
+	}
+
+	/**
+	 * 设备在线(开机)状态
+	 * @param msg
+	 */
+	private void deviceOnLineType(PackageData msg) {
+		queryService.deviceOnLineType(msg);
 	}
 
 	/**
