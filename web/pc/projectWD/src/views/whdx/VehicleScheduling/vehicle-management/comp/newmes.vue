@@ -93,7 +93,7 @@
                     cx:'',
                     dl:'',
                     sjxm:'',
-                    zt:'',
+                    zt:'00',
                     zdbh:'',
                     sjId:'',
                     obdCode:''
