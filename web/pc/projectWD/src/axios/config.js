@@ -84,7 +84,8 @@ module.exports = {
 	},
 	//******************车辆管理******************
 	CLOUD:{//云视频库
-		QUERY:'/api/spk/pager'
+		QUERY:'/api/spk/pager',
+		DELE:'/api/spk/remove'
 	},
 	CLGL:{
 		QUERY: '/api/cl/pager',
