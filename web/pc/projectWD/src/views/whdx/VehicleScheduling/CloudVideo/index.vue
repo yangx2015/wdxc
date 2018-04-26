@@ -88,6 +88,7 @@
 			<div class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
 					<div class="bodyC videoSty" 
+						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
     					<div v-if="!item.video">
 							<div class="videoBF" @click="videoS(item.video,item,index)">
@@ -106,9 +107,15 @@
 					       controls="controls"></video>
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
-					    	<span v-show="item.video" style="cursor: pointer;" @click="videoF(item.video,item,index)">
-					    		<Icon type="close-circled" style="float: right"></Icon>
-					    	</span>
+					    	<div style="float: right;cursor: pointer;">
+						    	<span v-show="item.video" @click="videoF(item.video,item,index)">
+						    		<!--<Icon type="close-circled" style="float: right"></Icon>-->
+						    		关闭
+						    	</span>
+						    	<span style="color: #ff9900;" @click="videoColse(item,index)">
+						    		移除
+						    	</span>
+					    	</div>
 					    </div>
 					</div>
 				</div>
@@ -122,8 +129,6 @@
 						show-elevator
 						@on-change='pageChange'></Page>
 			</div>
-			<!--<component
-			:is="'svideo'"></component>-->
 	</div>
 </template>
 
@@ -167,6 +172,17 @@
 			videoF(type,item,index){
 				this.videoList[index].video = false
 			},
+			videoColse(item,index){
+				var v = this
+				this.$http.post(configApi.CLOUD.DELE+'/'+item.id).then((res) =>{
+					if(res.code==200){
+						v.$Message.success(res.message);
+					}else{
+						v.$Message.error(res.message);
+					}
+					v.getmess()
+				})
+			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
                     this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
@@ -175,15 +191,6 @@
                 }
 				var v = this
 				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
-//					this.videoList = res.page.list
-//					this.videoList.forEach(function(item,index){
-//						item.video = false
-//				    	item.bf = false
-//				    	if (item.url){
-//                          item.imgdz = item.url.replace('video','cache');
-//                          item.imgdz = item.imgdz.replace('mp4','jpg')
-//                      }
-//					})
             	    v.pageTotal = res.page.total
 					for (let r of res.page.list){
 					    if (r.url){

@@ -66,7 +66,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
 		log.info("上传的gps信息:" + gpsinfo);
       
-		if (StringUtils.isEmpty(gpsinfo.getLatitude())||StringUtils.isEmpty(gpsinfo.getLongitude())) {
+		if (StringUtils.isEmpty(gpsinfo.getLatitude())||StringUtils.isEmpty(gpsinfo.getLongitude())||StringUtils.isEmpty(gpsinfo.getDeviceId())) {
 			return ApiResponse.error();
 		}
 
