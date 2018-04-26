@@ -61,6 +61,11 @@
 								</Select>
 							</FormItem>
 						</Col>
+						<Col span="12">
+							<FormItem prop="zdbh" label='obdCode：'>
+								<Input type="text" v-model="addmess.obdCode" placeholder="请输入obdCode"></Input>
+							</FormItem>
+						</Col>
 					</Row>
 	    		</div>
     		</Form>
@@ -90,7 +95,8 @@
                     sjxm:'',
                     zt:'',
                     zdbh:'',
-                    sjId:''
+                    sjId:'',
+                    obdCode:''
                 },
                 ruleInline: {
                   cph: [

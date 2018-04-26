@@ -153,10 +153,14 @@
                         }
                     },
                     {
+                        title: 'obdCode',
+                        align:'center',
+                        key: 'obdCode'
+                    },
+                    {
                         title: '终端编号',
                         align:'center',
                         key: 'zdbh'
-//						key:'sjId'
                     },
                     {
                         title: '操作',
