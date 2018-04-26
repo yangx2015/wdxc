@@ -4,7 +4,6 @@ import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +115,12 @@ public class ClJsy implements Serializable {
     private String dabh;
 
     /**
+     * 手机号
+     */
+    @Column(name = "SJH")
+    @NotNull(message="手机号不为空")
+    private String sjh;
+    /**
      * 初领日期
      */
     @Column(name = "CLRQ")
@@ -132,6 +137,18 @@ public class ClJsy implements Serializable {
 
     public void setClDdList(List<ClDd> clDdList) {
         this.clDdList = clDdList;
+    }
+
+    /**
+     * 手机号
+     * @return
+     */
+    public String getSjh() {
+        return sjh;
+    }
+
+    public void setSjh(String sjh) {
+        this.sjh = sjh;
     }
 
     /**
