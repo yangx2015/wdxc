@@ -136,12 +136,18 @@
 			this.getDeviceList();
 		},
 		methods:{
-		    getDeviceList(){
+		    getDeviceList(){//获取终端编号
                 let v = this;
                 v.$http.post(configApi.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
+                    	if(res.result==undefined){
+                    		res.result = []
+                    	}
                     	console.log('终端数据',res)
                         this.deviceList = res.result;
+                        if(!this.messType){
+                        	this.deviceList.push({'zdbh':v.mess.zdbh})
+                        }
                     }
                 })
 			},
@@ -168,6 +174,9 @@
 		        let v = this;
                 v.$http.get(configApi.JSY.NOT_BIND_LIST).then((res) =>{
                     if(res.code===200){
+                    	if(res.result==undefined||res.result==null){
+                    		res.result = []
+                    	}
                         this.drivers = res.result;
                         if(v.derMess.sjId!=null&&!v.messType){
 		                	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})

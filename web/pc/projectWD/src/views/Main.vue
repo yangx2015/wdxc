@@ -101,9 +101,8 @@
         data () {
             return {
             	compName:'',
-//          	"47.98.39.45:8080/biz"
-// 			    socket : new SockJS("http://"+"192.168.31.180:80"+"/gps"),
 				socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
+//				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],
 				
@@ -165,7 +164,6 @@
         created () {
             // 显示打开的页面的列表
             this.$store.commit('setOpenedList');
-//          this.sco()
         },
         methods: {
         	person(){
@@ -197,9 +195,6 @@
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
 			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-//			            console.log('soc',data)
-//			            let js = JSON.parse(data.body)
-//			            console.log('soc********************',js)
 			            let jsonMess = JSON.parse(data.body)
 			            
 			            if(jsonMess.cx==="30"){//校巴
@@ -211,13 +206,6 @@
 					        v.scoketMess.push(jsonMess)
 				            v.$store.commit('socketMessAdd',v.scoketMess)
 			            }
-			            
-                        // v.scoketAllCar.forEach((item,index) => {
-							// if(item.clid==jsonMess.clid){
-							// 	v.scoketAllCar.splice(index,1)
-							// }
-                        // })
-				        // v.scoketAllCar.push(jsonMess)
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			    });	
