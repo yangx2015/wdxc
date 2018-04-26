@@ -152,12 +152,12 @@
                         align:'center',
                         key:'zjcx'
                     },
-                    {
-                        title:'等级',
-                        width:80,
-                        align:'center',
-                        key:'dj'
-                    },
+//                  {
+//                      title:'等级',
+//                      width:80,
+//                      align:'center',
+//                      key:'dj'
+//                  },
                     {
                         title:'车队编号',
                         width:180,
@@ -168,7 +168,11 @@
                         title:'初领日期',
                         width:150,
                         align:'center',
-                        key:'clrq'
+                        key:'clrq',
+                        render:(h,p)=>{
+                            return this.getdateParaD(new Date(p.row.clrq))
+                        }
+                        
                     },
                     {
                         title:'档案编号',

@@ -57,9 +57,15 @@
 								</Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
+						<!--<Col span="12">
 							<FormItem prop="cdbh" label='车队编号：'>
 								<Input type="text" v-model="addmess.cdbh" placeholder="请输入车队编号">
+								</Input>
+							</FormItem>
+						</Col>-->
+						<Col span="12">
+							<FormItem prop="dabh" label='档案编号：'>
+								<Input type="text" v-model="addmess.dabh" placeholder="请输入档案编号">
 								</Input>
 							</FormItem>
 						</Col>
@@ -68,12 +74,6 @@
 						<Col span="12">
 							<FormItem prop="clrq" label='初领日期：'>
 								<DatePicker v-model="clrq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="dabh" label='档案编号：'>
-								<Input type="text" v-model="addmess.dabh" placeholder="请输入档案编号">
-								</Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -126,6 +126,7 @@
 
         watch:{
             clrq:function(n,o){
+            	console.log('事件日期',n)
             	this.addmess.clrq = this.getdateParaD(n)
             }
         },
@@ -140,26 +141,13 @@
 			}
 		},
 		created(){
-            this.addmess = this.mess
-			this.fullcal()
-			this.getFleetList()
 
             if(!this.messType){
-			    this.operate = '编辑'
+            	this.addmess = this.mess
+			    this.clrq = new Date(this.addmess.clrq)
             }
 		},
 		methods:{
-		    getFleetList(){
-				let v = this;
-                v.$http.post(configApi.CD.GET_CONDITION).then((res) =>{
-                    if(res.code===200){
-                        this.fleetList = res.result;
-                    }
-                })
-			},
-			fullcal(){
-				console.log('信息',this.mess)
-			},
 			colse(){
 				var v = this
 				v.$parent.compName = ''
