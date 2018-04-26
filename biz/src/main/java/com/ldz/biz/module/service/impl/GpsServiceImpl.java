@@ -355,7 +355,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		info.setSjxm(seleByZdbh.getSjxm());
 		info.setCx(seleByZdbh.getCx());
 		info.setSjxm(seleByZdbh.getSjxm());
-		if (!StringUtils.isEmpty(seleByZdbh.getObdCode())) {
+		if (StringUtils.isNotEmpty(seleByZdbh.getObdCode())) {
 			info.setObdId(seleByZdbh.getObdCode());
 		}
 		return info;
@@ -395,30 +395,25 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				if (StringUtils.isNotEmpty(clgps.getZdbh())) {
 					ClCl clCl = clmap.get(clgps.getZdbh());
 					if (clCl != null) {
+						websocketInfo websocketInfo = new websocketInfo();
+						websocketInfo.setBdjd(clgps.getBdjd().toString());
+						websocketInfo.setBdwd(clgps.getBdwd().toString());
+						websocketInfo.setClid(clCl.getClId());
+						websocketInfo.setCph(clCl.getCph());
+						websocketInfo.setTime(clgps.getCjsj());
+						websocketInfo.setZdbh(clgps.getZdbh());
+						websocketInfo.setCx(clCl.getCx());
+						websocketInfo.setSjxm(clCl.getSjxm());
+						websocketInfo.setSpeed(clgps.getYxsd());
+						if (StringUtils.isNotEmpty(clCl.getObdCode())) {
+							websocketInfo.setObdId(clCl.getObdCode());
+						}
+						
+						
 						if (lostZD.contains(clgps.getZdbh())) {
-							websocketInfo websocketInfo = new websocketInfo();
-							websocketInfo.setBdjd(clgps.getBdjd().toString());
-							websocketInfo.setBdwd(clgps.getBdwd().toString());
-							websocketInfo.setClid(clCl.getClId());
-							websocketInfo.setCph(clCl.getCph());
-							websocketInfo.setTime(clgps.getCjsj());
-							websocketInfo.setZdbh(clgps.getZdbh());
-							websocketInfo.setCx(clCl.getCx());
-							websocketInfo.setSjxm(clCl.getSjxm());
-							websocketInfo.setSpeed(clgps.getYxsd());
 							websocketInfo.setZxzt("20");
 							list.add(websocketInfo);
 						} else {
-							websocketInfo websocketInfo = new websocketInfo();
-							websocketInfo.setBdjd(clgps.getBdjd().toString());
-							websocketInfo.setBdwd(clgps.getBdwd().toString());
-							websocketInfo.setClid(clCl.getClId());
-							websocketInfo.setCph(clCl.getCph());
-							websocketInfo.setTime(clgps.getCjsj());
-							websocketInfo.setZdbh(clgps.getZdbh());
-							websocketInfo.setCx(clCl.getCx());
-							websocketInfo.setSjxm(clCl.getSjxm());
-							websocketInfo.setSpeed(clgps.getYxsd());
 							websocketInfo.setZxzt(zdglmap.get(clgps.getZdbh()).getZxzt());
 							list.add(websocketInfo);
 						}

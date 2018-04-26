@@ -115,6 +115,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (record == null){
+            log.debug("没有运行记录");
             currentStation = findCurrentZd(gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
@@ -126,9 +127,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 record.setXlmc(route.getXlmc());
             }
         }else {
+            log.debug("已有运行记录："+record.toString());
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
             double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+            log.debug("distance:"+distance);
             if (distance < currentStation.getFw()){
                 if (gpsInfo.getEventType().equals("80")){
                     zt = "off";

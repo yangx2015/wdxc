@@ -52,6 +52,7 @@ CL_CL t1 LEFT JOIN CL_DZWL_CL t2 ON t1.CL_ID=t2.CL_ID  LEFT JOIN CL_DZWL t3 on t
 		<result column="BXGSMC" property="bxgsmc" />
 		<result column="BXSJ" property="bxsj" />
 		<result column="NSSJ" property="nssj" />
+		<result column="OBD_CODE" property="obdCode" />
 		<collection property="clDzwlCl" ofType="com.ldz.biz.module.model.ClDzwlCl">
 		<id column="ID" property="id" />
 		<result column="WL_ID" property="wlId" />
