@@ -64,13 +64,16 @@
 			    this.map.addEventListener("click",function(e){
 //					console.log(e.point.lng + "," + e.point.lat);//打印map点数据
 					v.map.clearOverlays();//清楚数据点
-					let newMapDot = new BMap.Point(e.point.lng, e.point.lat);//点数据
-					var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
-					
-					var marker = new BMap.Marker(newMapDot,{icon:myIcon}); // 创建点
-					v.map.addOverlay(marker);
+                    v.addPoint(e.point.lng,e.point.lat);
 					v.$emit('getDot',e)
 				});
+			},
+			addPoint(lng,lat){
+                this.map.clearOverlays();//清楚数据点
+                let newMapDot = new BMap.Point(lng, lat);//点数据
+                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
+                var marker = new BMap.Marker(newMapDot,{icon:myIcon}); // 创建点
+                this.map.addOverlay(marker);
 			}
 		}
 }

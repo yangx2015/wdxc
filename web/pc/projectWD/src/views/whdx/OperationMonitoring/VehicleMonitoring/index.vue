@@ -117,7 +117,7 @@
 					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
 						<div>
 							<span class="_16pt">{{item.zdbh}}</span>
-							<Poptip v-if="gpsObdMessage != null" title="OBD信息"  placement="left" width="300"  style="float: right">
+							<Poptip v-if="item.obdId != null" title="OBD信息"  placement="left" width="300"  style="float: right">
 								<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
 								<div slot="content">
 									<Row v-if="gpsObdMessage != null">

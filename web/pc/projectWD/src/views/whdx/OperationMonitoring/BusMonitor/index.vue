@@ -7,7 +7,6 @@
     	padding-left: 5px;
     	.boxTiT{
     		height:80px;
-    		border-bottom:solid 5px #b3b3b3;
     		.cartypemess{
     			text-align: center;
     			/*line-height: 20px;*/

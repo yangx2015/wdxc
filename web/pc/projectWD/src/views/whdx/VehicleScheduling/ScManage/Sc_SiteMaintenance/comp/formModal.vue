@@ -25,11 +25,7 @@
 						<FormItem label='站点范围：'>
 							<Select filterable clearable  v-model="formItem.fw"
 									placeholder="请选择站点范围...">
-								<Option value="5">5</Option>
-								<Option value="10">10</Option>
-								<Option value="20">20</Option>
-								<Option value="30">30</Option>
-								<Option value="30">30</Option>
+								<Option v-for="item in fwList" :value="item.value">{{item.label}}</Option>
 							</Select>
 						</FormItem>
 					</Col>
@@ -45,8 +41,7 @@
 						<FormItem prop="sjxm" label='经度：'>
 							<Input v-model="formItem.jd"
 								   readonly="readonly"
-								   placeholder="用鼠标选取站点坐标">
-							</Input>
+								   placeholder="用鼠标选取站点坐标"></Input>
 						</FormItem>
 					</Col>
 					<Col span="8">
@@ -94,7 +89,7 @@
 				showModal:true,
 				formItem:{
                     mc:'',
-                    fw:'',
+                    fw:50,
 				    jd:'',
                     zt:'',
                     bz:'',
@@ -104,10 +99,18 @@
 	        		lng: 114.372443,
 	        		lat: 30.544572
 	        	},
+                fwList:[
+                    {label:10,value:10},
+                    {label:20,value:20},
+                    {label:30,value:30},
+                    {label:40,value:40},
+                    {label:50,value:50},
+                ],
                 ruleInline: {
                     mc: [
                     	{ required: true, message: '请输入站点名称', trigger: 'blur' }
                 	],
+
             },
 			}
 		},
@@ -116,6 +119,7 @@
 		mounted(){
             if (this.$parent.choosedRow !== null){
                 this.formItem = this.$parent.choosedRow;
+                this.addDot(this.formItem.jd,this.formItem.wd);
             }
         },
 		methods:{
@@ -148,7 +152,9 @@
 		    getDot(e){
                 this.formItem.jd = e.point.lng
         		this.formItem.wd = e.point.lat
-                console.log(this.formItem);
+            },
+		    addDot(lng,lat){
+			    this.$refs['maps'].addPoint(lng,lat);
             }
 		}
 	}

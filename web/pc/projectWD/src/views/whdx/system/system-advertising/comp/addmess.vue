@@ -48,8 +48,8 @@
 					</Row>
 					<Row>
 						<Col span="12">
-							<FormItem prop="cjsjInRange" label='活动时间'>
-								<DatePicker v-model="cjsjInRange"
+							<FormItem prop="hdsj" label='活动时间'>
+								<DatePicker v-model="formItem.hdsj"
 									format="yyyy-MM-dd" type="daterange"
 									placement="bottom-end"
 									placeholder="请输活动时间"
@@ -132,9 +132,9 @@
                     hdlx:[
                         { required: true,message: '请选择活动类型', trigger: 'blur' }
                     ],
-                    cjsjInRange:[
-                  	    { required: true,message: '请选择活动时间', trigger: 'blur' }
-                    ],
+                    // hdsj:[
+                  	//     { required: true,message: '请选择活动时间', trigger: 'blur' }
+                    // ],
                     wjlx:[
                   	    { required: true,message: '请选择附件类型', trigger: 'blur' }
                     ]
@@ -143,11 +143,6 @@
 			}
 		},
 		watch: {
-			cjsjInRange:function(newQuestion, oldQuestion){
-				this.formItem.kssj = this.getdateParaD(newQuestion[0])
-				this.formItem.jssj = this.getdateParaD(newQuestion[1])
-				console.log(this.formItem)
-			},
 		},
 		created(){
 		},
@@ -164,6 +159,10 @@
                 var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
+                        let hdsj = this.formItem.hdsj;
+                        this.formItem.kssj = this.getdateParaD(hdsj[0])
+                        this.formItem.jssj = this.getdateParaD(hdsj[1])
+                        delete this.formItem.hdsj;
 		                let url = configApi.ADVERTISING.ADD;
 		                this.$http.post(url,this.formItem).then((res) =>{
 		                    if(res.code===200){

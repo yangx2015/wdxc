@@ -2,6 +2,7 @@ package com.ldz.znzp.service.impl;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -86,7 +87,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         List<Channel> channels = nettyUtil.getChannelList(tid);
 //        if (channel == null) return;
         writeResult(channels,reportData);
-        return ApiResponse.success(reportData.toString());
+        return ApiResponse.success(JsonUtil.toJson(reportData));
     }
 
     @Override
@@ -138,7 +139,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 }else{
                     zt = "inStation"; // 进站
                 }
-                zdService.setStationOrder(currentStation);
             }else{
                 currentStation = findCurrentZd(gps,car,pb);
             }
@@ -158,6 +158,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             }
         }
         log.info("zt:"+zt);
+        currentStation.setXlId(route.getId());
+        zdService.setStationOrder(currentStation);
         record.setZdbh(currentStation.getRouteOrder());
         record.setZdmc(currentStation.getMc());
         record.setZdId(currentStation.getId());
@@ -324,7 +326,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         nettyUtil.sendData(channel,reportData);
     }
     private void writeResult(List<Channel> channels,ReportData reportData){
+        log.info("channels");
         for (Channel channel : channels) {
+            log.info(channel.id().asShortText());
             writeResult(channel,reportData);
         }
     }

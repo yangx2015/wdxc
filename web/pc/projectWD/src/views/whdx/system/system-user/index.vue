@@ -250,14 +250,8 @@
 			this.tabHeight = this.getWindowHeight() - 260
             this.getmess()
             this.getDict()
-            this.getNearbyStation()
 		},
 		methods: {
-		    getNearbyStation(){
-                var v = this
-                this.$http.get('/api/clzd/getNearbyStations',{params:{lng:114.36457,lat:30.545504}}).then((res) =>{
-                })
-			},
 		    getDict(){
                 this.yhlxDict = this.dictUtil.getByCode(this,this.yhlxDictCode);
                 console.log(this.yhlxDict);

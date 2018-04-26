@@ -73,16 +73,25 @@
 				<div style="overflow: hidden;">
 					<h1 style="float: left;">新增电子围栏</h1>
 					<div id="input" style="float: right;padding: 5px;">
+						<Form
+								ref="findMess"
+								:model="findMess"
+								:rules="ruleInline"
+								:label-width="100"
+								:styles="{top: '20px'}">
+							<FormItem label='围栏名称' prop="wlmc">
 						<Input type="text"
 							v-model="findMess.wlmc"
 							size="large"
 							placeholder='请输入电子围栏名称'
 							style="width: 200px"></Input>
+							</FormItem>
 						<Button type="success"
 							size="large"
 							style="margin: 0 8px;"
 							@click="finish">完成</Button>
 						<Button type="primary" size="large" @click="AddRali">取消</Button>
+						</Form>
 					</div>
 				</div>
 				<div class="body">
@@ -145,6 +154,11 @@ export default {
                 dlxxzb:'',
                 clIds:''
 			},
+            ruleInline: {
+                wlmc: [
+                    { required: true, message: '请输入围栏名称', trigger: 'blur' }
+                ],
+            },
 			fanceId:'',
             columns10: [
                 {
@@ -352,16 +366,22 @@ export default {
             }
         },
         save(){
-            this.getChoosedIds();
             var v = this
-            this.$http.post(configApi.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
-				if (res.code === 200){
-                    this.RootShow = !this.RootShow
-                    this.findMessList();
-				}else{
-				    this.$Message.error(res.message);
-				}
-                v.SpinShow = false;
+            this.$refs['findMess'].validate((valid) => {
+                if (valid) {
+                    this.getChoosedIds();
+                    this.$http.post(configApi.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
+                        if (res.code === 200){
+                            this.RootShow = !this.RootShow
+                            this.findMessList();
+                        }else{
+                            this.$Message.error(res.message);
+                        }
+                        v.SpinShow = false;
+                    })
+                }else {
+                    v.$Message.error('请认真填写信息!');
+                }
             })
         },
         saveDzwl(){

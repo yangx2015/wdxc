@@ -22,9 +22,9 @@
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="AddDataList()">
-								<Icon type="plus-round"></Icon>
-							</Button>
+							<!--<Button type="primary" @click="AddDataList()">-->
+								<!--<Icon type="plus-round"></Icon>-->
+							<!--</Button>-->
 						</div>
 					</div>
 				</div>

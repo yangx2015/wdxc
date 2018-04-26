@@ -25,7 +25,7 @@ public class Route {
         this.routeId = xl.getId();
         this.routeName = xl.getXlmc();
         this.startTime = xl.getYxkssj();
-        this.endTime = xl.getYxkssj();
+        this.endTime = xl.getYxjssj();
         this.routeType = xl.getLx();
         this.runTime = String.valueOf(xl.getPjsj());
     }

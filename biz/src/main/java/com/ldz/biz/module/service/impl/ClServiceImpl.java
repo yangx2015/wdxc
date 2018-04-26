@@ -86,7 +86,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 //        1、定义初始变量
         ApiResponse<List<Map<String,Object>>> result = new ApiResponse<List<Map<String,Object>>>();
         List<Map<String,Object>> retList=new ArrayList<Map<String,Object>>();
-        String jgdm="";//机构ID
+        SysYh user = getCurrentUser();
+        String jgdm=user.getJgdm();//机构ID
         zxzt= StringUtils.trim(zxzt);
 //        2、查询车辆信息
         List<ClClModel> clClList=null;
