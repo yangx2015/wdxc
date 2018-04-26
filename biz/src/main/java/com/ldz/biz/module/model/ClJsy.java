@@ -118,7 +118,6 @@ public class ClJsy implements Serializable {
      * 手机号
      */
     @Column(name = "SJH")
-    @NotNull(message="手机号不为空")
     private String sjh;
     /**
      * 初领日期
