@@ -163,7 +163,7 @@ export let appRouter = [
         	{
         		path: 'abnormal',
 				icon: 'abnormal',
-				name: 'vehicle-management',
+				name: 'abnormal',
 				title: '异常行驶记录',
 				component: () => import('@/views/whdx/VehicleScheduling/abnormal')
         	},
