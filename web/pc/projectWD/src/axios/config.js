@@ -163,9 +163,6 @@ module.exports = {
 	XBDT:{//校巴实时动态
 		QUERY: '/api/clzd/getzdcl/',
 	},
-	YCSJLB:{//异常事件列表
-		QUERY:'/api/clsbyxsjjl'
-	},
 	CS:{//超速
 		QUERY:  '/api/cssd/pager',
 //		ADD:    '/api/cssd/save',
