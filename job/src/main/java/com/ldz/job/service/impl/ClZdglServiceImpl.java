@@ -24,13 +24,13 @@ import com.ldz.util.commonUtil.JsonUtil;
 @Service
 public class ClZdglServiceImpl implements ClZdglService {
 
-	
+
 	private static final Logger log = LoggerFactory.getLogger(ClZdglServiceImpl.class);
 
-	private String url = "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
+	private String url = "http://47.98.39.45:8089/api/push/checkOnlin/";
 
-	private String gpsSaveUrl="http://47.98.39.45:8080/biz/pub/gps/save";
-	
+	private String gpsSaveUrl="http://47.98.39.45:8080/pub/gps/save";
+
 	@Autowired
 	private ClZdglMapper clZdglMapper;
 
@@ -52,7 +52,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 						.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
 
 				Set<String> keySet = collect.keySet();
-		
+
 
 		for (String zdbh : keySet) {
 
@@ -68,7 +68,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 				  if (senML.getCode()==200) {
 					  log.info("上传离线信息到服务器成功终端编号为:"+zdbh);
 				}
-				
+
 				log.info("更新了一条正常的设备状态终端编号为:"+zdbh);
 			}
 
@@ -76,13 +76,13 @@ public class ClZdglServiceImpl implements ClZdglService {
 		return ApiResponse.success();
 
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	public ApiResponse<String> senML(String zdbh) {
 		GpsInfo gpsinfo = new GpsInfo();
 		gpsinfo.setDeviceId(zdbh);
 		gpsinfo.setEventType("80");
-		
+
 		String postEntity = JsonUtil.toJson(gpsinfo);
 		ApiResponse<String> apiResponse = null;
 			Map<String, String> postHeaders = new HashMap<String, String>();
@@ -95,11 +95,11 @@ public class ClZdglServiceImpl implements ClZdglService {
 			}
 		return apiResponse;
 	}
-	
+
 	public static void main(String[] args) {
-		 String url1= "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
+		 String url1= "http://47.98.39.45:8089/api/push/checkOnlin/";
 		 String aString="asdad";
 		 System.out.println(url1+aString);
-		 
+
 	}
 }

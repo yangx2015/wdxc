@@ -21,15 +21,15 @@ public class InstructionServiceImpl  implements InstructionService {
 	private ClZdglMapper mapper;
 	@Autowired
 	private ZdglService service;
-    
-	private String url = "http://47.98.39.45:8080/tic-server/api/push/carcmd";
+
+	private String url = "http://47.98.39.45:8089/api/push/carcmd";
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 
-		
-		
+
+
 		String postEntity = JsonUtil.toJson(info);
 		String result = "";
 		ApiResponse<String> apiResponse =null;
@@ -38,13 +38,13 @@ public class InstructionServiceImpl  implements InstructionService {
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
-			
+
 			if (apiResponse.getCode()!=200) {
 				return apiResponse;
 			}
-			
+
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
-			
+
 			if (info.getCmdType().equals("02")) {
 				clzd.setJslmd(info.getCmd());
 			}
@@ -60,10 +60,10 @@ public class InstructionServiceImpl  implements InstructionService {
 			if (info.getCmdType().equals("50")) {
 				clzd.setSpscms(info.getCmd());
 			}
-			
-			
+
+
 			service.update(clzd);
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
