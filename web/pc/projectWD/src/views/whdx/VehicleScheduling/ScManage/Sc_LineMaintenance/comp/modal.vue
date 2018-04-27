@@ -105,7 +105,6 @@
                     yxfs:'10',
 				},
 				stationList:[],
-				stationList_O:[],
 				spotName:'',
 				routerList:[
 					{
@@ -128,17 +127,6 @@
                   ]
               	},
 
-			}
-		},
-		watch:{
-			stationList_O:function(n,o){
-				var v = this
-				console.log('数据更新',n)
-//				this.stationList = []
-				setTimeout(function(){
-					v.stationList = n
-				},500)
-//				this.stationList = n
 			}
 		},
 		mounted(){
@@ -164,7 +152,7 @@
 				var v = this
                 this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
                 for(var i = 0 ; i<this.stationList.length ; i++){
-                	if(v.stationList[i].id = stationId){
+                	if(v.stationList[i].id == stationId){
                 		v.stationList[i].disabled = true
                 		return
                 	}
@@ -173,7 +161,7 @@
 		    getAllStation(){
                 this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
                     if(res.code===200){
-                        this.stationList = this.stationList_O = res.result;
+                        this.stationList = res.result;
                         console.log('站点列表',res)
                         if (this.$parent.currentRow){
                             this.getStations();
@@ -227,15 +215,14 @@
                 	name:this.stationList[index].mc,
                 	'index':index
                 });//向线路插入数据
-//              this.stationList_O.splice(index,1);
-				this.stationList_O[index].disabled = true
-                console.log(this.stationList)
                 this.stationId = 0;
+				this.stationList[index].disabled = true
+                console.log(this.stationList)
 			},
 			removespot(){
 				var chLength = this.choosedStations.length-1
 				var chindex = this.choosedStations[chLength].index
-				this.stationList_O[chindex].disabled = false
+				this.stationList[chindex].disabled = false
 				this.choosedStations.pop()
 			},
 			colse(){
