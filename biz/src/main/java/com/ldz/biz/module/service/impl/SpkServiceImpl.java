@@ -52,6 +52,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
     @Override
     public boolean fillCondition(LimitedCondition condition){
+
         return true;
     }
     @Override

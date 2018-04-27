@@ -314,6 +314,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		if (clpgs != null) {
 			if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
 				if (StringUtils.equals(gpsinfo.getSczt(), "10")) {
+					if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+						info.setEventType(gpsinfo.getEventType());
+					}
 					info.setZxzt("00");
 					info.setBdjd(clpgs.getBdjd().toString());
 					info.setBdwd(clpgs.getBdwd().toString());
@@ -322,6 +325,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				}
 				if (StringUtils.equals(gpsinfo.getSczt(), "20")) {
 					info.setZxzt("10");
+					if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+						info.setEventType(gpsinfo.getEventType());
+					}
 					info.setBdjd(clpgs.getBdjd().toString());
 					info.setBdwd(clpgs.getBdwd().toString());
 					info.setTime(simpledate(gpsinfo.getStartTime()));
