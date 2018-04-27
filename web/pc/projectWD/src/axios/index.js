@@ -55,7 +55,7 @@ httpInstance.interceptors.response.use((response) => {
 	var v = this
     // 对响应数据做点什么
     store.commit('CloadingType',false)
-    if (response.status===200){
+    if (response.status===404){
         router.push({name: 'error-404'})
     }
     if (response.status===200){
