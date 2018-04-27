@@ -230,8 +230,8 @@ export default {
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
 			var v = this 
-			this.tabmess = newQuestion
-			this.getXBline(v.lineID,v.lineName)
+//			this.tabmess = newQuestion//异常事件列表
+//			this.getXBline(v.lineID,v.lineName)
 		},
 	},
     created(){
@@ -248,6 +248,15 @@ export default {
 		this.getalert()
     },
     methods: {
+    	//异常事件列表
+    	getERRORlist(){
+//  		this.$http.get(configApi.YCSJLB.QUERY,{params:{
+//  			'sjlx':'',//事件类型
+//  			'cjsj':'',//事件时间段
+//  			''
+//  		}}).then((res) =>{
+//			})
+    	},
     	getXBlineName(){//校巴线路名称
     		var v = this
     		this.$http.post(configApi.XL.QUERY).then((res) =>{
