@@ -117,7 +117,7 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
         //从请求中获取到所有参数名称，对参数名称进行解析，将符合搜索条件的参数取出来，参与到查询条件中
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         Enumeration<String> params = request.getParameterNames();
-        Pattern pattern = Pattern.compile("(In$)|(Like$)|(Gte$)|(Lte$)|(InRange$)|(IsNull$)|(IsNotNull$)");
+        Pattern pattern = Pattern.compile("(In$)|(Like$)|(Endwith$)|(Startwith$)|(Gte$)|(Lte$)|(InRange$)|(IsNull$)|(IsNotNull$)");
         //排序关键字
         String orderBy = request.getParameter(ORDERBYNAME);
 
@@ -148,6 +148,10 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
                             condition.in(fieldName, Arrays.asList(valueArray));
                         } else if ("Like".equals(optType)) {
                             condition.and().andLike(fieldName, "%" + value + "%");
+                        } else if ("Startwith".equals(optType)) {
+                            condition.and().andLike(fieldName, "%" + value);
+                        } else if ("Endwith".equals(optType)) {
+                            condition.and().andLike(fieldName, value + "%");
                         } else if ("Gte".equals(optType)) {
                             if (existField.getType().isInstance(new Date())) {
                                 condition.gte(fieldName, DateUtils.getDate(value, "yyyy-MM-dd"));
