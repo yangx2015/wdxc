@@ -86,14 +86,14 @@
 					<div class="bodyC videoSty" 
 						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
-    					<div v-if="!item.video">
-							<!--<div class="videoBF" @click="videoS(item.video,item,index)">-->
-								<!--<Icon class="icon" type="arrow-right-b" -->
-									 <!--@click="videoS(item.video,item,index)"-->
-									<!--color="#b5b5b5" size='38'></Icon>-->
-							<!--</div>-->
-							<img style="width: 100%;" :src="videoPath+'/test/'+item.url"/>
-    					</div>
+    					<!--<div v-if="!item.video">-->
+							<!--&lt;!&ndash;<div class="videoBF" @click="videoS(item.video,item,index)">&ndash;&gt;-->
+								<!--&lt;!&ndash;<Icon class="icon" type="arrow-right-b" &ndash;&gt;-->
+									 <!--&lt;!&ndash;@click="videoS(item.video,item,index)"&ndash;&gt;-->
+									<!--&lt;!&ndash;color="#b5b5b5" size='38'></Icon>&ndash;&gt;-->
+							<!--&lt;!&ndash;</div>&ndash;&gt;-->
+							<!--<img style="width: 100%;" :src="videoPath+'/test/'+item.url"/>-->
+    					<!--</div>-->
                         <img :src="videoPath+'/test/'+item.url" style="width: 100%;">
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
