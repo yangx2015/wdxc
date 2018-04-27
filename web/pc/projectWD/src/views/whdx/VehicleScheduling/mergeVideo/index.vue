@@ -19,10 +19,12 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="8">
-							<Select v-model="formItem.cphLike" filterable>
-								<Option  v-for="(item,index) in carList"
-										 :value="item.zdbh" :key="item.zdbh">{{item.cph}}</Option>
-							</Select>
+							<FormItem label='开始时间'>
+								<Select v-model="formItem.zdbh" filterable>
+									<Option  v-for="(item,index) in carList"
+											 :value="item.zdbh" :key="item.zdbh">{{item.cph}}</Option>
+								</Select>
+							</FormItem>
 						</Col>
 					</Row>
 					<Row>
@@ -45,6 +47,13 @@
 						</Col>
 					</Row>
 				</Form>
+			</Row>
+			<Row>
+				<video v-if="videoUrl != null"
+						style="width: 100%;"
+						:src="videoPath+videoUrl"
+						autoplay="autoplay"
+						controls="controls"></video>
 			</Row>
 		</Card>
 	</div>
@@ -98,6 +107,7 @@
                 carList:[],
 				count:0,
 				bj:'',
+                videoUrl:null
 			}
 		},
 		created(){
@@ -126,11 +136,12 @@
                 })
 			},
             mergeVideo(param){
+                this.videoUrl = null;
                 let endTime = new Date(this.formItem.startTime.getTime());
                 endTime.setSeconds(endTime.getSeconds() + this.formItem.duration);
                 let params = {
-                    deviceId:this.zdbh,
-                    cmdType:13,
+                    deviceId:this.formItem.zdbh,
+                    cmdType:11,
                     cmdParams:param,
                     startTime:this.formItem.startTime.format('yyyy-MM-dd hh:mm:ss'),
                     endTime  :endTime.format('yyyy-MM-dd hh:mm:ss'),
@@ -139,6 +150,7 @@
                 this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
+						this.bj = res.result;
 						this.check();
                     }else{
                         this.SpinShow = false;
@@ -152,13 +164,18 @@
                 }
                 this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
                     if (res.code === 200){
-                        this.SpinShow = false;
-                        this.$Message.success("发送成功!")
+                        if (res.page.total > 0){
+                            this.SpinShow = false;
+                            this.$Message.success("拍摄成功!")
+							this.videoUrl = res.page.list[0].url;
+						}else{
+                            clearTimeout();
+                            setTimeout(()=>{
+                                this.check()
+                            },5000)
+						}
                     }else{
-                        clearTimeout();
-                        setTimeout(()=>{
-                            this.check()
-						},5000)
+                        this.$Message.error(res.message);
 					}
                 })
 			}
