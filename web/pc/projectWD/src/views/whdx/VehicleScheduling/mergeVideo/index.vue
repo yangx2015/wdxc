@@ -31,7 +31,7 @@
 						</Col>
 						<Col span="8">
 							<FormItem label='时长' prop="duration">
-								<DatePicker v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"></DatePicker>
+								<Input v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"></Input>
 							</FormItem>
 						</Col>
 						<Col span="8">
