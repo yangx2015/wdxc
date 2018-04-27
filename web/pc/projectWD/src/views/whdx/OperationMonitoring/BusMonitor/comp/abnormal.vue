@@ -31,10 +31,12 @@
                         title: '异常事件',
                         key: 'eventType',
                         render: (h, params) => {
-                            switch (params.row.eventType){
-                                case "80":
-                                    return '正常';
-                            }
+                        	let val = this.dictUtil.getValByCode(this,this.sjBM,params.row.eventType)
+							return val
+//                          switch (params.row.eventType){
+//                              case "80":
+//                                  return '正常';
+//                          }
                         }
                     },
                     {
@@ -50,7 +52,9 @@
                             return this.getDJC(params.row.time)
                         }
                     }
-                ]
+                ],
+                sjBM:'ZDCLK0038',
+                sjDIC:[]
             }
         },
         props:{
@@ -65,10 +69,13 @@
             this.getalert()
         },
         methods:{
+        	getLXDic(){
+                this.sjDIC = this.dictUtil.getByCode(this,this.sjBM);
+			},
             getalert(){
                 var windowHeight = window.innerHeight
-//              this.tabHeight = windowHeight/2 - 118
-				this.tabHeight = windowHeight - 200
+                this.tabHeight = windowHeight/2 - 150
+//				this.tabHeight = windowHeight - 200
                 console.log('浏览器高',this.tabHeight)
             }
         }
