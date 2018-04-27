@@ -120,7 +120,7 @@
         	getmess(){
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total;
@@ -136,7 +136,7 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-        		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+        		this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;
