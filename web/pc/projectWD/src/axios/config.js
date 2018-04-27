@@ -73,7 +73,7 @@ module.exports = {
 
 	},
     CLSBYXJL:{
-		QUERY:'api/clsbyxsjjl/pager',//日志管理
+		QUERY:'api/clsbyxsjjl/pager',//异常事件管理
         ADD:'/api/clsbyxsjjl/save',
         CHANGE:'/api/clsbyxsjjl/update',
         DELE:'/api/clsbyxsjjl/removeIds'
