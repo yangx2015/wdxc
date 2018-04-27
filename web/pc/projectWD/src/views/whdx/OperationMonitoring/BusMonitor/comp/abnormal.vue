@@ -74,7 +74,7 @@
 			},
             getalert(){
                 var windowHeight = window.innerHeight
-                this.tabHeight = windowHeight/2 - 150
+                this.tabHeight = windowHeight/2 - 130
 //				this.tabHeight = windowHeight - 200
                 console.log('浏览器高',this.tabHeight)
             }

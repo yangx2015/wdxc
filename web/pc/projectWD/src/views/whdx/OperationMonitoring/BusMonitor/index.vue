@@ -93,7 +93,9 @@
 				            <Icon type="ios-film-outline"></Icon>
 				            	异常行驶记录
 				        </p>
-				    	<abnor :tabmess=tabmess></abnor>
+				        <div style="padding:5px ;">
+				        	<abnor :tabmess=tabmess></abnor>
+				        </div>
 				    </Card>
 				</div>
 				
@@ -227,8 +229,9 @@ export default {
 	},
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
+			var v = this 
 			this.tabmess = newQuestion
-			this.getXBline(this.lineID,this,lineName)
+			this.getXBline(v.lineID,v.lineName)
 		},
 	},
     created(){
