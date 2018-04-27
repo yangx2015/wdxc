@@ -16,9 +16,27 @@
 							<span>异常行驶记录</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input placeholder="车辆类型" style="width: 160px;"></Input>
-							<Input placeholder="车牌号码" style="width: 160px;"></Input>
-							<Input placeholder="事件类型" style="width: 160px;"></Input>
+							<Select v-model="findMess.carType" 
+								placeholder="请选择车辆类型"
+								filterable style="width: 160px;">
+				                <Option v-for="(item,index) in carType" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
+				            <Select v-model="findMess.carnumber"
+				            	placeholder="请选择车牌号码"
+				            	filterable style="width: 160px;">
+				                <Option v-for="(item,index) in carnumber" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
+				            <Select v-model="findMess.thingType" 
+				            	placeholder="请选择事件类型"
+				            	filterable style="width: 160px;">
+				                <Option v-for="(item,index) in thingType" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
 							<DatePicker v-model="czsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 						</div>
 						<div class="butevent">

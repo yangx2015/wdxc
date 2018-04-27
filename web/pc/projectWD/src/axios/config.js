@@ -77,7 +77,6 @@ module.exports = {
         ADD:'/api/clsbyxsjjl/save',
         CHANGE:'/api/clsbyxsjjl/update',
         DELE:'/api/clsbyxsjjl/removeIds'
-
 	},
 	SUGGES:{
 		QUERY:'api/yj/pager',//意见管理
