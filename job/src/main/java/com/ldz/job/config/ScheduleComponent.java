@@ -32,7 +32,7 @@ public class ScheduleComponent {
 				.build();
 
 		// gps同步定执行周期，每1分钟执行一次
-		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1* * * ? *");
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *");
 		// 终端状态监测定时周期 每5分钟执行一次
 		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? *");
 		
