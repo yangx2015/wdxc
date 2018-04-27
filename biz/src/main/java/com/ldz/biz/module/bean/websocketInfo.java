@@ -14,7 +14,7 @@ public class websocketInfo {
 	private String cph;
 	
 	private String speed;
-	//暂时不用
+	
 	private String eventType;
 	
 	private Date  time;

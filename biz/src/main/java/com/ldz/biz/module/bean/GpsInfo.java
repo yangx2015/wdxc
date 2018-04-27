@@ -22,7 +22,6 @@ public class GpsInfo {
 	private Integer speed;//速度
 	private String eventType;
 //事件 10急加速，20急刹车，30急转弯 ，40超速，50点火，60熄火,70不在电子围栏范围,80离线
-//04 GPS，05 上传图片，06上传视频， 07上传图片（突发事件记录），08上传视频（突发事件记录）
 	private String filePath;//文件相对路径(上传视频或者图片才会使用的参数)
 	private String fileLocalPath;//文件本地绝对路径(上传视频或者图片才会使用的参数)
 	private String fileRealName;//上传的文件在设备中的名称(上传视频或者图片才会使用的参数)
