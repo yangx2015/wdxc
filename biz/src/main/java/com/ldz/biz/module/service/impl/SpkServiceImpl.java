@@ -52,7 +52,6 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
     @Override
     public boolean fillCondition(LimitedCondition condition){
-        condition.and().andLike(ClSpk.InnerColumn.wjm.name(),"%.mp4");
         return true;
     }
     @Override

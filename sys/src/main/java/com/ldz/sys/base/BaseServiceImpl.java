@@ -149,9 +149,9 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
                         } else if ("Like".equals(optType)) {
                             condition.and().andLike(fieldName, "%" + value + "%");
                         } else if ("Startwith".equals(optType)) {
-                            condition.and().andLike(fieldName, "%" + value);
-                        } else if ("Endwith".equals(optType)) {
                             condition.and().andLike(fieldName, value + "%");
+                        } else if ("Endwith".equals(optType)) {
+                            condition.and().andLike(fieldName, "%" + value);
                         } else if ("Gte".equals(optType)) {
                             if (existField.getType().isInstance(new Date())) {
                                 condition.gte(fieldName, DateUtils.getDate(value, "yyyy-MM-dd"));
