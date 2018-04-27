@@ -2,7 +2,7 @@
     @import '../../../../styles/common.less';
     
 </style>
-<!--日志管理-->
+<!--异常记录-->
 <template>
     <div class="boxbackborder">
 		<Card>
@@ -13,7 +13,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>日志管理</span>
+							<span>异常行驶记录</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="czsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
