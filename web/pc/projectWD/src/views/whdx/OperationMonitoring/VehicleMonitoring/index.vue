@@ -358,8 +358,8 @@ export default {
 		updateItem(o,n){
             let r = {};
             r.cx = n.cx;
-            r.lnt = n.lng;
-            r.lat = n.lat;
+            r.lnt = n.bdwd;
+            r.lat = n.bdjd;
             r.clid = n.clid;
             r.zdbh = n.zdbh;
             r.bdjd = n.bdjd;
