@@ -16,6 +16,27 @@
 							<span>异常行驶记录</span>
 						</div>
 						<div class="body-r-1 inputSty">
+							<Select v-model="findMess.carType" 
+								placeholder="请选择车辆类型"
+								filterable style="width: 160px;">
+				                <Option v-for="(item,index) in carType" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
+				            <Select v-model="findMess.carnumber"
+				            	placeholder="请选择车牌号码"
+				            	filterable style="width: 160px;">
+				                <Option v-for="(item,index) in carnumber" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
+				            <Select v-model="findMess.thingType" 
+				            	placeholder="请选择事件类型"
+				            	filterable style="width: 160px;">
+				                <Option v-for="(item,index) in thingType" 
+				                	:value="item.value" 
+				                	:key="index"></Option>
+				            </Select>
 							<DatePicker v-model="czsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
 						</div>
 						<div class="butevent">
@@ -57,15 +78,12 @@
             return {
             	SpinShow:true,
 				tabHeight: 220,
-            	PickerTime:2017,
             	//分页
             	pageTotal:1,
             	page:{
             		pageNum:1,
             		pageSize:5
             	},
-            	//弹层
-            	showModal:false,
                 tableTiT: [
                 	{
 	                	title:"序号",
@@ -73,53 +91,6 @@
 	                	align:'center',
 	                	type:'index'
 	                },
-	                {
-                        title: '操作类型',
-                        width:120,
-                        align:'center',
-                        key: 'czlx'
-                    },
-                    {
-                        title: '操作时间',
-                        align:'center',
-                        key: 'czsj'
-                    },
-                    {
-                        title: '操作人 ',
-                        align:'center',
-                        key: 'czr'
-                    },
-                    {
-                        title: '对象ID',
-                        align:'center',
-                        key: 'dx_id'
-                    },
-                    {
-                        title: '对象类型',
-                        align:'center',
-                        key: 'dxlx'
-                    },
-                    {
-                        title: '参数',
-                        align:'center',
-                        key: 'cs',
-                        ellipsis:true,
-                    },
-                    {
-                        title: '耗时',
-                        align:'center',
-                        key: 'zxsj'
-                    },
-                    {
-                        title: '备注',
-                        align:'center',
-                        key: 'sm'
-                    },
-                    {
-                        title: '方法',
-                        align:'center',
-                        key: 'ff'
-                    },
                     {
                         title: '操作结果',
                         key: 'jg',
@@ -129,16 +100,18 @@
                 ],
                 tableData: [
                 ],
-                //form表单
-                formTop: {
-                },
-                //select
-                cityList: [
-                ],
-                //收索
-                datetime:[],
+                //车型
+                carType:[],
+                //车牌号码
+                carnumber:[],
+                //事件类型
+                thingType:[],
+                //收索时间
                 czsjInRange:[],
                 findMess:{
+                	carType:'',
+                	carnumber:'',
+                	thingType:'',
                 	czsjInRange:[],
                 	pageNum:1,
             		pageSize:5
@@ -159,7 +132,7 @@
                 title: '日志管理',
             }]),
 			this.tabHeight = this.getWindowHeight() - 290
-            this.getmess()
+//          this.getmess()
         },
         methods: {
         	getmess(){

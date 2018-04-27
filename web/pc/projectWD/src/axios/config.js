@@ -77,7 +77,6 @@ module.exports = {
         ADD:'/api/clsbyxsjjl/save',
         CHANGE:'/api/clsbyxsjjl/update',
         DELE:'/api/clsbyxsjjl/removeIds'
-
 	},
 	SUGGES:{
 		QUERY:'api/yj/pager',//意见管理
@@ -163,9 +162,6 @@ module.exports = {
 	},
 	XBDT:{//校巴实时动态
 		QUERY: '/api/clzd/getzdcl/',
-	},
-	YCSJLB:{//异常事件列表
-		QUERY:'/api/clsbyxsjjl'
 	},
 	CS:{//超速
 		QUERY:  '/api/cssd/pager',
