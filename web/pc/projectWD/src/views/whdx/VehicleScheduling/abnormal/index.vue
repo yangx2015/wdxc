@@ -46,7 +46,7 @@
 				                	style="text-align: left;"
 				                	:key="index">{{item.val}}</Option>
 				            </Select>
-							<DatePicker v-model="czsjInRange" 
+							<DatePicker v-model="cjsjInRange" 
 								@on-change = 'findMessList'
 								format="yyyy-MM-dd" type="daterange" 
 								placement="bottom-end" placeholder="请输时间" 
@@ -147,12 +147,12 @@
                 //事件类型
                 thingType:[],
                 //收索时间
-                czsjInRange:[],
+                cjsjInRange:[],
                 findMess:{
                 	cx:'',
                 	cph:'',
                 	sjlx:'',
-                	czsjInRange:[]
+                	cjsjInRange:[]
 //              	pageNum:1,
 //          		pageSize:5
                 },
@@ -163,11 +163,11 @@
             }
         },
         watch: {
-			czsjInRange:function(newQuestion, oldQuestion){
+			cjsjInRange:function(newQuestion, oldQuestion){
 				if (newQuestion.length > 0 && newQuestion[0] != ''){
-					this.findMess.czsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+					this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 				}else{
-					this.findMess.czsjInRange  = ''
+					this.findMess.cjsjInRange  = ''
 				}
 				console.log('newQuestion',newQuestion)
 			},
