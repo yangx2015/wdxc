@@ -40,7 +40,7 @@
 					<Card style="width:100%">
 						<p slot="title">
 							<Icon type="ios-film-outline"></Icon>
-							{{item.lmmc}}
+							{{item.lmmc}} [{{item.lmdm}}]
 						</p>
 						<span slot="extra">
 					        <a href="#" @click.prevent="AddDcList(item,index)">
