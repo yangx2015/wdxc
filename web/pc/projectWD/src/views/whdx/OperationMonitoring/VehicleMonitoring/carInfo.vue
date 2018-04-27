@@ -330,8 +330,28 @@
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
+                        if (type === '11'){
+                            this.checkImage();
+                        }
                     }else{
                         this.$Message.error(res.message)
+                    }
+                })
+            },
+            checkImage(bh){
+                let params = {
+                    bj:this.bj,
+                }
+                this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
+                    if (res.code === 200){
+                        console.log(res);
+                        this.SpinShow = false;
+                        this.$Message.success("发送成功!")
+                    }else{
+                        clearTimeout();
+                        setTimeout(()=>{
+                            this.check()
+                        },5000)
                     }
                 })
             },
