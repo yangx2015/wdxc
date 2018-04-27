@@ -162,7 +162,7 @@ export let appRouter = [
         	},
         	{
         		path: 'abnormal',
-				icon: 'abnormal',
+				icon: 'android-car',
 				name: 'abnormal',
 				title: '异常行驶记录',
 				component: () => import('@/views/whdx/VehicleScheduling/abnormal')
