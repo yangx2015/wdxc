@@ -18,7 +18,12 @@ baseURL: 'http://47.98.39.45:8080/biz',
 });
 // 添加请求拦截器 数据请求之前
 httpInstance.interceptors.request.use((config) => {
-	store.commit('CloadingType',true)//全局加载等待
+	console.log('数据加载前',config.url)
+	if(config.url =="/api/clzd/getzdcl/"){
+		store.commit('CloadingType',false)//全局加载等待
+	}else{
+		store.commit('CloadingType',true)//全局加载等待
+	}
 	
     var headers = config.headers;
     var contentType = headers['Content-Type'];
