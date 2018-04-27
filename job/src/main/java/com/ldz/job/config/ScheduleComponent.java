@@ -31,16 +31,17 @@ public class ScheduleComponent {
 		JobDetail zdglJob = JobBuilder.newJob(GpsZtSyncJob.class).withIdentity(GpsZtSyncJob.class.getName(), "zdglsync")
 				.build();
 
-		// 执行周期，每10分钟执行一次
-		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *");
-		
+		// gps同步定执行周期，每1分钟执行一次
+		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1* * * ? *");
+		// 终端状态监测定时周期 每5分钟执行一次
+		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? *");
 		
 		// gps同步创建一个trigger
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(GpsSaveJob.class.getName(), "GPSSync")
 				.withSchedule(scheduleBuilder).build();
 		// 创建设备状态同步trigger
 		CronTrigger cronTriggerzdgl = TriggerBuilder.newTrigger().withIdentity(GpsZtSyncJob.class.getName(), "zdglsync")
-				.withSchedule(scheduleBuilder).build();
+				.withSchedule(scheduleBuilderZD).build();
 		try {
 
 			schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);

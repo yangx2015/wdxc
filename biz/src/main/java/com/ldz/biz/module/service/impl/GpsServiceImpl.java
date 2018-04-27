@@ -280,13 +280,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			return null;
 		}
 
-		// 事件类型为离线
-		if (StringUtils.equals(entity.getEventType(), "80")) {
-			clsbyxsjjl.setId(genId());
-			clsbyxsjjl.setSjlx(entity.getEventType());
-			clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-			return clsbyxsjjl;
-		}
 
 		// 事件类型为点火
 		if (StringUtils.equals(entity.getEventType(), "50")) {
