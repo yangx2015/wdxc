@@ -4,22 +4,15 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.GuiJiGps;
 import com.ldz.biz.module.bean.gpsSJInfo;
-import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
-import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClSbyxsjjl;
 import com.ldz.biz.module.service.SbyxsjjlService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -34,8 +27,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClSbyxsjjlMapper entityMapper;
 	@Autowired
 	private ClGpsLsMapper clGpsLsMapper;
-	@Autowired
-	private ClClMapper clclmapper;
+	/*@Autowired
+	private ClClMapper clclmapper;*/
 
 	@Override
 	protected Mapper<ClSbyxsjjl> getBaseMapper() {
@@ -45,7 +38,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	@Override
 	public boolean fillCondition(LimitedCondition condition) {
 
-		LimitedCondition condition2 = new LimitedCondition(ClCl.class);
+		/*LimitedCondition condition2 = new LimitedCondition(ClCl.class);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
 				.getRequest();
 		condition2.eq(ClCl.InnerColumn.cph, request.getAttribute("cph"));
@@ -54,7 +47,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 
 		List<String> collect = selectByExample.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 				.map(ClCl::getZdbh).collect(Collectors.toList());
-		condition.in(ClSbyxsjjl.InnerColumn.zdbh, collect);
+		condition.in(ClSbyxsjjl.InnerColumn.zdbh, collect);*/
 		return true;
 	}
 
