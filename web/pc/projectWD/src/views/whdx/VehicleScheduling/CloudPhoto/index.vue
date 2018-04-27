@@ -64,11 +64,7 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
-								<!--<Input v-model="findMess.cphLike"
-									   placeholder="请输入车辆编号"
-									   style="width: 200px"
-									   @on-keyup.enter="findMessList()"></Input>-->
-							   	<Select v-model="findMess.cphLike" filterable 
+							   	<Select v-model="findMess.cphLike" filterable
 							   		@on-change="findMessList()"
 							   		style="width: 200px;text-align: left;">
 					                <Option  v-for="(item,index) in carList" 
@@ -91,25 +87,18 @@
 						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
     					<div v-if="!item.video">
-							<div class="videoBF" @click="videoS(item.video,item,index)">
-								<Icon class="icon" type="arrow-right-b" 
-									 @click="videoS(item.video,item,index)"
-									color="#b5b5b5" size='38'></Icon>
-							</div>
-							<img
-								style="width: 100%;"
-								:src="videoPath+'/test/'+item.imgdz"/>
+							<!--<div class="videoBF" @click="videoS(item.video,item,index)">-->
+								<!--<Icon class="icon" type="arrow-right-b" -->
+									 <!--@click="videoS(item.video,item,index)"-->
+									<!--color="#b5b5b5" size='38'></Icon>-->
+							<!--</div>-->
+							<img style="width: 100%;" :src="videoPath+'/test/'+item.url"/>
     					</div>
-						<video v-else
-							style="width: 100%;"
-					       :src="videoPath+'/test/'+item.url"
-					       autoplay="autoplay"
-					       controls="controls"></video>
+                        <img :src="videoPath+'/test/'+item.url" style="width: 100%;">
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
 					    	<div style="float: right;cursor: pointer;">
 						    	<span v-show="item.video" @click="videoF(item.video,item,index)">
-						    		<!--<Icon type="close-circled" style="float: right"></Icon>-->
 						    		关闭
 						    	</span>
 						    	<span style="color: #ff9900;" @click="videoColse(item,index)">

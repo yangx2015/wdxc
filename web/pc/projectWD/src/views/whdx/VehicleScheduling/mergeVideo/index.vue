@@ -24,20 +24,24 @@
 										 :value="item.zdbh" :key="item.zdbh">{{item.cph}}</Option>
 							</Select>
 						</Col>
+					</Row>
+					<Row>
 						<Col span="8">
 							<FormItem label='开始时间'>
 								<DatePicker v-model="formItem.startTime" type="datetime" placeholder="请输时间" style="width: 220px"></DatePicker>
 							</FormItem>
 						</Col>
+					</Row>
+					<Row>
 						<Col span="8">
 							<FormItem label='时长' prop="duration">
 								<Input v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"></Input>
 							</FormItem>
 						</Col>
+					</Row>
+					<Row>
 						<Col span="8">
-							<FormItem label='确定'>
-								<Button type="ghost" @click="confirm">确定</Button>
-							</FormItem>
+							<Button type="ghost" @click="confirm">确定</Button>
 						</Col>
 					</Row>
 				</Form>
@@ -47,6 +51,26 @@
 </template>
 
 <script>
+
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
 	import configApi from '@/axios/config.js'
     import mixins from '@/mixins'
     
@@ -61,17 +85,15 @@
                 videoPath :configApi.VIDEO_PATH,
 				cjsjInRange:[],
                 ruleInline: {
-                    xm: [
-                        { required: true, message: '请输入驾驶员名', trigger: 'blur' }
-                    ],
-                    duration: [
-                        { required: true, message: '请输入驾驶员名', trigger: 'blur' }
+                    startTime: [
+                        { required: true, message: '请输入开始时间', trigger: 'blur' }
                     ],
                 },
                 formItem:{
                     startTime:'',
 					endTime:'',
-                    zdbh:''
+                    zdbh:'',
+                    duration:10
 				},
                 carList:[],
 				count:0,
@@ -90,15 +112,28 @@
                 })
             },
             confirm(){
-                this.mergeVideo("0-10");
+                var v = this
+                this.$refs['formItem'].validate((valid) => {
+                    if (valid) {
+                        if (this.formItem.duration > 30){
+                            this.$Message.error('时长不能大于30秒')
+                            return;
+                        }
+                        this.mergeVideo("1-10");
+                    } else {
+                        v.$Message.error('请将信息填写完整!');
+                    }
+                })
 			},
             mergeVideo(param){
+                let endTime = new Date(this.formItem.startTime.getTime());
+                endTime.setSeconds(endTime.getSeconds() + this.formItem.duration);
                 let params = {
                     deviceId:this.zdbh,
                     cmdType:13,
                     cmdParams:param,
-                    startTime:this.formItem.startTime,
-                    endTime  :this.formItem.endTime,
+                    startTime:this.formItem.startTime.format('yyyy-MM-dd hh:mm:ss'),
+                    endTime  :endTime.format('yyyy-MM-dd hh:mm:ss'),
                 }
                 this.SpinShow = true;
                 this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
