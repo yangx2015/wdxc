@@ -32,8 +32,6 @@
                                 <DatePicker type="datetime" v-model="otherMess.ccdjrq"
                                             style="width: 100%"
                                             placeholder="请选着初次登记日期"></DatePicker>
-
-                                <!--<Input type="text" v-model="otherMess.ccdjrq" placeholder="请选着初次登记日期"></Input>-->
                             </FormItem>
                         </Col>
                         <Col span="12">
@@ -46,7 +44,6 @@
                                 <DatePicker type="datetime" v-model="otherMess.bxsj"
                                             style="width: 100%"
                                             placeholder="请选着保险时间"></DatePicker>
-                                <!--<Input type="text" v-model="otherMess.bxsj" placeholder="请选着保险时间"></Input>-->
                             </FormItem>
                         </Col>
                     </Row>

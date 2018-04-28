@@ -149,11 +149,10 @@
 			this.$store.commit('setCurrentPath', [{
 				title: '首页',
 			}, {
-				title: '系统管理',
-			}, {
-				title: '用户管理',
+				title: '车辆历史轨迹',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
+			console.log('路由',this.$route)
             this.formItem.startTime = this.getTodayDate() + " 00:00:00";
             this.formItem.endTime = this.getTodayDate() + " 23:59:59";
 			this.formItemList();

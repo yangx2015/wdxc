@@ -59,10 +59,12 @@
 	
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
+	import allmes from './comp/otherMess.vue'
+
 	export default {
 	  name:'char',
       components: {
-        expandRow,newmes
+        expandRow,newmes,allmes
       },
     	mixins:[mixins],
         data () {
@@ -88,18 +90,18 @@
             		pageSize:5
             	},
                 tableTiT: [
-//                  {
-//                    title:'#',
-//                    type: 'expand',
-//                    width: 50,
-//                    render: (h, params) => {
-//                        return h(expandRow, {
-//                            props: {
-//                                row: params.row
-//                            }
-//                        })
-//                    }
-//                  },
+					 {
+                        title:'#',
+                        type: 'expand',
+                        width: 50,
+                        render: (h, params) => {
+                            return h(expandRow, {
+                                props: {
+                                    row: params.row
+                                }
+                            })
+                        }
+                    },
 					{
 						title: "序号",
 						width: 80,
@@ -183,10 +185,50 @@
                                         click: () => {
                                             this.messType = false
                                         	this.mess = params.row
+											//由于数据传递丢失 司机ID 司机 姓名 单独传递
                                         	this.derMes.sjId = params.row.sjId
                                         	this.derMes.sjxm = params.row.sjxm
-                                            console.log('index数据传递',this.derMes);
                                             this.compName = newmes
+                                        }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+                                        icon: 'clipboard',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            // console.log('数据信息获取',params.row)
+                                            this.mess = params.row
+											// debugger
+                                            this.compName = allmes
+                                        }
+                                    }
+                                }),
+                                h('Button', {//历史轨迹
+                                    props: {
+                                        type: 'primary',
+                                        icon: 'steam',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.$router.push(
+                                                {
+                                                    name: 'historypath',
+                                                    params:{zdbh:params.row.zdbh}
+                                                }
+                                            );
                                         }
                                     }
                                 }),
