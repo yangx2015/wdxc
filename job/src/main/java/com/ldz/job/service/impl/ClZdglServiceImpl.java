@@ -10,6 +10,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +27,13 @@ public class ClZdglServiceImpl implements ClZdglService {
 
 	
 	private static final Logger log = LoggerFactory.getLogger(ClZdglServiceImpl.class);
+	@Value("${ticserver.url}")
+    private String ticserverurl;
+	
+	@Value("${biz.url}")
+    private String bizurl;
+	
 
-	private String url = "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
-
-	private String gpsSaveUrl="http://47.98.39.45:8080/biz/pub/gps/save";
 	
 	@Autowired
 	private ClZdglMapper clZdglMapper;
@@ -56,7 +60,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 
 		for (String zdbh : keySet) {
 
-			String string = HttpUtil.get(url + zdbh);
+			String string = HttpUtil.get(ticserverurl + zdbh);
 			ApiResponse<String> bean = JsonUtil.toBean(string, ApiResponse.class);
 
 			if (bean.getCode() != 200) {
@@ -88,7 +92,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 			Map<String, String> postHeaders = new HashMap<String, String>();
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			try {
-				 String postJson = HttpUtil.postJson(gpsSaveUrl, postHeaders, postEntity);
+				 String postJson = HttpUtil.postJson(bizurl, postHeaders, postEntity);
 				 apiResponse=(ApiResponse<String>)JsonUtil.toBean(postJson, ApiResponse.class);
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -97,6 +101,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 	}
 	
 	public static void main(String[] args) {
+		
 		 String url1= "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
 		 String aString="asdad";
 		 System.out.println(url1+aString);

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -21,9 +22,10 @@ public class InstructionServiceImpl  implements InstructionService {
 	private ClZdglMapper mapper;
 	@Autowired
 	private ZdglService service;
-    
-	private String url = "http://47.98.39.45:8080/tic-server/api/push/carcmd";
-
+	
+	@Value("${ticserver.url}")
+    private String url;
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {

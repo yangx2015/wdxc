@@ -47,4 +47,9 @@ mapper:
   
 server:
   port: 81
+
+biz:
+  url: http://47.98.39.45:8080/pub/gps/save
   
+ticserver:  
+   url: http://47.98.39.45:9095/api/push/checkOnlin/ 
