@@ -48,6 +48,7 @@ public class AppPushUtils {
 	public static void setMasterSecret(String masterSecret) {
 		AppPushUtils.masterSecret = masterSecret;
 	}
+	
 
 	/**
 	 * 根据alias 获取id

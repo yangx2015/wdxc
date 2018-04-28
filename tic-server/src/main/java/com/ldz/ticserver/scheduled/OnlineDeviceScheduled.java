@@ -40,6 +40,7 @@ public class OnlineDeviceScheduled {
 				String deviceIdAll = it.next();
 				executor.execute(new ThreedOnlineCheck(deviceIdAll));
 			}
+			
 		}
     }
 	
