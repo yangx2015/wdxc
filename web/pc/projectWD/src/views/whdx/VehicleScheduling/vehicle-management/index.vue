@@ -90,18 +90,18 @@
             		pageSize:5
             	},
                 tableTiT: [
-					 {
-                        title:'#',
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
-                        }
-                    },
+					 // {
+                    //     title:'#',
+                    //     type: 'expand',
+                    //     width: 50,
+                    //     render: (h, params) => {
+                    //         return h(expandRow, {
+                    //             props: {
+                    //                 row: params.row
+                    //             }
+                    //         })
+                    //     }
+                    // },
 					{
 						title: "序号",
 						width: 80,
@@ -151,7 +151,11 @@
                         key: 'zt',
                         render:(h,p)=>{
                             let val = this.dictUtil.getValByCode(this,this.clztDictCode,p.row.zt)
-                            return h('div',val)
+                            return h('div',{
+                                style: {
+                                    color: val=='正常' ?'#279a3b':'#ed3f14'
+                                }
+                            },val)
                         }
                     },
                     {
@@ -213,7 +217,7 @@
                                 }),
                                 h('Button', {//历史轨迹
                                     props: {
-                                        type: 'primary',
+                                        type: 'warning',
                                         icon: 'steam',
                                         shape: 'circle',
                                         size: 'small'
