@@ -16,12 +16,15 @@ import com.ldz.biz.module.service.ZdglService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.redis.RedisTemplateUtil;
 @Service
 public class InstructionServiceImpl  implements InstructionService {
 	@Autowired
 	private ClZdglMapper mapper;
 	@Autowired
 	private ZdglService service;
+    @Autowired
+    private RedisTemplateUtil redisTemplate;
 	
 	@Value("${ticserver.url}")
     private String url;
@@ -48,6 +51,11 @@ public class InstructionServiceImpl  implements InstructionService {
 			if (apiResponse.getCode()!=200) {
 				return apiResponse;
 			}
+			if (info.getCmdType().equals("13")) {
+				String results = apiResponse.getResult();
+				redisTemplate.boundListOps("BJ"+info.getDeviceId()).leftPush(results);
+				
+			}
 			
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
 			
@@ -66,7 +74,6 @@ public class InstructionServiceImpl  implements InstructionService {
 			if (info.getCmdType().equals("50")) {
 				clzd.setSpscms(info.getCmd());
 			}
-			
 			
 			service.update(clzd);
 			

@@ -8,6 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import com.github.pagehelper.PageInfo;
@@ -22,6 +24,7 @@ import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.redis.RedisTemplateUtil;
 
 import tk.mybatis.mapper.common.Mapper;
 
@@ -33,6 +36,11 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
     @Autowired
     private ClSpkMapper entityMapper;
+    
+	@Autowired
+	private SimpMessagingTemplate websocket;
+	@Autowired
+	private RedisTemplateUtil redisutils;
      
   /*  @Value("${spk.url}")
 	private String path;*/
@@ -96,9 +104,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 	public ApiResponse<String> saveSpk(GpsInfo entity) {
 		
 		log.info("收到的文件模型:"+entity);
-		
 		ClSpk clSpk = new ClSpk();
-		
         ClCl selectOne=new ClCl();
         selectOne.setZdbh(entity.getDeviceId());
 		//通过终端编号找到对应车辆信息
@@ -124,6 +130,26 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
 		save(clSpk);
 
+		if (StringUtils.isNotEmpty(entity.getTaskId())) {
+		BoundListOperations<Object, Object> boundListOps = redisutils.boundListOps("BJ"+entity.getDeviceId());
+		String index = (String) boundListOps.index(0);
+		if (StringUtils.isNotEmpty(index)) {
+			
+			for (int i = 0; i < boundListOps.size(); i++) {
+				String index2 = (String) boundListOps.index(i);
+				if (StringUtils.equals(entity.getTaskId(), index2)) {
+					websocket.convertAndSend("/topic/sendhbsp", clSpk);
+					log.info("视屏合并成功,并推送至前端"+clSpk);
+					boundListOps.remove(i, index2);
+				}
+				
+			}
+			
+		}
+		
+	}
+		
+		
 		return ApiResponse.success();
 	}
 }
