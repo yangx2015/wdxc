@@ -14,6 +14,7 @@
 </template>
 <script>
     import mixins from '@/mixins'
+	import configApi from '@/axios/config.js'
     export default {
         name:'',
         mixins: [mixins],
@@ -29,12 +30,11 @@
                     },
                     {
                         title: '异常事件',
-                        key: 'eventType',
+                        key: 'sjlx',
+                        align:'center',
                         render: (h, params) => {
-                            switch (params.row.eventType){
-                                case "80":
-                                    return '正常';
-                            }
+                        	let val = this.dictUtil.getValByCode(this,this.sjBM,params.row.sjlx)
+							return val
                         }
                     },
                     {
@@ -43,32 +43,48 @@
                         align: 'center'
                     },
                     {
+                        title: '驾驶员',
+                        key: 'sjxm',
+                        align: 'center'
+                    },
+                    {
                         title: '事发时间',
-                        key: 'time',
-                        align: 'center',
-                        render: (h, params) => {
-                            return this.getDJC(params.row.time)
-                        }
+                        key: 'cjsj',
+                        align: 'center'
                     }
-                ]
+                ],
+                tabmess:[],
+                sjBM:'ZDCLK0038',
+                sjDIC:[]
             }
         },
-        props:{
-            tabmess:{
-                type:Array,
-                default:[]
-            }
-        },
+//      props:{
+//          tabmess:{
+//              type:Array,
+//              default:[]
+//          }
+//      },
         created(){
+        	this.getmess()
         },
         mounted(){
             this.getalert()
         },
         methods:{
+        	getLXDic(){
+                this.sjDIC = this.dictUtil.getByCode(this,this.sjBM);
+			},
+			getmess(){
+				var v = this
+				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+					console.log('数据',res)
+					v.tabmess = res.page.list
+				})
+			},
             getalert(){
                 var windowHeight = window.innerHeight
-//              this.tabHeight = windowHeight/2 - 118
-				this.tabHeight = windowHeight - 200
+                this.tabHeight = windowHeight/2 - 130
+//				this.tabHeight = windowHeight - 200
                 console.log('浏览器高',this.tabHeight)
             }
         }

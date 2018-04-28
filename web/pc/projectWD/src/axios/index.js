@@ -8,7 +8,7 @@ import store from '@/store'
 //订单分配权限
 let httpInstance = axios.create({
 // baseURL: 'http://127.0.0.1:80',
-baseURL: 'http://47.98.39.45:8080/biz',
+baseURL: 'http://47.98.39.45:8080',
 // 	 baseURL: 'http://192.168.31.181:80',//陈
 //    	 baseURL: 'http://192.168.31.228:80',//羊
 // 	 baseURL: 'http://192.168.31.228:80',//羊
@@ -18,8 +18,13 @@ baseURL: 'http://47.98.39.45:8080/biz',
 });
 // 添加请求拦截器 数据请求之前
 httpInstance.interceptors.request.use((config) => {
-	store.commit('CloadingType',true)//全局加载等待
-	
+	console.log('数据加载前',config.url)
+	if(config.url =="/api/clzd/getzdcl/"){
+		store.commit('CloadingType',false)//全局加载等待
+	}else{
+		store.commit('CloadingType',true)//全局加载等待
+	}
+
     var headers = config.headers;
     var contentType = headers['Content-Type'];
     if (contentType == "application/x-www-form-urlencoded"){
@@ -50,17 +55,29 @@ httpInstance.interceptors.response.use((response) => {
 	var v = this
     // 对响应数据做点什么
     store.commit('CloadingType',false)
-    if(response.status===200&&response.data.code===200){
-    	return response.data;
-    }else if(!Cookies.get('result')||response.status===500){
-  		router.push({name: 'error-500'})
-    }else if(Cookies.get('result')&&response.status===500){
-  		router.push({name: 'errorpage_500'})
-    }else if(response.status===200&&response.data.code===403){
-    	router.push({name: 'error-403'})
-    }else if(response.status===200&&response.data.code===500){
-    	router.push({name: 'errorpage_500'})
+    if (response.status===404){
+        router.push({name: 'error-404'})
     }
+    if (response.status===200){
+        if (response.data.code===403){
+            router.push({name: 'error-403'})
+        }else{
+            return response.data;
+        }
+    }else{
+        router.push({name: 'error-500'})
+    }
+    // if(response.status===200&&response.data.code===200){
+    // 	return response.data;
+    // }else if(!Cookies.get('result')||response.status===500){
+  	// 	router.push({name: 'error-500'})
+    // }else if(Cookies.get('result')&&response.status===500){
+  	// 	router.push({name: 'errorpage_500'})
+    // }else if(response.status===200&&response.data.code===403){
+    // 	router.push({name: 'error-403'})
+    // }else if(response.status===200&&response.data.code===500){
+    // 	router.push({name: 'errorpage_500'})
+    // }
 }, function (error) {
     // 对响应错误做点什么
 		if(!Cookies.get('result')){

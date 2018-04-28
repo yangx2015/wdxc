@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +27,10 @@ import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements SpkService{
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(SpkServiceImpl.class);
+
     @Autowired
     private ClSpkMapper entityMapper;
      
@@ -45,7 +52,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
     @Override
     public boolean fillCondition(LimitedCondition condition){
-        condition.and().andLike(ClSpk.InnerColumn.wjm.name(),"%.mp4");
+
         return true;
     }
     @Override
@@ -87,6 +94,9 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
 	@Override
 	public ApiResponse<String> saveSpk(GpsInfo entity) {
+		
+		log.info("收到的文件模型:"+entity);
+		
 		ClSpk clSpk = new ClSpk();
 		
         ClCl selectOne=new ClCl();
@@ -107,7 +117,10 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		clSpk.setId(genId());//自增长id
 		clSpk.setJgdm(clinfo.getJgdm());//机构代码
 		clSpk.setJgmc(clinfo.getJgmc());//机构名称
-
+		//这个视屏的任务id
+		if (StringUtils.isNotEmpty(entity.getTaskId())) {
+			clSpk.setBj(entity.getTaskId());
+		}
 
 		save(clSpk);
 

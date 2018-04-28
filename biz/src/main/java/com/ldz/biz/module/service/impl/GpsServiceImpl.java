@@ -76,7 +76,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
 		}
 
-		return justDoIt(gpsinfo);
+		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
+		return justDoIt(gpsinfo,seleByZdbh);
 	}
 
 	public ApiResponse<String> justDoThat(GpsInfo gpsinfo) {
@@ -102,7 +103,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		return ApiResponse.success();
 	}
 
-	public ApiResponse<String> justDoIt(GpsInfo gpsinfo) {
+	public ApiResponse<String> justDoIt(GpsInfo gpsinfo,ClCl clcl) {
 		ClGps entity =null;
 		try {
 			// 将原始点位抓换
@@ -114,7 +115,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	
 
 	// 判断该点位是否携带类型,或者是何种类型分类存储
-	ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity);
+	ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity,clcl);
 	if(saveClSbyxsjjl!=null){
 		
 		log.info("该点位属于特殊点位,事件类型为:" + saveClSbyxsjjl.getSjlx());
@@ -156,11 +157,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public ClDzwl JudgePoint(GpsInfo gps) {
+	public ClDzwl JudgePoint(GpsInfo gps,ClCl clcl) {
 
 		ClGps changeCoordinates2 = changeCoordinates(gps);
 
-		List<ClDzwl> seleByZdbh = clclmapper.seleByZdbh(gps.getDeviceId()).getClDzwl();
+		List<ClDzwl> seleByZdbh = clcl.getClDzwl();
 
 		if (CollectionUtils.isEmpty(seleByZdbh)) {
 			log.info("该终端暂未设置电子围栏");
@@ -234,11 +235,16 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public ClSbyxsjjl saveClSbyxsjjl(GpsInfo entity, ClGps clgps) {
+	public ClSbyxsjjl saveClSbyxsjjl(GpsInfo entity, ClGps clgps,ClCl clcl) {
 		// 封装设备事件记录表表
 		ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
 		clsbyxsjjl.setJd(clgps.getBdjd());
 		clsbyxsjjl.setWd(clgps.getBdwd());
+		clsbyxsjjl.setCph(clcl.getCph());
+		clsbyxsjjl.setCx(clcl.getCx());
+		if (StringUtils.isNotEmpty(clcl.getSjxm())) {
+			clsbyxsjjl.setSjxm(clcl.getSjxm());
+		}
 		// 获取设备的记录时间
 		clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
 		if (entity.getGpsjd() != null) {
@@ -267,7 +273,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 
 		// 判断该点位是否在电子围栏里面
-		ClDzwl judgePoint = JudgePoint(entity);
+		ClDzwl judgePoint = JudgePoint(entity,clcl);
 		if (judgePoint != null) {
 			clsbyxsjjl.setId(genId());
 			clsbyxsjjl.setSjlx("70");
@@ -314,6 +320,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		if (clpgs != null) {
 			if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
 				if (StringUtils.equals(gpsinfo.getSczt(), "10")) {
+					if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+						info.setEventType(gpsinfo.getEventType());
+					}
 					info.setZxzt("00");
 					info.setBdjd(clpgs.getBdjd().toString());
 					info.setBdwd(clpgs.getBdwd().toString());
@@ -322,6 +331,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				}
 				if (StringUtils.equals(gpsinfo.getSczt(), "20")) {
 					info.setZxzt("10");
+					if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+						info.setEventType(gpsinfo.getEventType());
+					}
 					info.setBdjd(clpgs.getBdjd().toString());
 					info.setBdwd(clpgs.getBdwd().toString());
 					info.setTime(simpledate(gpsinfo.getStartTime()));

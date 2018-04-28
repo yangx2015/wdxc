@@ -69,9 +69,22 @@ public class ClSbyxsjjl implements Serializable {
      */
     @Column(name = "BZ")
     private String bz;
+    /**
+     * 车型
+     */
+    @Column(name = "CX")
+    private String cx;
+    /**
+     * 车牌号
+     */
+    @Column(name = "cph")
+    private String cph;
+    
+    @Column(name = "SJXM")
+    private String sjxm;
 
     private static final long serialVersionUID = 1L;
-
+   
     /**
      * 获取ID
      *
@@ -252,7 +265,31 @@ public class ClSbyxsjjl implements Serializable {
         this.bz = bz;
     }
 
-    public enum InnerColumn {
+    public String getCx() {
+		return cx;
+	}
+
+	public void setCx(String cx) {
+		this.cx = cx;
+	}
+
+	public String getCph() {
+		return cph;
+	}
+
+	public void setCph(String cph) {
+		this.cph = cph;
+	}
+
+	public String getSjxm() {
+		return sjxm;
+	}
+
+	public void setSjxm(String sjxm) {
+		this.sjxm = sjxm;
+	}
+
+	public enum InnerColumn {
         id("ID"),
         zdbh("ZDBH"),
         sjjb("SJJB"),
@@ -262,8 +299,11 @@ public class ClSbyxsjjl implements Serializable {
         jid("JID"),
         sjlx("SJLX"),
         yxfx("YXFX"),
-        bz("BZ");
-
+        bz("BZ"),
+        cx("cx"),
+        cph("CPH"),
+        sjxm("SJXM");
+       
         private final String column;
 
         public String value() {

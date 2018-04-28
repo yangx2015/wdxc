@@ -72,6 +72,12 @@ module.exports = {
         DELE:'/api/rz/removeIds'
 
 	},
+    CLSBYXJL:{
+		QUERY:'api/clsbyxsjjl/pager',//异常事件管理
+        ADD:'/api/clsbyxsjjl/save',
+        CHANGE:'/api/clsbyxsjjl/update',
+        DELE:'/api/clsbyxsjjl/removeIds'
+	},
 	SUGGES:{
 		QUERY:'api/yj/pager',//意见管理
         CHANGE:'/api/yj/update',

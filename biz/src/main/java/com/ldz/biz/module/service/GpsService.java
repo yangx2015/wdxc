@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.websocketInfo;
+import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClDzwl;
 import com.ldz.biz.module.model.ClGps;
 import com.ldz.biz.module.model.ClSbyxsjjl;
@@ -26,7 +27,7 @@ public interface GpsService extends BaseService<ClGps,String>{
     * @parm GpsInfo
     * @Return Boolean
     */
-   ClDzwl JudgePoint(GpsInfo entity);
+   ClDzwl JudgePoint(GpsInfo entity,ClCl clcl);
     
     /*
      * 将tic-server传入的gps信息转换百度 谷歌 经纬度.
@@ -39,7 +40,7 @@ public interface GpsService extends BaseService<ClGps,String>{
      * 根据原始的gps的事件类型返回ClSbyxsjjl对象,如若对象不为空则存储
      * @parm GpsInfo   ClGps
      */
-    ClSbyxsjjl   saveClSbyxsjjl(GpsInfo entity,ClGps clgps);
+    ClSbyxsjjl   saveClSbyxsjjl(GpsInfo entity,ClGps clgps,ClCl clcl);
     
     /*
      * 根据gps点位信息转换成推送至前端的模型

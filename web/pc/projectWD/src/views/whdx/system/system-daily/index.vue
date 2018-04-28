@@ -106,7 +106,7 @@
                         ellipsis:true,
                     },
                     {
-                        title: '执行时间',
+                        title: '耗时',
                         align:'center',
                         key: 'zxsj'
                     },

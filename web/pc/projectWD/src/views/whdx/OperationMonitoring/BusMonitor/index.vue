@@ -57,15 +57,49 @@
 		    </Card>
 		</div>
 		<div class="body-r-4">
-			<Card>
-		        <p slot="title">
-		            <Icon type="ios-film-outline"></Icon>
-		            	异常行驶记录
-		        </p>
-			    <div :style="mapheight">
-			    	<abnor :tabmess=tabmess></abnor>
+			<div class="box sugges">
+				<div class="body"  style="background-color: #fff;">
+					<div class="box">
+						<div style="overflow: auto;">
+							<div class="box-row-z padding-left-right">
+								<Button class="margin-5"
+									type="primary"
+									v-for="(item,index) in XBlineName"
+									@click="getXBline(item.id,item.xlmc)">{{item.xlmc}}</Button>
+							</div>
+						</div>
+						<div style="border-top: solid 2px #BBBEC4;">
+							 	当前线路:{{lineName}}
+
+						</div>
+						<div class="body">
+						    <div class="carlines">
+						    	<div class="box-row-z">
+						    		<div v-for="(item,index) in XBline">
+						    			<carline
+						    				:zd="item.entryCount!=0"
+						    				:linecar='item.exportCount!=0'
+						    				:siteName="item.zdName"
+						    				:lineShow="!(index==XBline.length-1)"></carline>
+						    		</div>
+						  		</div>
+					    	</div>
+						</div>
+					</div>
 				</div>
-		    </Card>
+				<div class="body">
+					<Card>
+				        <p slot="title">
+				            <Icon type="ios-film-outline"></Icon>
+				            	异常行驶记录
+				        </p>
+				        <div style="padding:5px ;">
+				        	<abnor :tabmess=tabmess></abnor>
+				        </div>
+				    </Card>
+				</div>
+				
+			</div>
 		</div>
 	</div>
 	<div class="box sugges" v-if="false">
@@ -182,6 +216,7 @@ export default {
         		height:''
         	},
         	lineName:'',
+        	lineID:'',
         	XBlineName:[],
         	XBline:[],
         	tabmess:[]
@@ -194,8 +229,9 @@ export default {
 	},
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
-			this.tabmess = newQuestion
-			this.getXBline()
+			var v = this 
+//			this.tabmess = newQuestion//异常事件列表
+//			this.getXBline(v.lineID,v.lineName)
 		},
 	},
     created(){
@@ -206,13 +242,21 @@ export default {
         },{
             title: '校巴监控',
         }])
-        this.getXBline()
         this.getXBlineName()
     },
      mounted(){
 		this.getalert()
     },
     methods: {
+    	//异常事件列表
+    	getERRORlist(){
+//  		this.$http.get(configApi.YCSJLB.QUERY,{params:{
+//  			'sjlx':'',//事件类型
+//  			'cjsj':'',//事件时间段
+//  			''
+//  		}}).then((res) =>{
+//			})
+    	},
     	getXBlineName(){//校巴线路名称
     		var v = this
     		this.$http.post(configApi.XL.QUERY).then((res) =>{
@@ -226,6 +270,7 @@ export default {
 				v.XBline = res.result
 			})
     		v.lineName = name
+    		v.lineID = id
     	},
     	getalert(){
     		var windowHeight = window.innerHeight

@@ -358,8 +358,8 @@ export default {
 		updateItem(o,n){
             let r = {};
             r.cx = n.cx;
-            r.lnt = n.lng;
-            r.lat = n.lat;
+            r.lng = n.bdjd;
+            r.lat = n.bdwd;
             r.clid = n.clid;
             r.zdbh = n.zdbh;
             r.bdjd = n.bdjd;
@@ -383,7 +383,7 @@ export default {
                     break;
                 case '00':
                 default:
-                    r.time = n.time;
+                    r.time = o.time;
                     r.speed = n.speed;
                     r.status = 0;
                     r.text = '更新时间';

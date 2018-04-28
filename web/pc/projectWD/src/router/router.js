@@ -161,6 +161,13 @@ export let appRouter = [
 				component: () => import('@/views/whdx/VehicleScheduling/vehicle-management')
         	},
         	{
+        		path: 'abnormal',
+				icon: 'android-car',
+				name: 'abnormal',
+				title: '异常行驶记录',
+				component: () => import('@/views/whdx/VehicleScheduling/abnormal')
+        	},
+        	{
         		path:'/',
 				icon: 'android-clipboard',
 				name: 'TemporaryCarManagement',
@@ -219,11 +226,25 @@ export let appRouter = [
 				component: () => import('@/views/whdx/VehicleScheduling/OverspeedLimit')
 			},
 			{
+				path: 'CloudPhoto',
+				icon: 'android-clipboard',
+				name: 'CloudPhoto',
+				title: '云图片库',
+				component: () => import('@/views/whdx/VehicleScheduling/CloudPhoto')
+			},
+			{
 				path: 'CloudVideo',
 				icon: 'android-clipboard',
 				name: 'CloudVideo',
 				title: '云视频库',
 				component: () => import('@/views/whdx/VehicleScheduling/CloudVideo')
+			},
+			{
+				path: 'mergeVideo',
+				icon: 'android-clipboard',
+				name: 'mergeVideo',
+				title: '合并视频',
+				component: () => import('@/views/whdx/VehicleScheduling/mergeVideo')
 			},
         	{
         		path:'/',

@@ -201,6 +201,7 @@
                     this.findMess.cjsjInRange = '';
                 }
 				var v = this
+                v.findMess.wjmEndwith = '.mp4';
 				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
             	    v.pageTotal = res.page.total
 					for (let r of res.page.list){
