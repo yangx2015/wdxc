@@ -3,7 +3,8 @@
 </style>
 <template>
 	<div>
-		<Card>
+		<component :is="componentName"></component>
+		<Card style="height: 500px;">
 			<Row>
 				<Form
 						ref="formItem"
@@ -13,7 +14,7 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="8">
-							<FormItem label='开始时间'>
+							<FormItem label='车牌号'>
 								<Select v-model="formItem.zdbh" filterable>
 									<Option  v-for="(item,index) in carList"
 											 :value="item.zdbh" :key="item.zdbh">{{item.cph}}</Option>
@@ -30,23 +31,24 @@
 					</Row>
 					<Row>
 						<Col span="8">
-							<FormItem label='时长' prop="duration">
-								<Input v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"></Input>
+							<FormItem label='提取时长' prop="duration">
+								<Input v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"><span slot="append">秒</span></Input>
 							</FormItem>
 						</Col>
 					</Row>
 					<Row>
 						<Col span="8">
-							<Button type="ghost" @click="confirm">确定</Button>
+							<Button type="ghost" @click="componentName = 'loading'">确定</Button>
+							<Button type="ghost" @click="cancel">取消等待</Button>
 						</Col>
 					</Row>
 				</Form>
 			</Row>
 			<Row>
-				<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+				<div v-if="SpinShow" style="width:100%;height:100%;z-index: 1111;">
 					<Spin fix>
 						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-						<div style="font-size: 30px;">数据加载中请稍后</div>
+						<div style="font-size: 30px;">文件上传中请稍后...</div>
 					</Spin>
 				</div>
 				<video v-if="videoUrl != null"
@@ -82,14 +84,17 @@
     }
 	import configApi from '@/axios/config.js'
     import mixins from '@/mixins'
+	import loading from './loadingModal'
     
 	export default{
 		name:'',
         mixins: [mixins],
         components: {
+            loading
       	},
 		data(){
 			return {
+                componentName:'',
                 SpinShow:false,
                 videoPath :configApi.VIDEO_PATH,
 				cjsjInRange:[],
@@ -107,7 +112,8 @@
                 carList:[],
 				count:0,
 				bj:'',
-                videoUrl:null
+                videoUrl:null,
+				wait:false,
 			}
 		},
 
@@ -127,6 +133,8 @@
 		methods:{
 		    onResult(r){
                 console.log(r);
+                this.wait = false;
+                this.componentName = '';
                 this.SpinShow = false;
                 this.$Message.success("拍摄成功!")
                 // this.videoUrl = res.page.list[0].url;
@@ -138,6 +146,9 @@
                     v.SpinShow = false;
                 })
             },
+			stopWait(){
+		        this.wait = false;
+			},
             confirm(){
                 var v = this
                 this.$refs['formItem'].validate((valid) => {
@@ -152,22 +163,29 @@
                     }
                 })
 			},
+            cancel(){
+                this.wait = false;
+                clearTimeout();
+                this.SpinShow = false;
+			},
             mergeVideo(param){
+                this.wait = true;
                 this.videoUrl = null;
                 let endTime = new Date(this.formItem.startTime.getTime());
                 endTime.setSeconds(endTime.getSeconds() + this.formItem.duration);
                 let params = {
                     deviceId:this.formItem.zdbh,
-                    cmdType:11,
+                    cmdType:13,
                     cmdParams:param,
                     startTime:this.formItem.startTime.format('yyyy-MM-dd hh:mm:ss'),
                     endTime  :endTime.format('yyyy-MM-dd hh:mm:ss'),
                 }
-                this.SpinShow = true;
+                // this.SpinShow = true;
                 this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
 						this.bj = res.result;
+                        this.componentName = 'loading';
 						// this.check();
                     }else{
                         this.SpinShow = false;
@@ -176,6 +194,7 @@
                 })
             },
 			check(){
+                this.wait = false;
                 let params = {
                     bj:this.bj,
                 }
@@ -187,9 +206,18 @@
 							this.videoUrl = res.page.list[0].url;
 						}else{
                             clearTimeout();
-                            setTimeout(()=>{
-                                this.check()
-                            },5000)
+                            if (this.wait){
+                                setTimeout(()=>{
+                                    this.check()
+                                },5000)
+							}
+                            // let path = this.$route.path;
+                            // console.log(path);
+                            // if (path === ''){
+                             //    setTimeout(()=>{
+                             //        this.check()
+                             //    },5000)
+							// }
 						}
                     }else{
                         this.$Message.error(res.message);
