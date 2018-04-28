@@ -383,7 +383,7 @@ export default {
                     break;
                 case '00':
                 default:
-                    r.time = o.time;
+                    r.time = n.time;
                     r.speed = n.speed;
                     r.status = 0;
                     r.text = '更新时间';

@@ -3,12 +3,6 @@
 </style>
 <template>
 	<div>
-		<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-			<Spin fix>
-				<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-				<div style="font-size: 30px;">数据加载中请稍后</div>
-			</Spin>
-		</div>
 		<Card>
 			<Row>
 				<Form
@@ -49,6 +43,12 @@
 				</Form>
 			</Row>
 			<Row>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
+					<Spin fix>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
+				</div>
 				<video v-if="videoUrl != null"
 						style="width: 100%;"
 						:src="videoPath+videoUrl"
@@ -110,10 +110,27 @@
                 videoUrl:null
 			}
 		},
+
+        computed: {
+            GetSendhbsp() {
+                return this.$store.state.app.sendhbsp
+            }
+        },
+        watch: {
+            GetSendhbsp: function(newQuestion, oldQuestion) {
+                this.onResult(newQuestion);
+            },
+        },
 		created(){
 			this.getCarList();
 		},
 		methods:{
+		    onResult(r){
+                console.log(r);
+                this.SpinShow = false;
+                this.$Message.success("拍摄成功!")
+                // this.videoUrl = res.page.list[0].url;
+			},
             getCarList(){
                 var v = this
                 this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
@@ -151,7 +168,7 @@
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
 						this.bj = res.result;
-						this.check();
+						// this.check();
                     }else{
                         this.SpinShow = false;
                         this.$Message.error(res.message)

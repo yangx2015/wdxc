@@ -1,6 +1,11 @@
 spring:
   profiles:
     active: test  #合并 application-test.yml 中的配置参数
+  #上传文件设置
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 100Mb
   #线程池配置信息
   thread:
     pool:
@@ -46,7 +51,6 @@ mapper:
 
 server:
   port: 80
-
 #GPS+OBD 混合信息 redis key值
 gpsObdMessage-key: gpsObdMessage_
 #超速设置 向tic-service 项目去请求

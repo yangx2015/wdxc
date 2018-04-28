@@ -9,6 +9,7 @@ const app = {
         dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
     	socketAllCar:[],//监控数据
+        sendhbsp:'',
     	loadingType:false,
     	loading:{
     		size:55,
@@ -45,6 +46,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+        addSendhbsp(state,data){
+            state.sendhbsp = date;
+        },
     	AdddictMap(state,data){
     		state.dictMap = data
     	},
