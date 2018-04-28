@@ -8,6 +8,7 @@ import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 
 import com.gexin.fastjson.JSON;
+import com.gexin.rp.sdk.base.IAliasResult;
 import com.gexin.rp.sdk.base.IPushResult;
 import com.gexin.rp.sdk.base.IQueryResult;
 import com.gexin.rp.sdk.base.ITemplate;
@@ -48,20 +49,47 @@ public class AppPushUtils {
 		AppPushUtils.masterSecret = masterSecret;
 	}
 
-	public static PushResult checkIdMessage(String id){
+	/**
+	 * 根据alias 获取id
+	 * @param alias
+	 * @return
+	 */
+	public static PushResult checkIdMessage(String alias){
+		//验证是否在线
+		String clientId = queryClientId(alias);
+		
 		PushResult result = new PushResult();
-		IGtPush push = new IGtPush(url, appKey, masterSecret);
-		IQueryResult iq =  push.getClientIdStatus(appId, id);
-		String k = JSON.toJSONString(iq.getResponse());
-		if(k.toLowerCase().contains("online")){
-			//说明在线
+		if(clientId!=null && StringUtils.isNotBlank(clientId)){
+			IGtPush push = new IGtPush(url, appKey, masterSecret);
+			IQueryResult iq =  push.getClientIdStatus(appId, clientId);
+			String k = JSON.toJSONString(iq.getResponse());
+			if(k.toLowerCase().contains("online")){
+				//说明在线
+				result.setResultMsg(clientId);
+			}else{
+				result.setCode(11);
+			}
 		}else{
 			result.setCode(11);
 		}
-		
 		return result;
 	}
 	
+	
+	
+	/**
+	 * 返回clientId
+	 * @param alias
+	 * @return
+	 */
+	public static String queryClientId(String alias){
+		IGtPush push = new IGtPush(url, appKey, masterSecret);
+		 IAliasResult queryClient = push.queryClientId(appId, alias);
+		 if(queryClient!=null && queryClient.getClientIdList()!=null && !queryClient.getClientIdList().isEmpty()){//标识有值，则获取第一条即可，因为现在几乎是一个设备一个别名
+			 return queryClient.getClientIdList().get(0);//返回第一条即可
+		 }
+		 return null;
+	}
 	
 	
 	/**
@@ -299,8 +327,22 @@ public class AppPushUtils {
 	}
 
 	public static void main(String[] args) {//87aa0967aa2c2e69c60c045479b40c54  e6feafe1ae47694fbb2e64b77402c60a
+		/*865923030006602
+		
 		System.out.println(JsonUtil.toJson(AppPushUtils
-				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039041", "{\"cmdType\":\"11\",\"cmd\":\"1\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039041", "{\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/WeicyCARFDLog/2018-04-23sys-try.txt\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+		*/
+		/*92 语音播报
+		System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030006602", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-v0.0.6.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+			*/ /*	
+		System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030006602", "{\"cmdType\":\"11\",\"cmd\":\"22222\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+
+		/**/
+		System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039041", "{\"cmdType\":\"50\",\"cmd\":\"30\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+
 	}
 
 	// public static

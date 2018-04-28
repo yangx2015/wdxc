@@ -61,7 +61,7 @@ public class OnlineDeviceScheduled {
 			// TODO Auto-generated method stub
 			super.run();
 			String[] clientId = carIdAll.split(Consts.CAR_SPLITE);
-			if(AppPushUtils.checkIdMessage(clientId[1]).getCode() == 11){
+			if(AppPushUtils.checkIdMessage(clientId[0]).getCode() == 11){
 				//用户已经离线
 				RequestCommonParamsDto dto = new RequestCommonParamsDto();
 				dto.setDeviceId(clientId[0]);

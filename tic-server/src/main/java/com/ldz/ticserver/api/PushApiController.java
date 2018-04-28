@@ -57,8 +57,9 @@ public class PushApiController {
 			pm.setPushData(dto);
 			//AppPushUtils.pushMessageAllOrClientByAlias(pm);
 		}
-		Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
+		//Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
 		boolean checkOnline = false;
+		/*
 		if(resultSet!=null && resultSet.size()>0){
 			Iterator<String> it = resultSet.iterator();
 			while(it.hasNext()){
@@ -73,6 +74,14 @@ public class PushApiController {
 					}
 				}
 			}
+		}
+		*/
+		if(AppPushUtils.checkIdMessage(dto.getDeviceId()).getCode() == 11){
+			//redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
+		    //不做任何操作，等待后续业务拓展
+		}else{
+			checkOnline = true;
+			AppPushUtils.pushMessageAllOrClientByAlias(pm);
 		}
 		if(checkOnline){
 			ar.setMessage("操作成功");
@@ -93,21 +102,26 @@ public class PushApiController {
 	@GetMapping("/checkOnlin/{deviceId}")
 	public ApiResponse<String> checkClientOnline(@PathVariable("deviceId") String deviceId){
 		ApiResponse<String> ar = new ApiResponse<>();
-		Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
-		boolean checkOnline = false;
+		
+		/*Set<String> resultSet = redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).members();
+		
 		if(resultSet!=null && resultSet.size()>0){
 			Iterator<String> it = resultSet.iterator();
 			while(it.hasNext()){
 				String deviceIdAll = it.next();
 				String[] clientId = deviceIdAll.split(Consts.CAR_SPLITE);
 				if(clientId[0].equals(deviceId)){
-					if(AppPushUtils.checkIdMessage(clientId[1]).getCode() == 11){
-						redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
-					}else{
-						checkOnline = true;
-					}
+					
 				}
 			}
+		}
+		*/
+		boolean checkOnline = false;
+		if(AppPushUtils.checkIdMessage(deviceId).getCode() == 11){
+			//redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).remove(deviceIdAll);
+			//说明设备不在线，不做任何操作。。目前
+		}else{
+			checkOnline = true;
 		}
 		if(checkOnline){
 			ar.setMessage("设备目前在线");
