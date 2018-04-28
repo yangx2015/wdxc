@@ -27,9 +27,9 @@ public class ClZdglServiceImpl implements ClZdglService {
 
 	private static final Logger log = LoggerFactory.getLogger(ClZdglServiceImpl.class);
 
-	private String url = "http://47.98.39.45:8089/api/push/checkOnlin/";
+	private String url = "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
 
-	private String gpsSaveUrl="http://47.98.39.45:8080/pub/gps/save";
+	private String gpsSaveUrl="http://47.98.39.45:8080/biz/pub/gps/save";
 
 	@Autowired
 	private ClZdglMapper clZdglMapper;
@@ -97,7 +97,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 	}
 
 	public static void main(String[] args) {
-		 String url1= "http://47.98.39.45:8089/api/push/checkOnlin/";
+		 String url1= "http://47.98.39.45:8080/tic-server/api/push/checkOnlin/";
 		 String aString="asdad";
 		 System.out.println(url1+aString);
 
