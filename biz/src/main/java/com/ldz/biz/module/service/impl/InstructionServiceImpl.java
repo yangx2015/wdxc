@@ -22,7 +22,7 @@ public class InstructionServiceImpl  implements InstructionService {
 	@Autowired
 	private ZdglService service;
 
-	private String url = "http://47.98.39.45:8080/tic-server/api/push/carcmd";
+	private String url = "http://47.98.39.45:8089/api/push/carcmd";
 
 	@SuppressWarnings("unchecked")
 	@Override
