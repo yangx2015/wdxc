@@ -86,7 +86,7 @@ public class AppConsts {
     /**
      * tic-server 的base_url地址
      */
-    public static final String BASE_URL = "http://47.98.39.45:8080/tic-server/api";
+    public static final String BASE_URL = "http://47.98.39.45:9095/api";
 
     /**
      * 上传文件接口

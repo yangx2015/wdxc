@@ -26,12 +26,16 @@ public class InstructionServiceImpl  implements InstructionService {
 	@Value("${ticserver.url}")
     private String url;
 	
+
+
+	
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 
-		
-		
+
+
 		String postEntity = JsonUtil.toJson(info);
 		String result = "";
 		ApiResponse<String> apiResponse =null;
