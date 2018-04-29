@@ -1,5 +1,6 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -129,10 +130,12 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		}
 
 		save(clSpk);
-
+		
+		
 		if (StringUtils.isNotEmpty(entity.getTaskId())) {
-		BoundListOperations<Object, Object> boundListOps = redisutils.boundListOps("BJ"+entity.getDeviceId());
-		String index = (String) boundListOps.index(0);
+			
+			BoundListOperations<Object, Object> boundListOps = redisutils.boundListOps("BJ"+entity.getDeviceId());
+			String index=(String) boundListOps.index(0);
 		if (StringUtils.isNotEmpty(index)) {
 			
 			for (int i = 0; i < boundListOps.size(); i++) {
@@ -140,7 +143,9 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 				if (StringUtils.equals(entity.getTaskId(), index2)) {
 					websocket.convertAndSend("/topic/sendhbsp", clSpk);
 					log.info("视屏合并成功,并推送至前端"+clSpk);
-					boundListOps.remove(i, index2);
+					Long remove = boundListOps.remove(1, index2);
+					log.info("redis中移除"+"BJ"+entity.getDeviceId()+":"+remove+"个元素");
+					break;
 				}
 				
 			}
@@ -149,7 +154,25 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		
 	}
 		
-		
 		return ApiResponse.success();
+	}
+	
+	public static void main(String[] args) {
+		
+		List<String>  ssList= new ArrayList<>();
+		ssList.add("苹果");
+		ssList.add("香蕉");
+		ssList.add("荔枝");
+		ssList.add("西瓜");
+		
+		for (int i = 0; i < ssList.size(); i++) {
+			String string = ssList.get(i);
+			if (string.equals("西瓜")) {
+				String remove = ssList.remove(i);
+				System.out.println(remove);
+			}
+			
+		}
+		System.out.println(ssList);
 	}
 }
