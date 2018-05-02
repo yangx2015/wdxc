@@ -79,6 +79,7 @@ httpInstance.interceptors.response.use((response) => {
     // 	router.push({name: 'errorpage_500'})
     // }
 }, function (error) {
+
     // 对响应错误做点什么
 		if(!Cookies.get('result')){
 			console.log('1')

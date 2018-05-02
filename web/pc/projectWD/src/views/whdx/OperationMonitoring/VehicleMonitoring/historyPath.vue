@@ -178,9 +178,9 @@
 				title: '车辆历史轨迹',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
-
-            this.formItem.startTime = this.getTodayDate() + " 00:00:00";
-            this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            //
+            // this.formItem.startTime = this.getTodayDate() + " 00:00:00";
+            // this.formItem.endTime = this.getTodayDate() + " 23:59:59";
 			this.formItemList();
 		},
 		methods: {
@@ -227,13 +227,14 @@
                     endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
                 }
                 let p = {
-                    startTime:startTime,
-                    endTime: endTime,
+                    startTime:'2018-01-01 00:00:00',
+                    endTime : '2018-05-01 00:00:00',
                     zdbh: this.formItem.zdbh,
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
-
+				alert('p')
+                console.log('p',p);
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200){
                         //var geoc = new BMap.Geocoder();

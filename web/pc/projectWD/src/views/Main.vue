@@ -209,7 +209,6 @@
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-                        console.log('sendhbsp');
                         let jsonMess = JSON.parse(data.body)
 			            v.$store.commit('addSendhbsp',jsonMess)
 			        });
