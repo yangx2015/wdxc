@@ -51,8 +51,20 @@
                         lat: 30.564572
                     }
                 ],
-                carID:'437316001277673472',
+                // carID:'437316001277673472',
                 wlDot:[]
+            }
+        },
+        props:{
+            carNumber:{
+                type:String,
+                default:''
+            }
+        },
+        watch:{
+            carNumber:function (n,o) {
+                alert(n)
+                this.bkDot(n)
             }
         },
         created(){
@@ -63,19 +75,16 @@
             this.map = new BMap.Map("allmap"); // 创建Map实例
             this.mapCenter()
 
-            // this.bkshow()
-            // this.bk()
-            this.bkDot()
         },
         methods:{
             //电子围栏点
-            bkDot(){
+            bkDot(id){
                 var v = this
-                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + this.carID).then((res) => {
+                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + id).then((res) => {
                     console.log('电子围栏点',res)
                     if (res.code === 200) {
-                        let ditMess  = res.result.dlxxzb.split(';')
-                        let dotLength = res.result.dlxxzb.split(';').length
+                        let ditMess  = res.result.dlxxzb.split(';');
+                        let dotLength = res.result.dlxxzb.split(';').length;
                         for(var i = 0 ; i<dotLength ; i++){
                             v.wlDot.push(
                                 new BMap.Point(ditMess[i].split(',')[0],ditMess[i].split(',')[1])
