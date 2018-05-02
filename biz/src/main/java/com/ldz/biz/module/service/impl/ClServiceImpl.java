@@ -10,7 +10,9 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     private ClService clService;
     @Autowired
     private JsyService jsyService;
+    @Autowired
+    private ZdxmService zdxmService;
+
 
     @Override
     protected Mapper<ClCl> getBaseMapper() {
@@ -66,9 +71,19 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
              ClJsy jsy = jsyService.findById(entity.getSjId());
              entity.setSjxm(jsy.getXm());
          }
+        Short zkl=entity.getZkl();
+        String zdCode="ZDCLK0041";//默认为载客量
+        SysZdxm sysZdxm=new SysZdxm();
+        sysZdxm.setZddm(zkl+"");//字典代码不能为空
+        sysZdxm.setZdlmdm(zdCode);//字典类目代码不能为空
+        sysZdxm.setZdmc(zkl+"");//字典名称不能为空
+        try {
+            zdxmService.add(sysZdxm);
+        }catch (Exception e){}
+
          save(entity);
         return ApiResponse.saveSuccess();
-    }
+}
 
 	@Override
 	public ApiResponse<String> updateEntity(ClCl entity) {
