@@ -8,10 +8,10 @@
 		<Card style="height:600px">
 			<Row class="margin-top-10" style='background-color: #fff'>
 				<Col span="3">
-					<DatePicker v-model="formItem.startTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入开始时间" ></DatePicker>
+					<DatePicker v-model="formItem.startTime" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
 				</Col>
 				<Col span="3">
-					<DatePicker v-model="formItem.endTime" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输入结束时间"  ></DatePicker>
+					<DatePicker v-model="formItem.endTime" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
 				</Col>
 				<Col span="3">
 					<Button type="primary" @click="formItemList()">
@@ -19,7 +19,7 @@
 					</Button>
 				</Col>
 				<Col>
-					<h2>{{}}</h2>
+					<!--<h2>{{}}</h2>-->
 				</Col>
 			</Row>
 			<br>
@@ -27,7 +27,7 @@
 				<Col span="6" v-for="item in tableData">
 					<Card>
 						<Row>
-							<img @click="showMap(item)" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+item.ksjd+','+item.kswd+'&width=300&height=200&zoom=12&markers='+item.ksjd+','+item.kswd+'|'+item.jsjd+','+item.jswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png'" class="imgItem">
+							<img @click="showMap(item)" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+item.ksjd+','+item.kswd+'&width=300&height=200&zoom=12&markers='+item.jsjd+','+item.jswd+'|'+item.ksjd+','+item.kswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_end.png|-1,http://47.98.39.45:9092/icon/map_line_begin.png'" class="imgItem">
 						</Row>
 						<Row>
 							<Col span="8"><span>开始时间</span></Col><Col span="16"><span class="span_time">{{item.kssj}}</span></Col>
@@ -76,6 +76,32 @@
 				tabHeight: 220,
 				compName: '',
 				pageTotal: 2,
+                dateOpts: {
+                    shortcuts: [
+                        {
+                            text: '今天',
+                            value () {
+                                return new Date();
+                            }
+                        },
+                        {
+                            text: '三天前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 3);
+                                return date;
+                            }
+                        },
+                        {
+                            text: '一周前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                return date;
+                            }
+                        }
+                    ]
+                },
 				page: {
 
 					pageNum: 1,
@@ -152,7 +178,7 @@
 				title: '车辆历史轨迹',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
-			console.log('路由',this.$route)
+
             this.formItem.startTime = this.getTodayDate() + " 00:00:00";
             this.formItem.endTime = this.getTodayDate() + " 23:59:59";
 			this.formItemList();
@@ -207,16 +233,31 @@
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
+
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200){
+                        //var geoc = new BMap.Geocoder();
                         for (let r of res.result){
                             let ksgps = r.ksgps.split(',');
                             let jsgps = r.jsjps.split(',');
                             r.ksjd = ksgps[1],
                             r.kswd = ksgps[0],
                             r.jsjd = jsgps[1],
-                            r.jswd = jsgps[0]
-                            console.log(r);
+                            r.jswd = jsgps[0];
+                            /*
+                            暂时不处理地址解析，地址解析是一个异步方法，可能造成延迟数据展示不出来
+                            //解析开始地址
+                            var point = new BMap.Point(r.ksjd,r.kswd);
+                            geoc.getLocation(point, (rs)=>{
+                                var addComp = rs.addressComponents;
+                                r.ksdz = addComp.street;
+                            });
+                            //解析结束地址
+                            var jsPoint = new BMap.Point(r.jsjd,r.jswd);
+                            geoc.getLocation(jsPoint, (rs)=>{
+                                var addComp = rs.addressComponents;
+                                r.jsdz = addComp.street;
+                            });*/
                         }
                         this.tableData = res.result;
 					}

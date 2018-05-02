@@ -15,4 +15,6 @@ public class GuiJiGps {
 	private BigDecimal bdjd;
 	
 	private BigDecimal bdwd;
+	
+	private String yxsd;
 }
