@@ -1,3 +1,8 @@
+<!--
+历史轨迹
+车辆历史轨迹 地图展示界组件
+-->
+
 <template>
 	<div style="width: 100%;height: 100%;background-color: #00FFFF;">
 		<Modal v-model="showModal" width='900' :closable="false" @on-cancel="close" @on-ok="close">

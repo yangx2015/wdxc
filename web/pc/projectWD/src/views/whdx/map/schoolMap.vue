@@ -1,3 +1,10 @@
+<!--
+校巴监控
+运营监控-校巴监控-地图展示
+
+-->
+
+
 <style type="text/css">
 	#allmap{
 		height: 100%;
@@ -17,7 +24,7 @@
 	    border-radius: 7px;
 	}
 </style>
-<!--校巴监控-->
+
 <template>
 	<div style="height: 100%;background-color: #00FFFF;position: relative;">
 		<div id="allmap"></div>

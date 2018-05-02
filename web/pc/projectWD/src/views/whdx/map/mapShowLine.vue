@@ -1,3 +1,8 @@
+<!--
+线路展示
+线路维护 - 线路展示组件
+-->
+
 <style type="text/css">
 	.allmapSty{
 		height: 100%;
@@ -17,7 +22,7 @@
 	    border-radius: 7px;
 	}
 </style>
-<!--线路展示-->
+
 <template>
 	<div style="height: 100%;background-color: #00FFFF;position: relative;">
 		<div :id="mapID" class="allmapSty"></div>

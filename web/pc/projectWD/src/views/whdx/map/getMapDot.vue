@@ -1,3 +1,6 @@
+<!--
+地图选取点位 获取坐标
+-->
 <style type="text/css">
 	#allmap{
 		height: 100%;
