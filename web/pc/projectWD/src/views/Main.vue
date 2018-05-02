@@ -182,14 +182,14 @@
 		     * 服务器有消息返回的回调函数
 		     */
 			    v.socket.onmessage = function(e) {
-			        console.log('message', e.data);
+			        // console.log('message', e.data);
 			    };
 		
 		    /**
 		     * websocket链接关闭的回调函数
 		     */
 			    v.socket.onclose = function() {
-			        console.log('关闭');
+			        // console.log('关闭');
 			    };
 		
 			    var stompClient = Stomp.over(v.socket);
@@ -209,9 +209,8 @@
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-                        console.log('sendhbsp');
-                        let jsonMess = JSON.parse(data.body)
-			            v.$store.commit('addSendhbsp',jsonMess)
+                        // let jsonMess = JSON.parse(data.body)
+			            v.$store.commit('addSendhbsp',data.body)
 			        });
 			    });
 			},

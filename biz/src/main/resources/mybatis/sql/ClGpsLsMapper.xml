@@ -3,7 +3,7 @@
 <mapper namespace="com.ldz.biz.module.mapper.ClGpsLsMapper">
 
 <select id="getZdbhAllLsGps" parameterType="com.ldz.biz.module.bean.gpsSJInfo" resultMap="GuijiGps">
-select t.BDJD,t.BDWD,t.YXSD,from CL_GPS_LS t where   t.CJSJ between to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss') 
+select t.BDJD,t.BDWD,t.YXSD,t.CJSJ from CL_GPS_LS t where   t.CJSJ between to_date(#{startTime},'yyyy-mm-dd hh24:mi:ss') 
  and to_date(#{endTime},'yyyy-mm-dd hh24:mi:ss') and ZDBH=#{zdbh} ORDER BY CJSJ ASC 
 </select>
 
@@ -11,5 +11,6 @@ select t.BDJD,t.BDWD,t.YXSD,from CL_GPS_LS t where   t.CJSJ between to_date(#{st
         <result column="BDJD" property="bdjd" />
 		<result column="BDWD" property="bdwd" />
         <result column="YXSD" property="yxsd" />
+        <result column="CJSJ" property="cjsj" />
 </resultMap>
 </mapper>

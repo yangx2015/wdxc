@@ -50,7 +50,7 @@
 								@on-change = 'findMessList'
 								format="yyyy-MM-dd" type="daterange" 
 								placement="bottom-end" placeholder="请输时间" 
-								@on-keyup.enter="findMessList()" style="width: 160px"></DatePicker>
+								@on-keyup.enter="findMessList()" style="width: 180px"></DatePicker>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -68,14 +68,14 @@
 						:columns="tableTiT"
 						:data="tableData"></Table>
 			</Row>
-			<!--<Row class="margin-top-10 pageSty">
+			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
 					  :current=page.pageNum
 					  :page-size=page.pageSize
 					  show-total
 					  show-elevator
 					  @on-change='pageChange'></Page>
-			</Row>-->
+			</Row>
 		</Card>
     </div>
 </template>
@@ -95,7 +95,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:10
             	},
                 tableTiT: [
                 	{
@@ -152,9 +152,9 @@
                 	cx:'',
                 	cph:'',
                 	sjlx:'',
-                	cjsjInRange:[]
-//              	pageNum:1,
-//          		pageSize:5
+                	cjsjInRange:[],
+					pageNum:1,
+					pageSize:10
                 },
                	dicCarCode:'ZDCLK0019',
                	dicCarList:[],
@@ -173,6 +173,9 @@
 			},
 		},
         created(){
+    	    var dae = new Date()
+            this.cjsjInRange = [dae,dae]
+
         	this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
@@ -180,7 +183,7 @@
             },{
                 title: '日志管理',
             }]),
-			this.tabHeight = this.getWindowHeight() - 220
+			this.tabHeight = this.getWindowHeight() - 260
             this.getmess()
             this.getLXDic()
         },

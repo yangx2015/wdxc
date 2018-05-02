@@ -8,6 +8,9 @@
 		<Card style="height:600px">
 			<Row class="margin-top-10" style='background-color: #fff'>
 				<Col span="3">
+					<h2>{{car.cph}}</h2>
+				</Col>
+				<Col span="3">
 					<DatePicker v-model="formItem.startTime" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
 				</Col>
 				<Col span="3">
@@ -17,9 +20,6 @@
 					<Button type="primary" @click="formItemList()">
 						<Icon type="search"></Icon>
 					</Button>
-				</Col>
-				<Col>
-					<!--<h2>{{}}</h2>-->
 				</Col>
 			</Row>
 			<br>
@@ -157,13 +157,14 @@
 				//收索
 				cjsjInRange:[],
 				formItem: {
-                    startTime:'2018-01-01 00:00:00',
-                    endTime: '2018-05-05 00:00:00',
+                    startTime:'',
+                    endTime: '',
                     zdbh: 1,
                     ignition: 50,
                     brennschluss:'60'
 				},
-				choosedItem:null
+				choosedItem:null,
+				car:{},
 			}
 		},
 		// watch: {
@@ -178,9 +179,10 @@
 				title: '车辆历史轨迹',
 			}])
 			this.formItem.zdbh = this.$route.params.zdbh;
-
+            //
             this.formItem.startTime = this.getTodayDate() + " 00:00:00";
             this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            this.getCarInfo();
 			this.formItemList();
 		},
 		methods: {
@@ -216,6 +218,15 @@
 		      this.$parent.showPath();
 		      this.$parent.componentName = '';
 			},
+			getCarInfo(){
+                var v = this
+                this.$http.get(configApi.CLGL.QUERY+'?zdbh='+this.formItem.zdbh).then((res) =>{
+                    if (res.code === 200 && res.page.list.length > 0){
+                        this.car = res.page.list[0];
+                        console.log(res);
+                    }
+                })
+			},
             formItemList(){
                 var v = this
 				let startTime = this.formItem.startTime;
@@ -228,12 +239,12 @@
                 }
                 let p = {
                     startTime:startTime,
-                    endTime: endTime,
+                    endTime : endTime,
                     zdbh: this.formItem.zdbh,
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
-
+                console.log('p',p);
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200){
                         //var geoc = new BMap.Geocoder();

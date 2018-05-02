@@ -1,6 +1,7 @@
 package com.ldz.biz.module.bean;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +18,6 @@ public class GuiJiGps {
 	private BigDecimal bdwd;
 	
 	private String yxsd;
+	
+	private  Date cjsj;
 }

@@ -47,7 +47,7 @@ const app = {
     },
     mutations: {
         addSendhbsp(state,data){
-            state.sendhbsp = date;
+            state.sendhbsp = data;
         },
     	AdddictMap(state,data){
     		state.dictMap = data

@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<component :is="componentName"></component>
-		<Card style="height: 500px;">
+		<Card style="height: 800px;width: 1200px;">
 			<Row>
 				<Form
 						ref="formItem"
@@ -21,25 +21,22 @@
 								</Select>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="8">
 							<FormItem label='开始时间'>
 								<DatePicker v-model="formItem.startTime" type="datetime" placeholder="请输时间" style="width: 220px"></DatePicker>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="8">
 							<FormItem label='提取时长' prop="duration">
 								<Input v-model="formItem.duration" :number="true" placeholder="请输时长" style="width: 220px"><span slot="append">秒</span></Input>
+								<span style="color: red;margin-left: 40px;">*一次最多提取30秒</span>
 							</FormItem>
 						</Col>
 					</Row>
 					<Row>
-						<Col span="8">
-							<Button type="ghost" @click="componentName = 'loading'">确定</Button>
-							<Button type="ghost" @click="cancel">取消等待</Button>
+						<Col span="24" style="text-align: center">
+							<Button type="primary" @click="confirm('0-0')">合并前摄像头</Button>
+							<Button type="primary" @click="confirm('1-0')">合并后摄像头</Button>
 						</Col>
 					</Row>
 				</Form>
@@ -52,8 +49,8 @@
 					</Spin>
 				</div>
 				<video v-if="videoUrl != null"
-						style="width: 100%;"
-						:src="videoPath+videoUrl"
+						style="width: 100%;height: 600px;margin-top: 20px"
+						:src="videoPath+'/test/'+videoUrl"
 						autoplay="autoplay"
 						controls="controls"></video>
 			</Row>
@@ -123,6 +120,7 @@
             }
         },
         watch: {
+		    // 以websocket推送方式获取视频是否上传成功
             GetSendhbsp: function(newQuestion, oldQuestion) {
                 this.onResult(newQuestion);
             },
@@ -137,7 +135,7 @@
                 this.componentName = '';
                 this.SpinShow = false;
                 this.$Message.success("拍摄成功!")
-                // this.videoUrl = res.page.list[0].url;
+                this.videoUrl = r.url;
 			},
             getCarList(){
                 var v = this
@@ -149,7 +147,7 @@
 			stopWait(){
 		        this.wait = false;
 			},
-            confirm(){
+            confirm(param){
                 var v = this
                 this.$refs['formItem'].validate((valid) => {
                     if (valid) {
@@ -157,7 +155,7 @@
                             this.$Message.error('时长不能大于30秒')
                             return;
                         }
-                        this.mergeVideo("1-10");
+                        this.mergeVideo(param);
                     } else {
                         v.$Message.error('请将信息填写完整!');
                     }
@@ -193,6 +191,9 @@
                     }
                 })
             },
+            /**
+			 *以轮询方式检查视频是否上传成功
+             */
 			check(){
                 this.wait = false;
                 let params = {

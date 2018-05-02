@@ -5,7 +5,7 @@ import app from './modules/app';
 import user from './modules/user';
 import createLogger from 'vuex/dist/logger';
 Vue.use(Vuex);
-const debug = process.env.NODE_ENV !== 'production'
+// const debug = process.env.NODE_ENV !== 'production'
 const store = new Vuex.Store({
     state: {
         //
@@ -20,7 +20,7 @@ const store = new Vuex.Store({
         app,
         user
     },
-    plugins: debug ? [createLogger()] : []
+    // plugins: debug ? [createLogger()] : []
 });
 
 export default store;

@@ -133,8 +133,13 @@
             if(!this.messType){
                 this.operate = '编辑';
                 this.editMode = true;
+                if(this.mess.zdbh == null){
+                    this.mess.zdbh = ''
+				}
+
                 this.addmess = this.mess
                 console.log('数据传递',this.derMess)
+                console.log('数据传递',this.mess)
             }
             this.getDrivers();
 			this.getDict();
@@ -233,7 +238,6 @@
             },
 		}
 	}
-//15271928827
 </script>
 
 <style>

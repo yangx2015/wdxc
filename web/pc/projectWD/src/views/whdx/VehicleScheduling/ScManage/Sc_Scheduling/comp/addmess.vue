@@ -49,7 +49,7 @@
 		    	</div>
 		    </div>
 		    <div slot='footer'>
-		    	<Button type="ghost" @click="colse">取消</Button>
+		    	<Button type="primary" @click="colse">完成</Button>
 	        	<!--<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>-->
 		    </div>
 	    </Modal>

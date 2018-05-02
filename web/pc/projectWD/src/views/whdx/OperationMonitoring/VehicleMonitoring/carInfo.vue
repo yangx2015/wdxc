@@ -163,16 +163,16 @@
                                             <Button type="primary"  @click="setCssd">确定</Button>
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        <Col span="20">
-                                            <FormItem label='GPS心跳间隔'>
-                                                <Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."><span slot="append">秒</span></Input>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="4">
-                                            <Button type="primary"  @click="saveXtjg">确定</Button>
-                                        </Col>
-                                    </Row>
+                                    <!--<Row>-->
+                                        <!--<Col span="20">-->
+                                            <!--<FormItem label='GPS心跳间隔'>-->
+                                                <!--<Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."><span slot="append">秒</span></Input>-->
+                                            <!--</FormItem>-->
+                                        <!--</Col>-->
+                                        <!--<Col span="4">-->
+                                            <!--<Button type="primary"  @click="saveXtjg">确定</Button>-->
+                                        <!--</Col>-->
+                                    <!--</Row>-->
                                     <Row>
                                     </Row>
                                 </Form>

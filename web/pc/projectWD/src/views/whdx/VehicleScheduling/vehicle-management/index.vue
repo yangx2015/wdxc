@@ -60,11 +60,12 @@
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
 	import allmes from './comp/otherMess.vue'
+	import bkShow from './comp/BKshow.vue'
 
 	export default {
 	  name:'char',
       components: {
-        expandRow,newmes,allmes
+        expandRow,newmes,allmes,bkShow
       },
     	mixins:[mixins],
         data () {
@@ -90,18 +91,18 @@
             		pageSize:5
             	},
                 tableTiT: [
-					 {
-                        title:'#',
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
-                        }
-                    },
+					 // {
+                    //     title:'#',
+                    //     type: 'expand',
+                    //     width: 50,
+                    //     render: (h, params) => {
+                    //         return h(expandRow, {
+                    //             props: {
+                    //                 row: params.row
+                    //             }
+                    //         })
+                    //     }
+                    // },
 					{
 						title: "序号",
 						width: 80,
@@ -151,7 +152,11 @@
                         key: 'zt',
                         render:(h,p)=>{
                             let val = this.dictUtil.getValByCode(this,this.clztDictCode,p.row.zt)
-                            return h('div',val)
+                            return h('div',{
+                                style: {
+                                    color: val=='正常' ?'#279a3b':'#ed3f14'
+                                }
+                            },val)
                         }
                     },
                     {
@@ -167,7 +172,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: 150,
+                        width: 180,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
@@ -213,7 +218,7 @@
                                 }),
                                 h('Button', {//历史轨迹
                                     props: {
-                                        type: 'primary',
+                                        type: 'warning',
                                         icon: 'steam',
                                         shape: 'circle',
                                         size: 'small'
@@ -229,6 +234,24 @@
                                                     params:{zdbh:params.row.zdbh}
                                                 }
                                             );
+                                        }
+                                    }
+                                }),
+                                h('Button', {//电子围栏展示
+                                    props: {
+                                        type: 'primary',
+                                        icon: 'ios-world-outline',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            debugger
+                                            this.compName = bkShow
+											this.mess = params.row
                                         }
                                     }
                                 }),
