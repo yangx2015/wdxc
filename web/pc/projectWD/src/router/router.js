@@ -54,7 +54,7 @@ export const otherRouter = {
         { path: 'ownspace', title: '个人中心', name: 'ownspace_index', component: () => import('@/views/own-space/own-space.vue') },
         { path: 'message', title: '消息中心', name: 'message_index', component: () => import('@/views/message/message.vue') },
         { path: 'historyTarck', title: '轨迹', name: 'historyTarck_index', component: () => import('@/views/whdx/historyTarck') },
-        { path: 'historyPath', title: '历史轨迹', name: 'historypath',omponent: () => import('@/views/whdx/OperationMonitoring/VehicleMonitoring/HistoryPath') },
+        { path: 'historyPath', title: '历史轨迹', name: 'historypath', component: () => import('@/views/whdx/OperationMonitoring/VehicleMonitoring/HistoryPath') },
     ]
 };
 
