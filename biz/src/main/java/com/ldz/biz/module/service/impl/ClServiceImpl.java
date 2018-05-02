@@ -14,6 +14,7 @@ import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -71,15 +72,20 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
              ClJsy jsy = jsyService.findById(entity.getSjId());
              entity.setSjxm(jsy.getXm());
          }
-        Short zkl=entity.getZkl();
-        String zdCode="ZDCLK0041";//默认为载客量
-        SysZdxm sysZdxm=new SysZdxm();
-        sysZdxm.setZddm(zkl+"");//字典代码不能为空
-        sysZdxm.setZdlmdm(zdCode);//字典类目代码不能为空
-        sysZdxm.setZdmc(zkl+"");//字典名称不能为空
-        try {
-            zdxmService.add(sysZdxm);
-        }catch (Exception e){}
+
+        SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+         condition.eq(SysZdxm.InnerColumn.zdlmdm,"ZDCLK0041");
+         condition.eq(SysZdxm.InnerColumn.zddm,entity.getZkl());
+         List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+         if (zdxms.size() == 0){
+             Short zkl=entity.getZkl();
+             String zdCode="ZDCLK0041";//默认为载客量
+             SysZdxm sysZdxm=new SysZdxm();
+             sysZdxm.setZddm(zkl+"");//字典代码不能为空
+             sysZdxm.setZdlmdm(zdCode);//字典类目代码不能为空
+             sysZdxm.setZdmc(zkl+"");//字典名称不能为空
+             zdxmService.add(sysZdxm);
+         }
 
          save(entity);
         return ApiResponse.saveSuccess();

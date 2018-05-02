@@ -58,8 +58,8 @@ public class ZdxmServiceImpl extends BaseServiceImpl<SysZdxm,String> implements 
         RuntimeCheck.ifNull(zdlm,"未找到字典类目");
 
         SimpleCondition condition = new SimpleCondition(SysZdxm.class);
-        condition.eq(SysZdxm.InnerColumn.zddm.getValue(),zdxm.getZddm());
-        condition.eq(SysZdxm.InnerColumn.zdlmdm.getValue(),zdxm.getZdlmdm());
+        condition.eq(SysZdxm.InnerColumn.zddm,zdxm.getZddm());
+        condition.eq(SysZdxm.InnerColumn.zdlmdm,zdxm.getZdlmdm());
         int count = zdxmMapper.selectCountByExample(condition);
         RuntimeCheck.ifTrue(count != 0,"字典代码已存在");
 

@@ -196,14 +196,6 @@ public class SysZdxm implements Serializable {
 
         private final String column;
 
-        public String value() {
-            return this.column;
-        }
-
-        public String getValue() {
-            return this.column;
-        }
-
         InnerColumn(String column) {
             this.column = column;
         }
