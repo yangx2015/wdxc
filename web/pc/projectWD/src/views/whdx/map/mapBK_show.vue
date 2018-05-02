@@ -26,12 +26,6 @@
 <template>
     <div style="height: 100%;background-color: #00FFFF;position: relative;">
         <div id="allmap"></div>
-        <div class="claer">
-            <Button type="success" size="small" @click="clear">清除</Button>
-        </div>
-        <div class="bk_OK">
-            <Button type="success" size="small" @click="bk_OK">保存</Button>
-        </div>
     </div>
 </template>
 
@@ -70,7 +64,7 @@
             this.mapCenter()
 
             // this.bkshow()
-            this.bk()
+            // this.bk()
             this.bkDot()
         },
         methods:{

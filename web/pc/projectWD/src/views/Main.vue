@@ -182,14 +182,14 @@
 		     * 服务器有消息返回的回调函数
 		     */
 			    v.socket.onmessage = function(e) {
-			        console.log('message', e.data);
+			        // console.log('message', e.data);
 			    };
 		
 		    /**
 		     * websocket链接关闭的回调函数
 		     */
 			    v.socket.onclose = function() {
-			        console.log('关闭');
+			        // console.log('关闭');
 			    };
 		
 			    var stompClient = Stomp.over(v.socket);
