@@ -40,7 +40,7 @@ public class ObdServiceImpl extends BaseServiceImpl<ObdMessageBean,String> imple
 
     public ApiResponse<Object> getObdTimely(String obdId){
         GpsObdMessageBean obds=new GpsObdMessageBean();
-        List<ObdFaultCodeBean> list=new ArrayList<>();
+        List<ObdFaultCodeBean> list=new ArrayList<ObdFaultCodeBean>();
         try {
            obds=  (GpsObdMessageBean)redisDao.opsForValue().get(gpsObdMessage+obdId);
         }catch (Exception e){}
