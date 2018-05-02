@@ -25,6 +25,7 @@ import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 
 import tk.mybatis.mapper.common.Mapper;
@@ -141,10 +142,10 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 			for (int i = 0; i < boundListOps.size(); i++) {
 				String index2 = (String) boundListOps.index(i);
 				if (StringUtils.equals(entity.getTaskId(), index2)) {
-					websocket.convertAndSend("/topic/sendhbsp", clSpk);
-					log.info("视屏合并成功,并推送至前端"+clSpk);
+					websocket.convertAndSend("/topic/sendhbsp", JsonUtil.toJson(clSpk));
+					log.info("视屏合并成功,并推送至前端"+JsonUtil.toJson(clSpk));
 					Long remove = boundListOps.remove(1, index2);
-					log.info("redis中移除"+"BJ"+entity.getDeviceId()+":"+remove+"个元素");
+					log.info("redis中移除"+"BJ"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
 					break;
 				}
 				

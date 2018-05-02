@@ -43,7 +43,7 @@ public class BaseControllerAdvice {
     public @ResponseBody
 	ApiResponse handleUncaughtException(Exception ex, HttpServletRequest request, HttpServletResponse response) throws Exception {
 		log.error("请求发生异常，来源路径["+request.getRequestURI()+"]，请求数据["+ JsonUtil.toJson(request.getParameterMap())+"]", ex);
-		return ApiResponse.fail(ex.getMessage());
+		return ApiResponse.fail("未知错误");
     }
 
 
