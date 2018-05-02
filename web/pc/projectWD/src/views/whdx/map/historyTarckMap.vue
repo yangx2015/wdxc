@@ -61,6 +61,7 @@
 					lat: 30.550822
 				},
 				zoom: 14,
+				speedList:[],
 				stationList: [
 				{
 					id: "435383685965938688",
@@ -155,6 +156,9 @@
                 this.$http.post(configApi.CLGL.GPS_HITSOR_GPS,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.stationList = res.result;
+                        for(let r of res.result){
+                            this.speedList.push([r.cjsj,r.yxsd]);
+						}
                         this.Buildmap()
                     }
                 })
@@ -223,7 +227,8 @@
                 // 基于准备好的dom，初始化echarts实例
                 this.movingChart = echarts.init(document.getElementById('trackLineChart'));
                 //运行轨迹chart数据集合，格式:['日期时间（格式化成MM-dd HH:mm，分两行显示日期和时间，界面会美观）','速度值']
-                var data2 = [["2016-03-29", 45], ["2016-03-30", 30], ["2016-03-31", 20], ["2016-04-01", 10], ["2016-04-02", 0]];
+                var data2 = this.speedList;
+                // var data2 = [["2016-03-29", 45], ["2016-03-30", 30], ["2016-03-31", 20], ["2016-04-01", 10], ["2016-04-02", 0]];
                 this.movingChartOptions = {
                     animation: true,
                     tooltip: {
