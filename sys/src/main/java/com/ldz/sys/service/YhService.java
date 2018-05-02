@@ -32,4 +32,11 @@ public interface YhService extends BaseService<SysYh, String> {
     ApiResponse<String> updateEntity(SysYh user);
 
     ApiResponse<String> updateSession(SysYh user);
+
+	/**
+	 * 重置密码
+	 * @param userId
+	 * @return
+	 */
+	ApiResponse<String> resetPassword(String userId);
 }

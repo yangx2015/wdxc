@@ -17,6 +17,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -33,7 +34,8 @@ import java.util.stream.Collectors;
 @Service
 public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhService {
 	Logger log = LogManager.getLogger(this);
-
+	@Value("${resePwd:111111}")
+	private String resePwd;
 	@Autowired
 	private SysClkPtyhMapper baseMapper;
 	@Autowired
@@ -210,6 +212,31 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		request.setAttribute("userInfo",user);
 		request.setAttribute("orgCode",user.getJgdm());
+		return ApiResponse.success();
+	}
+
+	/**
+	 * 重置密码
+	 * @param userId
+	 * @return
+	 */
+	@Override
+	public ApiResponse<String> resetPassword(String userId){
+		SysYh sysUser = getCurrentUser(true);
+		RuntimeCheck.ifTrue(StringUtils.equals(sysUser.getYhid(),userId),"您不能为本人重置密码，请联系管理员进行重置密码。");
+		SysYh user = baseMapper.selectByPrimaryKey(userId);
+		if (user == null) return ApiResponse.fail("用户不存在");
+		RuntimeCheck.ifFalse(user.getJgdm().indexOf(sysUser.getJgdm())==0,"您不能为非本机构的人员重置密码");
+		String newEncrypt=null;
+		try {
+			newEncrypt = Des.encrypt(resePwd);
+		} catch (Exception e) {
+			log.error("加密失败 newEncrypt={}",resePwd);
+			return ApiResponse.fail("加密失败");
+		}
+
+		user.setMm(newEncrypt);
+		baseMapper.updateByPrimaryKeySelective(user);
 		return ApiResponse.success();
 	}
 }
