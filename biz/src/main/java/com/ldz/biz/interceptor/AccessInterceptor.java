@@ -34,8 +34,8 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 	private StringRedisTemplate redisDao;
 
-	private List<String> whiteList = Arrays.asList("/biz/api/gn/getMenuTree","/biz/api/jg/pager","/api/gn/getMenuTree","/api/jg/pager","/api/jg/getOrgTree","/biz/api/jg/getOrgTree","/api/clsbyxsjjl/history","/biz/api/clsbyxsjjl/history");
-	private List<String> anonymousList = Arrays.asList("/biz/api/zd/pager","/api/zd/pager");
+	// 只要登录的用户都能访问
+	private List<String> whiteList = Arrays.asList("/api/gn/getMenuTree","/api/jg/pager","/api/gn/getMenuTree","/api/jg/pager","/api/jg/getOrgTree","/api/jg/getOrgTree","/api/clsbyxsjjl/history","/api/clsbyxsjjl/history");
 
 	public AccessInterceptor() {
 	}
@@ -53,9 +53,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		String method = request.getMethod();
 		if (method.equals("OPTIONS")) {
 			// 如果收到的是跨域预请求消息，直接响应，返回true，以便后续跨域请求成功
-			return true;
-		}
-		if (anonymousList.contains(request.getRequestURI())){
 			return true;
 		}
 

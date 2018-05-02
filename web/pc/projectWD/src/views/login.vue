@@ -104,7 +104,6 @@ export default {
     },
     created(){
         menuList.menuTree = [];
-        this.initDict();
     },
     methods: {
         handleSubmit () {
@@ -116,6 +115,7 @@ export default {
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
+                            v.initDict();
                             v.getMenuTree();
                             v.SpinShow = false
                         }else if(res.code===500){
