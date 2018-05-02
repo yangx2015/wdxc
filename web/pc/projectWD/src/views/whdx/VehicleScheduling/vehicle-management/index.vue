@@ -60,11 +60,12 @@
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
 	import allmes from './comp/otherMess.vue'
+	import bkShow from './comp/BKshow.vue'
 
 	export default {
 	  name:'char',
       components: {
-        expandRow,newmes,allmes
+        expandRow,newmes,allmes,bkShow
       },
     	mixins:[mixins],
         data () {
@@ -171,7 +172,7 @@
                     {
                         title: '操作',
                         key: 'action',
-                        width: 150,
+                        width: 180,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
@@ -233,6 +234,24 @@
                                                     params:{zdbh:params.row.zdbh}
                                                 }
                                             );
+                                        }
+                                    }
+                                }),
+                                h('Button', {//电子围栏展示
+                                    props: {
+                                        type: 'primary',
+                                        icon: 'ios-world-outline',
+                                        shape: 'circle',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            debugger
+                                            this.compName = bkShow
+											this.mess = params.row
                                         }
                                     }
                                 }),

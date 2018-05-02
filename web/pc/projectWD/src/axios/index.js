@@ -18,7 +18,6 @@ baseURL: 'http://47.98.39.45:8080',
 });
 // 添加请求拦截器 数据请求之前
 httpInstance.interceptors.request.use((config) => {
-	console.log('数据加载前',config.url)
 	if(config.url =="/api/clzd/getzdcl/"){
 		store.commit('CloadingType',false)//全局加载等待
 	}else{
@@ -37,8 +36,6 @@ httpInstance.interceptors.request.use((config) => {
         }
     }
     // 在发送请求之前做些什么
-//  console.log('拦截数据请求',config)
-//  console.log('123123',Cookies.get('result'))
     if(Cookies.get('result')){
     	let accessToken = JSON.parse(Cookies.get('result')).accessToken;
     	config.headers.token = accessToken.token;
