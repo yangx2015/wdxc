@@ -56,6 +56,7 @@ public class ZdxmServiceImpl extends BaseServiceImpl<SysZdxm,String> implements 
         RuntimeCheck.ifBlank(zdxm.getZdmc(),"字典名称不能为空");
         SysZdlm zdlm = zdlmMapper.selectByPrimaryKey(zdxm.getZdlmdm());
         RuntimeCheck.ifNull(zdlm,"未找到字典类目");
+        RuntimeCheck.ifTrue(ifExists(SysZdxm.InnerColumn.zddm.getValue(),zdxm.getZddm()),"字典代码已存在");
 
         zdxm.setCjr(getOperateUser());
         zdxm.setCjsj(new Date());

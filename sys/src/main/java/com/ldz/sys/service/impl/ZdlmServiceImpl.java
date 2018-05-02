@@ -37,6 +37,11 @@ public class ZdlmServiceImpl extends BaseServiceImpl<SysZdlm,String> implements 
         return zdlmMapper;
     }
 
+    /**
+     * 按指定字段进行排序
+     * @param condition
+     * @return
+     */
     @Override
     public boolean fillCondition(LimitedCondition condition){
         condition.setOrderByClause("qz desc");
