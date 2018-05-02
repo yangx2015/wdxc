@@ -61,12 +61,6 @@
                 default:''
             }
         },
-        watch:{
-            carNumber:function (n,o) {
-                alert(n)
-                this.bkDot(n)
-            }
-        },
         created(){
         },
         mounted(){
@@ -74,7 +68,7 @@
             // 百度地图API功能
             this.map = new BMap.Map("allmap"); // 创建Map实例
             this.mapCenter()
-
+            this.bkDot(this.carNumber)
         },
         methods:{
             //电子围栏点

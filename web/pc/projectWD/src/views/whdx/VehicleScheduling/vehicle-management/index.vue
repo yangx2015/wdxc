@@ -249,7 +249,6 @@
                                     },
                                     on: {
                                         click: () => {
-                                            debugger
                                             this.compName = bkShow
 											this.mess = params.row
                                         }
