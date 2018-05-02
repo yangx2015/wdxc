@@ -13,7 +13,7 @@
         width: 64px;
         height: 47px;
         top: 5px;
-        right: 0px;
+        right: 0;
         z-index: 100;
         background-color: rgb(255, 255, 255);
         text-align: center;
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
     export default {
         name:'',
         data(){
@@ -55,7 +56,9 @@
                         lng: 114.3725432,
                         lat: 30.564572
                     }
-                ]
+                ],
+                carID:'437316001277673472',
+                wlDot:[]
             }
         },
         created(){
@@ -66,16 +69,33 @@
             this.map = new BMap.Map("allmap"); // 创建Map实例
             this.mapCenter()
 
-            this.bkshow()
+            // this.bkshow()
             this.bk()
+            this.bkDot()
         },
         methods:{
+            //电子围栏点
+            bkDot(){
+                var v = this
+                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + this.carID).then((res) => {
+                    console.log('电子围栏点',res)
+                    if (res.code === 200) {
+                        let ditMess  = res.result.dlxxzb.split(';')
+                        let dotLength = res.result.dlxxzb.split(';').length
+                        for(var i = 0 ; i<dotLength ; i++){
+                            v.wlDot.push(
+                                new BMap.Point(ditMess[i].split(',')[0],ditMess[i].split(',')[1])
+                            )
+                        }
+                        v.bkshow(v.wlDot)//电子围栏显示
+                    }
+                })
+            },
             //地图级别中心
             mapCenter(){
                 var v = this
                 var point = new BMap.Point(v.mapcenter.lng, v.mapcenter.lat);
-                this.map.centerAndZoom(new BMap.Point(116.404, 39.915),15)
-                // this.map.centerAndZoom(point, v.zoom);// 初始化地图,设置中心点坐标和地图级别
+                this.map.centerAndZoom(point, v.zoom);// 初始化地图,设置中心点坐标和地图级别
                 this.map.addControl(new BMap.MapTypeControl({
                     mapTypes:[
                         BMAP_NORMAL_MAP
@@ -101,16 +121,17 @@
                     addMarker(point);
                 }
             },
-            bkshow(){
+            bkshow(mess){
                 var v = this
-                var polygon = new BMap.Polygon([
-                    new BMap.Point(116.387112,39.920977),
-                    new BMap.Point(116.385243,39.913063),
-                    new BMap.Point(116.394226,39.917988),
-                    new BMap.Point(116.401772,39.921364),
-                    new BMap.Point(116.41248,39.927893)
-                ], {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
-
+                    // mess=[
+                    // new BMap.Point(116.387112,39.920977),
+                    //     new BMap.Point(116.385243,39.913063),
+                    //     new BMap.Point(116.394226,39.917988),
+                    //     new BMap.Point(116.401772,39.921364),
+                    //     new BMap.Point(116.41248,39.927893)
+                    // ]
+                var polygon = new BMap.Polygon(mess, {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
+                v.map.setViewport(mess);             //可视化点
                 v.map.addOverlay(polygon);           //增加多边形
             },
             //布控
