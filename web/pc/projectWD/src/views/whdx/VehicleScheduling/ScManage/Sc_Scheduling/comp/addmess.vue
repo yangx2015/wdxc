@@ -116,7 +116,7 @@
 					}
 					v.getCarList()
 				}).catch((error)=>{
-					v.$Message.error('出错了！！！00000000000000');
+					v.$Message.error('出错了！！！');
 				})
 			},
 			deleteById(carID,index){

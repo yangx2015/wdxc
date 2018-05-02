@@ -96,10 +96,10 @@
                         align: 'center',
                         render: (h, params) => {
                         	let cl = params.row.clList
-                        	if(cl===null){
-                        		return
+                            if(cl===null){
+                                return
                         	}
-                        	let span = []
+                            let span = []
                         	for(var i = 0 ;i<cl.length;i++){
                         		span.push(
                         			h('span',{
@@ -130,7 +130,7 @@
 									},
 									on: {
 										click: () => {
-											if(params.row.clList!=null){
+											if(params.row.clList!=null && params.row.clList.length > 0){
 												params.row.clList.forEach(function(item,index){
 													item.ico = false
 												})

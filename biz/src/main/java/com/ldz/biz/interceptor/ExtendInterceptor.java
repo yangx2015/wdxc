@@ -19,12 +19,8 @@ public class ExtendInterceptor extends BaseWebConfigure {
 		registry.addInterceptor(new AccessInterceptor(redisDao))
 				.addPathPatterns("/api/**")
 				.excludePathPatterns("/pub/**"
-						,"**/export"
 						,"/login"
-						,"/upload"
-						,"/openapi/**"
-						,"/api/openuser/loginByCode"
-						,"/api/openuser/createCustomer");
+						,"/upload");
 		super.addInterceptors(registry);
 	}
 	
