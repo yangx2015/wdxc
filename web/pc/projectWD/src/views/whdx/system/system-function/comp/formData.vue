@@ -134,9 +134,6 @@
                     url: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
                     ],
-                    fjd: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
                     px: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' },
                     	{ min: 0, message: '请将信息填写完整', trigger: 'blur' }

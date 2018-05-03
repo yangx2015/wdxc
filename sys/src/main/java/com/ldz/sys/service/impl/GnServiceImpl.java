@@ -73,15 +73,14 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     	gn.setXgr(getOperateUser());
     	gn.setXgsj(new Date());
     	SysGn gndm = gnMapper.selectByPrimaryKey(gn.getGndm());
+    	if (StringUtils.isEmpty(gn.getFjd())){
+    	    gn.setFjd(null);
+        }
     	if (gndm==null) {
-			
     		save(gn);
 		}else {
 			update(gn);
 		}
-        
-
-        
         return ApiResponse.success();
     }
 
