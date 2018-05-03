@@ -28,7 +28,7 @@
 								</div>
 								<div>
 									<Icon type="android-car" size="16" color="#ff8300"></Icon>
-									:
+									：
 									{{item.cph}}
 								</div>
 		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
@@ -53,13 +53,13 @@
 								</div>
 								<div>
 									<Icon type="android-car" size="16" color="#ff8300"></Icon>
-									:
+									：
 									{{item.cph}}
 								</div>
 		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle"
 		    						 	size="small" icon="plus-round"
-		    						 	@click="AddList(item.clId,item.cph)"></Button>
+		    						 	@click="AddList(item.clId,item.cph,item.sjxm)"></Button>
 		    					</span>
 		    				</div>	    		
 		    			</Col>
@@ -110,7 +110,7 @@
 						if( res.result){
 							v.chrlist = res.result
 						}else{
-							v.chrlist = [{'cph':'无车辆数据','clId':'000000'}]
+							v.chrlist = [{'cph':'无车辆数据','clId':'000000','sjxm':'****'}]
 						}
 					}else{
 						console.log('bug')
@@ -120,14 +120,14 @@
 					console.log('bug')
 				})
 			},
-			AddList(carID,cph){
+			AddList(carID,cph,sjxm){
 				var v = this
 				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
 					console.log('排版新增',res)
 					if(res.code==200){
 						v.$Message.success(res.message);
 						v.$parent.getmess()
-						v.mess.clList.push({'cph':cph,'clId':carID})
+						v.mess.clList.push({'cph':cph,'clId':carID,'sjxm':sjxm})
 						v.getCarList()
 					}else{
 						v.$Message.error(res.message);
