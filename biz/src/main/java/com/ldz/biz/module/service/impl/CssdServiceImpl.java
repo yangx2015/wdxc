@@ -114,7 +114,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 			insetAndUpdate(cssd);
 
 		}
-		return ApiResponse.success("共计" + cphss.size() + "个" + "-----" + "设定失败了" + count + "个");
+		return ApiResponse.success();
 	}
 
 	@Override

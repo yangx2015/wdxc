@@ -122,9 +122,6 @@
                     dabh:[
                   	{ required: true,message: '请输入档案编号', trigger: 'blur' }
                   ],
-                    nl:[
-                  	{ required: true,message: '请输入年龄', trigger: 'blur' }
-                  ]
               	},
 				fleetList:[],
 			}

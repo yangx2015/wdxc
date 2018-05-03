@@ -59,7 +59,7 @@
     import expandRow from './table-expand.vue';
     export default {
         components: {
-        	expandRow 
+        	expandRow
         },
         mixins:[mixins],
         data () {
@@ -71,6 +71,7 @@
             		lte_StartTime:'',
                 	like_CarNumber:'',
                 	like_ScName:'',
+					ddzt:'',
                 	pageNum:1,
             		pageSize:5
                 },
@@ -97,22 +98,22 @@
                     {
                         title: '用车单位',
                         align:'center',
-                        key: 'VehicleUnit'
+                        key: 'jgmc'
                     },
                     {
                         title: '用车人',
                         align:'center',
-                        key: 'UseCarPeople'
+                        key: 'ck'
                     },
                     {
                         title: '客户电话',
                         align:'center',
-                        key: 'phoneNomber'
+                        key: 'cklxdh'
                     },
                     {
                         title: '出车司机',
                         align:'center',
-                        key: 'DriverName'
+                        key: 'sjxm'
                     },
                     {
                         title: '司机电话',
@@ -122,7 +123,7 @@
                     {
                         title: '车型',
                         align:'center',
-                        key: 'CarModel'
+                        key: 'zws'
                     },
                     {
                     	title:'操作',
@@ -163,10 +164,10 @@
                 ],
                 data9: [
                     {
-                        VehicleUnit:'信息学院',//用车单位
-                        UseCarPeople: '毛毛',//用车人
-                        phoneNomber: '15113131414',//用车人电话
-                        CarModel: '45人座位',//车型--按座位数分
+                        jgmc:'信息学院',//用车单位
+                        ck: '毛毛',//用车人
+                        cklxdh: '15113131414',//用车人电话
+                        zws: '45人座位',//车型--按座位数分
                         BillModel: '单程',//单据类型--单程--往返
                         mileage: '30公里',//行车里程
                         unit: '15元/公里',//里程单价
@@ -175,7 +176,7 @@
                         RoadToll:'10元',//过路费
                         BridgeFee:'15元',//过桥费
                         mess:'用车事由',//用车事由
-                        DriverName:'王二毛',//司机姓名
+                        sjxm:'王二毛',//司机姓名
                         DriverPhone:'13212121212',//司机电话
                         WaitingPlace:'武汉大学正门',//候车地点
 	                	Destination:'武汉火车站',//目的地
@@ -183,10 +184,10 @@
                     	addMoney:'470元',//费用合计
                     },
                     {
-                    	VehicleUnit:'信息学院',
-                        UseCarPeople: '毛毛',
-                        phoneNomber: '15113131414',
-                        CarModel: '45人座位',
+                    	jgmc:'信息学院',
+                        ck: '毛毛',
+                        cklxdh: '15113131414',
+                        zws: '45人座位',
                         BillModel: '单程',
                         mileage: '30公里',
                         unit: '15元/公里',
@@ -195,7 +196,7 @@
                         RoadToll:'10元',
                         BridgeFee:'15元',
                         mess:'用车事由',
-                        DriverName:'王二毛',
+                        sjxm:'王二毛',
                         DriverPhone:'13212121212',
                         WaitingPlace:'武汉大学正门',
 	                	Destination:'武汉火车站',
@@ -203,10 +204,10 @@
                     	addMoney:'470元',
                     },
                     {
-                    	VehicleUnit:'信息学院',
-                        UseCarPeople: '毛毛',
-                        phoneNomber: '15113131414',
-                        CarModel: '45人座位',
+                    	jgmc:'信息学院',
+                        ck: '毛毛',
+                        cklxdh: '15113131414',
+                        zws: '45人座位',
                         BillModel: '单程',
                         mileage: '30公里',
                         unit: '15元/公里',
@@ -215,7 +216,7 @@
                         RoadToll:'10元',
                         BridgeFee:'15元',
                         mess:'用车事由',
-                        DriverName:'王二毛',
+                        sjxm:'王二毛',
                         DriverPhone:'13212121212',
                         WaitingPlace:'武汉大学正门',
 	                	Destination:'武汉火车站',
@@ -242,13 +243,14 @@
         	pageChange(event){
         		var v = this
         	},
-        	findMessList(){
-        		var v = this
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
-        	},
+            findMessList(){
+                this.$http.get(configApi.ORDER.QUERY).then((res) =>{
+                    if (res.code === 200 && res.page.list){
+                        this.data9 = res.page.list;
+                        this.pageTotal = res.psage.total;
+                    }
+                })
+            },
         }
     }
 </script>

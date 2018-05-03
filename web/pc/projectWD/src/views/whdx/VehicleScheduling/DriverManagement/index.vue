@@ -46,7 +46,7 @@
 			</Row>
 		</Card>
 		<component
-			:is="compName" 
+			:is="compName"
 			:mess="mess"
 			:messType="messType"></component>
     </div>
@@ -55,7 +55,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import newmes from './comp/newmes.vue'
 	export default {
     	name:'char',
@@ -68,7 +68,7 @@
             	mess:{},
             	messType:true,
             	compName:'',
-            	
+
             	SpinShow:true,
 				tabHeight: 220,
             	PickerTime:2017,
@@ -170,9 +170,9 @@
                         align:'center',
                         key:'clrq',
                         render:(h,p)=>{
-                            return this.getdateParaD(new Date(p.row.clrq))
+                            return h('div',p.row.clrq.substring(0,10));
                         }
-                        
+
                     },
                     {
                         title:'档案编号',

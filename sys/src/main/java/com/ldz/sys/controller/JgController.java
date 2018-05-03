@@ -2,6 +2,7 @@ package com.ldz.sys.controller;
 
 import java.util.List;
 
+import com.ldz.sys.model.SysYh;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -38,6 +39,13 @@ public class JgController extends BaseController<SysJg, String> {
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(SysJg jg) {
 		return jgService.saveEntity(jg);
+	}
+
+	@RequestMapping("getSubOrgList")
+	public ApiResponse<List<SysJg>> getSubOrgList(){
+		SysYh user = getCurrentUser();
+		List<SysJg> orgList = jgService.findAllSubOrg(user.getJgdm());
+		return ApiResponse.success(orgList);
 	}
 
 }

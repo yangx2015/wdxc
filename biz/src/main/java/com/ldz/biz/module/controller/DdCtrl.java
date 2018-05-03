@@ -33,7 +33,7 @@ import com.ldz.util.bean.ApiResponse;
  *   请求地址要加上：api  因为api的话，可以加上权限的鉴权。
  */
 @RestController
-@RequestMapping("/dd")
+@RequestMapping("/api/dd")
 public class DdCtrl{
     @Autowired
     private DdService service;

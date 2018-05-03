@@ -18,6 +18,12 @@ module.exports = {
 		GIVE:'/api/js/modifyUserRoles',
 		DELE:'/api/yh/removeIds'
 	},
+	ORDER:{
+		QUERY:'/api/dd/pager',//订单管理
+		ADD:'/api/dd/save',
+		CHANGE:'/api/dd/update',
+		DELE:'/api/dd/removeIds'
+	},
 	ROLE:{
 		QUERY:'/api/js/pager',//角色管理
 		ALL:'/api/js/getAll',//角色管理
@@ -33,7 +39,8 @@ module.exports = {
         ADD:'/api/jg/save',
         CHANGE:'/api/jg/update',
         DELE:'/api/jg/removeIds',
-		GET_TREE:'/api/jg/getOrgTree'
+		GET_TREE:'/api/jg/getOrgTree',
+        getSubOrgList:'/api/jg/getSubOrgList',
 	},
 	DICTIONARY:{
 	   QUERY:'/api/zd/pager',// 查询字典
