@@ -67,6 +67,7 @@
 							   	<Select v-model="findMess.cphLike" filterable
 							   		@on-change="findMessList()"
 							   		style="width: 200px;text-align: left;">
+									<Option value="" key="">全部</Option>
 					                <Option  v-for="(item,index) in carList" 
 					                	:value="item.cph" :key="index">{{item.cph}}</Option>
 					            </Select>
@@ -86,14 +87,6 @@
 					<div class="bodyC videoSty" 
 						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
-    					<!--<div v-if="!item.video">-->
-							<!--&lt;!&ndash;<div class="videoBF" @click="videoS(item.video,item,index)">&ndash;&gt;-->
-								<!--&lt;!&ndash;<Icon class="icon" type="arrow-right-b" &ndash;&gt;-->
-									 <!--&lt;!&ndash;@click="videoS(item.video,item,index)"&ndash;&gt;-->
-									<!--&lt;!&ndash;color="#b5b5b5" size='38'></Icon>&ndash;&gt;-->
-							<!--&lt;!&ndash;</div>&ndash;&gt;-->
-							<!--<img style="width: 100%;" :src="videoPath+'/test/'+item.url"/>-->
-    					<!--</div>-->
                         <img :src="videoPath+'/test/'+item.url" style="width: 100%;">
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
@@ -151,7 +144,6 @@
 			}
 		},
 		created(){
-			this.getmess()
 			this.getCarList();
 		},
 		methods:{
@@ -201,14 +193,14 @@
                         }
 					}
 					this.videoList = res.page.list
+                    v.SpinShow = false;
 				})
 			},
 			getCarList(){
                 var v = this
                 this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
-                    this.findMess.cphLike = this.carList[0].cph
-                    v.SpinShow = false;
+                    this.getmess();
                 })
 			},
 			findMessList(){
