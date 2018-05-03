@@ -95,7 +95,6 @@
                     {
                         title: '车辆信息',
                         key: 'clList',
-						width:'100',
                         align: 'center',
                         render: (h, params) => {
                         	let cl = params.row.clList
@@ -109,7 +108,7 @@
 										style:{
 											marginRight:'5px',
 										}
-									},cl[i].cph)
+									},cl[i].cph+ ' ; ')
                         		)
                         	}
                         	return h('div', span)
