@@ -331,14 +331,17 @@
                         //更新地图移动轨迹
                         var movePoint = new BMap.Point(moveData.bdjd, moveData.bdwd);
                         this.movingMarker.setPosition(movePoint);
-						/*
-						 给chart补充完数据后，再开启该方法
+
+						 //给chart补充完数据后，再开启该方法
 						 this.movingChartOptions.animation = false;
 						 //更新chart移动轨迹
-						 this.movingChartOptions.xAxis.axisPointer.value = "gps日期值和chart初始化时的日期格式内容一致";
+                        console.log('index');
+                        console.log(this.playAndStopBtnGroup.playIndex);
+                        console.log(this.speedList[this.playAndStopBtnGroup.playIndex][0]);
+                        this.movingChartOptions.xAxis.axisPointer.value = this.speedList[this.playAndStopBtnGroup.playIndex][0];
 						 //重置chart属性来实现自动移动
 						 this.movingChart.setOption(this.movingChartOptions);
-						 */
+
 					}catch(e){
                         //防止动画执行报错，进行容错控制，防止界面卡死
 					}

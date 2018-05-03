@@ -136,10 +136,7 @@
                 if(this.mess.zdbh == null){
                     this.mess.zdbh = ''
 				}
-
-                this.addmess = this.mess
-                log('数据传递',this.derMess)
-                log('数据传递',this.mess)
+                this.addmess = JSON.parse(JSON.stringify(this.mess))
             }
             this.getDrivers();
 			this.getDict();

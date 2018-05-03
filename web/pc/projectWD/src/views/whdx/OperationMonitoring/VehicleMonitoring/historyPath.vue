@@ -244,9 +244,8 @@
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
-                log('p',p);
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
-                    if (res.code === 200){
+                    if (res.code === 200 && res.result){
                         //var geoc = new BMap.Geocoder();
                         for (let r of res.result){
                             let ksgps = r.ksgps.split(',');

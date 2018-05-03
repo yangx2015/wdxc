@@ -390,7 +390,7 @@ export default {
         },
         saveDzwl(){
             var v = this
-			if (v.findMess.wlmc == ''){
+            if (!v.findMess.wlmc || v.findMess.wlmc == ''){
                 v.$Message.error('请输入围栏名称');
                 return;
 			}

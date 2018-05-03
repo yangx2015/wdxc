@@ -24,8 +24,9 @@
 </style>
 
 <template>
-    <div style="height: 100%;background-color: #00FFFF;position: relative;">
-        <div id="allmap"></div>
+    <div style="height: 100%;position: relative;">
+        <div v-if="wlDot && wlDot.length != 0" id="allmap"></div>
+        <div v-else><span>该车辆没有设置电子围栏</span></div>
     </div>
 </template>
 
@@ -65,11 +66,7 @@
         },
         mounted(){
             var v = this
-            // 百度地图API功能
-            this.map = new BMap.Map("allmap"); // 创建Map实例
-            this.mapCenter()
             this.bkDot(this.carNumber)
-
         },
         methods:{
             //电子围栏点
@@ -86,6 +83,9 @@
                             )
                         }
                         setTimeout(function () {
+                            // 百度地图API功能
+                            v.map = new BMap.Map("allmap"); // 创建Map实例
+                            v.mapCenter()
                             v.map.setViewport(v.wlDot);
                             v.bkshow(v.wlDot)//电子围栏显示
                         },100)
