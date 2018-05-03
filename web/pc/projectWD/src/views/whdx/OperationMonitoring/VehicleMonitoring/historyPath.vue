@@ -223,7 +223,7 @@
                 this.$http.get(configApi.CLGL.QUERY+'?zdbh='+this.formItem.zdbh).then((res) =>{
                     if (res.code === 200 && res.page.list.length > 0){
                         this.car = res.page.list[0];
-                        console.log(res);
+                        log(res);
                     }
                 })
 			},
@@ -244,7 +244,7 @@
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
-                console.log('p',p);
+                log('p',p);
                 this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200){
                         //var geoc = new BMap.Geocoder();

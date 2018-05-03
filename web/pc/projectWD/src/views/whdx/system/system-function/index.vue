@@ -102,7 +102,7 @@
 									},
 									on: {
 										click: () => {
-											//console.log('数据调试', params)
+											//log('数据调试', params)
 										}
 									}
 								})
@@ -226,12 +226,12 @@
 		methods: {
 			getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
-            	console.log('字典',this.Dictionary)
+            	log('字典',this.Dictionary)
 			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.FUNCTION.QUERY,{params:this.findMess}).then((res) =>{
-					//console.log('功能数据',res)
+					//log('功能数据',res)
 					v.tableData = res.page.list
 					v.SpinShow = false
 					v.pageTotal = res.page.total
@@ -254,13 +254,13 @@
 			},
 			GetMess(page) {
 				var v = this
-				//      		console.log(page)
+				//      		log(page)
 			},
 			pageChange(event) {
 				var v = this
 				v.findMess.pageNum = event
 				v.getmess()
-				//      		console.log(v.page)
+				//      		log(v.page)
 			},
 //			findMessList() {
 //				var v = this

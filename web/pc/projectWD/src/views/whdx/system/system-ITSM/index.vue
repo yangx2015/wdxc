@@ -123,7 +123,7 @@
 									},
 									on: {
 										click: () => {
-											//console.log('数据调试', params)
+											//log('数据调试', params)
 										}
 									}
 								})
@@ -224,7 +224,7 @@
 		methods: {
 			getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
-                console.log('字典',this.Dictionary)
+                log('字典',this.Dictionary)
             },
 			getmess(){
 				var v = this
@@ -252,7 +252,7 @@
 				var v = this
 				v.SpinShow = true;
 				this.$http.get(configApi.ITMS.QUERY,{params:v.findMess}).then((res) =>{
-					//console.log(res)
+					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})

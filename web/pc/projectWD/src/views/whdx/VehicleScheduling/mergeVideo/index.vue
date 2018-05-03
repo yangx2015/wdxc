@@ -130,7 +130,7 @@
 		},
 		methods:{
 		    onResult(r){
-                console.log(r);
+                log(r);
                 this.wait = false;
                 this.componentName = '';
                 this.SpinShow = false;
@@ -213,7 +213,7 @@
                                 },5000)
 							}
                             // let path = this.$route.path;
-                            // console.log(path);
+                            // log(path);
                             // if (path === ''){
                              //    setTimeout(()=>{
                              //        this.check()

@@ -328,9 +328,9 @@
 //	            ghostClass: 'placeholder-style',
 //	            fallbackClass: 'iview-admin-cloned-item',
 	            onRemove (event) {
-	            	console.log(event.item.getAttribute('data-index'))
-	            	console.log(event)
-	            	console.log(event.to.id)
+	            	log(event.item.getAttribute('data-index'))
+	            	log(event)
+	            	log(event.to.id)
 	//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 	//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 	            }
@@ -341,7 +341,7 @@
 		},
 		methods:{
 			findlistMess(mes){
-				console.log(mes)
+				log(mes)
 			},
 			MenuClick(event){
 				this.MenuNum = event
@@ -359,8 +359,8 @@
 	//			            ghostClass: 'placeholder-style',
 	//			            fallbackClass: 'iview-admin-cloned-item',
 				            onRemove (event) {
-				            	console.log(event.item.getAttribute('data-index'))
-				            	console.log(event)
+				            	log(event.item.getAttribute('data-index'))
+				            	log(event)
 				//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 				//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 				           }

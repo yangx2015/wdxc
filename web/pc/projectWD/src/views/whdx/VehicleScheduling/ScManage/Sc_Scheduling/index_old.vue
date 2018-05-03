@@ -206,9 +206,9 @@
 		methods: {
 			getmess(){
 				var v = this
-				console.log('排班数据2')
+				log('排班数据2')
 				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
-					console.log('排班数据',res)
+					log('排班数据',res)
 					v.tableData = res.result
 				})
 			},
@@ -219,7 +219,7 @@
 			getalert(){
         		var windowHeight = window.innerHeight
         		this.tabHeight = windowHeight - 280
-        		console.log('浏览器高',this.tabHeight)
+        		log('浏览器高',this.tabHeight)
         	},
         	changeClick(){
         		this.dateMess = true
@@ -229,12 +229,12 @@
 			dayClick(event) {
 				this.todaytime = this.getdateParaD(event)
 				this.getmess()
-//				console.log('天事件', this.getdateParaD(event))
-//				console.log('天事件', event.toLocaleString())
+//				log('天事件', this.getdateParaD(event))
+//				log('天事件', event.toLocaleString())
 //				this.dateMess = true
 			},
 			eventClick(event) {
-				console.log('备注事件', event)
+				log('备注事件', event)
 			},
 			//dome组件刷新
 			domeC(){

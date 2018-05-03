@@ -213,7 +213,7 @@ util.handleTitle = function (vm, item) {
 
 //util.openNewPage = function(vm, name, argu, query){
 //	debugger
-//	console.log('*******')
+//	log('*******')
 //}
 
 util.openNewPage= function (vm, name, argu, query) {

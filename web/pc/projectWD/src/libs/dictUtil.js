@@ -20,7 +20,7 @@ let dictUtil = {
         if (val){
             return val;
         }else{
-            console.log('字典加载失败，重新登陆');
+            log('字典加载失败，重新登陆');
             v.$router.push({ name: 'login' });
         }
     },

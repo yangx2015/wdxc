@@ -113,7 +113,7 @@
 		},
 		methods:{
 			fullcal(){
-				console.log('信息',this.mess)
+				log('信息',this.mess)
 			},
 			colse(){
 				var v = this

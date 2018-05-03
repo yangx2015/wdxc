@@ -68,7 +68,7 @@
 			}
 		},
 		created(){
-			console.log('数据传输',this.mess)
+			log('数据传输',this.mess)
 			this.addmess = this.mess
 		},
 		methods:{

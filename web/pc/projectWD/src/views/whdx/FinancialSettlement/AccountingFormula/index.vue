@@ -126,7 +126,7 @@
 //									on: {
 //										click: () => {
 //											// this.show(params.index)
-//											console.log(params)
+//											log(params)
 //										}
 //									}
 //								}, params.row.time)
@@ -220,7 +220,7 @@
 				var v = this
 				v.page.pageNum = event
 				v.getDataList(v.page)
-				//      		console.log(v.page)
+				//      		log(v.page)
 			},
 			//角色分配选项
 			handleCheckAll() {

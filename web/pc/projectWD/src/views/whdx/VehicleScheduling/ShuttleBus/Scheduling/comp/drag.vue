@@ -93,9 +93,9 @@ li{
 //	            fallbackClass: 'iview-admin-cloned-item',
 	            onRemove (event) {
 //	            	event.to.innerHTML="<div style='background-color:#000;width:50px;height:50px'></div>"
-	            	console.log(event.item.getAttribute('data-index'))
-	            	console.log(event)
-	            	console.log(event.to.id)
+	            	log(event.item.getAttribute('data-index'))
+	            	log(event)
+	            	log(event.to.id)
 	//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 	//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 	            }
@@ -121,8 +121,8 @@ li{
 //			            ghostClass: 'placeholder-style',
 //			            fallbackClass: 'iview-admin-cloned-item',
 			            onRemove (event) {
-			            	console.log(event.item.getAttribute('data-index'))
-			            	console.log(event)
+			            	log(event.item.getAttribute('data-index'))
+			            	log(event)
 			//              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 			//          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
 			           }

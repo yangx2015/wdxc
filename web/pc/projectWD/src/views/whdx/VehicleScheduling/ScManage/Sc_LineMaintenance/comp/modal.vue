@@ -162,7 +162,7 @@
                 this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
-                        console.log('站点列表',res)
+                        log('站点列表',res)
                         if (this.$parent.currentRow){
                             this.getStations();
                         }
@@ -217,7 +217,7 @@
                 });//向线路插入数据
                 this.stationId = 0;
 				this.stationList[index].disabled = true
-                console.log(this.stationList)
+                log(this.stationList)
 			},
 			removespot(){
 				var chLength = this.choosedStations.length-1

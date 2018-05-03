@@ -234,15 +234,15 @@
         	changeTime(val){
 //      		this.findMess.gte_StartTime=val[0]
 //      		this.findMess.lte_StartTime=val[1]
-//      		console.log(this.findMess)
+//      		log(this.findMess)
 //      		this.findMessList()
         	},
         	print(){
         		window.print()
         	},
             listEve(num,event){
-        		console.log('event',event)
-        		console.log('num',num)
+        		log('event',event)
+        		log('num',num)
         		var v = this
 				swal({
 				  title: "审核通过?",
@@ -267,13 +267,13 @@
             },
         	GetMess(page){
         		var v = this
-//      		console.log(page)
+//      		log(page)
         	},
             pageChange(event){
         		var v = this
         		v.page.pageNum = event
         		v.getDataList(v.page)
-//      		console.log(v.page)
+//      		log(v.page)
         	},
         	findMessList(){
         		var v = this

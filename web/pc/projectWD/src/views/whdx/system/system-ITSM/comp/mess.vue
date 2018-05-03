@@ -106,7 +106,7 @@
 						delete this.addmess.cjsj
 						delete this.addmess.xgsj
 						this.$http.post(configApi.ITMS.CHANGE,this.addmess).then((res) =>{
-							console.log('服务数据',res)
+							log('服务数据',res)
 							if(res.code===200){
 								v.$Message.success('操作成功');
 							}else{

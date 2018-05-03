@@ -74,7 +74,7 @@
 			feedback(){
 				var v = this
 				this.$http.post(configApi.SUGGES.CHANGE,v.mess).then((res) =>{
-					console.log('shuju',res)
+					log('shuju',res)
 					if(res.code===200){
 						v.$Message.success('反馈解决');
 					}else{
@@ -87,7 +87,7 @@
 			colse(){
 				var v = this
 				v.$parent.compName = ''
-				console.log(v.$parent)
+				log(v.$parent)
 		    }
 		}
 	}

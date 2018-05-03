@@ -209,12 +209,12 @@
         methods:{
         	getClztDict(){
                 this.ztDict = this.dictUtil.getByCode(this,this.ztDictCode);
-                console.log('字典数据',this.ztDict)
+                log('字典数据',this.ztDict)
             },
         	getmess(){
 				var v = this
 				this.$http.get(configApi.CD.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('车队数据',res)
+					log('车队数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;

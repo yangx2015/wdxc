@@ -174,13 +174,13 @@ export default {
     },
     methods: {
     	getCook(){
-    		console.log("获取Cook")
+    		log("获取Cook")
     		this.userInfo = JSON.parse(Cookies.get('result')).userInfo
 			this.userForm.user = this.userInfo.zh
 			this.userForm.name = this.userInfo.xm
 			this.userForm.cellphone = this.userInfo.sjh
 			this.userForm.company = this.userInfo.jgmc
-	    	console.log('数据战死',this.userInfo)
+	    	log('数据战死',this.userInfo)
 //	    	userForm: {
 //          	user:'',//
 //              name: '',//姓名

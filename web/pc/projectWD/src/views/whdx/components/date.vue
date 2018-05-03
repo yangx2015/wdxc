@@ -52,11 +52,11 @@
 		},
 		methods:{
 			dayClick(event){
-				console.log('天事件',event.toLocaleString(
+				log('天事件',event.toLocaleString(
 				))
 			},
 			eventClick(event){
-				console.log('备注事件',event)
+				log('备注事件',event)
 			}
 		}
 	}

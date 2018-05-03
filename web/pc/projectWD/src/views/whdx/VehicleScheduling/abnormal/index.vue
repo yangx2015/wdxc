@@ -169,7 +169,7 @@
 				}else{
 					this.findMess.cjsjInRange  = ''
 				}
-				console.log('newQuestion',newQuestion)
+				log('newQuestion',newQuestion)
 			},
 		},
         created(){
@@ -197,14 +197,14 @@
             			v.carnumber = res.page.list
             		}
 				})
-            	console.log('车型',this.carType)
-            	console.log('事件',this.thingType)
+            	log('车型',this.carType)
+            	log('事件',this.thingType)
 			},
         	getmess(){
 				var v = this
 				v.SpinShow = true;
 				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('数据',res)
+					log('数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total;
 					v.SpinShow = false;
@@ -214,13 +214,13 @@
         		var v = this
         		v.findMess.pageNum = event
         		v.findMessList()
-//      		console.log(v.page)
+//      		log(v.page)
         	},
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
         		this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('数据',res)
+					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;
 					v.SpinShow = false;

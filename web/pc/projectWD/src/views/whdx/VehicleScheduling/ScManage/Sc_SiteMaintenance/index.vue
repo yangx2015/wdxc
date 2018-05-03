@@ -195,7 +195,7 @@
                 }
                 var v = this
                 this.$http.get(configApi.ZD.QUERY,{params:v.findMess}).then((res) =>{
-                    console.log('超速数据',res)
+                    log('超速数据',res)
                     v.data9 = res.page.list
                     v.pageTotal = res.page.total
                     v.SpinShow = false;

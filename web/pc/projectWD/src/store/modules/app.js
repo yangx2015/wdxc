@@ -60,8 +60,8 @@ const app = {
     	},
     	setFunctions (state,data){
             state.functionList = data
-            console.log('setFunctions');
-            console.log(menuList);
+            log('setFunctions');
+            log(menuList);
         },
     	socketMessAdd (state,data){
     		state.socketMess = data

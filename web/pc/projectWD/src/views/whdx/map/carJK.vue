@@ -101,9 +101,9 @@
                 this.clear()
                 var v = this
                 for (let r of this.carList) {
-                    console.log('showCarPosition');
-                    console.log(r.lng);
-                    console.log(r.lat);
+                    log('showCarPosition');
+                    log(r.lng);
+                    log(r.lat);
                     var point = new BMap.Point(r.lng, r.lat);
                     this.addMarker(r, point);
                     this.addLabel(r, point);

@@ -65,7 +65,7 @@
 			    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
 			    
 			    this.map.addEventListener("click",function(e){
-//					console.log(e.point.lng + "," + e.point.lat);//打印map点数据
+//					log(e.point.lng + "," + e.point.lat);//打印map点数据
 					v.map.clearOverlays();//清楚数据点
                     v.addPoint(e.point.lng,e.point.lat);
 					v.$emit('getDot',e)

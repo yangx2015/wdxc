@@ -207,7 +207,7 @@
         	getmess(){
 				var v = this
 				this.$http.get(configApi.LSDW.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('临时单位',res)
+					log('临时单位',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -226,7 +226,7 @@
             pageChange(event){
         		var v = this
         		v.page.pageNum = event
-//      		console.log(v.page)
+//      		log(v.page)
         	},
         }
     }

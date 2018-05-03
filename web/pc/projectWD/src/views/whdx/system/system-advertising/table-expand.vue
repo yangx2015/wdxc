@@ -104,7 +104,7 @@
 			}
 		},
 		created(){
-			console.log('tupian',this.row.filePaths)
+			log('tupian',this.row.filePaths)
             if (this.row.filePaths){
                 let paths = [];
                 this.uploadList = [];
