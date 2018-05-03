@@ -36,6 +36,7 @@
                 },
                 zoom: 12,
                 carList: [],
+                zoomDot:[],
                 fancePoints: [
                     {lng: 114.27226, lat: 30.608123},
                     {lng: 114.157277, lat: 30.544446},
@@ -69,8 +70,17 @@
                 this.addLine(this.fancePoints);
             },
             update() {
-                this.carList = this.$parent.mapCarList;
-                this.showCarPosition();
+                var v = this
+                v.carList = v.$parent.mapCarList;
+                v.showCarPosition();
+                for(var i = 0 ; i<v.carList.length ; i++){
+                    v.zoomDot.push(
+                        new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
+                    )
+                }
+                setTimeout(function () {
+                    v.map.setViewport(v.zoomDot);
+                },50)
             },
             init() {
                 this.carList = this.$parent.mapCarList;
