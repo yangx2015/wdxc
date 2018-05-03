@@ -138,8 +138,8 @@
 				}
 
                 this.addmess = this.mess
-                console.log('数据传递',this.derMess)
-                console.log('数据传递',this.mess)
+                log('数据传递',this.derMess)
+                log('数据传递',this.mess)
             }
             this.getDrivers();
 			this.getDict();
@@ -154,7 +154,7 @@
                     	if(res.result==undefined){
                     		res.result = []
                     	}
-                    	console.log('终端数据',res)
+                    	log('终端数据',res)
                         this.deviceList = res.result;
                         if(!this.messType){
                         	this.deviceList.push({'zdbh':v.mess.zdbh})
@@ -191,9 +191,9 @@
                         this.drivers = res.result;
                         if(v.derMess.sjId!=null&&!v.messType){
 		                	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
-		                	console.log('驾驶员添加数据',v.drivers)
+		                	log('驾驶员添加数据',v.drivers)
 		                }
-                        console.log('驾驶员',this.drivers)
+                        log('驾驶员',this.drivers)
                     }
                 })
 			},

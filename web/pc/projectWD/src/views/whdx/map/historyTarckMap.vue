@@ -204,7 +204,7 @@
                 this.map.addOverlay(polyline);          //增加折线
 
 				// 增加起点
-                console.log((v.stationList[0].bdjd, v.stationList[0].bdwd));
+                log((v.stationList[0].bdjd, v.stationList[0].bdwd));
                 var pt1 = new BMap.Point(v.stationList[0].bdjd, v.stationList[0].bdwd);
                 var myIcon1 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker1 = new BMap.Marker(pt1,{icon:myIcon1});  // 创建标注
