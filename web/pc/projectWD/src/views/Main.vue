@@ -170,7 +170,7 @@
         		this.compName = 'pass'
         	},
         	sco(){
-    		console.log('网络连接')
+    		log('网络连接')
     		//数据推送
 				var v = this
 			/**
@@ -182,14 +182,14 @@
 		     * 服务器有消息返回的回调函数
 		     */
 			    v.socket.onmessage = function(e) {
-			        // console.log('message', e.data);
+			        // log('message', e.data);
 			    };
 		
 		    /**
 		     * websocket链接关闭的回调函数
 		     */
 			    v.socket.onclose = function() {
-			        // console.log('关闭');
+			        // log('关闭');
 			    };
 		
 			    var stompClient = Stomp.over(v.socket);
@@ -215,7 +215,7 @@
 			    });
 			},
         	ButOnmouseover(mes){
-        		console.log('ButOnmouseover:',mes)
+        		log('ButOnmouseover:',mes)
         	},
             init () {
                 this.$store.commit('updateMenulist');
@@ -250,7 +250,7 @@
 //              }
             },
             handleSubmenuChange (val) {
-//                 console.log('路由',val)
+//                 log('路由',val)
             },
             beforePush (name) {
                 return true;

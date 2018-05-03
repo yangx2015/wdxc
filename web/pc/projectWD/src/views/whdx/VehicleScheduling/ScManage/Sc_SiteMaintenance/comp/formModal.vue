@@ -141,7 +141,7 @@
                         }).then((res)=>{
                             v.close();
                         }).catch((e)=>{
-                            console.log(e);
+                            log(e);
                             v.$Message.error("失败了！");
                         })
                 } else {

@@ -154,7 +154,7 @@
 			getmess() {
 				var v = this
 				this.$http.post(configApi.DICTIONARY.QUERY , this.findMess).then((res) => {
-					console.log('字典数据', res)
+					log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;
 				})
@@ -169,7 +169,7 @@
 			findMessList(mess) {
 				var v = this
 				this.$http.post(configApi.DICTIONARY.QUERY, this.findMess).then((res) => {
-					console.log('字典数据', res)
+					log('字典数据', res)
 					v.dictionary = res.page.list
 				})
 			},
@@ -189,7 +189,7 @@
 					'zdlmdm': item.lmdm,
 					'zdmcLike': mess
 				}).then((res) => {
-					console.log('字典数据', res)
+					log('字典数据', res)
 					if(res.code === 200) {
 						v.dictionary[index].zdxmList = res.page.list
 					}

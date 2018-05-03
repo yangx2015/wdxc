@@ -132,7 +132,7 @@
 
         watch:{
             clrq:function(n,o){
-            	console.log('事件日期',n)
+            	log('事件日期',n)
             	this.addmess.clrq = this.getdateParaD(n)
             }
         },

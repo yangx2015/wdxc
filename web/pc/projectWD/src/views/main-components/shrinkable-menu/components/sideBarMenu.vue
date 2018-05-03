@@ -68,7 +68,7 @@
         },
         methods: {
             changeMenu(active) {
-                console.log('菜单数据',active);
+                log('菜单数据',active);
 //              this.$store.commit('setCurrentPageName', active)
                 this.$emit('on-change', active);
             },
@@ -90,7 +90,7 @@
         created() {
 //          this.mesList = menuList.menuTree
             this.mesList = this.session.getItem('menuList')
-            console.log('菜单数据',this.mesList)
+            log('菜单数据',this.mesList)
         }
 
     };

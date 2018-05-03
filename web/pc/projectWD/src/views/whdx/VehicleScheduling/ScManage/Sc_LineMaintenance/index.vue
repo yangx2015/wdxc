@@ -244,7 +244,7 @@
                     if(res.code===200){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;
-                        console.log(this.data9);
+                        log(this.data9);
                     }
                 })
             },

@@ -24,7 +24,6 @@ function hasPermission(list,name){
     return false;
 }
 router.beforeEach((to, from, next) => {
-	console.log(to.name)
     iView.LoadingBar.start();
     if(to.name=='login'){
     	next()
@@ -42,7 +41,7 @@ router.beforeEach((to, from, next) => {
     }
 });
 router.afterEach((to) => {
-	console.log(to)
+	log(to)
     Util.openNewPage(router.app, to.name, to.params, to.query);
     iView.LoadingBar.finish();
     window.scrollTo(0, 0);

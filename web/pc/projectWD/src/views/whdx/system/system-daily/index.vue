@@ -166,7 +166,7 @@
 				var v = this
 				v.SpinShow = true;
 				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('数据',res)
+					log('数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total;
 					v.SpinShow = false;
@@ -176,13 +176,13 @@
         		var v = this
         		v.findMess.pageNum = event
         		v.findMessList()
-//      		console.log(v.page)
+//      		log(v.page)
         	},
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
         		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('数据',res)
+					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;
 					v.SpinShow = false;

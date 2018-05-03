@@ -55,7 +55,7 @@
                 if (this.$parent.jgdm){
                     this.formItem.fjgdm = this.$parent.jgdm;
                 }else{
-                    console.log("请选择父节点")
+                    log("请选择父节点")
 				}
 			}
 		},

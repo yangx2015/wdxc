@@ -50,7 +50,7 @@
 			}
 		},
 		created(){
-			console.log('数据传输',this.usermes.yhid)
+			log('数据传输',this.usermes.yhid)
 		},
 		mounted(){
             this.getUserRoles();
@@ -68,7 +68,7 @@
 							    this.checkAllGroup.push(r.jsId)
 							}
                         }
-                        console.log(this.roleList);
+                        log(this.roleList);
                     }
                 })
 			},

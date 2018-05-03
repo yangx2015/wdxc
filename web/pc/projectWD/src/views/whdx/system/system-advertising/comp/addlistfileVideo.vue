@@ -75,7 +75,7 @@
             },
             handleSuccess (res, file,fileList) {
                 this.$emit('addImg',res.message);
-                console.log(res);
+                log(res);
                 file.url = configApi.STATIC_PATH + res.message;
             },
             handleFormatError (file) {
@@ -101,7 +101,7 @@
             }
         },
         mounted () {
-        	console.log('fileList',this.$refs.upload.fileList)
+        	log('fileList',this.$refs.upload.fileList)
             this.uploadList = this.$refs.upload.fileList;
         }
     }

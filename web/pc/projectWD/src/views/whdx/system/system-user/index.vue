@@ -254,17 +254,17 @@
 		methods: {
 		    getDict(){
                 this.yhlxDict = this.dictUtil.getByCode(this,this.yhlxDictCode);
-                console.log(this.yhlxDict);
+                log(this.yhlxDict);
             },
 			enter(mes){
-//				console.log(mes)
+//				log(mes)
 //
-//				console.log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
+//				log('页面高度',Math.floor((this.getWindowHeight() - 290)/48))
 			},
 			getmess(){
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-//					console.log(res)
+//					log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 				})
@@ -274,14 +274,14 @@
 				var v = this
 				v.compName = 'changemes'
 				this.usermes = val;
-//              console.log(val);
+//              log(val);
 
             },
 			//收索事件
 			findMessList() {
 				var v = this
 				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
-//					console.log(res)
+//					log(res)
 					v.tableData = res.page.list
 				})
 			},

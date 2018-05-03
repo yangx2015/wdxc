@@ -102,7 +102,7 @@
 				v.SpinShow = true
 				delete this.addmess.children
 				this.$http.post(configApi.FUNCTION.CHANGE,this.addmess).then((res) =>{
-					console.log('功能数据',res)
+					log('功能数据',res)
 					if(res.code===200){
 						v.$Message.success('操作成功');
 					}else{

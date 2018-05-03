@@ -159,7 +159,7 @@
                 })
 			},
 			fullcal(){
-				console.log('信息',this.usermes)
+				log('信息',this.usermes)
 			},
 			colse(){
 				var v = this

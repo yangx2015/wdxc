@@ -130,7 +130,7 @@
         },
 		watch: {
 			pagerHeight:function(newQuestion, oldQuestion){
-				console.log('页面监控',newQuestion)
+				log('页面监控',newQuestion)
 			},
 		},
 		created() {
@@ -146,7 +146,7 @@
 		methods: {
 			//收索事件
 			changeTime(val) {
-				console.log(this.getWindowHeight())
+				log(this.getWindowHeight())
 			},
 			findMessList() {
 				var v = this
@@ -170,7 +170,7 @@
 				var v = this
 				v.page.pageNum = event
 				v.getDataList(v.page)
-				//      		console.log(v.page)
+				//      		log(v.page)
 			},
 			//角色分配选项
 			handleCheckAll() {

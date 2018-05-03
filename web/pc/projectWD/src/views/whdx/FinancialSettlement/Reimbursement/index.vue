@@ -161,7 +161,7 @@
 				var v = this
 				v.page.pageNum = event
 				v.getDataList(v.page)
-				//      		console.log(v.page)
+				//      		log(v.page)
 			}
 		}
 	}

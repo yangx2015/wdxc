@@ -239,7 +239,7 @@
         		var v = this
         		v.SpinShow = true;
 				this.$http.get(configApi.ROLE.QUERY,{params:v.findMess}).then((res) =>{
-					//console.log(res)
+					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -264,7 +264,7 @@
             pageChange(event){
         		var v = this
         		v.page.pageNum = event
-//      		console.log(v.page)
+//      		log(v.page)
 			}
         }
     }

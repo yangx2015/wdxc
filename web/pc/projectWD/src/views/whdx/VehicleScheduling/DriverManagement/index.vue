@@ -101,7 +101,7 @@
                     //                 },
                     //                 on: {
                     //                     click: () => {
-						// 															console.log('数据调试',params)
+						// 															log('数据调试',params)
                     //                     }
                     //                 }
                     //             })
@@ -273,7 +273,7 @@
         	getmess(){
 				var v = this
 				this.$http.get(configApi.JSY.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('驾驶员数据',res)
+					log('驾驶员数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;

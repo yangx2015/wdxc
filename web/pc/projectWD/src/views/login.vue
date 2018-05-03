@@ -130,7 +130,7 @@ export default {
                 		v.SpinShow = false
                 	}).catch((error) =>{
                 		v.SpinShow = false
-                		console.log('error',error)
+                		log('error',error)
                 	})
                 }
             }),
@@ -149,7 +149,7 @@ export default {
                     
                 }
         	}).catch((error) =>{
-        		console.log(error)
+        		log(error)
         	})
         },
         addToMenuList(list){
@@ -167,7 +167,7 @@ export default {
         		    this.getMenuTree();
                 }
         	}).catch((error) =>{
-        		console.log(error)
+        		log(error)
         	})
         },
         addToList(list){
@@ -192,11 +192,11 @@ export default {
                         }
                         this.$store.state.app.dictMap.set(r.lmdm,a)
                         this.session.setItem('dictMap',this.$store.state.app.dictMap)
-//						console.log('字典',this.$store.state.app.dictMap)
+//						log('字典',this.$store.state.app.dictMap)
                     }
                 }
             }).catch((error) =>{
-                console.log(error)
+                log(error)
             })
         },
         initMenu(){
@@ -209,10 +209,10 @@ export default {
             let params = {menus:JSON.stringify(this.menus)}
             this.$http.post(configApi.USERROOT.INIT_MENU,params).then((res) =>{
                 if(res.code===200){
-                    console.log(res);
+                    log(res);
                 }
             }).catch((error) =>{
-                console.log(error)
+                log(error)
             })
         }
     }

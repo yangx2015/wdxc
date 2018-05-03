@@ -100,7 +100,7 @@
 				this.$refs[name].validate((valid) => {
                     if (valid) {
 						this.$http.post(configApi.ITMS.ADD,this.addmess).then((res) =>{
-							console.log('功能数据',res)
+							log('功能数据',res)
 							if(res.code===200){
 								v.$Message.success('创建成功');
 							}else{

@@ -144,24 +144,24 @@ li{
 				//车辆数据
 				this.$http.get(configApi.CLGL.QUERY).then((res) =>{
 					v.carList = res.page.list
-					console.log('车辆数据',res.page.list)
+					log('车辆数据',res.page.list)
 				}).catch((err) =>{
-					console.log('bug')
+					log('bug')
 				})
 				//线路数据
 				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
-					console.log('排班数据2',res)
+					log('排班数据2',res)
 					v.listdata = res.result
 				}).then((res) =>{
 					v.fordata()
 				}).catch((err) =>{
-					console.log('bug')
+					log('bug')
 				})
 			},
 			AddList(carID,LineID){
 				var v = this
 				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":v.todaytime}).then((res) =>{
-					console.log('排版新增',res)
+					log('排版新增',res)
 //					if(res.code==500){
 //						v.$parent.domeC()
 //					}
@@ -203,12 +203,12 @@ li{
 									'</div>'
 							
 							evt.item.innerHTML = newhtml
-							console.log('6',evt)
+							log('6',evt)
 						},
 			            onRemove (event) {
-                            console.log(event.item);
+                            log(event.item);
                             event.item.setAttribute('style',"display:none");
-			            	console.log(event)
+			            	log(event)
 			           }
 			        });
 				}

@@ -106,10 +106,10 @@
 		},
 		created(){
 			this.getUSER()
-			console.log('字典状态',this.ty)
+			log('字典状态',this.ty)
 			this.fullcal()
             if(!this.messType){
-            	console.log('数据传递',this.mess)
+            	log('数据传递',this.mess)
             	this.addmess = this.mess
 			    this.operate = '编辑'
 //			    alert(this.mess.dzbh)
@@ -118,7 +118,7 @@
 		},
 		methods:{
 			fullcal(){
-				console.log('信息',this.mess)
+				log('信息',this.mess)
 			},
 			colse(){
 				var v = this
@@ -141,7 +141,7 @@
 		   	getUSER(){
 				var v = this
 				this.$http.get(configApi.USER.QUERY).then((res) =>{
-					console.log('用户列表',res)
+					log('用户列表',res)
 					this.userList = res.page.list
 				})
 		   	},

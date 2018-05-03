@@ -209,7 +209,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            // console.log('数据信息获取',params.row)
+                                            // log('数据信息获取',params.row)
                                             this.mess = params.row
 											// debugger
                                             this.compName = allmes
@@ -290,6 +290,7 @@
             }
         },
         created(){
+	      log('123','title')
         	this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
@@ -313,7 +314,7 @@
         	getmess(){
 				var v = this
 				this.$http.get(configApi.CLGL.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('车辆数据',res.page.list)
+					log('车辆数据',res.page.list)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;

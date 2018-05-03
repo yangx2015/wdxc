@@ -248,21 +248,21 @@ export default {
     },
     methods: {
         formateLongDate(long){
-            console.log(long);
+            log(long);
             if (typeof long == 'string'){
                 return long;
 			}
           	let d = new Date(long);
-            console.log(d);
+            log(d);
             return d.format("yyyy-MM-dd hh:mm:ss");
 		},
         formatDate(date){
-            console.log(date);
+            log(date);
             if (!date)return '';
             return date.substring(0,4)+'-'+date.substring(4,6)+"-"+date.substring(6,8)+"-";
         },
         formatTime(time){
-            console.log(time);
+            log(time);
             if (!time)return '';
             return time.substring(0,2)+':'+time.substring(2,4)+":"+time.substring(4,6);
         },
@@ -321,7 +321,7 @@ export default {
             this.$refs.map.init();
 		},
 		initGps(){
-            console.log('initGps');
+            log('initGps');
             var v = this
             this.$http.get(configApi.CLJK.QUERY).then((res) =>{
                 if (res.code === 200){
@@ -388,7 +388,7 @@ export default {
                     r.status = 0;
                     r.text = '更新时间';
             }
-            console.log(r);
+            log(r);
             return r;
 		},
 		handleItem(item){

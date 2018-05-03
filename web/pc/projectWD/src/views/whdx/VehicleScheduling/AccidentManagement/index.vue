@@ -184,7 +184,7 @@
 			getmess(){
 				var v = this
 				this.$http.get(configApi.SG.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('事故数据',res)
+					log('事故数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -204,7 +204,7 @@
             pageChange(event){
         		var v = this
         		v.page.pageNum = event
-//      		console.log(v.page)
+//      		log(v.page)
         	},
 		}
 	}

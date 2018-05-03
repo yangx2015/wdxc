@@ -324,7 +324,7 @@ export default {
     		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
     			this.data1 = res.result
         	}).catch((error) =>{
-        		console.log('error',error)
+        		log('error',error)
         	})
     	},
         choosePoint(points){
@@ -332,7 +332,7 @@ export default {
             for(let r of points){
     	        this.findMess.dlxxzb += r.lng+","+r.lat+";";
             }
-            console.log(this.findMess.dlxxzb);
+            log(this.findMess.dlxxzb);
         },
     	//电子围栏
     	AddRali(){

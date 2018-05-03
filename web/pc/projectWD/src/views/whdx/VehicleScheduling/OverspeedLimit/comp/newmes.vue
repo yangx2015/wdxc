@@ -73,29 +73,29 @@
 			//获取车辆树
 			getCarTree(){
 	    		this.$http.get(configApi.CARTREE.QUERY,{params:{'zxzt':'00'}}).then((res) =>{
-	    			console.log('数据结构数据',res)
+	    			log('数据结构数据',res)
 	    			this.data1 = res.result
 	        	}).catch((error) =>{
-	        		console.log('error',error)
+	        		log('error',error)
 	        	})
 	    	},
 			//树多选框
 	    	checkClick(event){
-	    		console.log('2',event)
+	    		log('2',event)
 	    		var v = this
 	    		v.treeList = []
 	    		for( var i = 0 ; i<event.length;i++){
 	    			if(event[i].children){
-	    				console.log('树输出')
+	    				log('树输出')
 	    			}else{
 	    				v.treeList.push(event[i].title)
-	    				console.log('车牌号',v.treeList)
-	    				console.log('车牌转',v.treeList.join(','))
+	    				log('车牌号',v.treeList)
+	    				log('车牌转',v.treeList.join(','))
 	    			}
 	    		}
 	    	},
 			fullcal(){
-				console.log('信息',this.mess)
+				log('信息',this.mess)
 			},
 			colse(){
 				var v = this

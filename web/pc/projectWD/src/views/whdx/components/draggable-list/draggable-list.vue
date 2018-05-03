@@ -106,7 +106,7 @@ export default {
             ghostClass: 'placeholder-style',
             fallbackClass: 'iview-admin-cloned-item',
             onRemove (event) {
-            	console.log('数据移出',event)
+            	log('数据移出',event)
 //              vm.doArray.splice(event.newIndex, 0, vm.todoArray[event.item.getAttribute('data-index')]);
 //          	vm.doArray.splice(event.newIndex, 0, vm.todoArray[]
             }
@@ -123,17 +123,17 @@ export default {
             fallbackClass: 'iview-admin-cloned-item',
             
             setData: function (/** DataTransfer */dataTransfer, /** HTMLElement*/dragEl) {
-				console.log('1')
+				log('1')
             },
 		
 			// Element is chosen
 			onChoose: function (/**Event*/evt) {
-				console.log('2',evt)
+				log('2',evt)
 			},
 		
 			// Element dragging started
 			onStart: function (/**Event*/evt) {
-				console.log('3')
+				log('3')
 			},
 		
 //			onEnd: function (/**Event*/evt) {
@@ -147,14 +147,14 @@ export default {
 			// Element is dropped into the list from another list
 			onAdd: function (/**Event*/evt) {
 				// same properties as onEnd
-				console.log('4',evt)
+				log('4',evt)
 				
 			},
 		
 			// Changed sorting within list
 			onUpdate: function (/**Event*/evt) {
 				// same properties as onEnd
-				console.log('5')
+				log('5')
 			},
 		
 			// Called by any change to the list (add / update / remove)
@@ -167,8 +167,8 @@ export default {
 				'<button type="button" onclick=onRemove class="ivu-btn ivu-btn-error ivu-btn-circle ivu-btn-small" style=""><!----> <i class="ivu-icon ivu-icon-close"></i> <span>1</span></button>'
 //				'<button type="button" class="ivu-btn ivu-btn-primary ivu-btn-circle ivu-btn-icon-only"><!----> <i class="ivu-icon ivu-icon-ios-search"></i> <!----></button>'+
 //				'<button type="button" class="ivu-btn ivu-btn-error ivu-btn-circle ivu-btn-icon-only"><!----> <i class="ivu-icon ivu-icon-close"></i> <!----></button>'
-//				console.log('6',ad)
-				console.log('6',evt)
+//				log('6',ad)
+				log('6',evt)
 			},
 		
 			onFilter: function (/**Event*/evt) {

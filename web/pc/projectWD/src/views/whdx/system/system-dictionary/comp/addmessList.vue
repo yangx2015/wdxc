@@ -70,9 +70,9 @@
 			},
 			addDicList(){
 				var v = this
-				console.log('字典数据',v.addmess)
+				log('字典数据',v.addmess)
 				this.$http.post(configApi.DICTIONARY_LIST.ADD,v.addmess).then((res) =>{
-					console.log('字典添加',res)
+					log('字典添加',res)
 					if(res.code===200){
 						v.$parent.getmess()
 						v.$Message.success('操作成功');

@@ -61,6 +61,7 @@
                                     <Button @click="setControl('12','2-10')" icon="camera">前后摄像头拍照</Button>
                                 </Col>
                             </Row>
+                            <br>
                             <Row>
                                 <Col span="8">
                                     <Button @click="setControl('11','0-10')" icon="ios-videocam">前摄像头视频</Button>
@@ -72,6 +73,7 @@
                                     <Button @click="setControl('11','2-10')" icon="ios-videocam">前后摄像头视频</Button>
                                 </Col>
                             </Row>
+                            <br>
                             <!--<Row>-->
                                 <!--<Col span="8">-->
                                     <!--<DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >-->
@@ -344,7 +346,6 @@
                 }
                 this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
                     if (res.code === 200){
-                        console.log(res);
                         this.SpinShow = false;
                         this.$Message.success("发送成功!")
                     }else{
@@ -378,17 +379,14 @@
                 this.$http.post(configApi.CLJK.getObdTimely,{obdId:this.car.obdId}).then((res) =>{
                     if (res.code === 200){
                         this.obd = res.result;
-                        console.log(res);
                     }
                 })
             },
             getDeviceInfo(){
                 var v = this
                 this.$http.get(configApi.ZDGL.GET_BY_ID+this.car.zdbh).then((res) =>{
-                    console.log('getDeviceInfo');
                     if (res.code === 200){
                         this.carControl = res.result;
-                        console.log(res);
                     }
                 })
             },
