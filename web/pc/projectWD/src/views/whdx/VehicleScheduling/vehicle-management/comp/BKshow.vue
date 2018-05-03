@@ -48,8 +48,8 @@
         methods:{
             colse(){
                 var v = this
-                v.$parent.compName = ''
-                v.$parent.componentName = ''
+                v.$parent.compName = '';
+                v.$parent.componentName = '';
             }
         }
     }

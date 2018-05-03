@@ -77,7 +77,7 @@
                 var v = this
                 this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + id).then((res) => {
                     console.log('电子围栏点',res)
-                    if (res.code === 200) {
+                    if (res.code === 200 && res.result) {
                         let ditMess  = res.result.dlxxzb.split(';');
                         let dotLength = res.result.dlxxzb.split(';').length;
                         for(var i = 0 ; i<dotLength ; i++){
@@ -85,7 +85,10 @@
                                 new BMap.Point(ditMess[i].split(',')[0],ditMess[i].split(',')[1])
                             )
                         }
-                        v.bkshow(v.wlDot)//电子围栏显示
+                        setTimeout(function () {
+                            v.map.setViewport(v.wlDot);
+                            v.bkshow(v.wlDot)//电子围栏显示
+                        },100)
                     }
                 })
             },
@@ -129,8 +132,8 @@
                     //     new BMap.Point(116.41248,39.927893)
                     // ]
                 var polygon = new BMap.Polygon(mess, {strokeColor:"blue", strokeWeight:2, strokeOpacity:0.5});  //创建多边形
-                v.map.setViewport(mess);             //可视化点
                 v.map.addOverlay(polygon);           //增加多边形
+                // v.map.setViewport(mess);             //可视化点
             },
             //布控
             bk(){
