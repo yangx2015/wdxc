@@ -73,12 +73,12 @@
 	                	align:'center',
 	                	type:'index'
 	                },
-	                {
-                        title: '操作类型',
-                        width:120,
-                        align:'center',
-                        key: 'czlx'
-                    },
+                    // {
+                    //     title: '操作类型',
+                    //     width:120,
+                    //     align:'center',
+                    //     key: 'czlx'
+                    // },
                     {
                         title: '操作时间',
                         align:'center',
@@ -89,26 +89,44 @@
                         align:'center',
                         key: 'czr'
                     },
-                    {
-                        title: '对象ID',
-                        align:'center',
-                        key: 'dx_id'
-                    },
-                    {
-                        title: '对象类型',
-                        align:'center',
-                        key: 'dxlx'
-                    },
+                    // {
+                    //     title: '对象ID',
+                    //     align:'center',
+                    //     key: 'dx_id'
+                    // },
+                    // {
+                    //     title: '对象类型',
+                    //     align:'center',
+                    //     key: 'dxlx'
+                    // },
                     {
                         title: '参数',
                         align:'center',
                         key: 'cs',
-                        ellipsis:true,
+						render:(h,p)=>{
+                            let s = p.row.cs;
+							if (s.length > 20) s = s.substring(0,17)+"...";
+                            return  h('Poptip',
+                                {
+                                    props: {
+                                        trigger:'hover',
+                                        placement: 'top',
+                                        content: p.row.cs,
+                                    },
+                                },
+                                [
+                                    h('div',s),
+                                ]
+                            )
+						}
                     },
                     {
                         title: '耗时',
                         align:'center',
-                        key: 'zxsj'
+                        key: 'zxsj',
+						render:(h,p)=>{
+                            return h('div',p.row.zxsj+" ms")
+						}
                     },
                     {
                         title: '备注',

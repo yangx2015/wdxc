@@ -1,4 +1,4 @@
-/*package com.ldz.sys.aop;
+package com.ldz.sys.aop;
 
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.mapper.SysPtrzMapper;
@@ -27,31 +27,28 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
-*//**
- * Created by chenwei on 2017/9/12
- *//*
 @Aspect
 @Component
 public class SysOperateLogAop {
-    Logger logger = LogManager.getLogger(this.getClass());
     private Map<String,BaseService> serviceMap = new HashMap<>();
 
     @Autowired
     public SnowflakeIdWorker idGenerator;
     @Autowired
     private SysPtrzMapper logMapper;
-
     @Around("execution(public * com.ldz.sys..*.*Controller.save*(..))" +
             "|| execution(public * com.ldz.sys..*.*Controller.update*(..))" +
-            "|| execution(public * com.ldz.sys..*.*Controller.remove*(..))")
+            "|| execution(public * com.ldz.sys..*.*Controller.remove*(..))"+
+            "|| execution(public * com.ldz.sys..*.*Ctrl.save*(..))" +
+            "|| execution(public * com.ldz.sys..*.*Ctrl.update*(..))" +
+            "|| execution(public * com.ldz.sys..*.*Ctrl.remove*(..))"
+    )
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        String methodName = joinPoint.getSignature().getName();
         SysRz log = new SysRz();
-        BaseService baseService = null;
-        Object pk = null;
+        Object result = null;
         try {
-            return joinPoint.proceed();
+            result = joinPoint.proceed();
         } finally {
             long endTime = System.currentTimeMillis();
             int elapseTime = (int) (endTime - startTime);
@@ -59,23 +56,21 @@ public class SysOperateLogAop {
             SysYh userInfo = (SysYh)request.getAttribute("userInfo");
             log.setFf(joinPoint.getTarget().getClass().getSimpleName() +"." + joinPoint.getSignature().getName());
             log.setCzsj(new Date());
-            log.setCzr(userInfo.getYhid());
+            log.setCzr(userInfo.getYhid()+"-"+userInfo.getXm());
             log.setZxsj(elapseTime);
             log.setCs(getArgsAsString(joinPoint));
             log.setRzId(""+idGenerator.nextId());
-            try{
-                logMapper.insert(log);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            log.setJg(JsonUtil.toJson(result));
+            logMapper.insert(log);
         }
+        return result;
     }
 
-    *//**
+    /**
      * 获取参数的json格式
      * @param joinPoint
      * @return
-     *//*
+     */
     private String getArgsAsString(ProceedingJoinPoint joinPoint){
         StringBuilder res = new StringBuilder();
         Object[] args = joinPoint.getArgs();
@@ -85,11 +80,11 @@ public class SysOperateLogAop {
         return res.toString();
     }
 
-    *//**
+    /**
      * 获取操作对象类型
      * @param joinPoint
      * @return
-     *//*
+     */
     private Object getEntity(ProceedingJoinPoint joinPoint){
         Object[] args = joinPoint.getArgs();
         for (Object arg : args) {
@@ -100,12 +95,12 @@ public class SysOperateLogAop {
         return null;
     }
 
-    *//**
+    /**
      * 获取主键
      * @param obj
      * @return
      * @throws IllegalAccessException
-     *//*
+     */
     private Object getPK(Object obj) throws IllegalAccessException {
         if (obj == null)return null;
         Field[] fields = obj.getClass().getDeclaredFields();
@@ -118,11 +113,11 @@ public class SysOperateLogAop {
         return null;
     }
 
-    *//**
+    /**
      * 获取BaseService
      * @param joinPoint
      * @return
-     *//*
+     */
     private BaseService getBaseService(ProceedingJoinPoint joinPoint){
         try {
             String className = joinPoint.getTarget().getClass().getSimpleName();
@@ -145,4 +140,3 @@ public class SysOperateLogAop {
         return baseService.findById((Serializable) pk);
     }
 }
-*/

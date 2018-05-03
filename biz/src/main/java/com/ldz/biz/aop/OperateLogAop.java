@@ -33,7 +33,6 @@ import java.util.Map;
 @Aspect
 @Component
 public class OperateLogAop {
-    Logger logger = LogManager.getLogger(this.getClass());
     private Map<String,BaseService> serviceMap = new HashMap<>();
 
     @Autowired
@@ -43,15 +42,17 @@ public class OperateLogAop {
 
     @Around("execution(public * com.ldz.biz..*.*Controller.save*(..))" +
             "|| execution(public * com.ldz.biz..*.*Controller.update*(..))" +
-            "|| execution(public * com.ldz.biz..*.*Controller.remove*(..))")
+            "|| execution(public * com.ldz.biz..*.*Controller.remove*(..))"+
+            "|| execution(public * com.ldz.biz..*.*Ctrl.save*(..))" +
+            "|| execution(public * com.ldz.biz..*.*Ctrl.update*(..))" +
+            "|| execution(public * com.ldz.biz..*.*Ctrl.remove*(..))"
+    )
     public Object log(ProceedingJoinPoint joinPoint) throws Throwable {
         long startTime = System.currentTimeMillis();
-        String methodName = joinPoint.getSignature().getName();
         SysRz log = new SysRz();
-        BaseService baseService = null;
-        Object pk = null;
+        Object result = null;
         try {
-            return joinPoint.proceed();
+            result = joinPoint.proceed();
         } finally {
             long endTime = System.currentTimeMillis();
             int elapseTime = (int) (endTime - startTime);
@@ -59,12 +60,14 @@ public class OperateLogAop {
             SysYh userInfo = (SysYh)request.getAttribute("userInfo");
             log.setFf(joinPoint.getTarget().getClass().getSimpleName() +"." + joinPoint.getSignature().getName());
             log.setCzsj(new Date());
-            log.setCzr(userInfo.getYhid());
+            log.setCzr(userInfo.getYhid()+"-"+userInfo.getXm());
             log.setZxsj(elapseTime);
             log.setCs(getArgsAsString(joinPoint));
             log.setRzId(""+idGenerator.nextId());
+            log.setJg(JsonUtil.toJson(result));
             logMapper.insert(log);
         }
+        return result;
     }
 
     /**
