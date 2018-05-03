@@ -34,7 +34,8 @@
 						:height="tabHeight"
 						:row-class-name="rowClassName"
 						:columns="tableTiT"
-						:data="tableData"></Table>
+						:data="tableData"
+				></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
@@ -176,97 +177,147 @@
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'success',
-										icon: 'edit',
-										shape: 'circle',
-										size: 'small'
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '编辑车辆',
+                                        },
                                     },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.messType = false
-                                        	this.mess = params.row
-											//由于数据传递丢失 司机ID 司机 姓名 单独传递
-                                        	this.derMes.sjId = params.row.sjId
-                                        	this.derMes.sjxm = params.row.sjxm
-                                            this.compName = newmes
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-                                        icon: 'clipboard',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            // log('数据信息获取',params.row)
-                                            this.mess = params.row
-											// debugger
-                                            this.compName = allmes
-                                        }
-                                    }
-                                }),
-                                h('Button', {//历史轨迹
-                                    props: {
-                                        type: 'warning',
-                                        icon: 'steam',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.$router.push(
-                                                {
-                                                    name: 'historypath',
-                                                    params:{zdbh:params.row.zdbh}
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'success',
+                                                icon: 'edit',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.messType = false
+                                                    this.mess = params.row
+                                                    //由于数据传递丢失 司机ID 司机 姓名 单独传递
+                                                    this.derMes.sjId = params.row.sjId
+                                                    this.derMes.sjxm = params.row.sjxm
+                                                    this.compName = newmes
                                                 }
-                                            );
-                                        }
-                                    }
-                                }),
-                                h('Button', {//电子围栏展示
-                                    props: {
-                                        type: 'primary',
-                                        icon: 'ios-world-outline',
-                                        shape: 'circle',
-                                        size: 'small'
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '车辆档案信息',
+                                        },
                                     },
-                                    style: {
-                                        marginRight: '5px'
+									[
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'clipboard',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    // log('数据信息获取',params.row)
+                                                    this.mess = params.row
+                                                    // debugger
+                                                    this.compName = allmes
+                                                }
+                                            }
+                                        })
+									]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '历史轨迹',
+                                        },
                                     },
-                                    on: {
-                                        click: () => {
-                                            this.compName = bkShow
-											this.mess = params.row
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-										icon: 'close',
-										shape: 'circle',
-										size: 'small'
+                                    [
+                                        h('Button', {//历史轨迹
+                                            props: {
+                                                type: 'warning',
+                                                icon: 'steam',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.$router.push(
+                                                        {
+                                                            name: 'historypath',
+                                                            params:{zdbh:params.row.zdbh}
+                                                        }
+                                                    );
+                                                },
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '电子围栏',
+                                        },
                                     },
-                                    on: {
-                                        click: () => {
-                                            this.listDele(params.row)
-                                        }
-                                    }
-                                })
+                                    [
+                                        h('Button', {//电子围栏展示
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'ios-world-outline',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.compName = bkShow
+                                                    this.mess = params.row
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '删除车辆',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {// 删除
+                                            props: {
+                                                type: 'error',
+                                                icon: 'close',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.listDele(params.row)
+                                                }
+                                            }
+                                        })
+                                    ]
+                                ),
                             ]);
                         }
                     }
