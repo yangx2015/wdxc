@@ -3,7 +3,7 @@
 		padding: 3px;
 		margin:8px;
 		border: solid #657180 1px;
-		height: 30px;
+		/*height: 30px;*/
 		position: relative;
 	}
 </style>
@@ -17,12 +17,21 @@
 		    width='600'
 		    :title="mess.xlmc+'_线路排班__'+pbTime">
 		    <div>
-		    	<div style="height: 200px;border: solid 1px #000;">
+		    	<div style="height: 200px;border: solid 1px #000;overflow: auto">
 		    		<Row>
-		    			<Col span="4" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>
+		    			<Col span="6" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>
 		    				<div class="carListsty">
-		    					{{item.cph}}
-		    					<span style="position:absolute;top: -6px;right: -10px;z-index: 100;">
+								<div>
+									<Icon type="person" size="16" color="#3bb84b"></Icon>
+									：
+									{{item.sjxm}}
+								</div>
+								<div>
+									<Icon type="android-car" size="16" color="#ff8300"></Icon>
+									:
+									{{item.cph}}
+								</div>
+		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button type="error" shape="circle" 
 		    						 	size="small" icon="minus-round"
 		    						 	@click="deleteById(item.clId,index)"></Button>
@@ -31,15 +40,24 @@
 		    			</Col>
 		    		</Row>
 		    	</div>
-		    	<div style="height: 200px;border: solid 1px #000;">
+		    	<div style="height: 200px;border: solid 1px #000;overflow: auto">
 		    		<Row>
-		    			<Col v-show="chrlist" span="4" v-for = '(item,index) in chrlist'>
+		    			<Col v-show="chrlist" span="6" v-for = '(item,index) in chrlist'>
 		    				<div class="carListsty" 
 		    					@mouseenter="item.ico = true"
 		    					@mouseleave="item.ico = false">
-		    					{{item.cph}}
+								<div>
+									<Icon type="person" size="16" color="#3bb84b"></Icon>
+									：
+									{{item.sjxm}}
+								</div>
+								<div>
+									<Icon type="android-car" size="16" color="#ff8300"></Icon>
+									:
+									{{item.cph}}
+								</div>
 		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
-		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle" 
+		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle"
 		    						 	size="small" icon="plus-round"
 		    						 	@click="AddList(item.clId,item.cph)"></Button>
 		    					</span>

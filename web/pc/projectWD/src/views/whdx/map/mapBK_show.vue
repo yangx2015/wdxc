@@ -69,6 +69,7 @@
             this.map = new BMap.Map("allmap"); // 创建Map实例
             this.mapCenter()
             this.bkDot(this.carNumber)
+
         },
         methods:{
             //电子围栏点

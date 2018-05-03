@@ -86,13 +86,16 @@
                     },
                     {
                         title: '运行时间',
-                        width: 100,
-                        key: 'yxjssj',
-                        align: 'center'
+                        width: 150,
+                        align: 'center',
+						render:(h,p)=>{
+                            return p.row.yxkssj + ' ~ ' + p.row.yxjssj
+                        }
                     },
                     {
                         title: '车辆信息',
                         key: 'clList',
+						width:'100',
                         align: 'center',
                         render: (h, params) => {
                         	let cl = params.row.clList
