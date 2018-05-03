@@ -55,7 +55,10 @@
                 ],
                 tabmess:[],
                 sjBM:'ZDCLK0038',
-                sjDIC:[]
+                sjDIC:[],
+                findMess:{
+                    sjlxIn:'10,20,30,40'
+                }
             }
         },
 //      props:{
@@ -77,7 +80,7 @@
 			getmess(){
 				var v = this
 				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					log('数据',res)
+					console.log('数据',res)
 					v.tabmess = res.page.list
 				})
 			},
@@ -85,7 +88,7 @@
                 var windowHeight = window.innerHeight
                 this.tabHeight = windowHeight/2 - 130
 //				this.tabHeight = windowHeight - 200
-                log('浏览器高',this.tabHeight)
+                console.log('浏览器高',this.tabHeight)
             }
         }
     }
