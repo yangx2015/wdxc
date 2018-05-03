@@ -4,8 +4,8 @@
 </style>
 <!--异常记录-->
 <template>
-    <div class="boxbackborder">
-		<Card>
+    <div class="box boxbackborder">
+		<!--<Card>-->
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -76,7 +76,7 @@
 					  show-elevator
 					  @on-change='pageChange'></Page>
 			</Row>
-		</Card>
+		<!--</Card>-->
     </div>
 </template>
 
@@ -95,7 +95,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:10
+            		pageSize:13
             	},
                 tableTiT: [
                 	{
@@ -154,7 +154,7 @@
                 	sjlx:'',
                 	cjsjInRange:[],
 					pageNum:1,
-					pageSize:10
+					pageSize:13
                 },
                	dicCarCode:'ZDCLK0019',
                	dicCarList:[],
@@ -179,11 +179,11 @@
         	this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
-                title: '系统管理',
+                title: '车辆调度',
             },{
-                title: '日志管理',
+                title: '异常行驶记录',
             }]),
-			this.tabHeight = this.getWindowHeight() - 260
+			this.tabHeight = this.getWindowHeight() - 295
             this.getmess()
             this.getLXDic()
         },
