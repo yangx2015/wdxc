@@ -64,11 +64,7 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
-								<!--<Input v-model="findMess.cphLike"
-									   placeholder="请输入车辆编号"
-									   style="width: 200px"
-									   @on-keyup.enter="findMessList()"></Input>-->
-							   	<Select v-model="findMess.cphLike" filterable 
+							   	<Select v-model="findMess.cphLike" filterable
 							   		@on-change="findMessList()"
 							   		style="width: 200px;text-align: left;">
 					                <Option  v-for="(item,index) in carList" 
@@ -85,7 +81,7 @@
 					</div>
 				</Row>
 			</div>
-			<div class="body" style="border: 1px solid #dddee1">
+			<div v-show="vadeoShow" class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
 					<div class="bodyC videoSty" 
 						style="min-height: 140px;"
@@ -120,6 +116,11 @@
 					</div>
 				</div>
 			</div>
+			<div  v-show="!vadeoShow" class="body" style="border: 1px solid #dddee1;position: relative">
+				<h1 style="color: #bdbdbd;position: absolute;top:40%;left: 50%;transform: translate(-50%,-50%)">
+					{{findMess.cphLike}}暂无视频数据
+				</h1>
+			</div>
 			<div class="margin-top-10 pageSty" style="height: 60px;">
 				<Page
 						:total=pageTotal
@@ -143,6 +144,7 @@
       	},
 		data(){
 			return {
+			    vadeoShow:true,
                 videoPath :configApi.VIDEO_PATH,
 				activeName:0,
 				cjsjInRange:[],
@@ -203,15 +205,23 @@
 				var v = this
                 v.findMess.wjmEndwith = '.mp4';
 				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
-            	    v.pageTotal = res.page.total
-					for (let r of res.page.list){
-					    if (r.url){
-							r.video = false
-                            r.imgdz = r.url.replace('video','cache');
-                            r.imgdz = r.imgdz.replace('mp4','jpg')
-                        }
+				    if(res.code==200){
+						v.pageTotal = res.page.total
+				        if(res.page.list.length>0){
+							for (let r of res.page.list){
+								if (r.url){
+									r.video = false
+									r.imgdz = r.url.replace('video','cache');
+									r.imgdz = r.imgdz.replace('mp4','jpg')
+								}
+							}
+							v.videoList = res.page.list
+							v.vadeoShow = true
+						}else {
+                            v.vadeoShow = false
+						}
+
 					}
-					this.videoList = res.page.list
 				})
 			},
 			getCarList(){
