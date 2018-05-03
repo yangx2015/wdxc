@@ -248,7 +248,7 @@
                                         h('Button', {//历史轨迹
                                             props: {
                                                 type: 'warning',
-                                                icon: 'steam',
+                                                icon: 'map',
                                                 shape: 'circle',
                                                 size: 'small'
                                             },
