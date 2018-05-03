@@ -160,9 +160,9 @@ export default {
                 clIds:''
 			},
             ruleInline: {
-                wlmc: [
-                    { required: true, message: '请输入围栏名称', trigger: 'blur' }
-                ],
+                // wlmc: [
+                //     { required: true, message: '请输入围栏名称', trigger: 'blur' }
+                // ],
             },
 			fanceId:'',
             columns10: [
@@ -390,6 +390,10 @@ export default {
         },
         saveDzwl(){
             var v = this
+			if (v.findMess.wlmc == ''){
+                v.$Message.error('请输入围栏名称');
+                return;
+			}
             this.$http.post(configApi.DZWL.ADD,v.findMess).then((res) =>{
                 if (res.code === 200){
                     this.fanceId = res.message;
