@@ -74,8 +74,8 @@
 			addPoint(lng,lat){
                 this.map.clearOverlays();//清楚数据点
                 let newMapDot = new BMap.Point(lng, lat);//点数据
-                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
-                var marker = new BMap.Marker(newMapDot,{icon:myIcon}); // 创建点
+                // var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/fox.gif", new BMap.Size(300,150), {anchor: new BMap.Size(130,110),});
+                var marker = new BMap.Marker(newMapDot); // 创建点
                 this.map.addOverlay(marker);
 			}
 		}

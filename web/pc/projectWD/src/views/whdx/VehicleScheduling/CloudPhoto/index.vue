@@ -82,7 +82,12 @@
 					</div>
 				</Row>
 			</div>
-			<div class="body" style="border: 1px solid #dddee1">
+			<div  v-show="videoList.length == 0" class="body" style="border: 1px solid #dddee1;position: relative">
+				<h1 style="color: #bdbdbd;position: absolute;top:40%;left: 50%;transform: translate(-50%,-50%)">
+					{{findMess.cphLike}}暂无图片
+				</h1>
+			</div>
+			<div v-if="videoList.length != 0" class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
 					<div class="bodyC videoSty" 
 						style="min-height: 140px;"
@@ -125,6 +130,7 @@
       	},
 		data(){
 			return {
+                vadeoShow:true,
                 videoPath :configApi.VIDEO_PATH,
 				activeName:0,
 				cjsjInRange:[],
