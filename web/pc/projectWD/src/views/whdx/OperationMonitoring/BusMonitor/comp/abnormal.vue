@@ -33,8 +33,8 @@
                         key: 'sjlx',
                         align:'center',
                         render: (h, params) => {
-                        	let val = this.dictUtil.getValByCode(this,this.sjBM,params.row.sjlx)
-							return val
+                            let val = this.dictUtil.getValByCode(this,this.sjBM,params.row.sjlx)
+                            return h('div',val)
                         }
                     },
                     {
