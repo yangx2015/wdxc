@@ -89,7 +89,7 @@
                         width: 150,
                         align: 'center',
 						render:(h,p)=>{
-                            return p.row.yxkssj + ' ~ ' + p.row.yxjssj
+                            return h('div',p.row.yxkssj + ' ~ ' + p.row.yxjssj)
                         }
                     },
                     {
