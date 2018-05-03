@@ -49,6 +49,7 @@
             colse(){
                 var v = this
                 v.$parent.compName = ''
+                v.$parent.componentName = ''
             }
         }
     }

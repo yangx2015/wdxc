@@ -112,6 +112,12 @@ public class DzwlServiceImpl extends BaseServiceImpl<ClDzwl, String> implements 
 		String creator = getOperateUser();
 		List<ClCl> carList = clService.findIn(ClCl.InnerColumn.clId,carIdList);
 		Map<String,ClCl> carMap = carList.stream().collect(Collectors.toMap(ClCl::getClId,p->p));
+
+		// 删除旧数据
+		SimpleCondition condition = new SimpleCondition(ClDzwlCl.class);
+		condition.in(ClDzwlCl.InnerColumn.clId,carIdList);
+		dzwlClMapper.deleteByExample(condition);
+
 		for (String s : carIdList) {
 			ClDzwlCl dzwlCl = new ClDzwlCl();
 			dzwlCl.setCjr(creator);
