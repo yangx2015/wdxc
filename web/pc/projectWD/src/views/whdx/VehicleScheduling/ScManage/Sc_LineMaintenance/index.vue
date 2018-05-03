@@ -140,14 +140,14 @@
 					// 		}
 					// 	}
 					// },
-					{
-						title: '创建人',
-						align: 'center',
-						key: 'cjr'
-					},
+					// {
+					// 	title: '创建人',
+					// 	align: 'center',
+					// 	key: 'cjr'
+					// },
 					{
 						title: '创建时间',
-						width: '100',
+						width: '180',
 						align: 'center',
 						key: 'cjsj'
 					},

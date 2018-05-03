@@ -186,12 +186,12 @@
                         align:'center',
                         key: 'cjsj'
                     },
-                    {
-                        title:'创建人',
-                        width:100,
-                        align:'center',
-                        key:'cjr'
-                    },
+                    // {
+                    //     title:'创建人',
+                    //     width:100,
+                    //     align:'center',
+                    //     key:'cjr'
+                    // },
                     {
                         title: '操作',
                         key: 'action',
