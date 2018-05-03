@@ -201,14 +201,7 @@
             	log('事件',this.thingType)
 			},
         	getmess(){
-				var v = this
-				v.SpinShow = true;
-				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					log('数据',res)
-					v.tableData = res.page.list
-					v.pageTotal = res.page.total;
-					v.SpinShow = false;
-				})
+        	    this.findMessList();
 			},
             pageChange(event){
         		var v = this
@@ -219,6 +212,11 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
+        		if (v.findMess.sjlx == ''){
+                    v.findMess.sjlxIn = '10,20,30,40';
+				}else{
+                    delete v.findMess.sjlxIn
+				}
         		this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
