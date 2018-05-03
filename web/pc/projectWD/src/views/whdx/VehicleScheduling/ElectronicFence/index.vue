@@ -18,7 +18,9 @@
 </style>
 <template>
 	<div class="box boxbackborder" style="padding: 5px 15px;">
-		<component :is="componentName"></component>
+		<component
+				:is="componentName"
+				:mess="mess"></component>
 		<div class="tit" v-show="!RootShow">
     		<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -124,11 +126,13 @@ import myMap from '../../map/mapBK.vue'
 import configApi from '@/axios/config.js'
 import mixins from '@/mixins'
 import formData from './comp/formData'
+import bkShow from '../vehicle-management/comp/BKshow'
+
 export default {
     name: '',
     mixins:[mixins],
     components: {
-    	myMap,formData
+    	myMap,formData,bkShow
     },
     data () {
         return {
@@ -139,6 +143,7 @@ export default {
             },
         	SpinShow:false,
 			tabHeight: 220,
+            mess:{},
         	mapDot:[],
             points:[],
         	RootShow:false,
@@ -177,14 +182,14 @@ export default {
                     align:'center',
                     key: 'wlmc'
                 },
-                {
-                    title: '状态',
-                    align:'center',
-                    key: 'zt',
-					render:(h,p)=>{
-                        return h('div',p.row.zt == '00' ? '正常':'停用')
-					}
-                },
+                // {
+                //     title: '状态',
+                //     align:'center',
+                //     key: 'zt',
+					// render:(h,p)=>{
+                //         return h('div',p.row.zt == '00' ? '正常':'停用')
+					// }
+                // },
                 {
                     title: '创建人',
                     align:'center',
@@ -192,7 +197,7 @@ export default {
                 },
                 {
                     title: '创建时间',
-                    width:'100',
+                    width:'180',
                     align:'center',
                     key: 'cjsj'
                 },
@@ -203,24 +208,23 @@ export default {
                     align: 'center',
                     render: (h, params) => {
                         return h('div', [
-                            // h('Button', {
-                            //     props: {
-								// 	type: 'success',
-								// 	icon: 'edit',
-								// 	shape: 'circle',
-								// 	size: 'small'
-								// },
-								// style: {
-								// 	cursor: "pointer",
-								// 	margin: '0 8px 0 0'
-								// },
-                            //     on: {
-                            //         click: () => {
-                            //             this.choosedRow = params.row;
-                            //             this.componentName = 'formData';
-                            //         }
-                            //     }
-                            // }),
+                            h('Button', {//电子围栏展示
+                                props: {
+                                    type: 'primary',
+                                    icon: 'ios-world-outline',
+                                    shape: 'circle',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.componentName = 'bkShow'
+                                        this.mess = params.row
+                                    }
+                                }
+                            }),
                             h('Button', {
                                 props: {
                                     type: 'error',
@@ -237,7 +241,7 @@ export default {
                                         this.listDele(params.row.id)
                                     }
                                 }
-                            })
+                            }),
                         ]);
                     }
                 }
