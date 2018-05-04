@@ -276,12 +276,12 @@ export let appRouter = [
 				]
 			},
       		{
-//      		path:'/ScManage',
-//				icon: 'android-clipboard',
-//				name: 'ScManage',
-//				title: '校巴管理',
-//				component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
-//				children: [{
+     		path:'/ScManage',
+				icon: 'android-clipboard',
+				name: 'ScManage',
+				title: '校巴管理',
+				component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
+				children: [{
 		            path: 'Sc_SiteMaintenance',
 		            icon: 'android-clipboard',
 		            name: 'Sc_SiteMaintenance',
@@ -301,8 +301,8 @@ export let appRouter = [
 		            name: 'Sc_Scheduling',
 		            title: '校巴排班',
 		            component: () => import('@/views/whdx/VehicleScheduling/ScManage/Sc_Scheduling')
-//    					}
-//    				]
+   					}
+   				]
       },
 			{
         		path:'/',
