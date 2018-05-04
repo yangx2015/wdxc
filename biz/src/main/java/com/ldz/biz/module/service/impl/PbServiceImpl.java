@@ -207,13 +207,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		}
 	}
 
-	public String getNowDate() {
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String date = sdf.format(new Date());
-
-		return date;
-	}
+	
 	@Override
 	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
 		RuntimeCheck.ifBlank(xlId,"线路ID不能为空");

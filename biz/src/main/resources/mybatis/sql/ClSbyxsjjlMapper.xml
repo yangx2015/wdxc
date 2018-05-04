@@ -22,5 +22,21 @@
 		from CL_SBYXSJJL L
 		) where row_flg =1
 	</select> -->
-
+  <select id="Safedriving" resultType="com.ldz.biz.module.bean.SafedrivingModel">
+  SELECT T1.sjxm,T2.*,t3.*,t4.*,t5.*  FROM CL_CL t1 
+  LEFT JOIN (select ZDBH ,count(SJLX) as "speedupCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='10' GROUP BY zdbh) t2 on T1.ZDBH=T2.ZDBH
+  LEFT JOIN (select ZDBH ,count(SJLX) as "speedownCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='20' GROUP BY zdbh) t3 on T1.ZDBH=T3.ZDBH
+  LEFT JOIN (select ZDBH ,count(SJLX) as "wheelCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='30' GROUP BY zdbh) t4 on T1.ZDBH=T4.ZDBH
+  LEFT JOIN (select ZDBH ,count(SJLX) as "overspeedCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='40' GROUP BY zdbh) t5 on T1.ZDBH=T5.ZDBH
+  </select>
+  
+<!--   <resultMap type="" id="">
+  <result column="SJ" property="sj" />
+		<result column="SJXM" property="sjxm" />
+		<result column="ZDBH" property="zdbh" />
+		<result column="JGMC" property="jgmc" />
+		<result column="CL_ID" property="clId" />
+		<result column="CJSJ" property="cjsj" />
+  
+  </resultMap> -->
 </mapper>

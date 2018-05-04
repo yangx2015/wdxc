@@ -2,6 +2,7 @@ package com.ldz.biz.module.mapper;
 
 import java.util.List;
 
+import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.model.ClSbyxsjjl;
 
@@ -13,4 +14,7 @@ public interface ClSbyxsjjlMapper extends Mapper<ClSbyxsjjl> {
 	
 /*	
 	List<ClSbyxsjjl> gpsInit();*/
+	
+	List<SafedrivingModel> Safedriving();
+	
 }

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.GuiJiGps;
+import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
@@ -27,8 +29,9 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClSbyxsjjlMapper entityMapper;
 	@Autowired
 	private ClGpsLsMapper clGpsLsMapper;
-	/*@Autowired
-	private ClClMapper clclmapper;*/
+	/*
+	 * @Autowired private ClClMapper clclmapper;
+	 */
 
 	@Override
 	protected Mapper<ClSbyxsjjl> getBaseMapper() {
@@ -38,16 +41,19 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	@Override
 	public boolean fillCondition(LimitedCondition condition) {
 
-		/*LimitedCondition condition2 = new LimitedCondition(ClCl.class);
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
-				.getRequest();
-		condition2.eq(ClCl.InnerColumn.cph, request.getAttribute("cph"));
-		condition2.eq(ClCl.InnerColumn.cx, request.getAttribute("cx"));
-		List<ClCl> selectByExample = clclmapper.selectByExample(condition2);
-
-		List<String> collect = selectByExample.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
-				.map(ClCl::getZdbh).collect(Collectors.toList());
-		condition.in(ClSbyxsjjl.InnerColumn.zdbh, collect);*/
+		/*
+		 * LimitedCondition condition2 = new LimitedCondition(ClCl.class);
+		 * HttpServletRequest request = ((ServletRequestAttributes)
+		 * RequestContextHolder.getRequestAttributes()) .getRequest();
+		 * condition2.eq(ClCl.InnerColumn.cph, request.getAttribute("cph"));
+		 * condition2.eq(ClCl.InnerColumn.cx, request.getAttribute("cx")); List<ClCl>
+		 * selectByExample = clclmapper.selectByExample(condition2);
+		 * 
+		 * List<String> collect = selectByExample.stream().filter(s ->
+		 * StringUtils.isNotEmpty(s.getZdbh()))
+		 * .map(ClCl::getZdbh).collect(Collectors.toList());
+		 * condition.in(ClSbyxsjjl.InnerColumn.zdbh, collect);
+		 */
 		return true;
 	}
 
@@ -115,6 +121,32 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		List<GuiJiGps> zdbhAllLsGps = clGpsLsMapper.getZdbhAllLsGps(gpssjinfo);
 		response.setResult(zdbhAllLsGps);
 		return response;
+	}
+
+	@Override
+	public ApiResponse<List<SafedrivingModel>> getSafeDrivig() {
+		ApiResponse<List<SafedrivingModel>> apiResponse = new ApiResponse<>();
+
+		List<SafedrivingModel> safedriving = entityMapper.Safedriving();
+		
+		for (SafedrivingModel safedrivingModel : safedriving) {
+			
+			if (StringUtils.isEmpty(safedrivingModel.getOverspeedCount())) {
+				safedrivingModel.setOverspeedCount("0");
+			}
+			if (StringUtils.isEmpty(safedrivingModel.getSpeedownCount())) {
+				safedrivingModel.setSpeedownCount("0");
+			}
+			if (StringUtils.isEmpty(safedrivingModel.getSpeedupCount())) {
+				safedrivingModel.setSpeedupCount("0");
+			}
+			if (StringUtils.isEmpty(safedrivingModel.getWheelCount())) {
+				safedrivingModel.setWheelCount("0");
+			}
+		}
+		
+		apiResponse.setResult(safedriving);
+		return apiResponse;
 	}
 
 }
