@@ -2,12 +2,13 @@
     <div>
         <Modal
                 v-model="showModal"
-                height="400"
+                width="700"
                 :closable='false'
                 :mask-closable="false"
-                :title="drveName+'用户'">
-            <div>
+                :title="'正在为 '+mess.xm+' 分配订单'">
+            <div style="height: 400px">
                 <Table border
+                       height="400"
                        ref="selection"
                        :columns="columns4"
                        :data="data1"
@@ -15,7 +16,7 @@
             </div>
             <div slot='footer'>
                 <Button type="ghost" @click="colse">取消</Button>
-                <Button type="primary" @click="colse">确定</Button>
+                <Button type="primary" @click="add()">确定</Button>
             </div>
         </Modal>
     </div>
@@ -36,63 +37,83 @@
                         align: 'center'
                     },
                     {
-                        title: 'Name',
-                        key: 'name'
+                        title: '用车人',
+                        key: 'ck',
+                        align: 'center'
                     },
                     {
-                        title: 'Age',
-                        key: 'age'
+                        title: '用车时间',
+                        key: 'yysj',
+                        align: 'center'
                     },
                     {
-                        title: 'Address',
-                        key: 'address'
+                        title: '候车地点',
+                        key: 'hcdz',
+                        align: 'center'
+                    },
+                    {
+                        title: '目的地',
+                        key: 'mdd',
+                        align: 'center'
                     }
                 ],
                 data1: [
-                    {
-                        name: 'John Brown',
-                        age: 18,
-                        address: 'New York No. 1 Lake Park',
-                        date: '2016-10-03'
-                    },
-                    {
-                        name: 'Jim Green',
-                        age: 24,
-                        address: 'London No. 1 Lake Park',
-                        date: '2016-10-01'
-                    },
-                    {
-                        name: 'Joe Black',
-                        age: 30,
-                        address: 'Sydney No. 1 Lake Park',
-                        date: '2016-10-02'
-                    },
-                    {
-                        name: 'Jon Snow',
-                        age: 26,
-                        address: 'Ottawa No. 2 Lake Park',
-                        date: '2016-10-04'
-                    }
-                ]
+                ],
+                seleList:[]
 
             }
         },
+        props:{
+          mess:{
+              type:Object,
+              default:{}
+          }
+        },
         created(){
+            this.getDfp()
+            console.log('*-*/---------------',this.mess)
         },
         methods:{
             getDfp(){
+                var v = this
                 this.$http.post(configApi.ORDER.DFP,{}).then((res) =>{
-                    console.log(res)
+                    if(res.code ==200){
+                        console.log('******************',res)
+                        v.data1 = res.result
+
+                    }
                 })
             },
-            addlist(){
+            add(){
+                if(this.seleList.length==0){
 
+                }else{
+                    var v = this
+                    let listLth = this.seleList.length
+                    for( let i = 0 ; i<listLth ;i++){
+                        v.addlist(this.seleList[i].id)
+                    }
+                }
+            },
+            addlist(listID){
+                var v = this
+                this.$http.post(configApi.ORDER.FP,{'sjSx':10,'sj':this.mess.sfzhm,'id':listID,'cph':''}).then((res) =>{
+                    if(res.code===200){
+                        v.$Message.success(res.message);
+                        v.$parent.getDrvList()
+                    }else{
+                        v.$Message.error(res.message);
+                    }
+                }).catch((error) =>{
+                    v.$Message.error('出错了！！！');
+                })
             },
             colse(){
                 var v = this
                 v.$parent.compName = ''
             },
             selectionClick(event){
+                this.seleList = event
                 console.log('*************************',event)
             }
         }

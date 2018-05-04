@@ -1,9 +1,12 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
 	.ddfpSty{
-		padding: 3px 5px;
-		border-left: solid #00a050 2px;
-		border-right: solid #00a050 2px;
+		position: relative;
+		margin-bottom: 6px;
+		margin-right: 3px;
+		padding: 3px 8px;
+		border-left: solid #fb00ff 2px;
+		border-right: solid #fb00ff 2px;
 		border-radius: 15px;
 	}
 </style>
@@ -28,26 +31,37 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:400px" v-for="(item,index) in drvlist">
+				<Card style="width:440px" v-for="(item,index) in drvlist">
 					<p slot="title">
 						<Icon type="ios-film-outline"></Icon>
 						{{item.xm}}
 					</p>
-					<a href="#" slot="extra">
-						<Icon type="ios-loop-strong"></Icon>
-						Change
-					</a>
+					<span slot="extra">
+						<Tooltip content="订单分配" placement="left">
+							<Button type="primary"
+									:disabled="item.zt=='01'"
+									size="small"
+									shape="circle"
+									icon="plus-round"
+									@click="showList(item)"></Button>
+						</Tooltip>
+					</span>
 					<div style="height: 160px;overflow: auto">
-						<div class="ddfpSty" v-for="(p,i) in item.clDdList" >
+						<div  v-if="item.clDdList.length==0">
+							<span>
+								暂无分配订单
+							</span>
+						</div>
+						<div v-else class="ddfpSty" v-for="(p,i) in item.clDdList" >
 							<div>
 								<Row>
-									<Col span="12">
+									<Col span="10">
 										<Icon type="person"
 											color="#7b7b7b"></Icon>
-										信息工程学院——陈小伟
+										信息工程学院—陈小伟
 										<!--{{p.jgmc}} {{p.ck}}-->
 									</Col>
-									<Col span="12">
+									<Col span="10">
 										<Icon type="ios-clock"
 											color="#0897ff"></Icon>
 										{{p.yysj}}
@@ -56,22 +70,30 @@
 							</div>
 							<div>
 								<Row>
-									<Col span="12">
+									<Col span="10">
 										<Icon type="record" color="#19a853"></Icon>
 										{{p.hcdz}}
 									</Col>
-									<Col span="12">
+									<Col span="10">
 										<Icon type="record" color="#ff8f00"></Icon>
 										{{p.mdd}}
 									</Col>
 								</Row>
 							</div>
+							<div style="position: absolute;right: 5px;top:10px;">
+								<Button type="warning"
+										size="small"
+										shape="circle"
+										icon="reply"
+										@click="dele(p.id)"></Button>
+							</div>
 						</div>
+
 					</div>
 				</Card>
 			</div>
 		</div>
-		<component :is="compName"></component>
+		<component :is="compName" :mess="mess"></component>
 	</div>
 </template>
 
@@ -85,6 +107,7 @@
         },
 		data(){
 			return{
+			    mess:{},
                 compName:'',
 			    drvlist:[],
 			}
@@ -119,9 +142,21 @@
                 })
 			},
 			dele(id){//取消分派
+			    var v = this
                 this.$http.post(configApi.ORDER.QXPD,{'id':id}).then((res) =>{
-                    console.log(res)
+                    if(res.code===200){
+                        v.$Message.success(res.message);
+                        v.getDrvList()
+                    }else{
+                        v.$Message.error(res.message);
+                    }
+                }).catch((error) =>{
+                    v.$Message.error('出错了！！！');
                 })
+			},
+            showList(item){
+			    this.compName = 'pageList'
+				this.mess = item
 			}
 		}
 	}
