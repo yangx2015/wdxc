@@ -76,6 +76,14 @@
 								<DatePicker v-model="clrq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
 							</FormItem>
 						</Col>
+						<Col span="12">
+							<FormItem label="状态： ">
+								<Select filterable clearable  v-model="addmess.zt">
+									<Option value="00">正常</Option>
+									<Option value="10">休息</Option>
+								</Select>
+							</FormItem>
+						</Col>
 					</Row>
 	    		</div>
     		</Form>

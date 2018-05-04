@@ -1,8 +1,34 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.module.mapper.*;
-import com.ldz.biz.module.model.*;
-import com.ldz.biz.module.service.ClService;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.biz.module.bean.DdTongjiTJ;
+import com.ldz.biz.module.bean.Ddtongji;
+import com.ldz.biz.module.mapper.ClCdMapper;
+import com.ldz.biz.module.mapper.ClClMapper;
+import com.ldz.biz.module.mapper.ClDdMapper;
+import com.ldz.biz.module.mapper.ClDdlsbMapper;
+import com.ldz.biz.module.mapper.ClDdrzMapper;
+import com.ldz.biz.module.mapper.ClGpsLsMapper;
+import com.ldz.biz.module.mapper.ClJsyMapper;
+import com.ldz.biz.module.mapper.ClLscMapper;
+import com.ldz.biz.module.model.ClCd;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClDd;
+import com.ldz.biz.module.model.ClDdlsb;
+import com.ldz.biz.module.model.ClDdrz;
+import com.ldz.biz.module.model.ClGps;
+import com.ldz.biz.module.model.ClGpsLs;
+import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -12,13 +38,9 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
-
-import java.util.*;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
@@ -28,9 +50,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private ClDdMapper entityMapper;
     @Autowired
     private JgService jgService;
-    @Autowired
+    /*@Autowired
     private ClService clService;
-
+*/
     @Autowired
     private DdrzService ddrzService;
 
@@ -743,4 +765,77 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         return order;
     }
+
+
+	@Override
+	public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd) {
+		
+		ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
+		
+		Ddtongji ddtongji = new Ddtongji();
+		
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		//订单总数
+		ddtongji.setDdzsCount(ddTongji.size());
+		int yshCount=0;
+		int wshCount=0;
+		int yqxCount=0;
+		int dsjCount=0;
+		int ddzCount=0;
+		
+		for (ClDd clDd : ddTongji) {
+			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+			if (StringUtils.equals(clDd.getDdzt(), "10")) {
+				wshCount++;
+			}
+			else if (StringUtils.equals(clDd.getDdzt(), "11")) {
+				yshCount++;
+			}
+			else if (StringUtils.equals(clDd.getDdzt(), "12")) {
+				yqxCount++;
+			}
+			else if (StringUtils.equals(clDd.getDdzt(), "13")) {
+				dsjCount++;
+			}
+			else if (StringUtils.equals(clDd.getDdzt(), "20")) {
+				ddzCount++;
+			}
+			else {
+				continue;
+			}
+		}
+		ddtongji.setYshCount(yshCount);
+		ddtongji.setWshCount(wshCount);
+		ddtongji.setYqxCount(yqxCount);
+		ddtongji.setDsjCount(dsjCount);
+		ddtongji.setDdzCount(ddzCount);
+		apiResponse.setResult(ddtongji);
+		return apiResponse;
+	}
+
+
+	@Override
+	public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd) {
+    	ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
+		
+		Ddtongji ddtongji = new Ddtongji();
+		
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		
+		int yshCount=0;
+		
+		for (ClDd clDd : ddTongji) {
+			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+			
+			 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+				yshCount++;
+			}
+			 else {
+				continue;
+			}
+		}
+		ddtongji.setYshCount(yshCount);
+		apiResponse.setResult(ddtongji);
+		return apiResponse;
+	}
 }

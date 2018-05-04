@@ -417,6 +417,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						
 						if (lostZD.contains(clgps.getZdbh())) {
 							websocketInfo.setZxzt("20");
+							websocketInfo.setLxsc(nowTime(clgps.getCjsj()));
 							list.add(websocketInfo);
 						} else {
 							websocketInfo.setZxzt(zdglmap.get(clgps.getZdbh()).getZxzt());
@@ -430,7 +431,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		return apiResponse;
 	}
 
-	public static Date simpledate(String date) {
+	public  Date simpledate(String date) {
 
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date date2 = null;
@@ -442,10 +443,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		return date2;
 	}
 
-	public static void main(String[] args) {
-
-		Date simpledate = simpledate("2018-04-24 15:50:39");
-		System.out.println(simpledate);
-	}
+    public long  nowTime(Date time) {
+    	
+    	Date now = new Date();
+    	long time2 = now.getTime();
+    	long time3 = time.getTime();
+    	return time2-time3;
+    }
 
 }

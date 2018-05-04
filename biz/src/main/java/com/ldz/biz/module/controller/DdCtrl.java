@@ -7,12 +7,12 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ldz.sys.exception.RuntimeCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,9 +20,12 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.DdTongjiTJ;
+import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.DdService;
+import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 
@@ -65,6 +68,8 @@ public class DdCtrl{
      */
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(ClDd entity){
+/*        SysYh userInfo = getCurrentUser();
+*/      
         SysYh userInfo = getCurrentUser(true);
         return service.saveEntity(entity,userInfo);
     }
@@ -78,6 +83,8 @@ public class DdCtrl{
      */
     @RequestMapping(value="/pager", method={RequestMethod.POST, RequestMethod.GET})
     public ApiResponse<List<ClDd>> pager(ClDd entity, Page<ClDd> pager){
+      /*  SysYh userInfo = getCurrentUser();*/
+//        RuntimeCheck.ifNull(userInfo,"当前登录用户未空！");
         SysYh userInfo = getCurrentUser(true);
         return service.pager(pager);
     }
@@ -310,4 +317,15 @@ public class DdCtrl{
         return service.updateFinanceConfirm(ids);
     }
 
+    @PostMapping("/ddtj")
+    public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd){
+    	
+    	return service.ddtongji(dd);
+    }
+    
+    @PostMapping("/cctj")
+    public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd){
+    	
+    	return service.chucheTj(dd);
+    }
 }
