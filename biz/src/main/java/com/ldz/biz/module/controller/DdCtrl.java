@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.sys.exception.RuntimeCheck;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -41,10 +42,10 @@ public class DdCtrl{
      * 获取当前登录用户信息
      * @return
      */
-    public static SysYh getCurrentUser(){
+    public static SysYh getCurrentUser(boolean require) {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        SysYh userInfo = (SysYh)request.getAttribute("userInfo");
-//		RuntimeCheck.ifNull(userInfo,"当前登录用户未空！");
+        SysYh userInfo = (SysYh) request.getAttribute("userInfo");
+        RuntimeCheck.ifTrue(require && userInfo == null,"当前登录用户未空！");
         return userInfo;
     }
 
@@ -64,8 +65,8 @@ public class DdCtrl{
      */
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(ClDd entity){
-        SysYh userInfo = getCurrentUser();
-        return service.saveEntity(entity);
+        SysYh userInfo = getCurrentUser(true);
+        return service.saveEntity(entity,userInfo);
     }
 
 
@@ -77,8 +78,7 @@ public class DdCtrl{
      */
     @RequestMapping(value="/pager", method={RequestMethod.POST, RequestMethod.GET})
     public ApiResponse<List<ClDd>> pager(ClDd entity, Page<ClDd> pager){
-        SysYh userInfo = getCurrentUser();
-//        RuntimeCheck.ifNull(userInfo,"当前登录用户未空！");
+        SysYh userInfo = getCurrentUser(true);
         return service.pager(pager);
     }
 
@@ -203,9 +203,9 @@ public class DdCtrl{
      */
     @RequestMapping(value="/ddxq/{pkid}", method={RequestMethod.GET})
     public ApiResponse<ClDd> get(@PathVariable("pkid")String pkid){
-        SysYh userInfo = getCurrentUser();
-//        String userId=userInfo.getYhid();
-        String userId="1"; // TODO: 2018/3/19   测试代码
+        SysYh userInfo = getCurrentUser(true);
+        String userId=userInfo.getYhid();
+//        String userId="1"; // TODO: 2018/3/19   测试代码
         ClDd whereClDd=new ClDd();
         whereClDd.setId(pkid);
         whereClDd.setDzbh(userId);
@@ -301,7 +301,7 @@ public class DdCtrl{
      * 财务结算-订单确认
      * 1、订单处于：队长确认(队长确定价格)
      * 2、只有财务才能有限制
-     * @param entity
+     * @param ids
      * id[]      //订单ID  必填 是一个或者多个
      * @return
      */
