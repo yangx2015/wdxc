@@ -33,4 +33,7 @@ public class websocketInfo {
 	private String obdId;
 	
 	private String zxzt;
+	
+	//离线时长
+	private Long lxsc;
 }
