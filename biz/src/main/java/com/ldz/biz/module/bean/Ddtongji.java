@@ -1,0 +1,21 @@
+package com.ldz.biz.module.bean;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class Ddtongji {
+    //订单总数
+	private  Integer ddzsCount;
+	//已审核总数
+	private  Integer yshCount;
+	//未审核总数
+	private  Integer wshCount;
+	//已取消总数
+	private  Integer yqxCount;
+	//待司机确认总数
+	private  Integer dsjCount;
+	//待队长确认总数
+	private  Integer ddzCount;
+}
