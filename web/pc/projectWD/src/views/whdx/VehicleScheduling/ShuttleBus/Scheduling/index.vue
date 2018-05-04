@@ -1,6 +1,7 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
+<!--校巴排班-->
 <template>
 	<div class="boxbackborder">
 		<Card>
