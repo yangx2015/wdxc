@@ -130,6 +130,7 @@
 		},
 		methods:{
 		    onResult(r){
+		        alert('result')
                 log(r);
                 this.wait = false;
                 this.componentName = '';
