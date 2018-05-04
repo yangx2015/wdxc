@@ -1,4 +1,4 @@
-<!--校巴站点维护-->
+<!--班车站点维护-->
 <style lang="less">
     @import '../../../../../styles/common.less';
 </style>
@@ -12,7 +12,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>校巴站点维护</span>
+							<span>班车站点维护</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
@@ -164,7 +164,8 @@
 					cjsjInRange:'',
                     mcLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize: 5,
+					lx:'20'
 				}
             }
         },
