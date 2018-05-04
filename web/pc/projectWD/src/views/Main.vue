@@ -103,7 +103,7 @@
         data () {
             return {
             	compName:'',
-				socket : new SockJS("http://"+"47.98.39.45:80801"+"/gps"),
+				socket : new SockJS("http://"+"47.98.39.45:8080"+"/gps"),
 //				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],
@@ -211,6 +211,7 @@
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
+                        log('=========================/topic/sendhbsp=======================')
                         // let jsonMess = JSON.parse(data.body)
 			            v.$store.commit('addSendhbsp',data.body)
 			        });
