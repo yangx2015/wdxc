@@ -22,9 +22,9 @@
             return{
                 showModal:true,
                 SpinShow1:true,
-                sec:150,
+                sec:600,
                 percent:100,
-                totalSec : 150
+                totalSec : 600
             }
         },
         mounted(){
@@ -39,12 +39,12 @@
                 this.sec--;
                 this.percent = this.sec*100 / this.totalSec;
                 clearTimeout();
+                if (!this.$route.path == '/VehicleScheduling/mergeVideo'){
+                    return;
+                }
                 if (this.sec <= 0){
                     this.$Message.error("等待超时！");
                     this.close();
-                    return;
-                }
-                if (!this.$route.path == '/VehicleScheduling/mergeVideo'){
                     return;
                 }
                 let v = this;
