@@ -101,7 +101,7 @@
 		methods:{
 			getCarList(){//获取车辆列表
 				var v = this
-				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'30'}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'20'}).then((res) =>{
 					if(res.code == 200){
 						console.log('车辆据',res)
 //						res.result.forEach(function(item,index){
@@ -122,7 +122,7 @@
 			},
 			AddList(carID,cph,sjxm){
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'20'}).then((res) =>{
 					console.log('排版新增',res)
 					if(res.code==200){
 						v.$Message.success(res.message);
@@ -139,7 +139,7 @@
 			},
 			deleteById(carID,index){
                 var v = this
-                this.$http.post(configApi.XLPBXX.DELE,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'30'}).then((res) =>{
+                this.$http.post(configApi.XLPBXX.DELE,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'20'}).then((res) =>{
                     if(res.code==200){
                     	v.$Message.success(res.message);
                     	v.$parent.getmess();
