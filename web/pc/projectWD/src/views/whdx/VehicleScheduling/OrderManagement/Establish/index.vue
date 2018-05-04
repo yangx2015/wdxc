@@ -22,7 +22,7 @@
 									用车单位
 								</h3>
 								<Select filterable clearable  v-model="formItem.jgdm" size="large" placeholder="请选择用车单位" filterable>
-									<Option v-for="item in jgdmList" :value="item.jgmc">{{item.jgmc}}</Option>
+									<Option v-for="item in jgdmList" :value="item.jgdm">{{item.jgmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>

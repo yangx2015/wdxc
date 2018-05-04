@@ -1,6 +1,6 @@
 <!--订单查阅-->
 <style lang="less">
-    @import '../../../../../styles/common.less';
+	@import '../../../../../styles/common.less';
 </style>
 <template>
 	<div class="box">
@@ -45,51 +45,50 @@
 				</Row>
 			</div>
 		</Card>
-
 		<Modal
-		    v-model="showModal"
-		    width='800'
-		    :mask-closable="false"
-		    title="信息详情">
-		    <div slot='footer'></div>
+				v-model="showModal"
+				width='800'
+				:mask-closable="false"
+				title="信息详情">
+			<div slot='footer'></div>
 		</Modal>
-    </div>
+	</div>
 </template>
 <script>
     import configApi from '@/axios/config.js'
-	import edit from './edit'
-	import mixins from '@/mixins'
+    import edit from './edit'
+    import mixins from '@/mixins'
     import expandRow from './table-expand.vue';
     export default {
         components: {
-        	expandRow,edit
+            expandRow,edit
         },
         mixins:[mixins],
         data () {
             return {
-            	//收索
+                //收索
                 componentName:'',
                 datetime:[],
                 findMess:{
-                	gte_StartTime:'',
-            		lte_StartTime:'',
-                	like_CarNumber:'',
-                	like_ScName:'',
-					ddzt:'30',
-                	pageNum:1,
-            		pageSize:5
+                    gte_StartTime:'',
+                    lte_StartTime:'',
+                    like_CarNumber:'',
+                    like_ScName:'',
+                    ddzt:'10',
+                    pageNum:1,
+                    pageSize:5
                 },
-				choosedRow:null,
-            	//弹层
-            	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:5
-            	},
-            	showModal:false,
+                choosedRow:null,
+                //弹层
+                pageTotal:1,
+                page:{
+                    pageNum:1,
+                    pageSize:5
+                },
+                showModal:false,
                 columns10: [
                     {
-                    	title:'#',
+                        title:'#',
                         type: 'expand',
                         width: 50,
                         render: (h, params) => {
@@ -131,8 +130,8 @@
                         key: 'zws'
                     },
                     {
-                    	title:'操作',
-                    	align:'center',
+                        title:'操作',
+                        align:'center',
                         type: 'action',
                         render: (h, params) => {
                             return h('div', [
@@ -146,8 +145,8 @@
                                     },
                                     on: {
                                         click: () => {
-											this.componentName = edit
-											this.choosedRow = params.row;
+                                            this.componentName = edit
+                                            this.choosedRow = params.row;
                                         }
                                     }
                                 }, '编辑'),
@@ -158,8 +157,8 @@
                                     },
                                     on: {
                                         click: () => {
-//                                          this.remove(params.index)
-											alert('确认')
+                                            console.log(params.row);
+                                            this.confirm(params.row.id);
                                         }
                                     }
                                 }, '确认')
@@ -172,7 +171,7 @@
             }
         },
         created(){
-        	this.$store.commit('setCurrentPath', [{
+            this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
                 title: '车辆管理',
@@ -181,17 +180,38 @@
             },{
                 title: '订单确认',
             }])
-			this.findMessList();
+            this.findMessList();
         },
         methods:{
-        	changeTime(val){
-        	},
-        	pageChange(event){
+            changeTime(val){
+            },
+            pageChange(event){
                 var v = this
                 v.page.pageNum = event
                 this.findMess.pageNum = event;
                 v.findMessList()
-        	},
+            },
+			confirm(id){
+                var v = this
+                v.SpinShow = true
+                let url = configApi.ORDER.CONFIRM;
+                let param = {
+                    id : id
+				}
+                this.$http.post(url,param).then((res) =>{
+                    v.SpinShow = false
+                    if(res.code===200){
+                        var v = this
+                        this.findMessList()
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                }).catch((error) =>{
+                    v.$Message.error('出错了！！！');
+                    v.SpinShow = false
+                })
+			},
             findMessList(){
                 this.$http.get(configApi.ORDER.QUERY,{params:this.findMess}).then((res) =>{
                     if (res.code === 200 && res.page.list){

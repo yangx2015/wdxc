@@ -98,13 +98,13 @@
             <Col span="6">
             	<h3>费用合计：</h3>
             	<div>
-            		{{row.addMoney}}
+            		{{row.zj}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>备注：</h3>
             	<div style="word-wrap:break-word">
-            		{{row.mess}}
+            		{{row.bz}}
             	</div>
             </Col>
         </Row>
@@ -124,7 +124,7 @@
 	        </div>
 	        <div v-show="horizontal=='4'" style="overflow: hidden;" class="topmar">
 	        	<Col span="6" class="margin-top-5">
-					<h5>用车单位：</h5>计算机学院
+					<h5>用车单位：</h5>{{detail.initialOracle}}
 				</Col>
 				<Col span="6" class="margin-top-5">
 					<h5>用车人：</h5>杨毛毛
@@ -160,21 +160,35 @@
     </div>
 </template>
 <script>
+    import configApi from '@/axios/config.js'
     export default {
     	name:'',
     	data(){
     		return {
     			horizontal:'1',
     			settleStatus:5,
+				detail:{
+
+				}
     		}
     	},
         props: {
             row: Object
         },
+		mounted(){
+            this.getOrderDetails();
+		},
         methods:{
         	MenuClick(event){
 				var v = this
 				v.horizontal = event
+			},
+            getOrderDetails(){
+                this.$http.get(configApi.ORDER.orderDetails+'?id='+this.row.id).then((res) =>{
+                    if (res.code == 200){
+                        this.detail = res.result;
+					}
+                })
 			}
         }
     };

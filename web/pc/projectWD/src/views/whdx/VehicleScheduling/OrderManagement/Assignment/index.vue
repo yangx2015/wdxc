@@ -1,5 +1,11 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
+	.ddfpSty{
+		padding: 3px 5px;
+		border-left: solid #00a050 2px;
+		border-right: solid #00a050 2px;
+		border-radius: 15px;
+	}
 </style>
 <!--订单分派-->
 <template>
@@ -22,17 +28,45 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:350px">
+				<Card style="width:400px" v-for="(item,index) in drvlist">
 					<p slot="title">
 						<Icon type="ios-film-outline"></Icon>
-						Classic film
+						{{item.xm}}
 					</p>
 					<a href="#" slot="extra">
 						<Icon type="ios-loop-strong"></Icon>
 						Change
 					</a>
-					<div>
-						123
+					<div style="height: 160px;overflow: auto">
+						<div class="ddfpSty" v-for="(p,i) in item.clDdList" >
+							<div>
+								<Row>
+									<Col span="12">
+										<Icon type="person"
+											color="#7b7b7b"></Icon>
+										信息工程学院——陈小伟
+										<!--{{p.jgmc}} {{p.ck}}-->
+									</Col>
+									<Col span="12">
+										<Icon type="ios-clock"
+											color="#0897ff"></Icon>
+										{{p.yysj}}
+									</Col>
+								</Row>
+							</div>
+							<div>
+								<Row>
+									<Col span="12">
+										<Icon type="record" color="#19a853"></Icon>
+										{{p.hcdz}}
+									</Col>
+									<Col span="12">
+										<Icon type="record" color="#ff8f00"></Icon>
+										{{p.mdd}}
+									</Col>
+								</Row>
+							</div>
+						</div>
 					</div>
 				</Card>
 			</div>
@@ -51,8 +85,8 @@
         },
 		data(){
 			return{
-                compName:'pageList',
-			    drvlist:[]
+                compName:'',
+			    drvlist:[],
 			}
 		},
 		created(){
@@ -65,13 +99,17 @@
             },{
                 title: '订单分配',
             }]);
-			// this.getDrvList()
+			this.getDrvList()
 		},
 		mounted(){
 		},
 		methods:{
 			getDrvList(){//司机列表
+			    var v = this
                 this.$http.post(configApi.ORDER.SJLB,{}).then((res) =>{
+                    if(res.code == 200){
+						v.drvlist = res.result
+					}
 					console.log(res)
                 })
 			},

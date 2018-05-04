@@ -12,10 +12,10 @@
                 :open-names="openedSubmenuArr"
                 :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <!--<div v-show="!shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">武汉大学车辆管理信息平台</div>-->
-                    <!--<div v-show="shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>-->
-                    <img v-show="!shrink"  src="../images/logo.png" key="max-logo" />
-                    <img v-show="shrink" src="../images/logo-min.png" key="min-logo" />
+                    <div v-show="!shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">武汉大学车辆管理信息平台</div>
+                    <div v-show="shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
+                    <!--<img v-show="!shrink"  src="../images/logo.png" key="max-logo" />-->
+                    <!--<img v-show="shrink" src="../images/logo-min.png" key="min-logo" />-->
                 </div>
             </shrinkable-menu>
         </div>
@@ -103,7 +103,7 @@
         data () {
             return {
             	compName:'',
-				socket : new SockJS("http://"+"47.98.39.45:8080"+"/gps"),
+				socket : new SockJS("http://"+"47.98.39.45:80801"+"/gps"),
 //				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],

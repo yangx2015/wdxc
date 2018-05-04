@@ -5,13 +5,14 @@ import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 
 import java.util.List;
 import java.util.Map;
 
 public interface DdService extends BaseService<ClDd,String>{
-    ApiResponse<String> saveEntity(ClDd entity);
+    ApiResponse<String> saveEntity(ClDd entity, SysYh userInfo);
 
     ApiResponse<String> updateOrderAuditing(ClDd entity);
 

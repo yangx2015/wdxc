@@ -1,15 +1,12 @@
 <template>
     <div>
-        <Modal v-model="showModal" width="600" height="300"
+        <Modal v-model="showModal" width="400" height="200"
                :closable='false'
                :mask-closable="false">
-            <div style="height: 400px;">
-                <div v-if="SpinShow1" style="width:80%;height:80%;z-index: 1111;text-align: center">
-                    <Spin fix style="width:80%;height: 80%;text-align: center;position:inherit">
-                        <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-                        <div style="font-size: 30px;">文件上传中请稍后...</div>
-                    </Spin>
-                </div>
+            <div style="height: 200px;text-align: center;padding-top: 10%">
+                <i-circle :percent="percent">
+                    <span class="demo-Circle-inner" style="font-size:24px">{{sec}} 秒</span>
+                </i-circle>
             </div>
             <div slot='footer' style="text-align: center;">
                 <Button type="primary" @click="close">取消等待</Button>
@@ -25,13 +22,37 @@
             return{
                 showModal:true,
                 SpinShow1:true,
+                sec:120,
+                percent:100,
+                totalSec : 120
             }
+        },
+        mounted(){
+          this.count();
         },
         methods:{
             close(){
                 var v = this
                 v.$parent.componentName = ''
             },
+            count(){
+                this.sec--;
+                this.percent = this.sec*100 / this.totalSec;
+                clearTimeout();
+                if (this.sec <= 0){
+                    this.$Message.error("等待超时！");
+                    this.close();
+                    return;
+                }
+                if (!this.$route.path == '/VehicleScheduling/mergeVideo'){
+                    return;
+                }
+                let v = this;
+                setTimeout(()=>{
+                    v.count();
+                },1000)
+
+            }
         }
     }
 </script>
