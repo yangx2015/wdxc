@@ -276,12 +276,12 @@ export let appRouter = [
 				]
 			},
       		{
-     		path:'/ScManage',
-				icon: 'android-clipboard',
-				name: 'ScManage',
-				title: '校巴管理',
-				component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
-				children: [{
+     		// path:'/ScManage',
+				// icon: 'android-clipboard',
+				// name: 'ScManage',
+				// title: '校巴管理',
+				// component: () => import('@/views/whdx/VehicleScheduling/ScManage/index'),
+				// children: [{
 		            path: 'Sc_SiteMaintenance',
 		            icon: 'android-clipboard',
 		            name: 'Sc_SiteMaintenance',
@@ -301,16 +301,16 @@ export let appRouter = [
 		            name: 'Sc_Scheduling',
 		            title: '校巴排班',
 		            component: () => import('@/views/whdx/VehicleScheduling/ScManage/Sc_Scheduling')
-   					}
-   				]
-      },
+   				// 	}
+   				// ]
+      		},
 			{
-        		path:'/',
-				icon: 'android-clipboard',
-				name: 'OrderManagement',
-				title: '订单管理',
-				component: () => import('@/views/whdx/VehicleScheduling/OrderManagement/index'),
-				children: [{
+                // path:'/',
+				// icon: 'android-clipboard',
+				// name: 'OrderManagement',
+				// title: '订单管理',
+				// component: () => import('@/views/whdx/VehicleScheduling/OrderManagement/index'),
+				// children: [{
 						path: 'OrderManagement/Establish',
 						icon: 'android-clipboard',
 						name: 'Establish',
@@ -344,8 +344,8 @@ export let appRouter = [
 						name: 'Confirm',
 						title: '订单确认',
 						component: () => import('@/views/whdx/VehicleScheduling/OrderManagement/Confirm')
-					}
-				]
+				// 	}
+				// ]
 			},
         ]
 	},
