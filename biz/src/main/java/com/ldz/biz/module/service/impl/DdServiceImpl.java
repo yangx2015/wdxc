@@ -355,6 +355,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             ClCl clCl=cl.get(0);
             RuntimeCheck.ifNull(clCl,"该司机未关联车辆，不能进行派单操作");
 
+            Short zkl=clCl.getZkl();//
+            RuntimeCheck.ifNull(zkl,"，车辆"+clCl.getCph()+"载客量为空，不能进行派单操作");
+            Short zws=clDd.getZws();
+            RuntimeCheck.ifNull(zws,"该订单座位数为空，不能进行派单操作");
+
+            RuntimeCheck.ifTrue(zws>zkl,"该车的载客量为:"+zkl+" 订单乘客人数:"+zws+",");
+
             ClCd clcd=clCdMapper.selectByPrimaryKey(clCl.getCdbh());
             RuntimeCheck.ifNull(clcd,"未找到该车辆所关联的车队记录");
 
