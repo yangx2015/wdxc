@@ -10,25 +10,25 @@
         	<Col span="6">
             	<h3>候车地点：</h3>
             	<div>
-            		{{row.hcdz}}
+            		{{row.WaitingPlace}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>目的地：</h3>
             	<div>
-            		{{row.mdd}}
+            		{{row.Destination}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>单据类型：</h3>
             	<div>
-            		{{row.wc}}
+            		{{row.BillModel}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>预约时间：</h3>
             	<div>
-            		{{row.yysj}}
+            		{{row.startTime}}
             	</div>
             </Col>
         </Row>
@@ -36,19 +36,19 @@
             <Col span="6">
             	<h3>行车里程：</h3>
             	<div>
-            		{{row.lc}}
+            		{{row.mileage}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>里程单价：</h3>
             	<div>
-            		{{row.dj}}
+            		{{row.unit}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>里程费用：</h3>
             	<div>
-            		{{row.lcf}}
+            		{{row.mileageMoney}}
             	</div>
             </Col>
             <Col span="6">
@@ -68,13 +68,13 @@
             <Col span="6">
             	<h3>过桥费：</h3>
             	<div>
-            		{{row.glf}}
+            		{{row.BridgeFee}}
             	</div>
             </Col>
             <Col span="6">
             	<h3>费用合计：</h3>
             	<div>
-            		{{row.zj}}
+            		{{row.addMoney}}
             	</div>
             </Col>
             <Col span="6">

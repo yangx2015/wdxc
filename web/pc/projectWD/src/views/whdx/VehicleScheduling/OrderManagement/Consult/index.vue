@@ -4,47 +4,49 @@
 </style>
 <template>
 	<div class="box">
-    	<div class="tit">
-	    	<Row class="margin-top-10">
-	    		<Col span="6">
-	    			<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
-	    		</Col>
-		        <Col span="6">
-		        	<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-		        </Col>
-		        <Col span="6">
-		        	<Input v-model="findMess.like_ScName" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-		        </Col>
-		        <Col span="6" style="text-align: right;">
-		        	<Button type="primary" @click="getDataList()">查询</Button>
-		        </Col>
-		    </Row>
-    		<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+		<Card>
+			<div class="tit">
+				<Row class="margin-top-10">
+					<Col span="6">
+						<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
+					</Col>
+					<Col span="6">
+						<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
+					</Col>
+					<Col span="6">
+						<Input v-model="findMess.like_ScName" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
+					</Col>
+					<Col span="6" style="text-align: right;">
+						<Button type="primary" @click="getDataList()">查询</Button>
+					</Col>
+				</Row>
+				<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-    			<div style="height: 45px;line-height: 45px;">
-	    			<span style="margin-left: 60px;font-size: 24px;">订单查询</span>
-    			</div>
-			</Row>
-    	</div>
-    	<div class="body">
-	    	<Row>
-			    <Table
-			    	:row-class-name="rowClassName"
-			    	:columns="columns10"
-			    	:data="data9"></Table>
-			</Row>
-		    <Row class="margin-top-10" style="text-align: right;">
-		    	<Page
-		    		:total=pageTotal
-		    		:current=page.pageNum
-		    		:page-size=page.pageSize
-		    		show-total
-		    		show-elevator
-		    		@on-change='pageChange'></Page>
-		    </Row>
-    	</div>
+					<div style="height: 45px;line-height: 45px;">
+						<span style="margin-left: 60px;font-size: 24px;">订单查询</span>
+					</div>
+				</Row>
+			</div>
+			<div class="body">
+				<Row>
+					<Table
+							:row-class-name="rowClassName"
+							:columns="columns10"
+							:data="data9"></Table>
+				</Row>
+				<Row class="margin-top-10" style="text-align: right;">
+					<Page
+							:total=pageTotal
+							:current=page.pageNum
+							:page-size=page.pageSize
+							show-total
+							show-elevator
+							@on-change='pageChange'></Page>
+				</Row>
+			</div>
+		</Card>
 		<Modal
 		    v-model="showModal"
 		    width='800'
@@ -206,13 +208,16 @@
         	changeTime(val){
         	},
         	pageChange(event){
-        		var v = this
+                var v = this
+                v.page.pageNum = event
+                this.findMess.pageNum = event;
+                v.findMessList()
         	},
         	findMessList(){
-                this.$http.get(configApi.ORDER.QUERY).then((res) =>{
+                this.$http.get(configApi.ORDER.QUERY,{params:this.findMess}).then((res) =>{
                     if (res.code === 200 && res.page.list){
                         this.data9 = res.page.list;
-                        this.pageTotal = res.psage.total;
+                        this.pageTotal = res.page.total;
 					}
                 })
         	},

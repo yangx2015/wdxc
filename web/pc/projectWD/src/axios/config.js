@@ -23,11 +23,14 @@ module.exports = {
 		ADD:'/api/dd/save',
 		CHANGE:'/api/dd/update',
 		DELE:'/api/dd/removeIds',
+		AUDIT:'/api/dd/orderAuditing',
 		//订单分派
 		SJLB:'/api/dd/pdsjlb',//司机列表
 		DFP:'/api/dd/dfp',//待分派订单
 		YFP:'/api/dd/yfp',//已分派
 		QXPD:'/api/dd/qxpd',//取消派单
+		CONFIRM:'/api/dd/ddqr',//订单确认
+        orderDetails:'/api/dd/orderDetails',//订单详情
 		FP:'/api/dd/pd',//订单分派
 	},
 	ROLE:{
