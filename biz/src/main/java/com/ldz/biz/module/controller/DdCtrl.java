@@ -12,6 +12,7 @@ import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +20,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.DdTongjiTJ;
+import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.DdService;
@@ -64,8 +67,8 @@ public class DdCtrl{
      */
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(ClDd entity){
-        SysYh userInfo = getCurrentUser();
-        return service.saveEntity(entity);
+/*        SysYh userInfo = getCurrentUser();
+*/        return service.saveEntity(entity);
     }
 
 
@@ -77,7 +80,7 @@ public class DdCtrl{
      */
     @RequestMapping(value="/pager", method={RequestMethod.POST, RequestMethod.GET})
     public ApiResponse<List<ClDd>> pager(ClDd entity, Page<ClDd> pager){
-        SysYh userInfo = getCurrentUser();
+      /*  SysYh userInfo = getCurrentUser();*/
 //        RuntimeCheck.ifNull(userInfo,"当前登录用户未空！");
         return service.pager(pager);
     }
@@ -203,7 +206,7 @@ public class DdCtrl{
      */
     @RequestMapping(value="/ddxq/{pkid}", method={RequestMethod.GET})
     public ApiResponse<ClDd> get(@PathVariable("pkid")String pkid){
-        SysYh userInfo = getCurrentUser();
+      /*  SysYh userInfo = getCurrentUser();*/
 //        String userId=userInfo.getYhid();
         String userId="1"; // TODO: 2018/3/19   测试代码
         ClDd whereClDd=new ClDd();
@@ -310,4 +313,9 @@ public class DdCtrl{
         return service.updateFinanceConfirm(ids);
     }
 
+    @PostMapping("/ddtj")
+    public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd){
+    	
+    	return service.ddtongji(dd);
+    }
 }
