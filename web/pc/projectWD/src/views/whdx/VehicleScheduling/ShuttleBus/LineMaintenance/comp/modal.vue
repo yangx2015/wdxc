@@ -12,79 +12,99 @@
 		    width='900'
 		    :closable='false'
 		    :mask-closable="false"
-		    title="新增线路">
+		    :title="tit+'校巴线路'">
 		    <div>
-		    	<Row :gutter='30' style="margin-bottom: 15px;">
-		    		<Col span="6">
-		    			<Input v-model="addspot.routertName" placeholder="请输入线路名称...">
-		    			</Input>
-		    		</Col>
-		    		<Col span="6">
-		    			<Select filterable clearable  v-model="addspot.classes"  placeholder="请输选择线路班次...">
-					        <Option value="早班">早班</Option>
-					        <Option value="午班">午班</Option>
-					        <Option value="下午班">下午班</Option>
-					        <Option value="晚班">晚班</Option>
-					    </Select>
-		    		</Col>
-		    		<Col span="5">
-		    			<Select filterable clearable  v-model="addspot.spotType">
-					        <Option value="正常">正常</Option>
-					        <Option value="停用">停用</Option>
-					    </Select>
-		    		</Col>
-		    		<Col span="5">
-	    				<Input v-model="addspot.spotmess" placeholder="备注信息...">
-		    			</Input>
-		    		</COl>
-		    	</Row>
+		    	<Form
+    			ref="addmess"
+    			:model="form"
+    			:rules="ruleInline"
+    			:label-width="0"
+    			:styles="{top: '20px'}">
+			    	<Row :gutter='30' style="margin-bottom: 15px;">
+			    		<Col span="6">
+			    			<FormItem prop="xlmc">
+				    			<Input v-model="form.xlmc" placeholder="请输入线路名称...">
+				    			</Input>
+			    			</FormItem>
+			    		</Col>
+			    		<Col span="3">
+			    			<FormItem prop="zt">
+				    			<Select filterable clearable  v-model="form.zt">
+							        <Option value="00">正常</Option>
+							        <Option value="10">停用</Option>
+							    </Select>
+							</FormItem>
+			    		</Col>
+			    		<Col span="3">
+			    			<FormItem prop="yxfs">
+				    			<Select filterable clearable  v-model="form.yxfs">
+							        <Option value="10">上行</Option>
+							        <Option value="20">下行</Option>
+							    </Select>
+							</FormItem>
+			    		</Col>
+						<Col span="5">
+							<FormItem>
+								<Input type="text" v-model="form.yxkssj" placeholder="开始时间..."></Input>
+							</FormItem>
+						</COl>
+						<Col span="5">
+							<FormItem>
+								<Input type="text" v-model="form.yxjssj" placeholder="结束时间..."></Input>
+							</FormItem>
+						</COl>
+					</Row>
+				</Form>
 		    </div>
 		    <div class="box-row">
 		    	<div class="body-F stepsList">
-		    		<Steps :current="routerList.length" size="small">
-				        <Step icon="disc" :content="item.name" v-for="(item,index) in routerList"></Step>
+		    		<Steps :current="choosedStations.length" size="small">
+				        <Step icon="disc" :content="item.name" v-for="(item,index) in choosedStations"></Step>
 				    </Steps>
 		    	</div>
 		    	<div style="width: 100px;">
 		    		<div>
-		    			<Select filterable clearable  v-model="spotName">
-					        <Option value="光谷广场">光谷广场</Option>
-					        <Option value="珞喻路">珞喻路</Option>
-					        <Option value="武汉大学">武汉大学</Option>
-					        <Option value="珞珈山">珞珈山</Option>
+		    			<Select filterable clearable  v-model="stationId">
+					        <Option v-for="(item,index) in stationList" 
+					        	:disabled='item.disabled'
+					        	:value="index+1">{{item.mc}}</Option>
 					    </Select>
 		    		</div>
 		    		<div style="margin-top: 8px;">
 		    			<Button type="primary" shape="circle" icon="plus"
-		    				:disabled="spotName==''"
-		    				@click='addspotlist'></Button>
+		    				:disabled="stationId==''"
+		    				@click='addStation(stationId-1)'></Button>
 		    			<Button type="primary" shape="circle" icon="minus"
 		    				:disabled="routerList.length==0" style="float: right;"
-		    				@click='removespot'></Button>
+		    				@click='removespot(stationId-1)'></Button>
 		    		</div>
-		    		</Row>
 		    	</div>
 			</div>
 		    <div slot='footer'>
 		    	<Button type="ghost" @click="colse">取消</Button>
-	        	<Button type="primary" @click="colse">确定</Button>
+	        	<Button type="primary" @click="save('addmess')">确定</Button>
 		    </div>
 		</Modal>
 	</div>
 </template>
 
 <script>
+    import configApi from '@/axios/config.js'
 	export default{
 		name:'',
 		data(){
 			return{
 				showModal:true,
-				addspot:{
-					routertName:'',
-					classes:'',
-					spotType:'正常',
-					spotmess:''
+				tit:'新增',
+                stationId:0,
+				choosedStations:[],
+				form:{
+				    id:'',
+                    xlmc:'',
+                    zt:'00',
+                    yxfs:'10',
 				},
+				stationList:[],
 				spotName:'',
 				routerList:[
 					{
@@ -94,22 +114,120 @@
 					},{
 						name:'0075'
 					}
-				]
+				],
+				ruleInline: {
+                  xlmc: [
+                      { required: true, message: '请输入线路名称', trigger: 'blur' }
+                  ],
+                  zt: [
+                      { required: true, message: '请选择线路状态', trigger: 'blur' }
+                  ],
+                  yxfs:[
+                      { required: true,message: '请选择方向', trigger: 'blur' }
+                  ]
+              	},
 
 			}
 		},
+		mounted(){
+			if(this.$parent.addmessType){
+				this.tit = '新增'
+			}else{
+				this.tit = '编辑'
+				this.form = this.$parent.currentRow;
+			}
+			this.getAllStation();
+		},
 		methods:{
-			addspotlist(){
-				this.routerList.push({'name':this.spotName})
-				this.spotName = ''
+		    getStations(){
+                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID+'?xlId='+this.form.id).then((res) =>{
+                    if(res.code === 200){
+                        for (let r of res.result){
+                            this.addByStationId(r.id);
+						}
+                    }
+                })
+			},
+			addByStationId(stationId){
+				var v = this
+                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
+                for(var i = 0 ; i<this.stationList.length ; i++){
+                	if(v.stationList[i].id == stationId){
+                		v.stationList[i].disabled = true
+                		return
+                	}
+                }
+			},
+		    getAllStation(){
+                this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
+                    if(res.code===200){
+                        this.stationList = res.result;
+                        log('站点列表',res)
+                        if (this.$parent.currentRow){
+                            this.getStations();
+                        }
+                    }
+                })
+			},
+			getStationById(id){
+				for (let r of this.stationList){
+				    if (r.id === id)return r;
+				}
+				return null;
+            },
+			getStationNameById(id){
+		        let station = this.getStationById(id);
+		        if (station == null)return '';
+		        return station.mc;
+			},
+			save(name){
+                var v = this
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+		                let zdIds = '';
+		                for(let r of this.choosedStations){
+		                    zdIds += r.id+",";
+						}
+		                this.form.zdIds = zdIds;
+                        delete this.form.startStation
+                        delete this.form.endStation
+		                let url = configApi.XL.ADD;
+		                if (this.$parent.currentRow){
+		                    url = configApi.XL.CHANGE;
+		                }
+                        this.$http.post(url,this.form).then((res) =>{
+		                    if(res.code===200){
+		                        var v = this
+		                        v.$parent.compName = ''
+		                        v.$parent.getmess()
+		                        this.$Message.success(res.message);
+		                    }
+		                })
+		            } else {
+                        v.$Message.error('请认真填写用户信息!');
+                    }
+                })
+			},
+			addStation(index){
+//				debugger
+                this.choosedStations.push({
+                	id:this.stationList[index].id,
+                	name:this.stationList[index].mc,
+                	'index':index
+                });//向线路插入数据
+                this.stationId = 0;
+				this.stationList[index].disabled = true
+                log(this.stationList)
 			},
 			removespot(){
-				this.routerList.pop()
+				var chLength = this.choosedStations.length-1
+				var chindex = this.choosedStations[chLength].index
+				this.stationList[chindex].disabled = false
+				this.choosedStations.pop()
 			},
 			colse(){
 				var v = this
 				v.$parent.compName = ''
-				log(v.$parent)
 		    }
 		}
 	}

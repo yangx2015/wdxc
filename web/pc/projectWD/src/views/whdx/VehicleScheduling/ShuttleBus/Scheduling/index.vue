@@ -1,227 +1,152 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
-	.SC {
-		.full-calendar-header {
-			font-size: 22px;
-		}
-		.day-number {
-			font-size: 18px;
-		}
-		.dates-bg {
-			.today {
-				background: #09b938!important;
-			}
-		}
-		.comp-full-calendar {
-			max-width: 100%!important;
-			margin: 0!important;
-		}
-	}
-	#fullcalendar{
-		.full-calendar-body .dates .dates-events .events-week .events-day{
-			min-height: 74px!important;
-		}
-		.full-calendar-body .dates .week-row .day-cell{
-			min-height: 74px!important;
-		}
-		.comp-full-calendar{
-			padding: 15px!important;
-		}
-	}
 </style>
 <template>
-	<div class="SC box">
-		<div class="body" v-show='dateMess' style="background-color: #fff;">
-			<component 
-				:is="modalName"
-				:todaytime='todaytime'
-				@okdrag='okdrag'></component>
-		</div>
-		<div class="body" v-show='!dateMess' style="height: 100%;">
-			<div class="box-row">
-				<div class="body-r-1" style="height:100%;border-right: solid 1px #22CDDE;">
-					<div id="fullcalendar" style="height: 100%;">
-						<fullcalendar :events='events' lang='zh' title='日历标题' @dayClick="dayClick" @eventClick='eventClick'>
-						</fullcalendar>
-					</div>
-						<!-- <div slot="fc-header-left" style="background-color: #f00;">
-									123
-							</div>
-							<div slot="fc-header-right" style="background-color: #f00;">
-									456
-							</div>
-							<div slot="fc-body-card" style="background-color: #f00;">
-							 		798
-							</div> -->
-				</div>
-				<div style="width: 360px;padding: 15px;height: 100%;background-color: #fff;border-left: solid 1px #22CDDE;">
-					<div class="box" style="">
-						<div class="tit">
-							<div style="text-align: center;font-size: 18px;padding: 5px;">
-								<b>
-									{{todaytime}}
-								</b>
-								<span style="font-size: 14px;">
-									排班信息
-								</span>
-							</div>
-							<div style="text-align: right;padding-bottom: 5px;">
-								<Button type="primary" size="small" @click="changeClick">编辑</Button>
-							</div>
+	<div class="boxbackborder">
+		<Card>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+				<span class="tabPageTit">
+    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
+    			</span>
+				<div style="height: 45px;line-height: 45px;">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>校巴排班</span>
 						</div>
-						<div class="body">
-							<Table 
-								border 
-								:height="tabHeight" 
-								:columns="columns2" 
-								:data="data2"></Table>
-							<div>
-								<Button type="warning">复制当日排班信息</Button>
-							</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="todaytime" 
+								format="yyyy-MM-dd" 
+								type="date" 
+								placement="bottom-end" 
+								placeholder="请输时间" 
+								style="width: 220px"></DatePicker>
 						</div>
+						<!--<div class="butevent">
+						</div>-->
 					</div>
 				</div>
-			</div>
-		</div>
+			</Row>
+			<Row style="position: relative;">
+				<Table
+						size='large'
+						:height="tabHeight"
+						:row-class-name="rowClassName"
+						:columns="tableTiT"
+						:data="tableData"></Table>
+			</Row>
+			<!--<Row class="margin-top-10 pageSty">
+				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
+			</Row>-->
+		</Card>
+		<component
+			:is="compName"
+			:mess="mess"
+			:pbTime="giveTime"></component>
 	</div>
 </template>
 
 <script>
-	import fullcalendar from 'vue-fullcalendar'
-	import drag from './comp/drag.vue'
-	import drlist from '../../../components/draggable-list/draggable-list.vue'
 	import mixins from '@/mixins'
+	import configApi from '@/axios/config.js'
+	
+	import addmess from './comp/addmess'
+	
 	export default {
 		name: '',
 		mixins:[mixins],
 		components: {
-			fullcalendar,
-			drag,drlist
+			addmess
 		},
 		data() {
 			return {
-				tabHeight:'',
+				compName:'',
+				mess:{},
+				tabHeight:220,
+				SpinShow:true,
 				todaytime:'',
-				dateMess: false,
-				modalName: '',
-				events: [{
-						title: '早班',
-						start: '2018-01-01',
-						cssClass: 'family',
-						YOUR_DATA: {
-							name: 'hello'
-						}
-					},
-					{
-						title: 'event1',
-						start: '2018-01-01',
-						cssClass: 'family',
-						YOUR_DATA: {}
-					},
-					{
-						title: 'event2',
-						start: '2018-01-06',
-						end: '2018-01-08',
-						cssClass: ['family', 'career'],
-						YOUR_DATA: {}
-					}
-				],
-				columns1: [{
-						title: '序号',
-						type: 'index'
-					},
-					{
-						title: '班次',
-						key: 'Shift'
-					},
-					{
-						title: '线路',
-						key: 'line'
-					},
-					{
-						title: '司机',
-						key: 'driver'
-					}
-				],
-				data1: [{
-					Shift: '早班',
-					line: '999线',
-					driver: '王炫智'
-				}],
-				columns2: [
-                	{
+				giveTime:'',
+				//分页
+				//---数据总数
+				pageTotal: 2,
+				page: {
+					//---当前页码
+					pageNum: 1,
+					//---每页显示条数
+					pageSize: 5
+				},
+				tableTiT: [
+				{
                         type: 'index',
                         width: 40,
                         align: 'center'
                     },
                     {
-                        title: '班次',
-                        key: 'date'
+                        title: '线路名称',
+                        key: 'xlmc'
                     },
                     {
-                        title: '车辆',
-                        width: 100,
-                        key: 'car',
-                        align: 'center'
+                        title: '运行时间',
+                        width: 150,
+                        align: 'center',
+						render:(h,p)=>{
+                            return h('div',p.row.yxkssj + ' ~ ' + p.row.yxjssj)
+                        }
                     },
                     {
-                        title: '线路',
-                        key: 'line',
-                        align: 'center'
-                    },
-                    {
-                        title: '状态',
-                        key: 'type',
+                        title: '车辆信息',
+                        key: 'clList',
                         align: 'center',
                         render: (h, params) => {
+                        	let cl = params.row.clList
+                            if(cl===null){
+                                return
+                        	}
+                            let span = []
+                        	for(var i = 0 ;i<cl.length;i++){
+                        		span.push(
+                        			h('span',{
+										style:{
+											marginRight:'5px',
+										}
+									},cl[i].cph+ ' ; ')
+                        		)
+                        	}
+                        	return h('div', span)
+						}
+                    },{
+						title: '操作',
+						key: 'action',
+						width: 100,
+						align: 'center',
+						render: (h, params) => {
 							return h('div', [
-								h('span',{
-									style:{
-										fontWeight:900,
-										color:params.row.type=='正常'?'#228B22':'#FF4500',
+							h('Button', {
+									props: {
+										type: 'success',
+										icon: 'edit',
+										shape: 'circle',
+										size: 'small'
+									},
+									style: {
+										cursor: "pointer"
+									},
+									on: {
+										click: () => {
+											if(params.row.clList!=null && params.row.clList.length > 0){
+												params.row.clList.forEach(function(item,index){
+													item.ico = false
+												})
+											}
+											this.mess = params.row
+											this.compName = 'addmess'
+										}
 									}
-								},params.row.type)
+								})
 							]);
 						}
-                    }
-                ],
-                data2: [
-                    {
-                        date:'早班',
-                        car:'鄂A12345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'45km/h'
-                    },
-                    {
-                        date:'午班',
-                        car:'鄂A11345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'60km/h'
-                    },
-                    {
-                        date:'晚班',
-                        car:'鄂A96345',
-                        line:'1号线路',
-                        type:'正常',
-                        km:'20km/h'
-                    },
-                    {
-                        date:'早班',
-                        car:'鄂A12695',
-                        line:'3号线路',
-                        type:'正常',
-                        km:'40km/h'
-                    },
-                    {
-                        date:'晚班',
-                        car:'鄂A12665',
-                        line:'3号线路',
-                        type:'正常',
-                        km:'70km/h'
-                    }
-                ]
+					}
+				],
+				tableData: []
 			}
 		},
 		created() {
@@ -230,38 +155,44 @@
 			}, {
 				title: '车辆管理',
 			}, {
-				title: '班车管理',
+				title: '校巴管理',
 			}, {
-				title: '班车排班',
-			}])
+				title: '校巴排班',
+			}]),
+			this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
+			this.tabHeight = this.getWindowHeight() - 220
+			this.getmess()
+		},
+		watch:{
+			todaytime:function(n,o){
+				this.giveTime = this.getdateParaD(n)
+				this.getmess()
+			}
 		},
 		mounted(){
-			this.todaytime = this.getdateStrD()
-			this.getalert()
 		},
 		methods: {
-			okdrag(){
-//				alert('132')
-				this.dateMess=!this.dateMess
+			getmess(){
+				var v = this
+				console.log('排班数据2')
+				//线路数据
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.giveTime}).then((res) =>{
+					console.log('排班数据2',res)
+					v.tableData = res.result
+				}).then((res) =>{
+					v.SpinShow = false;
+				}).catch((err) =>{
+					console.log('bug')
+				})
 			},
-			getalert(){
-        		var windowHeight = window.innerHeight
-        		this.tabHeight = windowHeight - 280
-        		log('浏览器高',this.tabHeight)
-        	},
         	changeClick(){
-        		this.dateMess = true
-        		this.modalName = drag
-//				this.modalName = drlist
+        		this.compName='addmess'
         	},
-			dayClick(event) {
-				this.todaytime = this.getdateParaD(event)
-//				log('天事件', this.getdateParaD(event))
-//				log('天事件', event.toLocaleString())
-//				this.dateMess = true
-			},
-			eventClick(event) {
-				log('备注事件', event)
+			//分页点击事件按
+			pageChange(event) {
+				var v = this
+				v.findMess.pageNum = event
+				v.getmess()
 			}
 		}
 	}

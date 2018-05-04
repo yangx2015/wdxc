@@ -1,4 +1,4 @@
-<!--班车站点维护-->
+<!--校巴站点维护-->
 <style lang="less">
     @import '../../../../../styles/common.less';
 </style>
@@ -6,27 +6,28 @@
 	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-    			<span class="tabPageTit">
+				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
-					<Row class="margin-top-10">
-						<Col span="4">
-							<span class="titmess">班车站点维护</span>
-						</Col>
-						<Col span="14">
-							<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-						</Col>
-						<Col span="6" class="butevent">
-							<Button type="primary" @click="findlist()">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>校巴站点维护</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
+							<Input v-model="findMess.mcLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="AddSpot()">
+							<Button type="primary" @click="AddDataList()">
 								<Icon type="plus-round"></Icon>
 							</Button>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</div>
 			</Row>
 			<Row>
@@ -42,25 +43,26 @@
 					</Spin>
 				</div>
 			</Row>
-			<Row class="margin-top-10 pageSty">
+			<Row class="margin-top-10" style="text-align: right;">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=findMess.pageNum
+						:page-size=findMess.pageSize
 						show-total
 						show-elevator
 						@on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component :is="compName"></component>
+		<component :is="componentName"></component>
     </div>
 </template>
 <script>
 	import mixins from '@/mixins'
-	import compModal from './comp/modal.vue'
+    import configApi from '@/axios/config.js'
+	import formModal from './comp/formModal.vue'
     export default {
         components: {
-			compModal
+			formModal
         },
         mixins:[mixins],
         data () {
@@ -68,23 +70,10 @@
             	SpinShow:true,
 				loading:this.$store.state.app.loading,
 				tabHeight: 220,
-            	compName:'',
-            	//收索
-                datetime:[],
-                findMess:{
-                	gte_StartTime:'',
-            		lte_StartTime:'',
-                	like_CarNumber:'',
-                	like_ScName:'',
-                	pageNum:1,
-            		pageSize:5
-                },
+            	componentName:'',
             	//弹层
             	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:5
-            	},
+				choosedRow:null,
                 columns10: [
                     {
                     	  title:'序号',
@@ -95,28 +84,31 @@
                     {
                         title: '站点名称',
                         align:'center',
-                        key: 'siteName'
+                        key: 'mc'
                     },
                     {
                         title: '状态',
                         align:'center',
-                        key: 'type'
+                        key: 'zt',
+                        render: (h, params) => {
+                        	return h('div',params.row.zt=='00' ? "正常":"停用");
+                        }
                     },
-                    {
-                        title: '创建人',
-                        align:'center',
-                        key: 'Founder'
-                    },
+                    // {
+                    //     title: '创建人',
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
                     {
                         title: '创建时间',
-                        width:'100',
+                        width:'180',
                         align:'center',
-                        key: 'time'
+                        key: 'cjsj'
                     },
                     {
                         title: '备注',
                         align:'center',
-                        key: 'mess'
+                        key: 'bz'
                     },
                     {
                       	title:'操作',
@@ -126,32 +118,31 @@
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        type: 'primary',
-										icon: 'navicon-round',
+										type: 'success',
+										icon: 'edit',
 										shape: 'circle',
 										size: 'small'
-                                    },
+									},
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            //this.show(params.index)
-                    											  alert(params.row.UnitName)
+                                            this.choosedRow = params.row;
+                                            this.componentName = 'formModal';
                                         }
                                     }
                                 }),
                                 h('Button', {
                                     props: {
-                                        type: 'error',
+										type: 'error',
 										icon: 'close',
 										shape: 'circle',
 										size: 'small'
-                                    },
+									},
                                     on: {
                                         click: () => {
-                                          //this.remove(params.index)
-                        										alert('删除')
+                                          this.listDele(params.row)
                                         }
                                     }
                                 })
@@ -167,7 +158,14 @@
                         time:'2017-09-08 10:11:12',
                         mess:'备注信息'
                     }
-                ]
+                ],
+                cjsjInRange:[],
+				findMess: {
+					cjsjInRange:'',
+                    mcLike: '',
+					pageNum: 1,
+					pageSize: 5
+				}
             }
         },
         created(){
@@ -176,32 +174,58 @@
             },{
                 title: '车辆管理',
             },{
-                title: '班车管理',
+                title: '校巴管理',
             },{
                 title: '站点维护',
             }])
         	this.tabHeight = this.getWindowHeight() - 290
 			setTimeout(() => {
                 this.SpinShow = false;
-            }, 1000);
+            }, 6000);
         },
+		mounted(){
+          this.getmess()
+		},
         methods:{
-        	findlist(){
-        		alert('查询')
-        	},
-        	AddSpot(){
-        		this.compName = 'compModal'
-        	},
-        	pageChange(event){
-        		var v = this
-        	},
+        	getmess(){
+                if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
+                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                }else{
+                    this.findMess.cjsjInRange = '';
+                }
+                var v = this
+                this.$http.get(configApi.ZD.QUERY,{params:v.findMess}).then((res) =>{
+                    log('超速数据',res)
+                    v.data9 = res.page.list
+                    v.pageTotal = res.page.total
+                    v.SpinShow = false;
+                })
+			},
         	findMessList(){
-        		var v = this
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
+        	    this.getmess();
         	},
+        	AddDataList(){
+                this.choosedRow = null;
+        		this.componentName = 'formModal'
+        	},
+        	//删除数据
+            listDele(r){
+            	this.util.del(this,configApi.ZD.DELE,[r.id],()=>{
+                    this.getmess();
+				});
+//              this.$http.post(configApi.ZD.DELE,{'ids':[r.id]}).then((res) =>{
+//                  if(res.code===200){
+//                      this.$Message.success('操作成功');
+//                  }else{
+//                      this.$Message.error('操作成功');
+//                  }
+//                  this.getmess()
+//              })
+            },
+        	pageChange(event){
+                this.findMess.pageNum = event;
+                this.getmess();
+        	}
         }
     }
 </script>
