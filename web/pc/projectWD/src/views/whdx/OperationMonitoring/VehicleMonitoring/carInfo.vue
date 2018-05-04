@@ -332,7 +332,8 @@
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
-                        if (type === '11'){
+                        if (type === '12'){
+                            this.bj = res.result;
                             this.checkImage();
                         }
                     }else{
@@ -351,7 +352,7 @@
                     }else{
                         clearTimeout();
                         setTimeout(()=>{
-                            this.check()
+                            this.checkImage()
                         },5000)
                     }
                 })
