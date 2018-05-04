@@ -42,5 +42,8 @@ public interface DdService extends BaseService<ClDd,String>{
 
     ApiResponse<String> updateFinanceConfirm(String[] ids);
 
+    //订单统计 各种状态订单统计
 	ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd);
+// 司机出车统计
+	ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd);
 }

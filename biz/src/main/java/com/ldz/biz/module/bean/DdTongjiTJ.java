@@ -12,4 +12,6 @@ public class DdTongjiTJ {
 	private String  kssj;
 	//结束时间
 	private String jssj;
+	//司机id
+	private String sj;
 }

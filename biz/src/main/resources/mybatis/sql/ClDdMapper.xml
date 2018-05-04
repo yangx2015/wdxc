@@ -10,6 +10,9 @@ select * from CL_DD t where t.CJSJ between
 		<if test="jgdm != null">
 			and t.JGDM=#{jgdm}
 		</if>
+		<if test="sj != null">
+			and t.sj=#{sj}
+		</if>
 </select>
 
 </mapper>

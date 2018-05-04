@@ -322,4 +322,10 @@ public class DdCtrl{
     	
     	return service.ddtongji(dd);
     }
+    
+    @PostMapping("/cctj")
+    public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd){
+    	
+    	return service.chucheTj(dd);
+    }
 }

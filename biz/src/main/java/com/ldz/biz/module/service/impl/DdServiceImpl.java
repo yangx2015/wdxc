@@ -812,4 +812,30 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		apiResponse.setResult(ddtongji);
 		return apiResponse;
 	}
+
+
+	@Override
+	public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd) {
+    	ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
+		
+		Ddtongji ddtongji = new Ddtongji();
+		
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		
+		int yshCount=0;
+		
+		for (ClDd clDd : ddTongji) {
+			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+			
+			 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+				yshCount++;
+			}
+			 else {
+				continue;
+			}
+		}
+		ddtongji.setYshCount(yshCount);
+		apiResponse.setResult(ddtongji);
+		return apiResponse;
+	}
 }
