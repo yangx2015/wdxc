@@ -1,17 +1,22 @@
 package com.ldz.biz.module.service.impl;
 
 import com.ldz.biz.module.mapper.ClDdrzMapper;
+import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClDdrz;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.Date;
 import java.util.List;
 
+@Slf4j
 @Service
 public class DdrzServiceImpl extends BaseServiceImpl<ClDdrz,String> implements DdrzService{
     @Autowired
@@ -45,5 +50,23 @@ public class DdrzServiceImpl extends BaseServiceImpl<ClDdrz,String> implements D
         condition.setOrderByClause(ClDdrz.InnerColumn.cjsj.asc());
         List<ClDdrz> oracleLog = findByCondition(condition);
         return oracleLog;
+    }
+
+    @Override
+    public void log(ClDd order) {
+        try{
+            ClDdrz clDdrz=new ClDdrz();
+            clDdrz.setId(genId());//主键ID
+            clDdrz.setDdId(order.getId());//订单ID
+            clDdrz.setCjsj(new Date());//创建时间
+            clDdrz.setCjr(getOperateUser());//创建人
+            clDdrz.setJgdm(order.getJgdm());//机构代码
+            clDdrz.setJgmc(order.getJgmc());//机构名称
+            clDdrz.setDdzt(order.getDdzt());//订单状态
+            clDdrz.setBz(order.getSy());
+            entityMapper.insertSelective(clDdrz);
+        }catch (Exception e){
+            log.error("订单日志记录异常");
+        }
     }
 }

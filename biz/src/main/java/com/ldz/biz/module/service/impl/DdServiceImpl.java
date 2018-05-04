@@ -82,42 +82,22 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     @Override
     public ApiResponse<String> saveEntity(ClDd entity, SysYh user) {
         String userId=user.getYhid();
-
         RuntimeCheck.ifFalse(entity.getJgdm().indexOf(user.getJgdm())==0,"您不能为非本机构分派车辆");
-
         SysJg org = jgService.findByOrgCode(entity.getJgdm());
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
         String orderId=genId();
         entity.setId(orderId);
-
         entity.setCjr(userId);
-
         entity.setJgdm(org.getJgdm());
         entity.setJgmc(org.getJgmc());
         entity.setCjsj(new Date());
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
         int i=entityMapper.insertSelective(entity);
-        if(i==0){
-            return ApiResponse.fail("订单入库失败");
-        }
-
-        ClDdrz clDdrz=new ClDdrz();
-        clDdrz.setId(genId());//主键ID
-        clDdrz.setDdId(orderId);//订单ID
-        clDdrz.setCjsj(new Date());//创建时间
-        clDdrz.setCjr(userId);//创建人
-        clDdrz.setJgdm(entity.getJgdm());//机构代码
-        clDdrz.setJgmc(entity.getJgmc());//机构名称
-        clDdrz.setDdzt(entity.getDdzt());//订单状态
-        i=ddrzMapper.insertSelective(clDdrz);
-        if(i==0){
-            RuntimeCheck.ifFalse(false,"创建订单历史表失败");
-            return ApiResponse.error();
-        }else{
-            return ApiResponse.success();
-        }
+        RuntimeCheck.ifTrue(i==0,"订单入库失败");
+        ddrzService.log(entity);
+        return ApiResponse.success();
     }
 
     /**
@@ -150,27 +130,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ent.setDdzt(entity.getDdzt());//订单状态
         ent.setShsj(new Date());//审核时间
         int i=update(entity);//  根据主键更新属性不为null的值
-        if(i==0){
-            RuntimeCheck.ifFalse(false,"订单审核操作失败");
-//            return ApiResponse.fail("订单入库失败");
-        }
-
-        ClDdrz clDdrz=new ClDdrz();
-        clDdrz.setId(genId());//主键ID
-        clDdrz.setDdId(entity.getId());//订单ID
-        clDdrz.setCjsj(new Date());//创建时间
-        clDdrz.setCjr(userId);//创建人
-        clDdrz.setJgdm(clDd.getJgdm());//机构代码
-        clDdrz.setJgmc(clDd.getJgmc());//机构名称
-        clDdrz.setDdzt(ent.getDdzt());//订单状态
-        clDdrz.setBz(entity.getSy());
-        i=ddrzMapper.insertSelective(clDdrz);
-        if(i==0){
-            RuntimeCheck.ifFalse(false,"创建订单历史表失败");
-            return ApiResponse.error();
-        }else{
-            return ApiResponse.success();
-        }
+        RuntimeCheck.ifTrue(i==0,"订单审核操作失败");
+        ddrzService.log(entity);
+        return ApiResponse.success();
     }
 
 
@@ -496,9 +458,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
-        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行编辑操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行编辑操作");
 
-        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行编辑操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行编辑操作");
 
         RuntimeCheck.ifNull(entity.getZj(),"订单总价不能为空");
 
@@ -536,7 +498,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         String ddzt=clDd.getDdzt();
         RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
 
-        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
 
         ClDd newClDd=new ClDd();
         newClDd.setId(clDd.getId());
@@ -776,11 +738,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 	@Override
 	public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd) {
-		
+
 		ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
-		
+
 		Ddtongji ddtongji = new Ddtongji();
-		
+
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
 		//订单总数
 		ddtongji.setDdzsCount(ddTongji.size());
@@ -789,7 +751,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		int yqxCount=0;
 		int dsjCount=0;
 		int ddzCount=0;
-		
+
 		for (ClDd clDd : ddTongji) {
 			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 			if (StringUtils.equals(clDd.getDdzt(), "10")) {
@@ -824,16 +786,16 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 	@Override
 	public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd) {
     	ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
-		
+
 		Ddtongji ddtongji = new Ddtongji();
-		
+
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-		
+
 		int yshCount=0;
-		
+
 		for (ClDd clDd : ddTongji) {
 			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-			
+
 			 if (StringUtils.equals(clDd.getDdzt(), "11")) {
 				yshCount++;
 			}
@@ -845,4 +807,28 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		apiResponse.setResult(ddtongji);
 		return apiResponse;
 	}
+
+    @Override
+    public ApiResponse<String> driverConfirm(String id) {
+        RuntimeCheck.ifBlank(id,"请选择订单");
+        ClDd order = findById(id);
+        RuntimeCheck.ifNull(order,"订单不存在");
+        SysYh user = getCurrentUser();
+        String userId = user.getYhid();
+
+//        2、验证当前状态必须是 11-订单确认状态
+        String ddzt = order.getDdzt();
+        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有被派单，不能进行司机确认操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(order.getSj(),userId),"订单不属于本人，不能进行司机确认操作");
+
+        ClDd newClDd=new ClDd();
+        newClDd.setId(order.getId());
+        newClDd.setDdzt("20");//订单状态
+        int i=update (newClDd);
+        RuntimeCheck.ifTrue(i==0,"操作数据库失败");
+
+        order.setDdzt("20");
+        ddrzService.log(order);
+        return ApiResponse.success();
+    }
 }

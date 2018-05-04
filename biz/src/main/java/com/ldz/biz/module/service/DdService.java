@@ -46,4 +46,6 @@ public interface DdService extends BaseService<ClDd,String>{
 	ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd);
 // 司机出车统计
 	ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd);
+
+    ApiResponse<String> driverConfirm(String id);
 }

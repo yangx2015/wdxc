@@ -6,6 +6,7 @@ import session from '../../libs/session';
 
 const app = {
     state: {
+        userInfo:null,
         dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
     	socketAllCar:[],//监控数据
@@ -46,6 +47,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+        setUserInfo(state,data){
+            state.userInfo = data;
+        },
         addSendhbsp(state,data){
             state.sendhbsp = data;
         },

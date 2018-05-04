@@ -30,6 +30,7 @@ module.exports = {
 		// YFP:'/api/dd/yfp',//已分派
 		QXPD:'/api/dd/qxpd',//取消派单
 		CONFIRM:'/api/dd/ddqr',//订单确认
+		DRIVER_CONFIRM:'/api/dd/driverConfirm',//队长确认
         orderDetails:'/api/dd/orderDetails',//订单详情
 		FP:'/api/dd/pd',//订单分派
 	},
