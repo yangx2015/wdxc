@@ -58,9 +58,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 
     @Override
-    public ApiResponse<String> saveEntity(ClDd entity) {
-        SysYh user=getCurrentUser();
+    public ApiResponse<String> saveEntity(ClDd entity, SysYh user) {
         String userId=user.getYhid();
+
+        RuntimeCheck.ifFalse(entity.getJgdm().indexOf(user.getJgdm())==0,"您不能为非本机构分派车辆");
 
         SysJg org = jgService.findByOrgCode(entity.getJgdm());
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
