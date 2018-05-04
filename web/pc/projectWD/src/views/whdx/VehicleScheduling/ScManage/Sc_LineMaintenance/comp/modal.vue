@@ -159,7 +159,7 @@
                 }
 			},
 		    getAllStation(){
-                this.$http.get(configApi.ZD.GET_ALL).then((res) =>{
+                this.$http.post(configApi.ZD.getByCondition,{lx:30}).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
                         log('站点列表',res)

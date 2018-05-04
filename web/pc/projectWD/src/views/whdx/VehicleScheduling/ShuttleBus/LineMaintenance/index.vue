@@ -1,4 +1,4 @@
-<!--校巴线路维护-->
+<!--班车线路维护-->
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
@@ -12,7 +12,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>校巴线路维护</span>
+							<span>班车线路维护</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
@@ -127,24 +127,6 @@
                             }
                         }
 					},
-					// {
-					// 	title: '运行方式',
-					// 	align: 'center',
-					// 	key: 'yxfx',
-					// 	render:(h,p)=>{
-					// 	    switch(p.row.yxfs){
-					// 			case '10':
-					// 			    return h('div','上行');
-					// 			case '20':
-					// 			    return h('div','下行');
-					// 		}
-					// 	}
-					// },
-					// {
-					// 	title: '创建人',
-					// 	align: 'center',
-					// 	key: 'cjr'
-					// },
 					{
 						title: '创建时间',
 						width: '180',
@@ -214,7 +196,8 @@
 					cjsjInRange:'',
                     xlmcLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize: 5,
+					lx:'20'
 				}
 			}
 		},

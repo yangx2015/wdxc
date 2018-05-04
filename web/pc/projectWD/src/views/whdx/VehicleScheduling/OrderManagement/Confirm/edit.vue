@@ -11,7 +11,7 @@
 				</Spin>
 			</div>
 			<div style="overflow: auto;height: 300px;">
-				<Form :model="form" :label-width="50">
+				<Form :model="form" :label-width="50" :gutter="16">
 					<Row>
 						<Col span="8">
 							<form label="">

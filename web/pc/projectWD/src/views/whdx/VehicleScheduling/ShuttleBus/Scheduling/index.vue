@@ -1,6 +1,7 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
+<!--班车排班-->
 <template>
 	<div class="boxbackborder">
 		<Card>
@@ -11,7 +12,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>校巴排班</span>
+							<span>班车排班</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="todaytime" 
@@ -161,7 +162,6 @@
 			}]),
 			this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
 			this.tabHeight = this.getWindowHeight() - 220
-			this.getmess()
 		},
 		watch:{
 			todaytime:function(n,o){
@@ -176,7 +176,7 @@
 				var v = this
 				console.log('排班数据2')
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.giveTime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"20","date2":v.giveTime}).then((res) =>{
 					console.log('排班数据2',res)
 					v.tableData = res.result
 				}).then((res) =>{

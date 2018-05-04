@@ -73,5 +73,12 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	public ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics(String zxzt) {
 		return clservice.getVehicleTypeStatistics(zxzt);
 	}
+	
+	@GetMapping("/nianshen")
+	public ApiResponse<List<ClCl>> nianshen(){
+		
+		return clservice.nianshen();
+		
+	}
 
 }

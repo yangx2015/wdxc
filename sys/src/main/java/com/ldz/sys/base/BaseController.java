@@ -66,7 +66,7 @@ public abstract class BaseController<T, PK extends Serializable> {
      * @return
      */
     @RequestMapping(value="/getCondition", method={RequestMethod.POST})
-	public ApiResponse<List<T>> getCondition(@RequestBody T entity){
+	public ApiResponse<List<T>> getCondition(T entity){
 		return ApiResponse.success(getBaseService().findByEntity(entity));
 	}
     

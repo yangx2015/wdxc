@@ -27,7 +27,7 @@ module.exports = {
 		//订单分派
 		SJLB:'/api/dd/pdsjlb',//司机列表
 		DFP:'/api/dd/dfp',//待分派订单
-		YFP:'/api/dd/yfp',//已分派
+		// YFP:'/api/dd/yfp',//已分派
 		QXPD:'/api/dd/qxpd',//取消派单
 		CONFIRM:'/api/dd/ddqr',//订单确认
         orderDetails:'/api/dd/orderDetails',//订单详情
@@ -162,6 +162,7 @@ module.exports = {
         CHANGE: '/api/clzd/update',
 		DELE:   '/api/clzd/removeIds',
 		GET_ALL:'/api/clzd/getAll',
+        getByCondition:'/api/clzd/getCondition',
 		GET_BY_ROUTE_ID:'/api/clzd/getByXlId'
 	},
 	PB:{//校巴排版
