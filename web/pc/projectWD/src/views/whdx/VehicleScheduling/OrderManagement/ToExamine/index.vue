@@ -6,30 +6,27 @@
 <template>
     <div class="box">
 		<Card>
-			<div class="tit">
-				<Row class="margin-top-10">
-					<Col span="6">
-						<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
-					</Col>
-					<Col span="6">
-						<Input v-model="findMess.like_CarNumber" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-					</Col>
-					<Col span="6">
-						<Input v-model="findMess.like_ScName" placeholder="..." style="width: 200px" @on-change="findMessList"></Input>
-					</Col>
-					<Col span="6" style="text-align: right;">
-						<Button type="primary" @click="findMessList()">查询</Button>
-					</Col>
-				</Row>
-				<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-					<div style="height: 45px;line-height: 45px;">
-						<span style="margin-left: 60px;font-size: 24px;">订单审核</span>
+				<div style="height: 45px;line-height: 45px;">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>订单审核</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="findMessList()">
+								<Icon type="search"></Icon>
+								<!--查询-->
+							</Button>
+						</div>
 					</div>
-				</Row>
-			</div>
+				</div>
+			</Row>
 			<div class="body">
 				<Row>
 					<Table
@@ -154,54 +151,6 @@
                     }
                 ],
                 tableData: [
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                },
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                },
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                },
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                },
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                },
-	                {
-	                	id:'201801020903000001',
-	                	jgmc:'计算机学院',
-	                	ck:'毛毛',
-	                	cklxdh:'13174174110',
-	                	hcdz:'武汉大学正门',
-	                	mdd:'武汉火车站'
-	                }
                 ],
                 //form表单
                 formTop: {
