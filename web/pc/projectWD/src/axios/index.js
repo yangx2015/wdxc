@@ -11,7 +11,7 @@ let httpInstance = axios.create({
 baseURL: 'http://47.98.39.45:8080',
 // 	 baseURL: 'http://192.168.31.181:80',//陈
 //    	 baseURL: 'http://192.168.31.228:8088',//羊
-// 	 baseURL: 'http://192.168.31.228:80',//羊
+// 	 baseURL: 'http://192.168.31.223:80',//羊
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true

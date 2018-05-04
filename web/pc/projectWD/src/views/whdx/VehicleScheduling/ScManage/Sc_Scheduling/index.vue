@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div class="boxbackborder">
-		<Card>
+		<!--<Card>-->
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -37,7 +37,7 @@
 			<!--<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>-->
-		</Card>
+		<!--</Card>-->
 		<component
 			:is="compName"
 			:mess="mess"
