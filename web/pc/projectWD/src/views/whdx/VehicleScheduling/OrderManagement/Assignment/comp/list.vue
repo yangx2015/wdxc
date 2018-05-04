@@ -101,6 +101,7 @@
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.$parent.getDrvList()
+                        v.colse()
                     }else{
                         v.$Message.error(res.message);
                     }

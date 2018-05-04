@@ -81,11 +81,13 @@
 								</Row>
 							</div>
 							<div style="position: absolute;right: 5px;top:10px;">
-								<Button type="warning"
-										size="small"
-										shape="circle"
-										icon="reply"
-										@click="dele(p.id)"></Button>
+								<Tooltip content="撤回" placement="left">
+									<Button type="warning"
+											size="small"
+											shape="circle"
+											icon="reply"
+											@click="dele(p.id)"></Button>
+								</Tooltip>
 							</div>
 						</div>
 
