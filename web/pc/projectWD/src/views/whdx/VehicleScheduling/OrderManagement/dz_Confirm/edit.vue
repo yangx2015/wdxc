@@ -100,6 +100,18 @@
 							</FormItem>
 						</Col>
 					</Row>
+					<Row>
+					<Col span="8">
+						<FormItem label="结束时间">
+							<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
+						</FormItem>
+					</Col>
+					<Col span="16">
+						<FormItem label="总费用">
+							<Input v-model="form.zj" type="text" :rows="6" placeholder="请填写总费用"></Input>
+						</FormItem>
+					</Col>
+				</Row>
 				</Form>
 			</div>
 			<div slot='footer'>
