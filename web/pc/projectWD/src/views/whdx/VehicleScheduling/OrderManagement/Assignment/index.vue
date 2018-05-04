@@ -58,8 +58,8 @@
 									<Col span="10">
 										<Icon type="person"
 											color="#7b7b7b"></Icon>
-										信息工程学院—陈小伟
-										<!--{{p.jgmc}} {{p.ck}}-->
+										<!--信息工程学院—陈小伟-->
+										{{p.jgmc}}-{{p.ck}}
 									</Col>
 									<Col span="10">
 										<Icon type="ios-clock"

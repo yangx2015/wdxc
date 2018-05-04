@@ -162,6 +162,7 @@ module.exports = {
         CHANGE: '/api/clzd/update',
 		DELE:   '/api/clzd/removeIds',
 		GET_ALL:'/api/clzd/getAll',
+        getByCondition:'/api/clzd/getCondition',
 		GET_BY_ROUTE_ID:'/api/clzd/getByXlId'
 	},
 	PB:{//校巴排版

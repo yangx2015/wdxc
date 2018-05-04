@@ -14,4 +14,6 @@ public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> updateEntity(ClCl entity);
 
     ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics(String zxzt);
+    
+	ApiResponse<List<ClCl>> nianshen();
 }
