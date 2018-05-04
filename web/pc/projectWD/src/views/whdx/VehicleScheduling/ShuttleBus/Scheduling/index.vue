@@ -176,7 +176,7 @@
 				var v = this
 				console.log('排班数据2')
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"20","date2":v.giveTime}).then((res) =>{
+				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"20","date2":v.giveTime,'lulx':'20'}).then((res) =>{
 					console.log('排班数据2',res)
 					v.tableData = res.result
 				}).then((res) =>{
