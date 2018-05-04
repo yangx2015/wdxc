@@ -10,89 +10,62 @@
 					<div style="font-size: 30px;">数据加载中请稍后</div>
 				</Spin>
 			</div>
-			<div style="overflow: auto;height: 300px;">
-				<Form :model="form" :label-width="50" :gutter="16">
-					<Row>
+			<div style="overflow: auto;height: 400px;">
+				<Form :model="form" :label-width="80">
+					<Row :gutter="16">
 						<Col span="8">
-							<form label="">
-								<h3>
-									用车单位
-								</h3>
+							<FormItem label="用车单位">
 								<Select filterable clearable  v-model="form.jgdm" size="large" placeholder="请选择用车单位" filterable>
 									<Option v-for="item in jgdmList" :value="item.jgdm">{{item.jgmc}}</Option>
 								</Select>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
-							<form label="">
-								<h3>
-									用车人
-								</h3>
+							<FormItem label="用车人">
 								<Input v-model="form.ck" size="large" placeholder="请填写用车人姓名"></Input>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
-							<form label="">
-								<h3>
-									客户电话
-								</h3>
+							<FormItem label="客户电话">
 								<Input v-model="form.cklxdh" size="large" placeholder="请填写用车人电话"></Input>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
-							<form label="">
-								<h3>
-									出车时间
-								</h3>
+							<FormItem label="出车时间">
 								<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
-							<form label="">
-								<h3>
-									候车地点
-								</h3>
+							<FormItem label="候车地点">
 								<Input v-model="form.hcdz" size="large" placeholder="请填写候车地点..."></Input>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
-							<form label="">
-								<h3>
-									目的地
-								</h3>
+							<FormItem label="目的地">
 								<Input v-model="form.mdd" size="large" placeholder="请填写目的地点"></Input>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="8">
 							<Row>
 								<Col span="12">
-									<form label="">
-										<h3>
-											费用来源
-										</h3>
+									<FormItem label="费用来源">
 										<Select filterable clearable  v-model="form.fromMoney" size="large" placeholder="请选择费用来源" filterable>
 											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 										</Select>
-									</form>
+									</FormItem>
 								</Col>
 								<Col span="12">
-									<form label="">
-										<h3>
-											单据类型
-										</h3>
+									<FormItem label="单据类型">
 										<Select v-model="form.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>
 											<Option value="00">单程</Option>
 											<Option value="10">往返</Option>
 										</Select>
-									</form>
+									</FormItem>
 								</Col>
 							</Row>
 							<Row v-if="form.fromMoney=='课题费用'">
 								<Col span="12">
-									<form label="">
-										<h3>
-											课题
-										</h3>
+									<FormItem label="课题">
 										<Input
 												v-if="form.task=='添加课题'"
 												v-model="form.newtask"
@@ -103,62 +76,40 @@
 												v-model="form.task" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in ctasklList" :value="item.value"></Option>
 										</Select>
-									</form>
+									</FormItem>
 								</Col>
 								<Col span="12">
-									<form label="">
-										<h3>
-											车型
-										</h3>
+									<FormItem label="车型">
 										<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in zwsList" :value="item.value"></Option>
 										</Select>
-									</form>
+									</FormItem>
 								</Col>
 							</Row>
 							<Row v-else	>
-								<form label="">
-									<h3>
-										车型
-									</h3>
+								<FormItem label="车型">
 									<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
 										<Option v-for="item in zwsList" :value="item.value"></Option>
 									</Select>
-								</form>
+								</FormItem>
 							</Row>
 						</Col>
 						<Col span="16">
-							<form label="">
-								<h3>
-									事由
-								</h3>
+							<FormItem label="事由">
 								<Input v-model="form.sy" type="textarea" :rows="6" placeholder="请填写用车事由"></Input>
-							</form>
+							</FormItem>
 						</Col>
 					</Row>
-				</Form>
-			</div>
-			<div style="overflow: auto;height: 300px;">
-				<Form :model="form" :label-width="50">
 					<Row>
 						<Col span="8">
-							<form label="">
-								<h3>
-									结束时间
-								</h3>
+							<FormItem label="结束时间">
 								<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
-							</form>
+							</FormItem>
 						</Col>
 						<Col span="16">
-							<form label="">
-								<h3>
-									总费用
-								</h3>
+							<FormItem label="总费用">
 								<Input v-model="form.zj" type="text" :rows="6" placeholder="请填写总费用"></Input>
-							</form>
-						</Col>
-						<Col span="24" style="padding: 8px 0 8px 50px;">
-							<Button type="primary" style="width: 100%;" @click="save">提交</Button>
+							</FormItem>
 						</Col>
 					</Row>
 				</Form>
@@ -172,30 +123,30 @@
 </template>
 
 <script>
-	import treelist from '@/data/list.js'
+    import treelist from '@/data/list.js'
     import configApi from '@/axios/config.js'
-	export default {
-		name: '',
-		data() {
-			return {
-				SpinShow:false,
-			    operate:'新建',
-				showModal: true,
+    export default {
+        name: '',
+        data() {
+            return {
+                SpinShow:false,
+                operate:'新建',
+                showModal: true,
                 mesF:false,
-				form: {
+                form: {
                     zdbh:'',
-					mc: '',
-					xh: '',
+                    mc: '',
+                    xh: '',
                     cs: '',
                     dz:'',
-				},
+                },
                 jgdmList:[],
                 ruleInline:{
 
-				},
+                },
                 addmess:{
 
-				},
+                },
                 fromMoneyList:[
                     {
                         value:'行政费用'
@@ -230,27 +181,27 @@
                     }
                 ]
 
-			}
-		},
-		created(){
-			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
-				this.operate = '编辑'
-			}
-		},
-        mounted(){
-		    this.getOrgList();
+            }
         },
-		methods: {
+        created(){
+            if (this.$parent.choosedRow){
+                this.form = this.$parent.choosedRow;
+                this.operate = '编辑'
+            }
+        },
+        mounted(){
+            this.getOrgList();
+        },
+        methods: {
             getOrgList(){
                 this.$http.get(configApi.FRAMEWORK.getSubOrgList).then((res) =>{
                     this.jgdmList = res.result
                 })
             },
-		    save(){
-		    	var v = this
-            	v.SpinShow = true
-		        let url = configApi.ORDER.CONFIRM;
+            save(){
+                var v = this
+                v.SpinShow = true
+                let url = configApi.ORDER.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     v.SpinShow = false
                     if(res.code===200){
@@ -260,20 +211,20 @@
                         v.$parent.componentName = ''
                     }else{
                         this.$Message.error(res.message);
-					}
+                    }
                 }).catch((error) =>{
-					v.$Message.error('出错了！！！');
-					v.SpinShow = false
-				})
-			},
-			close(){
-		        let v = this;
+                    v.$Message.error('出错了！！！');
+                    v.SpinShow = false
+                })
+            },
+            close(){
+                let v = this;
                 v.$parent.componentName = ''
                 v.$parent.findMessList()
-			}
+            }
 
-		}
-	}
+        }
+    }
 </script>
 
 <style>

@@ -270,7 +270,7 @@ export let appRouter = [
 						path: 'ShuttleBus/Scheduling',
 						icon: 'android-clipboard',
 						name: 'Scheduling',
-						title: '车辆排班',
+						title: '班车排班',
 						component: () => import('@/views/whdx/VehicleScheduling/ShuttleBus/Scheduling')
 					// }
 				// ]
