@@ -28,6 +28,7 @@ module.exports = {
 		DFP:'/api/dd/dfp',//待分派订单
 		YFP:'/api/dd/yfp',//已分派
 		QXPD:'/api/dd/qxpd',//取消派单
+		FP:'/api/dd/pd',//订单分派
 	},
 	ROLE:{
 		QUERY:'/api/js/pager',//角色管理

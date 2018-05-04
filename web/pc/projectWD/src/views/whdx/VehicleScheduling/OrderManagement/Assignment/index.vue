@@ -65,14 +65,24 @@
             },{
                 title: '订单分配',
             }]);
-			this.getDrvList()
+			// this.getDrvList()
 		},
 		mounted(){
 		},
 		methods:{
-			getDrvList(){
+			getDrvList(){//司机列表
                 this.$http.post(configApi.ORDER.SJLB,{}).then((res) =>{
 					console.log(res)
+                })
+			},
+			getYfp(sjid){//已分派订单列表
+                this.$http.post(configApi.ORDER.YFP,{'sjSx':10,'sj':sjid,'cph':''}).then((res) =>{
+                    console.log(res)
+                })
+			},
+			dele(id){//取消分派
+                this.$http.post(configApi.ORDER.QXPD,{'id':id}).then((res) =>{
+                    console.log(res)
                 })
 			}
 		}
