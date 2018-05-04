@@ -243,7 +243,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         List<ClJsy> list = clJsyMapper.selectByExample(resExample);
         if(list!=null){
             for(ClJsy obj:list){
-                parameters.setSjSx(obj.getSfzhm());//设置身份证号码
+                parameters.setSj(obj.getSfzhm());//设置身份证号码
                 ApiResponse<List<ClDd>> retObject=affirmOrderList(parameters);
                 if(retObject.isSuccess()){
                     List<ClDd> clDdList=retObject.getResult();
