@@ -75,9 +75,10 @@
             		lte_StartTime:'',
                 	like_CarNumber:'',
                 	like_ScName:'',
-					ddzt:'30',
+					ddzt:'13',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:5,
+					sj:''
                 },
 				choosedRow:null,
             	//弹层
@@ -126,7 +127,7 @@
                         key: 'DriverPhone'
                     },
                     {
-                        title: '车型',
+                        title: '座位数',
                         align:'center',
                         key: 'zws'
                     },
@@ -158,8 +159,7 @@
                                     },
                                     on: {
                                         click: () => {
-//                                          this.remove(params.index)
-											alert('确认')
+                                            this.confirm(params.row.id);
                                         }
                                     }
                                 }, '确认')
@@ -181,11 +181,30 @@
             },{
                 title: '订单确认',
             }])
+			// this.findMess.sj = this.$store.state.app.userInfo.yhid;
 			this.findMessList();
         },
         methods:{
         	changeTime(val){
         	},
+            confirm(id){
+                let v = this
+                v.SpinShow = true
+                let url = configApi.ORDER.DRIVER_CONFIRM;
+                this.$http.post(url,{id : id}).then((res) =>{
+                    this.SpinShow = false
+                    if(res.code===200){
+                        var v = this
+                        this.findMessList()
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                // }).catch((error) =>{
+                //     v.$Message.error('出错了！！！');
+                //     v.SpinShow = false
+                })
+            },
         	pageChange(event){
                 var v = this
                 v.page.pageNum = event

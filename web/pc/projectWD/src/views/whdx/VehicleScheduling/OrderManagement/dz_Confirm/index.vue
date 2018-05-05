@@ -74,7 +74,7 @@
                     lte_StartTime:'',
                     like_CarNumber:'',
                     like_ScName:'',
-                    ddzt:'10',
+                    ddzt:'20',
                     pageNum:1,
                     pageSize:5
                 },
@@ -125,7 +125,7 @@
                         key: 'DriverPhone'
                     },
                     {
-                        title: '车型',
+                        title: '座位数',
                         align:'center',
                         key: 'zws'
                     },
@@ -157,7 +157,6 @@
                                     },
                                     on: {
                                         click: () => {
-                                            console.log(params.row);
                                             this.confirm(params.row.id);
                                         }
                                     }
@@ -192,14 +191,14 @@
                 v.findMessList()
             },
 			confirm(id){
-                var v = this
+                let v = this
                 v.SpinShow = true
                 let url = configApi.ORDER.CONFIRM;
                 let param = {
                     id : id
 				}
                 this.$http.post(url,param).then((res) =>{
-                    v.SpinShow = false
+                    this.SpinShow = false
                     if(res.code===200){
                         var v = this
                         this.findMessList()
@@ -207,9 +206,9 @@
                     }else{
                         this.$Message.error(res.message);
                     }
-                }).catch((error) =>{
-                    v.$Message.error('出错了！！！');
-                    v.SpinShow = false
+                // }).catch((error) =>{
+                //     v.$Message.error('出错了！！！');
+                //     v.SpinShow = false
                 })
 			},
             findMessList(){

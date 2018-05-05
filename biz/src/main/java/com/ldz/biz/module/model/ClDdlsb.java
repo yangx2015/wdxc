@@ -18,6 +18,9 @@ public class ClDdlsb implements Serializable {
     @Column(name = "ID")
     private String id;
 
+    @Column(name = "DD_ID")
+    private String ddId;
+
     /**
      * 司机确认时间
      */
@@ -272,6 +275,14 @@ public class ClDdlsb implements Serializable {
      */
     @Column(name = "DDXGR")
     private String ddczr;
+
+    public String getDdId() {
+        return ddId;
+    }
+
+    public void setDdId(String ddId) {
+        this.ddId = ddId;
+    }
 
     private static final long serialVersionUID = 1L;
 
@@ -1029,6 +1040,7 @@ public class ClDdlsb implements Serializable {
 
     public enum InnerColumn {
         id("ID"),
+        ddId("DD_ID"),
         sjqrsj("SJQRSJ"),
         hcdz("HCDZ"),
         mdd("MDD"),

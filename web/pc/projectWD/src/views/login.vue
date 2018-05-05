@@ -17,13 +17,13 @@
 	    		/*position: absolute;*/
 	    		/*top: -50px;*/
 	    		text-align: center;
-	    		
+
 	    	}
 	    	.fromList{
 	    		padding-top: 20px;
 	    	}
 	    }
-    	
+
     }
 </style>
 
@@ -115,6 +115,7 @@ export default {
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
+                            this.$store.state.app.userInfo = res.result.userInfo;
                             v.initDict();
                             v.getMenuTree();
                             v.SpinShow = false
@@ -146,7 +147,7 @@ export default {
 //                  menuList.menuTree = res.result;
                     this.addToMenuList(res.result);
                     this.$router.push('home')
-                    
+
                 }
         	}).catch((error) =>{
         		log(error)

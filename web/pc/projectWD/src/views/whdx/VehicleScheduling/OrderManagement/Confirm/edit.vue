@@ -103,7 +103,7 @@
 					<Row>
 						<Col span="8">
 							<FormItem label="结束时间">
-								<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
+								<DatePicker v-model="form.sjqrsj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写结束时间" ></DatePicker>
 							</FormItem>
 						</Col>
 						<Col span="16">
@@ -199,11 +199,11 @@
                 })
             },
             save(){
-                var v = this
-                v.SpinShow = true
+                let v = this
+                this.SpinShow = true
                 let url = configApi.ORDER.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
-                    v.SpinShow = false
+                    this.SpinShow = false
                     if(res.code===200){
                         var v = this
                         v.$parent.findMessList()
@@ -212,9 +212,9 @@
                     }else{
                         this.$Message.error(res.message);
                     }
-                }).catch((error) =>{
-                    v.$Message.error('出错了！！！');
-                    v.SpinShow = false
+                // }).catch((error) =>{
+                //     v.$Message.error('出错了！！！');
+                //     v.SpinShow = false
                 })
             },
             close(){

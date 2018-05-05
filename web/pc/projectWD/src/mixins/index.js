@@ -30,6 +30,7 @@ export default{
 		getdatePara(val){//时间转换
 			var newDate = new Date();
 			newDate.setTime(val)
+            console.log(typeof newDate);
 			let Year = val.getFullYear();
 			let Month = val.getMonth()+1;
 			let Day = val.getDate();
@@ -51,7 +52,8 @@ export default{
 			}
 			var newDate = new Date();
 			newDate.setTime(val)
-			let Year = val.getFullYear()
+            console.log(typeof newDate);
+            let Year = val.getFullYear()
 			let Month = val.getMonth()+1
 			let Day = val.getDate()
 			if(Month<10){
@@ -66,6 +68,7 @@ export default{
 		getDJC(val){
 			var newDate = new Date();
 			newDate.setTime(val);
+            console.log(typeof newDate);
 			return this.getdatePara(newDate);
 		},
     	rowClassName (row, index) {

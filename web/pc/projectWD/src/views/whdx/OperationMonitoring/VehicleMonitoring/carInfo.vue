@@ -10,43 +10,6 @@
             </div>
             <div>
                 <Row :gutter="16">
-                    <!--<Col span="12">-->
-                        <!--<Card style="height: 300px">-->
-                            <!--<p slot="title"><Icon type="information-circled"></Icon> 车辆信息</p>-->
-                            <!--<Row>-->
-                                <!--<Col span="2"><Icon type="card"></Icon></Col>-->
-                                <!--<Col span="6"><span>{{car.cph}}</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row>-->
-                                <!--<Col span="2"><Icon type="person"></Icon></Col>-->
-                                <!--<Col span="6"><span>{{car.sjxm}}</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row>-->
-                                <!--<Col span="2"><Icon type="speedometer"></Icon></Col>-->
-                                <!--<Col span="6"><span>{{car.speed}} KM/h</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row v-if="obd != null">-->
-                                <!--<Col span="4">更新日期</Col>-->
-                                <!--<Col span="10"><span>{{formatDate(obd.creatorDate)}} {{formatTime(obd.creatortime)}}</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row v-if="obd != null">-->
-                                <!--<Col span="4">发动机转速</Col>-->
-                                <!--<Col span="10"><span>{{obd.engineSpeed}} r/min</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row v-if="obd != null">-->
-                                <!--<Col span="4">车速</Col>-->
-                                <!--<Col span="10"><span>{{obd.obdSpeed}} KM/h</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row v-if="obd != null">-->
-                                <!--<Col span="4">剩余油量</Col>-->
-                                <!--<Col span="10"><span>{{obd.syyl}} L</span></Col>-->
-                            <!--</Row>-->
-                            <!--<Row v-if="obd != null">-->
-                                <!--<Col span="4">耗油量</Col>-->
-                                <!--<Col span="10"><span>{{obd.hyl}} L</span></Col>-->
-                            <!--</Row>-->
-                        <!--</Card>-->
-                    <!--</Col>-->
                     <Col span="12">
                         <Card style="height: 400px">
                             <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
@@ -74,17 +37,6 @@
                                 </Col>
                             </Row>
                             <br>
-                            <!--<Row>-->
-                                <!--<Col span="8">-->
-                                    <!--<DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.startTime" placeholder="请选择开始时间"></DatePicker >-->
-                                <!--</Col>-->
-                                <!--<Col span="8">-->
-                                    <!--<DatePicker  type="datetime" format="yyyy-MM-dd HH:mm:ss" v-model="mergeVideoParam.endTime" placeholder="请选择结束时间"></DatePicker>-->
-                                <!--</Col>-->
-                                <!--<Col span="8">-->
-                                    <!--<Button @click="mergeVideo(1)" icon="qr-scanner">合并视频</Button>-->
-                                <!--</Col>-->
-                            <!--</Row>-->
                             <Row>
                                 <Col span="8">
                                     <Button @click="showFance" icon="qr-scanner">电子围栏</Button>
@@ -292,7 +244,6 @@
                     this.showModal = true;
                 }, 100);
                 this.car = this.$parent.choosedItem;
-                this.car.obdId = '101601190228'
                 this.getDeviceInfo();
                 if (this.car.obdId){
                     this.getObdInfo();

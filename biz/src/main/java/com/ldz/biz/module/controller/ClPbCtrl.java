@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/pb")
+@RequestMapping("pub/pb")
 public class ClPbCtrl extends BaseController<ClPb, String> {
 
 	@Autowired

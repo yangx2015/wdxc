@@ -111,7 +111,7 @@
 								<Col span="12">
 									<FormItem label="">
 										<h3>
-											车型
+											座位数
 										</h3>
 										<Select filterable clearable  v-model="formItem.zws" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in zwsList" :value="item.value"></Option>
@@ -122,7 +122,7 @@
 							<Row v-else	>
 								<FormItem label="">
 									<h3>
-										车型
+										座位数
 									</h3>
 									<Select filterable clearable  v-model="formItem.zws" size="large" placeholder="请选择用车单位" filterable>
 										<Option v-for="item in zwsList" :value="item.value"></Option>

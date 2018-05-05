@@ -29,7 +29,7 @@
 						<Col span="12">
 							<FormItem prop="zkl" label='载客量：'>
 								<!--<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>-->
-								<input class="input" type="number"  v-model="addmess.zkl"  placeholder="请设置载客量"/>
+								<Input  :number="true"  v-model="addmess.zkl"  placeholder="请设置载客量"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -102,9 +102,9 @@
                   cph: [
                       { required: true, message: '请输入车牌号', trigger: 'blur' }
                   ],
-                  zkl: [
-                      { required: true, message: '请输入载客量', trigger: 'blur' }
-                  ],
+                  // zkl: [
+                  //     { required: true, message: '请输入载客量', trigger: 'blur' }
+                  // ],
               	},
 				deviceList:[],//终端设备
 				drivers:[],//驾驶员

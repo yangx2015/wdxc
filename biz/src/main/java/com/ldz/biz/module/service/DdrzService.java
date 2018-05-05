@@ -1,5 +1,6 @@
 package com.ldz.biz.module.service;
 
+import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClDdrz;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
@@ -10,4 +11,6 @@ public interface DdrzService extends BaseService<ClDdrz,String>{
     ApiResponse<String> saveEntity(ClDdrz entity);
 
     List<ClDdrz> getOrderList(String orderId);
+
+    void log(ClDd order);
 }

@@ -65,7 +65,7 @@
         data () {
             return {
             	//收索
-                datetime:[],
+                datetime:'',
                 findMess:{
                 	gte_StartTime:'',
             		lte_StartTime:'',
@@ -120,7 +120,7 @@
                         key: 'DriverPhone'
                     },
                     {
-                        title: '车型',
+                        title: '座位数',
                         align:'center',
                         key: 'zws'
                     }

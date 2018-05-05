@@ -9,10 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ldz.job.service.ClZdglService;
+import com.ldz.job.service.ClService;
 
 /**
- * 定时器说明:每个5一分钟检查一次设备状态更新到设备管理数据库中
+ * 定时器说明:每天更新一次,更新车辆年审时间
  * 
  * @author liuzhihao
  *
@@ -21,15 +21,19 @@ import com.ldz.job.service.ClZdglService;
 @PersistJobDataAfterExecution
 // 等待上一次任务执行完成，才会继续执行新的任务
 @DisallowConcurrentExecution
-public class GpsZtSyncJob implements Job {
-	@Autowired
-	private ClZdglService clZdglService;
+public class ClNianShenJob implements Job {
+	
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 
+    @Autowired
+    private ClService clservice;
+	
+	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
+		
 		try {
-			clZdglService.checkOnline();
+			clservice.updateNianshen();
 		} catch (Exception e) {
 			errorLog.error("同步车辆在线状态异常", e);
 			JobExecutionException e2 = new JobExecutionException(e);
@@ -37,6 +41,7 @@ public class GpsZtSyncJob implements Job {
 			e2.setRefireImmediately(true);
 		}
 
+		
 	}
 
 }

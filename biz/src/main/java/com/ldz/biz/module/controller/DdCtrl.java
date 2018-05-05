@@ -69,7 +69,7 @@ public class DdCtrl{
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(ClDd entity){
 /*        SysYh userInfo = getCurrentUser();
-*/      
+*/
         SysYh userInfo = getCurrentUser(true);
         return service.saveEntity(entity,userInfo);
     }
@@ -242,6 +242,11 @@ public class DdCtrl{
     public ApiResponse<String> update(ClDd entity){
         return service.updateOrder(entity);
     }
+
+    @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
+    public ApiResponse<String> driverConfirm(String id){
+        return service.driverConfirm(id);
+    }
     /**
      * 订单确认 操作
      * 1、订单处于：司机确认(行程结束)
@@ -319,13 +324,13 @@ public class DdCtrl{
 
     @PostMapping("/ddtj")
     public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd){
-    	
+
     	return service.ddtongji(dd);
     }
-    
+
     @PostMapping("/cctj")
     public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd){
-    	
+
     	return service.chucheTj(dd);
     }
 }

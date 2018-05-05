@@ -1,16 +1,27 @@
 package com.ldz.job.model;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
+
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 车辆表
  * @author Lee
  *
  */
+@ToString
+@Getter
+@Setter
 @Table(name = "CL_CL")
 public class ClCl implements Serializable {
     /**
@@ -24,6 +35,7 @@ public class ClCl implements Serializable {
      * 车牌号
      */
     @Column(name = "CPH")
+    @NotNull(message="车牌号不为空")
     private String cph;
 
     /**
@@ -42,12 +54,14 @@ public class ClCl implements Serializable {
      * 车型
      */
     @Column(name = "CX")
+    @NotNull(message="车型不为空")
     private String cx;
 
     /**
      * 载客量
      */
     @Column(name = "ZKL")
+    @NotNull(message="载客量不为空")
     private Short zkl;
 
     /**
@@ -96,6 +110,7 @@ public class ClCl implements Serializable {
      * 状态
      */
     @Column(name = "ZT")
+    @NotNull(message="状态不为空")
     private String zt;
 
     /**
@@ -151,8 +166,6 @@ public class ClCl implements Serializable {
      */
     @Column(name = "NSSJ")
     private Date nssj;
-
-    private static final long serialVersionUID = 1L;
     /**
      * OBD编号
      */
@@ -160,13 +173,19 @@ public class ClCl implements Serializable {
     private String obdCode;
 
 
-    public String getObdCode() {
-        return obdCode;
-    }
+     /*
+      * 车辆电子围栏中间关联表
+     */
+     @Transient
+    private List<ClDzwlCl> clDzwlCl;
+    /*
+     *电子围栏表 
+     */
+    @Transient
+    private List<ClDzwl> clDzwl;
+    
+	private static final long serialVersionUID = 1L;
 
-    public void setObdCode(String obdCode) {
-        this.obdCode = obdCode;
-    }
     /**
      * 获取车辆id
      *

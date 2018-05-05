@@ -199,11 +199,11 @@
                 })
             },
 		    save(){
-		    	var v = this
+		    	let v = this
             	v.SpinShow = true
 		        let url = configApi.ORDER.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
-                    v.SpinShow = false
+                    this.SpinShow = false
                     if(res.code===200){
                         var v = this
                         v.$parent.findMessList()
@@ -212,9 +212,9 @@
                     }else{
                         this.$Message.error(res.message);
 					}
-                }).catch((error) =>{
-					v.$Message.error('出错了！！！');
-					v.SpinShow = false
+                // }).catch((error) =>{
+					// v.$Message.error('出错了！！！');
+					// v.SpinShow = false
 				})
 			},
 			close(){
