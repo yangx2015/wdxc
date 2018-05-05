@@ -159,20 +159,24 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             rMap.put("oracleLog",oracleLog);
         }
 
-//        4、车辆GPS列表
-        SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
-
-        condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());//开始时间
-        condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());//结束时间
-        condition.eq(ClGpsLs.InnerColumn.zdbh,clDd.getZdbm());//终端编码
-        condition.setOrderByClause(ClGps.InnerColumn.cjsj.desc());//创建时间
-        List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
-        if(gpsLog!=null){
+        if (clDd.getSjqrsj() != null){
+            rMap.put("sjqrsj",clDd.getSjqrsj());
+            // 4、车辆GPS列表
+            SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
+            condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());//开始时间
+            condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());//结束时间
+            condition.eq(ClGpsLs.InnerColumn.zdbh,clDd.getZdbm());//终端编码
+            condition.setOrderByClause(ClGps.InnerColumn.cjsj.desc());//创建时间
+            List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
             rMap.put("gpsLog",gpsLog);
+        }else{
+            rMap.put("gpsLog",new ArrayList());
+            rMap.put("sjqrsj",null);
         }
 
+
 //        5、原始单据信息
-        condition = new SimpleCondition(ClDdlsb.class);
+        SimpleCondition condition = new SimpleCondition(ClDdlsb.class);
         condition.eq(ClDdlsb.InnerColumn.id,entity.getId());
         List<ClDdlsb> initialOracle = ddlsbMapper.selectByExample(condition);
         if(initialOracle!=null){
@@ -813,17 +817,16 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifBlank(id,"请选择订单");
         ClDd order = findById(id);
         RuntimeCheck.ifNull(order,"订单不存在");
-        SysYh user = getCurrentUser();
-        String userId = user.getYhid();
 
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt = order.getDdzt();
         RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有被派单，不能进行司机确认操作");
-//        RuntimeCheck.ifFalse(StringUtils.equals(order.getSj(),userId),"订单不属于本人，不能进行司机确认操作");
+
 
         ClDd newClDd=new ClDd();
         newClDd.setId(order.getId());
         newClDd.setDdzt("20");//订单状态
+        newClDd.setSjqrsj(new Date());
         int i=update (newClDd);
         RuntimeCheck.ifTrue(i==0,"操作数据库失败");
 

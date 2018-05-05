@@ -9,6 +9,7 @@
 </style>
 <template>
     <div>
+		<component :is="componentName"></component>
     	<div slot="header">
         	<Menu mode="horizontal" theme="dark" active-name="1" @on-select="MenuClick">
 			    <MenuItem name="1">
@@ -111,16 +112,17 @@
 	        </div>
 	        <div v-show="horizontal=='2'" style="overflow: hidden;" class="topmar">
 				<Steps :current="settleStatus">
-					<Step title="订单创建" content="2018-01-12 14:30:39"></Step>
-					<Step title="任务分派" content="2018-01-12 14:30:39"></Step>
-					<Step title="队长确认" content="2018-01-12 14:30:39" ></Step>
-					<Step title="订单修改" content="2018-01-12 14:30:39" ></Step>
-					<Step title="订单修改" content="2018-01-16 14:10:39" ></Step>
-					<Step title="财务核算" content="2018-01-12 14:30:39" ></Step>
+					<Step v-for="(item,i) in detail.oracleLog" :title="getStepTitle(item.ddzt)" :content="item.cjsj"></Step>
 				</Steps>
 	        </div>
 	        <div v-show="horizontal=='3'" style="overflow: hidden;text-align: center;" class="topmar">
-	        	<img src="../../../../../images/map.png" width="60%"/>
+				<div v-if="detail.sjqrsj == ''">
+					<h2>司机未确认行程结束</h2>
+				</div>
+				<div v-else>
+					<h2 v-if="simpleRoute == null">暂无轨迹信息</h2>
+					<img v-else @click="showMap()" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+simpleRoute.ksjd+','+simpleRoute.kswd+'&width=300&height=200&zoom=12&markers='+simpleRoute.jsjd+','+simpleRoute.jswd+'|'+simpleRoute.ksjd+','+simpleRoute.kswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_end.png|-1,http://47.98.39.45:9092/icon/map_line_begin.png'" class="imgItem">
+				</div>
 	        </div>
 	        <div v-show="horizontal=='4'" style="overflow: hidden;" class="topmar">
 	        	<Col span="6" class="margin-top-5">
@@ -160,16 +162,22 @@
     </div>
 </template>
 <script>
+    import historyMap from './historyTarckMap'
     import configApi from '@/axios/config.js'
     export default {
     	name:'',
+		components:{
+            historyMap
+		},
     	data(){
     		return {
+    		    componentName :'',
     			horizontal:'1',
-    			settleStatus:5,
+    			settleStatus:1,
 				detail:{
 
-				}
+				},
+                simpleRoute:null
     		}
     	},
         props: {
@@ -179,6 +187,20 @@
             this.getOrderDetails();
 		},
         methods:{
+    	    getStepTitle(zt){
+    	        switch(zt){
+					case '10':return '订单创建';
+					case '11':return '审核通过';
+					case '12':return '审核驳回';
+					case '13':return '已派单';
+					case '20':return '司机已确认';
+					case '21':return '司机完成行程';
+					case '30':return '队长确认';
+				}
+			},
+            showMap(){
+                this.componentName = 'historyMap';
+            },
         	MenuClick(event){
 				var v = this
 				v.horizontal = event
@@ -187,6 +209,17 @@
                 this.$http.get(configApi.ORDER.orderDetails+'?id='+this.row.id).then((res) =>{
                     if (res.code == 200){
                         this.detail = res.result;
+                        this.settleStatus = this.detail.oracleLog.length;
+                        let gpsLog = this.detail.gpsLog;
+                        if (gpsLog.length != 0){
+                            this.simpleRoute = {
+                                ksjd:gpsLog[0].bdjd,
+                                kswd:gpsLog[0].bdwd,
+                                jsjd:gpsLog[gpsLog.length - 1].bdjd,
+                                jswd:gpsLog[gpsLog.length - 1].bdwd,
+							};
+                        }
+
 					}
                 })
 			}

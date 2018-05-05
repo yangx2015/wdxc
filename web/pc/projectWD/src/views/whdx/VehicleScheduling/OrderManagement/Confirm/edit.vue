@@ -103,7 +103,7 @@
 					<Row>
 						<Col span="8">
 							<FormItem label="结束时间">
-								<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
+								<DatePicker v-model="form.sjqrsj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写结束时间" ></DatePicker>
 							</FormItem>
 						</Col>
 						<Col span="16">
