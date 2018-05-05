@@ -84,7 +84,9 @@
                 for(let r of this.gpsList){
                     this.speedList.push([r.cjsj,r.yxsd]);
                 }
-                this.Buildmap()
+                setTimeout(() => {
+                    this.Buildmap()
+                }, 100)
             },
 			Buildmap() {
                 let v = this
@@ -95,7 +97,7 @@
                 log('jd', jd)
                 log('wd', wd)
 				// this.map.centerAndZoom(new BMap.Point(this.gpsList[0].bdwd, this.gpsList[0].bdjd), this.zoom); // 初始化地图,设置中心点坐标和地图级别
-				this.map.centerAndZoom(new BMap.Point(wd, jd), this.zoom); // 初始化地图,设置中心点坐标和地图级别
+				this.map.centerAndZoom(new BMap.Point(jd, wd), this.zoom); // 初始化地图,设置中心点坐标和地图级别
 				// this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom); // 初始化地图,设置中心点坐标和地图级别
 				//添加地图类型控件
 				this.map.addControl(new BMap.MapTypeControl({

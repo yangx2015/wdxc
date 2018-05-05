@@ -43,7 +43,7 @@
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component 
+		<component
 			:is="componentName"
 			:mess="choosedRow"></component>
 	</div>
@@ -52,15 +52,15 @@
 <script>
 	import mixins from '@/mixins'
     import configApi from '@/axios/config.js'
-    
 	import formData from './formData'
 	import change from './change'
 	import jkdz from './jkdz'
+	import setting from './setting'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData,change,jkdz
+            formData,change,jkdz,setting
 		},
         data () {
             return {
@@ -160,7 +160,7 @@
                         title:'操作',
                         align:'center',
                         type: 'action',
-                        width: 130,
+                        width: 150,
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -194,6 +194,23 @@
                                         click: () => {
                                         	this.choosedRow = params.row
                                             this.componentName = 'jkdz'
+                                        }
+                                    }
+                                }),
+                                h('Button', {
+                                    props: {
+                                        type: 'primary',
+										icon: 'gear-b',
+										shape: 'circle',
+										size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                        	this.choosedRow = params.row
+                                            this.componentName = 'setting'
                                         }
                                     }
                                 }),

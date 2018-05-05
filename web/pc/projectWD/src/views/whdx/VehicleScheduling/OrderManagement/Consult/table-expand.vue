@@ -121,42 +121,46 @@
 				</div>
 				<div v-else>
 					<h2 v-if="simpleRoute == null">暂无轨迹信息</h2>
-					<img v-else @click="showMap()" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+simpleRoute.ksjd+','+simpleRoute.kswd+'&width=300&height=200&zoom=12&markers='+simpleRoute.jsjd+','+simpleRoute.jswd+'|'+simpleRoute.ksjd+','+simpleRoute.kswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_end.png|-1,http://47.98.39.45:9092/icon/map_line_begin.png'" class="imgItem">
+					<div v-else>
+						<img @click="showMap()" :src="'http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&center='+simpleRoute.ksjd+','+simpleRoute.kswd+'&width=600&height=400&zoom=12&markers='+simpleRoute.jsjd+','+simpleRoute.jswd+'|'+simpleRoute.ksjd+','+simpleRoute.kswd+'&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_end.png|-1,http://47.98.39.45:9092/icon/map_line_begin.png'" class="imgItem">
+						<br><span style="color: red">*点击图片可查看详情</span>
+					</div>
+
 				</div>
 	        </div>
 	        <div v-show="horizontal=='4'" style="overflow: hidden;" class="topmar">
 	        	<Col span="6" class="margin-top-5">
-					<h5>用车单位：</h5>{{detail.initialOracle}}
+					<h5>用车单位：</h5>{{detail.initialOracle[0].jgmc}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>用车人：</h5>杨毛毛
+					<h5>用车人：</h5>{{detail.initialOracle[0].ck}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>电话：</h5>13113131313
+					<h5>电话：</h5>{{detail.initialOracle[0].cklxdh}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>出车时间：</h5>2018-2-10 10:00:00
+					<h5>出车时间：</h5>{{detail.initialOracle[0].yysj}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>候车地点：</h5>武汉大学正门
+					<h5>候车地点：</h5>{{detail.initialOracle[0].hcdz}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>目的地：</h5>汉口火车站
+					<h5>目的地：</h5>{{detail.initialOracle[0].mdd}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>行车里程：</h5>45公里
+					<h5>行车里程：</h5>{{detail.initialOracle[0].lc}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>等时：</h5>50分钟
+					<h5>等时：</h5>{{detail.initialOracle[0].ck}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>过桥费：</h5>30元
+					<h5>过桥费：</h5>{{detail.initialOracle[0].glf}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>过路费：</h5>30元
+					<h5>过路费：</h5>{{detail.initialOracle[0].glf}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>合计金额：</h5>1000元
+					<h5>合计金额：</h5>{{detail.initialOracle[0].zj}}
 				</Col>
 	        </div>
     </div>

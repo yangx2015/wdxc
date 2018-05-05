@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -96,6 +97,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
+
+        // 原始单据
+        ClDdlsb initOrder = new ClDdlsb();
+        BeanUtils.copyProperties(entity,initOrder,"id");
+        initOrder.setId(genId());
+        initOrder.setDdId(entity.getId());
+        ddlsbMapper.insertSelective(initOrder);
+
         ddrzService.log(entity);
         return ApiResponse.success();
     }
@@ -166,7 +175,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());//开始时间
             condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());//结束时间
             condition.eq(ClGpsLs.InnerColumn.zdbh,clDd.getZdbm());//终端编码
-            condition.setOrderByClause(ClGps.InnerColumn.cjsj.desc());//创建时间
+            condition.setOrderByClause(ClGps.InnerColumn.cjsj.asc());//创建时间
             List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
             rMap.put("gpsLog",gpsLog);
         }else{
@@ -177,7 +186,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 //        5、原始单据信息
         SimpleCondition condition = new SimpleCondition(ClDdlsb.class);
-        condition.eq(ClDdlsb.InnerColumn.id,entity.getId());
+        condition.eq(ClDdlsb.InnerColumn.ddId,entity.getId());
         List<ClDdlsb> initialOracle = ddlsbMapper.selectByExample(condition);
         if(initialOracle!=null){
             rMap.put("initialOracle",initialOracle);
@@ -826,7 +835,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ClDd newClDd=new ClDd();
         newClDd.setId(order.getId());
         newClDd.setDdzt("20");//订单状态
-        newClDd.setSjqrsj(new Date());
         int i=update (newClDd);
         RuntimeCheck.ifTrue(i==0,"操作数据库失败");
 
