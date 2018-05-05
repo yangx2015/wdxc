@@ -127,7 +127,7 @@
                         key: 'DriverPhone'
                     },
                     {
-                        title: '车型',
+                        title: '座位数',
                         align:'center',
                         key: 'zws'
                     },

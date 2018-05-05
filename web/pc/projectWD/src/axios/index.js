@@ -5,13 +5,23 @@ import Cookies from 'js-cookie';
 import {router} from '../router/index';
 import qs from 'qs';
 import store from '@/store'
+import env from '../../build/env';
 //订单分配权限
+
+
+function getUrl(){
+    let prodUrl = 'http://47.98.39.45:8080'; // 生产环境(正式环境)
+    let devUrl = 'http://localhost:8081'; // cw-mac
+// let devUrl = 'http://192.168.31.181:80',//陈
+// let devUrl = 'http://192.168.31.228:8088',//羊
+// let devUrl = 'http://192.168.31.223:80',//羊
+    switch(env){
+        case "development" : return devUrl;
+        default : return prodUrl;
+    }
+}
 let httpInstance = axios.create({
-// baseURL: 'http://127.0.0.1:80',
-baseURL: 'http://47.98.39.45:8080',
-// 	 baseURL: 'http://192.168.31.181:80',//陈
-//    	 baseURL: 'http://192.168.31.228:8088',//羊
-// 	 baseURL: 'http://192.168.31.223:80',//羊
+baseURL: getUrl(),
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true

@@ -27,8 +27,12 @@
 
     <script type="application/javascript">
         function log(t,s){
-            return;
-            console.log(t,s);
+            // return;
+            if (s){
+                console.log(t,s);
+            }else{
+                console.log(t);
+            }
         }
     </script>
 
