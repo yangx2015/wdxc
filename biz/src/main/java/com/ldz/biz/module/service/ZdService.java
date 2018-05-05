@@ -29,4 +29,6 @@ public interface ZdService extends BaseService<ClZd,String>{
     List<ClXl> getNearbyRoutes(String lng, String lat);
 
     Map<String,Object> getNearbyRoutesAndStations(String lng, String lat);
+
+    ApiResponse<List<ClZd>> getNotBindList(String stationId);
 }

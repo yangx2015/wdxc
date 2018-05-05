@@ -134,7 +134,7 @@ export let appRouter = [
 				path: 'system-propelling',
 				icon: 'android-clipboard',
 				name: 'system-propelling',
-				title: '自能站牌',
+				title: '智能站牌',
 				component: () => import('@/views/whdx/system/system-propelling')
 			},
 			{

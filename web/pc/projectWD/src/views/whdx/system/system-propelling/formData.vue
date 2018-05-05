@@ -43,10 +43,16 @@
 					</Row>
 
 					<Row>
-						<Col span="24">
+						<Col span="12">
 							<FormItem label='地址:'>
-								<Input type="text" v-model="form.dz" placeholder="请填写地址...">
-								</Input>
+								<Input type="text" v-model="form.dz" placeholder="请填写地址..."></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='站点:' placeholder="请选择站点...">
+								<Select filterable clearable  v-model="form.zdId">
+									<Option v-for="item in stationList" :value="item.id" :key="item.id">{{item.mc}}</Option>
+								</Select>
 							</FormItem>
 						</Col>
 					</Row>
@@ -78,6 +84,7 @@
 					xh: '',
                     cs: '',
                     dz:'',
+					zdId:''
 				},
 				ruleInline: {
                   zdbh: [
@@ -93,6 +100,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
+				stationList:[]
 			}
 		},
 		created(){
@@ -101,6 +109,7 @@
 				this.operate = '编辑'
 				this.edit = true;
 			}
+            this.getNotBindList();
 		},
         mounted(){
         },
@@ -125,6 +134,14 @@
 						})
 		            } else {
                         v.$Message.error('请认真填写用户信息!');
+                    }
+                })
+			},
+            getNotBindList(){
+		        let jgdm = this.$store.state.app.userInfo.jgdm;
+                this.$http.get(configApi.ZD.getNotBindList+"?stationId="+this.form.zdId).then((res) =>{
+                    if(res.code===200 && res.result){
+                        this.stationList = res.result;
                     }
                 })
 			},

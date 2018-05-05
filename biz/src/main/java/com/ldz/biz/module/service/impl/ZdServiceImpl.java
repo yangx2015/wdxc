@@ -3,14 +3,8 @@ package com.ldz.biz.module.service.impl;
 import com.ldz.biz.module.bean.ClClyxjlModel;
 import com.ldz.biz.module.bean.DdClModel;
 import com.ldz.biz.module.mapper.ClZdMapper;
-import com.ldz.biz.module.model.ClClyxjl;
-import com.ldz.biz.module.model.ClXl;
-import com.ldz.biz.module.model.ClXlzd;
-import com.ldz.biz.module.model.ClZd;
-import com.ldz.biz.module.service.ClyxjlService;
-import com.ldz.biz.module.service.XlService;
-import com.ldz.biz.module.service.XlzdService;
-import com.ldz.biz.module.service.ZdService;
+import com.ldz.biz.module.model.*;
+import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.exception.RuntimeCheck;
@@ -42,6 +36,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     private ZdService zdService;
     @Autowired
     private XlService xlService;
+    @Autowired
+    private ZnzpService znzpService;
 
     @Override
     protected Mapper<ClZd> getBaseMapper() {
@@ -200,6 +196,18 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         map.put("xls",xls);
         map.put("zds",zds);
         return map;
+    }
+
+    @Override
+    public ApiResponse<List<ClZd>> getNotBindList(String stationId) {
+        LimitedCondition condition = new LimitedCondition(ClZnzp.class);
+        List<ClZnzp> znzpList = znzpService.findByCondition(condition);
+        List<String> zdIds = znzpList.stream().filter(p->StringUtils.isNotEmpty(p.getZdId())).map(ClZnzp::getZdId).collect(Collectors.toList());
+        zdIds.remove(stationId);
+        condition = new LimitedCondition(ClZd.class);
+        condition.notIn(ClZd.InnerColumn.id,zdIds);
+        List<ClZd> stations = findByCondition(condition);
+        return ApiResponse.success(stations);
     }
 //
 //    private void setEndStation(List<ClXl> list){
