@@ -50,4 +50,10 @@ public class SimpleCondition extends Example {
     public void like(Enum key,String val){
         this.and().andLike(key.name(),"%"+val+"%");
     }
+    public void startWith(String key,String val){
+        this.and().andLike(key,val+"%");
+    }
+    public void startWith(Enum key,String val){
+        this.and().andLike(key.name(),val+"%");
+    }
 }

@@ -50,6 +50,7 @@ module.exports = {
         CHANGE:'/api/jg/update',
         DELE:'/api/jg/removeIds',
 		GET_TREE:'/api/jg/getOrgTree',
+		GET_TREE_Node:'/api/jg/getTree',
         getSubOrgList:'/api/jg/getSubOrgList',
 	},
 	DICTIONARY:{

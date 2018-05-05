@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.sys.bean.TreeNode;
+import com.ldz.sys.model.SysYh;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -144,12 +146,9 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	 */
 	@Override
 	public List<SysJg> findAllSubOrg(String orgCode) {
-		return ptjgMapper.selectAll();
-		// String like = "" + orgCode + "%";
-		// String sql = "select * from sys_hdyx where jgdm like "+ like;
-		//
-		// JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		// return jdbcTemplate.queryForList(sql,SysJg.class);
+		SimpleCondition condition = new SimpleCondition(SysJg.class);
+		condition.startWith(SysJg.InnerColumn.jgdm,orgCode);
+		return ptjgMapper.selectByExample(condition);
 	}
 
 	@Override
@@ -159,5 +158,50 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		List<SysJg> orgTree = jgService.getOrgTree(orgs);
 		response.setResult(orgTree);
 		return response;
+	}
+
+	@Override
+	public ApiResponse<List<TreeNode>> getTree() {
+		SysYh user = getCurrentUser();
+		List<SysJg> orgs = jgService.findAllSubOrg(user.getJgdm());
+		List<TreeNode> treeNodes = convertToTreeNodeList(orgs);
+		treeNodes = buildTree(treeNodes);
+		return ApiResponse.success(treeNodes);
+	}
+
+	private List<TreeNode> buildTree(List<TreeNode> list){
+		Map<String,TreeNode> nodeMap = list.stream().collect(Collectors.toMap(TreeNode::getValue,p->p));
+		List<TreeNode> root = new ArrayList<>();
+		for (TreeNode node : list) {
+			if (StringUtils.isEmpty(node.getFather())){
+				root.add(node);
+				continue;
+			}
+			TreeNode father = nodeMap.get(node.getFather());
+			if (father == null)continue;
+			if (father.getChildren() == null){
+				List<TreeNode> children = new ArrayList<>();
+				children.add(node);
+				father.setChildren(children);
+			}else{
+				father.getChildren().add(node);
+			}
+		}
+		return root;
+	}
+
+	private List<TreeNode> convertToTreeNodeList(List<SysJg> orgList){
+		List<TreeNode> treeNodes = new ArrayList<>(orgList.size());
+		for (SysJg jg : orgList) {
+			treeNodes.add(convertToTreeNode(jg));
+		}
+		return treeNodes;
+	}
+	private TreeNode convertToTreeNode(SysJg org){
+		TreeNode node = new TreeNode();
+		node.setLabel(org.getJgmc());
+		node.setValue(org.getJgdm());
+		node.setFather(org.getFjgdm());
+		return node;
 	}
 }

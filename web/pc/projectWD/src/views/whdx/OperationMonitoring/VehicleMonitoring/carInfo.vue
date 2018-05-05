@@ -96,7 +96,7 @@
                                     <Row>
                                         <Col span="20">
                                             <FormItem label='上传视屏模式'>
-                                                <Select filterable clearable  v-model="carControl.scspms">
+                                                <Select filterable clearable  v-model="carControl.spscms">
                                                     <Option value=""></Option>
                                                     <Option value="00">全部视屏</Option>
                                                     <Option value="10">仅碰撞视屏</Option>
@@ -110,7 +110,7 @@
                                     <Row>
                                         <Col span="20">
                                             <FormItem label='超速设定'>
-                                                <Input type="text" v-model="carControl.cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
+                                                <Input type="text" v-model="cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
                                             </FormItem>
                                         </Col>
                                         <Col span="4">
@@ -161,7 +161,7 @@
                     scms:1,
                     jslmd:'',
                     pzlmd:'',
-                    scspms:'',
+                    spscms:'',
                     cssd:'',
                     gpsxtjg:'',
                 },
@@ -169,7 +169,8 @@
                     startTime:'',
                     endTime:''
                 },
-                obd:null
+                obd:null,
+                cssd:0,
             }
 
         },
@@ -192,7 +193,7 @@
                 var v = this
                 let params = {
                     cphs:this.car.cph,
-                    csz:this.carControl.cssd,
+                    csz:this.cssd,
                 }
                 this.SpinShow = true;
                 this.$http.post(configApi.CS.ADD,params).then((res) =>{
@@ -201,6 +202,17 @@
                         this.$Message.success("设置成功!")
                     }else{
                         this.$Message.error(res.message)
+                    }
+                })
+            },
+            getCssd(){
+                var v = this
+                let params = {
+                    cph:this.car.cph,
+                }
+                this.$http.post(configApi.CS.QUERY,params).then((res) =>{
+                    if (res.code === 200 && res.page.list){
+                        this.cssd = res.page.list[0].sdsx;
                     }
                 })
             },
@@ -220,7 +232,7 @@
                 this.setting('30',this.carControl.scms);
             },
             selectChange50(){
-                this.setting('50',this.carControl.scspms);
+                this.setting('50',this.carControl.spscms);
             },
             setting(type,param){
                 var v = this
@@ -245,6 +257,7 @@
                 }, 100);
                 this.car = this.$parent.choosedItem;
                 this.getDeviceInfo();
+                this.getCssd();
                 if (this.car.obdId){
                     this.getObdInfo();
                 }
