@@ -271,6 +271,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
                     obj.setClDdList(clDdList);
                 }
             }
+        }else{
+            list=new ArrayList<ClJsyModel>();
         }
         result.setResult(list);
         return result;
