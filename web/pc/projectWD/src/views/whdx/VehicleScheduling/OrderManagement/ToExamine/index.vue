@@ -187,7 +187,8 @@
                 	pageNum:1,
             		pageSize:13
                 },
-				messError:''
+				messError:'',
+                idMs:''
             }
         },
         // watch: {
@@ -258,6 +259,7 @@
                 }).then((willDelete) => {
                     if (willDelete) {
                         this.showModal = true
+						this.idMs = id
                     }
                 });
 			},
@@ -266,7 +268,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         v.$Message.success('Success!');
-                        v.audit(id,'12');
+                        v.audit(v.idMs,'12');
                     } else {
                         this.$Message.error('Fail!');
                     }
