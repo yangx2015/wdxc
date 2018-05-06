@@ -259,7 +259,7 @@ export default {
     	},
     	getXBlineName(){//校巴线路名称
     		var v = this
-    		this.$http.post(configApi.XL.QUERY).then((res) =>{
+    		this.$http.post(configApi.XL.QUERY,{'lx':30}).then((res) =>{
 				v.XBlineName = res.page.list
 				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
 			})
