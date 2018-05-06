@@ -16,7 +16,7 @@ function getUrl(){
 // let devUrl = 'http://192.168.31.228:8088',//羊
 // let devUrl = 'http://192.168.31.223:80',//羊
     switch(env){
-        case "development" : return devUrl;
+        case true : return devUrl;
         default : return prodUrl;
     }
 }

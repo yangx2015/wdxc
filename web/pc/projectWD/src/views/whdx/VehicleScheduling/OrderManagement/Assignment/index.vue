@@ -10,6 +10,15 @@
 		border-radius: 15px;
 	}
 </style>
+<style scoped>
+	.demo-badge{
+		width: 42px;
+		height: 42px;
+		background: #eee;
+		border-radius: 6px;
+		display: inline-block;
+	}
+</style>
 <!--订单分派-->
 <template>
 	<div class="box boxbackborder">
@@ -31,12 +40,29 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:440px" v-for="(item,index) in drvlist">
-					<p slot="title">
-						<Icon type="ios-film-outline"></Icon>
-						{{item.xm}}
-					</p>
+				<Card style="width:440px;margin:8px auto" v-for="(item,index) in drvlist">
+						<div slot="title" class="box-row" style="height: 25px;line-height: 25px">
+							<div style="font-weight: 700">
+								<Icon type="ios-film-outline"></Icon>
+								{{item.xm}}
+							</div>
+							<div class="body-O" style="padding-left:8px ">
+								<span>
+									总（20）
+								</span>
+								<span>
+									完（10）
+								</span>
+								<span>
+									未（10）
+								</span>
+							</div>
+						</div>
 					<span slot="extra">
+						<i-switch size="large">
+							<span slot="open">开启</span>
+							<span slot="close">关闭</span>
+						</i-switch>
 						<Tooltip content="订单分配" placement="left">
 							<Button type="primary"
 									:disabled="item.zt=='01'"
