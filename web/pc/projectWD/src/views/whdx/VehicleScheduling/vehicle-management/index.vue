@@ -47,7 +47,7 @@
 			</Row>
 		</Card>
     	<component
-			:is="compName" 
+			:is="compName"
 			:mess="mess"
 			:derMess="derMes"
 			:messType="messType"></component>
@@ -57,7 +57,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
 	import allmes from './comp/otherMess.vue'
@@ -89,7 +89,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
                 tableTiT: [
 					 // {
@@ -128,6 +128,7 @@
                     {
                         title: '载客量',
                         align:'center',
+                        width:80,
                         key: 'zkl'
                     },
                     {
@@ -138,7 +139,7 @@
                     },
                     {
                         title: '创建时间',
-                        width:160,
+                        width:150,
                         align:'center',
                         key: 'cjsj'
                     },
@@ -149,6 +150,7 @@
                     },
                     {
                         title: '车辆状态',
+                        width:90,
                         align:'center',
                         key: 'zt',
                         render:(h,p)=>{
@@ -161,7 +163,7 @@
                         }
                     },
                     {
-                        title: 'obdCode',
+                        title: 'OBD编码',
                         align:'center',
                         key: 'obdCode'
                     },
@@ -336,7 +338,7 @@
 				findMess: {
                     cphLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
             }
         },

@@ -44,7 +44,7 @@
 			</Card>
 		</div>
 	</template>
-	
+
 	<script>
 		import mixins from '@/mixins'
 		//	import axios from '@/axios'
@@ -57,7 +57,7 @@
 					pageTotal: 1,
 					page: {
 						pageNum: 1,
-						pageSize: 5
+						pageSize:8
 					},
 					//弹层--角色分配
 					RootShow: false,
@@ -114,7 +114,7 @@
 						like_CarNumber: '',
 						like_ScName: '',
 						pageNum: 1,
-						pageSize: 5
+						pageSize:8
 					}
 				}
 			},
@@ -141,7 +141,7 @@
 				AddDataList() {
 					var v = this
 					v.showModal = true
-	
+
 					//              axios.get('carLogs/pager',this.page).then((res) => {
 					//                  v.tableData = res.data
 					//                  v.pageTotal = res.total

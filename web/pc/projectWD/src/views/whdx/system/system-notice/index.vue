@@ -75,7 +75,7 @@
                 choosedRow:{},
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	//弹层
             	showModal:false,
@@ -128,11 +128,11 @@
 	    					},val)
                         }
                     },
-                    {
-                        title: '在线时间',
-                        align:'center',
-                        key: 'zxsj'
-                    },
+                    // {
+                    //     title: '在线时间',
+                    //     align:'center',
+                    //     key: 'zxsj'
+                    // },
                     {
                         title: '终端状态',
                         align:'center',
@@ -244,7 +244,7 @@
                 form:{
                     mcLike:'',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 },
                 Dictionary:[],
 				lmdmDictionary:'ZDCLK0032',//在线状态

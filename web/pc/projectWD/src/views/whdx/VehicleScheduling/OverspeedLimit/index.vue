@@ -52,7 +52,7 @@
 			</Row>
 		</Card>
 		<component
-			:is="compName" 
+			:is="compName"
 			:mess="mess"></component>
 	</div>
 </template>
@@ -60,7 +60,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import newmes from './comp/newmes.vue'
 	import change from './comp/change.vue'
 	export default {
@@ -73,14 +73,14 @@
 			return {
 				mess:{},
             	compName:'',
-            	
+
 				SpinShow:true,
 				tabHeight: 220,
 				//分页
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				cxDict:[],
 				cxDictCode:'ZDCLK0002',
@@ -158,7 +158,7 @@
 				findMess: {
                     cphLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				}
 			}
 		},

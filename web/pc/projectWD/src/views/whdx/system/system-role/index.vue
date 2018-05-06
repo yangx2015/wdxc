@@ -17,9 +17,9 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.jsmcLike" 
-								placeholder="请输入角色" 
-								style="width: 200px" 
+							<Input v-model="findMess.jsmcLike"
+								placeholder="请输入角色"
+								style="width: 200px"
 								@on-keyup.enter="findMessList()"
 								@on-change="findMessList"></Input>
 						</div>
@@ -52,7 +52,7 @@
 			</Row>
 		</Card>
     	<component
-    		:is="compName" 
+    		:is="compName"
     		:messdata="messdata"
     		:usermesType="userMesType"
     		:Dictionary="Dictionary"
@@ -63,7 +63,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import addrole from './comp/addmess.vue'
 	import modifyRolePermission from './comp/modifyRolePermission.vue'
 	export default {
@@ -85,7 +85,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	//弹层
             	showModal:false,
@@ -195,7 +195,7 @@
 //              	cjsjInRange:'',
                 	jsmcLike:'',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 },
                 Dictionary:[],
 				lmdmDictionary:'ZDCLK0004'

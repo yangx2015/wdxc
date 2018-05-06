@@ -74,7 +74,7 @@
                     ckLike:'',
 					ddzt:'13',
                 	pageNum:1,
-            		pageSize:5,
+            		pageSize:8,
 					sj:''
                 },
 				choosedRow:null,
@@ -82,7 +82,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	showModal:false,
                 columns10: [

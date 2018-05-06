@@ -139,7 +139,7 @@ export default {
             pageTotal:1,
             page:{
                 pageNum:1,
-                pageSize:5
+                pageSize:8
             },
         	SpinShow:false,
 			tabHeight: 220,

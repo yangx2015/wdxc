@@ -48,7 +48,7 @@
 			</Row>
 		</Card>
 		<component
-			:is="compName" 
+			:is="compName"
 			:mess="mess"
 			:messType="messType"></component>
     </div>
@@ -56,7 +56,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import newmes from './comp/newmes.vue'
     export default {
     	name:'',
@@ -69,14 +69,14 @@
             	mess:{},
             	messType:true,
             	compName:'',
-            	
+
             	SpinShow:true,
 				tabHeight: 220,
-				
+
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
                 columns10: [
                     {
@@ -185,7 +185,7 @@
 					cjsjInRange:'',
 					zjhmLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				}
             }
         },
@@ -221,7 +221,7 @@
         		var v = this
         	},
         	listDele(){
-        		
+
         	},
             pageChange(event){
         		var v = this

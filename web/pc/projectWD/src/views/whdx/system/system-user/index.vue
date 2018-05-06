@@ -15,12 +15,12 @@
 							<span>用户管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.xmLike" 
-								placeholder="请输入用户姓名" style="width: 200px" 
+							<Input v-model="findMess.xmLike"
+								placeholder="请输入用户姓名" style="width: 200px"
 								@on-keyup.enter="findMessList()"
 								@on-change="findMessList"></Input>
-							<Input v-model="findMess.sjhLike" 
-								placeholder="请输入手机号码" style="width: 200px" 
+							<Input v-model="findMess.sjhLike"
+								placeholder="请输入手机号码" style="width: 200px"
 								@on-keyup.enter="findMessList()"
 								@on-change="findMessList"></Input>
 						</div>
@@ -86,7 +86,7 @@
 					//---当前页码
 					pageNum: 1,
 					//---每页显示条数
-					pageSize: 5
+					pageSize:8
 				},
 				tableTiT: [{
 						title: "序号",
@@ -223,7 +223,7 @@
 					sjhLike:'',
 					xmLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				yhlxDict:[],
 				yhlxDictCode:'ZDCLK0003'
