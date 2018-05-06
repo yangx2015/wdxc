@@ -12,7 +12,7 @@
 		    width='900'
 		    :closable='false'
 		    :mask-closable="false"
-		    :title="tit+'校巴线路'">
+		    :title="tit+'班车线路'">
 		    <div>
 		    	<Form
     			ref="addmess"
@@ -65,7 +65,7 @@
 		    	<div style="width: 100px;">
 		    		<div>
 		    			<Select filterable clearable  v-model="stationId">
-					        <Option v-for="(item,index) in stationList" 
+					        <Option v-for="(item,index) in stationList"
 					        	:disabled='item.disabled'
 					        	:value="index+1">{{item.mc}}</Option>
 					    </Select>
@@ -101,6 +101,7 @@
 				form:{
 				    id:'',
                     xlmc:'',
+					lx:'20',
                     zt:'00',
                     yxfs:'10',
 				},

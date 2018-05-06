@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("pub/pb")
+@RequestMapping("api/pb")
 public class ClPbCtrl extends BaseController<ClPb, String> {
 
 	@Autowired
@@ -28,7 +28,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	protected BaseService<ClPb, String> getBaseService() {
 		return pbservice;
 	}
-	
+
 	@Override
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })
 	public ApiResponse<String> update(ClPb entity) {

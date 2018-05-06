@@ -15,7 +15,7 @@
 					<Row :gutter="16">
 						<Col span="8">
 							<FormItem label="用车单位">
-								<Select filterable clearable  v-model="form.jgdm" size="large" placeholder="请选择用车单位" filterable>
+								<Select disabled filterable clearable  v-model="form.jgdm" size="large" placeholder="请选择用车单位" filterable>
 									<Option v-for="item in jgdmList" :value="item.jgdm">{{item.jgmc}}</Option>
 								</Select>
 							</FormItem>
@@ -101,17 +101,39 @@
 						</Col>
 					</Row>
 					<Row>
-					<Col span="8">
-						<FormItem label="结束时间">
-							<DatePicker v-model="form.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
-						</FormItem>
-					</Col>
-					<Col span="16">
-						<FormItem label="总费用">
-							<Input v-model="form.zj" type="text" :rows="6" placeholder="请填写总费用"></Input>
-						</FormItem>
-					</Col>
-				</Row>
+						<Col span="8">
+							<FormItem label="行车里程">
+								<Input v-model="form.lc" type="text" :rows="6" placeholder="请填写行车里程"></Input>
+							</FormItem>
+						</Col>
+						<Col span="8">
+							<FormItem label="里程单价">
+								<Input v-model="form.dj" type="text" :rows="6" placeholder="请填写里程单价"></Input>
+							</FormItem>
+						</Col>
+						<Col span="8">
+							<FormItem label="里程费用">
+								<Input v-model="form.jcf" type="text" :rows="6" placeholder="请填写里程费用"></Input>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="8">
+							<FormItem label="结束时间">
+								<DatePicker v-model="form.sjqrsj" format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写结束时间" ></DatePicker>
+							</FormItem>
+						</Col>
+						<Col span="8">
+							<FormItem label="过路费">
+								<Input v-model="form.glf" type="text" :rows="6" placeholder="请填写过路费"></Input>
+							</FormItem>
+						</Col>
+						<Col span="8">
+							<FormItem label="总费用">
+								<Input v-model="form.zj" type="text" :rows="6" placeholder="请填写总费用"></Input>
+							</FormItem>
+						</Col>
+					</Row>
 				</Form>
 			</div>
 			<div slot='footer'>
@@ -123,30 +145,30 @@
 </template>
 
 <script>
-	import treelist from '@/data/list.js'
+    import treelist from '@/data/list.js'
     import configApi from '@/axios/config.js'
-	export default {
-		name: '',
-		data() {
-			return {
-				SpinShow:false,
-			    operate:'新建',
-				showModal: true,
+    export default {
+        name: '',
+        data() {
+            return {
+                SpinShow:false,
+                operate:'新建',
+                showModal: true,
                 mesF:false,
-				form: {
+                form: {
                     zdbh:'',
-					mc: '',
-					xh: '',
+                    mc: '',
+                    xh: '',
                     cs: '',
                     dz:'',
-				},
+                },
                 jgdmList:[],
                 ruleInline:{
 
-				},
+                },
                 addmess:{
 
-				},
+                },
                 fromMoneyList:[
                     {
                         value:'行政费用'
@@ -181,27 +203,27 @@
                     }
                 ]
 
-			}
-		},
-		created(){
-			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
-				this.operate = '编辑'
-			}
-		},
-        mounted(){
-		    this.getOrgList();
+            }
         },
-		methods: {
+        created(){
+            if (this.$parent.choosedRow){
+                this.form = this.$parent.choosedRow;
+                this.operate = '编辑'
+            }
+        },
+        mounted(){
+            this.getOrgList();
+        },
+        methods: {
             getOrgList(){
                 this.$http.get(configApi.FRAMEWORK.getSubOrgList).then((res) =>{
                     this.jgdmList = res.result
                 })
             },
-		    save(){
-		    	let v = this
-            	v.SpinShow = true
-		        let url = configApi.ORDER.CHANGE;
+            save(){
+                let v = this
+                this.SpinShow = true
+                let url = configApi.ORDER.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     this.SpinShow = false
                     if(res.code===200){
@@ -211,20 +233,20 @@
                         v.$parent.componentName = ''
                     }else{
                         this.$Message.error(res.message);
-					}
-                // }).catch((error) =>{
-					// v.$Message.error('出错了！！！');
-					// v.SpinShow = false
-				})
-			},
-			close(){
-		        let v = this;
+                    }
+                    // }).catch((error) =>{
+                    //     v.$Message.error('出错了！！！');
+                    //     v.SpinShow = false
+                })
+            },
+            close(){
+                let v = this;
                 v.$parent.componentName = ''
                 v.$parent.findMessList()
-			}
+            }
 
-		}
-	}
+        }
+    }
 </script>
 
 <style>

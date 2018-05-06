@@ -65,7 +65,7 @@
 		    	<div style="width: 100px;">
 		    		<div>
 		    			<Select filterable clearable  v-model="stationId">
-					        <Option v-for="(item,index) in stationList" 
+					        <Option v-for="(item,index) in stationList"
 					        	:disabled='item.disabled'
 					        	:value="index+1">{{item.mc}}</Option>
 					    </Select>
@@ -102,6 +102,7 @@
 				    id:'',
                     xlmc:'',
                     zt:'00',
+                    lx:'20',
                     yxfs:'10',
 				},
 				stationList:[],
