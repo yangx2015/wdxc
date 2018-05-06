@@ -110,6 +110,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
         RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
         RuntimeCheck.ifNull(entity.getZws(),"乘客人数不能为空");
+        RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
         String orderId=genId();
         entity.setId(orderId);
         entity.setCjr(userId);
@@ -120,12 +121,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
 
-        // 原始单据
-        ClDdlsb initOrder = new ClDdlsb();
-        BeanUtils.copyProperties(entity,initOrder,"id");
-        initOrder.setId(genId());
-        initOrder.setDdId(entity.getId());
-        ddlsbMapper.insertSelective(initOrder);
+//        // 原始单据
+//        ClDdlsb initOrder = new ClDdlsb();
+//        BeanUtils.copyProperties(entity,initOrder,"id");
+//        initOrder.setId(genId());
+//        initOrder.setDdId(entity.getId());
+//        ddlsbMapper.insertSelective(initOrder);
 
         ddrzService.log(entity);
         return ApiResponse.success();
@@ -483,6 +484,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(false,"操作数据库失败");
             return ApiResponse.fail("操作数据库失败");
         }
+
 
         ClDdrz clDdrz=new ClDdrz();
         clDdrz.setId(genId());//主键ID
