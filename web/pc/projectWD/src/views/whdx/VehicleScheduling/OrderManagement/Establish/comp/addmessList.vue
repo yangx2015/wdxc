@@ -8,7 +8,7 @@
 			<div style="overflow: auto;">
 				<Form
 					:model='addmess'
-					:label-width="100"
+					:label-width="130"
 					:rules="ruleInline"
 					label-position="right">
 					<FormItem prop='zddm' label='新建课题代码：'>
