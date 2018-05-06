@@ -52,14 +52,14 @@
 			<div>
 				<Form ref="formValidate" :model="formValidate"
 					  :rules="ruleValidate" :label-width="80">
-					<FormItem label="原因" prop="desc">
+					<FormItem label="原因" prop="bhyy">
 						<Input v-model="formValidate.bhyy" type="textarea" placeholder="请填写驳回原因"></Input>
 					</FormItem>
 				</Form>
 			</div>
 		    <div slot='footer'>
-				<Button type="text" @click="showModal=false,messError=''">取消</Button>
-				<Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+				<Button type="text" @click="showModal=false,bhyy=''">取消</Button>
+				<Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
 			</div>
 		</Modal>
     </div>
@@ -76,10 +76,10 @@
         data () {
             return {
                 formValidate: {
-                    desc: ''
+                    bhyy: ''
                 },
                 ruleValidate: {
-                    desc: [
+                    bhyy: [
                         { required: true, message: '请认真填写驳回原因', trigger: 'blur' }
 					]
                 },
@@ -267,10 +267,10 @@
         	    var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        v.$Message.success('Success!');
+                        v.$Message.success('完成');
                         v.audit(v.idMs,'12');
                     } else {
-                        this.$Message.error('Fail!');
+                        this.$Message.error('失败');
                     }
                 })
             },
@@ -278,10 +278,11 @@
         	    let param = {
         	        ddzt:zt,
 					id:id,
-                    messError:this.messError
+                    bhyy:this.formValidate.bhyy
 				}
                 this.$http.post(configApi.ORDER.AUDIT,param).then((res) =>{
                     if (res.code === 200){
+
                         this.findMessList();
                         this.showModal = false
                     }
