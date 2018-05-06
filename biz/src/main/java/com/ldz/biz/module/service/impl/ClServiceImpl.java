@@ -13,15 +13,21 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.ZdxmService;
+import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.*;
 
+@Slf4j
 @Service
 public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClService {
 	@Autowired
@@ -34,7 +40,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private JsyService jsyService;
 	@Autowired
 	private ZdxmService zdxmService;
-
+	@Value("${deleteZnzpRedisKeyUrl:http://47.98.39.45:9888/api/deleteRedisKey}")
+	private String deleteZnzpRedisKeyUrl;
+	@Autowired
+	private RedisUtil redisUtil;
 	@Override
 	protected Mapper<ClCl> getBaseMapper() {
 		return entityMapper;
@@ -89,6 +98,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		}
 
 		save(entity);
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.saveSuccess();
 	}
 
@@ -99,6 +109,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		entity.setXgr(getOperateUser());
 		entity.setXgsj(new Date());
 		update(entity);
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.success();
 	}
 
@@ -171,7 +182,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 					cls.add(clCl);
 				}
 			}
-			
+
 		}
 		apiResponse.setResult(cls);
 		return apiResponse;

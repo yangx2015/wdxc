@@ -10,6 +10,15 @@
 		border-radius: 15px;
 	}
 </style>
+<style scoped>
+	.demo-badge{
+		width: 42px;
+		height: 42px;
+		background: #eee;
+		border-radius: 6px;
+		display: inline-block;
+	}
+</style>
 <!--订单分派-->
 <template>
 	<div class="box boxbackborder">
@@ -31,12 +40,29 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:440px" v-for="(item,index) in drvlist">
-					<p slot="title">
-						<Icon type="ios-film-outline"></Icon>
-						{{item.xm}}
-					</p>
+				<Card style="width:440px;margin:8px" v-for="(item,index) in drvlist">
+					<div slot="title" class="box-row" style="height: 25px;line-height: 25px">
+						<div style="font-weight: 700">
+							<Icon type="ios-film-outline"></Icon>
+							{{item.xm}}
+						</div>
+						<div class="body-O" style="padding-left:8px ">
+								<span>
+									总（20）
+								</span>
+							<span>
+									完（10）
+								</span>
+							<span>
+									未（10）
+								</span>
+						</div>
+					</div>
 					<span slot="extra">
+						<i-switch size="large">
+							<span slot="open">开启</span>
+							<span slot="close">关闭</span>
+						</i-switch>
 						<Tooltip content="订单分配" placement="left">
 							<Button type="primary"
 									:disabled="item.zt=='01'"
@@ -56,27 +82,27 @@
 							<div>
 								<Row>
 									<Col span="10">
-										<Icon type="person"
-											color="#7b7b7b"></Icon>
-										<!--信息工程学院—陈小伟-->
-										{{p.jgmc}}-{{p.ck}}
+									<Icon type="person"
+										  color="#7b7b7b"></Icon>
+									<!--信息工程学院—陈小伟-->
+									{{p.jgmc}}-{{p.ck}}
 									</Col>
 									<Col span="10">
-										<Icon type="ios-clock"
-											color="#0897ff"></Icon>
-										{{p.yysj}}
+									<Icon type="ios-clock"
+										  color="#0897ff"></Icon>
+									{{p.yysj}}
 									</Col>
 								</Row>
 							</div>
 							<div>
 								<Row>
 									<Col span="10">
-										<Icon type="record" color="#19a853"></Icon>
-										{{p.hcdz}}
+									<Icon type="record" color="#19a853"></Icon>
+									{{p.hcdz}}
 									</Col>
 									<Col span="10">
-										<Icon type="record" color="#ff8f00"></Icon>
-										{{p.mdd}}
+									<Icon type="record" color="#ff8f00"></Icon>
+									{{p.mdd}}
 									</Col>
 								</Row>
 							</div>
@@ -100,22 +126,22 @@
 </template>
 
 <script>
-	import pageList from './comp/list'
+    import pageList from './comp/list'
     import configApi from '@/axios/config.js'
-	export default{
-		name:'driver',
+    export default{
+        name:'driver',
         components: {
             pageList
         },
-		data(){
-			return{
-			    mess:{},
+        data(){
+            return{
+                mess:{},
                 compName:'',
-			    drvlist:[],
-			}
-		},
-		created(){
-			this.$store.commit('setCurrentPath', [{
+                drvlist:[],
+            }
+        },
+        created(){
+            this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
                 title: '车辆管理',
@@ -124,27 +150,22 @@
             },{
                 title: '订单分配',
             }]);
-			this.getDrvList()
-		},
-		mounted(){
-		},
-		methods:{
-			getDrvList(){//司机列表
-			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{}).then((res) =>{
+            this.getDrvList()
+        },
+        mounted(){
+        },
+        methods:{
+            getDrvList(){//司机列表
+                var v = this
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
                     if(res.code == 200){
-						v.drvlist = res.result
-					}
-					console.log(res)
-                })
-			},
-			getYfp(sjid){//已分派订单列表
-                this.$http.post(configApi.ORDER.YFP,{'sjSx':10,'sj':sjid,'cph':''}).then((res) =>{
+                        v.drvlist = res.result
+                    }
                     console.log(res)
                 })
-			},
-			dele(id){//取消分派
-			    var v = this
+            },
+            dele(id){//取消分派
+                var v = this
                 this.$http.post(configApi.ORDER.QXPD,{'id':id}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
@@ -155,13 +176,13 @@
                 }).catch((error) =>{
                     v.$Message.error('出错了！！！');
                 })
-			},
+            },
             showList(item){
-			    this.compName = 'pageList'
-				this.mess = item
-			}
-		}
-	}
+                this.compName = 'pageList'
+                this.mess = item
+            }
+        }
+    }
 </script>
 
 <style>

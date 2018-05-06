@@ -76,7 +76,7 @@
         methods:{
             getDfp(){
                 var v = this
-                this.$http.post(configApi.ORDER.DFP,{}).then((res) =>{
+                this.$http.post(configApi.ORDER.DFP,{'cllx':10}).then((res) =>{
                     if(res.code ==200){
                         console.log('******************',res)
                         v.data1 = res.result

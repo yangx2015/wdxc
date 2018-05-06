@@ -62,7 +62,7 @@
             <Col span="6">
             	<h3>过路费：</h3>
             	<div>
-            		{{row.RoadToll}}
+            		{{row.glf}}
             	</div>
             </Col>
             <Col span="6">
@@ -80,7 +80,7 @@
             <Col span="6">
             	<h3>备注：</h3>
             	<div style="word-wrap:break-word">
-            		{{row.mess}}
+            		{{row.sy}}
             	</div>
             </Col>
         </Row>

@@ -16,7 +16,7 @@
 							<span>订单确认</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
+							<Input v-model="findMess.ckLike" type="text" placeholder="输入乘客姓名查询" style="width: 220px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -70,10 +70,7 @@
                 componentName:'',
                 datetime:[],
                 findMess:{
-                    gte_StartTime:'',
-                    lte_StartTime:'',
-                    like_CarNumber:'',
-                    like_ScName:'',
+                    ckLike:'',
                     ddzt:'20',
                     pageNum:1,
                     pageSize:5

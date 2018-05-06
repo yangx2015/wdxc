@@ -1,14 +1,5 @@
 package com.ldz.sys.service.impl;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
@@ -23,8 +14,20 @@ import com.ldz.sys.service.HdService;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author chenwei
@@ -32,12 +35,17 @@ import tk.mybatis.mapper.common.Mapper;
  * @category
  * @since 2018/2/26
  */
+@Slf4j
 @Service
 public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements HdService{
     @Autowired
     private SysHdyxMapper hdyxMapper;
     @Autowired
     private SysYxhdwjMapper yxhdwjMapper;
+    @Autowired
+    private RestTemplateBuilder restTemplateBuilder;
+    @Value("${updateMediaUrl:http://127.0.0.1:9888/api/updateMedia}")
+    private String updateMediaUrl;
     @Override
     protected Mapper<SysHdyx> getBaseMapper() {
         return hdyxMapper;
@@ -95,7 +103,22 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         entity.setZt(Dict.CommonStatus.VALID.getCode());
         saveFiles(entity);
         save(entity);
+        if ("10".equals(entity.getHdlx())){
+            updateMdeia(yh.getJgdm());
+        }
         return ApiResponse.success();
+    }
+
+    private void updateMdeia(String jgdm){
+        log.info("================准备向znzp发送updateMedia请求==================");
+        Map<String,Object> params = new HashMap<>();
+        params.put("jgdm",jgdm);
+        try{
+            ResponseEntity<String> responseEntity = restTemplateBuilder.build().postForEntity(updateMediaUrl,params,String.class);
+            log.info("updateMedita responst:",responseEntity.toString());
+        }catch (Exception e){
+            log.error("updateMedia请求异常",e);
+        }
     }
 
     private void saveFiles(SysHdyx hdyx){
@@ -143,6 +166,9 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         condition.eq(SysYxhdwj.InnerColumn.hdId,entity.getHdId());
         yxhdwjMapper.deleteByExample(condition);
 
+        if ("10".equals(entity.getHdlx())){
+            updateMdeia(entity.getJgdm());
+        }
         saveFiles(entity);
         return ApiResponse.success();
     }

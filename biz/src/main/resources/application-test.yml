@@ -9,11 +9,13 @@ spring:
     username: 'C##wdxc_admin'
     password: 'wdxc123456'
 
-  
+
 server:
   port: 80
 
-ticserver:  
+ticserver:
    url: http://47.98.39.45:9095/api/push/carcmd
-  
+
 staticPath:  D:\static\common\
+updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
+deleteZnzpRedisKeyUrl: http://47.98.39.45:9888/api/deleteRedisKey

@@ -73,6 +73,12 @@ public class ClDd implements Serializable {
     private Double dj;
 
     /**
+     * 驳回原因
+     */
+    @Column(name = "BHYY")
+    private Double bhyy;
+
+    /**
      * 里程
      */
     @Column(name = "LC")
@@ -288,6 +294,15 @@ public class ClDd implements Serializable {
 
     public void setKtcode(String ktcode) {
         this.ktcode = ktcode;
+    }
+
+
+    public Double getBhyy() {
+        return bhyy;
+    }
+
+    public void setBhyy(Double bhyy) {
+        this.bhyy = bhyy;
     }
 
     /**

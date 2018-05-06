@@ -40,7 +40,7 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:440px;margin:8px auto" v-for="(item,index) in drvlist">
+				<Card style="width:440px;margin:8px" v-for="(item,index) in drvlist">
 						<div slot="title" class="box-row" style="height: 25px;line-height: 25px">
 							<div style="font-weight: 700">
 								<Icon type="ios-film-outline"></Icon>
@@ -157,16 +157,11 @@
 		methods:{
 			getDrvList(){//司机列表
 			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{}).then((res) =>{
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10}).then((res) =>{
                     if(res.code == 200){
 						v.drvlist = res.result
 					}
 					console.log(res)
-                })
-			},
-			getYfp(sjid){//已分派订单列表
-                this.$http.post(configApi.ORDER.YFP,{'sjSx':10,'sj':sjid,'cph':''}).then((res) =>{
-                    console.log(res)
                 })
 			},
 			dele(id){//取消分派

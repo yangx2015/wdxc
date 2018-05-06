@@ -88,7 +88,12 @@
 										<Button type="error" shape="circle" icon="close" size="small" @click="del(item)"></Button>
 									</div>
 									<div>
-										详情
+										<div>
+											负责人 ：{{item.glyxm}}
+										</div>
+										<div>
+											创建时间 ：{{item.cjsj}}
+										</div>
 									</div>
 								</Card>
 							</div>
