@@ -217,7 +217,7 @@ public class ClDd implements Serializable {
     private String sy;
 
     /**
-     * 车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
+     * 车辆类型 字典项：
      */
     @Column(name = "CLLX")
     private String cllx;
@@ -276,6 +276,19 @@ public class ClDd implements Serializable {
     @Column(name = "ZDBH")
     private String zdbm;
     private static final long serialVersionUID = 1L;
+    /**
+     * 课题编号  课题字典 [ZDCLK0045]
+     */
+    @Column(name = "KTCODE")
+    private String ktcode;
+
+    public String getKtcode() {
+        return ktcode;
+    }
+
+    public void setKtcode(String ktcode) {
+        this.ktcode = ktcode;
+    }
 
     /**
      * 获取ID
