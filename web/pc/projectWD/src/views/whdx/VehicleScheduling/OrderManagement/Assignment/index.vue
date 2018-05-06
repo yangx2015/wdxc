@@ -157,16 +157,11 @@
 		methods:{
 			getDrvList(){//司机列表
 			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{}).then((res) =>{
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10}).then((res) =>{
                     if(res.code == 200){
 						v.drvlist = res.result
 					}
 					console.log(res)
-                })
-			},
-			getYfp(sjid){//已分派订单列表
-                this.$http.post(configApi.ORDER.YFP,{'sjSx':10,'sj':sjid,'cph':''}).then((res) =>{
-                    console.log(res)
                 })
 			},
 			dele(id){//取消分派

@@ -9,7 +9,11 @@
 			<div style="overflow: auto;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
 					<FormItem label='机构名称' prop="jgmc">
-						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称...">
+						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称">
+						</Input>
+					</FormItem>
+					<FormItem label='机构负责人' prop="glyxm">
+						<Input type="text" v-model="formItem.glyxm" placeholder="请填写机构负责人">
 						</Input>
 					</FormItem>
 				</Form>
@@ -40,7 +44,10 @@
                 ruleInline: {
                     jgmc: [
                   		{ required: true, message: '请输入机构名称', trigger: 'blur' }
-                  	]
+                  	],
+                    glyxm:[
+                        { required: true, message: '请输入机构负责人', trigger: 'blur' }
+					]
               	},
             }
         },

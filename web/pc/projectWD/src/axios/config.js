@@ -27,7 +27,6 @@ module.exports = {
 		//订单分派
 		SJLB:'/api/dd/pdsjlb',//司机列表
 		DFP:'/api/dd/dfp',//待分派订单
-		// YFP:'/api/dd/yfp',//已分派
 		QXPD:'/api/dd/qxpd',//取消派单
 		CONFIRM:'/api/dd/ddqr',//订单确认
 		DRIVER_CONFIRM:'/api/dd/driverConfirm',//队长确认
