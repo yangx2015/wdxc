@@ -59,7 +59,7 @@
 							</div>
 						</div>
 					<span slot="extra">
-						<i-switch size="large">
+						<i-switch size="large"  v-model="item.zt=='00'">
 							<span slot="open">开启</span>
 							<span slot="close">关闭</span>
 						</i-switch>
