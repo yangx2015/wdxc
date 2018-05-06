@@ -278,7 +278,7 @@
         	    let param = {
         	        ddzt:zt,
 					id:id,
-                    bhyy:this.bhyy
+                    bhyy:this.formValidate.bhyy
 				}
                 this.$http.post(configApi.ORDER.AUDIT,param).then((res) =>{
                     if (res.code === 200){
