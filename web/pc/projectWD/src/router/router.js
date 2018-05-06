@@ -134,7 +134,7 @@ export let appRouter = [
 				path: 'system-propelling',
 				icon: 'android-clipboard',
 				name: 'system-propelling',
-				title: '自能站牌',
+				title: '智能站牌',
 				component: () => import('@/views/whdx/system/system-propelling')
 			},
 			{
@@ -335,8 +335,15 @@ export let appRouter = [
 						path: 'OrderManagement/Assignment',
 						icon: 'android-clipboard',
 						name: 'Assignment',
-						title: '订单分派',
+						title: '小车派单',
 						component: () => import('@/views/whdx/VehicleScheduling/OrderManagement/Assignment')
+					},
+					{
+						path: 'OrderManagement/Assignment_max',
+						icon: 'android-clipboard',
+						name: 'Assignment_max',
+						title: '大车派单',
+						component: () => import('@/views/whdx/VehicleScheduling/OrderManagement/Assignment_max')
 					},
 					{
 						path: 'OrderManagement/Confirm',

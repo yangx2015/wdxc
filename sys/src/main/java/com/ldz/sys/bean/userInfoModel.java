@@ -9,8 +9,10 @@ import lombok.ToString;
 @ToString
 public class userInfoModel {
 
-	
+
 	private String  yhid;
-	
+
 	private String xm;
+
+	private String jgdm;
 }

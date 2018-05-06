@@ -1,18 +1,18 @@
 package com.ldz.sys.controller;
 
-import java.util.List;
-
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.bean.TreeNode;
+import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
+import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.service.JgService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/jg")
@@ -33,6 +33,11 @@ public class JgController extends BaseController<SysJg, String> {
 	@RequestMapping("getOrgTree")
 	public ApiResponse<List<SysJg>> getOrgTree() {
 		return jgService.getOrgTree();
+	}
+
+	@RequestMapping("getTree")
+	public ApiResponse<List<TreeNode>> getTree(){
+		return jgService.getTree();
 	}
 
 	@Override

@@ -54,6 +54,11 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 		return ApiResponse.success(stations);
 	}
 
+	@RequestMapping("getNotBindList")
+	public ApiResponse<List<ClZd>> getNotBindList(String stationId){
+		return zdservice.getNotBindList(stationId);
+	}
+
 	@RequestMapping(value = "/getNearbyStations",method =  {RequestMethod.GET})
 	public ApiResponse<List<ClZd>> getNearbyStations(String lng,String lat){
 		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));

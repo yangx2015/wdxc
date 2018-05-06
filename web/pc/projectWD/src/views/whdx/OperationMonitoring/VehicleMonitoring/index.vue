@@ -120,6 +120,7 @@
 							<Poptip v-if="item.obdId != null" title="OBD信息"  placement="left" width="300"  style="float: right">
 								<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
 								<div slot="content">
+									<h2 v-if="gpsObdMessage == null" >暂无数据</h2>
 									<Row v-if="gpsObdMessage != null">
 										<Col span="8">更新日期</Col>
 										<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
@@ -146,7 +147,7 @@
 										<Col span="16">
 											<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
 												<span>{{item.faultCode}}</span>
-												<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>
+												<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
 												<br>
 												<span>{{item.creationTime}}</span>
 											</div>

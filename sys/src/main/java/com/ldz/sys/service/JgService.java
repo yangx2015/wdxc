@@ -1,6 +1,7 @@
 package com.ldz.sys.service;
 
 import com.ldz.sys.base.BaseService;
+import com.ldz.sys.bean.TreeNode;
 import com.ldz.sys.model.SysJg;
 import com.ldz.util.bean.ApiResponse;
 
@@ -38,6 +39,8 @@ public interface JgService extends BaseService<SysJg,String>{
      * @return
      */
     List<SysJg> findAllSubOrg(String orgCode);
-    
+
     ApiResponse<List<SysJg>>  getOrgTree();
+
+    ApiResponse<List<TreeNode>> getTree();
 }

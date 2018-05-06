@@ -21,9 +21,7 @@
 								<h3>
 									用车单位
 								</h3>
-								<Select filterable clearable  v-model="formItem.jgdm" size="large" placeholder="请选择用车单位" filterable>
-									<Option v-for="item in jgdmList" :value="item.jgdm">{{item.jgmc}}</Option>
-								</Select>
+								<Cascader @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 							</FormItem>
 						</Col>
 						<Col span="8">
@@ -47,7 +45,7 @@
 								<h3>
 									出车时间
 								</h3>
-								<DatePicker v-model="formItem.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
+								<DatePicker v-model="formItem.yysj" size="large"  placement="right" format="yyyy-MM-dd HH:mm:ss" type="datetime"  placeholder="请填写用车时间" ></DatePicker>
 							</FormItem>
 						</Col>
 						<Col span="8">
@@ -111,7 +109,7 @@
 								<Col span="12">
 									<FormItem label="">
 										<h3>
-											座位数
+											车型
 										</h3>
 										<Select filterable clearable  v-model="formItem.zws" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in zwsList" :value="item.value"></Option>
@@ -122,7 +120,7 @@
 							<Row v-else	>
 								<FormItem label="">
 									<h3>
-										座位数
+										车型
 									</h3>
 									<Select filterable clearable  v-model="formItem.zws" size="large" placeholder="请选择用车单位" filterable>
 										<Option v-for="item in zwsList" :value="item.value"></Option>
@@ -202,7 +200,9 @@
                 	},{
                 		value:'48'
                 	}
-                ]
+                ],
+				treeValue:[],
+				orgTree:[],
             }
         },
 		created(){
@@ -217,16 +217,23 @@
             }])
 		},
 		mounted(){
-			this.getOrgList();
+			this.getOrgTree();
 		},
 		methods:{
-    	    getOrgList(){
-                this.$http.get(configApi.FRAMEWORK.getSubOrgList).then((res) =>{
-                    this.jgdmList = res.result
+            change(vaule,selectedData){
+                this.treeValue = vaule;
+            },
+    	    getOrgTree(){
+                this.$http.get(configApi.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                    this.orgTree = res.result
                 })
 			},
 			//表单数据提交
 			AddNewlist(){
+                if (this.treeValue.length === 0){
+                    this.$Message.error('请选择机构');
+                    return;
+				}
 				var v = this
 				swal({
 				  title: "是否提交数据?",
@@ -241,6 +248,7 @@
 				});
 			},
 			create(){
+                this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
                 this.$http.post(configApi.ORDER.ADD,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("创建成功");

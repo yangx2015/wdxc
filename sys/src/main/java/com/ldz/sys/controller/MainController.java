@@ -106,8 +106,9 @@ public class MainController {
 				userInfoModel userInfomodel = new userInfoModel();
 				userInfomodel.setXm(item.getXm());
 				userInfomodel.setYhid(item.getYhid());
+				userInfomodel.setJgdm(item.getJgdm());
 				rMap.put("accessToken", aToken);
-					rMap.put("userInfo", userInfomodel);
+				rMap.put("userInfo", userInfomodel);
 				SysJg org = jgService.findByOrgCode(item.getJgdm());
 				if (org != null){
 					rMap.put("jgmc", org.getJgmc());
@@ -135,10 +136,10 @@ public class MainController {
 		String userId = request.getHeader("userid");
 		redisDao.delete(userId);
 		redisDao.delete(userId+"-userInfo");
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * 登陆验证码图片生成
 	 * @param id
@@ -146,26 +147,26 @@ public class MainController {
 	 * @param httpServletResponse
 	 * @throws Exception
 	 */
-    @RequestMapping(value="/pub/image/Kaptcha/{id}", method={RequestMethod.GET}, produces={MediaType.IMAGE_JPEG_VALUE})  
-    public void Kaptcha(@PathVariable("id")String id , HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception{ 
+    @RequestMapping(value="/pub/image/Kaptcha/{id}", method={RequestMethod.GET}, produces={MediaType.IMAGE_JPEG_VALUE})
+    public void Kaptcha(@PathVariable("id")String id , HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws Exception{
     	if (StringUtils.isEmpty(id)){
     		return;
     	}
-    	
-        httpServletResponse.setHeader("Cache-Control", "no-store");    
-        httpServletResponse.setHeader("Pragma", "no-cache");    
-        httpServletResponse.setDateHeader("Expires", 0);    
+
+        httpServletResponse.setHeader("Cache-Control", "no-store");
+        httpServletResponse.setHeader("Pragma", "no-cache");
+        httpServletResponse.setDateHeader("Expires", 0);
         try {
-        	//生产验证码字符串并保存到session中  
+        	//生产验证码字符串并保存到session中
             String createText = defaultKaptcha.createText();
 			httpServletRequest.getSession().setAttribute(id, createText);
-            //使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中  
-            BufferedImage challenge = defaultKaptcha.createImage(createText);  
-            ImageIO.write(challenge, "jpg", httpServletResponse.getOutputStream());  
-        } catch (IllegalArgumentException e) {    
-        	httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);    
-            return;    
-        } 
+            //使用生产的验证码字符串返回一个BufferedImage对象并转为byte写入到byte数组中
+            BufferedImage challenge = defaultKaptcha.createImage(createText);
+            ImageIO.write(challenge, "jpg", httpServletResponse.getOutputStream());
+        } catch (IllegalArgumentException e) {
+        	httpServletResponse.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
     }
 
 	//处理文件上传

@@ -50,6 +50,7 @@ module.exports = {
         CHANGE:'/api/jg/update',
         DELE:'/api/jg/removeIds',
 		GET_TREE:'/api/jg/getOrgTree',
+		GET_TREE_Node:'/api/jg/getTree',
         getSubOrgList:'/api/jg/getSubOrgList',
 	},
 	DICTIONARY:{
@@ -164,7 +165,8 @@ module.exports = {
 		DELE:   '/api/clzd/removeIds',
 		GET_ALL:'/api/clzd/getAll',
         getByCondition:'/api/clzd/getCondition',
-		GET_BY_ROUTE_ID:'/api/clzd/getByXlId'
+		GET_BY_ROUTE_ID:'/api/clzd/getByXlId',
+        getNotBindList:'/api/clzd/getNotBindList',
 	},
 	PB:{//校巴排版
 		QUERY:  '/api/pb/xbpb/',
