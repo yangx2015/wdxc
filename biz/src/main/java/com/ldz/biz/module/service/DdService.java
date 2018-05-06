@@ -1,5 +1,6 @@
 package com.ldz.biz.module.service;
 
+import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
@@ -21,7 +22,7 @@ public interface DdService extends BaseService<ClDd,String>{
 
     ApiResponse<List<ClDd>> assignedOrderd(ClDd entity);
 
-    ApiResponse<List<ClJsy>> driverList(ClJsy entity);
+    ApiResponse<List<ClJsyModel>> driverList(ClJsy entity);
 
     ApiResponse<List<ClDd>> affirmOrderList(ClDd entity);
 
