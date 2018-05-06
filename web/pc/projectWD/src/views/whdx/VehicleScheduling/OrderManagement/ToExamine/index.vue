@@ -4,8 +4,7 @@
 </style>
 <!--订单审核-->
 <template>
-    <div class="box">
-		<Card>
+    <div class="box boxbackborder">
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -30,6 +29,7 @@
 			<div class="body">
 				<Row>
 					<Table
+							:height="tabHeight"
 							:row-class-name="rowClassName"
 							:columns="tableTiT"
 							:data="tableData"></Table>
@@ -43,13 +43,24 @@
 						  @on-change='pageChange'></Page>
 				</Row>
 			</div>
-		</Card>
 		<Modal
 		    v-model="showModal"
 		    width='800'
+			:closable="false"
 		    :mask-closable="false"
-		    title="信息详情">
-		    <div slot='footer'></div>
+		    title="请填写驳回原因">
+			<div>
+				<Form ref="formValidate" :model="formValidate"
+					  :rules="ruleValidate" :label-width="80">
+					<FormItem label="原因" prop="desc">
+						<Input v-model="formValidate.desc" type="textarea" placeholder="请填写驳回原因"></Input>
+					</FormItem>
+				</Form>
+			</div>
+		    <div slot='footer'>
+				<Button type="text" @click="showModal=false,messError=''">取消</Button>
+				<Button type="primary" @click="handleSubmit('formValidate')">Submit</Button>
+			</div>
 		</Modal>
     </div>
 </template>
@@ -64,12 +75,22 @@
     	mixins:[mixins],
         data () {
             return {
+                formValidate: {
+                    desc: ''
+                },
+                ruleValidate: {
+                    desc: [
+                        { required: true, message: '请认真填写驳回原因', trigger: 'blur' }
+					]
+                },
+                //tab高度
+                tabHeight: 220,
             	PickerTime:2017,
             	//分页
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:13
             	},
             	//弹层
             	showModal:false,
@@ -167,10 +188,16 @@
                 	like_ScName:'',
 					ddzt:'10',
                 	pageNum:1,
-            		pageSize:5
-                }
+            		pageSize:13
+                },
+				messError:''
             }
         },
+        // watch: {
+        //     datetime:function(newQuestion, oldQuestion){
+			// 	this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+			// },
+        // },
         created(){
         	this.$store.commit('setCurrentPath', [{
                 title: '首页',
@@ -181,7 +208,8 @@
             },{
                 title: '订单审核',
             }]),
-			this.findMessList();
+			this.tabHeight = this.getWindowHeight() - 295
+            this.findMessList();
         },
         methods: {
         	changeTime(val){
@@ -228,22 +256,35 @@
                 swal({
                     title: "审核驳回?",
                     text: "",
-                    icon: "success",
+                    icon: "warning",
                     buttons:['取消','确认'],
                 }).then((willDelete) => {
                     if (willDelete) {
-                        this.audit(id,'12');
+                        this.showModal = true
                     }
                 });
 			},
+            handleSubmit (name) {
+        	    var v = this
+                this.$refs[name].validate((valid) => {
+                    if (valid) {
+                        v.$Message.success('Success!');
+                        v.audit(id,'12');
+                    } else {
+                        this.$Message.error('Fail!');
+                    }
+                })
+            },
             audit(id,zt){
         	    let param = {
         	        ddzt:zt,
-					id:id
+					id:id,
+                    messError:this.messError
 				}
                 this.$http.post(configApi.ORDER.AUDIT,param).then((res) =>{
                     if (res.code === 200){
                         this.findMessList();
+                        this.showModal = false
                     }
                 })
 			},
