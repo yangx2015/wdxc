@@ -509,6 +509,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * 订单编辑-订单确认
      * 1、订单处于：司机确认(行程结束)
      * 2、只有该队队长才能有限制
+     *
+     * ---------------20180506修改如下-------------
+     * 1、订单处理13（派单）、20（司机确认）后都可以修改
+     * 2、司机、队长、su(超级管理员)可以进行修改
      * @param entity
      * @return
      */
@@ -519,14 +523,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
+        RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行操作");
 //        2、验证当前状态必须是 11-订单确认状态
+//        订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
         String ddzt=clDd.getDdzt();
-        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"司机还未做确认操作，不能进行编辑操作");
+        if(StringUtils.equals(ddzt,"13")){
+//            RuntimeCheck.ifFalse(StringUtils.equals(clDd.getSj(),userId)||StringUtils.equals(user.getLx(),"su"),"订单不属于本人，不能进行编辑操作");
+        }else if(StringUtils.equals(ddzt,"20")){
+//            RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId)||StringUtils.equals(user.getLx(),"su"),"订单不属于本人，不能进行编辑操作");
 
-        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行编辑操作");
+            RuntimeCheck.ifNull(entity.getZj(),"订单总价不能为空");
+            RuntimeCheck.ifNull(entity.getZj()>0,"订单总价不能为空");
+        }else{
+            RuntimeCheck.ifTrue(true,"订单状态异常，不能进行订单编辑操作");
+        }
 
-        RuntimeCheck.ifNull(entity.getZj(),"订单总价不能为空");
-        RuntimeCheck.ifNull(entity.getZj()>0,"订单总价不能为空");
 
         ClDd newClDd=new ClDd();
         newClDd.setId(clDd.getId());
@@ -568,11 +579,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
-//        2、验证当前状态必须是 11-订单确认状态
-        String ddzt=clDd.getDdzt();
-        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
+        RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行操作");
+////        2、验证当前状态必须是 11-订单确认状态
+//        String ddzt=clDd.getDdzt();
+//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
 
-        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
+        RuntimeCheck.ifNull(clDd.getZj(),"订单总价不能为空");
+        RuntimeCheck.ifNull(clDd.getZj()>0,"订单总价不能为空");
 
         ClDd newClDd=new ClDd();
         newClDd.setId(clDd.getId());
