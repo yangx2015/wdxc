@@ -105,7 +105,7 @@
             <Col span="6">
             	<h3>备注：</h3>
             	<div style="word-wrap:break-word">
-            		{{row.bz}}
+            		{{row.sy}}
             	</div>
             </Col>
         </Row>
