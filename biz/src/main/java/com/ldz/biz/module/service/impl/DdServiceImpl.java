@@ -92,9 +92,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      */
     @Override
     public boolean fillCondition(LimitedCondition condition){
-        SysYh user=getCurrentUser(false);//true
-        String jgdm="/";
-
+        SysYh user=getCurrentUser(true);//true
+        String jgdm=user.getJgdm();
         condition.and().andLike("jgdm",jgdm+"%");
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()) .getRequest();
