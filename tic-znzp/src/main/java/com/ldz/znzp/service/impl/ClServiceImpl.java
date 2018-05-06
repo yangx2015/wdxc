@@ -171,7 +171,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }else{
             clyxjlMapper.insertSelective(record);
         }
-        if (gpsInfo.getEventType().equals("80")){
+        if ("80".equals(gpsInfo.getSczt()) || "20".equals(gpsInfo.getSczt())){
             return ApiResponse.fail("设备已离线");
         }
         return ApiResponse.success();
