@@ -6,4 +6,6 @@ import com.ldz.znzp.model.ClZnzp;
 
 public interface ZnzpService extends BaseService<ClZnzp,String>{
     ApiResponse<String> saveEntity(ClZnzp entity);
+
+    ApiResponse<String> updateMedia(String jgdm);
 }

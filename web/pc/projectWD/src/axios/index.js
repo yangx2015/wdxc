@@ -8,20 +8,14 @@ import store from '@/store'
 import env from '../../build/env';
 //订单分配权限
 
-
-function getUrl(){
-    let prodUrl = 'http://47.98.39.45:8080'; // 生产环境(正式环境)
-    let devUrl = 'http://localhost:8081'; // cw-mac
-// let devUrl = 'http://192.168.31.181:80',//陈
-// let devUrl = 'http://192.168.31.228:8088',//羊
-// let devUrl = 'http://192.168.31.223:80',//羊
-    switch(env){
-        case true : return devUrl;
-        default : return prodUrl;
-    }
-}
+// let url = 'http://47.98.39.45:8080'; // 生产环境(测试时不要改动这里)
+// let url = 'http://47.98.39.45:8080'; //
+let url = 'http://localhost:8081'; // cw-mac
+// let url = 'http://192.168.31.181:80',//陈
+// let url = 'http://192.168.31.228:8088',//羊
+// let url = 'http://192.168.31.223:80',//羊
 let httpInstance = axios.create({
-baseURL: getUrl(),
+baseURL: url,
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true

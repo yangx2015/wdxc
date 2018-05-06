@@ -16,10 +16,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Component
@@ -58,6 +55,31 @@ public class NettyUtil {
             }
         }
         return null;
+    }
+    public Map<String,Object> getChannelByTids(List<String> tids){
+        Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
+        if (keys.size() == 0)return null;
+        Map<String,Object> tidChannelMap = new HashMap<>(tids.size());
+        Map<String,Channel> channelMap = new HashMap<>(tids.size());
+        for (String key : keys) {
+            String[] part = key.split("-");
+            String tid = part[0];
+            String cid = part[1];
+            channelMap.put(cid,null);
+            tidChannelMap.put(tid,cid);
+        }
+        for (Channel channel : IotServer.onlineChannels) {
+            String id = channel.id().asShortText();
+            if (channelMap.containsKey(id)){
+                channelMap.put(id,channel);
+            }
+        }
+        for (Map.Entry<String, Object> entry : tidChannelMap.entrySet()) {
+            String cid = (String) entry.getValue();
+            if (!channelMap.containsKey(cid))continue;
+            tidChannelMap.put(entry.getKey(),channelMap.get(cid));
+        }
+        return tidChannelMap;
     }
 
     private void writeDataByte(ChannelHandlerContext ctx, Object sendData){

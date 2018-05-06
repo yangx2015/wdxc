@@ -12,6 +12,7 @@ import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.ClService;
 import com.ldz.znzp.service.ClyxjlService;
 import com.ldz.znzp.service.XlService;
+import com.ldz.znzp.service.ZnzpService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,6 +41,9 @@ public class MessageApi {
 	private XlService xlService;
 	@Autowired
 	private ClyxjlService clyxjlService;
+
+	@ Autowired
+	private ZnzpService znzpService;
 	/**
 	 * 将校巴实时位置信息发送给智能站牌展示。
 	 * 接收到车辆和位置信息后，需要查询当前车辆是在哪条线路上进行运行，确认运营路线，再通过经纬度解析车辆当前运行到哪个站点
@@ -55,9 +59,6 @@ public class MessageApi {
 		}
 		if (StringUtils.isEmpty(gpsInfo.getLatitude())){
 			return ApiResponse.fail("纬度不能为空");
-		}
-		if (StringUtils.isEmpty(gpsInfo.getEventType())){
-			return ApiResponse.fail("事件类型不能为空");
 		}
 
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
@@ -81,6 +82,11 @@ public class MessageApi {
 	@RequestMapping(value="/media", method={RequestMethod.POST})
 	public void media(HttpServletRequest request){
 
+	}
+
+	@RequestMapping(value="/updateMedia", method={RequestMethod.POST})
+	public ApiResponse<String> updateMedia(String jgdm){
+		return znzpService.updateMedia(jgdm);
 	}
 
 	@RequestMapping(value="/led", method={RequestMethod.POST})
