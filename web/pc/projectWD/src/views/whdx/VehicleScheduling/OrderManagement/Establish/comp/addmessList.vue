@@ -4,19 +4,19 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' 
-			:mask-closable="mesF" title="新建字典类目">
+			:mask-closable="mesF" title="新建课题">
 			<div style="overflow: auto;">
 				<Form
 					:model='addmess'
 					:label-width="100"
 					:rules="ruleInline"
 					label-position="right">
-					<FormItem prop='zddm' label='类目代码：'>
-						<Input type="text" v-model="addmess.zddm" placeholder="请填写类目编码...">
+					<FormItem prop='zddm' label='新建课题代码：'>
+						<Input type="text" v-model="addmess.zddm" placeholder="请填写课题代码...">
 						</Input>
 					</FormItem>
-							<FormItem prop='zdmc' label='类目名称：'>
-								<Input type="text" v-model="addmess.zdmc" placeholder="请填写类目名称...">
+							<FormItem prop='zdmc' label='新建课题名称：'>
+								<Input type="text" v-model="addmess.zdmc" placeholder="课题名称...">
 								</Input>
 							</FormItem>
 				</Form>
