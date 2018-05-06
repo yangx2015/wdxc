@@ -108,6 +108,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
+        RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
+        RuntimeCheck.ifNull(entity.getZws(),"乘客人数不能为空");
         String orderId=genId();
         entity.setId(orderId);
         entity.setCjr(userId);
@@ -243,7 +245,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             condition.in(ClDd.InnerColumn.cllx,li);
         }else{
             condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
-            RuntimeCheck.ifTrue(true,"车辆类型入参错误");
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
