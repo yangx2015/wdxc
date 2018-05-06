@@ -92,9 +92,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      */
     @Override
     public boolean fillCondition(LimitedCondition condition){
-        SysYh user=getCurrentUser(false);//true
-        String jgdm="/";
-
+        SysYh user=getCurrentUser(true);//true
+        String jgdm=user.getJgdm();
         condition.and().andLike("jgdm",jgdm+"%");
 
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()) .getRequest();
@@ -109,6 +108,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
+        RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
+        RuntimeCheck.ifNull(entity.getZws(),"乘客人数不能为空");
+        RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
         String orderId=genId();
         entity.setId(orderId);
         entity.setCjr(userId);
@@ -119,12 +121,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
 
-        // 原始单据
-        ClDdlsb initOrder = new ClDdlsb();
-        BeanUtils.copyProperties(entity,initOrder,"id");
-        initOrder.setId(genId());
-        initOrder.setDdId(entity.getId());
-        ddlsbMapper.insertSelective(initOrder);
+//        // 原始单据
+//        ClDdlsb initOrder = new ClDdlsb();
+//        BeanUtils.copyProperties(entity,initOrder,"id");
+//        initOrder.setId(genId());
+//        initOrder.setDdId(entity.getId());
+//        ddlsbMapper.insertSelective(initOrder);
 
         ddrzService.log(entity);
         return ApiResponse.success();
@@ -244,7 +246,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             condition.in(ClDd.InnerColumn.cllx,li);
         }else{
             condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
-            RuntimeCheck.ifTrue(true,"车辆类型入参错误");
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
@@ -483,6 +484,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(false,"操作数据库失败");
             return ApiResponse.fail("操作数据库失败");
         }
+
 
         ClDdrz clDdrz=new ClDdrz();
         clDdrz.setId(genId());//主键ID
