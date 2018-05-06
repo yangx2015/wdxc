@@ -276,7 +276,6 @@
 			},
             getKT(){
                 this.ctasklList =this.dictUtil.getByCode(this,'ktzd00001')
-				console.log('********************8',this.dictUtil.getByCode(this,'ktzd00001'))
 
             },
             change(vaule,selectedData){

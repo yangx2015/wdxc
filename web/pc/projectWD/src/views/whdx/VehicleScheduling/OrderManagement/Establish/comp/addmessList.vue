@@ -73,7 +73,7 @@
 				this.$http.post(configApi.DICTIONARY_LIST.ADD,v.addmess).then((res) =>{
 					log('字典添加',res)
 					if(res.code===200){
-						// v.$parent.getmess()
+						v.$parent.getKT()
 						v.$Message.success('操作成功');
 						v.$parent.compName = ''
 					}else{
