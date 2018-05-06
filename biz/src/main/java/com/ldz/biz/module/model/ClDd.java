@@ -73,6 +73,12 @@ public class ClDd implements Serializable {
     private Double dj;
 
     /**
+     * 驳回原因
+     */
+    @Column(name = "BHYY")
+    private Double bhyy;
+
+    /**
      * 里程
      */
     @Column(name = "LC")
@@ -276,6 +282,15 @@ public class ClDd implements Serializable {
     @Column(name = "ZDBH")
     private String zdbm;
     private static final long serialVersionUID = 1L;
+
+
+    public Double getBhyy() {
+        return bhyy;
+    }
+
+    public void setBhyy(Double bhyy) {
+        this.bhyy = bhyy;
+    }
 
     /**
      * 获取ID

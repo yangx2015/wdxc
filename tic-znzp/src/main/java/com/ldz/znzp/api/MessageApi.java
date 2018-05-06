@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.model.ClCl;
 import com.ldz.znzp.model.ClClyxjl;
@@ -33,6 +34,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/api")
 public class MessageApi {
+	@Autowired
+	private RedisTemplateUtil redisTemplateUtil;
 
 	@Autowired
 	private ClService clService;
@@ -92,5 +95,11 @@ public class MessageApi {
 	@RequestMapping(value="/led", method={RequestMethod.POST})
 	public void led(HttpServletRequest request){
 
+	}
+
+	@RequestMapping("deleteRedisKey")
+	public ApiResponse<String> deleteRedisKey(String key){
+		redisTemplateUtil.delete(key);
+		return ApiResponse.success();
 	}
 }

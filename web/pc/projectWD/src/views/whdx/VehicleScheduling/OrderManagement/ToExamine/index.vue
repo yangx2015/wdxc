@@ -53,7 +53,7 @@
 				<Form ref="formValidate" :model="formValidate"
 					  :rules="ruleValidate" :label-width="80">
 					<FormItem label="原因" prop="desc">
-						<Input v-model="formValidate.desc" type="textarea" placeholder="请填写驳回原因"></Input>
+						<Input v-model="formValidate.bhyy" type="textarea" placeholder="请填写驳回原因"></Input>
 					</FormItem>
 				</Form>
 			</div>

@@ -18,3 +18,4 @@ ticserver:
 
 staticPath:  D:\static\common\
 updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
+deleteZnzpRedisKeyUrl: http://47.98.39.45:9888/api/deleteRedisKey

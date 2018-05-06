@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.sys.util.RedisUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.mapper.ClXlMapper;
@@ -46,6 +48,10 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private ClXlzdMapper xlzdMapper;
 	@Autowired
 	private ClZdMapper clzdMapper;
+	@Value("${deleteZnzpRedisKeyUrl:http://47.98.39.45:9888/api/deleteRedisKey}")
+	private String deleteZnzpRedisKeyUrl;
+	@Autowired
+	private RedisUtil redisUtil;
 
 	@Override
 	protected Mapper<ClXl> getBaseMapper() {
@@ -72,6 +78,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			List<String> stationIds = Arrays.asList(entity.getZdIds().split(","));
 			saveRouterStations(entity, stationIds);
 		}
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.saveSuccess();
 	}
 
@@ -138,6 +145,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			List<String> stationIds = Arrays.asList(entity.getZdIds().split(","));
 			saveRouterStations(entity, stationIds);
 		}
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.success();
 	}
 
@@ -181,7 +189,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
 	/*
 	 * public static void main(String[] args) {
-	 * 
+	 *
 	 * List<String> qidian = new ArrayList<>(); String q =
 	 * "30.5307693887,114.3244618270"; qidian.add(q); List<String> zhongdian = new
 	 * ArrayList<>(); String z = "30.5582816319,114.2131314340"; zhongdian.add(z);
@@ -190,7 +198,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	 * (RouteMatrixResult routeMatrixResult : result) { Map<String, String> duration
 	 * = routeMatrixResult.getDuration(); System.out.println(duration.get("text"));
 	 * }
-	 * 
+	 *
 	 * }
 	 */
 
@@ -212,7 +220,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 				dsd.add(strings.get(i)+"第一次");
 			}
 		}
-		
+
 		System.out.println(dsd);
 	}
 }

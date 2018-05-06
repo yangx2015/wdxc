@@ -11,11 +11,13 @@ import com.ldz.sys.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.gps.DistanceUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -38,6 +40,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     private XlService xlService;
     @Autowired
     private ZnzpService znzpService;
+    @Value("${deleteZnzpRedisKeyUrl:http://47.98.39.45:9888/api/deleteRedisKey}")
+    private String deleteZnzpRedisKeyUrl;
+    @Autowired
+    private RedisUtil redisUtil;
 
     @Override
     protected Mapper<ClZd> getBaseMapper() {
@@ -60,6 +66,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
          entity.setJgdm(user.getJgdm());
          entity.setJgmc(org.getJgmc());
          save(entity);
+        redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
         return ApiResponse.saveSuccess();
     }
 
@@ -224,6 +231,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
 	        entity.setXgr(getOperateUser());
 	        entity.setXgsj(new Date());
 	        update(entity);
+        redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.success();
 	}
 }
