@@ -121,21 +121,24 @@
 						@on-change='pageChange'></Page>
 			</div>
 		<Modal
-				width="70%"
-				v-model="maxPhoto">
+			width="70%"
+			v-model="maxPhoto">
+				<div slot="close" style="padding: 10px" @click="maxPhoto = false">
+					<Icon type="close-round" color="#000"></Icon>
+				</div>
 				<img :src="maxUrl"
 					 width="100%"
 					 alt="">
-			<div slot="footer">
-				<div style="width: 100%;overflow-y: auto;text-align: center">
-					<img v-for="(item,index) in videoList"
-						 :src="videoPath+'/test/'+item.url"
-						 width="7.5%"
-						 @click="showMax(videoPath+'/test/'+item.url,index)"
-						 style="margin: 2px;">
+				<div slot="footer">
+					<div style="width: 100%;overflow-y: auto;text-align: center">
+						<img v-for="(item,index) in videoList"
+							 :src="videoPath+'/test/'+item.url"
+							 width="7.5%"
+							 @click="showMax(videoPath+'/test/'+item.url,index)"
+							 style="margin: 2px;">
 
+					</div>
 				</div>
-			</div>
 		</Modal>
 	</div>
 </template>
