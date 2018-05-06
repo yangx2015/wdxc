@@ -40,7 +40,7 @@
 		</Row>
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
-				<Card style="width:440px;margin:8px auto" v-for="(item,index) in drvlist">
+				<Card style="width:440px;margin:8px" v-for="(item,index) in drvlist">
 						<div slot="title" class="box-row" style="height: 25px;line-height: 25px">
 							<div style="font-weight: 700">
 								<Icon type="ios-film-outline"></Icon>
