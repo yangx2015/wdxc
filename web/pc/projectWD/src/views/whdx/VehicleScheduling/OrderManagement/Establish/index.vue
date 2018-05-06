@@ -56,28 +56,28 @@
 								<Input v-model="formItem.mdd" size="large" placeholder="请填写目的地点"></Input>
 							</FormItem>
 						</Col>
-						<Col span="4">
-						<FormItem label="">
-							<h3>
-								出车时间
-							</h3>
-							<DatePicker v-model="formItem.yysj"
-										size="large"  placement="left"
-										format="yyyy-MM-dd HH:mm:ss"
-										type="datetime"
-										placeholder="请填写用车时间" ></DatePicker>
-						</FormItem>
-						</Col>
-						<Col span="4">
+						<Col span="8">
 							<FormItem label="">
 								<h3>
-									单据类型
+									出车时间
 								</h3>
-								<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>
-									<Option value="00">单程</Option>
-									<Option value="10">往返</Option>
-								</Select>
+								<DatePicker v-model="formItem.yysj"
+											size="large"  placement="left"
+											format="yyyy-MM-dd HH:mm:ss"
+											type="datetime"
+											placeholder="请填写用车时间" ></DatePicker>
 							</FormItem>
+						<!--</Col>-->
+						<!--<Col span="4">-->
+							<!--<FormItem label="">-->
+								<!--<h3>-->
+									<!--单据类型-->
+								<!--</h3>-->
+								<!--<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>-->
+									<!--<Option value="00">单程</Option>-->
+									<!--<Option value="10">往返</Option>-->
+								<!--</Select>-->
+							<!--</FormItem>-->
 						</Col>
 						<Col span="8">
 							<Row>
@@ -90,7 +90,7 @@
 												v-model="formItem.fromMoney"
 												@on-change="fyly"
 												size="large" placeholder="请选择费用来源" filterable>
-											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
+											<Option v-for="item in fromMoneyList" :value="item.key">{{item.val}}</Option>
 										</Select>
 									</FormItem>
 								</Col>
@@ -102,14 +102,14 @@
 										<div class="box-row">
 											<div class="body-O">
 												<Select filterable clearable
-														:disabled="formItem.fromMoney!='课题费用'"
-														v-model="formItem.task" size="large" placeholder="请选择课题" filterable>
+														:disabled="formItem.fromMoney!='20'"
+														v-model="formItem.ktcode" size="large" placeholder="请选择课题" filterable>
 													<Option v-for="item in ctasklList" :value="item.key">{{item.val}}</Option>
 												</Select>
 											</div>
 											<div title="新建课题">
 												<Button type="info"
-														:disabled="formItem.fromMoney!='课题费用'"
+														:disabled="formItem.fromMoney!='20'"
 														@click="newKT">新建</Button>
 											</div>
 										</div>
@@ -122,7 +122,7 @@
 										<h3>
 											车型
 										</h3>
-										<Cascader v-model="formItem.zws" :data="CasData"></Cascader>
+										<Cascader @on-change="changeCLLX" :data="CasData"></Cascader>
 									</FormItem>
 								</Col>
 								<Col span="12">
@@ -130,7 +130,7 @@
 										<h3>
 											行程费用
 										</h3>
-										<Input v-model="formItem.money" placeholder="请输入行程费用"></Input>
+										<Input v-model="formItem.zj" placeholder="请输入行程费用"></Input>
 									</FormItem>
 									</Col>
 								</Row>
@@ -168,36 +168,38 @@
                 compName:'',
                 dicListMess:'ktzd00001',
                 formItem: {
-                	jgdm:'',//单位
+                	jgmc:'',//单位名称
+                    jgdm:'',//单位Code
                 	ck:'',//用车人
                 	cklxdh:'',//用车电话
-                	fromMoney:'',//费用来源
-                	starTime:'',//发车时间
                 	hcdz:'',//候车地点
                 	mdd:'',//目的点
-                	zws:[],//车型
+                    yysj:'',//发车时间
+                    fkfs:'',//费用来源
+                    ktcode:'',//课题
+                	cllx:'',//车型
+                    zws:'',//座位数
+                    zj:'',//总价
                 	sy:'',//备注
-                	task:'',//课题
-					money:''
                 },
+            // 机构代码(用车单位ID)	JGDM
+            // 机构名称(用车单位名称)	jgmc
+            // 乘客姓名  ck
+            // 乘客联系电话	cklxdh
+            //     候车地址  hcdz;
+            // 目的地  mdd;
+            // 预约时间   yysj
+            // 付款方式(费用来源)	fkfs
+			//车型cllx
+            // 座位数		zws
+            // 总价  zj
+
+            // 事由	sy
                 jgdmList:[
                 ],
-                fromMoneyList:[
-                	{
-                		value:'行政费用'
-                	},{
-                		value:'课题费用'
-                	},{
-                		value:'自费'
-                	}
+                fromMoneyList:[//费用来源
                 ],
-                ctasklList:[
-                	// {
-                	// 	value:'H012菌课题',
-                	// },
-                	// {
-                	// 	value:'甲骨文课题',
-                	// }
+                ctasklList:[//课题
                 ],
 				CasData:[{
                     value: '20',
@@ -279,7 +281,7 @@
 			},
             getKT(){
                 this.ctasklList =this.dictUtil.getByCode(this,'ktzd00001')
-
+				this.fromMoneyList = this.dictUtil.getByCode(this,'ZDCLK0043')
             },
             fyly(){
                 if(this.formItem.fromMoney!='课题费用'){
@@ -287,8 +289,16 @@
 				}
 			},
             change(vaule,selectedData){
+				this.formItem.jgmc=selectedData[selectedData.length-1].label
+				this.formItem.jgdm=selectedData[selectedData.length-1].value
                 this.treeValue = vaule;
             },
+            changeCLLX(v,s){
+                // console.log(v)
+				// console.log(s)
+                this.formItem.cllx=v[0]
+                this.formItem.zws=v[1]
+			},
     	    getOrgTree(){
                 this.$http.get(configApi.FRAMEWORK.GET_TREE_Node).then((res) =>{
                     this.orgTree = res.result
@@ -310,15 +320,30 @@
 				// })
 				// .then((willDelete) => {
 				//   if (willDelete) {
-				//       this.create();
+				      this.create();
 				//   }
 				// });
 			},
 			create(){
-                this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
+                // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
                 this.$http.post(configApi.ORDER.ADD,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("创建成功");
+                        this.formItem = {
+                            jgmc:'',//单位名称
+                                jgdm:'',//单位Code
+                                ck:'',//用车人
+                                cklxdh:'',//用车电话
+                                hcdz:'',//候车地点
+                                mdd:'',//目的点
+                                yysj:'',//发车时间
+                                fkfs:'',//费用来源
+                                ktcode:'',//课题
+                                cllx:'',//车型
+                                zws:'',//座位数
+                                zj:'',//总价
+                                sy:'',//备注
+                        }
 
 					}else{
                         this.$Message.error(res.message);
