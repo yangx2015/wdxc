@@ -69,13 +69,13 @@
                 findMess:{
                     ckLike:'',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 },
             	//弹层
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	showModal:false,
                 columns10: [

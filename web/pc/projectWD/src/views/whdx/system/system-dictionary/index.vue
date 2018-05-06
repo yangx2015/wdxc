@@ -17,7 +17,7 @@
 						<span>字典管理</span>
 					</div>
 					<div class="body-r-1 inputSty">
-						<Input v-model="findMess.lmmcLike" placeholder="请输入字典名称..." 
+						<Input v-model="findMess.lmmcLike" placeholder="请输入字典名称..."
 							style="width: 200px"
 							@on-keyup.enter="findMessList()"
 							@on-change="findMessList"></Input>
@@ -125,7 +125,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				dictionary: [],
 				//收索
@@ -216,7 +216,7 @@
 					})
 				  } else {
 				  }
-				});	
+				});
 			},
 			changrDcList(item, items) {
 				var v = this

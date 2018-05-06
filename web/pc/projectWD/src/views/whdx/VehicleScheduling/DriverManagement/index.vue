@@ -76,7 +76,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
                 tableTiT: [
                   	{
@@ -242,7 +242,7 @@
 					cjsjInRange:'',
 					xmLike: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
                 ztDict:[],
                 ztDictCode:'ZDCLK0016',

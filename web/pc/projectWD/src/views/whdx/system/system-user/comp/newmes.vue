@@ -148,7 +148,7 @@
 		methods:{
 		    getOrgList(){
 		        let v = this;
-                v.$http.post(configApi.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                v.$http.get(configApi.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{
                     if(res.code===200){
                         this.orgList = res.page.list;
                     }else{

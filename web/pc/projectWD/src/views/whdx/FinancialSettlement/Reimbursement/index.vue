@@ -67,7 +67,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				//弹层--角色分配
 				RootShow: false,
@@ -129,7 +129,7 @@
 					like_CarNumber: '',
 					like_ScName: '',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				}
 			}
 		},

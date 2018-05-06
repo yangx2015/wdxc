@@ -166,7 +166,7 @@
         data () {
             return {
                 compName:'',
-                dicListMess:'ktzd00001',
+                dicListMess:'ZDCLK0045',
                 formItem: {
                 	jgdm:'',//单位
                 	ck:'',//用车人
@@ -278,7 +278,7 @@
                 this.compName='addmessList'
 			},
             getKT(){
-                this.ctasklList =this.dictUtil.getByCode(this,'ktzd00001')
+                this.ctasklList =this.dictUtil.getByCode(this,'ZDCLK0045')
 
             },
             fyly(){
@@ -296,23 +296,22 @@
 			},
 			//表单数据提交
 			AddNewlist(){
-                console.log(this.formItem)
-                // if (this.treeValue.length === 0){
-                 //    this.$Message.error('请选择机构');
-                 //    return;
-				// }
-				// var v = this
-				// swal({
-				//   title: "是否提交数据?",
-				//   text: "",
-				//   icon: "success",
-				//   buttons:['取消','确认'],
-				// })
-				// .then((willDelete) => {
-				//   if (willDelete) {
-				//       this.create();
-				//   }
-				// });
+                if (this.treeValue.length === 0){
+                    this.$Message.error('请选择机构');
+                    return;
+				}
+				var v = this
+				swal({
+				  title: "是否提交数据?",
+				  text: "",
+				  icon: "success",
+				  buttons:['取消','确认'],
+				})
+				.then((willDelete) => {
+				  if (willDelete) {
+				      this.create();
+				  }
+				});
 			},
 			create(){
                 this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
