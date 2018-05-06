@@ -149,7 +149,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(orderTypeValid,"设置订单状态有误");
         }
 
-        RuntimeCheck.ifTrue(StringUtils.equals(entity.getDdzt(),"12")&&StringUtils.isEmpty(entity.getSy()),"驳回原因不能为空");
+        RuntimeCheck.ifTrue(StringUtils.equals(entity.getDdzt(),"12")&&StringUtils.isEmpty(entity.getBhyy()),"驳回原因不能为空");
 
 
         ClDd clDd=findById(entity.getId());

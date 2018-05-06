@@ -76,7 +76,7 @@ public class ClDd implements Serializable {
      * 驳回原因
      */
     @Column(name = "BHYY")
-    private Double bhyy;
+    private String bhyy;
 
     /**
      * 里程
@@ -296,12 +296,11 @@ public class ClDd implements Serializable {
         this.ktcode = ktcode;
     }
 
-
-    public Double getBhyy() {
+    public String getBhyy() {
         return bhyy;
     }
 
-    public void setBhyy(Double bhyy) {
+    public void setBhyy(String bhyy) {
         this.bhyy = bhyy;
     }
 
