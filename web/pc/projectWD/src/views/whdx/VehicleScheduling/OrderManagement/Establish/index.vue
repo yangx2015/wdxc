@@ -166,7 +166,7 @@
         data () {
             return {
                 compName:'',
-                dicListMess:'ktzd00001',
+                dicListMess:'ZDCLK0045',
                 formItem: {
                 	jgmc:'',//单位名称
                     jgdm:'',//单位Code
@@ -280,7 +280,7 @@
                 this.compName='addmessList'
 			},
             getKT(){
-                this.ctasklList =this.dictUtil.getByCode(this,'ktzd00001')
+                this.ctasklList =this.dictUtil.getByCode(this,this.dicListMess)
 				this.fromMoneyList = this.dictUtil.getByCode(this,'ZDCLK0043')
             },
             fyly(){
