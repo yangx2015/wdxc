@@ -53,9 +53,22 @@ public class ClJsyModel implements Serializable {
      */
     private String startOrderCount;
 
+    /**
+     * 状态
+     */
+    private String zt;
+
     private List<ClDd> clDdList;
 
     private static final long serialVersionUID = 1L;
+
+    public String getZt() {
+        return zt;
+    }
+
+    public void setZt(String zt) {
+        this.zt = zt;
+    }
 
     public String getEndOrderCount() {
         return endOrderCount;

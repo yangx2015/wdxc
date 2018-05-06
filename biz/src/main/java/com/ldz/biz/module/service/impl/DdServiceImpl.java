@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ldz.biz.module.bean.ClJsyModel;
+import com.ldz.sys.base.LimitedCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +42,12 @@ import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
@@ -80,11 +85,26 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         return entityMapper;
     }
 
+    /**
+     * 订单查询，所有的数据必须查询本人机构下的订单
+     * @param condition
+     * @return
+     */
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        SysYh user=getCurrentUser(false);//true
+        String jgdm="/";
 
+        condition.and().andLike("jgdm",jgdm+"%");
+
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()) .getRequest();
+		String aaa= (String) request.getAttribute("cph");
+        return true;
+    }
     @Override
     public ApiResponse<String> saveEntity(ClDd entity, SysYh user) {
         String userId=user.getYhid();
-        RuntimeCheck.ifFalse(entity.getJgdm().indexOf(user.getJgdm())==0,"您不能为非本机构分派车辆");
+        RuntimeCheck.ifFalse(entity.getJgdm().indexOf(user.getJgdm())==0,"您不能为非本机构员工创建订单");
         SysJg org = jgService.findByOrgCode(entity.getJgdm());
         RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
