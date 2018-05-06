@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.ldz.biz.module.bean.ClJsyModel;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -115,7 +116,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      */
     public ApiResponse<String> updateOrderAuditing(ClDd entity){
-        SysYh user=getCurrentUser();
+        SysYh user=getCurrentUser(true);
         String userId=user.getYhid();
 
         //订单状态入参验证 验证入参"ddzt"必须是11 或者  12
@@ -126,8 +127,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(orderTypeValid,"设置订单状态有误");
         }
 
+        RuntimeCheck.ifTrue(StringUtils.equals(entity.getDdzt(),"12")&&StringUtils.isEmpty(entity.getSy()),"驳回原因不能为空");
+
+
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
+
+        RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行操作");
 
         String oracleType=clDd.getDdzt();//订单状态
         RuntimeCheck.ifFalse(StringUtils.equals(oracleType,"10"),"当前订单不是待审核状态，无法进行该操作");
@@ -208,13 +214,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         if(StringUtils.isNotBlank(entity.getCk())){
             condition.like(ClDd.InnerColumn.ck,entity.getCk());
         }
-
-        //车辆类型 字典项：ZDCLK0001：号牌种类 01、大型汽车 02、小型汽车 03、校园巴士
-        if(StringUtils.isNotBlank(entity.getCllx())){
+        String cllx=StringUtils.trim(entity.getCllx());
+        RuntimeCheck.ifTrue(StringUtils.isBlank(cllx),"请填写车辆类型");
+        //车辆类型  车辆类型 10、小车 20、大车 30、校巴
+        if(StringUtils.equals(cllx,"2030")){
+            List<String> li=new ArrayList<String>();
+            li.add("20");
+            li.add("30");
+            condition.in(ClDd.InnerColumn.cllx,li);
+        }else{
             condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
+            RuntimeCheck.ifTrue(true,"车辆类型入参错误");
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
+        //这里还需要判断
         List<ClDd> orgs = findByCondition(condition);
         result.setResult(orgs);
         return result;
@@ -225,22 +239,31 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * 派单司机列表
      * @param entity
      * 1、司机名 xm like 查询
+     * 2、驾驶员车型  zjcx    车辆类型 10、小车 20、大车 30、校巴
+     * 0203是查询大车、校巴
      * @return
      */
-    public ApiResponse<List<ClJsy>> driverList(ClJsy entity){
-        ApiResponse<List<ClJsy>> result = new ApiResponse<List<ClJsy>>();
+    public ApiResponse<List<ClJsyModel>> driverList(ClJsy entity){
+        ApiResponse<List<ClJsyModel>> result = new ApiResponse<List<ClJsyModel>>();
         //验证一个司机，只能绑定一个车辆，如果一个司机没有绑定或者绑定数超过的话，就不显示。
-        Example resExample = new Example(ClJsy.class);
-        resExample.and().andCondition(" (SELECT count(1) from CL_CL where SJ_ID=SFZHM) = ",1);
-        if(StringUtils.isNotBlank(entity.getXm())){
-            resExample.and().andLike(ClJsy.InnerColumn.xm.name(),"%"+entity.getXm()+"%");
+//        1、排班表中该司机ID没有排班的，2、司机要与车辆有关联绑定
+        String cllx=entity.getZjcx();
+        RuntimeCheck.ifTrue(StringUtils.isBlank(cllx),"请填写车辆类型");
+        //车辆类型 车辆类型 10、小车 20、大车 30、校巴
+        List<String> li=new ArrayList<String>();
+        if(StringUtils.equals(cllx,"2030")){
+            li.add("20");
+            li.add("30");
+        }else{
+            li.add(cllx);
         }
+
+        List<ClJsyModel> list = clJsyMapper.getDispatchDriver(entity.getXm(),li);
 
         ClDd parameters =new ClDd();//入参
         parameters.setSjSx("10");//默认身份证号码
-        List<ClJsy> list = clJsyMapper.selectByExample(resExample);
         if(list!=null){
-            for(ClJsy obj:list){
+            for(ClJsyModel obj:list){
                 parameters.setSj(obj.getSfzhm());//设置身份证号码
                 ApiResponse<List<ClDd>> retObject=affirmOrderList(parameters);
                 if(retObject.isSuccess()){
@@ -308,6 +331,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
+        RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行派单操作");
+
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
         RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"11"),"订单没有处理待派单状态，不能进行派单操作");
@@ -416,6 +441,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
+        RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行取消派单操作");
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
         RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有处于已派单状态，不能进行取消派单操作");
@@ -471,11 +497,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
 //        2、验证当前状态必须是 11-订单确认状态
         String ddzt=clDd.getDdzt();
-//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行编辑操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"司机还未做确认操作，不能进行编辑操作");
 
-//        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行编辑操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行编辑操作");
 
         RuntimeCheck.ifNull(entity.getZj(),"订单总价不能为空");
+        RuntimeCheck.ifNull(entity.getZj()>0,"订单总价不能为空");
 
         ClDd newClDd=new ClDd();
         newClDd.setId(clDd.getId());
@@ -492,14 +519,24 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         int i=update(newClDd);
         if(i==0){
-            RuntimeCheck.ifFalse(false,"创建订单历史表失败");
+            RuntimeCheck.ifFalse(false,"修改订单失败");
             return ApiResponse.fail("操作数据库失败");
         }else{
             return ApiResponse.success();
         }
     }
 
-
+    /**
+     * 订单确认 操作
+     * 1、订单处于：司机确认(行程结束)
+     * 2、只有该队队长才能有限制
+     * 3、修改订单状态为 队长确认
+     * 4、复制订单表到原始订单表中
+     * @param entity
+     * 订单ID 必填
+     * @return
+     * 成功与否
+     */
     public  ApiResponse<String> updateAffirmOracle(ClDd entity){
         SysYh user=getCurrentUser();
         String userId=user.getYhid();
@@ -511,7 +548,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         String ddzt=clDd.getDdzt();
         RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
 
-//        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
+        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
 
         ClDd newClDd=new ClDd();
         newClDd.setId(clDd.getId());
@@ -519,12 +556,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         int i=update (newClDd);
         if(i==0){
             RuntimeCheck.ifFalse(false,"操作数据库失败");
-//            return ApiResponse.fail("操作数据库失败");
         }
 
-// TODO: 2018-03-22 在队长确认后，需要将订单表明细复制到原始单据表中。
-
-
+        // 需要将订单表明细复制到原始单据表中。
+        entityMapper.insertCopyOrder(clDd.getId(),userId);
 
         ClDdrz clDdrz=new ClDdrz();
         clDdrz.setId(genId());//主键ID

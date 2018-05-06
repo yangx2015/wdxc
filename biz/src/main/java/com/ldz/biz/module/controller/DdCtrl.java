@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.biz.module.bean.ClJsyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
@@ -83,9 +84,7 @@ public class DdCtrl{
      */
     @RequestMapping(value="/pager", method={RequestMethod.POST, RequestMethod.GET})
     public ApiResponse<List<ClDd>> pager(ClDd entity, Page<ClDd> pager){
-      /*  SysYh userInfo = getCurrentUser();*/
-//        RuntimeCheck.ifNull(userInfo,"当前登录用户未空！");
-        SysYh userInfo = getCurrentUser(true);
+        getCurrentUser(true);
         return service.pager(pager);
     }
 
@@ -126,6 +125,8 @@ public class DdCtrl{
      * 订单状态为待派单的订单
      * @param entity
      * 1、乘客姓名 ck like 查询
+     * 2、待派单车型  cllx    车辆类型 10、小车 20、大车 30、校巴
+     * 2030是查询大车、校巴
      * @return
      * 待分配的订单列表
      */
@@ -139,11 +140,13 @@ public class DdCtrl{
      * 派单司机列表
      * @param entity
      * 1、司机名 xm like 查询
+     * 2、驾驶员车型  zjcx   车辆类型 10、小车 20、大车 30、校巴
+     * 2030是查询大车、校巴
      * @return
      * 司机列表
      */
     @RequestMapping(value="/pdsjlb", method={RequestMethod.POST,RequestMethod.GET})
-    public ApiResponse<List<ClJsy>> driverList(ClJsy entity){
+    public ApiResponse<List<ClJsyModel>> driverList(ClJsy entity){
         return service.driverList(entity);
     }
 
@@ -243,6 +246,11 @@ public class DdCtrl{
         return service.updateOrder(entity);
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
     public ApiResponse<String> driverConfirm(String id){
         return service.driverConfirm(id);
