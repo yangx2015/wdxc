@@ -1,6 +1,6 @@
 <style lang="less">
     @import '../../../../styles/common.less';
-    
+
 </style>
 <!--查询统计-->
 <template>
@@ -70,7 +70,7 @@
                 componentName:'',
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	//弹层
             	showModal:false,
@@ -165,7 +165,7 @@
                 form:{
                     mcLike:'',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 }
             }
         },

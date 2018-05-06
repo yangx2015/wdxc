@@ -60,7 +60,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				columns10: [{
 						title: '#',
@@ -214,7 +214,7 @@
 					cjsjInRange:'',
                     xlmcLike: '',
 					pageNum: 1,
-					pageSize: 5,
+					pageSize:8,
                     lx:'30'
 				}
 			}

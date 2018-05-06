@@ -67,7 +67,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				//弹层
 				showModal: false,
@@ -198,7 +198,7 @@
 //					cjsjInRange:[],
 					fwmcLike:'',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				Dictionary:[],
 				lmdmDictionary:'ZDCLK0006'

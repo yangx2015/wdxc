@@ -15,11 +15,11 @@
 							<span>班车排班</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="todaytime" 
-								format="yyyy-MM-dd" 
-								type="date" 
-								placement="bottom-end" 
-								placeholder="请输时间" 
+							<DatePicker v-model="todaytime"
+								format="yyyy-MM-dd"
+								type="date"
+								placement="bottom-end"
+								placeholder="请输时间"
 								style="width: 220px"></DatePicker>
 						</div>
 						<!--<div class="butevent">
@@ -49,9 +49,9 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import addmess from './comp/addmess'
-	
+
 	export default {
 		name: '',
 		mixins:[mixins],
@@ -73,7 +73,7 @@
 					//---当前页码
 					pageNum: 1,
 					//---每页显示条数
-					pageSize: 5
+					pageSize:8
 				},
 				tableTiT: [
 				{

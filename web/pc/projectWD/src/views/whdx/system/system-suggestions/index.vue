@@ -41,7 +41,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	import compModal from './comp/modal.vue'
 	export default {
 		name: 'char',
@@ -60,7 +60,7 @@
 				pageTotal: 1,
 				page: {
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				//弹层
 				showModal: false,
@@ -169,9 +169,9 @@
 				findMess: {
 					cjsjInRange:'',
 					lxrxmLike: '',
-					zt:'',	
+					zt:'',
 					pageNum: 1,
-					pageSize: 5
+					pageSize:8
 				},
 				yjlxCode:'ZDCLK0009',
 				yjlxDic:[],

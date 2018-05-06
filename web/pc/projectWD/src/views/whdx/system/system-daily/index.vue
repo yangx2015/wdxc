@@ -1,6 +1,6 @@
 <style lang="less">
     @import '../../../../styles/common.less';
-    
+
 </style>
 <!--日志管理-->
 <template>
@@ -49,7 +49,7 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
 	export default {
     	name:'char',
     	mixins:[mixins],
@@ -62,7 +62,7 @@
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	//弹层
             	showModal:false,
@@ -159,7 +159,7 @@
                 findMess:{
                 	czsjInRange:[],
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 }
             }
         },

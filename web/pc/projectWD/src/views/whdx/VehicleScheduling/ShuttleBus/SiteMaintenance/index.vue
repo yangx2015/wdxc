@@ -164,7 +164,7 @@
 					cjsjInRange:'',
                     mcLike: '',
 					pageNum: 1,
-					pageSize: 5,
+					pageSize:8,
 					lx:'20'
 				}
             }

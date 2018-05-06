@@ -73,14 +73,14 @@
                     ckLike:'',
                     ddzt:'20',
                     pageNum:1,
-                    pageSize:5
+                    pageSize:8
                 },
                 choosedRow:null,
                 //弹层
                 pageTotal:1,
                 page:{
                     pageNum:1,
-                    pageSize:5
+                    pageSize:8
                 },
                 showModal:false,
                 columns10: [

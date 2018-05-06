@@ -89,7 +89,7 @@
 						@on-change='pageChange'></Page>
 			</Row>
 		</Card>
-    	<component :is="compName" 
+    	<component :is="compName"
     		:mess = 'choosedRow'
     		@colsemodal='colsemodal'></component>
 	</div>
@@ -97,12 +97,12 @@
 <script>
 	import mixins from '@/mixins'
 	import configApi from '@/axios/config.js'
-	
+
     import expandRow from './table-expand.vue';
     import addmess from './comp/addmess.vue'
 	import mess from './comp/mess.vue'
     export default {
-        components: { 
+        components: {
         	expandRow,
         	addmess,
 			mess
@@ -120,13 +120,13 @@
                 findMess:{
                 	hdbtLike:'',
                 	pageNum:1,
-            		pageSize:5
+            		pageSize:8
                 },
             	//弹层
             	pageTotal:1,
             	page:{
             		pageNum:1,
-            		pageSize:5
+            		pageSize:8
             	},
             	showModal:false,
                 columns10: [
@@ -284,7 +284,7 @@
 				v.SpinShow = true;
 				this.$http.get(configApi.ADVERTISING.QUERY).then((res) =>{
 					v.data9 = res.page.list
-					v.pageTotal = res.total
+					v.pageTotal = res.page.total
 					v.SpinShow = false;
 				})
 			},
@@ -298,7 +298,7 @@
         		v.SpinShow = true;
 				this.$http.get(configApi.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
 					 v.data9 = res.page.list
-					 v.pageTotal = res.total
+					 v.pageTotal = res.page.total
 					 v.SpinShow = false;
 				 })
         	},
