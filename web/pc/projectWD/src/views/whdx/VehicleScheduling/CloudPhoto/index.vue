@@ -89,10 +89,14 @@
 			</div>
 			<div v-if="videoList.length != 0" class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
-					<div class="bodyC videoSty" 
-						style="min-height: 140px;"
-						v-for="(item,index) in videoList">
-                        <img :src="videoPath+'/test/'+item.url" style="width: 100%;">
+					<div class="bodyC videoSty"
+						 title="点击查看大图"
+						 style="min-height: 140px;"
+						 v-for="(item,index) in videoList">
+                        <img
+							 :src="videoPath+'/test/'+item.url"
+							 @click="showMax(videoPath+'/test/'+item.url,index)"
+							 style="width: 100%;">
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
 					    	<div style="float: right;cursor: pointer;">
@@ -116,6 +120,23 @@
 						show-elevator
 						@on-change='pageChange'></Page>
 			</div>
+		<Modal
+				width="70%"
+				v-model="maxPhoto">
+				<img :src="maxUrl"
+					 width="100%"
+					 alt="">
+			<div slot="footer">
+				<div style="width: 100%;overflow-y: auto;text-align: center">
+					<img v-for="(item,index) in videoList"
+						 :src="videoPath+'/test/'+item.url"
+						 width="7.5%"
+						 @click="showMax(videoPath+'/test/'+item.url,index)"
+						 style="margin: 2px;">
+
+				</div>
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -130,6 +151,9 @@
       	},
 		data(){
 			return {
+                maxPhoto:false,
+				maxUrl:'',
+				maxIndex:'',
                 vadeoShow:true,
                 videoPath :configApi.VIDEO_PATH,
 				activeName:0,
@@ -153,6 +177,11 @@
 			this.getCarList();
 		},
 		methods:{
+            showMax(url,index){
+                this.maxPhoto = true
+				this.maxUrl = url
+                this.maxIndex = index
+			},
 			videoS(type,item,index){
 				this.videoList[index].video = true
 			},
