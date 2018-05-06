@@ -86,7 +86,10 @@
 										<h3>
 											费用来源
 										</h3>
-										<Select filterable clearable  v-model="formItem.fromMoney" size="large" placeholder="请选择费用来源" filterable>
+										<Select filterable clearable
+												v-model="formItem.fromMoney"
+												@on-change="fyly"
+												size="large" placeholder="请选择费用来源" filterable>
 											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 										</Select>
 									</FormItem>
@@ -278,6 +281,11 @@
                 this.ctasklList =this.dictUtil.getByCode(this,'ktzd00001')
 
             },
+            fyly(){
+                if(this.formItem.fromMoney!='课题费用'){
+                    this.formItem.task = ''
+				}
+			},
             change(vaule,selectedData){
                 this.treeValue = vaule;
             },
