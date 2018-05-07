@@ -119,7 +119,17 @@
                     {
                         title: '座位数',
                         align:'center',
-                        key: 'zws'
+                        key: 'zws',
+                        render:(h,p)=>{
+                            let cx = ''
+							switch(p.row.cllx){
+								case '10':
+								    cx = '小车';
+								case '20':
+								    cx = '大车'
+							}
+							return h('span',cx+'/'+p.row.zws)
+						}
                     }
                 ],
                 data9: [
