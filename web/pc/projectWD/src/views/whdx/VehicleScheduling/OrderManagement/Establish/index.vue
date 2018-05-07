@@ -7,7 +7,7 @@
 </style>
 <template>
 	<div class="box">
-		<!--<Card>-->
+		<Card>
 			<div class="tit headTit padding">
 				<h1>
 					武汉大学后勤集团运输中心用车单
@@ -150,7 +150,7 @@
 					</Row>
 				</Form>
 			</div>
-		<!--</Card>-->
+		</Card>
 		<component :is="compName" :dicListMess='dicListMess'></component>
 	</div>
 </template>
