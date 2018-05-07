@@ -908,6 +908,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ClDd newClDd=new ClDd();
         newClDd.setId(order.getId());
         newClDd.setDdzt("20");//订单状态
+        newClDd.setSjqrsj(new Date());
         int i=update (newClDd);
         RuntimeCheck.ifTrue(i==0,"操作数据库失败");
 
