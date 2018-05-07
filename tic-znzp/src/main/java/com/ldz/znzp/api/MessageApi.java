@@ -99,7 +99,7 @@ public class MessageApi {
 
 	@RequestMapping("deleteRedisKey")
 	public ApiResponse<String> deleteRedisKey(String key){
-		redisTemplateUtil.delete(key);
+//		redisTemplateUtil.delete(key);
 		return ApiResponse.success();
 	}
 }

@@ -43,10 +43,6 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
-        if (StringUtils.isNotEmpty(entity.getXlIds())){
-            List<String> xlIds = Arrays.asList(entity.getXlIds().split(","));
-            setZnzpXl(xlIds,entity.getZdbh());
-        }
         return ApiResponse.saveSuccess();
     }
 
@@ -55,6 +51,10 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         znzp.setXgr(getOperateUser());
         znzp.setXgsj(new Date());
         update(znzp);
+        if (StringUtils.isNotEmpty(znzp.getXlIds())){
+            List<String> xlIds = Arrays.asList(znzp.getXlIds().split(","));
+            setZnzpXl(xlIds,znzp.getZdbh());
+        }
         return ApiResponse.success();
     }
 
@@ -74,6 +74,11 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         }
         String cjr = getOperateUser();
         Date cjsj = new Date();
+
+        SimpleCondition condition = new SimpleCondition(ClZpXl.class);
+        condition.eq(ClZpXl.InnerColumn.zpId,znzpId);
+        zpXlMapper.deleteByExample(condition);
+
         for (String xlId : xlIds) {
             ClZpXl zpXl = new ClZpXl();
             zpXl.setId(genId());
