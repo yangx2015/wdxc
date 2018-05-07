@@ -205,6 +205,7 @@
 			add(item){
     	        this.choosedRow = null;
                 this.jgdm = item.jgdm;
+                this.gly = item.gly;
                 this.componentName = 'modelForm';
 			},
 			edit(item){
@@ -224,6 +225,7 @@
                 if(event.length>0){
 		      		this.treeMess = event[0]
 					this.jgdm = event[0].jgdm;
+					this.gly = event[0].gly;
         		}
         	},
         	treeToggleClick(event){

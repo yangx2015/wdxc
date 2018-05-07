@@ -12,9 +12,10 @@
 						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称">
 						</Input>
 					</FormItem>
-					<FormItem label='机构负责人' prop="glyxm">
-						<Input type="text" v-model="formItem.glyxm" placeholder="请填写机构负责人">
-						</Input>
+					<FormItem label='机构负责人' prop="">
+						<Select v-model="formItem.gly" placeholder="请填写机构负责人">
+							<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>
+						</Select>
 					</FormItem>
 				</Form>
 			</div>
@@ -39,16 +40,15 @@
                 mesF: false,
 				edit:false,
                 formItem: {
-                    fjgdm:''
+                    fjgdm:'',
+					gly:''
                 },
                 ruleInline: {
                     jgmc: [
                   		{ required: true, message: '请输入机构名称', trigger: 'blur' }
                   	],
-                    glyxm:[
-                        { required: true, message: '请输入机构负责人', trigger: 'blur' }
-					]
               	},
+				userList:[]
             }
         },
         created(){
@@ -61,12 +61,22 @@
 			}else{
                 if (this.$parent.jgdm){
                     this.formItem.fjgdm = this.$parent.jgdm;
+                    this.formItem.gly = this.$parent.gly;
                 }else{
                     log("请选择父节点")
 				}
 			}
+			this.getUserList();
 		},
         methods: {
+            getUserList(){
+                let jgdm = this.$store.state.app.userInfo.jgdm;
+                this.$http.get(configApi.USER.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
+                    if(res.code===200 && res.page.list){
+                        this.userList = res.page.list;
+                    }
+                })
+			},
             save(name){
                 var v = this
                 v.SpinShow = true
