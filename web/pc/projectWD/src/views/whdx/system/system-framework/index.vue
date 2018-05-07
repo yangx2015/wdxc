@@ -39,18 +39,18 @@
 						<div class="titmess">
 							<span>组织机构管理</span>
 						</div>
-						<div class="body-r-1 inputSty">
-							<Input v-model="jgmcLike"
-								   placeholder="请输入组织机构名称" style="width: 200px"
-								   @on-keyup.enter="getTree()"
-								   @on-change="getTree()"></Input>
-						</div>
-						<div class="butevent">
-							<Button type="primary" @click="getTree()">
-								<Icon type="search"></Icon>
-								<!--查询-->
-							</Button>
-						</div>
+						<!--<div class="body-r-1 inputSty">-->
+							<!--<Input v-model="jgmc"-->
+								   <!--placeholder="请输入组织机构名称" style="width: 200px"-->
+								   <!--@on-keyup.enter="getTree()"-->
+								   <!--@on-change="getTree()"></Input>-->
+						<!--</div>-->
+						<!--<div class="butevent">-->
+							<!--<Button type="primary" @click="getTree()">-->
+								<!--<Icon type="search"></Icon>-->
+								<!--&lt;!&ndash;查询&ndash;&gt;-->
+							<!--</Button>-->
+						<!--</div>-->
 					</div>
 				</div>
 			</Row>
@@ -123,7 +123,7 @@
     	mixins: [mixins],
         data () {
             return {
-                jgmcLike:'',
+                jgmc:'',
             	tabHeight:{
             		height:''
             	},
@@ -194,7 +194,7 @@
         methods: {
     	    getTree(){
     	    	var v = this
-                this.$http.get(configApi.FRAMEWORK.GET_TREE,{params:{'jgmcLike':this.jgmcLike}}).then((res) =>{
+                this.$http.get(configApi.FRAMEWORK.GET_TREE,{params:{'jgmc':this.jgmc}}).then((res) =>{
                     if(res.code===200){
                         v.RootTree.children = [res.result];
                         v.treeClick(v.RootTree.children[0])

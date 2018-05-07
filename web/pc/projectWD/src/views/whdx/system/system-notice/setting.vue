@@ -14,7 +14,6 @@
                             <Col span="20">
                                 <FormItem label='碰撞灵敏度'>
                                     <Select filterable clearable  v-model="deviceControl.pzlmd">
-                                        <Option value=""></Option>
                                         <Option value="00">低</Option>
                                         <Option value="10">中</Option>
                                         <Option value="20">高</Option>
@@ -29,7 +28,6 @@
                             <Col span="20">
                                 <FormItem label='上传模式'>
                                     <Select filterable clearable  v-model="deviceControl.scms">
-                                        <Option value=""></Option>
                                         <Option value="00">实时</Option>
                                         <Option value="10">仅WIFI</Option>
                                     </Select>
@@ -42,8 +40,7 @@
                         <Row>
                             <Col span="20">
                                 <FormItem label='上传视屏模式'>
-                                    <Select filterable clearable  v-model="deviceControl.scspms">
-                                        <Option value=""></Option>
+                                    <Select filterable clearable  v-model="deviceControl.spscms">
                                         <Option value="00">全部视屏</Option>
                                         <Option value="10">仅碰撞视屏</Option>
                                     </Select>
@@ -56,7 +53,7 @@
                         <Row>
                             <Col span="20">
                                 <FormItem label='超速设定'>
-                                    <Input type="text" v-model="deviceControl.cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
+                                    <Input type="text" v-model="cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
                                 </FormItem>
                             </Col>
                             <Col span="4">
@@ -90,7 +87,7 @@
                     scms:1,
                     jslmd:'',
                     pzlmd:'',
-                    scspms:'',
+                    spscms:'',
                     cssd:'',
                     gpsxtjg:'',
                 },
@@ -98,6 +95,7 @@
                     startTime:'',
                     endTime:''
                 },
+                cssd:''
             }
 
         },
@@ -120,7 +118,7 @@
                 var v = this
                 let params = {
                     cphs:this.device.cph,
-                    csz:this.deviceControl.cssd,
+                    csz:this.cssd,
                 }
                 this.SpinShow = true;
                 this.$http.post(configApi.CS.ADD,params).then((res) =>{
@@ -129,6 +127,17 @@
                         this.$Message.success("设置成功!")
                     }else{
                         this.$Message.error(res.message)
+                    }
+                })
+            },
+            getCssd(){
+                var v = this
+                let params = {
+                    cph:this.device.cph,
+                }
+                this.$http.post(configApi.CS.QUERY,params).then((res) =>{
+                    if (res.code === 200 && res.page.list &&  res.page.list.length>0){
+                        this.cssd = res.page.list[0].sdsx;
                     }
                 })
             },
@@ -148,7 +157,7 @@
                 this.setting('30',this.deviceControl.scms);
             },
             selectChange50(){
-                this.setting('50',this.deviceControl.scspms);
+                this.setting('50',this.deviceControl.spscms);
             },
             setting(type,param){
                 var v = this
@@ -173,6 +182,7 @@
                 }, 100);
                 this.device = this.$parent.choosedRow;
                 this.getDeviceInfo();
+                this.getCssd();
             },
             close(){
                 this.showModal = false;
