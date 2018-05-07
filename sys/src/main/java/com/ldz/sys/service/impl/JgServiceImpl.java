@@ -145,16 +145,19 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	 * @return
 	 */
 	@Override
-	public List<SysJg> findAllSubOrg(String orgCode) {
+	public List<SysJg> findAllSubOrg(String orgCode,String jgmc) {
 		SimpleCondition condition = new SimpleCondition(SysJg.class);
 		condition.startWith(SysJg.InnerColumn.jgdm,orgCode);
+		if (StringUtils.isNotEmpty(jgmc)){
+			condition.like(SysJg.InnerColumn.jgmc,jgmc);
+		}
 		return ptjgMapper.selectByExample(condition);
 	}
 
 	@Override
-	public ApiResponse<List<SysJg>> getOrgTree() {
+	public ApiResponse<List<SysJg>> getOrgTree(String jgmc) {
 		ApiResponse<List<SysJg>> response = new ApiResponse<>();
-		List<SysJg> orgs = jgService.findAllSubOrg("");
+		List<SysJg> orgs = jgService.findAllSubOrg("",jgmc);
 		List<SysJg> orgTree = jgService.getOrgTree(orgs);
 		response.setResult(orgTree);
 		return response;
@@ -163,7 +166,7 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	@Override
 	public ApiResponse<List<TreeNode>> getTree() {
 		SysYh user = getCurrentUser();
-		List<SysJg> orgs = jgService.findAllSubOrg(user.getJgdm());
+		List<SysJg> orgs = jgService.findAllSubOrg(user.getJgdm(),null);
 		List<TreeNode> treeNodes = convertToTreeNodeList(orgs);
 		treeNodes = buildTree(treeNodes);
 		return ApiResponse.success(treeNodes);

@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF' :mask-closable="mesF" :title="operate+'站牌'">
-			<div style="overflow: auto;height: 300px;">
+			<div style="overflow: auto;height:500px;">
 				<Form
 						ref="addmess"
 						:model="form"
@@ -49,16 +49,15 @@
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='站点:' placeholder="请选择站点...">
-								<Select filterable clearable  v-model="form.zdId">
-									<Option v-for="item in stationList" :value="item.id" :key="item.id">{{item.mc}}</Option>
+							<FormItem label='线路:' placeholder="请选择线路...">
+								<Select filterable clearable  v-model="xlIds" multiple>
+									<Option v-for="item in xlList" :value="item.id" :key="item.id">{{item.xlmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 					</Row>
 				</Form>
 			</div>
-			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="close">取消</Button>
 				<Button type="primary" @click="save('addmess')">确定</Button>
@@ -84,8 +83,10 @@
 					xh: '',
                     cs: '',
                     dz:'',
-					zdId:''
+					zdId:'',
+					xlIds:'',
 				},
+				xlIds:[],
 				ruleInline: {
                   zdbh: [
                       { required: true, message: '请输入终端编号', trigger: 'blur' }
@@ -100,7 +101,7 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
-				stationList:[]
+				xlList:[]
 			}
 		},
 		created(){
@@ -108,16 +109,37 @@
 				this.form = this.$parent.choosedRow;
 				this.operate = '编辑'
 				this.edit = true;
-			}
-            this.getNotBindList();
+                this.xlIds = this.form.xlIds.split(",");
+            }
+            this.getXlList();
 		},
         mounted(){
         },
 		methods: {
+		    getXlIds(){
+                this.$http.get(configApi.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
+                    if(res.code===200){
+                        var v = this
+                        v.$parent.componentName = ''
+                        v.$parent.getPageData()
+                        this.$Message.success(res.message);
+                        if (this.$parent.choosedRow){
+                            this.getXlIds();
+                        }
+                    }
+                })
+			},
+		    getChoosedXlIds(){
+		      this.form.xlIds = '';
+		      for(let r of this.xlIds){
+		          this.form.xlIds += r+',';
+			  }
+			},
 		    save(){
 		    	var v = this
 		    	this.$refs['addmess'].validate((valid) => {
                     if (valid) {
+                        this.getChoosedXlIds();
 				        let url = configApi.ZNZP.ADD;
 						if (this.$parent.choosedRow){
 		                    url = configApi.ZNZP.CHANGE;
@@ -134,6 +156,14 @@
 						})
 		            } else {
                         v.$Message.error('请认真填写用户信息!');
+                    }
+                })
+			},
+			getXlList(){
+                let jgdm = this.$store.state.app.userInfo.jgdm;
+                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
+                    if(res.code===200 && res.page.list){
+                        this.xlList = res.page.list;
                     }
                 })
 			},

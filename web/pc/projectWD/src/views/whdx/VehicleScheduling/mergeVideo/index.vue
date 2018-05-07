@@ -130,13 +130,13 @@
 		},
 		methods:{
 		    onResult(r){
-		        alert('result')
                 log(r);
+                let m = JSON.parse(r);
                 this.wait = false;
                 this.componentName = '';
                 this.SpinShow = false;
                 this.$Message.success("拍摄成功!")
-                this.videoUrl = r.url;
+                this.videoUrl = m.url;
 			},
             getCarList(){
                 var v = this
