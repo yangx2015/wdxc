@@ -101,10 +101,14 @@
                   	{ required: true,message: '请输入证件号码', trigger: 'blur' }
                   ]
               	},
-				xlList:[]
+				xlList:[],
+				jgdm:''
 			}
 		},
 		created(){
+            console.log(sessionStorage);
+            let userInfo = sessionStorage.getItem("userInfo");
+            this.jgdm = userInfo.jgdm;
 			if (this.$parent.choosedRow){
 				this.form = this.$parent.choosedRow;
 				this.operate = '编辑'
@@ -160,18 +164,9 @@
                 })
 			},
 			getXlList(){
-                let jgdm = this.$store.state.app.userInfo.jgdm;
-                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:jgdm,pageSize:1000}}).then((res) =>{
+                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:this.jgdm,pageSize:1000}}).then((res) =>{
                     if(res.code===200 && res.page.list){
                         this.xlList = res.page.list;
-                    }
-                })
-			},
-            getNotBindList(){
-		        let jgdm = this.$store.state.app.userInfo.jgdm;
-                this.$http.get(configApi.ZD.getNotBindList+"?stationId="+this.form.zdId).then((res) =>{
-                    if(res.code===200 && res.result){
-                        this.stationList = res.result;
                     }
                 })
 			},

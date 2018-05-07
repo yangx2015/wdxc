@@ -78,9 +78,9 @@
                         new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
                     )
                 }
-                setTimeout(function () {
-                    v.map.setViewport(v.zoomDot);
-                },50)
+                // setTimeout(function () {
+                //     v.map.setViewport(v.zoomDot);
+                // },50)
             },
             init() {
                 this.carList = this.$parent.mapCarList;

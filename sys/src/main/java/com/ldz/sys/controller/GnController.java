@@ -54,11 +54,15 @@ public class GnController extends BaseController<SysGn, String> {
     public ApiResponse<String> update(@Valid  SysGn gn){
         return gnService.updateEntity(gn);
     }
+
+    
     @RequestMapping(value = "getUserFunctions",method = RequestMethod.GET)
     public ApiResponse<List<SysGn>> getUserFunctions(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getUserFunctions(user));
     }
+
+    
     @RequestMapping(value = "getMenuTree",method = RequestMethod.GET)
     public ApiResponse<List<Menu>> getMenuTree(){
         SysYh user = getCurrentUser();
@@ -73,25 +77,52 @@ public class GnController extends BaseController<SysGn, String> {
         }
         return gnService.setRoleFunctions(jsdm,gndmList);
     }
+    @RequestMapping("setOrgFunctions")
+    public ApiResponse<String> setOrgFunctions(String jgdm,String gndms){
+        List<String> gndmList = new ArrayList<>();
+        if (StringUtils.isNotBlank(gndms)){
+            gndmList = Arrays.asList(gndms.split(","));
+        }
+        return gnService.setOrgFunctions(jgdm,gndmList);
+    }
+
+    
+    @RequestMapping("getOrgFunctions")
+    public ApiResponse<List<SysGn>> getOrgFunctions(String jgdm){
+        return ApiResponse.success(gnService.getOrgFunctions(jgdm));
+    }
+
+    
     @RequestMapping("getRoleFunctions")
     public ApiResponse<List<SysGn>> getRoleFunctions(String jsdm){
         return gnService.getRoleFunctions(jsdm);
     }
 
+
+    
     @RequestMapping("getAllPermissionTree")
     public ApiResponse<List<SysFw>> getAllPermissionTree(){
         return ApiResponse.success(gnService.getAllPermissionTree());
     }
+
+    
     @RequestMapping("getOrgPermissionTree")
-    public ApiResponse<List<SysFw>> getOrgPermissionTree(){
-        SysYh user = getCurrentUser();
-        return ApiResponse.success(gnService.getOrgPermissionTree(user.getJgdm()));
+    public ApiResponse<List<SysFw>> getOrgPermissionTree(String jgdm){
+        if (StringUtils.isEmpty(jgdm)){
+            SysYh user = getCurrentUser();
+            jgdm = user.getJgdm();
+        }
+        return ApiResponse.success(gnService.getOrgPermissionTree(jgdm));
     }
+
+    
     @RequestMapping("getUserPermissionTree")
     public ApiResponse<List<SysFw>> getUserPermissionTree(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getUserPermissionTree(user));
     }
+
+    
     @RequestMapping("getRolePermissionTree")
     public ApiResponse<List<SysFw>> getRolePermissionTree(String jsdm){
         return ApiResponse.success(gnService.getRolePermissionTree(jsdm));

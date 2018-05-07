@@ -80,6 +80,7 @@ module.exports = {
 		GET_ALL_PERMISSION_TREE:'/api/gn/getAllPermissionTree',
 		GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
 		SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
+		SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
 		GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions'
 	},
 	DAILY:{
@@ -87,7 +88,6 @@ module.exports = {
         ADD:'/api/rz/save',
         CHANGE:'/api/rz/update',
         DELE:'/api/rz/removeIds'
-
 	},
     CLSBYXJL:{
 		QUERY:'api/clsbyxsjjl/pager',//异常事件管理
