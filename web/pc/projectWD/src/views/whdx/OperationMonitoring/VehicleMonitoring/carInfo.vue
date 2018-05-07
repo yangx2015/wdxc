@@ -362,7 +362,7 @@
                 })
             },
             showPathHistory(){
-                this.$router.push({name: 'historypath',params:{zdbh:this.car.zdbh}});
+                this.$router.push({name: 'historyTarck_new',params:{zdbh:this.car.zdbh}});
                 this.close();
             },
             showFance(){
