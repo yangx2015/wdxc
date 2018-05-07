@@ -1,5 +1,6 @@
 package com.ldz.biz.module.controller;
 
+import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.model.ClZnzp;
 import com.ldz.biz.module.service.ZnzpService;
 import com.ldz.sys.base.BaseController;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/znzp")
@@ -30,5 +33,10 @@ public class ZnzpCtrl extends BaseController<ClZnzp,String> {
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClZnzp znzp){
         return znzpService.updateEntity(znzp);
+    }
+
+    @RequestMapping("getXlIds")
+    public ApiResponse<List<String>> getXlIds(String zpId){
+        return znzpService.getXlIds(zpId);
     }
 }
