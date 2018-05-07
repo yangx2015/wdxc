@@ -46,7 +46,7 @@
                                 </Col>
                             </Row>
                             <Row>
-                                <img v-if="imgSrc !=''" :src="imgSrc"/>
+                                <img v-if="imgSrc !=''" :src="imgSrc" style="height: 200px"/>
                             </Row>
                         </Card>
                     </Col>

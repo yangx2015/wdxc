@@ -161,7 +161,7 @@
 			},
 			getXlList(){
                 let jgdm = this.$store.state.app.userInfo.jgdm;
-                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
+                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:jgdm,pageSize:1000}}).then((res) =>{
                     if(res.code===200 && res.page.list){
                         this.xlList = res.page.list;
                     }
