@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name = "SYS_JGSQLB")
 public class SysJgsq implements Serializable {
     @Id
-    @GeneratedValue(generator = "JDBC")
+    @Column(name = "ID")
     private String id;
 
     @Column(name = "JGDM")
@@ -166,7 +166,7 @@ public class SysJgsq implements Serializable {
     }
 
     public enum InnerColumn {
-        id("id"),
+        id("ID"),
         jgdm("JGDM"),
         fwdm("FWDM"),
         gndm("GNDM"),

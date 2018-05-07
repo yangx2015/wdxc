@@ -24,9 +24,38 @@ let util = {
 //  headers: {'Content-Type':'application/x-www-form-urlencoded'},
 //  withCredentials:true
 //});
-util.initModalTitle = function(v){
-
+util.initFormModal = function(v){
+    if (v.$parent.choosedItem){
+        // 深复制，避免数据联动
+        v.formItem = JSON.parse(JSON.stringify(v.$parent.choosedItem));
+        v.operate = '编辑'
+        v.readonly = true
+    }
 }
+util.save = function(v){
+    let url = v.$parent.choosedItem ? v.updateUrl : v.createUrl;
+    v.$refs.form.validate((valid) => {
+        if (valid) {
+            if (typeof v.beforeSave === 'function'){
+                // 执行save方法之前的操作
+                v.beforeSave();
+            }
+            v.$http.post(url,v.formItem).then((res) =>{
+                if(res.code===200){
+                    v.$Message.success(res.message);
+                    v.$parent.getPageData()
+                    v.$parent.componentName = ''
+                }else{
+                    v.$Message.error(res.message);
+                }
+            }).catch((error) =>{
+                log(error)
+            })
+        } else {
+            v.$Message.error('请将信息填写完整!');
+        }
+    })
+},
 util.del = function(v,url,ids,callback){//数据删除方法封装
     swal({
         title: "是否删除数据?",
@@ -38,8 +67,10 @@ util.del = function(v,url,ids,callback){//数据删除方法封装
                 v.$http.post(url,{'ids':ids}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
-                        if (callback && typeof callback == 'function'){
+                        if (callback && typeof callback === 'function'){
                             callback();
+                        }else if(typeof v.getPageData === 'function'){
+                            v.getPageData()
                         }
                     }else{
                         v.$Message.error(res.message);
@@ -48,6 +79,49 @@ util.del = function(v,url,ids,callback){//数据删除方法封装
             }
         });
 }
+util.closeDialog = function(v){
+    v.showModal = false;
+    setTimeout((t) => {
+        v.$parent.$data.componentName = "";
+    }, 200)
+},
+util.getPageData = function(v) {
+    v.$http.post(v.pagerUrl, v.form).then((response) => {
+            let code = response.code;
+            let msg = response.message;
+            v.SpinShow = false
+            if (code === 200) {
+                let page = response.page;
+                v.pageData = page.list;
+                v.form.total = page.total;
+            }
+        }, (error) => {
+        }
+    ).then((next) => {
+    });
+}
+util.pageChange = function(v,event) {
+    v.form.pageNum = event
+    v.getPageData()
+},
+util.getData = function(v, url, onSuccess) {
+    v.$http.get(url).then((response) => {
+            let code = response.code;
+            let msg = response.message;
+            if (code == 200) {
+                if (typeof (onSuccess) === 'function') {
+                    onSuccess(response.result);
+                }
+            } else {
+                v.$Message.error(msg);
+            }
+        },
+        (error) => {
+            v.$Message.error('网络异常');
+        }).then((next) => {
+    });
+    ;
+},
 util.inOf = function (arr, targetArr) {
     let res = true;
     arr.forEach(item => {

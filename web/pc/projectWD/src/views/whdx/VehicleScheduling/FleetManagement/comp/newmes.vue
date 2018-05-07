@@ -24,7 +24,8 @@
 							<FormItem prop="dzxm" label='队长姓名：'>
 								<!--<Input type="text" v-model="addmess.dzxm" placeholder="请输入队长姓名">
 								</Input>-->
-								<Select filterable clearable v-model="userSelectMss" @on-change='userSelect()'>
+								<Select filterable clearable remote
+										:remote-method="remoteMethod"  v-model="userSelectMss" @on-change='userSelect()'>
 									<Option v-for="(item,index) in userList" :value="item.yhid">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
@@ -105,7 +106,6 @@
 			}
 		},
 		created(){
-			this.getUSER()
 			log('字典状态',this.ty)
 			this.fullcal()
             if(!this.messType){
@@ -117,6 +117,12 @@
             }
 		},
 		methods:{
+            remoteMethod(k){
+                var v = this
+                this.$http.get(configApi.USER.QUERY,{params:{xmLike:k,pageSize:1000}}).then((res) =>{
+                    this.userList = res.page.list
+                })
+			},
 			fullcal(){
 				log('信息',this.mess)
 			},
@@ -125,8 +131,7 @@
 				v.$parent.compName = ''
 		   	},
 		   	userSelect(){
-//		   		debugger
-				var v = this	
+				var v = this
 				var listIndex = 0
 		   		this.userList.forEach(function(item,index){
 		   			if(item.yhid == v.userSelectMss){

@@ -172,7 +172,6 @@
         		this.compName = 'pass'
         	},
         	sco(){
-    		log('网络连接')
     		//数据推送
 				var v = this
 			/**
@@ -211,14 +210,13 @@
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-                        log('=========================/topic/sendhbsp=======================')
+                        console.log('=========================/topic/sendhbsp=======================')
                         // let jsonMess = JSON.parse(data.body)
 			            v.$store.commit('addSendhbsp',data.body)
 			        });
 			    });
 			},
         	ButOnmouseover(mes){
-        		log('ButOnmouseover:',mes)
         	},
             init () {
                 this.$store.commit('updateMenulist');

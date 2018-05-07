@@ -80,6 +80,7 @@ module.exports = {
 		GET_ALL_PERMISSION_TREE:'/api/gn/getAllPermissionTree',
 		GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
 		SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
+		SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
 		GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions'
 	},
 	DAILY:{
@@ -87,7 +88,6 @@ module.exports = {
         ADD:'/api/rz/save',
         CHANGE:'/api/rz/update',
         DELE:'/api/rz/removeIds'
-
 	},
     CLSBYXJL:{
 		QUERY:'api/clsbyxsjjl/pager',//异常事件管理
@@ -178,6 +178,7 @@ module.exports = {
         DELE:   '/api/pb/deleteByXlAndCl',
         CARLIST:'api/pb/getcllist',//其余车辆
         deleteByXlAndCl:   '/api/pb/deleteByXlAndCl',
+
 	},
 	XBDT:{//校巴实时动态
 		QUERY: '/api/clzd/getzdcl/',
@@ -193,7 +194,8 @@ module.exports = {
 		QUERY:  '/api/znzp/pager',
 		ADD:    '/api/znzp/save',
         CHANGE: '/api/znzp/update',
-		DELE:   '/api/znzp/removeIds'
+		DELE:   '/api/znzp/removeIds',
+        getXlIds:   '/api/znzp/getXlIds',
 	},
 	ZDGL:{//终端管理
 		QUERY:  '/api/zdgl/pager',//终端数据列表

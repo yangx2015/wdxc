@@ -5,25 +5,9 @@
     <title>武汉大学车辆管理信息平台</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
-    <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>">
-    <link rel="stylesheet" name="theme" href="">
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.css[0] %>?t=<%= new Date().getTime() %>">
     <!--map-->
 	<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
-</head>
-
-<body>
-    <div id="app"></div>
-    <div class="lock-screen-back" id="lock_screen_back"></div>
-    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[0] %>"></script>
-    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[1] %>"></script>
-    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[2] %>"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=evDHwrRoILvlkrvaZEFiGp30"></script>
-	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/LuShu/1.2/src/LuShu_min.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
-	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
-    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
-
 
     <script type="application/javascript">
         function log(t,s){
@@ -35,6 +19,21 @@
             }
         }
     </script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <div class="lock-screen-back" id="lock_screen_back"></div>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[0] %>?t=<%= new Date().getTime() %>"></script>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[1] %>?t=<%= new Date().getTime() %>"></script>
+    <script type="text/javascript" src="<%= htmlWebpackPlugin.files.js[2] %>?t=<%= new Date().getTime() %>"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=evDHwrRoILvlkrvaZEFiGp30"></script>
+	<script src="http://libs.baidu.com/jquery/1.9.0/jquery.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/LuShu/1.2/src/LuShu_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/TextIconOverlay/1.2/src/TextIconOverlay_min.js"></script>
+	<script type="text/javascript" src="http://api.map.baidu.com/library/MarkerClusterer/1.2/src/MarkerClusterer_min.js"></script>
+    <script type="text/javascript" src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
+
 
 </body>
 

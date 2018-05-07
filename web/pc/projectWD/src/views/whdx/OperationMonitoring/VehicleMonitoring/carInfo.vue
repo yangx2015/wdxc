@@ -45,6 +45,9 @@
                                     <Button @click="showPathHistory" icon="pull-request">历史轨迹</Button>
                                 </Col>
                             </Row>
+                            <Row>
+                                <img v-if="imgSrc !=''" :src="imgSrc" style="height: 200px"/>
+                            </Row>
                         </Card>
                     </Col>
                     <Col span="12">
@@ -156,6 +159,7 @@
                 showModal:true,
                 SpinShow:false,
                 car:'',
+                imgSrc:'',
                 carControl:{
                     lmd:1,
                     scms:1,
@@ -211,7 +215,7 @@
                     cph:this.car.cph,
                 }
                 this.$http.post(configApi.CS.QUERY,params).then((res) =>{
-                    if (res.code === 200 && res.page.list){
+                    if (res.code === 200 && res.page.list &&  res.page.list.length>0){
                         this.cssd = res.page.list[0].sdsx;
                     }
                 })
@@ -310,14 +314,16 @@
                     bj:this.bj,
                 }
                 this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
-                    if (res.code === 200){
-                        this.SpinShow = false;
-                        this.$Message.success("发送成功!")
+                    if (res.code === 200 && res.page.list && res.page.list.length > 0){
+                        this.imgSrc = res.page.list[0].url;
                     }else{
                         clearTimeout();
-                        setTimeout(()=>{
-                            this.checkImage()
-                        },5000)
+                        let parentComponentName = this.$parent.componentName;
+                        if (this.$route.path == 'OperationMonitoring/VehicleMonitoring' && parentComponentName == 'carInfo'){
+                            setTimeout(()=>{
+                                this.checkImage()
+                            },5000)
+                        }
                     }
                 })
             },

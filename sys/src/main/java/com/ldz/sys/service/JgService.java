@@ -38,9 +38,9 @@ public interface JgService extends BaseService<SysJg,String>{
      * @param orgCode
      * @return
      */
-    List<SysJg> findAllSubOrg(String orgCode);
+    List<SysJg> findAllSubOrg(String orgCode,String jgmc);
 
-    ApiResponse<List<SysJg>>  getOrgTree();
+    ApiResponse<List<SysJg>>  getOrgTree(String jgmc);
 
     ApiResponse<List<TreeNode>> getTree();
 }

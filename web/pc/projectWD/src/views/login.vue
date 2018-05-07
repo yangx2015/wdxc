@@ -115,7 +115,7 @@ export default {
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
-                            this.$store.state.app.userInfo = res.result.userInfo;
+                            sessionStorage.setItem("userInfo",res.result.userInfo);
                             v.initDict();
                             v.getMenuTree();
                             v.SpinShow = false

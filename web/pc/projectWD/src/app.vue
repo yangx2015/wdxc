@@ -61,6 +61,7 @@ html,body{
 /* 设置滚动条的样式 */
 ::-webkit-scrollbar {
 	width:8px;
+	height:6px;
 }
 /* 滚动槽 */
 ::-webkit-scrollbar-track {

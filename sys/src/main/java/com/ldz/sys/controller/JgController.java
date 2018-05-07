@@ -31,8 +31,8 @@ public class JgController extends BaseController<SysJg, String> {
 	}
 
 	@RequestMapping("getOrgTree")
-	public ApiResponse<List<SysJg>> getOrgTree() {
-		return jgService.getOrgTree();
+	public ApiResponse<List<SysJg>> getOrgTree(String jgmc) {
+		return jgService.getOrgTree(jgmc);
 	}
 
 	@RequestMapping("getTree")
@@ -47,9 +47,9 @@ public class JgController extends BaseController<SysJg, String> {
 	}
 
 	@RequestMapping("getSubOrgList")
-	public ApiResponse<List<SysJg>> getSubOrgList(){
+	public ApiResponse<List<SysJg>> getSubOrgList(String jgmc){
 		SysYh user = getCurrentUser();
-		List<SysJg> orgList = jgService.findAllSubOrg(user.getJgdm());
+		List<SysJg> orgList = jgService.findAllSubOrg(user.getJgdm(),jgmc);
 		return ApiResponse.success(orgList);
 	}
 

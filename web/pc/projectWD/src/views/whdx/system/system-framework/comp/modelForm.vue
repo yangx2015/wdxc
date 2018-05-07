@@ -9,16 +9,18 @@
 			<div style="overflow: auto;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
 					<FormItem label='机构名称' prop="jgmc">
-						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称">
-						</Input>
+						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称"></Input>
 					</FormItem>
-					<FormItem label='机构负责人' prop="glyxm">
-						<Input type="text" v-model="formItem.glyxm" placeholder="请填写机构负责人">
-						</Input>
+					<FormItem label='机构负责人' prop="">
+						<Select v-model="formItem.gly" placeholder="请填写机构负责人">
+							<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>
+						</Select>
+					</FormItem>
+					<FormItem label='权限选择:'>
+						<Tree :data="data4" show-checkbox multiple></Tree>
 					</FormItem>
 				</Form>
 			</div>
-			</Form>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
 				<Button type="primary" @click="save('formItem')">确定</Button>
@@ -39,16 +41,17 @@
                 mesF: false,
 				edit:false,
                 formItem: {
-                    fjgdm:''
+                    fjgdm:'',
+					gly:''
                 },
                 ruleInline: {
                     jgmc: [
                   		{ required: true, message: '请输入机构名称', trigger: 'blur' }
                   	],
-                    glyxm:[
-                        { required: true, message: '请输入机构负责人', trigger: 'blur' }
-					]
               	},
+				userList:[],
+                data4: [],
+                choosedIds:[]
             }
         },
         created(){
@@ -61,12 +64,53 @@
 			}else{
                 if (this.$parent.jgdm){
                     this.formItem.fjgdm = this.$parent.jgdm;
+                    this.formItem.gly = this.$parent.gly;
                 }else{
                     log("请选择父节点")
 				}
 			}
+            this.getOrgPermissionTree();
+			this.getUserList();
 		},
         methods: {
+            getChoosedIds(list){
+                for(let r of list){
+                    if (r.checked)this.choosedIds.push(r.gndm);
+                    if (r.children){
+                        this.getChoosedIds(r.children);
+                    }
+                }
+            },
+            getOrgPermissionTree(){
+                this.$http.get(configApi.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
+                    if(res.code===200){
+                        this.data4 = res.result[0].functions;
+                    }
+                })
+            },
+            setOrgPermission(){
+                this.getChoosedIds(this.data4);
+                let ids = '';
+                for (let r of this.choosedIds){
+                    ids += r+',';
+                }
+                this.$http.post(configApi.FUNCTION.SET_ORG_FUNCTIONS,{'jgdm':this.formItem.jgdm,'gndms':ids}).then((res) =>{
+                    if(res.code===200){
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+					}
+                })
+            },
+            getUserList(){
+                let userInfo = sessionStorage.getItem("userInfo");
+                let jgdm = userInfo.jgdm;
+                this.$http.get(configApi.USER.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
+                    if(res.code===200 && res.page.list){
+                        this.userList = res.page.list;
+                    }
+                })
+			},
             save(name){
                 var v = this
                 v.SpinShow = true
@@ -76,9 +120,10 @@
 		                if (this.edit){
 		                    url = configApi.FRAMEWORK.CHANGE;
 						}
+						delete this.formItem.children;
 		                this.$http.post(url,this.formItem).then((res) =>{
 		                    if(res.code===200){
-		                        v.$Message.success(res.message);
+		                        this.setOrgPermission();
 		                    }else{
 		                        v.$Message.error(res.message);
 		                    }
