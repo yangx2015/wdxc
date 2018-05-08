@@ -32,6 +32,7 @@ public class LscServiceImpl extends BaseServiceImpl<ClLsc,String> implements Lsc
     public ApiResponse<String> saveEntity(ClLsc entity) {
         entity.setCjsj(new Date());
         entity.setCjr(getOperateUser());
+        entity.setId(genId());
         save(entity);
         return ApiResponse.saveSuccess();
     }

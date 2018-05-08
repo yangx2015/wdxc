@@ -20,10 +20,10 @@
 							<span class="titmess">订单统计</span>
 						</Col>
 						<Col span="14">
-							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="getPageData"></Input>
 						</Col>
 						<Col span="6" class="butevent">
-							<Button type="primary" @click="AddDataList()">
+							<Button type="primary" @click="getPageData()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
@@ -58,27 +58,8 @@
         data () {
             return {
             	//分页
-            	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:8
-            	},
             	//弹层--角色分配
             	RootShow:false,
-            	indeterminate: false,
-            	checkAll:false,
-      				checkAllGroup:[],
-              roleList:[
-                {
-                  value:'司机',
-                  key:'01'
-                },
-                {
-                  value:'队长',
-                  key:'02'
-                }
-              ],
-      				//弹层--新增用户
             	showModal:false,
               tableTiT: [
                 	{
@@ -159,71 +140,17 @@
             },{
                 title: '订单统计',
             }])
+            this.getPageData()
         },
         methods: {
-        	//收索事件
-        	findMessList(){
-        		var v = this
-//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
-        	},
-        	//添加新用户信息
-        	AddDataList(){
-                var v = this
-          		v.showModal = true
-
-//              axios.get('carLogs/pager',this.page).then((res) => {
-//                  v.tableData = res.data
-//                  v.pageTotal = res.total
-//              })
+            getPageData() {
+                this.$http.post(this.apis.ORDER.TJ,{},(res)=>{
+                    this.tableData = res.result;
+				})
             },
-            //分页点击事件按
-            pageChange(event){
-        		var v = this
-        		v.page.pageNum = event
-        		v.getDataList(v.page)
-//      		log(v.page)
-        	},
-        	//角色分配选项
-        	handleCheckAll () {
-                var v = this
-                if (v.indeterminate) {
-                    v.checkAll = false;
-                } else {
-                    v.checkAll = !this.checkAll;
-                }
-                v.indeterminate = false;
-                //
-                if (v.checkAll) {
-                    // debugger
-                    v.roleList.forEach((item,index) => {
-                      v.checkAllGroup.push(item.key)
-                    })
-                } else {
-                    v.checkAllGroup = [];
-                }
+            pageChange(event) {
+                this.util.pageChange(this, event);
             },
-            checkAllGroupChange (data) {
-              // alert(data)
-              var v = this
-              if(data.length == v.roleList.length){
-                v.checkAll = true;
-              }else{
-                v.checkAll = false;
-              }
-                // if (data.length === 3) {
-                //     this.indeterminate = false;
-                //     this.checkAll = true;
-                // } else if (data.length > 0) {
-                //     this.indeterminate = true;
-                //     this.checkAll = false;
-                // } else {
-                //     this.indeterminate = false;
-                //     this.checkAll = false;
-                // }
-            }
         }
     }
 </script>

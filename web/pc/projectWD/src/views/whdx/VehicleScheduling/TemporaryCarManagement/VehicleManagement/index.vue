@@ -1,219 +1,175 @@
 <style lang="less">
-    @import '../../../../../styles/common.less';
+	@import '../../../../../styles/common.less';
 </style>
-<!--临时车辆管理-->
+<!--角色管理-->
 <template>
-    <div class="boxbackborder">
+	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-    			<span class="tabPageTit">
+				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>临时车辆管理</span>
+							<span>临时车管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
+								   @on-change="getPageData()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="findMessList()">
+							<Button type="primary" @click="getPageData()">
 								<Icon type="search"></Icon>
-								<!--查询-->
 							</Button>
-							<Button type="primary" @click="AddDataList()">
+							<Button type="primary" @click="add()">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table
-						:height="tabHeight"
-						:row-class-name="rowClassName"
-						:columns="tableTiT"
-						:data="tableData"></Table>
+			<Row style="position: relative;">
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
-					  show-total
-					  show-elevator
+				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator
 					  @on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component
-			:is="compName"
-			:mess="mess"
-			:messType="messType"></component>
-    </div>
+		<component :is="componentName"></component>
+	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+    import mixins from '@/mixins'
+    import formData from './comp/formData.vue'
 
-	import newmes from './comp/newmes.vue'
-	export default {
-    	name:'char',
-    	components: {
-			newmes
+    export default {
+        name: 'char',
+        mixins: [mixins],
+        components: {
+            formData
         },
-    	mixins:[mixins],
-        data () {
+        data() {
             return {
-            	mess:{},
-            	messType:true,
-            	compName:'',
-
-            	SpinShow:true,
-				tabHeight: 220,
-            	//分页
-            	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:8
-            	},
-                tableTiT: [
-                	{
-	                	title:"序号",
-	                	width:80,
-	                	align:'center',
-	                	type:'index'
-	                },
-	                {
-                        title: '车辆编号',
-                        width:200,
+                SpinShow: true,
+                pagerUrl: this.apis.TEMP_CAR.QUERY,
+                tabHeight: 220,
+                componentName: '',
+                choosedItem: null,
+                tableTitle: [
+                    {
+                        title:'序号',
+                        type: 'index',
                         align:'center',
-                        key: 'clId'
+                        width: 60,
                     },
                     {
-                        title: '车牌号码',
+                        title: '车牌号',
                         align:'center',
                         key: 'cph'
                     },
-                      {
-                        title: '所属单位',
+                    {
+                        title: '临时单位',
                         align:'center',
-                        key: 'lsdwId'
+                        key: 'lsdwmc'
                     },
                     {
-                        title: '车辆类别',
+                        title: '车辆类型',
                         align:'center',
-                        key: 'cllx'
+                        key: 'cllx',
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cllx)
+                            return h('div',val)
+                        }
                     },
                     {
-                        title: '车辆型号',
+                        title: '座位数',
                         align:'center',
                         key: 'zws'
                     },
                     {
-                        title: '注册时间',
-                        width:160,
-                        align:'center',
-                        key: 'cjsj'
-                    },
-                    {
-                        title: '车辆状态',
+                        title: '状态',
                         align:'center',
                         key: 'zt'
                     },
                     {
-                        title: '操作',
-                        key: 'action',
-                        width: 150,
-                        align: 'center',
+                        title:'操作',
+                        align:'center',
+                        type: 'action',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
                                     props: {
-                                        type: 'primary',
-										icon: 'navicon-round',
-										shape: 'circle',
-										size: 'small'
+                                        type: 'success',
+                                        icon: 'edit',
+                                        shape: 'circle',
+                                        size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                            this.messType = false
-                                        	this.mess = params.row
-                                            this.compName = 'newmess'
+                                            this.choosedItem = params.row
+                                            this.componentName = 'formData'
                                         }
                                     }
                                 }),
                                 h('Button', {
                                     props: {
                                         type: 'error',
-										icon: 'close',
-										shape: 'circle',
-										size: 'small'
+                                        icon: 'close',
+                                        shape: 'circle',
+                                        size: 'small'
                                     },
                                     on: {
                                         click: () => {
-                                            this.listDele(params.row)
+                                            this.listDele(params.row.id)
                                         }
                                     }
                                 })
                             ]);
                         }
-                    }
+                    },
                 ],
-                tableData: [],
-                //收索
-                cjsjInRange:[],
-				findMess: {
-					cjsjInRange:'',
-					zjhmLike: '',
-					pageNum: 1,
-					pageSize:8
-				}
+                pageData: [],
+                form: {
+                    gnmcLike: '',
+                    total: 0,
+                    pageNum: 1,
+                    pageSize: 8,
+                },
+                cxDict:[],//车量型号
+                cxDictCode:'ZDCLK0019',
+				lswdList:[]
             }
         },
-        created(){
-        	this.$store.commit('setCurrentPath', [{
-                title: '首页',
-            },{
-                title: '车辆调度',
-            },{
-                title: '临时车管理',
-            },{
-                title: '车辆管理',
-            }]),
-			this.tabHeight = this.getWindowHeight() - 290
-            this.SpinShow = false;
-            this.getmess()
+        created() {
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
+            this.tabHeight = this.getWindowHeight() - 300
+            this.getPageData()
+            this.getDict()
         },
         methods: {
-        	getmess(){
-				var v = this
-				this.$http.get(configApi.LSC.QUERY,{params:v.findMess}).then((res) =>{
-					log('临时车数据',res)
-					v.tableData = res.page.list
-					v.pageTotal = res.page.total
-					v.SpinShow = false;
-				})
-			},
-        	AddDataList() {
-				var v = this
-				v.compName = 'newmes'
-			},
-        	findMessList(){
-        		var v = this
-        	},
-        	listDele(){
-
-        	},
-            pageChange(event){
-        		var v = this
-        		v.page.pageNum = event
-//      		log(v.page)
-        	},
+            getDict(){
+                this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
+            },
+            getPageData() {
+                this.util.getPageData(this);
+            },
+            //删除数据
+            listDele(id) {
+                this.util.del(this, this.apis.TEMP_CAR.DELE, [id]);
+            },
+            add() {
+                this.componentName = 'formData'
+                this.choosedItem = null;
+            },
+            pageChange(event) {
+                this.util.pageChange(this, event);
+            },
         }
     }
 </script>

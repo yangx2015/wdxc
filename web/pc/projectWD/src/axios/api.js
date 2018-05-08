@@ -18,6 +18,24 @@ module.exports = {
         GIVE:'/api/js/modifyUserRoles',
         DELE:'/api/yh/removeIds'
     },
+    BXJZ:{
+        QUERY:'/api/bxjz/pager',//报销记账管理
+        ADD:'/api/bxjz/save',
+        CHANGE:'/api/bxjz/update',
+        DELE:'/api/bxjz/removeIds'
+    },
+    TEMP_UNIT:{
+        QUERY:'/api/lsdw/pager',//临时单位管理
+        ADD:'/api/lsdw/save',
+        CHANGE:'/api/lsdw/update',
+        DELE:'/api/lsdw/removeIds'
+    },
+    TEMP_CAR:{
+        QUERY:'/api/lsc/pager',//临时车管理
+        ADD:'/api/lsc/save',
+        CHANGE:'/api/lsc/update',
+        DELE:'/api/lsc/removeIds'
+    },
     ORDER:{
         QUERY:'/api/dd/pager',//订单管理
         ADD:'/api/dd/save',
@@ -32,6 +50,7 @@ module.exports = {
         DRIVER_CONFIRM:'/api/dd/driverConfirm',//队长确认
         orderDetails:'/api/dd/orderDetails',//订单详情
         FP:'/api/dd/pd',//订单分派
+        TJ:'/api/dd/ddtj',//订单统计
     },
     ROLE:{
         QUERY:'/api/js/pager',//角色管理

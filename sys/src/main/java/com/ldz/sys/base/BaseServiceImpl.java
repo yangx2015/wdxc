@@ -368,6 +368,18 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
     }
 
     @Override
+    public ApiResponse<String> validAndSave(T entity) {
+        getBaseMapper().insertSelective(entity);
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<String> validAndUpdate(T entity) {
+        getBaseMapper().updateByPrimaryKeySelective(entity);
+        return ApiResponse.success();
+    }
+
+    @Override
     public int save(T entity) {
         return getBaseMapper().insertSelective(entity);
     }
