@@ -65,10 +65,19 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
         return entityClass;
     }
 
+    public List<T> query(T t){
+        LimitedCondition condition = getQueryCondition();
+        if (!fillQueryCondition(condition)){
+            return new ArrayList<>();
+        }
+        List<T> list = findByCondition(condition);
+        afterQuery(list);
+        return list;
+    }
     public ApiResponse<List<T>> pager(Page<T> pager){
         ApiResponse<List<T>> result = new ApiResponse<>();
         LimitedCondition condition = getQueryCondition();
-        if (!fillCondition(condition)){
+        if (!fillPagerCondition(condition)){
             return new ApiResponse<List<T>>().emptyPage();
         }
 
@@ -81,6 +90,9 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
     protected void afterPager(PageInfo<T> resultPage){
         return;
     }
+    protected void afterQuery(List<T> list){
+        return;
+    }
 
     /**
      * 查询条件补充
@@ -88,6 +100,12 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
      * @return
      */
     public boolean fillCondition(LimitedCondition condition){
+        return fillPagerCondition(condition);
+    }
+    public boolean fillPagerCondition(LimitedCondition condition){
+        return true;
+    }
+    public boolean fillQueryCondition(LimitedCondition condition){
         return true;
     }
 

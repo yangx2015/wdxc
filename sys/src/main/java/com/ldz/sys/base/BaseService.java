@@ -36,40 +36,40 @@ public interface BaseService<T, PK extends Serializable> {
 	 * @return
 	 */
 	public T findById(PK id);
-	
+
 	/**
 	 * 根据实体中的属性进行查询，只能有一个返回值，有多个结果是抛出异常，查询条件使用等号
 	 * @param entity
 	 * @return
 	 */
 	public T findOneByEntity(T entity);
-	
+
 	/**
 	 * 根据实体中的属性值进行多个对象结果查询，查询条件使用等号。
 	 * @param entity
 	 * @return
 	 */
 	public List<T> findByEntity(T entity);
-	
+
 	/**
 	 * 通过Example条件查询结果。
 	 * @return
 	 */
 	public List<T> findByCondition(Example condition);
-	
+
 	/**
 	 * 查询表数据总数
 	 * @return
 	 */
 	public Integer count();
-	
+
 	/**
 	 * 根据对象查询数据总数
 	 * @param entity
 	 * @return
 	 */
 	public Integer countByEntity(T entity);
-	
+
 	/**
 	 * 通过Example条件查询数据总数
 	 * @param condition
@@ -89,7 +89,7 @@ public interface BaseService<T, PK extends Serializable> {
 	 * @return
 	 */
 	public int save(T entity);
-	
+
 	/**
 	 * 对象数据更新
 	 * @param entity
@@ -115,13 +115,13 @@ public interface BaseService<T, PK extends Serializable> {
 	 * @param id
 	 */
 	public void remove(PK id);
-	
+
 	/**
 	 * 根据对象条件删除数据，条件使用等号
 	 * @param entity
 	 */
 	public void remove(T entity);
-	
+
 	/**
 	 * 根据主键批量删除数据
 	 * @param ids
@@ -136,7 +136,7 @@ public interface BaseService<T, PK extends Serializable> {
 	 * @return
 	 */
 	public PageInfo<T> findPage(Page page, Example condition);
-	
+
 	/**
 	 * 根据条件进行分页查询。页码，从1开始
 	 * @param page
@@ -171,4 +171,6 @@ public interface BaseService<T, PK extends Serializable> {
 	public int countIn(String key, Iterable iterable);
 
     public boolean ifExists(String key, String val);
+
+    List<T> query(T entity);
 }

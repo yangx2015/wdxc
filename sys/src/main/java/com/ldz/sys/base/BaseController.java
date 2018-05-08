@@ -49,7 +49,7 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<T> get(@PathVariable("pkid")PK pkid){
     	return ApiResponse.success(getBaseService().findById(pkid));
 	}
-    
+
     /**
      * 获取指定对象表中所有数据。
      * 如果对数据要求高，请重写该方法或是不直接继承该类，防止数据泄露
@@ -59,7 +59,16 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<List<T>> getAll(){
 		return ApiResponse.success(getBaseService().findAll());
 	}
-    
+
+    /**
+     * 根据对象字段值查询数据
+     * @param entity
+     * @return
+     */
+    @RequestMapping(value="/query", method={RequestMethod.GET})
+	public ApiResponse<List<T>> query(T entity){
+		return ApiResponse.success(getBaseService().query(entity));
+	}
     /**
      * 根据对象字段值查询数据
      * @param entity
@@ -69,7 +78,7 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<List<T>> getCondition(T entity){
 		return ApiResponse.success(getBaseService().findByEntity(entity));
 	}
-    
+
     /**
      * 分页查询。默认根据前台传递的值做精确搜索。需要其他搜索方式，请自行重新该方法
      * @param entity
@@ -91,7 +100,7 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<String> save(T entity){
 		return getBaseService().validAndSave(entity);
 	}
-    
+
     /**
      * 数据修改方法
      * 如果对数据要求高，请重写该方法或是不直接继承该类，防止数据泄露
@@ -102,7 +111,7 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<String> update(T entity){
 		return getBaseService().validAndUpdate(entity);
 	}
-    
+
     /**
      * 数据删除方法
      * 如果对数据要求高，请重写该方法或是不直接继承该类，防止数据泄露
@@ -114,7 +123,7 @@ public abstract class BaseController<T, PK extends Serializable> {
 		getBaseService().remove(id);
 		return ApiResponse.success();
 	}
-    
+
     /**
 	 * 批量删除操作
 	 * @param ids
@@ -124,12 +133,12 @@ public abstract class BaseController<T, PK extends Serializable> {
 	public ApiResponse<String> remove(PK[] ids){
 		return getBaseService().removeIds(ids);
 	}
-    
-    @InitBinder 
-    public void initBinder(WebDataBinder binder) {  
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
     	SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		dateFormat.setLenient(false); 
-		//true:允许输入空值，false:不能为空值 
+		dateFormat.setLenient(false);
+		//true:允许输入空值，false:不能为空值
 		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
 }
