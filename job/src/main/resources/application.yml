@@ -53,3 +53,5 @@ biz:
   
 ticserver:  
    url: http://47.98.39.45:9095/api/push/checkOnlin/ 
+znzp:
+   url: http://47.98.39.45:9888/api/reporting
