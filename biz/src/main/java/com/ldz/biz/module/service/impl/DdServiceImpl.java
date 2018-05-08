@@ -249,10 +249,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }
         String zkl=StringUtils.trim(entity.getZkl());//载客量
         if(StringUtils.isNotEmpty(zkl)){
-            condition.gte(ClDd.InnerColumn.zws,zkl);//zws
+            condition.lte(ClDd.InnerColumn.zws,zkl);//zws
         }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
-        condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
+        condition.setOrderByClause(ClDd.InnerColumn.yysj.desc() +" , "+ClDd.InnerColumn.zws.asc());
         //这里还需要判断
         List<ClDd> orgs = findByCondition(condition);
         result.setResult(orgs);
