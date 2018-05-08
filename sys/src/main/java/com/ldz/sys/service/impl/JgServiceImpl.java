@@ -45,7 +45,7 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		Map<String, SysJg> orgIdMap = orgList.stream().collect(Collectors.toMap(SysJg::getJgdm, p -> p));
 		List<SysJg> root = new ArrayList<>();
 		for (SysJg org : orgList) {
-			if (StringUtils.isEmpty(org.getFjgdm())) {
+			if (StringUtils.isEmpty(org.getFjgdm()) || !orgIdMap.containsKey(org.getFjgdm())) {
 				root.add(org);
 				continue;
 			}
@@ -157,7 +157,8 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	@Override
 	public ApiResponse<List<SysJg>> getOrgTree(String jgmc) {
 		ApiResponse<List<SysJg>> response = new ApiResponse<>();
-		List<SysJg> orgs = jgService.findAllSubOrg("",jgmc);
+		SysYh user = getCurrentUser();
+		List<SysJg> orgs = jgService.findAllSubOrg(user.getJgdm(),jgmc);
 		List<SysJg> orgTree = jgService.getOrgTree(orgs);
 		response.setResult(orgTree);
 		return response;

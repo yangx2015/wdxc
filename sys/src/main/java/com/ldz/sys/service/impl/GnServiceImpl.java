@@ -317,6 +317,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             return findAll();
         }
         List<String> functionCodes = getUserFunctionCodes(user);
+        List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
+        functionCodes.retainAll(orgFunctionCodes);
         if (functionCodes.size() == 0)return new ArrayList<>();
         SimpleCondition condition = new SimpleCondition(SysGn.class);
         condition.in(SysGn.InnerColumn.gndm,functionCodes);
@@ -326,12 +328,17 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<SysGn> getOrgFunctions(String orgCode) {
+        List<String> functionCodes = getOrgFunctionCodes(orgCode);
+        return gnService.findIn(SysGn.InnerColumn.gndm,functionCodes);
+    }
+    @Override
+    public List<String> getOrgFunctionCodes(String orgCode) {
         SimpleCondition condition = new SimpleCondition(SysJgsq.class);
         condition.eq(SysJgsq.InnerColumn.jgdm,orgCode);
         List<SysJgsq> jgsqs = jgsqMapper.selectByExample(condition);
         if (jgsqs.size() == 0)return new ArrayList<>();
         List<String> functionCodes = jgsqs.stream().map(SysJgsq::getGndm).collect(Collectors.toList());
-        return gnService.findIn(SysGn.InnerColumn.gndm,functionCodes);
+        return functionCodes;
     }
 
     private void initjgsq(){
@@ -364,20 +371,14 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     }
 
     @Override
-    public List<String> getOrgFunctionCodes(String orgCode) {
-        SimpleCondition condition = new SimpleCondition(SysJgsq.class);
-        condition.eq(SysJgsq.InnerColumn.jgdm,orgCode);
-        List<SysJgsq> jgsqs = jgsqlbMapper.selectByExample(condition);
-        if (jgsqs.size() == 0)return new ArrayList<>();
-        List<String> functionCodes = jgsqs.stream().map(SysJgsq::getGndm).collect(Collectors.toList());
-        return functionCodes;
-    }
-
-    @Override
     public List<SysGn> getRolesFunctions(List<String> jsdms) {
         if (jsdms == null || jsdms.size() == 0)return new ArrayList<>();
         List<String> functionCodes = getRolesFunctionCodes(jsdms);
         if (functionCodes.size() == 0)return new ArrayList<>();
+
+//        SysYh user = getCurrentUser();
+//        List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
+//        functionCodes.retainAll(orgFunctionCodes);
         return findIn(SysGn.InnerColumn.gndm,functionCodes);
     }
 
@@ -386,19 +387,16 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         if (jsdms == null || jsdms.size() == 0)return new ArrayList<>();
         SysJs role = jsService.findById(jsdms.get(0));
         if (role == null)return new ArrayList<>();
-
-        List<String> orgFunctionCodes = getOrgFunctionCodes(role.getJgdm());
-
         SimpleCondition condition = new SimpleCondition(SysJsGn.class);
         condition.in(SysJsGn.InnerColumn.jsdm,jsdms);
-        condition.in(SysJsGn.InnerColumn.gndm,orgFunctionCodes);
         List<SysJsGn> roleFunctions = jsGnMapper.selectByExample(condition);
         if (roleFunctions.size() == 0)return new ArrayList<>();
         return roleFunctions.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
     }
 
     private List<SysFw> getAllPermissionTreeWithChecked(List<SysFw> services,List<SysGn> functions){
-        List<SysGn> allFunctions = gnService.findAll();
+        SysYh user = getCurrentUser();
+        List<SysGn> allFunctions = getOrgFunctions(user.getJgdm());
         List<SysFw> allServices = fwService.findAll();
 
         List<String> functionCodes = functions.stream().map(SysGn::getGndm).collect(Collectors.toList());
@@ -453,7 +451,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions){
         return getPermissionTree(services,functions,null);
     }
-    private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions,List<SysGn> hasFunctions){
+    private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions,List<String> hasFunctionCodes){
         Map<String,SysFw> serviceMap = services.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
         Map<String,SysGn> functionMap = functions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
 
@@ -473,7 +471,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         }
         for (SysGn function : functions) {
             String fatherCode = function.getFjd();
-            if (hasFunctions != null && hasFunctions.contains(function)){
+            if (hasFunctionCodes != null && hasFunctionCodes.contains(function.getGndm())){
                 function.setChecked("checked");
             }
             // 如果没有父节点，则代码这是个一级功能
@@ -485,7 +483,6 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
                     children.add(function);
                     father.setFunctions(children);
                 }else{
-                    if (father.getFunctions().contains(function))continue;
                     father.getFunctions().add(function);
                 }
             }else{
@@ -496,7 +493,6 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
                     children.add(function);
                     father.setChildren(children);
                 }else{
-                    if (father.getChildren().contains(function))continue;
                     father.getChildren().add(function);
                 }
             }
@@ -512,10 +508,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     @Override
     public List<SysFw> getOrgPermissionTree(String jgdm) {
-        List<SysGn> hasFunctions = getOrgFunctions(jgdm);
+        List<String> hasFunctionCodes = getOrgFunctionCodes(jgdm);
         SysJg org = jgService.findByOrgCode(jgdm);
         if (org == null)return new ArrayList<>();
-        return getPermissionTree(fwService.findByJgdm(jgdm),getOrgFunctions(org.getFjgdm()),hasFunctions);
+        return getPermissionTree(fwService.findByJgdm(jgdm),getOrgFunctions(org.getFjgdm()),hasFunctionCodes);
     }
 
     @Override
