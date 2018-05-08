@@ -16,19 +16,31 @@ const package = require('../package.json');
 //     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
 // });
 
+/**
+ *  用[hash]的话，由于每次使用 webpack 构建代码的时候，此 hash 字符串都会更新，因此相当于强制刷新浏览器缓存。
+    用[chunkhash]的话，则会根据具体 chunk 的内容来形成一个 hash 字符串来插入到文件名上；换句说， chunk 的内容不变，
+        该 chunk 所对应生成出来的文件的文件名也不会变，由此，浏览器缓存便能得以继续利用。
+ */
 module.exports = merge(webpackBaseConfig, {
     output: {
-     publicPath: './dist/',  // 修改 https://iv...admin 这部分为你的服务器域名
-		// publicPath: 'http://47.98.39.45:8080/biz/static/dist/',
-        filename: '[name].[hash].js',
-        chunkFilename: '[name].[hash].chunk.js'
+        publicPath: './dist/',  // 修改 https://iv...admin 这部分为你的服务器域名
+        filename: '[name].[chunkhash].js',
+        chunkFilename: '[name].[chunkhash].chunk.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.(woff|svg|eot|ttf)\??.*$/,
+                loader: 'file-loader?publicPath=./font/&outputPath=/font/'
+            },
+        ]
     },
     plugins: [
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
         }),
         new ExtractTextPlugin({
-            filename: '[name].[hash].css',
+            filename: '[name].[chunkhash].css',
             allChunks: true
         }),
         new webpack.optimize.CommonsChunkPlugin({
