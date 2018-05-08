@@ -47,11 +47,11 @@ public class ClJsyModel implements Serializable {
     /**
      * 当天已完成的订单数
      */
-    private String endOrderCount;
+    private long endOrderCount;
     /**
      * 当天未完成的订单
      */
-    private String startOrderCount;
+    private long startOrderCount;
 
     /**
      * 状态
@@ -62,28 +62,28 @@ public class ClJsyModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public long getEndOrderCount() {
+        return endOrderCount;
+    }
+
+    public void setEndOrderCount(long endOrderCount) {
+        this.endOrderCount = endOrderCount;
+    }
+
+    public long getStartOrderCount() {
+        return startOrderCount;
+    }
+
+    public void setStartOrderCount(long startOrderCount) {
+        this.startOrderCount = startOrderCount;
+    }
+
     public String getZt() {
         return zt;
     }
 
     public void setZt(String zt) {
         this.zt = zt;
-    }
-
-    public String getEndOrderCount() {
-        return endOrderCount;
-    }
-
-    public void setEndOrderCount(String endOrderCount) {
-        this.endOrderCount = endOrderCount;
-    }
-
-    public String getStartOrderCount() {
-        return startOrderCount;
-    }
-
-    public void setStartOrderCount(String startOrderCount) {
-        this.startOrderCount = startOrderCount;
     }
 
     public List<ClDd> getClDdList() {
