@@ -12,7 +12,7 @@ import tk.mybatis.mapper.common.Mapper;
 import java.util.Date;
 import java.util.List;
 
-@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
+//@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClClMapper extends Mapper<ClCl> {
 	/*
 	 * 通过车辆终端id找到对应的电子围栏
