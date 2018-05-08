@@ -25,6 +25,7 @@ module.exports = {
 		DELE:'/api/dd/removeIds',
 		AUDIT:'/api/dd/orderAuditing',
 		//订单分派
+		PDTJ:'/api/dd/dtddtj',
 		SJLB:'/api/dd/pdsjlb',//司机列表
 		DFP:'/api/dd/dfp',//待分派订单
 		QXPD:'/api/dd/qxpd',//取消派单

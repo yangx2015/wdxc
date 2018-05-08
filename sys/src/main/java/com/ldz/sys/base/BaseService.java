@@ -96,7 +96,20 @@ public interface BaseService<T, PK extends Serializable> {
 	 * @return
 	 */
 	public int update(T entity);
-	
+	/**
+	 * 对象数据保存
+	 * @param entity
+	 * @return
+	 */
+	public ApiResponse<String> validAndSave(T entity);
+
+	/**
+	 * 对象数据更新
+	 * @param entity
+	 * @return
+	 */
+	public ApiResponse<String> validAndUpdate(T entity);
+
 	/**
 	 * 根据主键删除指定数据
 	 * @param id

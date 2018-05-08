@@ -89,8 +89,7 @@ public abstract class BaseController<T, PK extends Serializable> {
      */
     @RequestMapping(value="/save", method={RequestMethod.POST})
 	public ApiResponse<String> save(T entity){
-		getBaseService().save(entity);
-		return ApiResponse.saveSuccess();
+		return getBaseService().validAndSave(entity);
 	}
     
     /**
@@ -101,8 +100,7 @@ public abstract class BaseController<T, PK extends Serializable> {
      */
     @RequestMapping(value="/update", method={RequestMethod.POST})
 	public ApiResponse<String> update(T entity){
-		getBaseService().update(entity);
-		return ApiResponse.saveSuccess();
+		return getBaseService().validAndUpdate(entity);
 	}
     
     /**
