@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -125,6 +126,11 @@ public class ClJsy implements Serializable {
     @Column(name = "CLRQ")
     @NotNull(message="初领时间不为空")
     private Date clrq;
+    /**
+     * 载客量  筛选条件
+     */
+    @Transient
+    private String zkl;
 
     /**
      * 微信登陆密码
@@ -164,6 +170,14 @@ public class ClJsy implements Serializable {
 
     public void setSjh(String sjh) {
         this.sjh = sjh;
+    }
+
+    public String getZkl() {
+        return zkl;
+    }
+
+    public void setZkl(String zkl) {
+        this.zkl = zkl;
     }
 
     /**

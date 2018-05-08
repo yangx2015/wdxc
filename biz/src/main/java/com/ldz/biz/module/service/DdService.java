@@ -49,4 +49,6 @@ public interface DdService extends BaseService<ClDd,String>{
 	ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd);
 
     ApiResponse<String> driverConfirm(String id);
+
+    ApiResponse<Map<String,Object>> getVeryDayOrder(String cllx);
 }
