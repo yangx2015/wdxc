@@ -127,13 +127,13 @@
 								</div>
 								<div class="body-O" style="padding-left:8px ">
 									<span>
-										总（20）
+										总（{{item.endOrderCount+item.startOrderCount}}）
 									</span>
 									<span>
-										完（10）
+										完（{{item.endOrderCount}}）
 									</span>
 									<span>
-										未（10）
+										未（{{item.startOrderCount}}）
 									</span>
 								</div>
 							</div>
