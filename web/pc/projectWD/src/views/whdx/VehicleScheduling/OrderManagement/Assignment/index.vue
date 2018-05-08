@@ -91,18 +91,6 @@
 									{{item.COU}}
 								</span>
 							</div>
-							<!--<div class="body-1 zwxz">-->
-								<!--7座-->
-								<!--<span class="num">-->
-									<!--70-->
-								<!--</span>-->
-							<!--</div>-->
-							<!--<div class="body-1 zwxz">-->
-								<!--11座-->
-								<!--<span class="num">-->
-									<!--130-->
-								<!--</span>-->
-							<!--</div>-->
 						</div>
 						<div v-else>
 							……
@@ -121,7 +109,6 @@
 						<span>订单分派(小车)</span>
 					</div>
 					<div class="body-r-1 inputSty">
-						<!--今日已完成200————待派定单200——5座60 7座70 11座130-->
 					</div>
 					<div class="butevent">
 					</div>

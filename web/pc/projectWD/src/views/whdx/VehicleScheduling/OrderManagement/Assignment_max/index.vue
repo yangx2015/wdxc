@@ -118,21 +118,33 @@
 		<div class="body" style="border-top:3px #c8c8c8 solid;padding-top: 5px">
 			<div class="box-row-list">
 				<Card style="width:440px;margin:8px" v-for="(item,index) in drvlist">
-					<div slot="title" class="box-row" style="height: 25px;line-height: 25px">
-						<div style="font-weight: 700">
-							<Icon type="ios-film-outline"></Icon>
-							{{item.xm}}
-						</div>
-						<div class="body-O" style="padding-left:8px ">
+					<div slot="title" style="height: 40px;line-height: 25px">
+						<div class="box-row" style="height: 24px">
+							<div style="font-weight: 700">
+								<Icon type="ios-film-outline"></Icon>
+								{{item.xm}}
+							</div>
+							<div class="body-O" style="padding-left:8px ">
+									<span>
+										总（*）
+									</span>
 								<span>
-									总（*）
-								</span>
-							<span>
-									完（*）
-								</span>
-							<span>
-									未（*）
-								</span>
+										完（*）
+									</span>
+								<span>
+										未（*）
+									</span>
+							</div>
+						</div>
+						<div class="box-row">
+							<div style="margin-right: 16px">
+								<Icon type="android-car"></Icon>
+								{{item.cph}}
+							</div>
+							<div class="body-O">
+								<Icon type="android-contacts"></Icon>
+								{{item.zkl}}座
+							</div>
 						</div>
 					</div>
 					<span slot="extra">
