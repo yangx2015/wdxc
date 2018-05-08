@@ -104,9 +104,6 @@
 				this.$http.post(configApi.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'30'}).then((res) =>{
 					if(res.code == 200){
 						console.log('车辆据',res)
-//						res.result.forEach(function(item,index){
-//							item.ico = false
-//						})
 						if( res.result){
 							v.chrlist = res.result
 						}else{
@@ -126,13 +123,12 @@
 					console.log('排版新增',res)
 					if(res.code==200){
 						v.$Message.success(res.message);
-						v.$parent.getmess()
+						// v.$parent.getmess();
 						v.mess.clList.push({'cph':cph,'clId':carID,'sjxm':sjxm})
 						v.getCarList()
 					}else{
 						v.$Message.error(res.message);
 					}
-					v.getCarList()
 				}).catch((error)=>{
 					v.$Message.error('出错了！！！');
 				})
@@ -154,6 +150,7 @@
 			},
 			colse(){
 				var v = this
+                v.$parent.getmess();
 				v.$parent.compName = ''
 		   	}
 		}

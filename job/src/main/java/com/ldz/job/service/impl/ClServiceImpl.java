@@ -117,7 +117,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		return datetime;
 	}
 
-	public static int pareYear(Date ccdjrq) {
+	public  int pareYear(Date ccdjrq) {
 
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd");
@@ -131,7 +131,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		Years year = Years.yearsBetween(start, end);
 		return year.getYears();
 	}
-
+/*
 	public static void main(String[] args) throws ParseException {
 		
 		String aString = " 2015-05-05 ";
@@ -141,6 +141,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		int pareYear = pareYear(parse);
 		System.out.println(pareYear);
 		
-	}
+	}*/
 	
 }
