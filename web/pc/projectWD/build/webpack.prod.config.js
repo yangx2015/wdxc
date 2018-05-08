@@ -15,6 +15,7 @@ const package = require('../package.json');
 //     const buf = 'export default "production";';
 //     fs.write(fd, buf, 0, buf.length, 0, function(err, written, buffer) {});
 // });
+
 /**
  *  用[hash]的话，由于每次使用 webpack 构建代码的时候，此 hash 字符串都会更新，因此相当于强制刷新浏览器缓存。
     用[chunkhash]的话，则会根据具体 chunk 的内容来形成一个 hash 字符串来插入到文件名上；换句说， chunk 的内容不变，
