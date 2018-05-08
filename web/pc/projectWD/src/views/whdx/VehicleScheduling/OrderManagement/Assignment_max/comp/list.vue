@@ -55,6 +55,11 @@
                         title: '目的地',
                         key: 'mdd',
                         align: 'center'
+                    },
+                    {
+                        title: '载客数',
+                        key: 'zws',
+                        align: 'center'
                     }
                 ],
                 data1: [
@@ -71,12 +76,11 @@
         },
         created(){
             this.getDfp()
-            console.log('*-*/---------------',this.mess)
         },
         methods:{
             getDfp(){
                 var v = this
-                this.$http.post(configApi.ORDER.DFP,{'cllx':2030}).then((res) =>{
+                this.$http.post(configApi.ORDER.DFP,{'cllx':2030,'zkl':this.mess.zkl}).then((res) =>{
                     if(res.code ==200){
                         console.log('******************',res)
                         v.data1 = res.result
@@ -101,6 +105,7 @@
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.$parent.getDrvList()
+                        v.$parent.pdtj()
                         v.colse()
                     }else{
                         v.$Message.error(res.message);

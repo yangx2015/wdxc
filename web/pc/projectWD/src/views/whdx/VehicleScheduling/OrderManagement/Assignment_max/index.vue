@@ -70,7 +70,7 @@
 					</div>
 					<div class="body hg">
 						<span style="color: #00a864;font-size: 16px;font-weight: 600;">
-						200
+						{{jrpd.WCORDER}}
 						</span>
 					</div>
 				</div>
@@ -80,35 +80,20 @@
 					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;">
 						待派定单
 						<span style="color: #ff8300;font-size: 16px;font-weight: 600;">
-							200
+							{{jrpd.num}}
 						</span>
 					</div>
 					<div class="body hg">
-						<div class="box-row-nh">
-							<div class="body-1 zwxz">
-								20座
+						<div class="box-row-nh" v-if="jrpd.list.length>0">
+							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list">
+								{{item.ZWS}}座
 								<span class="num">
-									20
+									{{item.COU}}
 								</span>
 							</div>
-							<div class="body-1 zwxz">
-								32座
-								<span class="num">
-									70
-								</span>
-							</div>
-							<div class="body-1 zwxz">
-								45座
-								<span class="num">
-									130
-								</span>
-							</div>
-							<div class="body-1 zwxz">
-								48座
-								<span class="num">
-									130
-								</span>
-							</div>
+						</div>
+						<div v-else>
+							……
 						</div>
 					</div>
 				</div>
@@ -231,6 +216,7 @@
                 mess:{},
                 compName:'',
                 drvlist:[],
+                jrpd:{}
             }
         },
         created(){
@@ -244,10 +230,33 @@
                 title: '订单分配',
             }]);
             this.getDrvList()
+            this.pdtj()
         },
         mounted(){
         },
         methods:{
+            pdtj(){//派单统计
+                var v = this
+                this.$http.post(configApi.ORDER.PDTJ,{'cllx':2030}).then((res) =>{
+                    // debugger
+                    if(res.code == 200){
+                        let num = 0
+                        if(res.result.list.length == 0){
+                            res.result.num = num
+                        }else {
+                            for(var i of res.result.list){
+                                num = num+i.COU
+                            }
+                            res.result.num = num
+                        }
+                        v.jrpd = res.result
+
+                        console.log('派单****',res.result)
+                    }
+                }).catch(()=>{
+
+                })
+            },
             getDrvList(){//司机列表
                 var v = this
                 this.$http.post(configApi.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
@@ -263,6 +272,8 @@
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.getDrvList()
+						v.pdtj()
+
                     }else{
                         v.$Message.error(res.message);
                     }

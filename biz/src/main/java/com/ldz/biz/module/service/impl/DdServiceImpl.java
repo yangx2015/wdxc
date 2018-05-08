@@ -247,6 +247,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }else{
             condition.eq(ClDd.InnerColumn.cllx,entity.getCllx());
         }
+        String zkl=StringUtils.trim(entity.getZkl());//载客量
+        if(StringUtils.isNotEmpty(zkl)){
+            condition.gte(ClDd.InnerColumn.zws,zkl);//zws
+        }
         condition.eq(ClDd.InnerColumn.ddzt,"11");// TODO: 2018/3/18 这里的是否需要设置为常量？
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
         //这里还需要判断
@@ -262,6 +266,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * 1、司机名 xm like 查询
      * 2、驾驶员车型  zjcx    车辆类型 10、小车 20、大车 30、校巴
      * 0203是查询大车、校巴
+     * 3、载客量    zkl
      * @return
      */
     public ApiResponse<List<ClJsyModel>> driverList(ClJsy entity){
@@ -278,8 +283,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }else{
             li.add(cllx);
         }
-
-        List<ClJsyModel> list = clJsyMapper.getDispatchDriver(entity.getXm(),li);
+        String zkl=StringUtils.trim(entity.getZkl());
+        zkl=StringUtils.isEmpty(zkl)?null:zkl;
+        List<ClJsyModel> list = clJsyMapper.getDispatchDriver(entity.getXm(),li,zkl);
 
         ClDd parameters =new ClDd();//入参
         parameters.setSjSx("10");//默认身份证号码
@@ -894,6 +900,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		return apiResponse;
 	}
 
+	@Override
+    public ApiResponse<Map<String,Object>> getVeryDayOrder(String cllx){
+
+        List<String> li=new ArrayList<String>();
+        if(StringUtils.equals(cllx,"2030")){
+            li.add("20");
+            li.add("30");
+        }else{
+            li.add(cllx);
+        }
+        List<Map<String,Object>> list=entityMapper.selectVeryDayOrder(li);
+        Map<String,Object> map=entityMapper.selectVeryDayOrderCount(li);
+        map.put("list",list);
+        return ApiResponse.success(map);
+    }
     @Override
     public ApiResponse<String> driverConfirm(String id) {
         RuntimeCheck.ifBlank(id,"请选择订单");

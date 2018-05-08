@@ -104,33 +104,30 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	public ApiResponse<String> justDoIt(GpsInfo gpsinfo,ClCl clcl) {
-		ClGps entity =null;
-		try {
-			// 将原始点位抓换
-			 entity = changeCoordinates(gpsinfo);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-			return ApiResponse.fail("传入的数据有问题");
+		// 获取redis(实时gps点位)里面数据
+		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
+		if (StringUtils.equals(gpsinfo.getLatitude(), "-1")||StringUtils.equals(gpsinfo.getLongitude(), "-1")) {
+		    if (StringUtils.isNotEmpty(bean)) {
+		    	ClGps bean2 = JsonUtil.toBean(bean, ClGps.class);
+		    	// 判断该点位是否携带类型,或者是何种类型分类存储
+		      saveClSbyxsjjl(gpsinfo, bean2,clcl);
+		      String socket = JsonUtil.toJson(changeSocket(gpsinfo, bean2,null));
+		      websocket.convertAndSend("/topic/sendgps",socket);
+		      return ApiResponse.success("经纬度为-1的点位事件存储成功,并推送给前端"+JsonUtil.toJson(socket));
+			}
 		}
-	
-
-	// 判断该点位是否携带类型,或者是何种类型分类存储
-	ClSbyxsjjl saveClSbyxsjjl = saveClSbyxsjjl(gpsinfo, entity,clcl);
-	if(saveClSbyxsjjl!=null){
 		
-		log.info("该点位属于特殊点位,事件类型为:" + saveClSbyxsjjl.getSjlx());
-	}
-
+	 ClGps entity = changeCoordinates(gpsinfo);
+	// 判断该点位是否携带类型,或者是何种类型分类存储
+        saveClSbyxsjjl(gpsinfo, entity,clcl);
+	
 	// 推送坐标去前端
 	String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity,null));
-	log.info("推送前端的数据为"+socket);websocket.convertAndSend("/topic/sendgps",socket);
-	// 判断redis(实时gps点位)里面是否存在历史gps数据
-	String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).get();
+	log.info("推送前端的数据为"+socket);
+	websocket.convertAndSend("/topic/sendgps",socket);
 	
 	if(StringUtils.isEmpty(bean)){
-		redis.boundValueOps(ClGps.class.getSimpleName() + entity.getZdbh()).set(JsonUtil.toJson(entity));
-		// 初始化点位时 推送坐标到前端
-		websocket.convertAndSend("/topic/sendgps", JsonUtil.toJson(changeSocket(gpsinfo, entity, null)));
+		redis.boundValueOps(ClGps.class.getSimpleName() +  gpsinfo.getDeviceId()).set(JsonUtil.toJson(entity));
 		return ApiResponse.success("初始化点位成功");
 	}
 	
@@ -157,9 +154,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public ClDzwl JudgePoint(GpsInfo gps,ClCl clcl) {
+	public ClDzwl JudgePoint(ClGps gps,ClCl clcl) {
 
-		ClGps changeCoordinates2 = changeCoordinates(gps);
 
 		List<ClDzwl> seleByZdbh = clcl.getClDzwl();
 
@@ -184,8 +180,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				polygonYA.add(area.getWgLat());
 			}
 			// 判断位置点是否在电子围栏内
-			Boolean flag = PositionUtil.isPointInPolygon(changeCoordinates2.getBdwd().doubleValue(),
-					changeCoordinates2.getBdjd().doubleValue(), polygonXA, polygonYA);
+			Boolean flag = PositionUtil.isPointInPolygon(gps.getBdwd().doubleValue(),
+					gps.getBdjd().doubleValue(), polygonXA, polygonYA);
 
 			if (flag == false) {
 
@@ -246,11 +242,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clsbyxsjjl.setSjxm(clcl.getSjxm());
 		}
 		// 获取设备的记录时间
-		clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
-		if (entity.getGpsjd() != null) {
+		if (StringUtils.isNotEmpty(entity.getStartTime())) {
+			clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
+		}
+		
+		if (StringUtils.isNotEmpty(entity.getGpsjd())) {
 			clsbyxsjjl.setJid(new BigDecimal(entity.getGpsjd()));
 		}
-		if (entity.getFxj() != null) {
+		if (StringUtils.isNotEmpty(entity.getFxj())) {
 			clsbyxsjjl.setYxfx(new Double(entity.getFxj()));
 		}
 		clsbyxsjjl.setZdbh(entity.getDeviceId());
@@ -273,7 +272,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 
 		// 判断该点位是否在电子围栏里面
-		ClDzwl judgePoint = JudgePoint(entity,clcl);
+		ClDzwl judgePoint = JudgePoint(clgps,clcl);
 		if (judgePoint != null) {
 			clsbyxsjjl.setId(genId());
 			clsbyxsjjl.setSjlx("70");
