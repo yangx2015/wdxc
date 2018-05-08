@@ -1,6 +1,7 @@
 package com.ldz.biz.module.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.model.ClDd;
@@ -18,4 +19,28 @@ public interface ClDdMapper extends Mapper<ClDd> {
         " FROM CL_DD  WHERE ID=#{orderid} " +
         " </script>"})
     void insertCopyOrder(@Param("orderid") String id,@Param("userid") String userId);
+
+    @Select({
+            "<script> " +
+                    " SELECT ZWS,COUNT(1) COU FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='11' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    "  AND D.CLLX IN " +
+                    " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
+                    "  #{item} " +
+                    " </foreach> " +
+                    "  ) " +
+                    " group by ZWS " +
+            " </script>"})
+    List<Map<String,Object>> selectVeryDayOrder(List<String> list);
+
+    @Select({
+            "<script> " +
+                    " SELECT COUNT(1) WCORDER  FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='13' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    "  AND D.CLLX IN " +
+                    " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
+                    "  #{item} " +
+                    " </foreach> " +
+                    "  ) " +
+                    " </script>"
+    })
+    Map<String,Object> selectVeryDayOrderCount(List<String> list);
 }
