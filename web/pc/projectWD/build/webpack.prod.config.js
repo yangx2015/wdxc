@@ -27,6 +27,14 @@ module.exports = merge(webpackBaseConfig, {
         filename: '[name].[chunkhash].js',
         chunkFilename: '[name].[chunkhash].chunk.js'
     },
+    module: {
+        rules: [
+            {
+                test: /\.(woff|svg|eot|ttf)\??.*$/,
+                loader: 'file-loader?publicPath=./font/&outputPath=/font/'
+            },
+        ]
+    },
     plugins: [
         new cleanWebpackPlugin(['dist/*'], {
             root: path.resolve(__dirname, '../')
