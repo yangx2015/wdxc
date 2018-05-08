@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.Date;
+
 @Service
 public class LsdwServiceImpl extends BaseServiceImpl<ClLsdw,String> implements LsdwService{
     @Autowired
@@ -26,6 +28,10 @@ public class LsdwServiceImpl extends BaseServiceImpl<ClLsdw,String> implements L
 
     @Override
     public ApiResponse<String> saveEntity(ClLsdw entity) {
+        entity.setId(genId());
+        entity.setCjr(getOperateUser());
+        entity.setCjsj(new Date());
+        entity.setDjcs(new Short("0"));
         save(entity);
         return ApiResponse.saveSuccess();
     }
