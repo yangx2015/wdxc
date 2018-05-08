@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -281,12 +282,28 @@ public class ClDd implements Serializable {
      */
     @Column(name = "ZDBH")
     private String zdbm;
+
+    /**
+     * 载客量  筛选条件
+     */
+    @Transient
+    private String zkl;
+
+
     private static final long serialVersionUID = 1L;
     /**
      * 课题编号  课题字典 [ZDCLK0045]
      */
     @Column(name = "KTCODE")
     private String ktcode;
+
+    public String getZkl() {
+        return zkl;
+    }
+
+    public void setZkl(String zkl) {
+        this.zkl = zkl;
+    }
 
     public String getKtcode() {
         return ktcode;

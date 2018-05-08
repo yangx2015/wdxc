@@ -127,6 +127,7 @@ public class DdCtrl{
      * 1、乘客姓名 ck like 查询
      * 2、待派单车型  cllx    车辆类型 10、小车 20、大车 30、校巴
      * 2030是查询大车、校巴
+     * 3、载客量    zkl
      * @return
      * 待分配的订单列表
      */
@@ -142,6 +143,7 @@ public class DdCtrl{
      * 1、司机名 xm like 查询
      * 2、驾驶员车型  zjcx   车辆类型 10、小车 20、大车 30、校巴
      * 2030是查询大车、校巴
+     * 3、载客量    zkl
      * @return
      * 司机列表
      */
@@ -215,7 +217,6 @@ public class DdCtrl{
     public ApiResponse<ClDd> get(@PathVariable("pkid")String pkid){
         SysYh userInfo = getCurrentUser(true);
         String userId=userInfo.getYhid();
-//        String userId="1"; // TODO: 2018/3/19   测试代码
         ClDd whereClDd=new ClDd();
         whereClDd.setId(pkid);
         whereClDd.setDzbh(userId);
@@ -329,6 +330,17 @@ public class DdCtrl{
     public ApiResponse<String> updateFinanceConfirm(String[] ids){
         return service.updateFinanceConfirm(ids);
     }
+
+    /**
+     * 获取当天订单统计
+     * @param cllx 车型      车辆类型 10、小车 20、大车 30、校巴、2030是查询大车、校巴
+     * @return
+     */
+    @RequestMapping(value="/dtddtj", method={RequestMethod.POST})
+    public ApiResponse<Map<String ,Object>> getVeryDayOrder (String cllx){
+        return service.getVeryDayOrder(cllx);
+    }
+
 
     @PostMapping("/ddtj")
     public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd){
