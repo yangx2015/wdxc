@@ -8,17 +8,30 @@
 			   :title="operate+'机构'">
 			<div style="overflow: auto;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
-					<FormItem label='机构名称' prop="jgmc">
-						<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称"></Input>
-					</FormItem>
-					<FormItem label='机构负责人' prop="">
-						<Select v-model="formItem.gly" placeholder="请填写机构负责人">
-							<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>
-						</Select>
-					</FormItem>
-					<FormItem label='权限选择:'>
-						<Tree :data="data4" show-checkbox multiple></Tree>
-					</FormItem>
+					<Row>
+						<Col>
+							<FormItem label='机构名称' prop="jgmc">
+								<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称"></Input>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<FormItem label='机构负责人' prop="">
+								<Select v-model="formItem.gly" placeholder="请填写机构负责人">
+									<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>
+								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col>
+							<FormItem label='权限选择:'>
+								<br>
+								<Tree :data="data4" show-checkbox multiple></Tree>
+							</FormItem>
+						</Col>
+					</Row>
 				</Form>
 			</div>
 			<div slot='footer'>
@@ -82,6 +95,7 @@
                 }
             },
             getOrgPermissionTree(){
+                this.data4 = [];
                 this.$http.get(configApi.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;

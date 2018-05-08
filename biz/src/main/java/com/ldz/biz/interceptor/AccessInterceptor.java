@@ -118,7 +118,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			return false;
 
 		String uri = request.getRequestURI();
-		String apiPrefix = uri.substring(0, uri.indexOf("/", 5));
+		String apiPrefix = uri.substring(0, uri.indexOf("/", 5) + 1);
 		for (SysGn function : functions) {
 			if (StringUtils.isEmpty(function.getApiQz()))
 				continue;

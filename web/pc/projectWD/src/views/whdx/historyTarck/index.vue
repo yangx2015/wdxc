@@ -114,14 +114,14 @@
 					</div>
 					<div class="carMessH" style="margin-top: 6px">
 						<div class="box-row-nh">
-							<div class="body-1" style="margin: 4px;">
-								<div class="tit">
-									行驶里程(km)
-								</div>
-								<div class="mess">
-									200
-								</div>
-							</div>
+							<!--<div class="body-1" style="margin: 4px;">-->
+								<!--<div class="tit">-->
+									<!--行驶里程(km)-->
+								<!--</div>-->
+								<!--<div class="mess">-->
+									<!--200-->
+								<!--</div>-->
+							<!--</div>-->
 							<div class="body-1" style="margin: 4px;">
 								<div class="tit">
 									驾驶时长(min)
@@ -130,8 +130,6 @@
 									{{getMinute(totalTime)}}
 								</div>
 							</div>
-						</div>
-						<div class="box-row-nh">
 							<div class="body-1" style="margin: 4px;">
 								<div class="tit">
 									驾驶次数
@@ -140,14 +138,14 @@
 									{{pathList.length}}
 								</div>
 							</div>
-							<div class="body-1" style="margin: 4px">
-								<div class="tit">
-									最高时速(km/h)
-								</div>
-								<div class="mess">
-									150
-								</div>
-							</div>
+							<!--<div class="body-1" style="margin: 4px">-->
+								<!--<div class="tit">-->
+									<!--最高时速(km/h)-->
+								<!--</div>-->
+								<!--<div class="mess">-->
+									<!--150-->
+								<!--</div>-->
+							<!--</div>-->
 						</div>
 					</div>
 				</div>
@@ -183,11 +181,11 @@
 							<!--</div>-->
 							<div class="body-1" style="margin: 4px;">
 								<div class="tit">
-									耗时
+									耗时 {{dateFormat(item.sc)}}
 								</div>
-								<div class="mess">
-									{{dateFormat(item.sc)}}
-								</div>
+								<!--<div class="mess">-->
+
+								<!--</div>-->
 							</div>
 							<!--<div class="body-1" style="margin: 4px;">-->
 								<!--<div class="tit">-->
@@ -489,6 +487,22 @@
                     },
                     xAxis: {
                         type: 'time',
+                        axisLabel:{
+                            // 使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
+                            formatter: function (value, index) {
+                                // 格式化成月/日，只在第一个刻度显示年份
+                                var date = new Date(value);
+                                let min = date.getMinutes()
+                                let sec = date.getSeconds()
+								if (min < 10)min = '0'+min;
+								if (sec < 10)sec = '0'+sec;
+                                var texts = (date.getMonth() + 1) +'-'+date.getDate()+' '+min+':'+sec;
+                                // if (index === 0) {
+                                //     texts.unshift(date.getYear());
+                                // }
+                                return texts;
+                            }
+						},
                         axisPointer: {
                             animation: true,
                             //给出pointer显示的位置点，和数据参数关联

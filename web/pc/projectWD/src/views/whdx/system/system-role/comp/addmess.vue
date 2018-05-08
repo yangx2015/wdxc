@@ -121,7 +121,11 @@
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
 		    getRolePermissionTree(){
-                this.$http.get(configApi.FUNCTION.GET_ROLE_PERMISSION_TREE+"?jsdm="+this.addmess.jsId).then((res) =>{
+                let url = configApi.FUNCTION.GET_ROLE_PERMISSION_TREE;
+                if (this.addmess.jsId){
+                    url += "?jsdm="+this.addmess.jsId;
+				}
+                this.$http.get(url).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }
