@@ -22,7 +22,7 @@ import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.XlService;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;

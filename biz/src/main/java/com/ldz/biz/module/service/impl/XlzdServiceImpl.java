@@ -9,7 +9,7 @@ import com.ldz.biz.module.mapper.ClXlzdMapper;
 import com.ldz.biz.module.model.ClXlzd;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.bean.ApiResponse;
 
 import tk.mybatis.mapper.common.Mapper;

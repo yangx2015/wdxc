@@ -3,7 +3,7 @@ package com.ldz.sys.controller;
 
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysFw;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.YhService;

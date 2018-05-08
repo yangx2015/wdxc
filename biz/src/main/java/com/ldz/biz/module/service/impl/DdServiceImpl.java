@@ -35,7 +35,7 @@ import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
@@ -383,7 +383,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             Short zws=clDd.getZws();
             RuntimeCheck.ifNull(zws,"该订单座位数为空，不能进行派单操作");
 
-            RuntimeCheck.ifTrue(zws>zkl,"该车的载客量为:"+zkl+" 订单乘客人数:"+zws+",");
+            RuntimeCheck.ifTrue(zws>zkl,"该车的载客量为:"+zkl+" 订单乘客人数:"+zws+",不能进行派单操作");
 
             ClCd clcd=clCdMapper.selectByPrimaryKey(clCl.getCdbh());
             RuntimeCheck.ifNull(clcd,"未找到该车辆所关联的车队记录");

@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.constant.Dict;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysPtjgMapper;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.service.JgService;

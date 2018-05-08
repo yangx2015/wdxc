@@ -22,7 +22,7 @@ import com.ldz.biz.module.model.ClSpk;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.JsonUtil;
