@@ -5,35 +5,35 @@ import packjson from '../../package.json';
 
 import swal from 'sweetalert'
 let util = {
-
 };
-//util.title = function (title) {
-//  title = title || '武汉大学车辆管理平台';
-//  window.document.title = title;
-//};
 
-//const ajaxUrl = env === 'development'
-//  ? 'http://127.0.0.1'
-//  : env === 'production'
-//      ? 'https://www.url.com'
-//      : 'https://debug.url.com';
-// util.videoPath = 'http://47.98.39.45:9091';
-//util.ajax = axios.create({
-//  baseURL: ajaxUrl,
-//  timeout: 30000,
-//  headers: {'Content-Type':'application/x-www-form-urlencoded'},
-//  withCredentials:true
-//});
-util.initFormModal = function(v){
+util.initTable = (v)=>{
+    v.tabHeight = v.getWindowHeight() - 300
+    util.getPageData(v)
+}
+util.initFormModal = (v)=>{
     if (v.$parent.choosedItem){
         // 深复制，避免数据联动
         v.formItem = JSON.parse(JSON.stringify(v.$parent.choosedItem));
         v.operate = '编辑'
         v.readonly = true
     }
+    util.initFormRule(v);
+}
+util.initFormRule = (v)=>{
+    for (let r of v.formInputs){
+        if (r.required){
+            let rule = [{required: true, message: '请填写'+r.label, trigger: 'blur' }]
+            v.ruleInline[r.prop] = rule;
+        }
+    }
+}
+util.add = (v)=>{
+    v.componentName = 'formData'
+    v.choosedItem = null;
 }
 util.save = function(v){
-    let url = v.$parent.choosedItem ? v.updateUrl : v.createUrl;
+    let url = v.$parent.choosedItem ? v.apiRoot['CHANGE'] : v.apiRoot['ADD'];
     v.$refs.form.validate((valid) => {
         if (valid) {
             if (typeof v.beforeSave === 'function'){
@@ -43,7 +43,7 @@ util.save = function(v){
             v.$http.post(url,v.formItem).then((res) =>{
                 if(res.code===200){
                     v.$Message.success(res.message);
-                    v.$parent.getPageData()
+                    util.getPageData(v.$parent)
                     v.$parent.componentName = ''
                 }else{
                     v.$Message.error(res.message);
@@ -56,6 +56,30 @@ util.save = function(v){
         }
     })
 },
+util.delete = function(v,ids,callback){//数据删除方法封装
+    swal({
+        title: "是否删除数据?",
+        text: "",
+        icon: "warning",
+        buttons:['取消','确认'],
+    }).then((willDelete) => {
+            if (willDelete) {
+                let url = v.apiRoot['DELE'];
+                v.$http.post(url,{'ids':ids}).then((res) =>{
+                    if(res.code===200){
+                        v.$Message.success(res.message);
+                        if (callback && typeof callback === 'function'){
+                            callback();
+                        }else{
+                            util.getPageData(v)
+                        }
+                    }else{
+                        v.$Message.error(res.message);
+                    }
+                })
+            }
+        });
+}
 util.del = function(v,url,ids,callback){//数据删除方法封装
     swal({
         title: "是否删除数据?",
@@ -86,7 +110,8 @@ util.closeDialog = function(v){
     }, 200)
 },
 util.getPageData = function(v) {
-    v.$http.post(v.pagerUrl, v.form).then((response) => {
+    let url = v.apiRoot['QUERY'];
+    v.$http.post(url, v.form).then((response) => {
             let code = response.code;
             let msg = response.message;
             v.SpinShow = false
@@ -100,9 +125,9 @@ util.getPageData = function(v) {
     ).then((next) => {
     });
 }
-util.pageChange = function(v,event) {
-    v.form.pageNum = event
-    v.getPageData()
+util.pageChange = function(v,e) {
+    v.form.pageNum = e
+    util.getPageData(v)
 },
 util.getData = function(v, url, onSuccess) {
     v.$http.get(url).then((response) => {

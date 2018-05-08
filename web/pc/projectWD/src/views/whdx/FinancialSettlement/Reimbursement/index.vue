@@ -19,10 +19,10 @@
 								   @on-change="getPageData()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="getPageData()">
+							<Button type="primary" @click="v.util.getPageData(v)">
 								<Icon type="search"></Icon>
 							</Button>
-							<Button type="primary" @click="add()">
+							<Button type="primary" @click="v.util.add(v)">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -53,43 +53,19 @@
         },
         data() {
             return {
+                v:this,
                 SpinShow: true,
-                pagerUrl: this.apis.BXJZ.QUERY,
+				apiRoot : this.apis.BXJZ,
                 tabHeight: 220,
                 componentName: '',
                 choosedItem: null,
                 tableTitle: [
-                    {
-                        title: "序号",
-                        width: 80,
-                        align: 'center',
-                        type: 'index'
-                    },
-                    {
-                        title: '报销人',
-                        align: 'center',
-                        key: 'bxr'
-                    },
-                    {
-                        title: '报销事项',
-                        align: 'center',
-                        key: 'bxsx'
-                    },
-                    {
-                        title: '报销时间',
-                        align: 'center',
-                        key: 'bxsj'
-                    },
-                    {
-                        title: '报销金额',
-                        align: 'center',
-                        key: 'bxje'
-                    },
-                    {
-                        title: '发票数量',
-                        align: 'center',
-                        key: 'fpsl'
-                    }
+                    {title: "序号", width: 80, align: 'center', type: 'index'},
+                    {title: '报销人', align: 'center', key: 'bxr'},
+                    {title: '报销事项', align: 'center', key: 'bxsx'},
+                    {title: '报销时间', align: 'center', key: 'bxsj'},
+                    {title: '报销金额', align: 'center', key: 'bxje'},
+                    {title: '发票数量', align: 'center', key: 'fpsl'}
                 ],
                 pageData: [],
                 form: {
@@ -102,21 +78,9 @@
         },
         created() {
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-            this.tabHeight = this.getWindowHeight() - 300
-            this.getPageData()
+            this.util.initTable(this)
         },
         methods: {
-            getPageData() {
-                this.util.getPageData(this);
-            },
-            //删除数据
-            listDele(id) {
-                this.util.del(this, this.apis.BXJZ.DELE, [id]);
-            },
-            add() {
-                this.componentName = 'formData'
-                this.choosedItem = null;
-            },
             pageChange(event) {
                 this.util.pageChange(this, event);
             },

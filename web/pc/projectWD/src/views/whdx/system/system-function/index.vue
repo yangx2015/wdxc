@@ -15,14 +15,13 @@
                             <span>功能管理</span>
                         </div>
                         <div class="body-r-1 inputSty">
-                            <Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
-                                   @on-change="getPageData()"></Input>
+                            <Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"></Input>
                         </div>
                         <div class="butevent">
-                            <Button type="primary" @click="getPageData()">
+                            <Button type="primary" @click="v.util.getPageData(v)">
                                 <Icon type="search"></Icon>
                             </Button>
-                            <Button type="primary" @click="add()">
+                            <Button type="primary" @click="v.util.add(v)">
                                 <Icon type="plus-round"></Icon>
                             </Button>
                         </div>
@@ -55,8 +54,9 @@
         },
         data() {
             return {
+                v:this,
                 SpinShow: true,
-                pagerUrl: this.apis.FUNCTION.QUERY,
+                apiRoot:this.apis.FUNCTION,
                 tabHeight: 220,
                 componentName: '',
                 choosedItem: null,
@@ -164,7 +164,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.listDele(params.row.gndm)
+                                            this.util.delete(this,[params.row.gndm])
                                         }
                                     }
                                 })
@@ -185,24 +185,12 @@
         },
         created() {
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-            this.tabHeight = this.getWindowHeight() - 300
+            this.util.initTable(this)
             this.getLXDic()//字典数据
-            this.getPageData()
         },
         methods: {
             getLXDic() {
                 this.Dictionary = this.dictUtil.getByCode(this, this.lmdmDictionary);
-            },
-            getPageData() {
-                this.util.getPageData(this);
-            },
-            //删除数据
-            listDele(id) {
-                this.util.del(this, this.apis.FUNCTION.DELE, [id]);
-            },
-            add() {
-                this.componentName = 'formData'
-                this.choosedItem = null;
             },
             pageChange(event) {
                 this.util.pageChange(this, event);
