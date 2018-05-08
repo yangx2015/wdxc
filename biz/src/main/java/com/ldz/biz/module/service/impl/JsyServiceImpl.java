@@ -1,24 +1,22 @@
 package com.ldz.biz.module.service.impl;
 
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ldz.biz.module.controller.CljsyCtrl;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.util.bean.SimpleCondition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.biz.module.mapper.ClJsyMapper;
+import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.exception.RuntimeCheck;
 
 import tk.mybatis.mapper.common.Mapper;
 
@@ -48,6 +46,7 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
          entity.setCjr(getOperateUser());
          entity.setCjsj(now);
          entity.setJgdm(user.getJgdm());
+         entity.setPwd("11111");
          save(entity);
         return ApiResponse.saveSuccess();
     }

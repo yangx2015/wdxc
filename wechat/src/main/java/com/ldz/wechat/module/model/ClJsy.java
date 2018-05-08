@@ -1,12 +1,12 @@
-package com.ldz.biz.module.model;
+package com.ldz.wechat.module.model;
+
+import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 驾驶员表
@@ -142,17 +142,9 @@ public class ClJsy implements Serializable {
 		this.pwd = pwd;
 	}
 
-	private List<ClDd> clDdList;
-
     private static final long serialVersionUID = 1L;
 
-    public List<ClDd> getClDdList() {
-        return clDdList;
-    }
 
-    public void setClDdList(List<ClDd> clDdList) {
-        this.clDdList = clDdList;
-    }
 
     /**
      * 手机号
