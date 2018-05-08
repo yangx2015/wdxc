@@ -27,7 +27,7 @@ public interface GpsService extends BaseService<ClGps,String>{
     * @parm GpsInfo
     * @Return Boolean
     */
-   ClDzwl JudgePoint(GpsInfo entity,ClCl clcl);
+   ClDzwl JudgePoint(ClGps entity,ClCl clcl);
     
     /*
      * 将tic-server传入的gps信息转换百度 谷歌 经纬度.
