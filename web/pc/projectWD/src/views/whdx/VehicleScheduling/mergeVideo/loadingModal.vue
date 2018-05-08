@@ -22,9 +22,9 @@
             return{
                 showModal:true,
                 SpinShow1:true,
-                sec:600,
+                sec:120,
                 percent:100,
-                totalSec : 600
+                totalSec : 120
             }
         },
         mounted(){
