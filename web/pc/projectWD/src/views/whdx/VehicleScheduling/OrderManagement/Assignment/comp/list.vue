@@ -70,13 +70,14 @@
           }
         },
         created(){
+            console.log('mess数据********************',this.mess)
             this.getDfp()
             console.log('*-*/---------------',this.mess)
         },
         methods:{
             getDfp(){
                 var v = this
-                this.$http.post(configApi.ORDER.DFP,{'cllx':10}).then((res) =>{
+                this.$http.post(configApi.ORDER.DFP,{'cllx':10,'zkl':this.mess.zkl}).then((res) =>{
                     if(res.code ==200){
                         console.log('******************',res)
                         v.data1 = res.result

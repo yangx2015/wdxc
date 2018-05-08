@@ -9,6 +9,43 @@
 		border-right: solid #fb00ff 2px;
 		border-radius: 15px;
 	}
+	.ElistDemo{
+		width: 400px;
+		height: 76px;
+		z-index: 300;
+		background-color: #c8eaef;
+		box-shadow: 2px 5px 5px #888888;
+		position: absolute;
+		right: 15px;
+		top: 2px;
+		text-align: center;
+		.tit{
+			width: 52px;
+			font-size: 16px;
+			padding:10px 8px 0 8px;
+			border-right: solid 2px #b0bbc8;
+		}
+		.hg{
+			line-height: 35px;
+			padding: 0 10px;
+		}
+		.zwxz{
+			cursor: pointer;
+			.num{
+				color: #ff8300;
+				font-size: 16px;
+				font-weight: 600;
+			}
+		}
+		.zwxz:hover{
+			color: #00b5d3;
+			font-size: 16px;
+			font-weight: 600;
+			.num{
+				color: #ff8300;
+			}
+		}
+	}
 </style>
 <style scoped>
 	.demo-badge{
@@ -21,7 +58,56 @@
 </style>
 <!--订单分派-->
 <template>
-	<div class="box boxbackborder">
+	<div class="box boxbackborder"  style="position: relative">
+		<div class="ElistDemo box-row-nh">
+			<div class="tit">
+				今日数据
+			</div>
+			<div style="border-right: solid 2px #b0bbc8;">
+				<div class="box">
+					<div class="body hg">
+						已完成
+					</div>
+					<div class="body hg">
+						<span style="color: #00a864;font-size: 16px;font-weight: 600;">
+						200
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="body-1">
+				<div class="box">
+					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;">
+						待派定单
+						<span style="color: #ff8300;font-size: 16px;font-weight: 600;">
+							200
+						</span>
+					</div>
+					<div class="body hg">
+						<div class="box-row-nh">
+							<div class="body-1 zwxz">
+								5座
+								<span class="num">
+									20
+								</span>
+							</div>
+							<div class="body-1 zwxz">
+								7座
+								<span class="num">
+									70
+								</span>
+							</div>
+							<div class="body-1 zwxz">
+								11座
+								<span class="num">
+									130
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -32,8 +118,7 @@
 						<span>订单分派</span>
 					</div>
 					<div class="body-r-1 inputSty">
-
-						今日已完成200————待派定单200——5座60 7座70 11座130
+						<!--今日已完成200————待派定单200——5座60 7座70 11座130-->
 					</div>
 					<div class="butevent">
 					</div>
@@ -172,7 +257,7 @@
 		methods:{
 			getDrvList(){//司机列表
 			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10}).then((res) =>{
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10,'zkl':''}).then((res) =>{
                     if(res.code == 200){
 						v.drvlist = res.result
 					}
