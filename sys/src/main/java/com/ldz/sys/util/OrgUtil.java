@@ -1,6 +1,6 @@
 package com.ldz.sys.util;
 
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 
 public class OrgUtil {
 

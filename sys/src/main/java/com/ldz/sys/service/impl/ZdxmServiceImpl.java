@@ -1,7 +1,7 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysZdlmMapper;
 import com.ldz.sys.mapper.SysZdxmMapper;
 import com.ldz.sys.model.SysZdlm;
