@@ -134,7 +134,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
             log.info("distance:"+distance);
             if (distance < currentStation.getFw()){
-                if (gpsInfo.getEventType().equals("80")){
+                if ("80".equals(gpsInfo.getEventType())){
                     zt = "off";
                 }else{
                     zt = "inStation"; // 进站
@@ -145,7 +145,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
         log.info("zt:"+zt);
         if (zt == null){
-            if (gpsInfo.getEventType().equals("80")){
+            if ("80".equals(gpsInfo.getEventType())){
                 zt = "off";
             }else{
                 double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
@@ -205,7 +205,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     public ClZd getCurrentZd(BigDecimal jd,BigDecimal wd,ClCl car,String currentZdId,ClPb pb){
         // 判断是否有当前站点信息
         // 如果有当前站点，再判断与当前站点距离
-        currentZdId = "1";
         Gps currentGps = new Gps(jd.doubleValue(),wd.doubleValue());
         ClZd currentZd = zdMapper.selectByPrimaryKey(currentZdId);
         if (currentZd == null)return null;

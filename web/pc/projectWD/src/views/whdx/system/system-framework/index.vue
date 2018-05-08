@@ -29,12 +29,6 @@
 <template>
 	<div class="boxbackborder">
 		<component :is="componentName"></component>
-		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-			<Spin fix>
-				<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-				<div style="font-size: 30px;">数据加载中请稍后</div>
-			</Spin>
-		</div>
 		<Card >
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
@@ -45,6 +39,18 @@
 						<div class="titmess">
 							<span>组织机构管理</span>
 						</div>
+						<!--<div class="body-r-1 inputSty">-->
+							<!--<Input v-model="jgmc"-->
+								   <!--placeholder="请输入组织机构名称" style="width: 200px"-->
+								   <!--@on-keyup.enter="getTree()"-->
+								   <!--@on-change="getTree()"></Input>-->
+						<!--</div>-->
+						<!--<div class="butevent">-->
+							<!--<Button type="primary" @click="getTree()">-->
+								<!--<Icon type="search"></Icon>-->
+								<!--&lt;!&ndash;查询&ndash;&gt;-->
+							<!--</Button>-->
+						<!--</div>-->
 					</div>
 				</div>
 			</Row>
@@ -117,10 +123,10 @@
     	mixins: [mixins],
         data () {
             return {
+                jgmc:'',
             	tabHeight:{
             		height:''
             	},
-            	SpinShow:true,
             	TreeListStyleC:"text-align: center",
             	TreeListStyleF:"text-align: left",
                 componentName:'',
@@ -188,11 +194,10 @@
         methods: {
     	    getTree(){
     	    	var v = this
-                this.$http.get(configApi.FRAMEWORK.GET_TREE).then((res) =>{
+                this.$http.get(configApi.FRAMEWORK.GET_TREE,{params:{'jgmc':this.jgmc}}).then((res) =>{
                     if(res.code===200){
                         v.RootTree.children = [res.result];
                         v.treeClick(v.RootTree.children[0])
-                        v.SpinShow = false
 
                     }
                 })
@@ -200,6 +205,7 @@
 			add(item){
     	        this.choosedRow = null;
                 this.jgdm = item.jgdm;
+                this.gly = item.gly;
                 this.componentName = 'modelForm';
 			},
 			edit(item){
@@ -219,6 +225,7 @@
                 if(event.length>0){
 		      		this.treeMess = event[0]
 					this.jgdm = event[0].jgdm;
+					this.gly = event[0].gly;
         		}
         	},
         	treeToggleClick(event){

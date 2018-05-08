@@ -35,7 +35,7 @@ import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
@@ -908,6 +908,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ClDd newClDd=new ClDd();
         newClDd.setId(order.getId());
         newClDd.setDdzt("20");//订单状态
+        newClDd.setSjqrsj(new Date());
         int i=update (newClDd);
         RuntimeCheck.ifTrue(i==0,"操作数据库失败");
 

@@ -7,7 +7,7 @@
 </style>
 <template>
 	<div class="box">
-		<!--<Card>-->
+		<Card>
 			<div class="tit headTit padding">
 				<h1>
 					武汉大学后勤集团运输中心用车单
@@ -109,8 +109,9 @@
 											</div>
 											<div title="新建课题">
 												<Button type="info"
+														icon="plus-round"
 														:disabled="formItem.fromMoney!='20'"
-														@click="newKT">新建</Button>
+														@click="newKT"></Button>
 											</div>
 										</div>
 									</FormItem>
@@ -149,7 +150,7 @@
 					</Row>
 				</Form>
 			</div>
-		<!--</Card>-->
+		</Card>
 		<component :is="compName" :dicListMess='dicListMess'></component>
 	</div>
 </template>
@@ -205,35 +206,17 @@
                     value: '20',
                     label: '大车',
                     children: [{
-                        value: '18',
-                        label: '18',
+                        value: '20',
+                        label: '20',
                     },{
-                        value: '24',
-                        label: '24',
+                        value: '32',
+                        label: '32',
                     },{
-						value: '25',
-						label: '25',
+						value: '45',
+						label: '45',
 					},{
-                        value: '26',
-                        label: '26',
-                    },{
-                        value: '35',
-                        label: '35',
-                    },{
-                        value: '36',
-                        label: '36',
-                    },{
-                        value: '41',
-                        label: '41',
-                    },{
-                        value: '42',
-                        label: '42',
-                    },{
-                        value: '45',
-                        label: '45',
-                    },{
-                        value: '46',
-                        label: '46',
+                        value: '48',
+                        label: '48',
                     }]
                 }, {
                     value: '10',
@@ -243,14 +226,8 @@
                         value: '5',
                         label: '5',
                     },{
-                        value: '6',
-                        label: '6',
-                    },{
                         value: '7',
                         label: '7',
-                    },{
-                        value: '8',
-                        label: '8',
                     },{
                         value: '11',
                         label: '11',

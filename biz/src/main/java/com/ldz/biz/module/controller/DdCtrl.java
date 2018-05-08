@@ -26,7 +26,7 @@ import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.DdService;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 

@@ -1,4 +1,4 @@
-package com.ldz.sys.exception;
+package com.ldz.util.exception;
 
 import org.apache.commons.lang.StringUtils;
 

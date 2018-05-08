@@ -81,7 +81,7 @@
         },
         methods: {
             getPermissionTree(){
-                this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
+                this.$http.get(configApi.FUNCTION.GET_ORG_PERMISSION_TREE).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }

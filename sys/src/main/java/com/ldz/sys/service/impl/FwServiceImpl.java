@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysJgsqlbMapper;
 import com.ldz.sys.mapper.SysPtfwMapper;
 import com.ldz.sys.mapper.SysPtjgMapper;

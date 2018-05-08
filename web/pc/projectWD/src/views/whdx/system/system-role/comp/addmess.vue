@@ -120,13 +120,6 @@
             getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
-		    getAllPermissionTree(){
-                this.$http.get(configApi.FUNCTION.GET_ALL_PERMISSION_TREE).then((res) =>{
-                    if(res.code===200){
-                        this.data4 = res.result[0].functions;
-                    }
-                })
-			},
 		    getRolePermissionTree(){
                 this.$http.get(configApi.FUNCTION.GET_ROLE_PERMISSION_TREE+"?jsdm="+this.addmess.jsId).then((res) =>{
                     if(res.code===200){

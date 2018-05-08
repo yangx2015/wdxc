@@ -10,6 +10,7 @@ import com.ldz.znzp.bean.Station;
 import com.ldz.znzp.mapper.ClPbMapper;
 import com.ldz.znzp.mapper.ClXlMapper;
 import com.ldz.znzp.mapper.ClZnzpMapper;
+import com.ldz.znzp.mapper.ClZpXlMapper;
 import com.ldz.znzp.model.*;
 import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
@@ -43,6 +44,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
     private ClyxjlService clyxjlService;
     @Autowired
     private NettyUtil nettyUtil;
+    @Autowired
+    private ClZpXlMapper zpXlMapper;
 
     @Override
     protected Mapper<ClXl> getBaseMapper() {
@@ -68,6 +71,15 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         return xlService.findIn(ClXl.InnerColumn.id,xlIds);
     }
 
+    private List<ClXl> getXls(String zpId){
+        SimpleCondition condition = new SimpleCondition(ClZpXl.class);
+        condition.eq(ClZpXl.InnerColumn.zpId,zpId);
+        List<ClZpXl> zpXlList = zpXlMapper.selectByExample(condition);
+        if (zpXlList.size() == 0)return new ArrayList<>();
+        List<String> xlIds = zpXlList.stream().map(ClZpXl::getXlId).collect(Collectors.toList());
+        return xlService.findIn(ClXl.InnerColumn.id,xlIds);
+    }
+
     /**
      * 根据终端id获取 站点线路，线路站点
      * @param ctx
@@ -85,8 +97,10 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
             return result;
         }
 
+
+
         // 获取站点线路
-        List<ClXl> xls = getByZdId(zp.getZdId());
+        List<ClXl> xls = getXls(zp.getZdbh());
         if (xls.size() == 0){
             result = ApiResponse.fail("未找到线路信息");
             nettyUtil.sendData(ctx,result);

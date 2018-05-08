@@ -16,7 +16,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cph" label='车牌号：'>
-								<Input type="text" v-model="addmess.cph" placeholder="请设置车牌号"></Input>
+								<Input type="text" v-model="addmess.cph" :readonly="!messType" placeholder="请设置车牌号"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">

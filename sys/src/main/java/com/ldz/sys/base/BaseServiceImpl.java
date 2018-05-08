@@ -4,7 +4,7 @@ import com.github.pagehelper.ISelect;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;

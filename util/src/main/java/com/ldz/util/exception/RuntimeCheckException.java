@@ -1,4 +1,4 @@
-package com.ldz.sys.exception;
+package com.ldz.util.exception;
 
 public class RuntimeCheckException extends RuntimeException{
     private static final long serialVersionUID = -9221941718593423481L;

@@ -6,11 +6,11 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF'
-			:mask-closable="mesF" :title="operate+'功能'">
+		<Modal v-model="showModal" width='900' :closable='false'
+			:mask-closable="false" :title="operate+'功能'">
 			<div style="overflow: auto;height: 500px;">
 				<Form
-						ref="formItem"
+						ref="form"
 						:model="formItem"
 						:rules="ruleInline"
 						:label-width="100"
@@ -23,7 +23,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop='gndm' label='功能代码'>
-								<Input :readonly="read" type="text" v-model="formItem.gndm" placeholder="请填写功能名称..."></Input>
+								<Input :readonly="readonly" type="text" v-model="formItem.gndm" placeholder="请填写功能名称..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -99,24 +99,23 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="colse">取消</Button>
-				<Button type="primary" @click="save('formItem')">确定</Button>
+				<Button type="ghost" @click="close">取消</Button>
+				<Button type="primary" @click="save">确定</Button>
 			</div>
 		</Modal>
 	</div>
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
-
 	export default {
 		name: '',
 		data() {
 			return {
+                createUrl:this.apis.FUNCTION.ADD,
+                updateUrl:this.apis.FUNCTION.CHANGE,
                 operate:'新建',
 				showModal: true,
-				mesF: false,
-				read: false,
+				readonly: false,
 				formItem: {
 					px:1,
 					zt:'00'
@@ -148,42 +147,17 @@
 			}
 		},
 		created(){
-		    if (this.$parent.choosedRow){
-				this.formItem = this.$parent.choosedRow;
-                this.operate = '编辑'
-                this.read = true
-			}
+		    this.util.initFormModal(this);
 		},
 		methods: {
-			save(name){
-				var v = this
-				let url = configApi.FUNCTION.ADD;
-				if (this.$parent.choosedRow){
-                    url = configApi.FUNCTION.CHANGE;
-				}
-				delete this.formItem.children;
-				this.$refs[name].validate((valid) => {
-                    if (valid) {
-//                    	新增
-						this.$http.post(url,this.formItem).then((res) =>{
-							if(res.code===200){
-								v.$Message.success(res.message);
-							}else{
-								v.$Message.error(res.message);
-							}
-							v.$parent.getmess()
-							v.$parent.compName = ''
-						}).catch((error) =>{
-							v.$Message.error('出错了！！！');
-						})
-					} else {
-                        v.$Message.error('请将信息填写完整!');
-                    }
-                })
+            beforeSave(){
+                delete this.formItem.children;
 			},
-			colse() {
-                var v = this
-                v.$parent.compName = ''
+			save(){
+			    this.util.save(this);
+			},
+			close() {
+			    this.util.closeDialog(this);
             }
 		}
 	}

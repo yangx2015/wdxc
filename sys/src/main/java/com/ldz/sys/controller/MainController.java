@@ -6,7 +6,7 @@ import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.ldz.sys.bean.AccessToken;
 import com.ldz.sys.bean.UserPassCredential;
 import com.ldz.sys.bean.userInfoModel;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;

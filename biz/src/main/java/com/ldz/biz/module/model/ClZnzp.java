@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 
 import java.io.Serializable;
@@ -81,6 +82,17 @@ public class ClZnzp implements Serializable {
      */
     @Column(name = "TIPS")
     private String tips;
+
+    @Transient
+    private String xlIds;
+
+    public String getXlIds() {
+        return xlIds;
+    }
+
+    public void setXlIds(String xlIds) {
+        this.xlIds = xlIds;
+    }
 
     public String getTips() {
         return tips;

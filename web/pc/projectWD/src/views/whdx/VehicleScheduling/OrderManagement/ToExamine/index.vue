@@ -251,26 +251,25 @@
                     });
 			},
 			reject(id){
-                swal({
-                    title: "审核驳回?",
-                    text: "",
-                    icon: "warning",
-                    buttons:['取消','确认'],
-                }).then((willDelete) => {
-                    if (willDelete) {
+                // swal({
+                //     title: "审核驳回?",
+                //     text: "",
+                //     icon: "warning",
+                //     buttons:['取消','确认'],
+                // }).then((willDelete) => {
+                //     if (willDelete) {
                         this.showModal = true
 						this.idMs = id
-                    }
-                });
+                //     }
+                // });
 			},
             handleSubmit (name) {
         	    var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        v.$Message.success('完成');
                         v.audit(v.idMs,'12');
                     } else {
-                        this.$Message.error('失败');
+                        this.$Message.error('请填写驳回信息');
                     }
                 })
             },
@@ -282,7 +281,7 @@
 				}
                 this.$http.post(configApi.ORDER.AUDIT,param).then((res) =>{
                     if (res.code === 200){
-
+                        this.$Message.success(res.message);
                         this.findMessList();
                         this.showModal = false
                     }

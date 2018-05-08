@@ -4,7 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.constant.Dict;
-import com.ldz.sys.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysHdyxMapper;
 import com.ldz.sys.mapper.SysYxhdwjMapper;
 import com.ldz.sys.model.SysHdyx;
