@@ -70,7 +70,7 @@
 					</div>
 					<div class="body hg">
 						<span style="color: #00a864;font-size: 16px;font-weight: 600;">
-						200
+						{{jrpd.WCORDER}}
 						</span>
 					</div>
 				</div>
