@@ -58,7 +58,7 @@
 </style>
 <!--订单分派-->
 <template>
-	<div class="box boxbackborder"  style="position: relative">
+	<div class="box boxbackborder" style="position: relative">
 		<div class="ElistDemo box-row-nh">
 			<div class="tit">
 				今日数据
