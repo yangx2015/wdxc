@@ -356,7 +356,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SysYh user=getCurrentUser();
         String userId=user.getYhid();
         ClDd newClDd=new ClDd();
-
+        String sjId=null;
+        Map<String,Object> mapBody=null;
 //        1、查找该ID是否存在
         ClDd clDd=findById(entity.getId());
         RuntimeCheck.ifNull(clDd,"未找到订单记录");
@@ -404,6 +405,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             newClDd.setDzbh(clcd.getDzbh());//队长编号
             newClDd.setCdbh(clcd.getCdbh());//车队编号
             newClDd.setZdbm(clCl.getZdbh());//终端编号
+            sjId=jsy.getSjh();//
+            mapBody=new HashMap<String,Object>();
+            mapBody.put("","");
         }else if(StringUtils.equals(entity.getSjSx(),"11")){
 
 //            3-5、通过车牌号码查询临时车表，验证该车牌的正确性。
@@ -446,6 +450,20 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
+            //todo 插入下发短信表
+            if(StringUtils.isNotEmpty(sjId)&&mapBody!=null){
+
+
+                mapBody.put("","");
+
+
+                String title="司机派单";//标题
+                String sendCode=sjId;//接收方编号
+                String message="";//接收方报文  mapBody
+                String bizId="BIZ_10";//业务编号
+
+            }
+
             return ApiResponse.success();
         }
 
