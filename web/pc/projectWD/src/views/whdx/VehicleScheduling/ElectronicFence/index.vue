@@ -123,7 +123,7 @@
 
 <script>
 import myMap from '../../map/mapBK.vue'
-import configApi from '@/axios/config.js'
+
 import mixins from '@/mixins'
 import formData from './comp/formData'
 import bkShow from '../vehicle-management/comp/BKshow'
@@ -313,7 +313,7 @@ export default {
     methods: {
         //删除数据
         listDele(id){
-            this.util.del(this,configApi.DZWL_CL.DELE,[id],()=>{
+            this.util.del(this,this.apis.DZWL_CL.DELE,[id],()=>{
                 this.findMessList();
             });
         },
@@ -321,7 +321,7 @@ export default {
             this.saveDzwl();
         },
     	getCarTree(){
-    		this.$http.get(configApi.CARTREE.QUERY).then((res) =>{
+    		this.$http.get(this.apis.CARTREE.QUERY).then((res) =>{
     			this.data1 = res.result
         	}).catch((error) =>{
         		log('error',error)
@@ -374,7 +374,7 @@ export default {
             this.$refs['findMess'].validate((valid) => {
                 if (valid) {
                     this.getChoosedIds();
-                    this.$http.post(configApi.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
+                    this.$http.post(this.apis.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
                         if (res.code === 200){
                             this.RootShow = !this.RootShow
                             this.findMessList();
@@ -394,7 +394,7 @@ export default {
                 v.$Message.error('请输入围栏名称');
                 return;
 			}
-            this.$http.post(configApi.DZWL.ADD,v.findMess).then((res) =>{
+            this.$http.post(this.apis.DZWL.ADD,v.findMess).then((res) =>{
                 if (res.code === 200){
                     this.fanceId = res.message;
                     this.save();
@@ -417,7 +417,7 @@ export default {
             var v = this
 			delete this.findMess.dlxxzb;
 			delete this.findMess.wlmc;
-            this.$http.get(configApi.DZWL_CL.QUERY,{params:v.findMess}).then((res) =>{
+            this.$http.get(this.apis.DZWL_CL.QUERY,{params:v.findMess}).then((res) =>{
                 v.data9 = res.page.list
                 v.pageTotal = res.page.total
                 v.SpinShow = false;

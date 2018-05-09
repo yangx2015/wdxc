@@ -157,7 +157,7 @@
 
 <script>
 	import swal from 'sweetalert'
-    import configApi from '@/axios/config.js'
+
     import addmessList from './comp/addmessList.vue'
     export default {
     	name:'NewCarList',
@@ -277,7 +277,7 @@
                 this.formItem.zws=v[1]
 			},
     	    getOrgTree(){
-                this.$http.get(configApi.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
                     this.orgTree = res.result
                 })
 			},
@@ -303,7 +303,7 @@
 			},
 			create(){
                 // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
-                this.$http.post(configApi.ORDER.ADD,this.formItem).then((res) =>{
+                this.$http.post(this.apis.ORDER.ADD,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("创建成功");
                         this.formItem = {

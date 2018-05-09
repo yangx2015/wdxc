@@ -68,7 +68,7 @@
 
 <script>
 	import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -121,7 +121,7 @@
         },
 		methods: {
 		    getXlIds(){
-                this.$http.get(configApi.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
+                this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
                     if(res.code===200){
                         var v = this
                         v.$parent.componentName = ''
@@ -144,9 +144,9 @@
 		    	this.$refs['addmess'].validate((valid) => {
                     if (valid) {
                         this.getChoosedXlIds();
-				        let url = configApi.ZNZP.ADD;
+				        let url = this.apis.ZNZP.ADD;
 						if (this.$parent.choosedRow){
-		                    url = configApi.ZNZP.CHANGE;
+		                    url = this.apis.ZNZP.CHANGE;
 						}
 		                this.$http.post(url,this.form).then((res) =>{
 		                    if(res.code===200){
@@ -164,7 +164,7 @@
                 })
 			},
 			getXlList(){
-                this.$http.get(configApi.XL.QUERY,{params:{jgdmStartWith:this.jgdm,pageSize:1000}}).then((res) =>{
+                this.$http.get(this.apis.XL.QUERY,{params:{jgdmStartWith:this.jgdm,pageSize:1000}}).then((res) =>{
                     if(res.code===200 && res.page.list){
                         this.xlList = res.page.list;
                     }

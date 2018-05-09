@@ -167,7 +167,7 @@
 </template>
 <script>
     import historyMap from './historyTarckMap'
-    import configApi from '@/axios/config.js'
+
     export default {
     	name:'',
 		components:{
@@ -210,7 +210,7 @@
 				v.horizontal = event
 			},
             getOrderDetails(){
-                this.$http.get(configApi.ORDER.orderDetails+'?id='+this.row.id).then((res) =>{
+                this.$http.get(this.apis.ORDER.orderDetails+'?id='+this.row.id).then((res) =>{
                     if (res.code == 200){
                         this.detail = res.result;
                         this.settleStatus = this.detail.oracleLog.length;

@@ -193,7 +193,7 @@
         return format;
     }
 import myMap from '../../map/carJK.vue'
-import configApi from '@/axios/config.js'
+
 export default {
     name: 'VehicleMonitoring',
     components: {
@@ -272,7 +272,7 @@ export default {
             var v = this
             this.gpsObdMessage = null;
             this.obdFaultCode = [];
-            this.$http.post(configApi.CLJK.getObdTimely,{obdId:item.obdId}).then((res) =>{
+            this.$http.post(this.apis.CLJK.getObdTimely,{obdId:item.obdId}).then((res) =>{
                 if (res.code === 200){
                     if (res.result.gpsObdMessage){
                         this.gpsObdMessage = res.result.gpsObdMessage;
@@ -324,7 +324,7 @@ export default {
 		initGps(){
             log('initGps');
             var v = this
-            this.$http.get(configApi.CLJK.QUERY).then((res) =>{
+            this.$http.get(this.apis.CLJK.QUERY).then((res) =>{
                 if (res.code === 200){
                     this.initTime = new Date().getTime();
                     this.allCarList = res.result;

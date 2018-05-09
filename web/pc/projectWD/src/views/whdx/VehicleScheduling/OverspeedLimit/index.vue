@@ -59,7 +59,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import newmes from './comp/newmes.vue'
 	import change from './comp/change.vue'
@@ -177,7 +177,7 @@
 		methods: {
 			getmess(){
 				var v = this
-				this.$http.get(configApi.CS.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CS.QUERY,{params:v.findMess}).then((res) =>{
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -196,7 +196,7 @@
         		var v = this
         	},
         	listDele(r){
-        		this.util.del(this,configApi.CS.DELE,[r.id],()=>{
+        		this.util.del(this,this.apis.CS.DELE,[r.id],()=>{
                     this.getmess();
 				});
         	},

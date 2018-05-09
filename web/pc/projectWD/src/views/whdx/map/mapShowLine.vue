@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name:'getmapdot',
 		data(){
@@ -101,7 +101,7 @@
                 this.map.addOverlay(polyline);          //增加折线
 			},
             getStations(){
-                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID,{params:{xlId:this.xlId}}).then((res) =>{
+                this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID,{params:{xlId:this.xlId}}).then((res) =>{
                     if(res.code===200 && res.result){
                         this.stationList = res.result;
                         this.showMap();

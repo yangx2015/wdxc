@@ -51,7 +51,7 @@
 
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
 	import formData from './formData'
 	import change from './change'
 	import jkdz from './jkdz'
@@ -270,7 +270,7 @@
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
         	},
     	    getPageData(){
-                this.$http.get(configApi.ZDGL.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.ZDGL.QUERY,{params:this.form}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
                         this.tableData = res.page.list;
@@ -299,7 +299,7 @@
 				})
 				.then((willDelete) => {
 				  if (willDelete) {
-					v.$http.post(configApi.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
+					v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
 						if(res.code===200){
 							this.$Message.success('操作成功');
 						}

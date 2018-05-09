@@ -58,7 +58,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 
     export default {
         name:'',
@@ -93,7 +93,7 @@
 //                    	新增
                 delete v.otherMess.clDzwlCl;
                 delete v.otherMess.clDzwl;
-                v.$http.post(configApi.CLGL.CHANGE,v.otherMess).then((res) =>{
+                v.$http.post(this.apis.CLGL.CHANGE,v.otherMess).then((res) =>{
                     if(res.code===200){
                         v.$Message.success('车辆修改成功');
                     }else{

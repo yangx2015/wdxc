@@ -63,7 +63,7 @@
 </template>
 <script>
   	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import newmes from './comp/newmes.vue'
     export default {
@@ -213,7 +213,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(configApi.CD.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CD.QUERY,{params:v.findMess}).then((res) =>{
 					log('车队数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -232,7 +232,7 @@
         	},
         	listDele(id){
         		var v = this
-        		this.util.del(this,configApi.CD.DELE,[id.cdbh],()=>{
+        		this.util.del(this,this.apis.CD.DELE,[id.cdbh],()=>{
         			v.SpinShow = true;
                     v.getmess();
 				});

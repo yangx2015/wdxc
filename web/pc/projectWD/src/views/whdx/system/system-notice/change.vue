@@ -67,7 +67,7 @@
 
 <script>
 	import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -121,7 +121,7 @@
 		    	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                    	let url = configApi.ZDGL.CHANGE;
+                    	let url = this.apis.ZDGL.CHANGE;
 		                this.$http.post(url,this.form).then((res) =>{
 		                	if(res.code==200){
 		                		v.$Message.success(res.message);

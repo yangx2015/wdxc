@@ -102,7 +102,7 @@
 
 	import addlistfileImg from './addlistfileImg.vue'
 	import addlistfileVideo from './addlistfileVideo.vue'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		mixins: [mixins],
@@ -163,7 +163,7 @@
                         this.formItem.kssj = this.getdateParaD(hdsj[0])
                         this.formItem.jssj = this.getdateParaD(hdsj[1])
                         delete this.formItem.hdsj;
-		                let url = configApi.ADVERTISING.ADD;
+		                let url = this.apis.ADVERTISING.ADD;
 		                this.$http.post(url,this.formItem).then((res) =>{
 		                    if(res.code===200){
 		                        v.$Message.success(res.message);

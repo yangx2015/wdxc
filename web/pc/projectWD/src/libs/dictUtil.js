@@ -1,4 +1,4 @@
-import configApi from '@/axios/config.js'
+
 import session from '@/libs/session.js'
 let dictUtil = {
     getValByCode(v,zdlmCode,zdxmCode){

@@ -64,6 +64,9 @@ public class MessageApi {
 			return ApiResponse.fail("纬度不能为空");
 		}
 
+		if (gpsInfo.getLatitude().equals("-1") || gpsInfo.getLongitude().equals("-1")){
+			return ApiResponse.fail("gps 为-1，不做处理");
+		}
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
 		if (car == null)return ApiResponse.fail("未找到车辆");
 

@@ -248,8 +248,8 @@
                     return;
                 }
                 if (newQuestion.length > 0 && newQuestion[0] != ''){
-                    this.formItem.startTime = this.getdateParaD(newQuestion[0])
-                    this.formItem.endTime = this.getdateParaD(newQuestion[1])
+                    // this.formItem.startTime = this.getdateParaD(newQuestion[0])
+                    // this.formItem.endTime = this.getdateParaD(newQuestion[1])
                 }else{
                     this.formItem.startTime  = ''
                     this.formItem.endTime  = ''
@@ -304,6 +304,7 @@
 		mounted(){
             this.formItem.startTime = this.getTodayDate() + " 00:00:00";
             this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            this.formItem.zdbh = this.$route.params.zdbh;
             this.timeRange = [this.formItem.startTime,this.formItem.endTime];
 			this.getCarList();
 		},
@@ -339,10 +340,9 @@
                     if (res.code === 200 && res.page.list){
                         this.carList = res.page.list;
                         if (this.carList.length != 0){
-							this.formItem.zdbh = this.carList[0].zdbh;
+							// this.formItem.zdbh = this.carList[0].zdbh;
                             this.formItemList();
 						}
-                        this.formItem.zdbh = this.$route.params.zdbh;
                     }
                 })
 			},
@@ -352,6 +352,7 @@
             },
             formItemList(){
                 var v = this
+				debugger
                 let startTime = this.formItem.startTime;
                 let endTime = this.formItem.endTime;
                 if (typeof startTime === 'object'){
@@ -395,6 +396,7 @@
                         }
                         this.pathList = res.result;
                         if (this.pathList.length > 0){
+                            this.item = this.pathList[0];
                             this.getData();
 						}
                     }
@@ -404,8 +406,8 @@
                 var v = this
 				let p = {
                     zdbh:this.formItem.zdbh,
-					startTime:this.formItem.startTime,
-					endTime:this.formItem.endTime,
+					startTime:this.item.kssj,
+					endTime:this.item.jssj,
 				}
                 this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,p).then((res) =>{
                     if (res.code === 200){

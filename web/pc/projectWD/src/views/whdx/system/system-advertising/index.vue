@@ -96,7 +96,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
     import expandRow from './table-expand.vue';
     import addmess from './comp/addmess.vue'
@@ -282,7 +282,7 @@
         	getmess(){
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(configApi.ADVERTISING.QUERY).then((res) =>{
+				this.$http.get(this.apis.ADVERTISING.QUERY).then((res) =>{
 					v.data9 = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -296,14 +296,14 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(configApi.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
+				this.$http.get(this.apis.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
 					 v.data9 = res.page.list
 					 v.pageTotal = res.page.total
 					 v.SpinShow = false;
 				 })
         	},
         	remove(id){
-        		this.util.del(this,configApi.ADVERTISING.DELE,[id],()=>{
+        		this.util.del(this,this.apis.ADVERTISING.DELE,[id],()=>{
                     this.getmess();
 				});
         	},

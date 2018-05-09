@@ -196,7 +196,7 @@ import gauge from './comp/gauge.vue'
 import abnor from './comp/abnormal.vue'
 import carline from './comp/travelist.vue'
 
-import configApi from '@/axios/config.js'
+
 import mixins from '@/mixins'
 export default {
     name: 'VehicleMonitoring',
@@ -250,7 +250,7 @@ export default {
     methods: {
     	//异常事件列表
     	getERRORlist(){
-//  		this.$http.get(configApi.YCSJLB.QUERY,{params:{
+//  		this.$http.get(this.apis.YCSJLB.QUERY,{params:{
 //  			'sjlx':'',//事件类型
 //  			'cjsj':'',//事件时间段
 //  			''
@@ -259,14 +259,14 @@ export default {
     	},
     	getXBlineName(){//校巴线路名称
     		var v = this
-    		this.$http.post(configApi.XL.QUERY,{'lx':30}).then((res) =>{
+    		this.$http.post(this.apis.XL.QUERY,{'lx':30}).then((res) =>{
 				v.XBlineName = res.page.list
 				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
 			})
     	},
     	getXBline(id,name){//校巴线路
     		var v = this
-    		this.$http.post(configApi.XBDT.QUERY,{"xlId":id}).then((res) =>{
+    		this.$http.post(this.apis.XBDT.QUERY,{"xlId":id}).then((res) =>{
 				v.XBline = res.result
 			})
     		v.lineName = name

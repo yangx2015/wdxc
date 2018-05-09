@@ -658,7 +658,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         List<Map<String,Object>> rList=new ArrayList<Map<String,Object>>();
 
         Map<String,Object> rMap = new HashMap<String,Object>();
-        String firstJgdm="";//原始机构ID
+        SysYh user = getCurrentUser();
+        String firstJgdm=user.getJgdm();//原始机构ID
         String firstJgmc="";//原始机构名称
         List<ClDd> firstDdList=new ArrayList<ClDd>();
 

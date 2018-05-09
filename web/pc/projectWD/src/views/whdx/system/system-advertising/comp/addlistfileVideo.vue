@@ -37,7 +37,7 @@
 	</div>
 </template>
 <script>
-	import configApi from '@/axios/config.js'
+
     export default {
         data () {
             return {
@@ -46,7 +46,7 @@
                 imgName: '',
                 visible: false,
                 uploadList: [],
-                uploadUrl:configApi.UPLOAD
+                uploadUrl:this.apis.UPLOAD
             }
         },
          props:{
@@ -62,7 +62,7 @@
         	dataList(){
         		let ArrList = this.urlList.split(',')
 	        	for(var i=0;i<ArrList.length-1;i++){
-	        		this.defaultList.push({'url':configApi.STATIC_PATH+ArrList[i]})
+	        		this.defaultList.push({'url':this.apis.STATIC_PATH+ArrList[i]})
 	        	}
         	},
             handleView (name) {
@@ -76,7 +76,7 @@
             handleSuccess (res, file,fileList) {
                 this.$emit('addImg',res.message);
                 log(res);
-                file.url = configApi.STATIC_PATH + res.message;
+                file.url = this.apis.STATIC_PATH + res.message;
             },
             handleFormatError (file) {
                 this.$Notice.warning({

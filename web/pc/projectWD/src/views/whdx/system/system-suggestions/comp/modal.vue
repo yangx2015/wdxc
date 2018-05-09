@@ -50,7 +50,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 	export default{
 		name:'',
 		props:{
@@ -73,7 +73,7 @@
 		methods:{
 			feedback(){
 				var v = this
-				this.$http.post(configApi.SUGGES.CHANGE,v.mess).then((res) =>{
+				this.$http.post(this.apis.SUGGES.CHANGE,v.mess).then((res) =>{
 					log('shuju',res)
 					if(res.code===200){
 						v.$Message.success('反馈解决');

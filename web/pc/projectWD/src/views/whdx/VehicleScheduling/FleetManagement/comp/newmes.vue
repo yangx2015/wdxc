@@ -57,7 +57,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name:'',
@@ -119,7 +119,7 @@
 		methods:{
             remoteMethod(k){
                 var v = this
-                this.$http.get(configApi.USER.QUERY,{params:{xmLike:k,pageSize:1000}}).then((res) =>{
+                this.$http.get(this.apis.USER.QUERY,{params:{xmLike:k,pageSize:1000}}).then((res) =>{
                     this.userList = res.page.list
                 })
 			},
@@ -145,7 +145,7 @@
 		   	},
 		   	getUSER(){
 				var v = this
-				this.$http.get(configApi.USER.QUERY).then((res) =>{
+				this.$http.get(this.apis.USER.QUERY).then((res) =>{
 					log('用户列表',res)
 					this.userList = res.page.list
 				})
@@ -157,7 +157,7 @@
                     if (valid) {
 //                    	新增
                     	if(v.messType){
-                    		v.$http.post(configApi.CD.ADD,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.CD.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('操作成功');
 								}else{
@@ -171,7 +171,7 @@
 							})
 							//修改
                     	}else{
-                    		v.$http.post(configApi.CD.CHANGE,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.CD.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('操作成功');
 								}else{

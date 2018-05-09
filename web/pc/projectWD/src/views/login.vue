@@ -80,7 +80,7 @@
 
 <script>
 import Cookies from 'js-cookie';
-import configApi from '@/axios/config.js'
+
 import menuList from '../data/list'
 import {appRouter} from '../router/router';
 export default {
@@ -111,7 +111,7 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.SpinShow = true
-                	v.$http.post(configApi.LOGIN.QUERY, this.form).then((res) =>{
+                	v.$http.post(this.apis.LOGIN.QUERY, this.form).then((res) =>{
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
@@ -141,7 +141,7 @@ export default {
         },
         getMenuTree(){
         	var v = this
-        	this.$http.get(configApi.USERROOT.GET_MENU_TREE).then((res) =>{
+        	this.$http.get(this.apis.USERROOT.GET_MENU_TREE).then((res) =>{
         		if(res.code===200){
                     v.session.setItem('menuList',res.result)
 //                  menuList.menuTree = res.result;
@@ -162,7 +162,7 @@ export default {
             }
         },
         getMenuList(){
-        	this.$http.get(configApi.USERROOT.GET_MENU_LIST).then((res) =>{
+        	this.$http.get(this.apis.USERROOT.GET_MENU_LIST).then((res) =>{
         		if(res.code===200){
                     menuList.menuList = res.result;
         		    this.getMenuTree();
@@ -183,7 +183,7 @@ export default {
             }
         },
         initDict(){
-            this.$http.get(configApi.DICTIONARY.QUERY,{params:{pageSize:10000}}).then((res) =>{
+            this.$http.get(this.apis.DICTIONARY.QUERY,{params:{pageSize:10000}}).then((res) =>{
                 if(res.code===200){
                     for (let r of res.page.list){
                         let a = [];
@@ -208,7 +208,7 @@ export default {
             }
 
             let params = {menus:JSON.stringify(this.menus)}
-            this.$http.post(configApi.USERROOT.INIT_MENU,params).then((res) =>{
+            this.$http.post(this.apis.USERROOT.INIT_MENU,params).then((res) =>{
                 if(res.code===200){
                     log(res);
                 }

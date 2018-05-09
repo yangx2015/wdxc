@@ -43,7 +43,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 	
 	export default {
 		name:'',
@@ -72,7 +72,7 @@
 		methods:{
 			//获取车辆树
 			getCarTree(){
-	    		this.$http.get(configApi.CARTREE.QUERY,{params:{'zxzt':'00'}}).then((res) =>{
+	    		this.$http.get(this.apis.CARTREE.QUERY,{params:{'zxzt':'00'}}).then((res) =>{
 	    			log('数据结构数据',res)
 	    			this.data1 = res.result
 	        	}).catch((error) =>{
@@ -107,7 +107,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid && v.treeList.length>0) {
 //                    	新增
-	                		v.$http.post(configApi.CS.ADD,{'cphs':v.treeList.join(','), 'csz':v.addmess.sdsx}).then((res) =>{
+	                		v.$http.post(this.apis.CS.ADD,{'cphs':v.treeList.join(','), 'csz':v.addmess.sdsx}).then((res) =>{
 								if(res.code===200){
 									v.$parent.getmess();
 			                    	v.$Message.success(res.message);
