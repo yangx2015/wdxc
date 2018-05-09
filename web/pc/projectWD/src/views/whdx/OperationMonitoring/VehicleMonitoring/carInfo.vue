@@ -82,27 +82,27 @@
                                             <Button type="primary"  @click="selectChange20">确定</Button>
                                         </Col>
                                     </Row>
-                                    <Row>
-                                        <Col span="20">
-                                            <FormItem label='上传模式'>
-                                                <Select filterable clearable  v-model="carControl.scms">
-                                                    <Option value=""></Option>
-                                                    <Option value="00">实时</Option>
-                                                    <Option value="10">仅WIFI</Option>
-                                                </Select>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="4">
-                                            <Button type="primary"  @click="selectChange30">确定</Button>
-                                        </Col>
-                                    </Row>
+                                    <!--<Row>-->
+                                        <!--<Col span="20">-->
+                                            <!--<FormItem label='上传模式'>-->
+                                                <!--<Select filterable clearable  v-model="carControl.scms">-->
+                                                    <!--<Option value=""></Option>-->
+                                                    <!--<Option value="00">实时</Option>-->
+                                                    <!--<Option value="10">仅WIFI</Option>-->
+                                                <!--</Select>-->
+                                            <!--</FormItem>-->
+                                        <!--</Col>-->
+                                        <!--<Col span="4">-->
+                                            <!--<Button type="primary"  @click="selectChange30">确定</Button>-->
+                                        <!--</Col>-->
+                                    <!--</Row>-->
                                     <Row>
                                         <Col span="20">
                                             <FormItem label='上传视屏模式'>
                                                 <Select filterable clearable  v-model="carControl.spscms">
-                                                    <Option value=""></Option>
-                                                    <Option value="00">全部视屏</Option>
-                                                    <Option value="10">仅碰撞视屏</Option>
+                                                    <Option value="10">WIFI下上传普通视频</Option>
+                                                    <Option value="20">WIFI下不上传普通视频</Option>
+                                                    <Option value="30">WIFI/4G都上传</Option>
                                                 </Select>
                                             </FormItem>
                                         </Col>
