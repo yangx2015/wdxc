@@ -367,6 +367,8 @@
                     brennschluss:this.formItem.brennschluss
                 }
                 this.totalTime = 0;
+                this.pathList = [];
+                this.item = {};
                 this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         var geoc = new BMap.Geocoder();
