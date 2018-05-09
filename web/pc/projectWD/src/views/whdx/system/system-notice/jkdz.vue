@@ -160,9 +160,13 @@
 			seet(name){
 		    	var v = this
             	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
-            		v.$Message.success(res.message);
-                    v.$parent.getPageData()
-                    v.close()
+            	    if(res.code == 200){
+                        v.$Message.success(res.message);
+                        v.$parent.getPageData()
+                        v.close()
+					}else{
+                        v.$Message.error(res.message);
+					}
                 }).catch((error) =>{
 					v.$Message.error('出错了！！！');
 				})
