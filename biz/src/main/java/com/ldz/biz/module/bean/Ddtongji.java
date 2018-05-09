@@ -18,4 +18,6 @@ public class Ddtongji {
 	private  Integer dsjCount;
 	//待队长确认总数
 	private  Integer ddzCount;
+	//机构代码
+	private String jgdm;
 }

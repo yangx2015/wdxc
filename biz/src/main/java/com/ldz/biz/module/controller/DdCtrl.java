@@ -344,13 +344,13 @@ public class DdCtrl{
 
 
     @PostMapping("/ddtj")
-    public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd){
+    public ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd){
 
     	return service.ddtongji(dd);
     }
 
     @PostMapping("/cctj")
-    public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd){
+    public  ApiResponse<List<Ddtongji>> chucheTj(DdTongjiTJ dd){
 
     	return service.chucheTj(dd);
     }
