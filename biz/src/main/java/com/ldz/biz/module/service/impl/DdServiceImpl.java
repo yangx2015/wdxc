@@ -3,16 +3,22 @@ package com.ldz.biz.module.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
-import com.ldz.biz.module.bean.ClJsyModel;
-import com.ldz.sys.base.LimitedCondition;
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.mapper.ClCdMapper;
@@ -35,19 +41,15 @@ import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.exception.RuntimeCheck;
 
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
-import tk.mybatis.mapper.entity.Example;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
@@ -829,74 +831,107 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 
 	@Override
-	public ApiResponse<Ddtongji> ddtongji(DdTongjiTJ dd) {
+	public  ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd) {
 
-		ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
-		Ddtongji ddtongji = new Ddtongji();
-
+		List<Ddtongji> ddlist= new ArrayList<>();
+		
+        //获取条件下所有订单
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-		//订单总数
-		ddtongji.setDdzsCount(ddTongji.size());
-		int yshCount=0;
-		int wshCount=0;
-		int yqxCount=0;
-		int dsjCount=0;
-		int ddzCount=0;
-
-		for (ClDd clDd : ddTongji) {
-			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-			if (StringUtils.equals(clDd.getDdzt(), "10")) {
-				wshCount++;
-			}
-			else if (StringUtils.equals(clDd.getDdzt(), "11")) {
-				yshCount++;
-			}
-			else if (StringUtils.equals(clDd.getDdzt(), "12")) {
-				yqxCount++;
-			}
-			else if (StringUtils.equals(clDd.getDdzt(), "13")) {
-				dsjCount++;
-			}
-			else if (StringUtils.equals(clDd.getDdzt(), "20")) {
-				ddzCount++;
-			}
-			else {
-				continue;
-			}
+		if (CollectionUtils.isEmpty(ddTongji)) {
+			apiResponse.setCode(404);
+			apiResponse.setMessage("未查询到订单");
+			return apiResponse;
 		}
-		ddtongji.setYshCount(yshCount);
-		ddtongji.setWshCount(wshCount);
-		ddtongji.setYqxCount(yqxCount);
-		ddtongji.setDsjCount(dsjCount);
-		ddtongji.setDdzCount(ddzCount);
-		apiResponse.setResult(ddtongji);
+		//将订单按照机构分类
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgdm));
+		//获取每个机构下面的各种统计订单
+		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+		 while(it.hasNext()) {
+			 Entry<String, List<ClDd>> next = it.next();
+			 List<ClDd> value = next.getValue();
+			 Ddtongji ddtongji= new Ddtongji();
+				//订单总数
+			    ddtongji.setDdzsCount(value.size());
+				int yshCount=0;
+				int wshCount=0;
+				int yqxCount=0;
+				int dsjCount=0;
+				int ddzCount=0;
+				for (ClDd clDd :value) {
+					//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+					if (StringUtils.equals(clDd.getDdzt(), "10")) {
+						wshCount++;
+					}
+					else if (StringUtils.equals(clDd.getDdzt(), "11")) {
+						yshCount++;
+					}
+					else if (StringUtils.equals(clDd.getDdzt(), "12")) {
+						yqxCount++;
+					}
+					else if (StringUtils.equals(clDd.getDdzt(), "13")) {
+						dsjCount++;
+					}
+					else if (StringUtils.equals(clDd.getDdzt(), "20")) {
+						ddzCount++;
+					}
+					else {
+						continue;
+					}
+				}
+				ddtongji.setJgdm(next.getKey());
+				ddtongji.setYshCount(yshCount);
+				ddtongji.setWshCount(wshCount);
+				ddtongji.setYqxCount(yqxCount);
+				ddtongji.setDsjCount(dsjCount);
+				ddtongji.setDdzCount(ddzCount);
+				ddlist.add(ddtongji);
+		 }
+		 
+		 apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
 
 
 	@Override
-	public ApiResponse<Ddtongji> chucheTj(DdTongjiTJ dd) {
-    	ApiResponse<Ddtongji> apiResponse= new ApiResponse<>();
+	public ApiResponse<List<Ddtongji>>  chucheTj(DdTongjiTJ dd) {
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
-		Ddtongji ddtongji = new Ddtongji();
-
+		List<Ddtongji> ddlist= new ArrayList<>();
+		
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-
-		int yshCount=0;
-
-		for (ClDd clDd : ddTongji) {
-			//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-
-			 if (StringUtils.equals(clDd.getDdzt(), "11")) {
-				yshCount++;
-			}
-			 else {
-				continue;
-			}
+		if (CollectionUtils.isEmpty(ddTongji)) {
+			apiResponse.setCode(404);
+			apiResponse.setMessage("未查询到订单");
+			return apiResponse;
 		}
-		ddtongji.setYshCount(yshCount);
-		apiResponse.setResult(ddtongji);
+		//将订单按照司机分类
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getJgdm));
+		//获取每个机构下面的各种统计订单
+		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+		 while(it.hasNext()) {
+			 Entry<String, List<ClDd>> next = it.next();
+			 List<ClDd> value = next.getValue();
+			 Ddtongji ddtongji= new Ddtongji();
+				int yshCount=0;
+
+				for (ClDd clDd : value) {
+					//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+
+					 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+						yshCount++;
+					}
+					 else {
+						continue;
+					}
+				}
+				ddtongji.setJgdm(next.getKey());
+				ddtongji.setYshCount(yshCount);
+				ddlist.add(ddtongji);
+			 
+		 }
+		 apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
 
