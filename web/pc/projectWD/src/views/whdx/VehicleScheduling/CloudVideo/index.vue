@@ -31,7 +31,7 @@
 				background: rgba(0,0,0,0.5);
 				padding: 3px 5px;
 				width: 100%;
-				
+
 			}
 		}
 		.inputTit{
@@ -64,7 +64,11 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
+							</div>
+							<div class="body-r-1 inputSty">
 								<Input type="text" v-model="findMess.cphLike" placeholder="请输入车牌号"></Input>
+							</div>
+							<div class="body-r-1 inputSty">
 								<Input type="text" v-model="findMess.zdbhLike" placeholder="请输入终端编号"></Input>
 							</div>
 							<div class="butevent">
@@ -79,12 +83,12 @@
 			</div>
 			<div v-show="vadeoShow" class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
-					<div class="bodyC videoSty" 
+					<div class="bodyC videoSty"
 						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
     					<div v-if="!item.video">
 							<div class="videoBF" @click="videoS(item.video,item,index)">
-								<Icon class="icon" type="arrow-right-b" 
+								<Icon class="icon" type="arrow-right-b"
 									 @click="videoS(item.video,item,index)"
 									color="#b5b5b5" size='38'></Icon>
 							</div>
@@ -131,7 +135,7 @@
 <script>
 
     import mixins from '@/mixins'
-    
+
 	export default{
 		name:'',
         mixins: [mixins],
