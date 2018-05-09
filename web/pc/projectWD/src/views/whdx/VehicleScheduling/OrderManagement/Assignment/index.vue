@@ -77,7 +77,7 @@
 			</div>
 			<div class="body-1">
 				<div class="box">
-					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;">
+					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;cursor: pointer"  @click="getDrvList()">
 						待派定单
 						<span style="color: #ff8300;font-size: 16px;font-weight: 600;">
 							{{jrpd.num}}
@@ -85,7 +85,7 @@
 					</div>
 					<div class="body hg">
 						<div class="box-row-nh" v-if="jrpd.list.length>0">
-							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list">
+							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list" @click="getDrvList(item.ZWS)">
 								{{item.ZWS}}座
 								<span class="num">
 									{{item.COU}}
@@ -269,9 +269,12 @@
 
 				})
 			},
-			getDrvList(){//司机列表
+			getDrvList(zkl){//司机列表
 			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10,'zkl':''}).then((res) =>{
+		        if(!zkl){
+		            zkl = ''
+				}
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10,'zkl':zkl}).then((res) =>{
                     if(res.code == 200){
 						v.drvlist = res.result
 					}

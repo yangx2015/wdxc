@@ -1,0 +1,58 @@
+<style lang="less">
+  @import './login.less';
+</style>
+<template>
+  <div class="login">
+      <div class="backSty" @click="back">
+        <i class="iconfont icon-left"></i>
+      </div>
+      <div class="form">
+        <md-field>
+          <md-input-item
+            title="姓名"
+            type="text"
+            v-model="log.name"
+            placeholder="请填写您的姓名"
+            clearable
+          ></md-input-item>
+          <md-input-item
+            title="身份证号"
+            type="text"
+            v-model="log.idCar"
+            placeholder="请输入您的身份证号码"
+            clearable
+          ></md-input-item>
+        </md-field>
+      </div>
+    <div class="submit">
+      <md-button>登录</md-button>
+    </div>
+  </div>
+</template>
+
+<script>
+  import {InputItem, Field ,Button} from 'mand-mobile'
+
+  export default {
+    name: 'input-item-demo',
+    /* DELETE */
+    title: '标题隐藏输入框',
+    /* DELETE */
+    components: {
+      [Button.name]: Button,
+      [InputItem.name]: InputItem,
+      [Field.name]: Field,
+    },
+    data(){
+      return{
+        log:{}
+      }
+    },
+    methods:{
+      back(){
+
+      }
+    }
+  }
+
+</script>
