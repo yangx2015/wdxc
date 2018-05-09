@@ -15,13 +15,12 @@
 				<div class="titRight" @click="feedback()">
 					<Icon type="ios-compose" color="#949494" size='26'></Icon>
 				</div>
-				
 			</div>
 		</div>
 		<div>
-			<swiper 
-				:list="imglist" 
-				v-model="imglistV" 
+			<swiper
+				:list="imglist"
+				v-model="imglistV"
 				:auto="true"
 				:loop="true"
 				:interval="2000"
@@ -39,11 +38,11 @@
 					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
 						功能开发中
 					</div>
-				</div>		
+				</div>
 				<div v-else class="body">
 					<div class="list">
-						<div class="listTiT box-row" 
-							v-for="(item,index) in lineList" 
+						<div class="listTiT box-row"
+							v-for="(item,index) in lineList"
 							@click="lineMess(item.id)">
 							<div class="body-O">
 								<i class="iconfont icon-003lubiao"></i>
@@ -88,7 +87,7 @@
 									</div>
 								</div>
 							</li>
-						</ul>			
+						</ul>
 					</div>
 				</div>
 			</div>
