@@ -150,8 +150,8 @@
 						</div>
 					<span slot="extra">
 						<i-switch size="large"  v-model="item.zt=='00'">
-							<span slot="open">开启</span>
-							<span slot="close">关闭</span>
+							<span slot="open">在班</span>
+							<span slot="close">休息</span>
 						</i-switch>
 						<Tooltip content="订单分配" placement="left">
 							<Button type="primary"
