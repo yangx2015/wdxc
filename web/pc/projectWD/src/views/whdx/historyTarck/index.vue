@@ -248,11 +248,11 @@
                     return;
                 }
                 if (newQuestion.length > 0 && newQuestion[0] != ''){
-                    // this.formItem.startTime = this.getdateParaD(newQuestion[0])
-                    // this.formItem.endTime = this.getdateParaD(newQuestion[1])
+                    this.formItem.startTime = this.getdateParaD(newQuestion[0]) + " 00:00:00";
+                    this.formItem.endTime = this.getdateParaD(newQuestion[1]) + " 23:59:59";
                 }else{
-                    this.formItem.startTime  = ''
-                    this.formItem.endTime  = ''
+                    this.formItem.startTime  = this.getTodayDate() + " 00:00:00";
+                    this.formItem.endTime  = this.getTodayDate() + " 23:59:59";
                 }
             },
         },
@@ -340,7 +340,6 @@
                     if (res.code === 200 && res.page.list){
                         this.carList = res.page.list;
                         if (this.carList.length != 0){
-							// this.formItem.zdbh = this.carList[0].zdbh;
                             this.formItemList();
 						}
                     }
@@ -352,7 +351,6 @@
             },
             formItemList(){
                 var v = this
-				debugger
                 let startTime = this.formItem.startTime;
                 let endTime = this.formItem.endTime;
                 if (typeof startTime === 'object'){
@@ -369,6 +367,8 @@
                     brennschluss:this.formItem.brennschluss
                 }
                 this.totalTime = 0;
+                this.pathList = [];
+                this.item = {};
                 this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         var geoc = new BMap.Geocoder();

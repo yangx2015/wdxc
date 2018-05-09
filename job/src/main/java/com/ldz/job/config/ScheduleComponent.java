@@ -37,8 +37,8 @@ public class ScheduleComponent {
 
 		// gps同步定执行周期，每1分钟执行一次
 		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *");
-		// 终端状态监测定时周期 每5分钟执行一次
-		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/5 * * * ? *");
+		// 终端状态监测定时周期 每10分钟执行一次
+		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/10 * * * ? *");
 		// 车辆年审日期设置  每天中午12点执行一次
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
 		

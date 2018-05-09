@@ -15,6 +15,8 @@ server:
 
 ticserver:
    url: http://47.98.39.45:9095/api/push/carcmd
+biz:
+  scTime: 30000
 
 staticPath:  D:\static\common\
 updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
