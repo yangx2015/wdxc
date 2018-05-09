@@ -15,14 +15,13 @@
 							<span>单位管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
-								   @on-change="getPageData()"></Input>
+							<Input v-model="form.dwmcLike" placeholder="请输入单位名称" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="getPageData()">
+							<Button type="primary" @click="v.util.getPageData(v)">
 								<Icon type="search"></Icon>
 							</Button>
-							<Button type="primary" @click="add()">
+							<Button type="primary" @click="v.util.add(v)">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -53,8 +52,9 @@
         },
         data() {
             return {
+                v:this,
                 SpinShow: true,
-                pagerUrl: this.apis.TEMP_UNIT.QUERY,
+                apiRoot: this.apis.TEMP_UNIT,
                 tabHeight: 220,
                 componentName: '',
                 choosedItem: null,
@@ -138,7 +138,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.listDele(params.row.id)
+                                            this.util.delete(this,[params.row.id])
                                         }
                                     }
                                 })
@@ -163,10 +163,6 @@
         methods: {
             getPageData() {
                 this.util.getPageData(this);
-            },
-            //删除数据
-            listDele(id) {
-                this.util.del(this, this.apis.TEMP_UNIT.DELE, [id]);
             },
             add() {
                 this.componentName = 'formData'

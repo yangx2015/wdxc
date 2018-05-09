@@ -40,7 +40,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import compModal from './comp/modal.vue'
 	export default {
@@ -203,7 +203,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(configApi.SUGGES.QUERY,{params:this.findMess}).then((res) =>{
+				this.$http.get(this.apis.SUGGES.QUERY,{params:this.findMess}).then((res) =>{
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})

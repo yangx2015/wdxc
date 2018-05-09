@@ -71,7 +71,7 @@
 
 <script>
 	import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -115,7 +115,7 @@
 		    	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                    	let url = configApi.ZDGL.ADD;
+                    	let url = this.apis.ZDGL.ADD;
 						delete this.form.cl;
 						delete this.form.cph;
 		                this.$http.post(url,this.form).then((res) =>{
@@ -153,7 +153,7 @@
 		    	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                    	v.$http.post(configApi.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
+                    	v.$http.post(this.apis.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
                     		v.$Message.success(res.message);
 		                    v.$parent.getPageData()
 		                    v.close()

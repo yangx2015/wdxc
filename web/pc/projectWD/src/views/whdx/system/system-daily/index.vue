@@ -48,7 +48,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	export default {
     	name:'char',
@@ -183,7 +183,7 @@
         	getmess(){
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total;
@@ -199,7 +199,7 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-        		this.$http.get(configApi.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+        		this.$http.get(this.apis.DAILY.QUERY,{params:v.findMess}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;

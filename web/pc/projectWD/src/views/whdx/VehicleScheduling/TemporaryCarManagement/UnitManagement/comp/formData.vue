@@ -16,32 +16,11 @@
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>
-						<Col span="12">
-							<FormItem prop='dwmc' label='单位名称'>
-								<Input type="text" v-model="formItem.dwmc" placeholder="请填写单位名称..."></Input>
+						<Col span="12" v-for="i in formInputs">
+							<FormItem :prop='i.prop' :label='i.label'>
+								<Input type="text" v-model="formItem[i.prop]" :placeholder="'请填写'+i.label+'...'"></Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
-							<FormItem prop='dwbh' label='单位编号'>
-								<Input type="text" v-model="formItem.dwbh" placeholder="请填写单位编号..."></Input>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
-						<Col span="12">
-							<FormItem label='联系人'>
-								<Input type="text" v-model="formItem.lxr" placeholder="请填写联系人...">
-								</Input>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop='lxdh' label='联系电话'>
-								<Input type="text" v-model="formItem.lxdh" placeholder="请填写联系电话...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem label='状态'>
 								<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">
@@ -54,8 +33,8 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="ghost" @click="v.util.closeDialog(v)">取消</Button>
+				<Button type="primary" @click="v.util.save(v)">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -66,8 +45,8 @@
 		name: '',
 		data() {
 			return {
-                createUrl:this.apis.TEMP_UNIT.ADD,
-                updateUrl:this.apis.TEMP_UNIT.CHANGE,
+			    v:this,
+                apiRoot:this.apis.TEMP_UNIT,
                 operate:'新建',
 				showModal: true,
 				readonly: false,
@@ -75,30 +54,14 @@
 					px:1,
 					zt:'00'
 				},
+                formInputs:[
+                    {label:'单位名称',prop:'dwmc',required:true},
+                    {label:'单位编号',prop:'dwbh',required:true},
+                    {label:'联系人',prop:'lxr',required:true},
+                    {label:'联系电话',prop:'lxdh',required:true},
+                ],
                 ruleInline:{
-                	gnmc: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    gndm: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    fwdm: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    url: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
-                    px: [
-                    	{ required: true, message: '请将信息填写完整', trigger: 'blur' },
-                    	{ min: 0, message: '请将信息填写完整', trigger: 'blur' }
-                    ],
 				}
-			}
-		},
-		props:{
-			Dictionary:{
-				type:Array,
-				default:[]
 			}
 		},
 		created(){
@@ -107,12 +70,6 @@
 		methods: {
             beforeSave(){
 			},
-			save(){
-			    this.util.save(this);
-			},
-			close() {
-			    this.util.closeDialog(this);
-            }
 		}
 	}
 </script>

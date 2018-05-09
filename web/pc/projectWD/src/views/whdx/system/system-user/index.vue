@@ -58,7 +58,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 
 	import newmess from './comp/newmes.vue'
@@ -258,7 +258,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.USER.QUERY,{params:v.findMess}).then((res) =>{
 //					log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -275,7 +275,7 @@
 			//收索事件
 			findMessList() {
 				var v = this
-				this.$http.get(configApi.USER.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.USER.QUERY,{params:v.findMess}).then((res) =>{
 //					log(res)
 					v.tableData = res.page.list
 				})
@@ -293,7 +293,7 @@
 			},
 			//删除数据
 			listDele(id){
-				this.util.del(this,configApi.USER.DELE,[id],()=>{
+				this.util.del(this,this.apis.USER.DELE,[id],()=>{
                     this.getmess();
 				});
 			},

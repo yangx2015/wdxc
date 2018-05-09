@@ -68,7 +68,7 @@
 
 <script>
 	import treelist from '@/data/list.js'
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name: '',
@@ -121,7 +121,7 @@
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
 		    getRolePermissionTree(){
-                let url = configApi.FUNCTION.GET_ROLE_PERMISSION_TREE;
+                let url = this.apis.FUNCTION.GET_ROLE_PERMISSION_TREE;
                 if (this.addmess.jsId){
                     url += "?jsdm="+this.addmess.jsId;
 				}
@@ -137,7 +137,7 @@
                 for (let r of this.choosedIds){
                     ids += r+',';
 				}
-                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':ids}).then((res) =>{
+                this.$http.post(this.apis.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success(res.message);
                     }
@@ -157,7 +157,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 						if(v.usermesType){
-	                		v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
+	                		v.$http.post(this.apis.ROLE.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
                                     this.setRolePermission();
 									v.$emit('listF',res)
@@ -170,7 +170,7 @@
 								v.SpinShow = false
 							})
 						}else{
-							v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
+							v.$http.post(this.apis.ROLE.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
                                     this.setRolePermission();
 									v.$emit('listF',res)

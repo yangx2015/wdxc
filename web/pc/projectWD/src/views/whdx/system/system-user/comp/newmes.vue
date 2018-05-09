@@ -84,7 +84,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name:'',
@@ -148,7 +148,7 @@
 		methods:{
 		    getOrgList(){
 		        let v = this;
-                v.$http.get(configApi.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                v.$http.get(this.apis.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{
                     if(res.code===200){
                         this.orgList = res.page.list;
                     }else{
@@ -172,7 +172,7 @@
                     if (valid) {
 //                    	新增
                     	if(v.usermesType){
-                    		v.$http.post(configApi.USER.ADD,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.USER.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('用户注册成功');
 									v.$emit('listF',res)
@@ -184,7 +184,7 @@
 							})
                     	}else{
                     	    delete v.addmess.mm;
-                    		v.$http.post(configApi.USER.CHANGE,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.USER.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('用户修改成功');
 									v.$emit('listF',res)

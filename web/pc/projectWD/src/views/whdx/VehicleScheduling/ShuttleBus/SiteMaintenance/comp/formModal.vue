@@ -78,7 +78,7 @@
 <script>
 	import getMapDot from '../../../../map/getMapDot.vue'
 
-    import configApi from '@/axios/config.js'
+
 	export default{
 		name:'',
 		components: {
@@ -133,7 +133,7 @@
                 var v = this
                 this.$refs['addmess'].validate((valid) => {
                     if (valid) {
-                        v.$http.post(configApi.ZD.ADD,v.formItem).then((res) =>{
+                        v.$http.post(this.apis.ZD.ADD,v.formItem).then((res) =>{
                             if(res.code===200){
                                 v.$Message.success(res.message);
                             }else{

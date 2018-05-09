@@ -54,7 +54,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import newmes from './comp/newmes.vue'
 	export default {
@@ -272,7 +272,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(configApi.JSY.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.JSY.QUERY,{params:v.findMess}).then((res) =>{
 					log('驾驶员数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -290,7 +290,7 @@
         		v.getmess()
         	},
         	listDele(id){
-        		this.$http.post(configApi.JSY.DELE,{'ids':[id.sfzhm]}).then((res) =>{
+        		this.$http.post(this.apis.JSY.DELE,{'ids':[id.sfzhm]}).then((res) =>{
 					if(res.code===200){
 						this.$Message.success('操作成功');
 					}else{

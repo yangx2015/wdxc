@@ -147,7 +147,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
     export default {
         name: "carInfo",
         components: {
@@ -200,7 +200,7 @@
                     csz:this.cssd,
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CS.ADD,params).then((res) =>{
+                this.$http.post(this.apis.CS.ADD,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("设置成功!")
@@ -214,7 +214,7 @@
                 let params = {
                     cph:this.car.cph,
                 }
-                this.$http.post(configApi.CS.QUERY,params).then((res) =>{
+                this.$http.post(this.apis.CS.QUERY,params).then((res) =>{
                     if (res.code === 200 && res.page.list &&  res.page.list.length>0){
                         this.cssd = res.page.list[0].sdsx;
                     }
@@ -246,7 +246,7 @@
                     cmd:param
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("设置成功!")
@@ -296,7 +296,7 @@
                     cmdParams:param
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
@@ -313,7 +313,7 @@
                 let params = {
                     bj:this.bj,
                 }
-                this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
+                this.$http.post(this.apis.CLOUD.QUERY,params).then((res) =>{
                     if (res.code === 200 && res.page.list && res.page.list.length > 0){
                         this.imgSrc = res.page.list[0].url;
                     }else{
@@ -336,7 +336,7 @@
                     endTime  :this.mergeVideoParam.endTime,
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
@@ -347,7 +347,7 @@
             },
             getObdInfo(){
                 var v = this
-                this.$http.post(configApi.CLJK.getObdTimely,{obdId:this.car.obdId}).then((res) =>{
+                this.$http.post(this.apis.CLJK.getObdTimely,{obdId:this.car.obdId}).then((res) =>{
                     if (res.code === 200){
                         this.obd = res.result;
                     }
@@ -355,7 +355,7 @@
             },
             getDeviceInfo(){
                 var v = this
-                this.$http.get(configApi.ZDGL.GET_BY_ID+this.car.zdbh).then((res) =>{
+                this.$http.get(this.apis.ZDGL.GET_BY_ID+this.car.zdbh).then((res) =>{
                     if (res.code === 200){
                         this.carControl = res.result;
                     }

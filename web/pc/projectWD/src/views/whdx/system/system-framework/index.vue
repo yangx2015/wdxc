@@ -112,7 +112,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
     import treeList from './comp/treelist.vue'
     import modelForm from './comp/modelForm.vue'
     export default {
@@ -194,7 +194,7 @@
         methods: {
     	    getTree(){
     	    	var v = this
-                this.$http.get(configApi.FRAMEWORK.GET_TREE,{params:{'jgmc':this.jgmc}}).then((res) =>{
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE,{params:{'jgmc':this.jgmc}}).then((res) =>{
                     if(res.code===200){
                         v.RootTree.children = [res.result];
                         v.treeClick(v.RootTree.children[0])
@@ -213,7 +213,7 @@
                 this.componentName = 'modelForm';
 			},
 			del(item){
-    	        this.util.del(this,configApi.FRAMEWORK.DELE,[item.jgdm],()=>{
+    	        this.util.del(this,this.apis.FRAMEWORK.DELE,[item.jgdm],()=>{
                     this.getTree();
 				});
 			},

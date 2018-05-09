@@ -308,7 +308,11 @@
 						]
 					}
 				],
-				munName:'1'
+				munName:'1',
+				form:{
+				    ddzt:'30',
+					ck:'',
+				}
 			}
 		},
 		created(){
@@ -319,11 +323,19 @@
             },{
                 title: '收款管理',
             }])
+			this.getData();
         },
 		mounted(){
 			
 		},
 		methods:{
+		    getData(){
+		      	this.$http.post(this.apis.ORDER.skgl,this.form,(res)=>{
+		      	    if (res.code == 200){
+
+					}
+				})
+			},
 			//选项卡的切换
 			MenuClick(event){
 				this.munName=event

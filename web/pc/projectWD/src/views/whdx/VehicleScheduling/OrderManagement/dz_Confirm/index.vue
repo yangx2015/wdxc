@@ -55,7 +55,7 @@
 	</div>
 </template>
 <script>
-    import configApi from '@/axios/config.js'
+
     import edit from './edit'
     import mixins from '@/mixins'
     import expandRow from './table-expand.vue';
@@ -190,7 +190,7 @@
 			confirm(id){
                 let v = this
                 v.SpinShow = true
-                let url = configApi.ORDER.CONFIRM;
+                let url = this.apis.ORDER.CONFIRM;
                 let param = {
                     id : id
 				}
@@ -209,7 +209,7 @@
                 })
 			},
             findMessList(){
-                this.$http.get(configApi.ORDER.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.ORDER.QUERY,{params:this.findMess}).then((res) =>{
                     if (res.code === 200 && res.page.list){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;

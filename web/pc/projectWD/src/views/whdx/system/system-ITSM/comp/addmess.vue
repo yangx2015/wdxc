@@ -62,7 +62,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name: '',
@@ -99,7 +99,7 @@
 				var v = this
 				this.$refs[name].validate((valid) => {
                     if (valid) {
-						this.$http.post(configApi.ITMS.ADD,this.addmess).then((res) =>{
+						this.$http.post(this.apis.ITMS.ADD,this.addmess).then((res) =>{
 							log('功能数据',res)
 							if(res.code===200){
 								v.$Message.success('创建成功');

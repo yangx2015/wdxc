@@ -62,7 +62,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import addrole from './comp/addmess.vue'
 	import modifyRolePermission from './comp/modifyRolePermission.vue'
@@ -225,7 +225,7 @@
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
         	getmess(){
-        		this.$http.get(configApi.ROLE.QUERY).then((res) =>{
+        		this.$http.get(this.apis.ROLE.QUERY).then((res) =>{
 					this.tableData = res.page.list
 					this.SpinShow = false;
 				})
@@ -238,7 +238,7 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(configApi.ROLE.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.ROLE.QUERY,{params:v.findMess}).then((res) =>{
 					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;
@@ -246,7 +246,7 @@
         	},
 			//数据删除
         	listDele(id) {
-        		this.util.del(this,configApi.ROLE.DELE,[id],()=>{
+        		this.util.del(this,this.apis.ROLE.DELE,[id],()=>{
                     this.getmess();
 				});
             },

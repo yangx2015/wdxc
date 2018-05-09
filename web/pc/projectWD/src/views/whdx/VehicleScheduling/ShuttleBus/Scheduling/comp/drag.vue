@@ -88,7 +88,7 @@ li{
 <script>
 	import Sortable from 'sortablejs';
 	
-	import configApi from '@/axios/config.js'
+
 	export default {
 		name:'',
 		data(){
@@ -142,14 +142,14 @@ li{
 			getmess(){
 				var v = this
 				//车辆数据
-				this.$http.get(configApi.CLGL.QUERY).then((res) =>{
+				this.$http.get(this.apis.CLGL.QUERY).then((res) =>{
 					v.carList = res.page.list
 					log('车辆数据',res.page.list)
 				}).catch((err) =>{
 					log('bug')
 				})
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
+				this.$http.post(this.apis.XLPBXX.QUERY,{"clcx":"30","date2":v.todaytime}).then((res) =>{
 					log('排班数据2',res)
 					v.listdata = res.result
 				}).then((res) =>{
@@ -160,7 +160,7 @@ li{
 			},
 			AddList(carID,LineID){
 				var v = this
-				this.$http.post(configApi.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":v.todaytime}).then((res) =>{
+				this.$http.post(this.apis.XLPBXX.ADD,{"clId":carID,"xlId":LineID,"date2":v.todaytime}).then((res) =>{
 					log('排版新增',res)
 //					if(res.code==500){
 //						v.$parent.domeC()
@@ -170,7 +170,7 @@ li{
 			deleteById(xlId,clId){
                 this.$Message.success('移出成功');
                 var v = this
-                this.$http.post(configApi.XLPBXX.deleteByXlAndCl,{"xlId":xlId,clId:clId}).then((res) =>{
+                this.$http.post(this.apis.XLPBXX.deleteByXlAndCl,{"xlId":xlId,clId:clId}).then((res) =>{
                     this.getmess();
                 })
 			},

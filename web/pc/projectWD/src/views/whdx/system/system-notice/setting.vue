@@ -71,7 +71,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
     export default {
         name: "deviceInfo",
         components: {
@@ -122,7 +122,7 @@
                     csz:this.cssd,
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CS.ADD,params).then((res) =>{
+                this.$http.post(this.apis.CS.ADD,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("设置成功!")
@@ -136,7 +136,7 @@
                 let params = {
                     cph:this.device.cph,
                 }
-                this.$http.post(configApi.CS.QUERY,params).then((res) =>{
+                this.$http.post(this.apis.CS.QUERY,params).then((res) =>{
                     if (res.code === 200 && res.page.list &&  res.page.list.length>0){
                         this.cssd = res.page.list[0].sdsx;
                     }
@@ -168,7 +168,7 @@
                     cmd:param
                 }
                 this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("设置成功!")
@@ -201,7 +201,7 @@
             },
             getDeviceInfo(){
                 var v = this
-                this.$http.get(configApi.ZDGL.GET_BY_ID+this.device.zdbh).then((res) =>{
+                this.$http.get(this.apis.ZDGL.GET_BY_ID+this.device.zdbh).then((res) =>{
                     if (res.code === 200){
                         this.deviceControl = res.result;
                     }

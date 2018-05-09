@@ -78,7 +78,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name:'',
@@ -146,7 +146,7 @@
 		methods:{
 		    getDeviceList(){//获取终端编号
                 let v = this;
-                v.$http.post(configApi.ZDGL.SXQUERY).then((res) =>{
+                v.$http.post(this.apis.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
                     	if(res.result==undefined){
                     		res.result = []
@@ -161,7 +161,7 @@
 			},
 		    getFleetList(){
                 let v = this;
-                v.$http.get(configApi.CD.QUERY,{params:{pageSize:10000}}).then((res) =>{
+                v.$http.get(this.apis.CD.QUERY,{params:{pageSize:10000}}).then((res) =>{
                     if(res.code===200){
                         this.fleetList = res.page.list;
                     }
@@ -180,7 +180,7 @@
             },
 		    getDrivers(){
 		        let v = this;
-                v.$http.get(configApi.JSY.NOT_BIND_LIST).then((res) =>{
+                v.$http.get(this.apis.JSY.NOT_BIND_LIST).then((res) =>{
                     if(res.code===200){
                     	if(res.result==undefined||res.result==null){
                     		res.result = []
@@ -206,7 +206,7 @@
                         this.getDriverName();
 //                    	新增
                     	if(v.messType){
-                    		v.$http.post(configApi.CLGL.ADD,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.CLGL.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('车辆添加成功');
 								}else{
@@ -218,7 +218,7 @@
                     	}else{
                     	    delete v.addmess.clDzwlCl;
                     	    delete v.addmess.clDzwl;
-                    		v.$http.post(configApi.CLGL.CHANGE,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.CLGL.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('车辆修改成功');
 								}else{
