@@ -24,19 +24,19 @@
                                 <Button type="primary"  @click="selectChange20">确定</Button>
                             </Col>
                         </Row>
-                        <Row>
-                            <Col span="20">
-                                <FormItem label='上传模式'>
-                                    <Select filterable clearable  v-model="deviceControl.scms">
-                                        <Option value="00">实时</Option>
-                                        <Option value="10">仅WIFI</Option>
-                                    </Select>
-                                </FormItem>
-                            </Col>
-                            <Col span="4">
-                                <Button type="primary"  @click="selectChange30">确定</Button>
-                            </Col>
-                        </Row>
+                        <!--<Row>-->
+                            <!--<Col span="20">-->
+                                <!--<FormItem label='上传模式'>-->
+                                    <!--<Select filterable clearable  v-model="deviceControl.scms">-->
+                                        <!--<Option value="00">实时</Option>-->
+                                        <!--<Option value="10">仅WIFI</Option>-->
+                                    <!--</Select>-->
+                                <!--</FormItem>-->
+                            <!--</Col>-->
+                            <!--<Col span="4">-->
+                                <!--<Button type="primary"  @click="selectChange30">确定</Button>-->
+                            <!--</Col>-->
+                        <!--</Row>-->
                         <Row>
                             <Col span="20">
                                 <FormItem label='上传视屏模式'>
