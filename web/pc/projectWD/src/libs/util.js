@@ -8,7 +8,7 @@ let util = {
 };
 
 util.initTable = (v)=>{
-    v.tabHeight = v.getWindowHeight() - 300
+    v.tabHeight = v.getWindowHeight() - 295
     util.getPageData(v)
 }
 util.initFormModal = (v)=>{
