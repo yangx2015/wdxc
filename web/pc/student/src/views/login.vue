@@ -5,12 +5,27 @@
 <template>
     <div class="login" @keydown.enter="handleSubmit">
     	<!--<img src="../../static/3.png"/>-->
+        <div class="yc">
+          <h1>欢迎约车</h1>
+          <!--<h1 class="huan">-->
+            <!--欢-->
+          <!--</h1>-->
+          <!--<h1 class="ying">-->
+            <!--迎-->
+          <!--</h1>-->
+          <!--<h1 class="yue">-->
+            <!--约-->
+          <!--</h1>-->
+          <!--<h1 class="che">-->
+            <!--车-->
+          <!--</h1>-->
+        </div>
         <div class="login-con">
             <Card :bordered="false">
-                <p slot="title">
-                    <Icon type="log-in"></Icon>
-                    欢迎登录
-                </p>
+                <!--<p slot="title">-->
+                    <!--<Icon type="log-in"></Icon>-->
+                    <!--欢迎登录-->
+                <!--</p>-->
                 <div class="form-con">
                     <Form ref="loginForm" :model="form" :rules="rules">
                         <FormItem prop="username">
@@ -31,7 +46,6 @@
                             <Button @click="handleSubmit" type="primary" long>登录</Button>
                         </FormItem>
                     </Form>
-                    <p class="login-tip">输入任意用户名和密码即可</p>
                 </div>
             </Card>
         </div>
