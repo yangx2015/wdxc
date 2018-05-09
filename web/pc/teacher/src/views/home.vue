@@ -1,37 +1,48 @@
+<style lang="less">
+  @import '../styles/box.less';
+  @import "./hone.less";
+</style>
 <template>
-  <div class="md-example-child md-example-child-swiper md-example-child-swiper-0">
-    <md-swiper
-      @before-change="beforeChange"
-      @after-change="afterChange"
-      ref="swiper">
-      <md-swiper-item :key="index" v-for="(item, index) in simple">
-        <a href="javascript:void(0)"
-           class="banner-item"
-           :style="{'background': `${item.color}`}">{{item.text}}</a>
-      </md-swiper-item>
-    </md-swiper>
+  <div>
+    <div class="header">
+      <div class="box-row">
+        <div class="titLeft" @click="MyCenter()">
+          <i class="iconfont icon-wo"></i>
+        </div>
+        <div class="titCenter body-O" style="text-align: center;">
+          <input type="text" placeholder="请输入站点名称">
+        </div>
+        <div class="titRight" @click="feedback()">
+        </div>
+      </div>
+    </div>
+    <!--<div  class="md-example-child md-example-child-swiper md-example-child-swiper-0">-->
+      <!--<md-swiper-->
+        <!--@before-change="beforeChange"-->
+        <!--@after-change="afterChange"-->
+        <!--ref="swiper">-->
+        <!--<md-swiper-item :key="index" v-for="(item, index) in simple">-->
+          <!--<a href="javascript:void(0)"-->
+             <!--class="banner-item"-->
+             <!--:style="{'background': `${item.color}`}">{{item.text}}</a>-->
+        <!--</md-swiper-item>-->
+      <!--</md-swiper>-->
+    <!--</div>-->
   </div>
 </template>
 
 <script>
-  import {Swiper, SwiperItem} from 'mand-mobile'
-  import simple from 'mand-mobile/components/swiper/demo/data/simple'
-
+  import {Swiper, SwiperItem,InputItem} from 'mand-mobile'
   export default {
     name: 'swiper-demo',
-    /* DELETE */
-    title:
-      '横向轮播 <a href="javascript:window.triggerSwiper0()">Goto 2</a><a href="javascript:window.triggerSwiper1()">Play</a><a href="javascript:window.triggerSwiper2()">Stop</a>',
-    message:
-      '@before-change: from: <span id="valueSwiper0">0</span>, to: <span id="valueSwiper1">0</span><br/>@after-change: from: <span id="valueSwiper2">0</span>, to: <span id="valueSwiper3">0</span>',
-    /* DELETE */
     components: {
       [Swiper.name]: Swiper,
       [SwiperItem.name]: SwiperItem,
+      [InputItem.name]:InputItem
     },
     data() {
       return {
-        simple,
+        // simple,
       }
     },
     mounted() {

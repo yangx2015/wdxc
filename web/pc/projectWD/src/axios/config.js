@@ -33,6 +33,7 @@ module.exports = {
 		DRIVER_CONFIRM:'/api/dd/driverConfirm',//队长确认
         orderDetails:'/api/dd/orderDetails',//订单详情
 		FP:'/api/dd/pd',//订单分派
+		DRZT:'/api/jsy/jsytype ',//司机状态修改
 	},
 	ROLE:{
 		QUERY:'/api/js/pager',//角色管理
