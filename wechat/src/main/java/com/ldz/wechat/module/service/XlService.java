@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface XlService extends BaseService<ClXl,String> {
-    List<ClXl> getAll();
+    List<ClXl> getAll(String lx);
 
     ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlId);
 }

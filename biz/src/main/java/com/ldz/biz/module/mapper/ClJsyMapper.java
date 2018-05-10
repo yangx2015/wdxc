@@ -17,13 +17,15 @@ public interface ClJsyMapper extends Mapper<ClJsy> {
             ",(SELECT COUNT(1) FROM CL_DD D WHERE to_char(D.YYSJ,'yyyy-MM-dd')=to_char(SYSDATE,'yyyy-MM-dd') AND J.SFZHM=D.SJ AND D.DDZT='13') STARTORDERCOUNT " +
             "   FROM CL_JSY J,CL_CL L WHERE J.SFZHM=L.SJ_ID AND L.ZT='00'" +
             " <if test='zkl != null'> " +
-            "  AND L.ZKL = #{zkl}" +
+            "  AND L.ZKL >= #{zkl}" +
             " </if>  " +
             " AND J.SFZHM NOT IN (SELECT SJ FROM CL_PB WHERE to_char(PBSJ,'yyyy-MM-dd')=to_char(SYSDATE,'yyyy-MM-dd')) " +
+            " <if test='list != null'> " +
             "  AND L.CX IN " +
             " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
             "  #{item} " +
             "</foreach> " +
+            " </if>  " +
             " <if test='xm != null'> " +
             " and J.xm=like '%'#{xm}'%' " +
             " </if>  " +

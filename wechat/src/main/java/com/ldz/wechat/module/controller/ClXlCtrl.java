@@ -28,8 +28,8 @@ public class ClXlCtrl {
 	 * @return
 	 */
 	@RequestMapping(value="/getAll", method={RequestMethod.POST})
-	public ApiResponse<List<ClXl>> getAll(){
-		return ApiResponse.success(wxXlService.getAll());
+	public ApiResponse<List<ClXl>> getAll(String lx){
+		return ApiResponse.success(wxXlService.getAll(lx));
 	}
 
 	/**

@@ -24,8 +24,10 @@ public class ClJsyServiceImpl implements ClJsyService{
 
 	@Override
 	public ApiResponse<String> updatejsy(ClJsy jsy) {
+		jsy.setZt(null);
 		jsymapper.updateByPrimaryKeySelective(jsy);
 		return ApiResponse.updateSuccess();
 	}
+
 
 }
