@@ -3,6 +3,7 @@ package com.ldz.biz.module.service.impl;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -10,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -104,8 +106,20 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 
 	@Override
 	public ApiResponse<String> saveSpk(GpsInfo entity) {
-		
 		log.info("收到的文件模型:"+entity);
+		
+		BoundValueOperations<Object, Object> boundValueOps = redisutils.boundValueOps(entity.getFileRealName());
+            String wjm = (String) boundValueOps.get();
+            if (StringUtils.isNotEmpty(wjm)) {
+				if (StringUtils.equals(entity.getFileRealName(), wjm)) {
+					return ApiResponse.fail("文件名已存在");
+				}
+			}else {
+				boundValueOps.set(entity.getFileRealName());
+				boundValueOps.set(entity.getFileRealName(), 30, TimeUnit.SECONDS);
+			}
+		
+		
 		ClSpk clSpk = new ClSpk();
         ClCl selectOne=new ClCl();
         selectOne.setZdbh(entity.getDeviceId());

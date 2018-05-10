@@ -56,7 +56,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
@@ -366,7 +366,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(configApi.CLGL.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
 					log('车辆数据',res.page.list)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -383,7 +383,7 @@
                 this.getmess()
         	},
         	listDele(id){
-                this.util.del(this,configApi.CLGL.DELE,[id.clId],()=>{
+                this.util.del(this,this.apis.CLGL.DELE,[id.clId],()=>{
                     this.getmess()
 				})
 			},

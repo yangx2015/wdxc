@@ -31,7 +31,7 @@
 				background: rgba(0,0,0,0.5);
 				padding: 3px 5px;
 				width: 100%;
-				
+
 			}
 		}
 		.inputTit{
@@ -64,12 +64,12 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
-							   	<Select v-model="findMess.cphLike" filterable
-							   		@on-change="findMessList()"
-							   		style="width: 200px;text-align: left;">
-					                <Option  v-for="(item,index) in carList" 
-					                	:value="item.cph" :key="index">{{item.cph}}</Option>
-					            </Select>
+							</div>
+							<div class="body-r-1 inputSty">
+								<Input type="text" v-model="findMess.cphLike" placeholder="请输入车牌号"></Input>
+							</div>
+							<div class="body-r-1 inputSty">
+								<Input type="text" v-model="findMess.zdbhLike" placeholder="请输入终端编号"></Input>
 							</div>
 							<div class="butevent">
 								<Button type="primary" @click="findMessList()">
@@ -83,17 +83,16 @@
 			</div>
 			<div v-show="vadeoShow" class="body" style="border: 1px solid #dddee1">
 				<div class="box-row-list">
-					<div class="bodyC videoSty" 
+					<div class="bodyC videoSty"
 						style="min-height: 140px;"
 						v-for="(item,index) in videoList">
     					<div v-if="!item.video">
 							<div class="videoBF" @click="videoS(item.video,item,index)">
-								<Icon class="icon" type="arrow-right-b" 
+								<Icon class="icon" type="arrow-right-b"
 									 @click="videoS(item.video,item,index)"
 									color="#b5b5b5" size='38'></Icon>
 							</div>
-							<img
-								style="width: 100%;"
+							<img style="width: 100%;"
 								:src="videoPath+'/test/'+item.imgdz"/>
     					</div>
 						<video v-else
@@ -134,9 +133,9 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
     import mixins from '@/mixins'
-    
+
 	export default{
 		name:'',
         mixins: [mixins],
@@ -145,7 +144,7 @@
 		data(){
 			return {
 			    vadeoShow:true,
-                videoPath :configApi.VIDEO_PATH,
+                videoPath :this.apis.VIDEO_PATH,
 				activeName:0,
 				cjsjInRange:[],
 				carList:[],
@@ -159,7 +158,8 @@
                     cjsjInRange:'',
                     cphLike:'',
                     pageNum: 1,
-                    pageSize: 12
+                    pageSize: 12,
+                    zdbhLike:''
 				}
 			}
 		},
@@ -183,7 +183,7 @@
 			        buttons:['取消','确认'],
 			    }).then((willDelete) => {
 		            if (willDelete) {
-		                this.$http.post(configApi.CLOUD.DELE+'/'+item.id).then((res) =>{
+		                this.$http.post(this.apis.CLOUD.DELE+'/'+item.id).then((res) =>{
 							if(res.code==200){
 								v.$Message.success(res.message);
 							}else{
@@ -204,7 +204,7 @@
                 }
 				var v = this
                 v.findMess.wjmEndwith = '.mp4';
-				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
 				    if(res.code==200){
 						v.pageTotal = res.page.total
 				        if(res.page.list.length>0){
@@ -226,7 +226,7 @@
 			},
 			getCarList(){
                 var v = this
-                this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
+                this.$http.get(this.apis.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
                     this.findMess.cphLike = this.carList[0].cph
                     v.SpinShow = false;

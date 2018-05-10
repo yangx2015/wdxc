@@ -42,7 +42,7 @@
 </template>
 <script>
 	import mapShowLine from '../../../map/mapShowLine.vue'
-    import configApi from '@/axios/config.js'
+
     export default {
     	name:'',
     	components: {
@@ -66,7 +66,7 @@
 		},
         methods:{
     	    getStations(){
-                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID,{params:{xlId:this.xlId}}).then((res) =>{
+                this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID,{params:{xlId:this.xlId}}).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
                     }

@@ -82,7 +82,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 	
 	export default {
     	name:'char',
@@ -192,7 +192,7 @@
         		var v = this
                 this.carType = this.dictUtil.getByCode(this,this.dicCarCode);
             	this.thingType = this.dictUtil.getByCode(this,this.dicSJcode);
-            	this.$http.get(configApi.CLGL.QUERY).then((res) =>{
+            	this.$http.get(this.apis.CLGL.QUERY).then((res) =>{
             		if(res.code == 200){
             			v.carnumber = res.page.list
             		}
@@ -217,7 +217,7 @@
 				}else{
                     delete v.findMess.sjlxIn
 				}
-        		this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+        		this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;

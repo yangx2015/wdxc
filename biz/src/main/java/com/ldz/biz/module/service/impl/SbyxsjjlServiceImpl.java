@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClLsGjInfo;
@@ -29,6 +30,9 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClSbyxsjjlMapper entityMapper;
 	@Autowired
 	private ClGpsLsMapper clGpsLsMapper;
+	@Value("${biz.scTime}")
+    private String scTime;
+	
 	/*
 	 * @Autowired private ClClMapper clclmapper;
 	 */
@@ -92,7 +96,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		List<ClLsGjInfo> cclLsGjInfos = new ArrayList<>();
 		for (List<ClSbyxsjjl> clLsGjInfo : clLsGjInfos) {
 			long a = clLsGjInfo.get(1).getCjsj().getTime() - clLsGjInfo.get(0).getCjsj().getTime();
-			if (a >= 10000) {
+			if (a >= Long.parseLong(scTime)) {
 				ClLsGjInfo clLsGjInfoIn = new ClLsGjInfo();
 				clLsGjInfoIn.setJsjps(clLsGjInfo.get(1).getWd() + "," + clLsGjInfo.get(1).getJd());
 				clLsGjInfoIn.setKsgps(clLsGjInfo.get(0).getWd() + "," + clLsGjInfo.get(0).getJd());

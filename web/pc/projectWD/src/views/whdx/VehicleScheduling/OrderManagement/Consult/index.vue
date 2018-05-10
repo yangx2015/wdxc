@@ -55,7 +55,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
     import expandRow from './table-expand.vue';
     export default {
         components: {
@@ -158,7 +158,7 @@
                 v.findMessList()
         	},
         	findMessList(){
-                this.$http.get(configApi.ORDER.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.ORDER.QUERY,{params:this.findMess}).then((res) =>{
                     if (res.code === 200 && res.page.list){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;

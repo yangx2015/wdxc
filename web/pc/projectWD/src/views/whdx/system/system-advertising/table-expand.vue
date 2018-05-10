@@ -84,13 +84,13 @@
 	</div>
 </template>
 <script>
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
 			return {
 				visible: false,//modal层
-				staticPath:configApi.STATIC_PATH,
+				staticPath:this.apis.STATIC_PATH,
 				uploadList: [],
 				Ix:0,
 				imgUrl:'',

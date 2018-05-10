@@ -41,8 +41,7 @@
 		name: 'formData',
 		data() {
 			return {
-                createUrl:this.apis.BXJZ.ADD,
-                updateUrl:this.apis.BXJZ.CHANGE,
+                apiRoot:this.apis.BXJZ,
                 operate:'新建',
 				showModal: true,
 				readonly: false,

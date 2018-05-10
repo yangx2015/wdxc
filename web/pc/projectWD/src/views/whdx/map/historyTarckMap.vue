@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	import echarts from 'echarts'
 	export default {
 		name: 'historyTarckMap',
@@ -153,7 +153,7 @@
                 var v = this
 				delete this.formItem.ignition
 				delete this.formItem.brennschluss
-                this.$http.post(configApi.CLGL.GPS_HITSOR_GPS,this.formItem).then((res) =>{
+                this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.stationList = res.result;
                         for(let r of res.result){

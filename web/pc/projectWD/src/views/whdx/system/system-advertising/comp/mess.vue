@@ -104,7 +104,7 @@
 
 	import addlistfileImg from './addlistfileImg.vue'
 	import addlistfileVideo from './addlistfileVideo.vue'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		mixins: [mixins],
@@ -161,7 +161,7 @@
 			},
             save(){
                 var v = this
-                let url = configApi.ADVERTISING.CHANGE;
+                let url = this.apis.ADVERTISING.CHANGE;
                 this.$http.post(url,this.formItem).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);

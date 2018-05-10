@@ -89,7 +89,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	export default{
 		name:'',
 		data(){
@@ -141,7 +141,7 @@
 		},
 		methods:{
 		    getStations(){
-                this.$http.get(configApi.ZD.GET_BY_ROUTE_ID+'?xlId='+this.form.id).then((res) =>{
+                this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID+'?xlId='+this.form.id).then((res) =>{
                     if(res.code === 200){
                         for (let r of res.result){
                             this.addByStationId(r.id);
@@ -160,7 +160,7 @@
                 }
 			},
 		    getAllStation(){
-                this.$http.post(configApi.ZD.getByCondition,{lx:20}).then((res) =>{
+                this.$http.post(this.apis.ZD.getByCondition,{lx:20}).then((res) =>{
                     if(res.code===200){
                         this.stationList = res.result;
                         log('站点列表',res)
@@ -192,9 +192,9 @@
 		                this.form.zdIds = zdIds;
                         delete this.form.startStation
                         delete this.form.endStation
-		                let url = configApi.XL.ADD;
+		                let url = this.apis.XL.ADD;
 		                if (this.$parent.currentRow){
-		                    url = configApi.XL.CHANGE;
+		                    url = this.apis.XL.CHANGE;
 		                }
                         this.$http.post(url,this.form).then((res) =>{
 		                    if(res.code===200){

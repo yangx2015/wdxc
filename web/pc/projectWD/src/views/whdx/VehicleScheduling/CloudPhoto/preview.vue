@@ -20,7 +20,7 @@
         date(){
             return{
                 visible:true,
-                videoPath :configApi.VIDEO_PATH,
+                videoPath :this.apis.VIDEO_PATH,
                 imgUrl:'',
                 Ix:0,
             }

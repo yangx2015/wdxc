@@ -43,7 +43,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 
     export default {
         name: '',
@@ -96,7 +96,7 @@
             },
             getOrgPermissionTree(){
                 this.data4 = [];
-                this.$http.get(configApi.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }
@@ -108,7 +108,7 @@
                 for (let r of this.choosedIds){
                     ids += r+',';
                 }
-                this.$http.post(configApi.FUNCTION.SET_ORG_FUNCTIONS,{'jgdm':this.formItem.jgdm,'gndms':ids}).then((res) =>{
+                this.$http.post(this.apis.FUNCTION.SET_ORG_FUNCTIONS,{'jgdm':this.formItem.jgdm,'gndms':ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success(res.message);
                     }else{
@@ -119,7 +119,7 @@
             getUserList(){
                 let userInfo = sessionStorage.getItem("userInfo");
                 let jgdm = userInfo.jgdm;
-                this.$http.get(configApi.USER.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
+                this.$http.get(this.apis.USER.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
                     if(res.code===200 && res.page.list){
                         this.userList = res.page.list;
                     }
@@ -130,9 +130,9 @@
                 v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-						let url = configApi.FRAMEWORK.ADD;
+						let url = this.apis.FRAMEWORK.ADD;
 		                if (this.edit){
-		                    url = configApi.FRAMEWORK.CHANGE;
+		                    url = this.apis.FRAMEWORK.CHANGE;
 						}
 						delete this.formItem.children;
 		                this.$http.post(url,this.formItem).then((res) =>{

@@ -58,7 +58,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
 	import formModal from './comp/formModal.vue'
     export default {
         components: {
@@ -195,7 +195,7 @@
                     this.findMess.cjsjInRange = '';
                 }
                 var v = this
-                this.$http.get(configApi.ZD.QUERY,{params:v.findMess}).then((res) =>{
+                this.$http.get(this.apis.ZD.QUERY,{params:v.findMess}).then((res) =>{
                     log('超速数据',res)
                     v.data9 = res.page.list
                     v.pageTotal = res.page.total
@@ -211,10 +211,10 @@
         	},
         	//删除数据
             listDele(r){
-            	this.util.del(this,configApi.ZD.DELE,[r.id],()=>{
+            	this.util.del(this,this.apis.ZD.DELE,[r.id],()=>{
                     this.getmess();
 				});
-//              this.$http.post(configApi.ZD.DELE,{'ids':[r.id]}).then((res) =>{
+//              this.$http.post(this.apis.ZD.DELE,{'ids':[r.id]}).then((res) =>{
 //                  if(res.code===200){
 //                      this.$Message.success('操作成功');
 //                  }else{

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -57,7 +57,7 @@
 		},
 		methods: {
 		    getRoleList(){
-                this.$http.get(configApi.ROLE.ALL).then((res) =>{
+                this.$http.get(this.apis.ROLE.ALL).then((res) =>{
                     if(res.code===200){
                         this.roleList = [];
                         let list = res.result;
@@ -79,7 +79,7 @@
 				return false;
 			},
 		    getUserRoles(){
-                this.$http.get(configApi.ROLE.GET_USER_ROLES+'?userId='+this.usermes.yhid).then((res) =>{
+                this.$http.get(this.apis.ROLE.GET_USER_ROLES+'?userId='+this.usermes.yhid).then((res) =>{
                     if(res.code===200){
                         if (res.result){
                             this.userRoles = res.result;
@@ -101,7 +101,7 @@
                 for (let r of this.checkAllGroup){
                     ids.push(r);
 				}
-                this.$http.post(configApi.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:ids}).then((res) =>{
+                this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success('操作成功');
                         this.$emit('listF',res)

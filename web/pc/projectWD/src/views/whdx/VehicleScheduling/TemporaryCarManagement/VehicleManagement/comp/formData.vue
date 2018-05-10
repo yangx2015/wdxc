@@ -16,9 +16,9 @@
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>
-						<Col span="12">
-							<FormItem prop='cph' label='车牌号'>
-								<Input type="text" v-model="formItem.cph" placeholder="请填写车牌号..."></Input>
+						<Col span="12" v-for="i in formInputs">
+							<FormItem :prop='i.prop' :label='i.label'>
+								<Input type="text" v-model="formItem[i.prop]" :placeholder="'请填写'+i.label+'...'"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -28,8 +28,6 @@
 								</Select>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem label='车辆类型'>
 								<Select filterable clearable  v-model="formItem.cllx">
@@ -37,14 +35,6 @@
 								</Select>
 							</FormItem>
 						</Col>
-						<Col span="12">
-							<FormItem prop='zws' label='座位数'>
-								<Input type="text" v-model="formItem.zws" placeholder="请填写座位数...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem label='状态'>
 								<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">
@@ -57,8 +47,8 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="save">确定</Button>
+				<Button type="ghost" @click="v.util.closeDialog(v)">取消</Button>
+				<Button type="primary" @click="v.util.save(v)">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -69,8 +59,8 @@
 		name: '',
 		data() {
 			return {
-                createUrl:this.apis.TEMP_CAR.ADD,
-                updateUrl:this.apis.TEMP_CAR.CHANGE,
+			    v:this,
+                apiRoot:this.apis.TEMP_CAR,
                 operate:'新建',
 				showModal: true,
 				readonly: false,
@@ -79,8 +69,14 @@
                 lswdList:[],
 				formItem: {
 					px:1,
-					zt:'00'
+					zt:'00',
+                    lsdwId:'',
+                    cllx:'',
 				},
+				formInputs:[
+					{label:'车牌号',prop:'cph',required:true},
+					{label:'座位数',prop:'zws',required:true},
+				],
                 ruleInline:{
                 	gnmc: [
                     	{ required: true, message: '请将信息填写完整', trigger: 'blur' }
@@ -101,12 +97,6 @@
 				}
 			}
 		},
-		props:{
-			Dictionary:{
-				type:Array,
-				default:[]
-			}
-		},
 		created(){
 		    this.util.initFormModal(this);
 		    this.getDict();
@@ -125,12 +115,6 @@
             },
             beforeSave(){
 			},
-			save(){
-			    this.util.save(this);
-			},
-			close() {
-			    this.util.closeDialog(this);
-            }
 		}
 	}
 </script>

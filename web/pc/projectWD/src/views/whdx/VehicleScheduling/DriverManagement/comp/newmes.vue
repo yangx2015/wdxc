@@ -96,7 +96,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
     import mixins from '@/mixins'
 	export default {
 		name:'',
@@ -171,7 +171,7 @@
                         delete v.addmess.clDdList;
 //                    	新增
                     	if(v.messType){
-                    		v.$http.post(configApi.JSY.ADD,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.JSY.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('驾驶员注册成功');
                                     v.$parent.getmess()
@@ -181,7 +181,7 @@
 								}
 							})
                     	}else{
-                    		v.$http.post(configApi.JSY.CHANGE,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.JSY.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('驾驶员修改成功');
                                     v.$parent.getmess()

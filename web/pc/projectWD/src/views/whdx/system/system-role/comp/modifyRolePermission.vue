@@ -38,7 +38,7 @@
 
 <script>
     import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
 
     export default {
         name: '',
@@ -81,14 +81,14 @@
         },
         methods: {
             getPermissionTree(){
-                this.$http.get(configApi.FUNCTION.GET_ORG_PERMISSION_TREE).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }
                 })
             },
 			getRolePermission(){
-                this.$http.get(configApi.FUNCTION.GET_ROLE_FUNCTIONS+"?jsdm="+this.addmess.jsId).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.GET_ROLE_FUNCTIONS+"?jsdm="+this.addmess.jsId).then((res) =>{
                     if(res.code===200){
                         this.hasPermissions = res.result;
                         this.getPermissionTree();
@@ -97,7 +97,7 @@
 			},
             setRolePermission(){
                 this.getChoosedIds(this.data4);
-                this.$http.post(configApi.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':this.choosedIds}).then((res) =>{
+                this.$http.post(this.apis.FUNCTION.SET_ROLE_FUNCTIONS,{'jsdm':this.addmess.jsId,'gndms':this.choosedIds}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success('修改成功');
                     }
@@ -117,7 +117,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                         if(v.usermesType){
-                            v.$http.post(configApi.ROLE.ADD,v.addmess).then((res) =>{
+                            v.$http.post(this.apis.ROLE.ADD,v.addmess).then((res) =>{
                                 if(res.code===200){
                                     v.$Message.success('角色注册成功');
                                     this.setRolePermission();
@@ -129,7 +129,7 @@
 								v.SpinShow = false
 							})
                         }else{
-                            v.$http.post(configApi.ROLE.CHANGE,v.addmess).then((res) =>{
+                            v.$http.post(this.apis.ROLE.CHANGE,v.addmess).then((res) =>{
                                 if(res.code===200){
                                     v.$Message.success('角色修改成功');
                                     this.setRolePermission();

@@ -66,7 +66,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	import mixins from '@/mixins'
 	import swal from 'sweetalert'
 //	import axios from '@/axios'
@@ -279,7 +279,7 @@
 					id:id,
                     bhyy:this.formValidate.bhyy
 				}
-                this.$http.post(configApi.ORDER.AUDIT,param).then((res) =>{
+                this.$http.post(this.apis.ORDER.AUDIT,param).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success(res.message);
                         this.findMessList();
@@ -298,7 +298,7 @@
         		v.findMessList()
         	},
             findMessList(){
-                this.$http.get(configApi.ORDER.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.ORDER.QUERY,{params:this.findMess}).then((res) =>{
                     if (res.code === 200 && res.page.list){
                         this.tableData = res.page.list;
                         this.pageTotal = res.page.total;

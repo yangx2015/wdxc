@@ -102,7 +102,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import addmess from './comp/addmess.vue'
 	import addmessList from './comp/addmessList.vue'
@@ -153,7 +153,7 @@
 		methods: {
 			getmess() {
 				var v = this
-				this.$http.post(configApi.DICTIONARY.QUERY , this.findMess).then((res) => {
+				this.$http.post(this.apis.DICTIONARY.QUERY , this.findMess).then((res) => {
 					log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;
@@ -168,13 +168,13 @@
 			},
 			findMessList(mess) {
 				var v = this
-				this.$http.post(configApi.DICTIONARY.QUERY, this.findMess).then((res) => {
+				this.$http.post(this.apis.DICTIONARY.QUERY, this.findMess).then((res) => {
 					log('字典数据', res)
 					v.dictionary = res.page.list
 				})
 			},
 			removeDc(item, index) {
-				this.util.del(this,configApi.DICTIONARY.DELE,[item.lmdm],()=>{
+				this.util.del(this,this.apis.DICTIONARY.DELE,[item.lmdm],()=>{
                     this.getmess();
 				});
 			},
@@ -185,7 +185,7 @@
 			},
 			findDicList(item, index, mess) {
 				var v = this
-				this.$http.post(configApi.DICTIONARY_LIST.QUERY, {
+				this.$http.post(this.apis.DICTIONARY_LIST.QUERY, {
 					'zdlmdm': item.lmdm,
 					'zdmcLike': mess
 				}).then((res) => {
@@ -206,7 +206,7 @@
 				})
 				.then((willDelete) => {
 				  if (willDelete) {
-					v.$http.post(configApi.DICTIONARY_LIST.DELE, {'ids': [items.zdId]}).then((res) =>{
+					v.$http.post(this.apis.DICTIONARY_LIST.DELE, {'ids': [items.zdId]}).then((res) =>{
 						if(res.code===200){
 							this.$Message.success(res.message);
 						}else{

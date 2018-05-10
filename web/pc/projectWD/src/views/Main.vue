@@ -86,7 +86,7 @@
 	import SockJS from 'sockjs-client';
     // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
     import Stomp from '@stomp/stompjs';
-	import configApi from '@/axios/config.js'
+
 	
 	import pass from './passworld'
     export default {

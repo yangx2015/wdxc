@@ -77,7 +77,7 @@
 			</div>
 			<div class="body-1">
 				<div class="box">
-					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;">
+					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;cursor: pointer"  @click="getDrvList()">
 						待派定单
 						<span style="color: #ff8300;font-size: 16px;font-weight: 600;">
 							{{jrpd.num}}
@@ -85,7 +85,7 @@
 					</div>
 					<div class="body hg">
 						<div class="box-row-nh" v-if="jrpd.list.length>0">
-							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list">
+							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list" @click="getDrvList(item.ZWS)">
 								{{item.ZWS}}座
 								<span class="num">
 									{{item.COU}}
@@ -149,9 +149,9 @@
 							</div>
 						</div>
 					<span slot="extra">
-						<i-switch size="large"  v-model="item.zt=='00'">
-							<span slot="open">开启</span>
-							<span slot="close">关闭</span>
+						<i-switch size="large"  v-model="item.zt=='00'" @on-change="switchCh(item)">
+							<span slot="open">在班</span>
+							<span slot="close">休息</span>
 						</i-switch>
 						<Tooltip content="订单分配" placement="left">
 							<Button type="primary"
@@ -247,6 +247,23 @@
 		mounted(){
 		},
 		methods:{
+            switchCh(item){
+                let zt = ''
+                if(item.zt=='00'){
+                    zt = '10'
+				}else {
+                    zt = '00'
+				}
+                this.$http.post(configApi.ORDER.DRZT,{'sfzhm':item.sfzhm,'zt':zt}).then((res) =>{
+                    log('驾驶员数据',res)
+                    if(res.code==200){
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                    this.getDrvList()
+                })
+			},
 		    pdtj(){//派单统计
 		        var v = this
                 this.$http.post(configApi.ORDER.PDTJ,{'cllx':10}).then((res) =>{
@@ -269,9 +286,12 @@
 
 				})
 			},
-			getDrvList(){//司机列表
+			getDrvList(zkl){//司机列表
 			    var v = this
-                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10,'zkl':''}).then((res) =>{
+		        if(!zkl){
+		            zkl = ''
+				}
+                this.$http.post(configApi.ORDER.SJLB,{'zjcx':10,'zkl':zkl}).then((res) =>{
                     if(res.code == 200){
 						v.drvlist = res.result
 					}

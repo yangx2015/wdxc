@@ -54,7 +54,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import newmes from './comp/newmes.vue'
 	export default {
@@ -110,7 +110,7 @@
                     // },
                     {
                         title: '姓名',
-                        width:80,
+                        width:110,
                         align:'center',
                         key: 'xm',
                         fixed: 'left'
@@ -126,13 +126,13 @@
                     },
                     {
                         title: '年龄',
-						width:60,
+						width:80,
                         align:'center',
                         key: 'nl'
                     },
                     {
                         title: '身份证号',
-						width:200,
+						width:240,
                         align:'center',
                         key: 'sfzhm'
                     },
@@ -143,7 +143,35 @@
                         key: 'zt',
                         render:(h,p)=>{
                             let val = this.dictUtil.getValByCode(this,this.ztDictCode,p.row.zt);
-                            return h('div',val);
+                            return h('div',[
+                                h('i-switch',{
+                                    props:{
+										size:'large',
+										value:p.row.zt =='00' ? true:false,
+									},
+                                    on:{
+                                        'on-change':(value)=>{
+                                            let rzt = value ? '00':'10'
+                                            this.$http.post(configApi.ORDER.DRZT,{'sfzhm':p.row.sfzhm,'zt':rzt}).then((res) =>{
+                                                log('驾驶员数据',res)
+												if(res.code==200){
+                                                    this.$Message.success(res.message);
+                                                }else{
+                                                    this.$Message.error(res.message);
+												}
+												this.getmess()
+                                            })
+										}
+									}
+								},[
+								    h('span',{
+										slot:"open"
+									},'在班'),
+                                    h('span',{
+										slot:"close"
+                                    },'休息')
+								])
+							]);
                         }
                     },
                     {
@@ -152,12 +180,6 @@
                         align:'center',
                         key:'zjcx'
                     },
-//                  {
-//                      title:'等级',
-//                      width:80,
-//                      align:'center',
-//                      key:'dj'
-//                  },
                     {
                         title:'车队编号',
                         width:180,
@@ -186,12 +208,6 @@
                         align:'center',
                         key: 'cjsj'
                     },
-                    // {
-                    //     title:'创建人',
-                    //     width:100,
-                    //     align:'center',
-                    //     key:'cjr'
-                    // },
                     {
                         title: '操作',
                         key: 'action',
@@ -272,7 +288,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(configApi.JSY.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.JSY.QUERY,{params:v.findMess}).then((res) =>{
 					log('驾驶员数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -290,7 +306,7 @@
         		v.getmess()
         	},
         	listDele(id){
-        		this.$http.post(configApi.JSY.DELE,{'ids':[id.sfzhm]}).then((res) =>{
+        		this.$http.post(this.apis.JSY.DELE,{'ids':[id.sfzhm]}).then((res) =>{
 					if(res.code===200){
 						this.$Message.success('操作成功');
 					}else{

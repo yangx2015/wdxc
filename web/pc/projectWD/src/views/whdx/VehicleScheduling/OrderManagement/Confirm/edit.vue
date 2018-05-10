@@ -146,7 +146,7 @@
 
 <script>
     import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
     export default {
         name: '',
         data() {
@@ -216,14 +216,14 @@
         },
         methods: {
             getOrgList(){
-                this.$http.get(configApi.FRAMEWORK.getSubOrgList).then((res) =>{
+                this.$http.get(this.apis.FRAMEWORK.getSubOrgList).then((res) =>{
                     this.jgdmList = res.result
                 })
             },
             save(){
                 let v = this
                 this.SpinShow = true
-                let url = configApi.ORDER.CHANGE;
+                let url = this.apis.ORDER.CHANGE;
                 this.$http.post(url,this.form).then((res) =>{
                     this.SpinShow = false
                     if(res.code===200){

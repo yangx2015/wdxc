@@ -23,7 +23,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 
     export default {
         name:'',
@@ -80,7 +80,7 @@
         methods:{
             getDfp(){
                 var v = this
-                this.$http.post(configApi.ORDER.DFP,{'cllx':2030,'zkl':this.mess.zkl}).then((res) =>{
+                this.$http.post(this.apis.ORDER.DFP,{'cllx':2030,'zkl':this.mess.zkl}).then((res) =>{
                     if(res.code ==200){
                         console.log('******************',res)
                         v.data1 = res.result
@@ -101,7 +101,7 @@
             },
             addlist(listID){
                 var v = this
-                this.$http.post(configApi.ORDER.FP,{'sjSx':10,'sj':this.mess.sfzhm,'id':listID,'cph':''}).then((res) =>{
+                this.$http.post(this.apis.ORDER.FP,{'sjSx':10,'sj':this.mess.sfzhm,'id':listID,'cph':''}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.$parent.getDrvList()

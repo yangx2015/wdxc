@@ -29,7 +29,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
 	import echarts from 'echarts'
 	export default {
 		name: 'historyTarckMap',

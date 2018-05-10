@@ -44,7 +44,7 @@
 
 <script>
 	import treelist from '@/data/list.js'
-    import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -81,9 +81,9 @@
 		    save(){
 		    	var v = this
             	v.SpinShow = true
-		        let url = configApi.DZWL.ADD;
+		        let url = this.apis.DZWL.ADD;
 				if (this.$parent.choosedRow){
-                    url = configApi.DZWL.CHANGE;
+                    url = this.apis.DZWL.CHANGE;
 				}
                 this.form.wlmj = 1000;
                 this.$http.post(url,this.form).then((res) =>{
