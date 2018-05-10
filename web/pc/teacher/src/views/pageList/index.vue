@@ -4,8 +4,17 @@
 </style>
 <template>
       <div class="pagelist box" style="font-size: 16px">
-          <div>
-            tit
+          <div class="header">
+              <div class="box-row">
+                <div class="titLeft" @click="back()">
+                  <i class="iconfont icon-left"></i>
+                </div>
+                <div class="titCenter body-O" style="text-align: center;">
+                      历史订单
+                </div>
+                <div class="titLeft">
+                </div>
+              </div>
           </div>
           <div class="body DDlist">
               <div class="DDitem" v-for="item in [,,,,,,,,,,,]">
@@ -50,6 +59,11 @@
         methods:{
           starNum(val){
             alert(val)
+          },
+          back(){
+            this.$router.push({
+              name:'Home'
+            })
           }
         }
     }
