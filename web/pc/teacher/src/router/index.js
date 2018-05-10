@@ -14,6 +14,21 @@ export default new Router({
       path: '/login',
       name: 'Home',
       component: () => import('@/views/login')
+    },
+    {
+      path: '/center',
+      name: 'center',
+      component: () => import('@/views/myCenter')
+    },
+    {
+      path: '/feedBack',
+      name: 'feedBack',
+      component: () => import('@/views/feedback')
+    },
+    {
+      path: '/list',
+      name: 'list',
+      component: () => import('@/views/pageList')
     }
   ]
 })

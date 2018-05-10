@@ -10,7 +10,10 @@
                   <i class="iconfont icon-wo"></i>
               </div>
               <div class="titCenter body-O" style="text-align: center;">
-                  <input class="input" type="text" placeholder="请输入站点名称">
+                  <input class="input"
+                         v-model="findInput"
+                         @keyup.enter="submit"
+                         type="search" placeholder="请输入站点名称">
               </div>
               <div class="titRight" @click="feedback()">
                   <i class="iconfont icon-ybbfeedback"></i>
@@ -35,7 +38,7 @@
           :titles="titles"
         ></md-tab-bar>
       </div>
-      <div v-if="false" class="body" style="position: relative;">
+      <div v-if="!school" class="body" style="position: relative;">
           <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
               功能开发中
           </div>
@@ -56,16 +59,43 @@
             </div>
           </div>
       </div>
+      <transition name="bounce">
+        <div class="trans" v-if="show">
+          <div class="centerMess box">
+              <div class="header">
+                <div class="box-row">
+                  <!--<div class="titLeft" @click="MyCenter()">-->
+                    <!--<i class="iconfont icon-left"></i>-->
+                  <!--</div>-->
+                  <div class="titCenter body-O" style="text-align:center;line-height: 0.68rem">
+                    <i class="iconfont icon-wo"
+                        style="font-size: 0.4rem;color: #949494;"
+                    ></i>
+                    <span style="font-size: 16px">
+                      12345678911
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div class="body">
+                <myCenter></myCenter>
+              </div>
+          </div>
+          <div class="close" @click="MyCenter">
+
+          </div>
+        </div>
+      </transition>
   </div>
 </template>
-
 <script>
   import {Swiper, SwiperItem,InputItem,TabBar} from 'mand-mobile'
   import simple from 'mand-mobile/components/swiper/demo/data/simple'
-
+  import  myCenter from './myCenter'
   export default {
     name: 'swiper-demo',
     components: {
+      myCenter,
       [Swiper.name]: Swiper,
       [SwiperItem.name]: SwiperItem,
       [InputItem.name]:InputItem,
@@ -73,40 +103,52 @@
     },
     data() {
       return {
+        show:true,
         simple,
+        findInput:'',
         titles: ['校巴线路', '班车线路','约车'],
-        lineList:[,,,,,]
+        lineList:[,,,,,],
+        school:true
       }
     },
     mounted() {
-      window.triggerSwiper0 = () => {
-        this.goto()
-      }
-      window.triggerSwiper1 = () => {
-        this.play()
-      }
-      window.triggerSwiper2 = () => {
-        this.stop()
-      }
     },
     methods: {
-      setValue(id, value) {
-        document.querySelector(id) && (document.querySelector(id).innerHTML = value)
+      submit(){
+        alert(this.findInput)
       },
       beforeChange(from, to) {
-        this.setValue('#valueSwiper0', from)
-        this.setValue('#valueSwiper1', to)
+        // console.log('befor',from)
+        // console.log('befor',to)
       },
       afterChange(from, to) {
-        this.setValue('#valueSwiper2', from)
-        this.setValue('#valueSwiper3', to)
+        // console.log('after',from)
+        // console.log('after',to)
       },
       tabbarC(n,o){//tab切换
-        alert(n)
-        alert(o)
+        if(n==1){
+          this.school = false
+        }else if(n==0) {
+          this.school = true
+        }else if(n==2) {
+          alert('约车')
+        }
+        // alert(n)
+        // alert(o)
       },
       lineMess(){
 
+      },
+      MyCenter(){//个人中心
+        this.show = !this.show
+        // this.$router.push({
+        //   name: 'center'
+        // });
+      },
+      feedback(){//信息反馈
+        this.$router.push({
+          name: 'feedBack'
+        });
       }
     },
   }
@@ -115,22 +157,20 @@
 
 <style lang="less" scoped>
   .md-example-child{
-    height:300px;
-  .banner-item{
-    float:left;
-    width:100%;
-    height:100%;
-    line-height:250px;
-    text-align:center;
-    font-size:28px;
-    color:#FFF;
-    box-align:center;
-    align-items:center;
-    box-pack:center;
-    justify-content:center;
-    text-decoration-line:none;
-
-  }
-
+    height:320px;
+    .banner-item{
+        float:left;
+        width:100%;
+        height:100%;
+        line-height:250px;
+        text-align:center;
+        font-size:28px;
+        color:#FFF;
+        box-align:center;
+        align-items:center;
+        box-pack:center;
+        justify-content:center;
+        text-decoration-line:none;
+    }
   }
 </style>
