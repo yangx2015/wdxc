@@ -1,85 +1,69 @@
 <style lang="less">
-    @import '../../../../styles/common.less';
+	@import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-    .fromTiT{
-    	/*text-align: right;*/
-    }
-</style>
-<!--订单统计-->
+<!--角色管理-->
 <template>
-    <div class="boxbackborder">
+	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-    			<span class="tabPageTit">
+				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
-					<Row class="margin-top-10">
-						<Col span="4">
-							<span class="titmess">订单统计</span>
-						</Col>
-						<Col span="14">
-							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="getPageData"></Input>
-						</Col>
-						<Col span="6" class="butevent">
-							<Button type="primary" @click="getPageData()">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>订单统计</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="getData()">
 								<Icon type="search"></Icon>
-								<!--查询-->
 							</Button>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table
-						:row-class-name="rowClassName"
-						:columns="tableTiT"
-						:data="tableData"></Table>
+			<Row style="position: relative;">
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
-			<!-- <Row class="margin-top-10" style="text-align: right;">
-                <Page :total=pageTotal
-                    :current=page.pageNum
-                    :page-size=page.pageSize
-                    show-total
-                    show-elevator
-                    @on-change='pageChange'></Page>
-            </Row> -->
 		</Card>
-    </div>
+	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-//	import axios from '@/axios'
-	export default {
-    	name:'char',
-    	mixins:[mixins],
-        data () {
+    import mixins from '@/mixins'
+
+    export default {
+        name: 'char',
+        mixins: [mixins],
+        components: {
+        },
+        data() {
             return {
-            	//分页
-            	//弹层--角色分配
-            	RootShow:false,
-            	showModal:false,
-              tableTiT: [
-                	{
-	                	title:"序号",
-	                	width:80,
-	                	align:'center',
-	                	type:'index'
-	                },
-	                {
-	                    title: '用车单位',
-	                    align:'center',
-	                    key: 'unit'
-	                },
-	                {
-	                    title: '时间',
-	                    align:'center',
-	                    width:100,
-	                    key: 'time'
-	                },
-	                {
+                v:this,
+                SpinShow: true,
+                tabHeight: 220,
+                tableColumns: [
+                    {
+                        title:"序号",
+                        width:80,
+                        align:'center',
+                        type:'index'
+                    },
+                    {
+                        title: '用车单位',
+                        align:'center',
+                        key: 'unit'
+                    },
+                    {
+                        title: '时间',
+                        align:'center',
+                        width:100,
+                        key: 'time'
+                    },
+                    {
                         title: '订单总数',
                         align:'center',
                         key: 'allpage'
@@ -110,46 +94,25 @@
                         key: 'drM'
                     }
                 ],
-                tableData: [
-	                {
-	                	unit:'法学院',
-	                	time:'2017-05-02',
-	                	allpage:'25',
-	                	OKaudit:'23',
-	                	UNaudit:'2',
-	                	cancel:'0',
-	                	dr:'20',
-	                	drM:'18'
-	                }
-                ],
-                //收索
-                datetime:[],
-                findMess:{
-                	like_CarNumber:'',
-                	like_ScName:'',
-                	pageNum:1,
-            		pageSize:8
-                }
+                pageData: [],
+                form: {
+                    sjxmLike: '',
+                    total: 0,
+                },
             }
         },
-        created(){
-        	this.$store.commit('setCurrentPath', [{
-                title: '首页',
-            },{
-                title: '数据报表',
-            },{
-                title: '订单统计',
-            }])
-            this.getPageData()
+        created() {
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.tabHeight = this.getWindowHeight() - 295
+            this.getData()
         },
         methods: {
-            getPageData() {
-                this.$http.post(this.apis.ORDER.TJ,{},(res)=>{
-                    this.tableData = res.result;
-				})
-            },
-            pageChange(event) {
-                this.util.pageChange(this, event);
+            getData(){
+                this.$http.post(this.apis.ORDER.TJ,{params:this.form}).then((res) =>{
+                    if (res.code == 200){
+                        this.pageData = res.result;
+                    }
+                })
             },
         }
     }

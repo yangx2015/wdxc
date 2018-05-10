@@ -8,7 +8,10 @@ select * from CL_DD t where t.CJSJ between
 		and
 		to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss') 
 		<if test="jgdm != null">
-			and t.JGDM=#{jgdm}
+			and t.JGDM = #{jgdm}
+		</if>
+		<if test="jgdmlike != null">
+			and t.JGDM like "#{jgdm}%"
 		</if>
 		<if test="sj != null">
 			and t.sj=#{sj}

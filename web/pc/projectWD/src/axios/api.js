@@ -52,6 +52,7 @@ module.exports = {
         FP:'/api/dd/pd',//订单分派
         TJ:'/api/dd/ddtj',//订单统计
         skgl:'/api/dd/skgl',//收款管理
+        cctj:'/api/dd/cctj' // 出车统计
     },
     ROLE:{
         QUERY:'/api/js/pager',//角色管理
@@ -96,6 +97,10 @@ module.exports = {
         ADD:'/api/hsgs/save',
         CHANGE:'/api/hsgs/update',
         DELE:'/api/hsgs/removeIds'
+    },
+    AQJS:{
+        QUERY:'/api/clsbyxsjjl/Safedriving',
+
     },
     FUNCTION:{
         QUERY:'api/gn/pager',//功能管理

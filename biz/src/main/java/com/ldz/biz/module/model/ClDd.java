@@ -282,6 +282,8 @@ public class ClDd implements Serializable {
      */
     @Column(name = "ZDBH")
     private String zdbm;
+    
+ 
 
     /**
      * 载客量  筛选条件

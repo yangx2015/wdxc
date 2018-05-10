@@ -851,6 +851,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 	@Override
 	public  ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+		
 
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
@@ -864,7 +870,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照机构分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgdm));
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgmc));
 		//获取每个机构下面的各种统计订单
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
@@ -895,11 +901,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 					else if (StringUtils.equals(clDd.getDdzt(), "20")) {
 						ddzCount++;
 					}
-					else {
-						continue;
-					}
+					continue;
 				}
-				ddtongji.setJgdm(next.getKey());
+				ddtongji.setJgmc(next.getKey());
 				ddtongji.setYshCount(yshCount);
 				ddtongji.setWshCount(wshCount);
 				ddtongji.setYqxCount(yqxCount);
@@ -915,6 +919,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 	@Override
 	public ApiResponse<List<Ddtongji>>  chucheTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+		
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
 		List<Ddtongji> ddlist= new ArrayList<>();
@@ -926,8 +936,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照司机分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getJgdm));
-		//获取每个机构下面的各种统计订单
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getSjxm));
+		
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
 			 Entry<String, List<ClDd>> next = it.next();
@@ -939,13 +949,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 					//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 
 					 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+						 ddtongji.setSjname(clDd.getSjxm());
 						yshCount++;
 					}
-					 else {
-						continue;
-					}
+					continue;
 				}
-				ddtongji.setJgdm(next.getKey());
+				ddtongji.setSjname(next.getKey());
 				ddtongji.setYshCount(yshCount);
 				ddlist.add(ddtongji);
 			 
@@ -991,4 +1000,77 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ddrzService.log(order);
         return ApiResponse.success();
     }
+
+	@Override
+	public ApiResponse<List<Ddtongji>> FukuanTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+		
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
+		List<Ddtongji> ddlist= new ArrayList<>();
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+    Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getSjxm));
+    Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+	 while(it.hasNext()) {
+		 Entry<String, List<ClDd>> next = it.next();
+		 List<ClDd> value = next.getValue();
+		 Ddtongji ddtongji= new Ddtongji();
+			double fkze=0;
+
+			for (ClDd clDd : value) {
+				//订单付款状态状态  10已付款 00未付款
+				 if (StringUtils.equals(clDd.getFkzt(), "10")) {
+					 fkze=clDd.getZj()+fkze;
+				}
+				
+			}
+			
+			ddtongji.setSjname(next.getKey());
+			ddtongji.setFkze(Double.toString(fkze));
+			ddlist.add(ddtongji);
+		 
+	 }
+	 apiResponse.setResult(ddlist);
+		
+		return apiResponse;
+	}
+
+	@Override
+	public ApiResponse<List<Ddtongji>> ShoukuanTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+		
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
+		List<Ddtongji> ddlist= new ArrayList<>();
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgmc));
+			//获取每个机构下面的各种统计订单
+			 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+			 while(it.hasNext()) {
+				 Entry<String, List<ClDd>> next = it.next();
+				 List<ClDd> value = next.getValue();
+				 Ddtongji ddtongji= new Ddtongji();
+				 double fkze=0;
+
+					for (ClDd clDd : value) {
+						//订单付款状态状态  10已付款 00未付款
+						 if (StringUtils.equals(clDd.getFkzt(), "10")) {
+							 fkze=clDd.getZj()+fkze;
+						}
+						
+					}
+					ddtongji.setJgmc(next.getKey());
+					ddtongji.setFkze(Double.toString(fkze));
+					ddlist.add(ddtongji);
+			 }
+			 
+			 apiResponse.setResult(ddlist);
+		return apiResponse;
+	}
 }

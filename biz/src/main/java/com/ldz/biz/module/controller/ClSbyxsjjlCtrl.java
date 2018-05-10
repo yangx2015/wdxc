@@ -52,7 +52,7 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	}
     
 	
-	@GetMapping("/Safedriving")
+	@RequestMapping("/Safedriving")
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig(){
 		
 		return service.getSafeDrivig();
