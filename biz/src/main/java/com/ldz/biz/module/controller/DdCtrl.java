@@ -342,16 +342,36 @@ public class DdCtrl{
         return service.getVeryDayOrder(cllx);
     }
 
-
+    /*
+     * 订单各种状态的统计
+     */
     @PostMapping("/ddtj")
     public ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd){
 
     	return service.ddtongji(dd);
     }
-
+    /*
+     * 司机出车统计
+     */
     @PostMapping("/cctj")
     public  ApiResponse<List<Ddtongji>> chucheTj(DdTongjiTJ dd){
 
     	return service.chucheTj(dd);
+    }
+    /*
+     * 订单付款统计
+     */
+    @PostMapping("/fktj")
+    public  ApiResponse<List<Ddtongji>> FukuanTj(DdTongjiTJ dd){
+
+    	return service.FukuanTj(dd);
+    }
+    /*
+     * 机构收款统计
+     */
+    @PostMapping("/sktj")
+    public  ApiResponse<List<Ddtongji>> ShoukuanTj(DdTongjiTJ dd){
+
+    	return service.ShoukuanTj(dd);
     }
 }

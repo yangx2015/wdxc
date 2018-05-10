@@ -8,6 +8,7 @@ import lombok.Setter;
 public class DdTongjiTJ {
    //机构代码
 	private String  jgdm;
+	private String  jgdmlike;
 	//开始时间
 	private String  kssj;
 	//结束时间
