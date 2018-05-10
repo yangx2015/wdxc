@@ -103,7 +103,7 @@
         data () {
             return {
             	compName:'',
-				socket : new SockJS("http://"+"47.98.39.45:8080"+"/gps"),
+				socket : new SockJS("http://"+"47.98.39.45:80801"+"/gps"),
 //				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],

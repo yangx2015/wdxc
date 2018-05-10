@@ -1,12 +1,7 @@
 <style lang="less">
 	@import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-	.fromTiT {
-		/*text-align: right;*/
-	}
-</style>
-<!--安全驾驶统计-->
+<!--角色管理-->
 <template>
 	<div class="boxbackborder">
 		<Card>
@@ -15,125 +10,69 @@
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
-					<Row class="margin-top-10">
-						<Col span="4">
-							<span class="titmess">安全驾驶</span>
-						</Col>
-						<Col span="14">
-							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="findMessList"></Input>
-						</Col>
-						<Col span="6" class="butevent">
-							<Button type="primary" @click="findMessList()">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>安全驾驶</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="getData()">
 								<Icon type="search"></Icon>
-								<!--查询-->
 							</Button>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
+			<Row style="position: relative;">
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
 		</Card>
 	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-	//	import axios from '@/axios'
-	export default {
-		name: 'char',
-		mixins: [mixins],
-		data() {
-			return {
-				//弹层--角色分配
-				checkAll: false,
-				checkAllGroup: [],
-				roleList: [{
-						value: '司机',
-						key: '01'
-					},
-					{
-						value: '队长',
-						key: '02'
-					}
-				],
-				//弹层--新增用户
-				showModal: false,
-				tableTiT: [{
-						title: "序号",
-						width: 80,
-						align: 'center',
-						type: 'index'
-					},
-					{
-						title: '时间',
-						align: 'center',
-						width: 100,
-						key: 'time'
-					},
-					{
-						title: '车牌号',
-						align: 'center',
-						key: 'unit'
-					},
-					{
-						title: '驾驶人',
-						align: 'center',
-						key: 'allpage'
-					},
-					{
-						title: '急加速',
-						align: 'center',
-						key: 'OKaudit'
-					},
-					{
-						title: '急刹车',
-						align: 'center',
-						key: 'UNaudit'
-					},
-					{
-						title: '超速行驶',
-						align: 'center',
-						key: 'cancel'
-					}
-				],
-				tableData: [{
-					unit: '鄂A12345',
-					time: '2017-05-02',
-					allpage: '周师傅',
-					OKaudit: '23',
-					UNaudit: '2',
-					cancel: '5',
-				}],
-				//收索
-				datetime: [],
-				findMess: {
-					like_CarNumber: '',
-					like_ScName: '',
-					pageNum: 1,
-					pageSize:8
-				}
-			}
-		},
-		created() {
-			this.$store.commit('setCurrentPath', [{
-				title: '首页',
-			}, {
-				title: '数据报表',
-			}, {
-				title: '安全驾驶',
-			}])
-		},
-		methods: {
-			//收索事件
-			findMessList() {
-				var v = this
-				//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
-			}
-		}
-	}
+    import mixins from '@/mixins'
+
+    export default {
+        name: 'char',
+        mixins: [mixins],
+        components: {
+        },
+        data() {
+            return {
+                v:this,
+                SpinShow: true,
+                tabHeight: 220,
+                tableColumns: [
+                    {title: "序号",  align: 'center', type: 'index'},
+                    {title: '驾驶人', align: 'center',  key: 'sjxm'},
+                    {title: '车牌号', align: 'center', key: 'cph'},
+                    {title: '急加速', align: 'center', key: 'speedupCount'},
+                    {title: '急刹车', align: 'center',  key: 'speedownCount'},
+                    {title: '超速行驶', align: 'center',  key: 'overspeedCount'},
+                ],
+                pageData: [],
+                form: {
+                    sjxmLike: '',
+                    total: 0,
+                },
+            }
+        },
+        created() {
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.tabHeight = this.getWindowHeight() - 295
+            this.getData()
+        },
+        methods: {
+            getData(){
+                this.$http.get(this.apis.AQJS.QUERY,{params:this.form}).then((res) =>{
+                    if (res.code == 200){
+                        this.pageData = res.result;
+                    }
+                })
+			},
+        }
+    }
 </script>
