@@ -216,7 +216,6 @@
 
 <script>
     import pageList from './comp/list'
-    import configApi from '@/axios/config.js'
     export default{
         name:'driver',
         components: {
