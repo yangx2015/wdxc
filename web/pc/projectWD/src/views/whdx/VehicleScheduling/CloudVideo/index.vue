@@ -228,7 +228,6 @@
                 var v = this
                 this.$http.get(this.apis.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
-                    this.findMess.cphLike = this.carList[0].cph
                     v.SpinShow = false;
                 })
 			},
