@@ -37,8 +37,12 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		return ClXl.class;
 	}
 
-   public List<ClXl> getAll(){
-	   return findAll();
+   public List<ClXl> getAll(String lx){
+	   RuntimeCheck.ifNull(lx,"编号不能为空，请核实！");
+	   ClXl clXl=new ClXl();
+	   clXl.setLx(lx);
+	   clXl.setZt("00");
+	   return findByEntity(clXl);
    }
 
 	public ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlId){
