@@ -1,24 +1,18 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ldz.sys.model.SysMessage;
-import com.ldz.sys.service.SysMessageService;
+//import com.ldz.sys.model.SysMessage;
+//import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -59,9 +53,9 @@ import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
-
-    @Autowired
-    private SysMessageService sysMessageService;
+//
+//    @Autowired
+//    private SysMessageService sysMessageService;
 
     @Autowired
     private ClDdMapper entityMapper;
@@ -474,13 +468,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
                 String bizId="BIZ_10";//业务编号
                 long type=1;//1、短信
                 // TODO: 2018/5/9  插入系统消息表
-                SysMessage sysMessage=new SysMessage();
-                sysMessage.setMessage(message);//
-                sysMessage.setType(type+"");//
-                sysMessage.setTitle(title);
-                sysMessage.setSendeeCode(sendCode);
-                sysMessage.setBizId(bizId);
-                sysMessageService.add(sysMessage);
+                // todo 羊哥代码没有提交完 SysMessage 没有
+//                SysMessage sysMessage=new SysMessage();
+//                sysMessage.setMessage(message);//
+//                sysMessage.setType(type+"");//
+//                sysMessage.setTitle(title);
+//                sysMessage.setSendeeCode(sendCode);
+//                sysMessage.setBizId(bizId);
+//                sysMessageService.add(sysMessage);
 
             }
             return ApiResponse.success();
@@ -672,6 +667,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         if (StringUtils.isNotEmpty(order.getJgmc())){
             condition.like(ClDd.InnerColumn.jgmc,order.getJgmc());
         }
+        if (order.getStartTime() != null){
+            condition.gte(ClDd.InnerColumn.cjsj,order.getStartTime());
+        }
+        if (order.getEndTime() != null){
+            condition.lte(ClDd.InnerColumn.cjsj,order.getEndTime());
+        }
         List<ClDd> orderList = findByCondition(condition);
         if (orderList.size() == 0){
             return ApiResponse.success(new ArrayList<>());
@@ -692,7 +693,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
                 List<ClDd> orders = new ArrayList<>();
                 orders.add(o);
                 map = new HashMap<>();
-                map.put("orderId",o.getId());
                 map.put("orgCode",o.getJgdm());
                 map.put("orgName",o.getJgmc());
                 map.put("orderList",orders);
@@ -702,6 +702,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }
         List<Map<String,Object>> list = new ArrayList<>(orderGroupMap.size());
         for (Entry<String, Map<String, Object>> entry : orderGroupMap.entrySet()) {
+            Map<String,Object> map = entry.getValue();
+            List<ClDd> orders = (List<ClDd>) map.get("orderList");
+            orders.sort(Comparator.comparing(ClDd::getCjsj));
             list.add(entry.getValue());
         }
         return ApiResponse.success(list);
@@ -715,6 +718,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.eq(ClDd.InnerColumn.fkzt,state);
         if (StringUtils.isNotEmpty(order.getSjxm())){
             condition.like(ClDd.InnerColumn.sjxm,order.getSjxm());
+        }
+        if (order.getStartTime() != null){
+            condition.gte(ClDd.InnerColumn.cjsj,order.getStartTime());
+        }
+        if (order.getEndTime() != null){
+            condition.lte(ClDd.InnerColumn.cjsj,order.getEndTime());
         }
         List<ClDd> orderList = findByCondition(condition);
         if (orderList.size() == 0){
@@ -752,24 +761,30 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
     @Override
-    public ApiResponse<String> collectingConfirm(ClDd entity) {
-        RuntimeCheck.ifBlank(entity.getId(),"请选择订单");
-        ClDd order = findById(entity.getId());
-        RuntimeCheck.ifNull(order,"订单不存在");
-        RuntimeCheck.ifFalse("30".equals(order.getDdzt()),"订单状态异常");
-        entity.setDdzt("40");
-        entityMapper.updateByPrimaryKeySelective(entity);
+    public ApiResponse<String> collectingConfirm(List<String> idList) {
+        RuntimeCheck.ifEmpty(idList,"请选择订单");
+        List<ClDd> orders = findIn(ClDd.InnerColumn.id,idList);
+        RuntimeCheck.ifEmpty(orders,"请选择订单");
+        for (ClDd order : orders) {
+            RuntimeCheck.ifNull(order,"订单不存在");
+            RuntimeCheck.ifFalse("30".equals(order.getDdzt()),"订单状态异常");
+            order.setDdzt("40");
+            entityMapper.updateByPrimaryKeySelective(order);
+        }
         return ApiResponse.success();
     }
 
     @Override
-    public ApiResponse<String> paymentConfirm(ClDd entity) {
-        RuntimeCheck.ifBlank(entity.getId(),"请选择订单");
-        ClDd order = findById(entity.getId());
-        RuntimeCheck.ifNull(order,"订单不存在");
-        RuntimeCheck.ifFalse("00".equals(order.getFkzt()),"订单状态异常");
-        entity.setFkzt("10");
-        entityMapper.updateByPrimaryKeySelective(entity);
+    public ApiResponse<String> paymentConfirm(List<String> idList) {
+        RuntimeCheck.ifEmpty(idList,"请选择订单");
+        List<ClDd> orders = findIn(ClDd.InnerColumn.id,idList);
+        RuntimeCheck.ifEmpty(orders,"请选择订单");
+        for (ClDd order : orders) {
+            RuntimeCheck.ifNull(order,"订单不存在");
+            RuntimeCheck.ifFalse("00".equals(order.getFkzt()),"订单状态异常");
+            order.setFkzt("10");
+            entityMapper.updateByPrimaryKeySelective(order);
+        }
         return ApiResponse.success();
     }
 
@@ -1075,6 +1090,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			String jgdm = currentUser.getJgdm();
 			dd.setJgdmlike(jgdm);
 		}
+        if (StringUtils.isEmpty(dd.getKssj())){
+            String kssj = DateUtils.getToday()+" 00:00:00";
+            dd.setKssj(kssj);
+        }
+        if (StringUtils.isEmpty(dd.getJssj())){
+            String jssj = DateUtils.getToday()+" 23:59:59";
+            dd.setJssj(jssj);
+        }
 
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
@@ -1095,21 +1118,20 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			 Entry<String, List<ClDd>> next = it.next();
 			 List<ClDd> value = next.getValue();
 			 Ddtongji ddtongji= new Ddtongji();
-				int yshCount=0;
+				int ddzsCount = 0;
 
 				for (ClDd clDd : value) {
 					//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-
-					 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+                    Integer stateInt = Integer.parseInt(clDd.getDdzt());
+                    if (stateInt >= 13){
 						 ddtongji.setSjname(clDd.getSjxm());
-						yshCount++;
+                         ddzsCount++;
 					}
 					continue;
 				}
 				ddtongji.setSjname(next.getKey());
-				ddtongji.setYshCount(yshCount);
+				ddtongji.setDdzsCount(ddzsCount);
 				ddlist.add(ddtongji);
-
 		 }
 		 apiResponse.setResult(ddlist);
 		return apiResponse;

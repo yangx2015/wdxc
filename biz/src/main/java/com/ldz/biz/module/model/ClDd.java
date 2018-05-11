@@ -291,6 +291,12 @@ public class ClDd implements Serializable {
     @Transient
     private String zkl;
 
+    @Transient
+    private Date startTime;
+
+    @Transient
+    private Date endTime;
+
 
     private static final long serialVersionUID = 1L;
     /**
@@ -321,6 +327,26 @@ public class ClDd implements Serializable {
 
     public void setBhyy(String bhyy) {
         this.bhyy = bhyy;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**

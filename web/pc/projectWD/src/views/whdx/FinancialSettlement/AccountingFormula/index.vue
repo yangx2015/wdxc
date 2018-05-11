@@ -61,8 +61,26 @@
                 choosedItem: null,
                 tableTitle: [
                     {title: "序号", width: 80, align: 'center', type: 'index'},
-                    {title: '类型', align: 'center', key: 'lx'},
-                    {title: '车型', align: 'center', key: 'cx'},
+                    {title: '类型', align: 'center', key: 'lx',
+						render:(h,p)=>{
+                        	let s = '';
+                        	switch(p.row.lx){
+								case '00': s = '里程';
+								break;
+								case '10': s = '加班';
+								break;
+								case '20': s = '节假日';
+								break;
+							}
+							return h('div',s);
+						}
+					},
+                    {title: '车型', align: 'center', key: 'cx',
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
+                            return h('div',val)
+                        }
+					},
                     {title: '内容', align: 'center', key: 'nr'},
                     {title: '金额', align: 'center', key: 'je'},
                     {
@@ -99,13 +117,19 @@
                     pageNum: 1,
                     pageSize: 8,
                 },
+                cxDict:[],
+                cxDictCode:'ZDCLK0019',
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '核算公式',}])
             this.util.initTable(this)
+			this.getCxDict();
         },
         methods: {
+            getCxDict(){
+                this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
+            },
             pageChange(event) {
                 this.util.pageChange(this, event);
             },

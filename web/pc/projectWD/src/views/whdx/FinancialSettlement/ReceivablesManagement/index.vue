@@ -6,7 +6,7 @@
 </style>
 <template>
 	<div class="box">
-		<Row class="tit" style="height: 60px;">
+		<Row class="tit" style="height: 120px;">
 			<Col span="6">
 				<Menu mode="horizontal" theme="light" active-name="1" @on-select="MenuClick">
 			        <MenuItem name="1">
@@ -19,30 +19,35 @@
 			        </MenuItem>
 			    </Menu>
 		    </Col>
-		    <Col span="6">
+			<Col span="15">
+				<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
+					单笔费用结算公式：里程 * 单价 + 过路费 + 过桥费 + 等时费 = 合计总价
+				</div>
+			</Col>
+			<Col span="3">
+				<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
+					<div v-show="form.ddzt === '30'">
+						应收单据：{{list.length}}单
+					</div>
+					<div v-show="form.ddzt === '40'">
+						已收单据：{{list.length}}单
+					</div>
+				</div>
+			</Col>
+		    <Col span="24">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<Input placeholder="请输入机构名称" v-model="form.jgmc" style="width: 100%;" @input="getData"></Input>
-		    	</div>
-		    </Col>
-		    <Col span="9">
-		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		单笔费用结算公式：里程 * 单价 + 过路费 + 过桥费 + 等时费 = 合计总价
-		    	</div>
-		    </Col>
-		    <Col span="3">
-		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<div v-show="form.ddzt === '30'">
-		    			应收单据：{{list.length}}单
-		    		</div>
-		    		<div v-show="form.ddzt === '40'">
-		    			已收单据：{{list.length}}单
-		    		</div>
+		    		<Input placeholder="请输入机构名称" style="width: 150px;" v-model="form.jgmc"></Input>
+					<DatePicker v-model="form.startTime" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
+					<DatePicker v-model="form.endTime" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
+					<Button type="primary" @click="getData()">
+						<Icon type="search"></Icon>
+					</Button>
 		    	</div>
 		    </Col>
 		</Row>
 		<Row :gutter="16" class="margin-top-10 body clientList"  v-for="(item,index) in list" >
 			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
-				<Card style="width:100%">
+				<Card style="width:100%" :id="'group_'+item.orgCode">
 			        <div slot="title">
 			            <Icon type="person"></Icon>
 			            	{{item.orgName}}
@@ -50,8 +55,8 @@
 			        <span slot="extra">
 			        	<span>
 			        		收款金额：{{item.amount}}元
-			        		<Button type="success" size="small">打印</Button>
-			        		<Button v-if="form.ddzt === '30'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
+			        		<Button type="success" size="small" @click="print(item)">打印</Button>
+			        		<Button v-if="form.ddzt === '30'" type="primary" size="small" @click="confirm(item.orderList)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
@@ -72,13 +77,40 @@
 
 <script>
 	import edit from './edit'
+	import print from './print'
 	export default{
 		name:'client',
 		components:{
-		  edit
+		  edit,print
 		},
 		data(){
 			return {
+                dateOpts: {
+                    shortcuts: [
+                        {
+                            text: '今天',
+                            value () {
+                                return new Date();
+                            }
+                        },
+                        {
+                            text: '三天前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 3);
+                                return date;
+                            }
+                        },
+                        {
+                            text: '一周前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                return date;
+                            }
+                        }
+                    ]
+                },
 			    v:this,
                 componentName:'',
                 choosedItem:null,
@@ -148,8 +180,10 @@
 				    ddzt:'30',
 					ck:'',
                     jgmc:'',
+                    startTime:'',
+					endTime:''
 				},
-                list:[]
+                list:[],
 			}
 		},
 		created(){
@@ -168,13 +202,21 @@
 		methods:{
 		    getData(){
                 this.list = [];
+                let startTime = this.form.startTime;
+                let endTime = this.form.endTime;
+                if (typeof startTime === 'object'){
+                    this.form.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    this.form.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
 		      	this.$http.get(this.apis.ORDER.collectingList,{params:this.form}).then((res)=>{
 		      	    if (res.code === 200 && res.result){
 						this.list = res.result;
                     }
 				})
 			},
-			confirm(id){
+			confirm(orderList){
                 swal({
                     title: "确认已付款?",
                     text: "",
@@ -182,9 +224,13 @@
                     buttons:['取消','确认'],
                 }).then((confirm) => {
                     if (confirm) {
+                        let ids = '';
+                        for (let r of orderList){
+                            ids += r.id +',';
+						}
                         let v = this;
                         let url = this.apis.ORDER.collectingConfirm;
-                        v.$http.post(url,{'id':id}).then((res) =>{
+                        v.$http.post(url,{'ids':ids}).then((res) =>{
                             if(res.code===200){
                                 v.$Message.success(res.message);
                                 this.getData();
@@ -204,8 +250,9 @@
 			changeLimit(mes){
 				alert(mes)
 			},
-			print(){
-				alert('打印')
+			print(item){
+		        this.choosedItem = item;
+		        this.componentName = 'print';
 			},
 			show(){
 

@@ -21,4 +21,6 @@ public interface PbInfoMapper extends Mapper<PbInfo> {
 	List<XbXlPb> selectXbPb(PbClXlmodel pnbclxlmodel);
 	
 	List<PbInfo> findXlCl(clpbInfo clpbInfo);
+	
+	List<PbInfo> bancheTj(PbClXlmodel pnbclxlmodel);
 }

@@ -85,4 +85,16 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
 		return pbservice.getAllNotPbClList(xlId,date,cx);
 	}
+
+	/**
+	 * 班车统计
+	 * @param 
+	 * @return
+	 */
+	@PostMapping("/banchetj")
+	public ApiResponse<List<PbInfo>> bancheTj(PbClXlmodel pbclxlmodel){
+		
+		return pbservice.bancheTj(pbclxlmodel);
+	}
+	
 }

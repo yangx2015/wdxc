@@ -253,7 +253,7 @@
                 }else {
                     zt = '00'
                 }
-                this.$http.post(configApi.ORDER.DRZT,{'sfzhm':item.sfzhm,'zt':zt}).then((res) =>{
+                this.$http.post(this.apis.ORDER.DRZT,{'sfzhm':item.sfzhm,'zt':zt}).then((res) =>{
                     log('驾驶员数据',res)
                     if(res.code==200){
                         this.$Message.success(res.message);
@@ -265,7 +265,7 @@
             },
             pdtj(){//派单统计
                 var v = this
-                this.$http.post(configApi.ORDER.PDTJ,{'cllx':2030}).then((res) =>{
+                this.$http.post(this.apis.ORDER.PDTJ,{'cllx':2030}).then((res) =>{
                     // debugger
                     if(res.code == 200){
                         let num = 0
@@ -290,7 +290,7 @@
                 if(!zkl){
                     zkl = ''
                 }
-                this.$http.post(configApi.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
+                this.$http.post(this.apis.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
                     if(res.code == 200){
                         v.drvlist = res.result
                     }
@@ -299,7 +299,7 @@
             },
             dele(id){//取消分派
                 var v = this
-                this.$http.post(configApi.ORDER.QXPD,{'id':id}).then((res) =>{
+                this.$http.post(this.apis.ORDER.QXPD,{'id':id}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.getDrvList()

@@ -55,7 +55,6 @@
 <script>
 	import mixins from '@/mixins'
 
-
 	import newmes from './comp/newmes.vue'
 	export default {
     	name:'char',
@@ -152,7 +151,7 @@
                                     on:{
                                         'on-change':(value)=>{
                                             let rzt = value ? '00':'10'
-                                            this.$http.post(configApi.ORDER.DRZT,{'sfzhm':p.row.sfzhm,'zt':rzt}).then((res) =>{
+                                            this.$http.post(this.apis.JSY.jsytype,{'sfzhm':p.row.sfzhm,'zt':rzt}).then((res) =>{
                                                 log('驾驶员数据',res)
 												if(res.code==200){
                                                     this.$Message.success(res.message);

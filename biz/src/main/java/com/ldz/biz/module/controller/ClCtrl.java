@@ -75,9 +75,9 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	}
 	
 	@GetMapping("/nianshen")
-	public ApiResponse<List<ClCl>> nianshen(){
+	public ApiResponse<List<ClCl>> nianshen(ClCl car){
 		
-		return clservice.nianshen();
+		return clservice.nianshen(car);
 		
 	}
 

@@ -15,10 +15,12 @@
 							<span>班车统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
+							<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
+							<Input v-model="form.sjxm" placeholder="请输入司机姓名" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="v.util.getPageData(v)">
+							<Button type="primary" @click="getData">
 								<Icon type="search"></Icon>
 							</Button>
 						</div>
@@ -28,20 +30,32 @@
 			<Row style="position: relative;">
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="pageData"></Table>
 			</Row>
-			<Row class="margin-top-10 pageSty">
-				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator
-					  @on-change='pageChange'></Page>
-			</Row>
 		</Card>
-		<component
-				:is="componentName"
-				:Dictionary="Dictionary"></component>
 	</div>
 </template>
 
 <script>
     import mixins from '@/mixins'
 
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
     export default {
         name: 'char',
         mixins: [mixins],
@@ -49,6 +63,32 @@
         },
         data() {
             return {
+                dateOpts: {
+                    shortcuts: [
+                        {
+                            text: '今天',
+                            value () {
+                                return new Date();
+                            }
+                        },
+                        {
+                            text: '三天前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 3);
+                                return date;
+                            }
+                        },
+                        {
+                            text: '一周前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                return date;
+                            }
+                        }
+                    ]
+                },
                 v:this,
                 SpinShow: true,
                 apiRoot:this.apis.AQJS,
@@ -58,29 +98,52 @@
                 //数据传输
                 chmess: {},
                 tableTiT: [
-                    {title: "序号", width: 60, align: 'center', type: 'index', fixed: 'left'},
-                    {title: '驾驶人', align: 'center', width: 120, key: 'gnmc', fixed: 'left'},
-                    {title: '车牌号', align: 'center', width: 120, key: 'gndm'},
-                    {title: '急加速', align: 'center', width: 120, key: 'fwdm'},
-                    {title: '急刹车', align: 'center', width: 120, key: 'px'},
-                    {title: '超速行驶', align: 'center', width: 120, key: 'bz'},
+                    {title: "序号",  align: 'center', type: 'index'},
+                    {title: '线路时间', align: 'center',  key: 'clxl',
+						render:(h,p)=>{
+                        	return h('div',p.row.clXl.yxjssj+'~'+p.row.clXl.yxjssj);
+						}
+					},
+                    {title: '线路名称', align: 'center',  key: 'clxl',
+                        render:(h,p)=>{
+                            return h('div',p.row.clXl.xlmc);
+                        }
+
+					},
+                    {title: '司机', align: 'center',  key: 'sjxm'},
                 ],
                 pageData: [],
                 form: {
-                    gnmcLike: '',
-                    total: 0,
-                    pageNum: 1,
-                    pageSize: 8,
+                    sjxm: '',
                 },
             }
         },
         created() {
+            this.form.kssj  = this.getTodayDate() + " 00:00:00";
+            this.form.jssj  = this.getTodayDate() + " 23:59:59";
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
-            this.util.initTable(this)
+            this.tabHeight = this.getWindowHeight() - 295
+            // this.getData()
         },
         methods: {
-            pageChange(event) {
-                this.util.pageChange(this, event);
+            getTodayDate(){
+                let now = new Date();
+                return now.format("yyyy-MM-dd");
+            },
+            getData(){
+                let startTime = this.form.kssj;
+                let endTime = this.form.jssj;
+                if (typeof startTime === 'object'){
+                    this.form.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    this.form.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                this.$http.post(this.apis.PB.banchetj,this.form).then((res) =>{
+                    if (res.code == 200){
+                        this.pageData = res.result;
+                    }
+                })
             },
         }
     }
