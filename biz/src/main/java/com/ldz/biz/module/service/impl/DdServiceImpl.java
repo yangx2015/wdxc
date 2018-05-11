@@ -783,122 +783,131 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * jgmc     机构名称
      * ddList   订单列表
      */
-    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
-//        1、定义初始变量
-        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<>();
+//    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
+////        1、定义初始变量
+//        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<>();
+//
+//        List<Map<String,Object>> rList = new ArrayList<>();
+//
+////        Map<String,Object> rMap = new HashMap<>();
+////        SysYh user = getCurrentUser();
+////        String firstJgdm=user.getJgdm();//原始机构ID
+//        Map<String,Object> rMap = new HashMap<String,Object>();
+////        SysYh user = getCurrentUser();
+//        String firstJgdm="";//原始机构ID
+////        Map<String,Object> rMap = new HashMap<>();
+////        SysYh user = getCurrentUser();
+////        String firstJgdm=user.getJgdm();//原始机构ID
+//        String firstJgmc="";//原始机构名称
+//        List<ClDd> firstDdList=new ArrayList<ClDd>();
+//
+////        2、验证参数的有效性
+//        String ddzt=entity.getDdzt();
+//        if(!(StringUtils.equals(ddzt,"30")||StringUtils.equals(ddzt,"40"))){
+//            RuntimeCheck.ifFalse(false,"入参错误");
+//        }
+////        3、查询订单信息
+//        SimpleCondition condition = new SimpleCondition(ClDd.class);
+//
+//        if(StringUtils.isNotBlank(entity.getCk())){
+//            condition.like(ClDd.InnerColumn.ck,entity.getCk());
+//        }
+//        condition.eq(ClDd.InnerColumn.ddzt,ddzt);
+//        condition.setOrderByClause(ClDd.InnerColumn.jgdm.desc());
+//        List<ClDd> orgs = findByCondition(condition);
+////        4、遍历订单LIST列表
+//        if(orgs!= null&&orgs.size()>0){
+////            firstJgdm=StringUtils.trimToEmpty(orgs.get(0).getJgdm());//原始机构ID
+////            firstJgmc=StringUtils.trimToEmpty(orgs.get(0).getJgmc());
+//            for(ClDd list:orgs){
+//               String ddJgdm=StringUtils.trimToEmpty(list.getJgdm());
+//                if(StringUtils.isNotBlank(ddJgdm)){
+//                    if(!StringUtils.equals(firstJgdm,ddJgdm)){
+////                        4-1 将上一个机构的信息存放到返回的List中
+//                        rMap.put("ddList",firstDdList);
+//                        rMap.put("jgdm",firstJgdm);
+//                        rMap.put("jgmc",firstJgmc);
+//                        rList.add(rMap);
+//
+////                        4-2、清除上一个机构的订单信息
+//                        rMap = new HashMap<String,Object>();
+//                        firstJgdm=ddJgdm;
+//                        firstJgmc=StringUtils.trimToEmpty(list.getJgmc());
+//                        firstDdList=new ArrayList<ClDd>();
+//                    }else{
+//                        firstDdList.add(list);
+//                    }
+//                }
+//            }
+//
+//
+//        }
+//
+//        result.setResult(rList);
+//        return result;
+//    }
 
-        List<Map<String,Object>> rList = new ArrayList<>();
-
-        Map<String,Object> rMap = new HashMap<>();
-        SysYh user = getCurrentUser();
-        String firstJgdm=user.getJgdm();//原始机构ID
-        String firstJgmc="";//原始机构名称
-        List<ClDd> firstDdList=new ArrayList<ClDd>();
-
-//        2、验证参数的有效性
-        String ddzt=entity.getDdzt();
-        if(!(StringUtils.equals(ddzt,"30")||StringUtils.equals(ddzt,"40"))){
-            RuntimeCheck.ifFalse(false,"入参错误");
-        }
-//        3、查询订单信息
-        SimpleCondition condition = new SimpleCondition(ClDd.class);
-
-        if(StringUtils.isNotBlank(entity.getCk())){
-            condition.like(ClDd.InnerColumn.ck,entity.getCk());
-        }
-        condition.eq(ClDd.InnerColumn.ddzt,ddzt);
-        condition.setOrderByClause(ClDd.InnerColumn.jgdm.desc());
-        List<ClDd> orgs = findByCondition(condition);
-//        4、遍历订单LIST列表
-        if(orgs!= null&&orgs.size()>0){
-//            firstJgdm=StringUtils.trimToEmpty(orgs.get(0).getJgdm());//原始机构ID
-//            firstJgmc=StringUtils.trimToEmpty(orgs.get(0).getJgmc());
-            for(ClDd list:orgs){
-               String ddJgdm=StringUtils.trimToEmpty(list.getJgdm());
-                if(StringUtils.isNotBlank(ddJgdm)){
-                    if(!StringUtils.equals(firstJgdm,ddJgdm)){
-//                        4-1 将上一个机构的信息存放到返回的List中
-                        rMap.put("ddList",firstDdList);
-                        rMap.put("jgdm",firstJgdm);
-                        rMap.put("jgmc",firstJgmc);
-                        rList.add(rMap);
-
-//                        4-2、清除上一个机构的订单信息
-                        rMap = new HashMap<String,Object>();
-                        firstJgdm=ddJgdm;
-                        firstJgmc=StringUtils.trimToEmpty(list.getJgmc());
-                        firstDdList=new ArrayList<ClDd>();
-                    }else{
-                        firstDdList.add(list);
-                    }
-                }
-            }
-        }
-        result.setResult(rList);
-        return result;
-    }
-
-    /**
-     * 付款管理
-     * @param entity
-     * ddzt     订单状态  30：因收单据  40：已收单据  必填
-     * ck       乘客姓名
-     * @return
-     * sjid     司机ID
-     * sjxm     司机姓名
-     * ddList   订单列表
-     */
-    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
-//        1、定义初始变量
-        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<List<Map<String,Object>>>();
-
-        List<Map<String,Object>> rList=new ArrayList<Map<String,Object>>();
-
-        Map<String,Object> rMap = new HashMap<String,Object>();
-        String firstSj="";//原始驾驶员ID
-        String firstsjxm="";//原始驾驶员姓名
-        List<ClDd> firstDdList=new ArrayList<ClDd>();
-
-//        2、验证参数的有效性
-        String ddzt=entity.getDdzt();
-        if(!(StringUtils.equals(ddzt,"30")||StringUtils.equals(ddzt,"40"))){
-            RuntimeCheck.ifFalse(false,"入参错误");
-        }
-//        3、查询订单信息
-        SimpleCondition condition = new SimpleCondition(ClDd.class);
-
-        if(StringUtils.isNotBlank(entity.getCk())){
-            condition.like(ClDd.InnerColumn.ck,entity.getCk());
-        }
-        condition.eq(ClDd.InnerColumn.ddzt,ddzt);
-        condition.setOrderByClause(ClDd.InnerColumn.sj.desc());
-        List<ClDd> orgs = findByCondition(condition);
-//        4、遍历订单LIST列表
-        if(orgs!= null){
-            for(ClDd list:orgs){
-                String ddSj=StringUtils.trimToEmpty(list.getSj());
-                if(StringUtils.isNotBlank(ddSj)){
-                    if(!StringUtils.equals(firstSj,ddSj)){
-//                        4-1 将上一个机构的信息存放到返回的List中
-                        rMap.put("ddList",firstDdList);
-                        rMap.put("sjid",firstSj);
-                        rMap.put("sjxm",firstsjxm);
-                        rList.add(rMap);
-
-//                        4-2、清除上一个机构的订单信息
-                        rMap = new HashMap<String,Object>();
-                        firstSj=ddSj;
-                        firstsjxm=StringUtils.trimToEmpty(list.getSjxm());
-                        firstDdList=new ArrayList<ClDd>();
-                    }else{
-                        firstDdList.add(list);
-                    }
-                }
-            }
-        }
-        result.setResult(rList);
-        return result;
-    }
+//    /**
+//     * 付款管理
+//     * @param entity
+//     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+//     * ck       乘客姓名
+//     * @return
+//     * sjid     司机ID
+//     * sjxm     司机姓名
+//     * ddList   订单列表
+//     */
+//    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
+////        1、定义初始变量
+//        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<List<Map<String,Object>>>();
+//
+//        List<Map<String,Object>> rList=new ArrayList<Map<String,Object>>();
+//
+//        Map<String,Object> rMap = new HashMap<String,Object>();
+//        String firstSj="";//原始驾驶员ID
+//        String firstsjxm="";//原始驾驶员姓名
+//        List<ClDd> firstDdList=new ArrayList<ClDd>();
+//
+////        2、验证参数的有效性
+//        String ddzt=entity.getDdzt();
+//        if(!(StringUtils.equals(ddzt,"30")||StringUtils.equals(ddzt,"40"))){
+//            RuntimeCheck.ifFalse(false,"入参错误");
+//        }
+////        3、查询订单信息
+//        SimpleCondition condition = new SimpleCondition(ClDd.class);
+//
+//        if(StringUtils.isNotBlank(entity.getCk())){
+//            condition.like(ClDd.InnerColumn.ck,entity.getCk());
+//        }
+//        condition.eq(ClDd.InnerColumn.ddzt,ddzt);
+//        condition.setOrderByClause(ClDd.InnerColumn.sj.desc());
+//        List<ClDd> orgs = findByCondition(condition);
+////        4、遍历订单LIST列表
+//        if(orgs!= null){
+//            for(ClDd list:orgs){
+//                String ddSj=StringUtils.trimToEmpty(list.getSj());
+//                if(StringUtils.isNotBlank(ddSj)){
+//                    if(!StringUtils.equals(firstSj,ddSj)){
+////                        4-1 将上一个机构的信息存放到返回的List中
+//                        rMap.put("ddList",firstDdList);
+//                        rMap.put("sjid",firstSj);
+//                        rMap.put("sjxm",firstsjxm);
+//                        rList.add(rMap);
+//
+////                        4-2、清除上一个机构的订单信息
+//                        rMap = new HashMap<String,Object>();
+//                        firstSj=ddSj;
+//                        firstsjxm=StringUtils.trimToEmpty(list.getSjxm());
+//                        firstDdList=new ArrayList<ClDd>();
+//                    }else{
+//                        firstDdList.add(list);
+//                    }
+//                }
+//            }
+//        }
+//        result.setResult(rList);
+//        return result;
+//    }
     /**
      * 财务结算-订单编辑
      * 1、订单处于：队长确认(队长确定价格)

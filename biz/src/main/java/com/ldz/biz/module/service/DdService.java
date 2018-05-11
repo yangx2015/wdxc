@@ -35,9 +35,9 @@ public interface DdService extends BaseService<ClDd,String>{
 
     ApiResponse<String> updateAffirmOracle(ClDd entity);
 
-    ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity);
+//    ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity);
 
-    ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity);
+//    ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity);
 
     ApiResponse<String> updateFinanceOrder(ClDd entity);
 

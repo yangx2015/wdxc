@@ -270,17 +270,17 @@ public class DdCtrl{
         return service.updateAffirmOracle(entity);
     }
 
-    /**
-     * 收款管理
-     * @param entity
-     * ddzt     订单状态  30：因收单据  40：已收单据  必填
-     * ck       乘客姓名
-     * @return
-     */
-    @RequestMapping(value="/skgl", method={RequestMethod.POST})
-    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
-        return service.proceedsDetail(entity);
-    }
+//    /**
+//     * 收款管理  这个功能放弃了
+//     * @param entity
+//     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+//     * ck       乘客姓名
+//     * @return
+//     */
+//    @RequestMapping(value="/skgl", method={RequestMethod.POST})
+//    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
+//        return service.proceedsDetail(entity);
+//    }
 
     /**
      * 收款管理
@@ -328,17 +328,17 @@ public class DdCtrl{
     public ApiResponse<String> paymentConfirm(ClDd entity){
         return service.paymentConfirm(entity);
     }
-    /**
-     * 付款管理
-     * @param entity
-     * ddzt     订单状态  30：因收单据  40：已收单据  必填
-     * ck       乘客姓名
-     * @return
-     */
-    @RequestMapping(value="/fkgl", method={RequestMethod.POST})
-    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
-        return service.paymentDetail(entity);
-    }
+//    /**
+//     * 付款管理   这个功能放弃了
+//     * @param entity
+//     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+//     * ck       乘客姓名
+//     * @return
+//     */
+//    @RequestMapping(value="/fkgl", method={RequestMethod.POST})
+//    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
+//        return service.paymentDetail(entity);
+//    }
     /**
      * 财务结算-订单编辑
      * 1、订单处于：队长确认(队长确定价格)
