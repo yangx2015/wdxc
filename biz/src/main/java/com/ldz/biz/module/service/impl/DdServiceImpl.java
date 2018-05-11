@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import com.ldz.sys.model.SysMessage;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -592,6 +593,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         newClDd.setLc(entity.getLc());//里程
         newClDd.setScf(entity.getScf());//时长费
         newClDd.setLcf(entity.getLcf());//里程费
+        newClDd.setFkzt("00"); // 未付款
 
         int i=update(newClDd);
         if(i==0){
@@ -623,7 +625,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行操作");
 ////        2、验证当前状态必须是 11-订单确认状态
 //        String ddzt=clDd.getDdzt();
-//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机  确认状态，不能进行队长确认操作");
 //        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
 
         RuntimeCheck.ifNull(clDd.getZj(),"订单总价不能为空");
@@ -666,6 +668,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.eq(ClDd.InnerColumn.ddzt,state);
         if (StringUtils.isNotEmpty(order.getCk())){
             condition.like(ClDd.InnerColumn.ck,order.getCk());
+        }
+        if (StringUtils.isNotEmpty(order.getJgmc())){
+            condition.like(ClDd.InnerColumn.jgmc,order.getJgmc());
         }
         List<ClDd> orderList = findByCondition(condition);
         if (orderList.size() == 0){
@@ -787,9 +792,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         Map<String,Object> rMap = new HashMap<>();
         SysYh user = getCurrentUser();
         String firstJgdm=user.getJgdm();//原始机构ID
-        Map<String,Object> rMap = new HashMap<String,Object>();
-//        SysYh user = getCurrentUser();
-        String firstJgdm="";//原始机构ID
         String firstJgmc="";//原始机构名称
         List<ClDd> firstDdList=new ArrayList<ClDd>();
 
@@ -989,6 +991,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			dd.setJgdmlike(jgdm);
 		}
 
+		if (StringUtils.isEmpty(dd.getKssj())){
+		    String kssj = DateUtils.getToday()+" 00:00:00";
+		    dd.setKssj(kssj);
+        }
+		if (StringUtils.isEmpty(dd.getJssj())){
+		    String jssj = DateUtils.getToday()+" 23:59:59";
+		    dd.setJssj(jssj);
+        }
 
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
@@ -1142,6 +1152,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			dd.setJgdmlike(jgdm);
 		}
 
+        if (StringUtils.isEmpty(dd.getKssj())){
+            String kssj = DateUtils.getToday()+" 00:00:00";
+            dd.setKssj(kssj);
+        }
+        if (StringUtils.isEmpty(dd.getJssj())){
+            String jssj = DateUtils.getToday()+" 23:59:59";
+            dd.setJssj(jssj);
+        }
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 		List<Ddtongji> ddlist= new ArrayList<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);

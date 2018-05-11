@@ -103,7 +103,7 @@
     },
     data() {
       return {
-        show:true,
+        show:false,
         simple,
         findInput:'',
         titles: ['校巴线路', '班车线路','约车'],
@@ -131,7 +131,9 @@
         }else if(n==0) {
           this.school = true
         }else if(n==2) {
-          alert('约车')
+          this.$router.push({
+            name: 'Ycar'
+          });
         }
       },
       lineMess(){
@@ -139,9 +141,6 @@
       },
       MyCenter(){//个人中心
         this.show = !this.show
-        // this.$router.push({
-        //   name: 'center'
-        // });
       },
       feedback(){//信息反馈
         this.$router.push({
