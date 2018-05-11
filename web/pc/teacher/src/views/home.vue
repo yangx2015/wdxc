@@ -133,8 +133,6 @@
         }else if(n==2) {
           alert('约车')
         }
-        // alert(n)
-        // alert(o)
       },
       lineMess(){
 

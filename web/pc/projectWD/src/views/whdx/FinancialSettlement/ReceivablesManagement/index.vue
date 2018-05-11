@@ -31,79 +31,57 @@
 		    </Col>
 		    <Col span="3">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<div v-show="munName=='1'">
-		    			应收单据：80单
+		    		<div v-show="form.ddzt === '30'">
+		    			应收单据：{{list.length}}单
 		    		</div>
-		    		<div v-show="munName=='2'">
-		    			已收单据：96单
+		    		<div v-show="form.ddzt === '40'">
+		    			已收单据：{{list.length}}单
 		    		</div>
 		    	</div>
 		    </Col>
 		</Row>
-		<Row :gutter="16" class="margin-top-10 body" v-show="munName=='1'">
-			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" v-for="(item,index) in list" class="margin-top-10">
+		<Row :gutter="16" class="margin-top-10 body clientList"  v-for="(item,index) in list" >
+			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
 				<Card style="width:100%">
 			        <div slot="title">
 			            <Icon type="person"></Icon>
-			            	<span v-if='index==list.length-1'>
-			            		生茂集团
-			            	</span>
-			            	<span v-else>
-			            		学院{{(index+1)}}
-			            	</span>
+			            	{{item.orgName}}
 			        </div>
 			        <span slot="extra">
 			        	<span>
-			        		应收金额：715元
+			        		收款金额：{{item.amount}}元
 			        		<Button type="success" size="small">打印</Button>
-			        		<Button type="primary" size="small">确认</Button>
+			        		<Button v-if="form.ddzt === '30'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
 			        <div>
-			        	<Table 
-			        		border 
-			        		ref="selection" 
-			        		:columns="columns4"
-			        		height="220"
-			        		:data="data1"></Table>
-			        </div>
-			    </Card>
-			</Col>
-		</Row>
-		<Row :gutter="16" class="margin-top-10 body clientList" v-show="munName=='2'">
-			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" v-for="(item,index) in list" class="margin-top-10">
-				<Card style="width:100%">
-			        <div slot="title">
-			            <Icon type="person"></Icon>
-			            	{{item.num}}
-			        </div>
-			        <span slot="extra">
-			        	<span>
-			        		收款金额：715元
-			        		<Button type="success" size="small">打印</Button>
-			        	</span>
-			        </span>
-			        <!--信息-->
-			        <div>
-			        	<Table 
-			        		border 
-			        		ref="selection" 
+			        	<Table
+			        		border
+			        		ref="selection"
 			        		:columns="columns3"
 			        		height="220"
-			        		:data="data1"></Table>
+			        		:data="item.orderList"></Table>
 			        </div>
 			    </Card>
 			</Col>
 		</Row>
+		<component :is="componentName"></component>
 	</div>
 </template>
 
 <script>
+	import edit from './edit'
 	export default{
 		name:'client',
+		components:{
+		  edit
+		},
 		data(){
 			return {
+			    v:this,
+                componentName:'',
+                choosedItem:null,
 				columns3: [
 					{
                         type: 'index',
@@ -112,73 +90,36 @@
                     },
                     {
                         title: '用车人员',
-                        key: 'name'
+                        key: 'ck'
                     },
                     {
                         title: '候车地点',
-                        key: 'Sunit'
+                        key: 'hcdz'
                     },
                     {
                         title: '目的地',
-                        key: 'Eunit'
+                        key: 'mdd'
                     },{
                         title: '司机',
-                        key: 'driver'
+                        key: 'sjxm'
                     },{
                         title: '车型',
-                        key: 'model'
+                        key: 'zws'
                     },{
                         title: '出车时间',
-                        key: 'time'
+                        key: 'yysj'
                     },{
                         title: '里程(公里)',
-                        key: 'mileage'
+                        key: 'lc'
                     },{
                         title: '车费合计',
-                        key: 'addMoney'
+                        key: 'zj'
                     },{
                         title: '事由',
-                        key: 'mess'
-                    }
-                ],
-				columns4: [
-                    {
-                        type: 'selection',
-                        width: 45,
-                        align: 'center'
+                        key: 'sy'
                     },
                     {
-                        title: '用车人员',
-                        key: 'name'
-                    },
-                    {
-                        title: '候车地点',
-                        key: 'Sunit'
-                    },
-                    {
-                        title: '目的地',
-                        key: 'Eunit'
-                    },{
-                        title: '司机',
-                        key: 'driver'
-                    },{
-                        title: '车型',
-                        key: 'model'
-                    },{
-                        title: '出车时间',
-                        key: 'time'
-                    },{
-                        title: '里程(公里)',
-                        key: 'mileage'
-                    },{
-                        title: '车费合计',
-                        key: 'addMoney'
-                    },{
-                        title: '事由',
-                        key: 'mess'
-                    },
-                    {
-                        title: 'Action',
+                        title: '操作',
                         key: 'action',
                         align: 'center',
                         render: (h, params) => {
@@ -193,7 +134,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.show(params.index)
+                                            this.choosedItem = params.row;
+                                            this.componentName = 'edit';
                                         }
                                     }
                                 }, '编辑')
@@ -201,118 +143,12 @@
                         }
                     }
                 ],
-                data1: [
-                    {
-                        name: '杨毛毛',
-                        Sunit: '武汉大学正门',
-                        Eunit: '武汉火车站',
-                        driver:'杨师傅',
-                        model:'小型',
-                        time:'2018-01-01 09:00:00',
-                        mileage:'45',
-                        addMoney:'750',
-                        mess:'XXXXXXXXXXXXX'
-                    },
-                    {
-                        name: '李海',
-                        Sunit: '武汉大学正门',
-                        Eunit: '武汉火车站',
-                        driver:'杨师傅',
-                        model:'小型',
-                        time:'2018-01-01 09:00:00',
-                        mileage:'45',
-                        addMoney:'750',
-                        mess:'XXXXXXXXXXXXX'
-                    },
-                    {
-                        name: '周晓枫',
-                        Sunit: '武汉大学正门',
-                        Eunit: '武汉火车站',
-                        driver:'杨师傅',
-                        model:'小型',
-                        time:'2018-01-01 09:00:00',
-                        mileage:'45',
-                        addMoney:'750',
-                        mess:'XXXXXXXXXXXXX'
-                    },
-                    {
-                        name: '陈明',
-                        Sunit: '武汉大学正门',
-                        Eunit: '武汉火车站',
-                        driver:'杨师傅',
-                        model:'小型',
-                        time:'2018-01-01 09:00:00',
-                        mileage:'45',
-                        addMoney:'750',
-                        mess:'XXXXXXXXXXXXX'
-                    },
-                    {
-                        name: '陈明',
-                        Sunit: '武汉大学正门',
-                        Eunit: '武汉火车站',
-                        driver:'杨师傅',
-                        model:'小型',
-                        time:'2018-01-01 09:00:00',
-                        mileage:'45',
-                        addMoney:'750',
-                        mess:'XXXXXXXXXXXXX'
-                    }
-                ],
-				list:[
-					{
-						num:'信息学院',
-						cum:[
-							{
-								it:'1'
-							},{
-								it:'2'
-							}
-						]
-					},{
-						num:'生物学院',
-						cum:[
-							{
-								it:'1'
-							},{
-								it:'2'
-							}
-						]
-					},{
-						num:'人文学院',
-						cum:[
-							{
-								it:'1'
-							},{
-								it:'2'
-							}
-						]
-					},{
-						num:'商学院',
-						cum:[
-							{
-								it:'1'
-							},{
-								it:'2'
-							}
-						]
-					},{
-						num:'法学院',
-						cum:[
-							{
-								it:'1'
-							},{
-								it:'2'
-							},{
-								it:'2'
-							}
-						]
-					}
-				],
 				munName:'1',
 				form:{
 				    ddzt:'30',
 					ck:'',
-				}
+				},
+                list:[]
 			}
 		},
 		created(){
@@ -326,19 +162,42 @@
 			this.getData();
         },
 		mounted(){
-			
+
 		},
 		methods:{
 		    getData(){
-		      	this.$http.post(this.apis.ORDER.skgl,this.form,(res)=>{
-		      	    if (res.code == 200){
-
-					}
+                this.list = [];
+		      	this.$http.get(this.apis.ORDER.collectingList,{params:this.form}).then((res)=>{
+		      	    if (res.code === 200 && res.result){
+						this.list = res.result;
+                    }
 				})
+			},
+			confirm(id){
+                swal({
+                    title: "确认已付款?",
+                    text: "",
+                    icon: "warning",
+                    buttons:['取消','确认'],
+                }).then((confirm) => {
+                    if (confirm) {
+                        let v = this;
+                        let url = this.apis.ORDER.collectingConfirm;
+                        v.$http.post(url,{'id':id}).then((res) =>{
+                            if(res.code===200){
+                                v.$Message.success(res.message);
+                                this.getData();
+                            }else{
+                                v.$Message.error(res.message);
+                            }
+                        })
+                    }
+                });
 			},
 			//选项卡的切换
 			MenuClick(event){
-				this.munName=event
+                this.form.ddzt = (event === '1' ? '30' : '40');
+                this.getData();
 			},
 			//卡片事件
 			changeLimit(mes){
@@ -348,7 +207,7 @@
 				alert('打印')
 			},
 			show(){
-				
+
 			}
 		}
 	}

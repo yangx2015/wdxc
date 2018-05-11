@@ -11,12 +11,7 @@ import com.ldz.biz.module.bean.ClJsyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -285,6 +280,53 @@ public class DdCtrl{
     @RequestMapping(value="/skgl", method={RequestMethod.POST})
     public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
         return service.proceedsDetail(entity);
+    }
+
+    /**
+     * 收款管理
+     * @param entity
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @GetMapping(value="/collectingList")
+    public ApiResponse<List<Map<String,Object>>> collectingList(ClDd entity){
+        return service.collectingList(entity);
+    }
+    /**
+     * 确认收款 - 财务
+     * @param entity
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @PostMapping(value="/collectingConfirm")
+    public ApiResponse<String> collectingConfirm(ClDd entity){
+        return service.collectingConfirm(entity);
+    }
+
+    /**
+     * 付款管理
+     * @param entity
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @GetMapping(value="/paymentList")
+    public ApiResponse<List<Map<String,Object>>> paymentList(ClDd entity){
+        return service.paymentList(entity);
+    }
+
+    /**
+     * 付款确认 -司机
+     * @param entity
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @PostMapping(value="/paymentConfirm")
+    public ApiResponse<String> paymentConfirm(ClDd entity){
+        return service.paymentConfirm(entity);
     }
     /**
      * 付款管理

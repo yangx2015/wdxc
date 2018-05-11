@@ -55,4 +55,12 @@ public interface DdService extends BaseService<ClDd,String>{
 	ApiResponse<List<Ddtongji>> FukuanTj(DdTongjiTJ dd);
    //机构收款统计
 	ApiResponse<List<Ddtongji>> ShoukuanTj(DdTongjiTJ dd);
+
+    ApiResponse<List<Map<String,Object>>> collectingList(ClDd entity);
+
+    ApiResponse<List<Map<String,Object>>> paymentList(ClDd entity);
+
+    ApiResponse<String> collectingConfirm(ClDd entity);
+
+    ApiResponse<String> paymentConfirm(ClDd entity);
 }

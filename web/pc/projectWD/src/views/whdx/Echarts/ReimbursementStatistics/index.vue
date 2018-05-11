@@ -40,13 +40,11 @@
 
 <script>
     import mixins from '@/mixins'
-    import formData from './comp/formData.vue'
 
     export default {
         name: 'char',
         mixins: [mixins],
         components: {
-            formData
         },
         data() {
             return {
