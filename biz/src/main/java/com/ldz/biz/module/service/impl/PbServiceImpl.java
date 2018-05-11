@@ -1,6 +1,21 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.module.bean.*;
+import java.text.ParseException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.ldz.biz.module.bean.ClClModel;
+import com.ldz.biz.module.bean.PbClXlmodel;
+import com.ldz.biz.module.bean.PbInfo;
+import com.ldz.biz.module.bean.XbXlPb;
+import com.ldz.biz.module.bean.clpbInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClPbMapper;
 import com.ldz.biz.module.mapper.PbInfoMapper;
@@ -9,25 +24,14 @@ import com.ldz.biz.module.model.ClPb;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.PbService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.DateUtils;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
+import com.ldz.util.exception.RuntimeCheck;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbService {
@@ -223,25 +227,19 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		List<ClClModel> clClList=clclmapper.getAllNotPbClList(xlId,pbDate,cx);
 		return ApiResponse.success(clClList);
 	}
-	public static void main(String[] args) {
+
+	@Override
+	public ApiResponse<List<PbInfo>> bancheTj(PbClXlmodel pbclxlmodel) {
+		SysYh currentUser = getCurrentUser();
+		String jgdm= currentUser.getJgdm();
+		RuntimeCheck.ifNull(currentUser, "当前用户为登陆");
+		ApiResponse<List<PbInfo>>  response =new ApiResponse<>();
+		pbclxlmodel.setJgdm(jgdm);
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String date = sdf.format(new Date());
-		System.out.println(date);
-
-		String aString = "sasd";
-		String bString = "s1asd";
-
-		if (!aString.equals(bString)) {
-			System.out.println("sadsadwsdasd");
-		}
-
-		List<String> ss = new ArrayList<>();
-
-		ss.add("苹果");
-		ss.add("香蕉");
-
-		String sdString = "苹果";
-		System.out.println(ss.contains(sdString));
+		List<PbInfo> bancheTj = pbinfomapper.bancheTj(pbclxlmodel);
+		
+		response.setResult(bancheTj);
+		return response;
 	}
+
 }
