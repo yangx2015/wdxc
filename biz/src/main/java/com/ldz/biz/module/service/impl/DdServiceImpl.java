@@ -1212,6 +1212,15 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			dd.setJgdmlike(jgdm);
 		}
 
+        if (StringUtils.isEmpty(dd.getKssj())){
+            String kssj = DateUtils.getToday()+" 00:00:00";
+            dd.setKssj(kssj);
+        }
+        if (StringUtils.isEmpty(dd.getJssj())){
+            String jssj = DateUtils.getToday()+" 23:59:59";
+            dd.setJssj(jssj);
+        }
+
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 		List<Ddtongji> ddlist= new ArrayList<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
