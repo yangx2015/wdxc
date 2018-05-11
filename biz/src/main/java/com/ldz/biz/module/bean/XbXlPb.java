@@ -43,5 +43,9 @@ public class XbXlPb {
 	 * 车辆对象集合
 	 */
 	private List<ClCl> clList;
+	/**
+	 * 司机姓名
+	 */
+	private String sjxm;
 	
 }
