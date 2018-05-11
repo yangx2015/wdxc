@@ -86,26 +86,21 @@
                         key: 'lxdh'
                     },
                     {
-                        title: '状态',
-                        align:'center',
-                        key: 'zt'
-                    },
-                    {
                         title: '登记次数',
                         align:'center',
                         key: 'djcs'
                     },
-                    {
-                        title: '创建人',
-                        align:'center',
-                        key: 'cjr'
-                    },
-                    {
-                        title: '创建时间',
-                        width:'100',
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建人',
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
+                    // {
+                    //     title: '创建时间',
+                    //     width:'100',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title:'操作',
                         align:'center',

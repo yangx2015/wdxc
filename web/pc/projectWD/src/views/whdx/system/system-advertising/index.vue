@@ -194,11 +194,11 @@
 							 return h('div',s);
 						 }
 					 },
-                    {
-                        title: '创建时间',
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
 	                	title:'附件',
 	                    type: 'expand',

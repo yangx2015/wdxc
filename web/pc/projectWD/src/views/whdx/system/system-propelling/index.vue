@@ -101,16 +101,16 @@
                         align:'center',
                         key: 'dz'
                     },
-                    {
-                        title: '创建时间',
-                        align:'center',
-                        key: 'cjsj'
-                    },
-                    {
-                        title: '创建人',
-                        align:'center',
-                        key: 'cjr'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
+                    // {
+                    //     title: '创建人',
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
                     {
                         title:'操作',
                         align:'center',

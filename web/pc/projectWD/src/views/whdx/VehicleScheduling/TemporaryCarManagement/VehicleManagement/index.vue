@@ -89,11 +89,11 @@
                         align:'center',
                         key: 'zws'
                     },
-                    {
-                        title: '状态',
-                        align:'center',
-                        key: 'zt'
-                    },
+                    // {
+                    //     title: '状态',
+                    //     align:'center',
+                    //     key: 'zt'
+                    // },
                     {
                         title:'操作',
                         align:'center',

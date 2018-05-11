@@ -130,12 +130,12 @@
 							]);
 						}
 					},
-					{
-						title: '创建时间',
-						width: '100',
-						align: 'center',
-						key: 'cjsj'
-					},
+					// {
+					// 	title: '创建时间',
+					// 	width: '100',
+					// 	align: 'center',
+					// 	key: 'cjsj'
+					// },
 					{
 						title: '操作',
 						key: 'action',

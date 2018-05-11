@@ -131,18 +131,18 @@
                         width:80,
                         key: 'zkl'
                     },
-                    {
-                        title: '创建人',
-                        width:160,
-                        align:'center',
-                        key: 'cjr'
-                    },
-                    {
-                        title: '创建时间',
-                        width:150,
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建人',
+                    //     width:160,
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
+                    // {
+                    //     title: '创建时间',
+                    //     width:150,
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '司机',
                         align:'center',

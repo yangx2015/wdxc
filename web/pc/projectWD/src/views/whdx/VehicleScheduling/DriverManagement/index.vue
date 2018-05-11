@@ -201,12 +201,12 @@
                         align:'center',
                         key:'dabh'
                     },
-                    {
-                        title: '创建时间',
-                        width:150,
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     width:150,
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '操作',
                         key: 'action',

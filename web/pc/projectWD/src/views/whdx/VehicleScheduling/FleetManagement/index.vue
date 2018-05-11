@@ -127,12 +127,12 @@
                     //     align:'center',
                     //     key: 'cjr'
                     // },
-                    {
-                        title: '创建时间',
-                        width:'180',
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     width:'180',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '操作',
                         key: 'action',

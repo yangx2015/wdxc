@@ -121,11 +121,11 @@
                         align:'center',
                         key: 'bz'
                     },
-                    {
-                        title: '创建时间',
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '操作',
                         key: 'action',

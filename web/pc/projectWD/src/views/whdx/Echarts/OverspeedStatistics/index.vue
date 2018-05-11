@@ -12,7 +12,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>安全驾驶</span>
+							<span>超速统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
@@ -106,7 +106,7 @@
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '超速统计',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
         },
