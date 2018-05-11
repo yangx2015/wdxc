@@ -12,7 +12,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>安全驾驶</span>
+							<span>付款统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
@@ -54,17 +54,12 @@
                     {
                         title: '姓名',
                         align: 'center',
-                        key: 'unit'
-                    },
-                    {
-                        title: '日期',
-                        align: 'center',
-                        key: 'time'
+                        key: 'sjname'
                     },
                     {
                         title: '付款金额',
                         align: 'center',
-                        key: 'money'
+                        key: 'fkze'
                     },
                 ],
                 pageData: [],

@@ -53,7 +53,8 @@ module.exports = {
         TJ:'/api/dd/ddtj',//订单统计
         skgl:'/api/dd/skgl',//收款管理
         cctj:'/api/dd/cctj', // 出车统计
-        fktj:'/api/dd/fktj', // 出车统计
+        fktj:'/api/dd/fktj', // 付款统计
+        sktj:'/api/dd/sktj', // 收款统计
         collectingList:'/api/dd/collectingList', // 收款列表
         paymentList:'/api/dd/paymentList', // 付款列表
         cwupdate:'/api/dd/cwupdate', // 财务编辑
