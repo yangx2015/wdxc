@@ -43,7 +43,7 @@
 							<td>{{item.mdd}}</td>
 							<td>{{item.sjxm}}</td>
 							<td>{{getCx(item.cllx)+'-'+item.zws+'人'}}</td>
-							<td>{{item.yysj}}</td>
+							<td>{{format(item.yysj)}}</td>
 							<td>{{item.lc}}</td>
 							<td>{{item.zj}}</td>
 							<td>{{item.sy}}</td>
@@ -108,6 +108,10 @@
         mounted(){
         },
         methods: {
+            format(s){
+                let d = new Date(s);
+                return d.format('MM-dd hh:mm');
+            },
             getCx(s){
               if (s == '10')return '小车';
               return '大车';
