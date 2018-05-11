@@ -60,6 +60,11 @@
           @confirm="onDatePickerConfirm"
         ></md-date-picker>
       </div>
+      <div class="button">
+        <button>
+          提    交
+        </button>
+      </div>
     </div>
 </template>
 
