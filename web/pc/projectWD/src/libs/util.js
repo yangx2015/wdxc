@@ -79,6 +79,7 @@ util.delete = function(v,ids,callback){//数据删除方法封装
                 })
             }
         });
+
 }
 util.del = function(v,url,ids,callback){//数据删除方法封装
     swal({
