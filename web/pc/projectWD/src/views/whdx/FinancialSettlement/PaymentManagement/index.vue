@@ -21,7 +21,7 @@
 		    </Col>
 		    <Col span="6">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<Input value="数据搜索" placeholder="数据搜索" style="width: 100%;"></Input>
+		    		<Input  v-model="form.sjxm" placeholder="请输入司机姓名搜索" style="width: 100%;" @input="getData"></Input>
 		    	</div>
 		    </Col>
 		    <Col span="9">
@@ -42,7 +42,7 @@
 		</Row>
 		<Row :gutter="16" class="margin-top-10 body clientList"  v-for="(item,index) in list" >
 			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
-				<Card style="width:100%">
+				<Card style="width:100%" :id="'order_'+item.orderId">
 			        <div slot="title">
 			            <Icon type="person"></Icon>
 			            	{{item.driverName}}
@@ -51,7 +51,7 @@
 			        	<span>
 			        		收款金额：{{item.amount}}元
 			        		<Button type="success" size="small">打印</Button>
-			        		<Button v-if="form.fkzt === '30'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
+			        		<Button v-if="form.fkzt === '00'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
@@ -71,7 +71,16 @@
 </template>
 
 <script>
-	import edit from './edit'
+    function PrintPage(){
+        var newstr = document.getElementById("printPage").innerHTML;
+        var oldstr = document.body.innerHTML;
+        document.body.innerHTML = newstr;
+        window.print();
+        document.body.innerHTML = oldstr;
+        return false;
+
+    }
+    import edit from './edit'
 	export default{
 		name:'client',
 		components:{
@@ -147,6 +156,7 @@
 				form:{
 				    fkzt:'00',
 					ck:'',
+					sjxm:'',
 				},
                 list:[]
 			}

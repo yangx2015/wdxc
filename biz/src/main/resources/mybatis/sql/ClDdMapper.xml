@@ -11,7 +11,7 @@ select * from CL_DD t where t.CJSJ between
 			and t.JGDM = #{jgdm}
 		</if>
 		<if test="jgdmlike != null">
-			and t.JGDM like "#{jgdm}%"
+			and t.JGDM like '${jgdmlike}%'
 		</if>
 		<if test="sj != null">
 			and t.sj=#{sj}

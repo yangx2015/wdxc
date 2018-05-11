@@ -55,43 +55,37 @@
                     {
                         title: '用车单位',
                         align:'center',
-                        key: 'unit'
-                    },
-                    {
-                        title: '时间',
-                        align:'center',
-                        width:100,
-                        key: 'time'
+                        key: 'jgmc'
                     },
                     {
                         title: '订单总数',
                         align:'center',
-                        key: 'allpage'
+                        key: 'ddzsCount'
                     },
                     {
                         title: '已审核',
                         align:'center',
-                        key: 'OKaudit'
+                        key: 'yshCount'
                     },
                     {
                         title: '未审核',
                         align:'center',
-                        key: 'UNaudit'
+                        key: 'wshCount'
                     },
                     {
                         title: '已取消',
                         align:'center',
-                        key: 'cancel'
+                        key: 'yqxCount'
                     },
                     {
                         title: '司机确认',
                         align:'center',
-                        key: 'dr'
+                        key: 'dsjCount'
                     },
                     {
                         title: '对长确认',
                         align:'center',
-                        key: 'drM'
+                        key: 'ddzCount'
                     }
                 ],
                 pageData: [],
