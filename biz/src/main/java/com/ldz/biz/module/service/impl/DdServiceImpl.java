@@ -870,7 +870,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照机构分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgmc));
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getJgmc())).collect(Collectors.groupingBy(ClDd::getJgmc));
 		//获取每个机构下面的各种统计订单
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
@@ -936,7 +936,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照司机分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getSjxm));
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
 		
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
@@ -1012,7 +1012,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 		List<Ddtongji> ddlist= new ArrayList<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-    Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getSjxm));
+    Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
     Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 	 while(it.hasNext()) {
 		 Entry<String, List<ClDd>> next = it.next();
@@ -1049,7 +1049,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 		List<Ddtongji> ddlist= new ArrayList<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgmc));
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getJgmc())).collect(Collectors.groupingBy(ClDd::getJgmc));
 			//获取每个机构下面的各种统计订单
 			 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 			 while(it.hasNext()) {
