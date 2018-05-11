@@ -6,8 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
-//import com.ldz.sys.model.SysMessage;
-//import com.ldz.sys.service.SysMessageService;
+import com.ldz.sys.model.SysMessage;
+import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
@@ -54,8 +54,8 @@ import tk.mybatis.mapper.common.Mapper;
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
 //
-//    @Autowired
-//    private SysMessageService sysMessageService;
+    @Autowired
+    private SysMessageService sysMessageService;
 
     @Autowired
     private ClDdMapper entityMapper;
@@ -469,13 +469,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
                 long type=1;//1、短信
                 // TODO: 2018/5/9  插入系统消息表
                 // todo 羊哥代码没有提交完 SysMessage 没有
-//                SysMessage sysMessage=new SysMessage();
-//                sysMessage.setMessage(message);//
-//                sysMessage.setType(type+"");//
-//                sysMessage.setTitle(title);
-//                sysMessage.setSendeeCode(sendCode);
-//                sysMessage.setBizId(bizId);
-//                sysMessageService.add(sysMessage);
+                SysMessage sysMessage=new SysMessage();
+                sysMessage.setMessage(message);//
+                sysMessage.setType(type+"");//
+                sysMessage.setTitle(title);
+                sysMessage.setSendeeCode(sendCode);
+                sysMessage.setBizId(bizId);
+                sysMessageService.add(sysMessage);
 
             }
             return ApiResponse.success();
