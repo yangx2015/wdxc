@@ -34,6 +34,17 @@ export default new Router({
       path: '/Ycar',
       name: 'Ycar',
       component: () => import('@/views/Ycar')
+    },
+    {
+      path: '/evaluate',
+      name: 'evaluate',
+      component: () => import('@/views/evaluate')
+    }
+    ,
+    {
+      path: '/messList',
+      name: 'messList',
+      component: () => import('@/views/comp/lineMess')
     }
   ]
 })

@@ -79,3 +79,28 @@
     overflow: auto;
   }
 }
+.box-row-z{//横向布局禁止换行
+  display: flex;
+  flex-direction: row ;
+  flex-wrap:nowrap ;
+  height: 100%;
+}
+.box-row-list{//横向布局自动换行
+  display: flex;
+  flex-direction: row ;
+  flex-wrap:wrap;
+  .bodyC{
+    width: 23%;
+    margin:5px 1%;
+    .videoFile{
+      height: 100%;
+      width: 100%;
+    }
+  }
+  .bodyWidth{
+    width: 30%;
+    margin:5px 1%;
+    //  margin: auto;
+    margin-bottom: 8px;
+  }
+}

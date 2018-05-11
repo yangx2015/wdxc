@@ -137,7 +137,9 @@
         }
       },
       lineMess(){
-
+        this.$router.push({
+          name:'messList'
+        })
       },
       MyCenter(){//个人中心
         this.show = !this.show
