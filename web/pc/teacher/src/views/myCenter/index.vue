@@ -1,23 +1,46 @@
+<style lang="less">
+  @import "./center.less";
+</style>
 <template>
-	<div style="height: 100%;">
-		<div class="header">
-	  		<x-header
-	  			:left-options="{showBack: true}">
-	  			<span class="tit">个人中心</span>
-	  			</x-header>
-	  	</div>
-		个人中心功能开发中...
+	<div class="myCenter box">
+    <div class="body" style="margin-top: 0.2rem">
+      <div class="Flist" @click="pageList">
+        <i class="iconfont icon-list"></i>
+        <span>
+           订单
+        </span>
+      </div>
+      <div class="Flist">
+        <i class="iconfont icon-setting"></i>
+        <span>
+           设置
+        </span>
+      </div>
+    </div>
+    <div class="LoginClose">
+        <button>退出登录</button>
+    </div>
 	</div>
 </template>
 
 <script>
-	import {XHeader } from 'vux'
-	
+
 	export default{
 		name:'',
 		components: {
-		    XHeader
 		},
+    data(){
+		  return{
+
+      }
+    },
+    methods:{
+      pageList(){
+        this.$router.push({
+          name:'list'
+        })
+      }
+    }
 	}
 </script>
 

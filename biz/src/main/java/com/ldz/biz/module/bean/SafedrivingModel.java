@@ -18,5 +18,7 @@ public class SafedrivingModel {
 	private String wheelCount;
 	
 	private String overspeedCount;
+
+	private String cph;
 	
 }

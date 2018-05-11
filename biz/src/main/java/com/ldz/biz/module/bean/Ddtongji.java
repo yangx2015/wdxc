@@ -20,4 +20,12 @@ public class Ddtongji {
 	private  Integer ddzCount;
 	//机构代码
 	private String jgdm;
+	//机构名称
+	private String jgmc;
+	
+	private String sj;
+	
+	private String sjname;
+	
+	private String fkze;
 }

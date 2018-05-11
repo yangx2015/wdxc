@@ -14,8 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import com.ldz.sys.model.SysMessage;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.apache.bcel.classfile.annotation.RuntimeInvisAnnos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -124,6 +126,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setJgdm(org.getJgdm());
         entity.setJgmc(org.getJgmc());
         entity.setCjsj(new Date());
+        entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
@@ -653,6 +656,118 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             return ApiResponse.success();
         }
     }
+
+    public ApiResponse<List<Map<String,Object>>> collectingList(ClDd order){
+        String state = order.getDdzt();
+        if (StringUtils.isEmpty(state)) state = "30";
+        RuntimeCheck.ifFalse(StringUtils.equals(state,"30") || StringUtils.equals(state,"40"),"订单状态错误");
+
+        LimitedCondition condition = new LimitedCondition(ClDd.class);
+        condition.eq(ClDd.InnerColumn.ddzt,state);
+        if (StringUtils.isNotEmpty(order.getCk())){
+            condition.like(ClDd.InnerColumn.ck,order.getCk());
+        }
+        List<ClDd> orderList = findByCondition(condition);
+        if (orderList.size() == 0){
+            return ApiResponse.success(new ArrayList<>());
+        }
+
+        // 订单分组
+        Map<String,Map<String,Object>> orderGroupMap = new HashMap<>();
+        for (ClDd o : orderList) {
+            String orgCode = o.getJgdm();
+            Map<String,Object> map = orderGroupMap.get(orgCode);
+            if (map != null){
+                List<ClDd> orders = (List<ClDd>) map.get("orderList");
+                Double oldAmount = (Double) map.get("amount");
+                Double newAmount = MathUtil.add(oldAmount,o.getZj());
+                map.put("amount",newAmount);
+                orders.add(o);
+            }else{
+                List<ClDd> orders = new ArrayList<>();
+                orders.add(o);
+                map = new HashMap<>();
+                map.put("orderId",o.getId());
+                map.put("orgCode",o.getJgdm());
+                map.put("orgName",o.getJgmc());
+                map.put("orderList",orders);
+                map.put("amount",o.getZj());
+                orderGroupMap.put(orgCode,map);
+            }
+        }
+        List<Map<String,Object>> list = new ArrayList<>(orderGroupMap.size());
+        for (Entry<String, Map<String, Object>> entry : orderGroupMap.entrySet()) {
+            list.add(entry.getValue());
+        }
+        return ApiResponse.success(list);
+    }
+    public ApiResponse<List<Map<String,Object>>> paymentList(ClDd order){
+        String state = order.getFkzt();
+        if (StringUtils.isEmpty(state)) state = "00";
+        RuntimeCheck.ifFalse(StringUtils.equals(state,"00") || StringUtils.equals(state,"10"),"订单状态错误");
+
+        LimitedCondition condition = new LimitedCondition(ClDd.class);
+        condition.eq(ClDd.InnerColumn.fkzt,state);
+        if (StringUtils.isNotEmpty(order.getSjxm())){
+            condition.like(ClDd.InnerColumn.sjxm,order.getSjxm());
+        }
+        List<ClDd> orderList = findByCondition(condition);
+        if (orderList.size() == 0){
+            return ApiResponse.success(new ArrayList<>());
+        }
+
+        // 订单分组
+        Map<String,Map<String,Object>> orderGroupMap = new HashMap<>();
+        for (ClDd o : orderList) {
+            String sjxm = o.getSjxm();
+            Map<String,Object> map = orderGroupMap.get(sjxm);
+            if (map != null){
+                List<ClDd> orders = (List<ClDd>) map.get("orderList");
+                Double oldAmount = (Double) map.get("amount");
+                Double newAmount = MathUtil.add(oldAmount,o.getZj());
+                map.put("amount",newAmount);
+                orders.add(o);
+            }else{
+                List<ClDd> orders = new ArrayList<>();
+                orders.add(o);
+                map = new HashMap<>();
+                map.put("orderId",o.getId());
+                map.put("driverName",o.getSjxm());
+                map.put("driverId",o.getSj());
+                map.put("orderList",orders);
+                map.put("amount",o.getZj());
+                orderGroupMap.put(sjxm,map);
+            }
+        }
+        List<Map<String,Object>> list = new ArrayList<>(orderGroupMap.size());
+        for (Entry<String, Map<String, Object>> entry : orderGroupMap.entrySet()) {
+            list.add(entry.getValue());
+        }
+        return ApiResponse.success(list);
+    }
+
+    @Override
+    public ApiResponse<String> collectingConfirm(ClDd entity) {
+        RuntimeCheck.ifBlank(entity.getId(),"请选择订单");
+        ClDd order = findById(entity.getId());
+        RuntimeCheck.ifNull(order,"订单不存在");
+        RuntimeCheck.ifFalse("30".equals(order.getDdzt()),"订单状态异常");
+        entity.setDdzt("40");
+        entityMapper.updateByPrimaryKeySelective(entity);
+        return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<String> paymentConfirm(ClDd entity) {
+        RuntimeCheck.ifBlank(entity.getId(),"请选择订单");
+        ClDd order = findById(entity.getId());
+        RuntimeCheck.ifNull(order,"订单不存在");
+        RuntimeCheck.ifFalse("00".equals(order.getFkzt()),"订单状态异常");
+        entity.setFkzt("10");
+        entityMapper.updateByPrimaryKeySelective(entity);
+        return ApiResponse.success();
+    }
+
     /**
      * 收款管理
      * @param entity
@@ -665,10 +780,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      */
     public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
 //        1、定义初始变量
-        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<List<Map<String,Object>>>();
+        ApiResponse<List<Map<String,Object>>> result = new ApiResponse<>();
 
-        List<Map<String,Object>> rList=new ArrayList<Map<String,Object>>();
+        List<Map<String,Object>> rList = new ArrayList<>();
 
+        Map<String,Object> rMap = new HashMap<>();
+        SysYh user = getCurrentUser();
+        String firstJgdm=user.getJgdm();//原始机构ID
         Map<String,Object> rMap = new HashMap<String,Object>();
 //        SysYh user = getCurrentUser();
         String firstJgdm="";//原始机构ID
@@ -865,11 +983,17 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 	@Override
 	public  ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+
 
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
 		List<Ddtongji> ddlist= new ArrayList<>();
-		
+
         //获取条件下所有订单
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
 		if (CollectionUtils.isEmpty(ddTongji)) {
@@ -878,7 +1002,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照机构分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().collect(Collectors.groupingBy(ClDd::getJgdm));
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getJgmc())).collect(Collectors.groupingBy(ClDd::getJgmc));
 		//获取每个机构下面的各种统计订单
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
@@ -909,11 +1033,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 					else if (StringUtils.equals(clDd.getDdzt(), "20")) {
 						ddzCount++;
 					}
-					else {
-						continue;
-					}
+					continue;
 				}
-				ddtongji.setJgdm(next.getKey());
+				ddtongji.setJgmc(next.getKey());
 				ddtongji.setYshCount(yshCount);
 				ddtongji.setWshCount(wshCount);
 				ddtongji.setYqxCount(yqxCount);
@@ -921,7 +1043,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 				ddtongji.setDdzCount(ddzCount);
 				ddlist.add(ddtongji);
 		 }
-		 
+
 		 apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
@@ -929,10 +1051,16 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 	@Override
 	public ApiResponse<List<Ddtongji>>  chucheTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
 		List<Ddtongji> ddlist= new ArrayList<>();
-		
+
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
 		if (CollectionUtils.isEmpty(ddTongji)) {
 			apiResponse.setCode(404);
@@ -940,8 +1068,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			return apiResponse;
 		}
 		//将订单按照司机分类
-		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSj())).collect(Collectors.groupingBy(ClDd::getJgdm));
-		//获取每个机构下面的各种统计订单
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
+
+
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
 			 Entry<String, List<ClDd>> next = it.next();
@@ -953,16 +1082,15 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 					//订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 
 					 if (StringUtils.equals(clDd.getDdzt(), "11")) {
+						 ddtongji.setSjname(clDd.getSjxm());
 						yshCount++;
 					}
-					 else {
-						continue;
-					}
+					continue;
 				}
-				ddtongji.setJgdm(next.getKey());
+				ddtongji.setSjname(next.getKey());
 				ddtongji.setYshCount(yshCount);
 				ddlist.add(ddtongji);
-			 
+
 		 }
 		 apiResponse.setResult(ddlist);
 		return apiResponse;
@@ -1005,4 +1133,89 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ddrzService.log(order);
         return ApiResponse.success();
     }
+
+	@Override
+	public ApiResponse<List<Ddtongji>> FukuanTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
+		List<Ddtongji> ddlist= new ArrayList<>();
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		if (CollectionUtils.isEmpty(ddTongji)) {
+			apiResponse.setCode(404);
+			apiResponse.setMessage("未查询到订单");
+			return apiResponse;
+		}
+
+    Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
+    Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+	 while(it.hasNext()) {
+		 Entry<String, List<ClDd>> next = it.next();
+		 List<ClDd> value = next.getValue();
+		 Ddtongji ddtongji= new Ddtongji();
+			double fkze=0;
+
+			for (ClDd clDd : value) {
+				//订单付款状态状态  10已付款 00未付款
+				 if (StringUtils.equals(clDd.getFkzt(), "10")) {
+					 fkze=clDd.getZj()+fkze;
+				}
+
+			}
+
+			ddtongji.setSjname(next.getKey());
+			ddtongji.setFkze(Double.toString(fkze));
+			ddlist.add(ddtongji);
+
+	 }
+	 apiResponse.setResult(ddlist);
+
+		return apiResponse;
+	}
+
+	@Override
+	public ApiResponse<List<Ddtongji>> ShoukuanTj(DdTongjiTJ dd) {
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+
+		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
+		List<Ddtongji> ddlist= new ArrayList<>();
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+		if (CollectionUtils.isEmpty(ddTongji)) {
+			apiResponse.setCode(404);
+			apiResponse.setMessage("未查询到订单");
+			return apiResponse;
+		}
+
+		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getJgmc())).collect(Collectors.groupingBy(ClDd::getJgmc));
+			//获取每个机构下面的各种统计订单
+			 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+			 while(it.hasNext()) {
+				 Entry<String, List<ClDd>> next = it.next();
+				 List<ClDd> value = next.getValue();
+				 Ddtongji ddtongji= new Ddtongji();
+				 double fkze=0;
+
+					for (ClDd clDd : value) {
+						//订单付款状态状态  10已付款 00未付款
+						 if (StringUtils.equals(clDd.getFkzt(), "10")) {
+							 fkze=clDd.getZj()+fkze;
+						}
+
+					}
+					ddtongji.setJgmc(next.getKey());
+					ddtongji.setFkze(Double.toString(fkze));
+					ddlist.add(ddtongji);
+			 }
+
+			 apiResponse.setResult(ddlist);
+		return apiResponse;
+	}
 }

@@ -47,10 +47,9 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	entity.setPzlmd("10");
     	//默认设备急加速灵敏度
     	entity.setJslmd("2");
-    	//默认设备数据上传模式
-    	entity.setScms("10");
+    
     	//默认设备视屏上传模式
-    	entity.setSpscms("10");
+    	entity.setSpscms("20");
     	//默认设备的心跳
     	entity.setGpsxt("10");
     	
