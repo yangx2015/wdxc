@@ -52,7 +52,12 @@ module.exports = {
         FP:'/api/dd/pd',//订单分派
         TJ:'/api/dd/ddtj',//订单统计
         skgl:'/api/dd/skgl',//收款管理
-        cctj:'/api/dd/cctj' // 出车统计
+        cctj:'/api/dd/cctj', // 出车统计
+        collectingList:'/api/dd/collectingList', // 收款列表
+        paymentList:'/api/dd/paymentList', // 付款列表
+        cwupdate:'/api/dd/cwupdate', // 财务编辑
+        collectingConfirm:'/api/dd/collectingConfirm', // 收款确认
+        paymentConfirm:'/api/dd/paymentConfirm', // 付款确认
     },
     ROLE:{
         QUERY:'/api/js/pager',//角色管理
