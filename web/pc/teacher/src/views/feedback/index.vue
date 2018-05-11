@@ -9,52 +9,48 @@
   }
 </style>
 <template>
-	<div class="box feedback" style="height: 100%;">
-    <div class="header">
-      <div class="box-row">
-        <div class="titLeft" @click="back()">
-          <i class="iconfont icon-left"></i>
+  <div class="feedbackF">
+      <div class="box feedback" style="height: 100%;">
+        <head-tit tit="意见反馈"></head-tit>
+        <div class="body">
+            <div class="box">
+                <div>
+                    <md-tab-bar
+                      @indexChanged="tabbarC"
+                      :titles="titles"
+                    ></md-tab-bar>
+                </div>
+                <div class="body" style="padding: 0.5rem">
+                  <div class="textarea">
+                      <textarea class="text"
+                                :placeholder="'请输入您的'+placeholder+'信息'"
+                      ></textarea>
+                  </div>
+                </div>
+            </div>
         </div>
-        <div class="titCenter body-O" style="text-align: center;">
-            意见反馈
-        </div>
-        <div class="titLeft">
+        <div class="button">
+          <button>
+            提    交
+          </button>
         </div>
       </div>
-    </div>
-    <div class="body">
-        <div class="box">
-            <div>
-                <md-tab-bar
-                  @indexChanged="tabbarC"
-                  :titles="titles"
-                ></md-tab-bar>
-            </div>
-            <div class="body" style="padding: 0.5rem">
-              <div class="textarea">
-                  <textarea></textarea>
-              </div>
-            </div>
-        </div>
-    </div>
-    <div class="button">
-      <button>
-        提    交
-      </button>
-    </div>
-	</div>
+  </div>
 </template>
 
 <script>
   import {TabBar} from 'mand-mobile'
+  import headTit from "@/views/comp/headTit"
 	export default{
 		name:'',
 		components: {
       [TabBar.name]: TabBar,
+      headTit,
 		},
     data(){
 		  return{
         titles: ['建议', '投诉'],
+        placeholder:'建议'
       }
     },
     methods:{
@@ -64,6 +60,7 @@
         })
       },
       tabbarC(n,o){//tab切换
+            this.placeholder = this.titles[n]
           // alert('约车')
       },
     }

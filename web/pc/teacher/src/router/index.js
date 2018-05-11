@@ -12,7 +12,7 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'Home',
+      name: 'login',
       component: () => import('@/views/login')
     },
     {
@@ -29,6 +29,11 @@ export default new Router({
       path: '/list',
       name: 'list',
       component: () => import('@/views/pageList')
+    },
+    {
+      path: '/Ycar',
+      name: 'Ycar',
+      component: () => import('@/views/Ycar')
     }
   ]
 })
