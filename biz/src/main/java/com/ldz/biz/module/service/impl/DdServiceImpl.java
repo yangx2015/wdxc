@@ -11,6 +11,9 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.sys.model.SysMessage;
+import com.ldz.sys.service.SysMessageService;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
@@ -57,6 +60,8 @@ import tk.mybatis.mapper.common.Mapper;
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdService{
 
+    @Autowired
+    private SysMessageService sysMessageService;
 
     @Autowired
     private ClDdMapper entityMapper;
@@ -122,6 +127,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setJgdm(org.getJgdm());
         entity.setJgmc(org.getJgmc());
         entity.setCjsj(new Date());
+        entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
@@ -411,8 +417,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             newClDd.setCdbh(clcd.getCdbh());//车队编号
             newClDd.setZdbm(clCl.getZdbh());//终端编号
             sjId=jsy.getSjh();//
+
             mapBody=new HashMap<String,Object>();
-            mapBody.put("","");
+            mapBody.put("ck",clDd.getCk());//乘客名称
+            mapBody.put("cklxdh",clDd.getCklxdh());//乘客联系电话
+            mapBody.put("hcdz",clDd.getHcdz());//候车地址
+            mapBody.put("mdd",clDd.getMdd());//目的地
+            mapBody.put("yysj",clDd.getYysj());//获取预约时间
+
         }else if(StringUtils.equals(entity.getSjSx(),"11")){
 
 //            3-5、通过车牌号码查询临时车表，验证该车牌的正确性。
@@ -455,23 +467,24 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             RuntimeCheck.ifFalse(false,"创建订单历史表失败");
             return ApiResponse.error();
         }else{
-            //todo 插入下发短信表
             if(StringUtils.isNotEmpty(sjId)&&mapBody!=null){
-
-
-                mapBody.put("","");
-
-
                 String title="司机派单";//标题
                 String sendCode=sjId;//接收方编号
-                String message="";//接收方报文  mapBody
+                String message= JsonUtil.toJson(mapBody);//接收方报文  mapBody
                 String bizId="BIZ_10";//业务编号
+                long type=1;//1、短信
+                // TODO: 2018/5/9  插入系统消息表
+                SysMessage sysMessage=new SysMessage();
+                sysMessage.setMessage(message);//
+                sysMessage.setType(type+"");//
+                sysMessage.setTitle(title);
+                sysMessage.setSendeeCode(sendCode);
+                sysMessage.setBizId(bizId);
+                sysMessageService.add(sysMessage);
 
             }
-
             return ApiResponse.success();
         }
-
     }
     /**
      * 取消派单操作   请求方式为post
@@ -797,7 +810,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.setOrderByClause(ClDd.InnerColumn.jgdm.desc());
         List<ClDd> orgs = findByCondition(condition);
 //        4、遍历订单LIST列表
-        if(orgs!= null){
+        if(orgs!= null&&orgs.size()>0){
+//            firstJgdm=StringUtils.trimToEmpty(orgs.get(0).getJgdm());//原始机构ID
+//            firstJgmc=StringUtils.trimToEmpty(orgs.get(0).getJgmc());
             for(ClDd list:orgs){
                String ddJgdm=StringUtils.trimToEmpty(list.getJgdm());
                 if(StringUtils.isNotBlank(ddJgdm)){
@@ -1064,7 +1079,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 		}
 		//将订单按照司机分类
 		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
-		
+
 
 		 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 		 while(it.hasNext()) {
@@ -1153,7 +1168,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			apiResponse.setMessage("未查询到订单");
 			return apiResponse;
 		}
-		
+
     Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getSjxm())).collect(Collectors.groupingBy(ClDd::getSjxm));
     Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
 	 while(it.hasNext()) {
@@ -1205,7 +1220,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			apiResponse.setMessage("未查询到订单");
 			return apiResponse;
 		}
-		
+
 		 Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s->StringUtils.isNotEmpty(s.getJgmc())).collect(Collectors.groupingBy(ClDd::getJgmc));
 			//获取每个机构下面的各种统计订单
 			 Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
