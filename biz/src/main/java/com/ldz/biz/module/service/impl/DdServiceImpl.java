@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -121,7 +122,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setJgdm(org.getJgdm());
         entity.setJgmc(org.getJgmc());
         entity.setCjsj(new Date());
-        entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
         int i=entityMapper.insertSelective(entity);
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
@@ -580,6 +580,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         newClDd.setLc(entity.getLc());//里程
         newClDd.setScf(entity.getScf());//时长费
         newClDd.setLcf(entity.getLcf());//里程费
+        newClDd.setFkzt("00"); // 未付款
 
         int i=update(newClDd);
         if(i==0){
@@ -611,7 +612,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm())==0,"您不能对非本机构订单进行操作");
 ////        2、验证当前状态必须是 11-订单确认状态
 //        String ddzt=clDd.getDdzt();
-//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机确认状态，不能进行队长确认操作");
+//        RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机  确认状态，不能进行队长确认操作");
 //        RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId),"订单不属于本人，不能进行队长确认操作");
 
         RuntimeCheck.ifNull(clDd.getZj(),"订单总价不能为空");
@@ -654,6 +655,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.eq(ClDd.InnerColumn.ddzt,state);
         if (StringUtils.isNotEmpty(order.getCk())){
             condition.like(ClDd.InnerColumn.ck,order.getCk());
+        }
+        if (StringUtils.isNotEmpty(order.getJgmc())){
+            condition.like(ClDd.InnerColumn.jgmc,order.getJgmc());
         }
         List<ClDd> orderList = findByCondition(condition);
         if (orderList.size() == 0){
@@ -972,6 +976,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			dd.setJgdmlike(jgdm);
 		}
 
+		if (StringUtils.isEmpty(dd.getKssj())){
+		    String kssj = DateUtils.getToday()+" 00:00:00";
+		    dd.setKssj(kssj);
+        }
+		if (StringUtils.isEmpty(dd.getJssj())){
+		    String jssj = DateUtils.getToday()+" 23:59:59";
+		    dd.setJssj(jssj);
+        }
 
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 
@@ -1125,6 +1137,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			dd.setJgdmlike(jgdm);
 		}
 
+        if (StringUtils.isEmpty(dd.getKssj())){
+            String kssj = DateUtils.getToday()+" 00:00:00";
+            dd.setKssj(kssj);
+        }
+        if (StringUtils.isEmpty(dd.getJssj())){
+            String jssj = DateUtils.getToday()+" 23:59:59";
+            dd.setJssj(jssj);
+        }
 		ApiResponse<List<Ddtongji>> apiResponse= new ApiResponse<>();
 		List<Ddtongji> ddlist= new ArrayList<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);

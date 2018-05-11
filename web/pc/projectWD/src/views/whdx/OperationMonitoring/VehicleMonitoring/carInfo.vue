@@ -15,25 +15,25 @@
                             <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
                             <Row>
                                 <Col span="8">
-                                    <Button @click="setControl('12','0-10')" icon="camera">前摄像头拍照</Button>
+                                    <Button @click="setControl('12','1-10')" icon="camera">前摄像头拍照</Button>
                                 </Col>
                                 <Col span="8">
-                                    <Button @click="setControl('12','1-10')" icon="camera">后摄像头拍照</Button>
+                                    <Button @click="setControl('12','2-10')" icon="camera">后摄像头拍照</Button>
                                 </Col>
                                 <Col span="8">
-                                    <Button @click="setControl('12','2-10')" icon="camera">前后摄像头拍照</Button>
+                                    <Button @click="setControl('12','0-10')" icon="camera">前后摄像头拍照</Button>
                                 </Col>
                             </Row>
                             <br>
                             <Row>
                                 <Col span="8">
-                                    <Button @click="setControl('11','0-10')" icon="ios-videocam">前摄像头视频</Button>
+                                    <Button @click="setControl('11','1-10')" icon="ios-videocam">前摄像头视频</Button>
                                 </Col>
                                 <Col span="8">
-                                    <Button @click="setControl('11','1-10')" icon="ios-videocam">后摄像头视频</Button>
+                                    <Button @click="setControl('11','2-10')" icon="ios-videocam">后摄像头视频</Button>
                                 </Col>
                                 <Col span="8">
-                                    <Button @click="setControl('11','2-10')" icon="ios-videocam">前后摄像头视频</Button>
+                                    <Button @click="setControl('11','0-10')" icon="ios-videocam">前后摄像头视频</Button>
                                 </Col>
                             </Row>
                             <br>

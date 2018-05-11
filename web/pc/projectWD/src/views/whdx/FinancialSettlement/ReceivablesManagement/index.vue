@@ -21,7 +21,7 @@
 		    </Col>
 		    <Col span="6">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<Input value="数据搜索" placeholder="数据搜索" style="width: 100%;"></Input>
+		    		<Input placeholder="请输入机构名称" v-model="form.jgmc" style="width: 100%;" @input="getData"></Input>
 		    	</div>
 		    </Col>
 		    <Col span="9">
@@ -147,6 +147,7 @@
 				form:{
 				    ddzt:'30',
 					ck:'',
+                    jgmc:'',
 				},
                 list:[]
 			}
