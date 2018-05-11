@@ -60,7 +60,7 @@ public interface DdService extends BaseService<ClDd,String>{
 
     ApiResponse<List<Map<String,Object>>> paymentList(ClDd entity);
 
-    ApiResponse<String> collectingConfirm(ClDd entity);
+    ApiResponse<String> collectingConfirm(List<String> idList);
 
-    ApiResponse<String> paymentConfirm(ClDd entity);
+    ApiResponse<String> paymentConfirm(List<String> idList);
 }

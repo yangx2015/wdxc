@@ -15,4 +15,5 @@ public class DdTongjiTJ {
 	private String jssj;
 	//司机id
 	private String sj;
+	private String sjxm;
 }

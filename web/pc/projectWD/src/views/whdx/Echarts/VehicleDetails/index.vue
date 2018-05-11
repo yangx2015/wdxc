@@ -9,13 +9,18 @@
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
+				<span class="nscl">
+					<marquee behavior="" direction="">
+						据年审，还有90天以内的车量
+					</marquee>
+				</span>
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>安全驾驶</span>
+							<span>年审提醒</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<Input v-model="form.cph" placeholder="请输入车牌号" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -47,28 +52,27 @@
                 tabHeight: 220,
                 tableColumns: [
                     {title: "序号",  align: 'center', type: 'index'},
-                    {title: '终端编号', align: 'center',  key: 'sjxm'},
-                    {title: '离线时长', align: 'center', key: 'cph'},
-                    {title: '急加速', align: 'center', key: 'speedupCount'},
-                    {title: '急刹车', align: 'center',  key: 'speedownCount'},
-                    {title: '超速行驶', align: 'center',  key: 'overspeedCount'},
+                    {title: '司机姓名', align: 'center',  key: 'sjxm'},
+                    {title: '车牌号', align: 'center', key: 'cph'},
+                    {title: '年审时间', align: 'center',  key: 'nssj'},
                 ],
                 pageData: [],
                 form: {
-                    sjxmLike: '',
+                    cph: '',
                     total: 0,
                 },
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '年审提醒',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
         },
         methods: {
             getData(){
-                this.$http.get(this.apis.AQJS.QUERY,{params:this.form}).then((res) =>{
-                    if (res.code == 200){
+                this.pageData = [];
+                this.$http.get(this.apis.CLGL.nianshen,{params:this.form}).then((res) =>{
+                    if (res.code == 200 && res.result){
                         this.pageData = res.result;
                     }
                 })

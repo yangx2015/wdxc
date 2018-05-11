@@ -12,10 +12,10 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>安全驾驶</span>
+							<span>出车统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<Input v-model="form.sjxm" placeholder="请输入司机姓名" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -59,22 +59,17 @@
                     {
                         title: '司机',
                         align: 'center',
-                        key: 'dr'
-                    },
-                    {
-                        title: '时间',
-                        align: 'center',
-                        key: 'time'
+                        key: 'sjname'
                     },
                     {
                         title: '出车次数',
                         align: 'center',
-                        key: 'num'
+                        key: 'ddzsCount'
                     },
                 ],
                 pageData: [],
                 form: {
-                    gnmcLike: '',
+                    sjxm: '',
                     total: 0,
                     pageNum: 1,
                     pageSize: 8,
@@ -82,14 +77,15 @@
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '出车统计',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
         },
         methods: {
             getData(){
+                this.pageData = []
                 this.$http.post(this.apis.ORDER.cctj,this.form).then((res) =>{
-                    if (res.code == 200){
+                    if (res.code == 200 && res.result){
                         this.pageData = res.result;
                     }
                 })

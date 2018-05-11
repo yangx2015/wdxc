@@ -7,6 +7,7 @@ import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
@@ -26,6 +27,7 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -166,14 +168,20 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	}
 
 	@Override
-	public ApiResponse<List<ClCl>> nianshen() {
+	public ApiResponse<List<ClCl>> nianshen(ClCl car) {
 		ApiResponse<List<ClCl>> apiResponse = new ApiResponse<>();
 		long now = new Date().getTime();
 
-
-		List<ClCl> cllist = entityMapper.selectAll();
+		LimitedCondition condition = new LimitedCondition(ClCl.class);
+		if (StringUtils.isNotEmpty(car.getCph())){
+			condition.like(ClCl.InnerColumn.cph,car.getCph());
+		}
+		List<ClCl> cllist = entityMapper.selectByExample(condition);
 		List<ClCl> cls= new ArrayList<>();
 		/*cllist.stream().filter(s -> s.getNssj() != null).filter(s -> (now-s.getNssj().getTime()) < a);*/
+		// 年审时间正序
+		cllist = cllist.stream().filter(p->p.getNssj() != null).collect(Collectors.toList());
+		cllist.sort(Comparator.comparing(ClCl::getNssj));
 		for (ClCl clCl : cllist) {
 			if (clCl.getNssj()!=null) {
 				long nianshen= clCl.getNssj().getTime();

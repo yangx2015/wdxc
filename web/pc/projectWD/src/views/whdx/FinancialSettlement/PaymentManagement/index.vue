@@ -191,9 +191,13 @@
                     buttons:['取消','确认'],
                 }).then((confirm) => {
                     if (confirm) {
+                        let ids = '';
+                        for (let r of orderList){
+                            ids += r.id +',';
+                        }
                         let v = this;
                         let url = this.apis.ORDER.paymentConfirm;
-                        v.$http.post(url,{'id':id}).then((res) =>{
+                        v.$http.post(url,{'ids':ids}).then((res) =>{
                             if(res.code===200){
                                 v.$Message.success(res.message);
                                 this.getData();

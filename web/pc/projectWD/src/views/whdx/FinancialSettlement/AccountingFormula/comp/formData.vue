@@ -23,10 +23,7 @@
 						<Col span="12">
 							<FormItem label='车型'>
 							<Select filterable clearable  v-model="formItem.cx" placeholder="请选择车型...">
-								<Option value="05">5人坐</Option>
-								<Option value="07">7人坐</Option>
-								<Option value="45">45人坐</Option>
-								<Option value="48">48人坐</Option>
+								<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 							</Select>
 							</FormItem>
 						</Col>
@@ -69,15 +66,21 @@
 					{label:'内容',prop:'nr',required:true},
 					{label:'金额',prop:'je',required:true},
 				],
-                ruleInline:{}
+                ruleInline:{},
+                cxDict:[],//车量型号
+                cxDictCode:'ZDCLK0019',
 			}
 		},
 		created(){
             this.util.initFormModal(this);
+            this.getDict();
 		},
 		methods: {
             beforeSave(){
 			},
+            getDict(){
+                this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
+            },
 		}
 	}
 </script>

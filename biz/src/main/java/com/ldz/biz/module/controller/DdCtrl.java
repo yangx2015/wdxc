@@ -1,6 +1,7 @@
 package com.ldz.biz.module.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -295,14 +296,15 @@ public class DdCtrl{
     }
     /**
      * 确认收款 - 财务
-     * @param entity
      * ddzt     订单状态  30：因收单据  40：已收单据  必填
      * ck       乘客姓名
      * @return
      */
     @PostMapping(value="/collectingConfirm")
-    public ApiResponse<String> collectingConfirm(ClDd entity){
-        return service.collectingConfirm(entity);
+    public ApiResponse<String> collectingConfirm(String ids){
+        RuntimeCheck.ifBlank(ids,"请选择订单");
+        List<String> idList = Arrays.asList(ids.split(","));
+        return service.collectingConfirm(idList);
     }
 
     /**
@@ -319,14 +321,15 @@ public class DdCtrl{
 
     /**
      * 付款确认 -司机
-     * @param entity
      * ddzt     订单状态  30：因收单据  40：已收单据  必填
      * ck       乘客姓名
      * @return
      */
     @PostMapping(value="/paymentConfirm")
-    public ApiResponse<String> paymentConfirm(ClDd entity){
-        return service.paymentConfirm(entity);
+    public ApiResponse<String> paymentConfirm(String ids){
+        RuntimeCheck.ifBlank(ids,"请选择订单");
+        List<String> idList = Arrays.asList(ids.split(","));
+        return service.paymentConfirm( idList);
     }
 //    /**
 //     * 付款管理   这个功能放弃了
