@@ -41,7 +41,7 @@
 					<!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
 						<!--今日单据-->
 					<!--</div>-->
-          <Card style="width:100%">
+          <Card style="width:100%;margin-top: 6px">
             <p slot="title">
               <Icon type="ios-film-outline"></Icon>
               信息工程学院-小名
