@@ -25,7 +25,8 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
     
 	@Override
 	public ApiResponse<String> saveEntity(SysYjfk entity) {
-		
+		//默认待处理
+		entity.setZt("00");
 		entity.setYjId(genId());
 		entity.setCjsj(new Date());
 		save(entity);
