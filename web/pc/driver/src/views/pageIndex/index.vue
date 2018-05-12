@@ -46,7 +46,7 @@
               <Icon type="ios-film-outline"></Icon>
               信息工程学院-小名
             </p>
-              <div>
+              <div style="font-size: 16px">
                   <p>
                     <Icon type="ios-clock"></Icon>
                     2018-11-11 09:00:00
@@ -67,15 +67,75 @@
               </div>
           </Card>
 				</div>
-				<div v-else-if="school==1" class="body">
-          <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-            待确认
-          </div>
+				<div v-else-if="school==1" class="body"  style="position: relative;padding: 5px 12px">
+          <!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
+            <!--待确认-->
+          <!--</div>-->
+          <ok-list></ok-list>
         </div>
-        <div v-else-if="school==2" class="body">
-          <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-            历史单据
-          </div>
+        <div v-else-if="school==2" class="body"  style="padding: 5px 12px">
+          <!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
+            <!--历史单据-->
+          <!--</div>-->
+          <Card style="width:100%;margin-top: 6px">
+            <p slot="title">
+              <Icon type="ios-film-outline"></Icon>
+              信息工程学院-小名
+            </p>
+            <div style="font-size: 16px">
+              <p>
+                <Icon type="ios-clock"></Icon>
+                2018-11-11 09:00:00
+              </p>
+              <p>
+                <Icon type="ios-telephone"></Icon>
+                <a>123456789000</a>
+              </p>
+              <p>
+                <Icon type="ios-location" color="#15b740"></Icon>
+                候车地点
+              </p>
+              <p><Icon type="arrow-down-c"></Icon></p>
+              <p>
+                <Icon type="ios-location" color="#ff9b00"></Icon>
+                目的地
+              </p>
+            </div>
+            <div class="box-row" style="text-align: center">
+                <div class="body-O">
+                    <div>
+                      里程:
+                    </div>
+                    <div>
+                      45公里
+                    </div>
+                </div>
+                <div class="body-O">
+                    <div>
+                      单价:
+                    </div>
+                    <div>
+                      15元/公里
+                    </div>
+                </div>
+                <div class="body-O">
+                  <div>
+                    过桥费:
+                  </div>
+                  <div>
+                    25元
+                  </div>
+                </div>
+                <div class="body-O">
+                  <div>
+                    路停费:
+                  </div>
+                  <div>
+                    25元
+                  </div>
+                </div>
+            </div>
+          </Card>
         </div>
 			</div>
 		</div>
@@ -84,14 +144,15 @@
 
 <script>
 	import { Swiper, SwiperItem, Cell, XButton, Tab, TabItem } from 'vux'
-	import configApi from '@/axios/config.js'
+  import okList from './comp/okList'
 	export default{
 		name:'',
 		components: {
 		    Swiper,
 		    SwiperItem,
 		    Cell,
-		    XButton, Tab, TabItem
+		    XButton, Tab, TabItem,
+        okList
 		 },
 		data(){
 			return{
@@ -125,7 +186,7 @@
 		  	},
 		  	getSwiperMess(){
 		  		var v = this
-		  		this.$http.post(configApi.SWIPER.QUERTY).then((res)=>{
+		  		this.$http.post(this.apis.SWIPER.QUERTY).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('图片数据',res)
 //		  				v.$Message.success('This is a success tip');
@@ -139,7 +200,7 @@
 		  	},
 		  	getLineMess(){
 		  		var v = this
-		  		this.$http.post(configApi.LINE.QUERTY).then((res)=>{
+		  		this.$http.post(this.apis.LINE.QUERTY).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('线路数据',res)
 //		  				v.$Message.success('This is a success tip');
