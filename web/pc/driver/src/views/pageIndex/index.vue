@@ -37,10 +37,22 @@
               <tab-item @on-item-click="onItemClick">历史单据</tab-item>
 				    </tab>
 				</div>
-				<div v-if="school==0" class="body" style="position: relative;">
-					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-						今日单据
-					</div>
+				<div v-if="school==0" class="body" style="position: relative;padding: 5px 12px">
+					<!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
+						<!--今日单据-->
+					<!--</div>-->
+          <Card style="width:100%">
+            <p slot="title">
+              <Icon type="ios-film-outline"></Icon>
+              信息工程学院-小名
+            </p>
+              <div>
+                  <p>
+                    <Icon type="ios-telephone"></Icon>
+                    <a>123456789000</a>
+                  </p>
+              </div>
+          </Card>
 				</div>
 				<div v-else-if="school==1" class="body">
           <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">

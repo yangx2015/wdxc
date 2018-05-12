@@ -6,6 +6,9 @@ import App from './App'
 import router from './router'
 import './styles/global.css'
 
+import http from './axios/index';
+
+Vue.prototype.$http = http;
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
