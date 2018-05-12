@@ -48,8 +48,21 @@
             </p>
               <div>
                   <p>
+                    <Icon type="ios-clock"></Icon>
+                    2018-11-11 09:00:00
+                  </p>
+                  <p>
                     <Icon type="ios-telephone"></Icon>
                     <a>123456789000</a>
+                  </p>
+                  <p>
+                    <Icon type="ios-location" color="#15b740"></Icon>
+                    候车地点
+                  </p>
+                  <p><Icon type="arrow-down-c"></Icon></p>
+                  <p>
+                    <Icon type="ios-location" color="#ff9b00"></Icon>
+                    目的地
                   </p>
               </div>
           </Card>
