@@ -29,5 +29,8 @@ public class ClJsyServiceImpl implements ClJsyService{
 		return ApiResponse.updateSuccess();
 	}
 
-
+	public ClJsy findById(String sfzhm){
+		ClJsy findJzg = jsymapper.findById(sfzhm);
+		return findJzg;
+	}
 }

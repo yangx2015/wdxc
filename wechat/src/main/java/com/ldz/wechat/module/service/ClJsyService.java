@@ -13,4 +13,6 @@ public interface ClJsyService {
 	 * 修改驾驶员信息
 	 */
 	ApiResponse<String> updatejsy(ClJsy jsy);
+
+	ClJsy findById(String id);
 }
