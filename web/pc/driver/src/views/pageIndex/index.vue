@@ -6,15 +6,17 @@
 	<div class="box">
 		<div class="header">
 			<div class="box-row">
-				<div class="titLeft" @click="MyCenter()">
-					<Icon type="person" color="#949494" size='26'></Icon>
-				</div>
-				<div class="titCenter body-O" style="text-align: center;">
-					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
-				</div>
-				<div class="titRight" @click="feedback()">
-					<Icon type="ios-compose" color="#949494" size='26'></Icon>
-				</div>
+				<!--<div class="titLeft" @click="MyCenter()">-->
+					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
+				<div class="titCenter body-O"
+             style="text-align: center;font-size: 16px;font-weight: 600;color:#a8a8a8">
+					 <!--<Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>-->
+				    我的单据
+        </div>
+				<!--<div class="titRight" @click="feedback()">-->
+					<!--<Icon type="ios-compose" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
 			</div>
 		</div>
 		<div>
@@ -30,66 +32,26 @@
 			<div class="box">
 				<div class="">
 					<tab>
-				      <tab-item selected @on-item-click="onItemClick">校园巴士</tab-item>
-				      <tab-item @on-item-click="onItemClick">通勤巴士</tab-item>
+				      <tab-item selected @on-item-click="onItemClick">今日单据</tab-item>
+				      <tab-item @on-item-click="onItemClick">待确认</tab-item>
+              <tab-item @on-item-click="onItemClick">历史单据</tab-item>
 				    </tab>
 				</div>
-				<div v-if="!school" class="body" style="position: relative;">
+				<div v-if="school==0" class="body" style="position: relative;">
 					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-						功能开发中
+						今日单据
 					</div>
 				</div>
-				<div v-else class="body">
-					<div class="list">
-						<div class="listTiT box-row"
-							v-for="(item,index) in lineList"
-							@click="lineMess(item.id)">
-							<div class="body-O">
-								<i class="iconfont icon-003lubiao"></i>
-								{{item.xlmc}}
-							</div>
-							<div>
-								<i class="iconfont icon-right"></i>
-							</div>
-						</div>
-					</div>
-					<div class="list" v-show="false">
-						<div class="listTiT box-row">
-							<div class="body-O">
-								<i class="iconfont icon-003lubiao"></i>
-								校巴一号站点
-							</div>
-							<div>
-								<i class="iconfont icon-right"></i>
-							</div>
-						</div>
-						<ul>
-							<li v-for="item in [,,,,,,]">
-								<div class="carNum">
-									202
-								</div>
-								<div class="box-row line lineTop" @click="lineMess">
-									<div class="body-O">
-										<i class="iconfont icon-jiantouarrow591"></i>
-										开往校图书馆
-									</div>
-									<div>
-										<i class="iconfont icon-xinhao"></i>2站
-									</div>
-								</div>
-								<div class="box-row line" @click="lineMess">
-									<div class="body-O">
-										<i class="iconfont icon-jiantouarrow591"></i>
-										第一食堂
-									</div>
-									<div>
-										<i class="iconfont icon-xinhao"></i>4站
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
-				</div>
+				<div v-else-if="school==1" class="body">
+          <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
+            待确认
+          </div>
+        </div>
+        <div v-else-if="school==2" class="body">
+          <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
+            历史单据
+          </div>
+        </div>
 			</div>
 		</div>
 	</div>
@@ -108,7 +70,7 @@
 		 },
 		data(){
 			return{
-				school:true,
+				school:0,
 				titFind:'',
 				imglistV:0,
 				imglist: [{
@@ -122,8 +84,8 @@
 			}
 		},
 		created(){
-			this.getSwiperMess()
-			this.getLineMess()
+			// this.getSwiperMess()
+			// this.getLineMess()
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -171,11 +133,8 @@
 		    	this.$router.push('/lineMess?lineID='+id)
 		    },
 		    onItemClick(index){
-		    	if(index==1){
-		    		this.school = false
-		    	}else{
-		    		this.school = true
-		    	}
+		  	  console.log(index)
+          this.school = index
 		    }
 		}
 	}
