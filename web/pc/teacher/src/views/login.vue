@@ -11,20 +11,20 @@
           <md-input-item
             title="姓名"
             type="text"
-            v-model="log.name"
+            v-model="form.name"
             placeholder="请填写您的姓名"
             clearable
           ></md-input-item>
           <md-input-item
             title="身份证号"
             type="text"
-            v-model="log.idCar"
+            v-model="form.idCard"
             placeholder="请输入您的身份证号码"
             clearable
           ></md-input-item>
         </md-field>
       </div>
-    <div class="submit">
+    <div class="submit"  @click="login">
       <md-button>登录</md-button>
     </div>
   </div>
@@ -45,12 +45,23 @@
     },
     data(){
       return{
-        log:{}
+        form:{
+          name:'宋林殊',
+          idCard:'32948289347289'
+        }
       }
     },
     methods:{
       back(){
+        this.$router.back()
+      },
+      login(){
+        var v = this
+        v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
 
+        }).catch((error)=>{
+
+        })
       }
     }
   }

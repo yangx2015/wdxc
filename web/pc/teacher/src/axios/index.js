@@ -7,7 +7,7 @@ import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
 // 	baseURL: 'http://47.98.39.45:9999',
-	baseURL: 'http://192.168.31.223:9998',
+	baseURL: 'http://192.168.31.180:9998',
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
@@ -42,24 +42,9 @@ httpInstance.interceptors.request.use((config) => {
 httpInstance.interceptors.response.use((response) => {
 		var v = this
 //     对响应数据做点什么
-//  if(response.status===200){
     	return response.data;
-//  }else if(!Cookies.get('result')||response.status===500){
-//		router.push({name: 'error-500'})
-//  }else if(Cookies.get('result')&&response.status===500){
-//		router.push({name: 'errorpage_500'})
-//  }else if(response.status===200&&response.data.code===403){
-//  	router.push({name: 'error-403'})
-//  }
 }, function (error) {
     // 对响应错误做点什么
-//	if(!Cookies.get('result')){
-//		console.log('1')
-//		router.push({name: 'error-500'})
-//  }else if(Cookies.get('result')){
-//  	console.log('2')
-//		router.push({name: 'errorpage_500'})
-//  }
     return Promise.reject(error);
 });
 export default httpInstance;
