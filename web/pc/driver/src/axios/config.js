@@ -7,5 +7,8 @@ module.exports = {
 	},
 	LINEMESS:{
 		QUERTY:'/put/xl/getzdcl'//车辆到站信息
-	}
+	},
+  LOGIN:{
+    QUERTY:'/put/jsy/getjsy',//登录
+  }
 }

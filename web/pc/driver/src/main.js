@@ -7,8 +7,9 @@ import iView from 'iview';
 import 'iview/dist/styles/iview.css';
 
 import http from './axios/index';
-
+import apis from './axios/config';
 Vue.prototype.$http = http;
+Vue.prototype.apis = apis;
 
 Vue.use(VueRouter);
 Vue.use(iView);

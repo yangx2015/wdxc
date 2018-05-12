@@ -5,10 +5,12 @@ import * as FastClick from "fastclick"
 import App from './App'
 import router from './router'
 import './styles/global.css'
-
+import apis from './axios/config';
 import http from './axios/index';
 
 Vue.prototype.$http = http;
+Vue.prototype.apis = apis;
+
 FastClick.attach(document.body)
 
 Vue.config.productionTip = false
