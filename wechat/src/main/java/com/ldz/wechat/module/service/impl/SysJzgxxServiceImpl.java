@@ -26,4 +26,9 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 		return response;
 	}
 
+	public  SysJzgxx findById(String id){
+		return jzgmapper.findById(id);
+	}
+
+
 }

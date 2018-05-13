@@ -33,19 +33,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private YhService yhService;
     @Autowired
     private ClDdrzMapper ddrzMapper;//历史订单明细表
-
+    @Autowired
+    private SysJzgxxService jzgxxService;
     @Override
     protected Mapper<ClDd> getBaseMapper() {
         return entityMapper;
     }
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
-        ClJsy clJsy= jsyService.findById(userId);
-        String jgdm=clJsy.getJgdm();
+        String xm=entity.getCk();
+        String cklxdh=entity.getCklxdh();//
+        RuntimeCheck.ifBlank(xm,"乘客姓名不能为空");
+        RuntimeCheck.ifBlank(cklxdh,"乘客联系电话不能为空");
+
+        SysJzgxx clJsy= jzgxxService.findById(userId);
         RuntimeCheck.ifNull(clJsy, "未找到记录");
-        RuntimeCheck.ifFalse(entity.getJgdm().indexOf(jgdm)==0,"您不能为非本机构员工创建订单");
-        SysJg org = jgService.findByOrgCode(entity.getJgdm());
-        RuntimeCheck.ifNull(org,"当前选择的用车单位有误，请核实！");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
         RuntimeCheck.ifBlank(entity.getMdd(),"目的地不能为空");
         RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
@@ -53,9 +55,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
         String orderId=genId();
         entity.setId(orderId);
-        entity.setCjr(userId);
-        entity.setJgdm(org.getJgdm());
-        entity.setJgmc(org.getJgmc());
+//        entity.setCjr(userId);
+        entity.setCkCjl(userId);//乘客创建人
+        entity.setJgdm(clJsy.getJgdm());
+        entity.setJgmc(clJsy.getJdmc());
         entity.setCjsj(new Date());
         entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
