@@ -1,18 +1,24 @@
 package com.ldz.biz.module.service.impl;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.sys.mapper.SysHsgsMapper;
+import com.ldz.sys.model.SysHsgs;
 import com.ldz.sys.model.SysMessage;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
+import org.apache.commons.collections.bidimap.AbstractBidiMapDecorator;
+import org.apache.commons.collections4.BidiMap;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.cfg.defs.MinDef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -81,6 +87,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private ClLscMapper clLscMapper;//临时车表
     @Autowired
     private ClCdMapper clCdMapper;//车队表
+    @Autowired
+    private SysHsgsMapper hsgsMapper;
 
 
 
@@ -1278,4 +1286,81 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 			 apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
+
+	private BigDecimal overWorkMoney(ClDd order){
+        SimpleCondition condition = new SimpleCondition(SysHsgs.class);
+        condition.eq(SysHsgs.InnerColumn.lx,"10");
+        List<SysHsgs> hsgsList = hsgsMapper.selectByExample(condition);
+        RuntimeCheck.ifTrue(hsgsList.size() == 0,"未找到核算公式");
+        SysHsgs hsgs = hsgsList.get(0);
+        BigDecimal price = hsgs.getJe();
+        String nr = hsgs.getNr();
+        long durationMs = getExtraTime(nr,order.getYysj(),order.getSjqrsj());
+        BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000*60*60),2);
+        System.out.println(amount);
+        return amount;
+    }
+
+    public static void main(String[] ars){
+        String time = "8:30-12:00,14:00-17:00";
+        Date startTime = new Date();
+        Date endTime = new Date();
+        startTime.setHours(7);
+        startTime.setMinutes(30);
+
+        endTime.setHours(20);
+        endTime.setMinutes(0);
+        long s = getExtraTime(time,startTime,endTime);
+        System.out.println("s="+s);
+        BigDecimal price = new BigDecimal(10);
+        BigDecimal amount = price.multiply(new BigDecimal(s)).divide(new BigDecimal(1000*60*60),BigDecimal.ROUND_HALF_UP);
+        System.out.println(amount);
+    }
+
+    private static long getExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime){
+        String[] times = workTimeStr.split(",");
+        String time0 = times[0];
+        Date midTime = new Date();
+        String midEndTime = time0.split("-")[1];
+        int midEndHour = Integer.parseInt(midEndTime.split(":")[0]);
+        int midEndMinute = Integer.parseInt(midEndTime.split(":")[1]);
+        midTime.setHours(midEndHour);
+        midTime.setMinutes(midEndMinute);
+        long duration = 0;
+        if (orderEndTime.getTime() - midTime.getTime() > 0){
+            for (int i = 0; i < times.length; i++) {
+                duration += getPartExtraTime(times[i],orderStartTime,midTime,i);
+            }
+        }else{
+            duration += getPartExtraTime(times[0],orderStartTime,midTime,0);
+        }
+        return duration;
+    }
+
+    private static long getPartExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime,int i){
+        String startWorkTime = workTimeStr.split("-")[0];
+        String endWorkTime = workTimeStr.split("-")[1];
+        int workStartHour = Integer.parseInt(startWorkTime.split(":")[0]);
+        int workStartMinute = Integer.parseInt(startWorkTime.split(":")[1]);
+
+        long duration = 0;
+        if (i == 1){// 下午
+            int workEndHour = Integer.parseInt(endWorkTime.split(":")[0]);
+            int workEndMinute = Integer.parseInt(endWorkTime.split(":")[1]);
+            Date workEndTime = new Date(orderEndTime.getTime());
+            workEndTime.setHours(workEndHour);
+            workEndTime.setMinutes(workEndMinute);
+            long duration2 = orderEndTime.getTime() - workEndTime.getTime();
+            if (duration2 > 0)duration += duration2;
+        }
+
+        Date workStartTime = new Date(orderStartTime.getTime());
+        workStartTime.setHours(workStartHour);
+        workStartTime.setMinutes(workStartMinute);
+
+        long duration1 = workStartTime.getTime() - orderStartTime.getTime();
+        if (duration1 > 0)duration += duration1;
+        System.out.println(duration/(1000*60*60));
+        return duration;
+    }
 }

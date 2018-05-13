@@ -1,5 +1,6 @@
 package com.ldz.wechat.module.service.impl;
 
+import com.ldz.util.commonUtil.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +17,11 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 	private SysJzgxxMapper jzgmapper;
 
 	@Override
-	public ApiResponse<SysJzgxx> findJzg(String idCard, String name) {
-
+	public ApiResponse<String> findJzg(String idCard, String name) {
 		SysJzgxx jzg = jzgmapper.findJzg(idCard, name);
-
 		RuntimeCheck.ifNull(jzg, "身份证或者姓名有误");
-		ApiResponse<SysJzgxx> response = new ApiResponse<>();
-		response.setResult(jzg);
-		return response;
+		String token = JwtUtil.createToken(jzg.getId(),jzg.getZjhm());
+		return ApiResponse.success(token);
 	}
 
 	public  SysJzgxx findById(String id){
