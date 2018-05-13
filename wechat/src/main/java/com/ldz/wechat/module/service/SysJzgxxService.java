@@ -10,4 +10,6 @@ public interface SysJzgxxService {
 	 */
 	
 	ApiResponse<SysJzgxx> findJzg(String idCard,String name);
+
+	SysJzgxx findById(String id);
 }

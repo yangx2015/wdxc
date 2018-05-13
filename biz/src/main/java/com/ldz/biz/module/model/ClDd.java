@@ -305,6 +305,21 @@ public class ClDd implements Serializable {
     @Column(name = "KTCODE")
     private String ktcode;
 
+
+    /**
+     * 乘客创建人，这个订单是由乘客创建时，这里填写申请的人姓名
+     */
+    @Column(name = "CK_CJL")
+    private String ckCjl;
+
+    public String getCkCjl() {
+        return ckCjl;
+    }
+
+    public void setCkCjl(String ckCjl) {
+        this.ckCjl = ckCjl;
+    }
+
     public String getZkl() {
         return zkl;
     }

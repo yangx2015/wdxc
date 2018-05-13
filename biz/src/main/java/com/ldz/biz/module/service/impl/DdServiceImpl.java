@@ -115,6 +115,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
         RuntimeCheck.ifNull(entity.getZws(),"乘客人数不能为空");
         RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
+        RuntimeCheck.ifBlank(entity.getCk(),"乘客姓名不能为空");
+        RuntimeCheck.ifBlank(entity.getCklxdh(),"乘客联系电话不能为空");
         String orderId=genId();
         entity.setId(orderId);
         entity.setCjr(userId);
