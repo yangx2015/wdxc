@@ -11,7 +11,11 @@
 <template>
   <div class="feedbackF">
       <div class="box feedback" style="height: 100%;">
-        <head-tit tit="意见反馈"></head-tit>
+        <head-tit tit="意见反馈" @titRigCli="titRigCli">
+          <div slot="headright">
+            <i class="iconfont icon-list"></i>
+          </div>
+        </head-tit>
         <div class="body">
             <div class="box">
                 <div>
@@ -62,12 +66,23 @@
       }
     },
     created(){
-      this.feedbackList()
+      if(this.cok.get('result')) {
+
+      }else{
+        this.$router.push({
+          name:'login'
+        })
+      }
     },
     methods:{
       back(){
         this.$router.push({
           name:'Home'
+        })
+      },
+      titRigCli(){
+        this.$router.push({
+          name:'feedbackHis'
         })
       },
       tabbarC(n,o){//tab切换****10投诉  00改建/建议

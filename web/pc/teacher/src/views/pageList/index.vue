@@ -56,6 +56,15 @@
         name: "",
         components:{
         },
+        created(){
+          if (this.cok.get('result')) {
+
+          }else{
+            this.$router.push({
+              name:'login'
+            })
+          }
+        },
         methods:{
           starNum(val){
             alert(val)

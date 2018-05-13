@@ -5,12 +5,16 @@
   <div class="boxHeader">
       <div class="box-row">
           <div class="titLeft" @click="back()">
-            <i class="iconfont icon-left"></i>
+            <slot  name="headleft">
+                <i class="iconfont icon-left"></i>
+            </slot>
           </div>
           <div class="titCenter body-O" style="text-align: center;">
             {{tit}}
           </div>
-          <div class="titLeft">
+          <div class="titRight" @click="titRight">
+              <slot name="headright">
+              </slot>
           </div>
       </div>
   </div>
@@ -27,9 +31,10 @@
         },
         methods:{
           back(){
-            this.$router.push({
-              name: 'Home'
-            });
+            this.$router.back()
+          },
+          titRight(){
+            this.$emit('titRigCli')
           }
         }
     }

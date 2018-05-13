@@ -26,6 +26,11 @@ export default new Router({
       component: () => import('@/views/feedback')
     },
     {
+      path: '/feedbackHis',
+      name: 'feedbackHis',
+      component: () => import('@/views/feedbackHis')
+    },
+    {
       path: '/list',
       name: 'list',
       component: () => import('@/views/pageList')
