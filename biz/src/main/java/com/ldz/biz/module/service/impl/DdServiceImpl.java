@@ -1117,7 +1117,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 			for (ClDd clDd : value) {
 				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-				if (StringUtils.equals(clDd.getDdzt(), "20")) {
+				Integer ddzt = Integer.parseInt(clDd.getDdzt());
+				if (ddzt>=13) {
 					ddzsCount++;
 				}
 				continue;
@@ -1527,9 +1528,25 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		    CcTjTx ccTjTx = new CcTjTx();
 		    List<String> sjxm=new ArrayList<>();
 		    List<Integer> count = new ArrayList<>();
-		
+		    Map<String, Integer> tjMap= new HashMap<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-	
+		
+		int ypddCount = 0;
+		int dpddCount=0;
+		for (ClDd clDd : ddTongji) {
+				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+				Integer ddzt = Integer.parseInt(clDd.getDdzt());
+				if (ddzt>=13) {
+					ypddCount++;
+				}else {
+					dpddCount++;
+				}
+				
+		}
+		tjMap.put("已派单", ypddCount);
+		tjMap.put("待派单", dpddCount);
+		ccTjTx.setTjMap(tjMap);
+		
 		// 将订单按照司机分类
 		Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s -> StringUtils.isNotEmpty(s.getSjxm()))
 				.collect(Collectors.groupingBy(ClDd::getSjxm));
@@ -1538,17 +1555,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		while (it.hasNext()) {
 			Entry<String, List<ClDd>> next = it.next();
 			List<ClDd> value = next.getValue();
-			int ddzsCount = 0;
-
+			int ypdCount = 0;
+           
 			for (ClDd clDd : value) {
 				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-				if (StringUtils.equals(clDd.getDdzt(), "20")) {
-					ddzsCount++;
+				Integer ddzt = Integer.parseInt(clDd.getDdzt());
+				if (ddzt>=13) {
+					ypdCount++;
 				}
 				continue;
+				
 			}
 			sjxm.add(next.getKey());
-			count.add(ddzsCount);
+			count.add(ypdCount);
 		}
 		ccTjTx.setSjxm(sjxm);
 		ccTjTx.setCount(count);

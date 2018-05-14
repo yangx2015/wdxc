@@ -1,6 +1,7 @@
 package com.ldz.biz.module.bean;
 
 import java.util.List;
+import java.util.Map;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,4 +16,6 @@ public class CcTjTx {
 	private List<String> sjxm;
 	
 	private List<Integer> count;
+	
+	private Map<String, Integer>  tjMap;
 }
