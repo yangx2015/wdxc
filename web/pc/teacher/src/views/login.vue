@@ -65,16 +65,17 @@
       },
       login(){
         var v = this
-        this.cok.set('result',this.form)
-        this.$router.back()
-        // this.$router.push({
-        //     name:'Home'
-        // })
-        // v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
-        //
-        // }).catch((error)=>{
-        //
-        // })
+        v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
+            if (res.code == 200){
+                this.cok.set('result',this.form)
+                this.cok.set("token",res.result);
+                this.$router.push({
+                    name:'Home'
+                })
+            }
+        }).catch((error)=>{
+
+        })
       }
     }
   }

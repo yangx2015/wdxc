@@ -27,11 +27,9 @@ httpInstance.interceptors.request.use((config) => {
         }
     }
     // 在发送请求之前做些什么
-//  if(Cookies.get('result')){
-//  	let accessToken = JSON.parse(Cookies.get('result')).accessToken;
-//  	config.headers.token = accessToken.token;
-//  	config.headers.userid = accessToken.userId;
-//  }
+    if(Cookies.get('token')){
+        config.headers.token = Cookies.get('token');
+    }
     return config;
 }, function (error) {
     // 对请求错误做些什么

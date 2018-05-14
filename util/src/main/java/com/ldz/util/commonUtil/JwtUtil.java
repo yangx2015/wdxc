@@ -50,14 +50,14 @@ public class JwtUtil {
         }
         return null;
     }
-    public static String createToken(String userId,String loginName){
+    public static String createToken(String type,String userInfo){
         try {
             String token = JWT.create()
                     .withIssuer("wcpms")
                     .withSubject("wcpms")
                     .withAudience("wcpms")
-                    .withClaim("userId",userId)
-                    .withClaim("loginName",loginName)
+                    .withClaim("type",type)
+                    .withClaim("userInfo",userInfo)
                     .sign(algorithm);
             return token;
         } catch (JWTCreationException exception){

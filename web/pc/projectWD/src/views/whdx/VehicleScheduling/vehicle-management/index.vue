@@ -325,14 +325,6 @@
                     }
                 ],
                 tableData: [
-	                {
-	                	carNumber:'201701010914230001',
-	                	LicensePlate:'鄂A12345',
-	                	carType:'大巴车',
-	                	carModel:'48人座',
-	                	time:'2017-05-02 09:10:00',
-	                	carState:'离线'
-	                }
                 ],
                 //收索
 				findMess: {

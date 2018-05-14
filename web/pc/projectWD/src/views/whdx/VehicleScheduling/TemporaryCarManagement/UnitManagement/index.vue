@@ -1,12 +1,12 @@
+<!--单位管理-->
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
-<!--角色管理-->
 <template>
 	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-				<span class="tabPageTit">
+    			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
@@ -15,80 +15,112 @@
 							<span>单位管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.dwmcLike" placeholder="请输入单位名称" style="width: 200px"></Input>
+							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
+							<Input v-model="findMess.cdmcLike" placeholder="请输入车队名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="v.util.getPageData(v)">
+							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
+								<!--查询-->
 							</Button>
-							<Button type="primary" @click="v.util.add(v)">
+							<Button type="primary" @click="AddDataList()">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
-			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
+			<Row>
+				<Table
+					:height="tabHeight"
+					:row-class-name="rowClassName"
+					:columns="columns10"
+					:data="tableData"></Table>
+				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 1111;">
+					<Spin fix>
+						<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
+						<div style="font-size: 30px;">数据加载中请稍后</div>
+					</Spin>
+				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator
-					  @on-change='pageChange'></Page>
+				<Page
+					:total=pageTotal
+					:current=page.pageNum
+					:page-size=page.pageSize
+					show-total
+					show-elevator
+					@on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component :is="componentName"></component>
+		<component
+			:is="compName"
+			:mess="mess"
+			:messType="messType"
+			:ty="ztDict"
+		></component>
 	</div>
 </template>
-
 <script>
     import mixins from '@/mixins'
-    import formData from './comp/formData.vue'
 
+
+    import newmes from './comp/formData'
     export default {
-        name: 'char',
-        mixins: [mixins],
+        name:'',
         components: {
-            formData
+            newmes
         },
-        data() {
+        mixins:[mixins],
+        data () {
             return {
-                v:this,
-                SpinShow: true,
-                apiRoot: this.apis.TEMP_UNIT,
+                mess:{},
+                messType:true,
+                compName:'',
+
+                SpinShow:true,
                 tabHeight: 220,
-                componentName: '',
-                choosedItem: null,
-                tableTitle: [
+
+                pageTotal:1,
+                page:{
+                    pageNum:1,
+                    pageSize:8
+                },
+                columns10: [
                     {
-                        title:'序号',
+                        title: '序号',
                         type: 'index',
-                        align:'center',
                         width: 60,
+                        align: 'center'
                     },
                     {
                         title: '单位编号',
                         align:'center',
-                        key: 'dwbh'
+                        key: 'cdbh'
                     },
                     {
                         title: '单位名称',
                         align:'center',
-                        key: 'dwmc'
+                        key: 'cdmc'
                     },
                     {
-                        title: '负责人',
+                        title: '单位负责人',
                         align:'center',
-                        key: 'lxr'
+                        key: 'dzxm'
                     },
                     {
-                        title: '联系电话',
+                        title: '手机号码',
                         align:'center',
-                        key: 'lxdh'
+                        key: 'sjhm'
                     },
                     {
-                        title: '登记次数',
+                        title: '状态',
                         align:'center',
-                        key: 'djcs'
+                        key: 'zt',
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,this.ztDictCode,p.row.zt)
+                            return h('div',val)
+                        }
                     },
                     // {
                     //     title: '创建人',
@@ -97,14 +129,15 @@
                     // },
                     // {
                     //     title: '创建时间',
-                    //     width:'100',
+                    //     width:'180',
                     //     align:'center',
                     //     key: 'cjsj'
                     // },
                     {
-                        title:'操作',
-                        align:'center',
-                        type: 'action',
+                        title: '操作',
+                        key: 'action',
+                        width: 150,
+                        align: 'center',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -119,8 +152,9 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.choosedItem = params.row
-                                            this.componentName = 'formData'
+                                            this.messType = false
+                                            this.mess = params.row
+                                            this.compName = 'newmes'
                                         }
                                     }
                                 }),
@@ -133,38 +167,80 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.util.delete(this,[params.row.id])
+                                            this.listDele(params.row)
                                         }
                                     }
                                 })
                             ]);
                         }
-                    },
+                    }
                 ],
-                pageData: [],
-                form: {
-                    gnmcLike: '',
-                    total: 0,
+                tableData: [
+                ],
+                //收索
+                cjsjInRange:[],
+                findMess: {
+                    cjsjInRange:'',
+                    cdmcLike: '',
                     pageNum: 1,
-                    pageSize: 8,
+                    pageSize:8
                 },
+                ztDict:[],
+                ztDictCode:'ZDCLK0016',
             }
         },
-        created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-            this.tabHeight = this.getWindowHeight() - 300
-            this.getPageData()
+        watch: {
+            cjsjInRange:function(newQuestion, oldQuestion){
+                this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+            },
         },
-        methods: {
-            getPageData() {
-                this.util.getPageData(this);
+        created(){
+            this.$store.commit('setCurrentPath', [{
+                title: '首页',
+            },{
+                title: '车辆管理',
+            },{
+                title: '订单管理',
+            }])
+            this.tabHeight = this.getWindowHeight() - 290
+            this.getmess()
+            this.getClztDict()
+        },
+        methods:{
+            getClztDict(){
+                this.ztDict = this.dictUtil.getByCode(this,this.ztDictCode);
+                log('字典数据',this.ztDict)
             },
-            add() {
-                this.componentName = 'formData'
-                this.choosedItem = null;
+            getmess(){
+                var v = this
+                this.$http.get(this.apis.CD.QUERY,{params:v.findMess}).then((res) =>{
+                    log('车队数据',res)
+                    v.tableData = res.page.list
+                    v.pageTotal = res.page.total
+                    v.SpinShow = false;
+                })
             },
-            pageChange(event) {
-                this.util.pageChange(this, event);
+            AddDataList() {
+                var v = this
+                v.mess = {},
+                    v.messType = true,
+                    v.compName = 'newmes'
+            },
+            findMessList(){
+                var v = this
+                v.getmess()
+            },
+            listDele(id){
+                var v = this
+                this.util.del(this,this.apis.CD.DELE,[id.cdbh],()=>{
+                    v.SpinShow = true;
+                    v.getmess();
+                });
+            },
+            pageChange(event){
+                var v = this
+                v.findMess.pageNum = event
+                v.getmess()
             },
         }
     }

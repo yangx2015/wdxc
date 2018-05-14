@@ -15,7 +15,10 @@ module.exports = {
     QUERTY:'put/yj/save',
     LIST:'put/yj/pager'
   },
-  DDSAVE:{
-	  SAVE:'/pub/dd/save'
+  DDSAVE:{//订单创建
+	  SAVE:'/put/dd/save'
+  },
+  ZWS:{
+    QUERTY:'/put/dd/getzdxm'
   }
 }
