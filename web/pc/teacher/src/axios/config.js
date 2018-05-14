@@ -21,7 +21,10 @@ module.exports = {
   ZWS:{//座位数字典获取ZDCLK0041
     QUERTY:'/put/dd/getzdxm'
   },
-  DDLIST:{
+  DDLIST:{//订单列表
     QUERTY:'/put/dd/getorderworkerslis'
+  },
+  REMOVE:{
+	  DELE:'/put/yj/removeIds'
   }
 }
