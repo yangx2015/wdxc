@@ -110,7 +110,7 @@
             currentDate: new Date(),
             isDatePickerShow: false,
             datePickerValue: '',
-            Azws:"20",
+            Azws:"",
             form:{
               ycr:JSON.parse(this.cok.get('result')).name,
               ck:'',//乘车人
@@ -199,14 +199,16 @@
               //   let Year = NowDate.getFullYear()
               //   item.value=Year
               // }else
-                if((item.type == "Date") || (item.type == "Minute")){
-                a = ' '
+                if((item.type == "Date")) {
+                  a = ' '
+                }else if(item.type == "Minute"){
+                  a = ':00'
                 }else if(item.type == "Hour"){
                   a=':'
                 }else {
                   a='-'
                 }
-              this.datePickerValue = this.datePickerValue + item.value+a
+              this.datePickerValue = this.datePickerValue+item.value+a
             })
           }
         }

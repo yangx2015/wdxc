@@ -18,7 +18,10 @@ module.exports = {
   DDSAVE:{//订单创建
 	  SAVE:'/put/dd/save'
   },
-  ZWS:{
+  ZWS:{//座位数字典获取ZDCLK0041
     QUERTY:'/put/dd/getzdxm'
+  },
+  DDLIST:{
+    QUERTY:'/put/dd/getorderworkerslis'
   }
 }
