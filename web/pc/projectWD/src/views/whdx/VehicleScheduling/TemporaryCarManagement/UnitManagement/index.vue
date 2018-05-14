@@ -94,17 +94,17 @@
                         align: 'center'
                     },
                     {
-                        title: '车队编号',
+                        title: '单位编号',
                         align:'center',
                         key: 'cdbh'
                     },
                     {
-                        title: '车队名称',
+                        title: '单位名称',
                         align:'center',
                         key: 'cdmc'
                     },
                     {
-                        title: '队长姓名',
+                        title: '单位负责人',
                         align:'center',
                         key: 'dzxm'
                     },
