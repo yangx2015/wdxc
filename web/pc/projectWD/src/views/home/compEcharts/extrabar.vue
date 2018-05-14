@@ -28,7 +28,11 @@
 		data() {
 			return {
 				SpinShow:true,
-				loading:this.$store.state.app.loading
+				loading:this.$store.state.app.loading,
+				result:{},
+				form:{
+
+				}
 			};
 		},
 		props: {
@@ -43,59 +47,71 @@
             }, 1000);
 		},
 		mounted() {
-			var v = this
-			this.$nextTick(() => {
-				var dataSourceBar = echarts.init(document.getElementById(v.Eid));
+		    this.getData();
+		},
+		methods:{
+            getData(){
+                this.$http.get(this.apis.CHART_DATA.SAFE_DRIVING,this.form).then((res)=>{
+                    if (res.code == 200){
+                        this.result = res.result;
+                        this.initChart();
+                    }
+                })
+            },
+            initChart(){
+                var v = this
+                this.$nextTick(() => {
+                    var dataSourceBar = echarts.init(document.getElementById(v.Eid));
 
-				const option = {
-					title: {
-				        text: "加班时长",
-				        textStyle: {
-				            color: "rgb(255, 255, 255)"
-				        }
-				    },
-					color: ['#3398DB'],
-					tooltip: {
-						trigger: 'axis',
-						formatter: '{a} <br/>{b} : {c}分钟',
-						axisPointer: { // 坐标轴指示器，坐标轴触发有效
-							type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-						}
-					},
-					grid: {
-						left: '3%',
-						right: '4%',
-						bottom: '3%',
-						containLabel: true
-					},
-					xAxis: [{
-						type: 'category',
-						data: ['王师傅', '李师傅', '陈师傅', '吴师傅', '钱师傅', '冯师傅'],
-						axisTick: {
-							alignWithLabel: true
-						}
-					}],
-					yAxis: [{
-						type: 'value'
-					}],
-					series: [{
-						name: '加班时长',
-						type: 'bar',
-						label: {
-							normal: {
-								show: true,
-								position: 'top'
-							}
-						},
-						barWidth: '60%',
-						data: [10, 52, 200, 334, 390, 330]
-					}]
-				};
-				dataSourceBar.setOption(option);
-				window.addEventListener('resize', function() {
-					dataSourceBar.resize();
-				});
-			});
+                    const option = {
+                        title: {
+                            text: "超速统计",
+                            textStyle: {
+                            }
+                        },
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            formatter: '{a} <br/>{b} : {c}次',
+                            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            data: this.result.driverNames,
+                            axisTick: {
+                                alignWithLabel: true
+                            }
+                        }],
+                        yAxis: [{
+                            type: 'value'
+                        }],
+                        series: [{
+                            name: '超速次数',
+                            type: 'bar',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+                            barWidth: '60%',
+                            data: this.result.overSpeedMap.yAxis
+                        }]
+                    };
+                    dataSourceBar.setOption(option);
+                    window.addEventListener('resize', function() {
+                        dataSourceBar.resize();
+                    });
+                });
+			}
 		}
 	};
 </script>

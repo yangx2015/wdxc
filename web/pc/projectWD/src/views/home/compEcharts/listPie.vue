@@ -55,9 +55,9 @@ export default {
             this.$nextTick(() => {
                 var dataSourcePie = echarts.init(document.getElementById(v.Eid));
                 const option = {
-//          	title: {
-//						text: '今日派单统计'
-//				},
+					title: {
+								text: '今日派单统计'
+						},
                     tooltip: {
                         trigger: 'item',
                         formatter: '{a} <br/>{b} : {c} 单'

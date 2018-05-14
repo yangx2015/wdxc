@@ -55,7 +55,6 @@
                         title: {
                             text: '安全驾驶',
                             textStyle: {
-                                color: "red"
                             }
                         },
                         tooltip: {
@@ -82,7 +81,7 @@
                         xAxis: [{
 //						type: 'category',
                             boundaryGap: false,
-                            data: this.result.xAxis,
+                            data: this.result.driverNames,
                         }],
                         yAxis: [{
                             type: 'value'

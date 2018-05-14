@@ -55,7 +55,6 @@ export default {
                     title: {
                         text: '年审提醒',
                         textStyle: {
-                            color: "rgb(255, 255, 255)"
                         }
                     },
                     tooltip: {
