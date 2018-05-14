@@ -33,6 +33,12 @@ public class DdCtrl {
     @Autowired
     private ZdxmService zdxmService;
 
+    public static String getUserType(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String type = (String) request.getAttribute("type");
+        RuntimeCheck.ifBlank(type,"当前登录用户未空！");
+        return type;
+    }
     /**
      * 获取当前登录用户信息
      * @return

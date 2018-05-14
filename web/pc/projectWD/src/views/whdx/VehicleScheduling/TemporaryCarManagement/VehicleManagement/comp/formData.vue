@@ -24,7 +24,7 @@
 						<Col span="12">
 							<FormItem prop='lsdwId' label='临时单位'>
 								<Select v-model="formItem.lsdwId">
-									<Option v-for="item in lswdList" :value="item.id">{{item.dwmc}}</Option>
+									<Option v-for="item in lswdList" :value="item.id" :key="item.id">{{item.dwmc}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -35,14 +35,14 @@
 								</Select>
 							</FormItem>
 						</Col>
-						<!--<Col span="12">-->
-							<!--<FormItem label='状态'>-->
-								<!--<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">-->
-									<!--<Option value="00">正常</Option>-->
-									<!--<Option value="10">停用</Option>-->
-								<!--</Select>-->
-							<!--</FormItem>-->
-						<!--</Col>-->
+						<Col span="12">
+							<FormItem label='状态'>
+								<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">
+									<Option value="00">正常</Option>
+									<Option value="10">停用</Option>
+								</Select>
+							</FormItem>
+						</Col>
 					</Row>
 				</Form>
 			</div>
@@ -104,7 +104,8 @@
 		},
 		methods: {
             getLsdw(){
-                this.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}},(res)=>{
+                let v = this;
+                v.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if (res.code == 200 && res.page.list){
                         this.lswdList = res.page.list;
                     }

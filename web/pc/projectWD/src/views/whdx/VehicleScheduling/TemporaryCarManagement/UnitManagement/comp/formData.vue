@@ -21,14 +21,14 @@
 								<Input type="text" v-model="formItem[i.prop]" :placeholder="'请填写'+i.label+'...'"></Input>
 							</FormItem>
 						</Col>
-						<!--<Col span="12">-->
-							<!--<FormItem label='状态'>-->
-								<!--<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">-->
-									<!--<Option value="00">正常</Option>-->
-									<!--<Option value="10">停用</Option>-->
-								<!--</Select>-->
-							<!--</FormItem>-->
-						<!--</Col>-->
+						<Col span="12">
+							<FormItem label='状态'>
+								<Select filterable clearable  v-model="formItem.zt" placeholder="请填选择状态...">
+									<Option value="00">正常</Option>
+									<Option value="10">停用</Option>
+								</Select>
+							</FormItem>
+						</Col>
 					</Row>
 				</Form>
 			</div>

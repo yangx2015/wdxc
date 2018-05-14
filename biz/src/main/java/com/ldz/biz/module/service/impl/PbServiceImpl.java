@@ -1,9 +1,13 @@
 package com.ldz.biz.module.service.impl;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClClModel;
+import com.ldz.biz.module.bean.JrXbKb;
 import com.ldz.biz.module.bean.PbClXlmodel;
 import com.ldz.biz.module.bean.PbInfo;
 import com.ldz.biz.module.bean.XbXlPb;
@@ -20,7 +25,9 @@ import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClPbMapper;
 import com.ldz.biz.module.mapper.PbInfoMapper;
 import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClPb;
+import com.ldz.biz.module.model.ClXl;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.PbService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -58,36 +65,35 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 	@Override
 	public ApiResponse<String> saveEntity(ClPb entity) {
-		RuntimeCheck.ifNull(entity,"当前选择的排班车辆有误，请核实！");
-		RuntimeCheck.ifBlank(entity.getDate(),"排线时间不能为空");
-		RuntimeCheck.ifBlank(entity.getClId(),"车辆ID不能为空");
-		RuntimeCheck.ifBlank(entity.getXlId(),"线路ID不能为空");
-		RuntimeCheck.ifBlank(entity.getCx()," 车型不能为空");
-		Date pbDate=null;
+		RuntimeCheck.ifNull(entity, "当前选择的排班车辆有误，请核实！");
+		RuntimeCheck.ifBlank(entity.getDate(), "排线时间不能为空");
+		RuntimeCheck.ifBlank(entity.getClId(), "车辆ID不能为空");
+		RuntimeCheck.ifBlank(entity.getXlId(), "线路ID不能为空");
+		RuntimeCheck.ifBlank(entity.getCx(), " 车型不能为空");
+		Date pbDate = null;
 		try {
-			pbDate=DateUtils.getDate(entity.getDate(),"yyyy-MM-dd");
-		} catch (ParseException e) {}
-		if(pbDate==null){
-			RuntimeCheck.ifFalse(false,"排班时间格式异常");
+			pbDate = DateUtils.getDate(entity.getDate(), "yyyy-MM-dd");
+		} catch (ParseException e) {
+		}
+		if (pbDate == null) {
+			RuntimeCheck.ifFalse(false, "排班时间格式异常");
 		}
 
 		clpbInfo clpbInfo = new clpbInfo();
 		clpbInfo.setDate(pbDate);
 		clpbInfo.setClid(entity.getClId());
 
-		ClCl clCl=clService.findByOrgCode(entity.getClId());
-		RuntimeCheck.ifNull(clCl,"车辆信息有误，请核实！");
-		String sjId=clCl.getSjId();
-		RuntimeCheck.ifBlank(sjId,"该车辆未绑定司机，无法进行排班");
-		String clZt=clCl.getZt();
-		if(!StringUtils.equals(clZt,"00")){
-			RuntimeCheck.ifBlank(sjId,"该车辆状态异常，无法进行排班");
+		ClCl clCl = clService.findByOrgCode(entity.getClId());
+		RuntimeCheck.ifNull(clCl, "车辆信息有误，请核实！");
+		String sjId = clCl.getSjId();
+		RuntimeCheck.ifBlank(sjId, "该车辆未绑定司机，无法进行排班");
+		String clZt = clCl.getZt();
+		if (!StringUtils.equals(clZt, "00")) {
+			RuntimeCheck.ifBlank(sjId, "该车辆状态异常，无法进行排班");
 		}
-		if(!StringUtils.equals(entity.getCx(),clCl.getCx())){
-			RuntimeCheck.ifBlank(sjId,"该车辆车型异常，无法进行排班");
+		if (!StringUtils.equals(entity.getCx(), clCl.getCx())) {
+			RuntimeCheck.ifBlank(sjId, "该车辆车型异常，无法进行排班");
 		}
-
-
 
 		// 通过车辆id找到当天是否有排班线路信息
 		List<PbInfo> findXlCl = pbinfomapper.findXlCl(clpbInfo);
@@ -99,10 +105,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			entity.setJgdm(user.getJgdm());
 			entity.setJgmc(org.getJgmc());
 			entity.setCjsj(new Date());
-			entity.setCph(clCl.getCph());//车牌号码
-			entity.setPbsj(pbDate);//排班时间
-			entity.setSj(clCl.getSjId());//司机ID
-			entity.setSjxm(clCl.getSjxm());//司机姓名
+			entity.setCph(clCl.getCph());// 车牌号码
+			entity.setPbsj(pbDate);// 排班时间
+			entity.setSj(clCl.getSjId());// 司机ID
+			entity.setSjxm(clCl.getSjxm());// 司机姓名
 			save(entity);
 			return ApiResponse.saveSuccess();
 		}
@@ -117,13 +123,13 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			entity.setJgdm(user.getJgdm());
 			entity.setJgmc(org.getJgmc());
 			entity.setCjsj(new Date());
-			entity.setCph(clCl.getCph());//车牌号码
-			entity.setPbsj(pbDate);//排班时间
-			entity.setSj(clCl.getSjId());//司机ID
-			entity.setSjxm(clCl.getSjxm());//司机姓名
+			entity.setCph(clCl.getCph());// 车牌号码
+			entity.setPbsj(pbDate);// 排班时间
+			entity.setSj(clCl.getSjId());// 司机ID
+			entity.setSjxm(clCl.getSjxm());// 司机姓名
 			save(entity);
 			return ApiResponse.saveSuccess();
-		}else{
+		} else {
 			return ApiResponse.fail("车辆与线路已经关联，需求重启关联");
 		}
 	}
@@ -182,64 +188,111 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	}
 
 	@Override
-	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId,String date) {
-		RuntimeCheck.ifBlank(xlId,"线路ID不能为空");
-		RuntimeCheck.ifBlank(clId,"车辆ID不能为空");
-		RuntimeCheck.ifBlank(date,"排班时间不能为空");
+	public ApiResponse<String> deleteByXlAndCl(String xlId, String clId, String date) {
+		RuntimeCheck.ifBlank(xlId, "线路ID不能为空");
+		RuntimeCheck.ifBlank(clId, "车辆ID不能为空");
+		RuntimeCheck.ifBlank(date, "排班时间不能为空");
 
-		Date pbDate=null;
+		Date pbDate = null;
 		try {
-			pbDate=DateUtils.getDate(date,"yyyy-MM-dd");
-		} catch (ParseException e) {}
-		if(pbDate==null){
-			RuntimeCheck.ifFalse(false,"排班时间格式异常");
+			pbDate = DateUtils.getDate(date, "yyyy-MM-dd");
+		} catch (ParseException e) {
+		}
+		if (pbDate == null) {
+			RuntimeCheck.ifFalse(false, "排班时间格式异常");
 		}
 
-		int i=0;
+		int i = 0;
 		clpbInfo clpbInfo = new clpbInfo();
 		clpbInfo.setDate(pbDate);
 		clpbInfo.setClid(clId);
 		clpbInfo.setXlid(xlId);
 		List<PbInfo> findXlCl = pbinfomapper.findXlCl(clpbInfo);
-		if(findXlCl!=null&&findXlCl.size()==1&&findXlCl.get(0).getId()!=null){
-			i=entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
+		if (findXlCl != null && findXlCl.size() == 1 && findXlCl.get(0).getId() != null) {
+			i = entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
 		}
-		if(i==0){
+		if (i == 0) {
 			return ApiResponse.fail();
-		}else{
+		} else {
 			return ApiResponse.success();
 		}
 	}
 
-	
 	@Override
-	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
-		RuntimeCheck.ifBlank(xlId,"线路ID不能为空");
-		RuntimeCheck.ifBlank(date,"排班时间不能为空");
-		RuntimeCheck.ifBlank(cx,"车型不能为空");
-		Date pbDate=null;
+	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date, String cx) {
+		RuntimeCheck.ifBlank(xlId, "线路ID不能为空");
+		RuntimeCheck.ifBlank(date, "排班时间不能为空");
+		RuntimeCheck.ifBlank(cx, "车型不能为空");
+		Date pbDate = null;
 		try {
-			pbDate=DateUtils.getDate(date,"yyyy-MM-dd");
-		} catch (ParseException e) {}
-		if(pbDate==null){
-			RuntimeCheck.ifFalse(false,"排班时间格式异常");
+			pbDate = DateUtils.getDate(date, "yyyy-MM-dd");
+		} catch (ParseException e) {
 		}
-		List<ClClModel> clClList=clclmapper.getAllNotPbClList(xlId,pbDate,cx);
+		if (pbDate == null) {
+			RuntimeCheck.ifFalse(false, "排班时间格式异常");
+		}
+		List<ClClModel> clClList = clclmapper.getAllNotPbClList(xlId, pbDate, cx);
 		return ApiResponse.success(clClList);
 	}
 
 	@Override
 	public ApiResponse<List<PbInfo>> bancheTj(PbClXlmodel pbclxlmodel) {
+		ApiResponse<List<PbInfo>> response = new ApiResponse<>();
+
 		SysYh currentUser = getCurrentUser();
-		String jgdm= currentUser.getJgdm();
-		RuntimeCheck.ifNull(currentUser, "当前用户为登陆");
-		ApiResponse<List<PbInfo>>  response =new ApiResponse<>();
+		String jgdm = currentUser.getJgdm();
 		pbclxlmodel.setJgdm(jgdm);
-		
+
+		if (StringUtils.isEmpty(pbclxlmodel.getKssj()) || StringUtils.isEmpty(pbclxlmodel.getJssj())) {
+			String kssj = DateUtils.getToday() + " 00:00:00";
+			String jssj = DateUtils.getToday() + " 23:59:59";
+			pbclxlmodel.setKssj(kssj);
+			pbclxlmodel.setJssj(jssj);
+		}
+
 		List<PbInfo> bancheTj = pbinfomapper.bancheTj(pbclxlmodel);
-		
+
 		response.setResult(bancheTj);
 		return response;
+	}
+
+	@Override
+	public ApiResponse<JrXbKb> xbkb(PbClXlmodel pbclxlmodel) {
+		SysYh currentUser = getCurrentUser();
+		String jgdm = currentUser.getJgdm();
+		pbclxlmodel.setJgdm(jgdm);
+		
+		// 校巴车型
+		pbclxlmodel.setClcx("30");
+		ApiResponse<JrXbKb> apiResponse = new ApiResponse<>();
+		JrXbKb jrXbKb = new JrXbKb();
+		List<String> xlmcList = new ArrayList<>();
+		List<Integer> count = new ArrayList<>();
+
+		if (StringUtils.isEmpty(pbclxlmodel.getKssj()) || StringUtils.isEmpty(pbclxlmodel.getJssj())) {
+			String kssj = DateUtils.getToday() + " 00:00:00";
+			String jssj = DateUtils.getToday() + " 23:59:59";
+			pbclxlmodel.setKssj(kssj);
+			pbclxlmodel.setJssj(jssj);
+		}
+
+		List<PbInfo> bancheTj = pbinfomapper.bancheTj(pbclxlmodel);
+
+		Map<String, List<PbInfo>> collect = bancheTj.stream().filter(ws -> StringUtils.isNotEmpty(ws.getXlId()))
+				.collect(Collectors.groupingBy(PbInfo::getXlId));
+
+		Iterator<Entry<String, List<PbInfo>>> it = collect.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, List<PbInfo>> next = it.next();
+
+			List<PbInfo> value = next.getValue();
+			xlmcList.add(value.get(0).getClXl().getXlmc());
+			count.add(value.size());
+		}
+		jrXbKb.setXlmcList(xlmcList);
+		jrXbKb.setCount(count);
+		apiResponse.setResult(jrXbKb);
+		return apiResponse;
 	}
 
 }

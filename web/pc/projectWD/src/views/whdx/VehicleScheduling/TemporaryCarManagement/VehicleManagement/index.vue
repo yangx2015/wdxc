@@ -73,7 +73,11 @@
                     {
                         title: '临时单位',
                         align:'center',
-                        key: 'lsdwmc'
+                        key: 'lsdwId',
+						render:(h,p)=>{
+							let s = this.getLsdwmcById(p.row.lsdwId);
+							return h('div',s);
+						}
                     },
                     {
                         title: '车辆类型',
@@ -89,11 +93,11 @@
                         align:'center',
                         key: 'zws'
                     },
-                    // {
-                    //     title: '状态',
-                    //     align:'center',
-                    //     key: 'zt'
-                    // },
+                    {
+                        title: '状态',
+                        align:'center',
+                        key: 'zt'
+                    },
                     {
                         title:'操作',
                         align:'center',
@@ -150,8 +154,24 @@
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
 			this.util.initTable(this);
             this.getDict()
+            this.getLsdw()
         },
         methods: {
+            getLsdwmcById(id){
+                for (let r of this.lswdList){
+                    if (r.id == id){
+                        return r.dwmc;
+					}
+				}
+			},
+            getLsdw(){
+                let v = this;
+                v.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}}).then((res) =>{
+                    if (res.code == 200 && res.page.list){
+                        this.lswdList = res.page.list;
+                    }
+                })
+            },
             getDict(){
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
             },
