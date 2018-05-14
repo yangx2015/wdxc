@@ -592,6 +592,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		newClDd.setScf(entity.getScf());// 时长费
 		newClDd.setLcf(entity.getLcf());// 里程费
 		newClDd.setFkzt("00"); // 未付款
+		newClDd.setYysj(entity.getYysj());
 
 		int i = update(newClDd);
 		if (i == 0) {
@@ -1157,16 +1158,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		String ddzt = order.getDdzt();
 		RuntimeCheck.ifFalse(StringUtils.equals(ddzt, "13"), "订单没有被派单，不能进行司机确认操作");
 
+		// 计算里程费
+		if (order.getSjqrsj() == null){
+			order.setSjqrsj(new Date());
+		}
+		BigDecimal lcf = overWorkMoney(order);
 		ClDd newClDd = new ClDd();
+		newClDd.setLcf(lcf.doubleValue());
 		newClDd.setId(order.getId());
 		newClDd.setDdzt("20");// 订单状态
 		newClDd.setSjqrsj(new Date());
 		int i = update(newClDd);
 		RuntimeCheck.ifTrue(i == 0, "操作数据库失败");
 
-		// 计算里程费
-		order.setSjqrsj(new Date());
-		BigDecimal lcf = overWorkMoney(order);
 		order.setLcf(lcf.doubleValue());
 		order.setDdzt("20");
 		ddrzService.log(order);
@@ -1294,8 +1298,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			List<SysRlb> rlbs = rlbMapper.selectByExample(rlCond);
 			RuntimeCheck.ifEmpty(rlbs,"未找到日历");
 			SysRlb rlb = rlbs.get(0);
-			if (!"1".equals(rlb.getZt()))continue;
-			durationMs += getExtraTime(nr,map.get("startTime"),map.get("startTime"));
+			if (!"1".equals(rlb.getZt().trim()))continue;
+			durationMs += getExtraTime(nr,map.get("startTime"),map.get("endTime"));
 		}
 		BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000*60*60),2,BigDecimal.ROUND_HALF_UP);
 		return amount;
