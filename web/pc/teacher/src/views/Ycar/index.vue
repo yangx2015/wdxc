@@ -22,32 +22,36 @@
             ref="input0"
             title="乘车人"
             placeholder="请输入乘车人姓名"
-            v-model="form.ccr"
+            v-model="form.ck"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
             ref="input0"
             type="phone"
             title="联系方式"
+            v-model="form.cklxdh"
             placeholder="请输入您的联系方式"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
             ref="input0"
             title="出发地"
+            v-model="form.hcdz"
             placeholder="您的候车地点"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
             ref="input0"
             title="目的地"
+            v-model="form.mdd"
             placeholder="您的目的地"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
             ref="input0"
-            type="text"
+            type="phone"
             title="乘车人数"
+            v-model="Azws"
             placeholder="请输入您的乘车人数"
             :maxlength="5"
           ></md-input-item>
@@ -64,9 +68,7 @@
           ref="datePicker"
           v-model="isDatePickerShow"
           type="custom"
-          today-text="&(今天)"
           title="选择出发时间"
-          is-twelve-hours
           :text-render="textRender"
           :custom-types="['yyyy', 'MM','dd', 'hh','mm']"
           :default-date="currentDate"
@@ -74,17 +76,25 @@
           @confirm="onDatePickerConfirm"
         ></md-date-picker>
       </div>
-      <div class="button" @click="addList">
+      <div class="button" @click="yz(Azws)">
         <button>
           提    交
         </button>
       </div>
+      <md-dialog
+        title="窗口标题"
+        :closable="true"
+        v-model="basicDialog.open"
+        :btns="basicDialog.btns"
+      >
+        人生的刺，就在这里，留恋着不肯快走的，偏是你所不留恋的东西。
+      </md-dialog>
     </div>
 </template>
 
 <script>
   import headTit from "@/views/comp/headTit"
-  import {InputItem, Field,DatePicker, FieldItem} from 'mand-mobile'
+  import {InputItem, Field,DatePicker, FieldItem,Dialog} from 'mand-mobile'
     export default {
         name: "",
         components: {
@@ -93,24 +103,38 @@
           [DatePicker.name]: DatePicker,
           [Field.name]: Field,
           [FieldItem.name]: FieldItem,
+          [Dialog.name]: Dialog,
         },
         data(){
           return{
             currentDate: new Date(),
             isDatePickerShow: false,
             datePickerValue: '',
-            Azws:200,
-            Lzws:[10,7,5],
+            Azws:"20",
             form:{
               ycr:JSON.parse(this.cok.get('result')).name,
-              xm:'',//乘车人
+              ck:'',//乘车人
               cklxdh:'',//联系电话
-              gethcdz:'',//候车地址
+              hcdz:'',//候车地址
               mdd:'',//目的地
               cllx:'10',//10小车20大车
               zws:'',//座位数
               yysj:''// 约车时间按
+            },
+            basicDialog: {
+              open: false,
+              btns: [
+                {
+                  text: '确认操作',
+                  handler: this.onBasicConfirm,
+                },
+              ],
             }
+          }
+        },
+        watch:{
+          datePickerValue:function (n,o) {
+            this.form.yysj = n
           }
         },
         created(){
@@ -121,36 +145,35 @@
               name:'login'
             })
           }
-          this.getzws()
         },
         mounted() {
         },
         methods: {
-          zwsList(){
-              // if(a<=5){
-              //   ==5
-              // }else if(5<a<=7){
-              //   ==7
-              // }else if(7<a<=10){
-              //   ==10
-              // }else if(10<a){
-              //   ==10
-              //
-              //   a= a-10
-              //
-              //   this.zwsList()
-              // }
+          yz(val){
+            var v = this.form
+            if((v.ck||v.cklxdh||v.gethcdz||v.mdd||v.zws||v.yysj)==''){
+              alert('请将信息填写完成整')
+            }else{
+              this.zwsList(val)
+            }
           },
-          getzws(){
-            var v =this
-            v.$http.post(this.apis.ZWS.QUERTY, {'zdlmdm':'ZDCLK0041'}).then((res) =>{
-
-            }).catch((error)=>{
-
-            })
+          zwsList(val){
+              let num = parseInt(val)
+              if(num<=5){
+                  this.form.zws = 5
+              }else if(5<num&&num<=7){
+                  this.form.zws = 7
+              }else if(7<num&&num<=11){
+                  this.form.zws = 11
+              }else if(11<num){
+                  this.form.zws = 11
+                  this.zwsList(num-11)
+              }
+            this.addList()
           },
           addList(){//订单创建
             var v =this
+            console.log('***********',this.form)
             v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
 
             }).catch((error)=>{
@@ -167,13 +190,23 @@
           onDatePickerChange(columnIndex, itemIndex, value) {
           },
           onDatePickerConfirm(c) {
+            console.log('-************',c)
+            this.datePickerValue = ''
+            let a = '-'
             c.forEach((item, index) => {
-              if(index==0){
-                var NowDate = new Date
-                let Year = NowDate.getFullYear()
-                item.text=Year+'年'
-              }
-              this.datePickerValue = this.datePickerValue + item.text
+              // if(index==0){
+              //   var NowDate = new Date
+              //   let Year = NowDate.getFullYear()
+              //   item.value=Year
+              // }else
+                if((item.type == "Date") || (item.type == "Minute")){
+                a = ' '
+                }else if(item.type == "Hour"){
+                  a=':'
+                }else {
+                  a='-'
+                }
+              this.datePickerValue = this.datePickerValue + item.value+a
             })
           }
         }

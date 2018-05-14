@@ -1,12 +1,12 @@
 <style lang="less">
 	@import '../../../../../styles/common.less';
 </style>
-<!--角色管理-->
+<!--临时车管理-->
 <template>
 	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-				<span class="tabPageTit">
+    			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
@@ -15,148 +15,368 @@
 							<span>临时车管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"></Input>
+							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="v.util.getPageData(v)">
+							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
+								<!--查询-->
 							</Button>
-							<Button type="primary" @click="v.util.add(v)">
+							<Button type="primary" @click="AddDataList()">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
-			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
+			<Row>
+				<Table
+					:height="tabHeight"
+					:row-class-name="rowClassName"
+					:columns="tableTiT"
+					:data="tableData"
+				></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator
-					  @on-change='pageChange'></Page>
+				<Page :total=pageTotal
+				      :current=page.pageNum
+				      :page-size=page.pageSize
+				      show-total
+				      show-elevator
+				      @on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component :is="componentName"></component>
+		<component
+			:is="compName"
+			:mess="mess"
+			:derMess="derMes"
+			:messType="messType"></component>
 	</div>
 </template>
 
 <script>
     import mixins from '@/mixins'
-    import formData from './comp/formData.vue'
+
+
+    import newmes from './comp/newmes.vue'
+    import allmes from './comp/otherMess.vue'
+    import bkShow from './comp/BKshow.vue'
 
     export default {
-        name: 'char',
-        mixins: [mixins],
+        name:'char',
         components: {
-            formData
+            newmes,allmes,bkShow
         },
-        data() {
+        mixins:[mixins],
+        data () {
             return {
-                v:this,
-                SpinShow: true,
-                apiRoot: this.apis.TEMP_CAR,
+                mess:{},
+                derMes:{
+                    sjId:'',
+                    sjxm:''
+                },
+                messType:true,
+                compName:'',
+                clztDict:[],
+                clztDictCode:'ZDCLK0016',
+                cxDict:[],
+                cxDictCode:'ZDCLK0019',
+                SpinShow:true,
                 tabHeight: 220,
-                componentName: '',
-                choosedItem: null,
-                tableTitle: [
+                PickerTime:2017,
+                //分页
+                pageTotal:1,
+                page:{
+                    pageNum:1,
+                    pageSize:8
+                },
+                tableTiT: [
                     {
-                        title:'序号',
-                        type: 'index',
-                        align:'center',
-                        width: 60,
+                        title: "序号",
+                        width: 80,
+                        align: 'center',
+                        type: 'index'
                     },
                     {
                         title: '车牌号',
+                        width:'100',
                         align:'center',
                         key: 'cph'
                     },
                     {
-                        title: '临时单位',
+                        title: '车型',
                         align:'center',
-                        key: 'lsdwmc'
-                    },
-                    {
-                        title: '车辆类型',
-                        align:'center',
-                        key: 'cllx',
+                        key: 'cx',
                         render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cllx)
+                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
                             return h('div',val)
                         }
                     },
                     {
-                        title: '座位数',
+                        title: '载客量',
                         align:'center',
-                        key: 'zws'
+                        width:80,
+                        key: 'zkl'
                     },
                     // {
-                    //     title: '状态',
+                    //     title: '创建人',
+                    //     width:160,
                     //     align:'center',
-                    //     key: 'zt'
+                    //     key: 'cjr'
+                    // },
+                    // {
+                    //     title: '创建时间',
+                    //     width:150,
+                    //     align:'center',
+                    //     key: 'cjsj'
                     // },
                     {
-                        title:'操作',
+                        title: '司机',
                         align:'center',
-                        type: 'action',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'success',
-                                        icon: 'edit',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.choosedItem = params.row
-                                            this.componentName = 'formData'
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        icon: 'close',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.util.delete(this,[params.row.id])
-                                        }
-                                    }
-                                })
-                            ]);
+                        key: 'sjxm'
+                    },
+                    {
+                        title: '车辆状态',
+                        width:90,
+                        align:'center',
+                        key: 'zt',
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,this.clztDictCode,p.row.zt)
+                            return h('div',{
+                                style: {
+                                    color: val=='正常' ?'#279a3b':'#ed3f14'
+                                }
+                            },val)
                         }
                     },
+                    {
+                        title: 'OBD编码',
+                        align:'center',
+                        key: 'obdCode'
+                    },
+                    {
+                        title: '终端编号',
+                        align:'center',
+                        key: 'zdbh'
+                    },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        width: 180,
+                        align: 'center',
+                        render: (h, params) => {
+                            return h('div', [
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '编辑车辆',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'success',
+                                                icon: 'edit',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.messType = false
+                                                    this.mess = params.row
+                                                    //由于数据传递丢失 司机ID 司机 姓名 单独传递
+                                                    this.derMes.sjId = params.row.sjId
+                                                    this.derMes.sjxm = params.row.sjxm
+                                                    this.compName = newmes
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '车辆档案信息',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'clipboard',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    // log('数据信息获取',params.row)
+                                                    this.mess = params.row
+                                                    // debugger
+                                                    this.compName = allmes
+                                                }
+                                            }
+                                        })
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '历史轨迹',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {//历史轨迹
+                                            props: {
+                                                type: 'warning',
+                                                icon: 'map',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.$router.push(
+                                                        {
+                                                            name: 'historypath',
+                                                            params:{zdbh:params.row.zdbh}
+                                                        }
+                                                    );
+                                                },
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '电子围栏',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {//电子围栏展示
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'ios-world-outline',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.compName = bkShow
+                                                    this.mess = params.row
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '删除车辆',
+                                        },
+                                    },
+                                    [
+                                        h('Button', {// 删除
+                                            props: {
+                                                type: 'error',
+                                                icon: 'close',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.listDele(params.row)
+                                                }
+                                            }
+                                        })
+                                    ]
+                                ),
+                            ]);
+                        }
+                    }
                 ],
-                pageData: [],
-                form: {
-                    gnmcLike: '',
-                    total: 0,
+                tableData: [
+                    {
+                        carNumber:'201701010914230001',
+                        LicensePlate:'鄂A12345',
+                        carType:'大巴车',
+                        carModel:'48人座',
+                        time:'2017-05-02 09:10:00',
+                        carState:'离线'
+                    }
+                ],
+                //收索
+                findMess: {
+                    cphLike: '',
                     pageNum: 1,
-                    pageSize: 8,
+                    pageSize:8
                 },
-                cxDict:[],//车量型号
-                cxDictCode:'ZDCLK0019',
-				lswdList:[]
             }
         },
-        created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-			this.util.initTable(this);
-            this.getDict()
+        created(){
+            log('123','title')
+            this.$store.commit('setCurrentPath', [{
+                title: '首页',
+            },{
+                title: '车辆调度',
+            },{
+                title: '车辆管理',
+            }]),
+                this.tabHeight = this.getWindowHeight() - 290
+            this.SpinShow = false;
+            this.getmess()
+            this.getCxDict();
+            this.getClztDict();
         },
         methods: {
-            getDict(){
+            getClztDict(){
+                this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
+            },
+            getCxDict(){
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
             },
-            pageChange(event) {
-                this.util.pageChange(this, event);
+            getmess(){
+                var v = this
+                this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
+                    log('车辆数据',res.page.list)
+                    v.tableData = res.page.list
+                    v.pageTotal = res.page.total
+                    v.SpinShow = false;
+                })
+            },
+            AddDataList() {
+                var v = this
+                v.mess = {}
+                v.messType = true
+                v.compName = 'newmes'
+            },
+            findMessList(){
+                this.getmess()
+            },
+            listDele(id){
+                this.util.del(this,this.apis.CLGL.DELE,[id.clId],()=>{
+                    this.getmess()
+                })
+            },
+            pageChange(event){
+                this.findMess.pageNum = event
+                this.getmess()
             },
         }
     }
