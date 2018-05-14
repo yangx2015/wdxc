@@ -81,6 +81,11 @@ public class ClCtrl extends BaseController<ClCl, String> {
 		
 	}
 
+	/**
+	 *安全驾驶统计（返回图表所需的数据结构）
+	 * @param days
+	 * @return
+	 */
 	@RequestMapping("carAccStatistics")
 	public ApiResponse<Map<String,Object>> carAccStatistics(Integer days){
 		return clservice.carAccStatistics(days);

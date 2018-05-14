@@ -3,11 +3,11 @@
 </style>
 <template>
 	<div style="width:100%;height:100%;position: relative;">
-		<div style="position: absolute;top:0;right: 0;">
+		<div style="position: absolute;top:0;right: 0;z-index: 1000">
 			<ButtonGroup size="small" shape="circle">
-		        <Button type="primary">三天</Button>
-		        <Button type="primary">五天</Button>
-		        <Button type="primary">七天</Button>
+		        <Button type="primary" @click="changeDays(3)">三天</Button>
+		        <Button type="primary" @click="changeDays(5)">五天</Button>
+		        <Button type="primary" @click="changeDays(7)">七天</Button>
 		    </ButtonGroup>
 		</div>
 		<div style="width:100%;height:100%;" :id="Eid"></div>
@@ -28,7 +28,12 @@
 		data() {
 			return {
 				SpinShow:true,
-				loading:this.$store.state.app.loading
+				loading:this.$store.state.app.loading,
+				result:{},
+				form:{
+					days:3
+				},
+				day:'三天'
 			};
 		},
 		props: {
@@ -43,59 +48,90 @@
             }, 1000);
 		},
 		mounted() {
-			var v = this
-			this.$nextTick(() => {
-				var dataSourceBar = echarts.init(document.getElementById(v.Eid));
+		    this.getData();
+		},
+		methods:{
+		    changeDays(d){
+                this.form.days = d;
+                switch(d){
+					case 3:
+					    this.day = '三天';
+					    break;
+					case 5:
+					    this.day = '五天';
+					    break;
+					case 7:
+					    this.day = '七天';
+					    break;
+					default:
+                        this.day = '三天';
+                        break;
+				}
+		        this.getData();
+			},
+            getData(){
+                this.$http.get(this.apis.CHART_DATA.SAFE_DRIVING,{params:this.form}).then((res)=>{
+                    if (res.code == 200){
+                        this.result = res.result;
+                        this.initChart();
+                    }
+                })
+            },
+            initChart(){
+                var v = this
+                this.$nextTick(() => {
+                    var dataSourceBar = echarts.init(document.getElementById(v.Eid));
 
-				const option = {
-					title: {
-				        text: "加班时长",
-				        textStyle: {
-				            color: "rgb(255, 255, 255)"
-				        }
-				    },
-					color: ['#3398DB'],
-					tooltip: {
-						trigger: 'axis',
-						formatter: '{a} <br/>{b} : {c}分钟',
-						axisPointer: { // 坐标轴指示器，坐标轴触发有效
-							type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
-						}
-					},
-					grid: {
-						left: '3%',
-						right: '4%',
-						bottom: '3%',
-						containLabel: true
-					},
-					xAxis: [{
-						type: 'category',
-						data: ['王师傅', '李师傅', '陈师傅', '吴师傅', '钱师傅', '冯师傅'],
-						axisTick: {
-							alignWithLabel: true
-						}
-					}],
-					yAxis: [{
-						type: 'value'
-					}],
-					series: [{
-						name: '加班时长',
-						type: 'bar',
-						label: {
-							normal: {
-								show: true,
-								position: 'top'
-							}
-						},
-						barWidth: '60%',
-						data: [10, 52, 200, 334, 390, 330]
-					}]
-				};
-				dataSourceBar.setOption(option);
-				window.addEventListener('resize', function() {
-					dataSourceBar.resize();
-				});
-			});
+                    const option = {
+                        title: {
+                            text: "超速统计("+this.day+')',
+                            textStyle: {
+                            }
+                        },
+                        color: ['#3398DB'],
+                        tooltip: {
+                            trigger: 'axis',
+                            formatter: '{a} <br/>{b} : {c}次',
+                            axisPointer: { // 坐标轴指示器，坐标轴触发有效
+                                type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+                            }
+                        },
+                        grid: {
+                            left: '3%',
+                            right: '4%',
+                            bottom: '3%',
+                            containLabel: true
+                        },
+                        xAxis: [{
+                            type: 'category',
+                            data: this.result.driverNames,
+                            axisTick: {
+                                alignWithLabel: true
+                            }
+                        }],
+                        yAxis: [{
+                            type: 'value'
+                        }],
+                        series: [{
+                            name: '超速次数',
+                            type: 'bar',
+                            label: {
+                                normal: {
+                                    show: true,
+                                    position: 'top'
+                                }
+                            },
+                            barWidth: '60%',
+                            data: this.result.overSpeedMap.yAxis
+                        }],
+                        color: ["#6495ed", "#da70d6", "#ff69b4", "#ba55d3", "#cd5c5c", "#ffa500", "#40e0d0", "#1e90ff", "#ff6347", "#7b68ee", "#00fa9a", "#ffd700", "#6699FF", "#ff6666", "#3cb371", "#b8860b", "#30e0e0"]
+                    };
+                    dataSourceBar.setOption(option);
+                    window.addEventListener('resize', function() {
+                        dataSourceBar.resize();
+                    });
+                });
+			}
 		}
 	};
 </script>

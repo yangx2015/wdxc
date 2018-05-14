@@ -16,10 +16,14 @@
 			leid: {
 				type: String,
 				default: 'eBar'
-			}
+			},
+			result:{
+			    type:Object,
+				default:{}
+,			}
 		},
-		mounted() {
-			var v = this
+		created() {
+            var v = this
 			this.$nextTick(() => {
 				var dataSourceBar = echarts.init(document.getElementById(v.leid));
 
@@ -46,7 +50,7 @@
 					},
 					xAxis: [{
 						type: 'category',
-						data: ['王师傅', '李师傅', '陈师傅', '吴师傅', '钱师傅', '冯师傅'],
+						data: this.result.sjxm,
 						axisTick: {
 							alignWithLabel: true
 						}
@@ -64,7 +68,7 @@
 							}
 						},
 						barWidth: '60%',
-						data: [2, 3, 2, 6, 3, 4]
+						data: this.result.count
 					}]
 				};
 				dataSourceBar.setOption(option);

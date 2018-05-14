@@ -38,7 +38,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	}
 
    public List<ClXl> getAll(String lx){
-	   RuntimeCheck.ifNull(lx,"编号不能为空，请核实！");
+	   RuntimeCheck.ifNull(lx,"线路类型不能为空，请核实！");
 	   ClXl clXl=new ClXl();
 	   clXl.setLx(lx);
 	   clXl.setZt("00");

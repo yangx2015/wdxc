@@ -96,7 +96,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
       if(StringUtils.equals(ddzt,"13")){
           ClJsy clJsy= jsyService.findById(userId);
-          RuntimeCheck.ifFalse(!StringUtils.equals(clDd.getSj(),clJsy.getSfzhm()),"您不能对非本人的订单进行操作");
+          RuntimeCheck.ifFalse(StringUtils.equals(clDd.getSj(),clJsy.getSfzhm()),"您不能对非本人的订单进行操作");
       }else{
           RuntimeCheck.ifTrue(true,"订单状态异常，不能进行订单编辑操作");
       }
@@ -106,6 +106,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setSj(userId);//修改人
       newClDd.setXgsj(new Date());//修改时间
       newClDd.setGlf(entity.getGlf());//过路费
+      newClDd.setGqf(entity.getGqf());//过桥费
       newClDd.setSy(entity.getSy());//事由
       newClDd.setZj(entity.getZj());//总价
       newClDd.setSc(entity.getSc());//时长
@@ -114,7 +115,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setScf(entity.getScf());//时长费
       newClDd.setLcf(entity.getLcf());//里程费
       newClDd.setFkzt("00"); // 未付款
-      newClDd.setDdzt("30");//订单状态
+      newClDd.setDdzt("20");//订单状态
       newClDd.setSjqrsj(new Date());
 
       int i=update(newClDd);
@@ -176,6 +177,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
 
         List<ClDd> orgs = findByCondition(condition);
+
         result.setResult(orgs);
         return result;
     }

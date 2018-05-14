@@ -224,10 +224,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		List<Object> speedDownCountList = new ArrayList<>(result.size());
 		List<Object> wheelCountList = new ArrayList<>(result.size());
 		List<Object> overSpeedCountList = new ArrayList<>(result.size());
+		List<String> driverNames = new ArrayList<>(result.size());
 		for (Object o : result) {
 			Map<String,Object> map = (Map<String, Object>) o;
-			String carNumber = (String) map.get("sjxm");
+			String carNumber = (String) map.get("cph");
+			String driverName = (String) map.get("sjxm");
 			carNumberList.add(carNumber);
+			driverNames.add(driverName);
 
 			String speedupCountStr = map.get("speedupCount") == null ? "0" : map.get("speedupCount").toString();
 			int count1 = StringUtils.isEmpty(speedupCountStr) ? 0 : Integer.parseInt(speedupCountStr);
@@ -266,6 +269,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		overSpeedMap.put("name","超速");
 		overSpeedMap.put("yAxis",overSpeedCountList);
 
+		map.put("driverNames",driverNames);
+		map.put("carNumbers",carNumberList);
 		map.put("xAxis",carNumberList);
 		map.put("speedUpMap",speedUpMap);
 		map.put("wheelMap",wheelMap);
