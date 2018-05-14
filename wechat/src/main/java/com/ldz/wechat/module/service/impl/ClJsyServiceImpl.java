@@ -20,7 +20,7 @@ public class ClJsyServiceImpl implements ClJsyService{
 	public ApiResponse<String> findJsy(String sfzhm, String xm) {
 		ClJsy jsy = jsymapper.findJzg(sfzhm, xm);
 		RuntimeCheck.ifNull(jsy, "身份证或者姓名有误");
-		String token = JwtUtil.createToken("jsy",JsonUtil.toJson(jsy));
+		String token = JwtUtil.createWechatToken("jsy",JsonUtil.toJson(jsy));
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);
 		return res;

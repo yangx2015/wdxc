@@ -50,7 +50,22 @@ public class JwtUtil {
         }
         return null;
     }
-    public static String createToken(String type,String userInfo){
+    public static String createToken(String userId,String loginName){
+        try {
+            String token = JWT.create()
+                    .withIssuer("wcpms")
+                    .withSubject("wcpms")
+                    .withAudience("wcpms")
+                    .withClaim("userId",userId)
+                    .withClaim("loginName",loginName)
+                    .sign(algorithm);
+            return token;
+        } catch (JWTCreationException exception){
+            //UTF-8 encoding not supported
+        }
+        return null;
+    }
+    public static String createWechatToken(String type,String userInfo){
         try {
             String token = JWT.create()
                     .withIssuer("wcpms")
