@@ -150,16 +150,6 @@
                         }
                     },
                     {
-                        title: 'OBD编码',
-                        align:'center',
-                        key: 'obdCode'
-                    },
-                    {
-                        title: '终端编号',
-                        align:'center',
-                        key: 'zdbh'
-                    },
-                    {
                         title: '操作',
                         key: 'action',
                         width: 180,
@@ -226,64 +216,64 @@
                                         })
                                     ]
                                 ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '历史轨迹',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {//历史轨迹
-                                            props: {
-                                                type: 'warning',
-                                                icon: 'map',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.$router.push(
-                                                        {
-                                                            name: 'historypath',
-                                                            params:{zdbh:params.row.zdbh}
-                                                        }
-                                                    );
-                                                },
-                                            }
-                                        }),
-                                    ]
-                                ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '电子围栏',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {//电子围栏展示
-                                            props: {
-                                                type: 'primary',
-                                                icon: 'ios-world-outline',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.compName = bkShow
-                                                    this.mess = params.row
-                                                }
-                                            }
-                                        }),
-                                    ]
-                                ),
+                                // h('Tooltip',
+                                //     {
+                                //         props: {
+                                //             placement: 'top',
+                                //             content: '历史轨迹',
+                                //         },
+                                //     },
+                                //     [
+                                //         h('Button', {//历史轨迹
+                                //             props: {
+                                //                 type: 'warning',
+                                //                 icon: 'map',
+                                //                 shape: 'circle',
+                                //                 size: 'small'
+                                //             },
+                                //             style: {
+                                //                 marginRight: '5px'
+                                //             },
+                                //             on: {
+                                //                 click: () => {
+                                //                     this.$router.push(
+                                //                         {
+                                //                             name: 'historypath',
+                                //                             params:{zdbh:params.row.zdbh}
+                                //                         }
+                                //                     );
+                                //                 },
+                                //             }
+                                //         }),
+                                //     ]
+                                // ),
+                                // h('Tooltip',
+                                //     {
+                                //         props: {
+                                //             placement: 'top',
+                                //             content: '电子围栏',
+                                //         },
+                                //     },
+                                //     [
+                                //         h('Button', {//电子围栏展示
+                                //             props: {
+                                //                 type: 'primary',
+                                //                 icon: 'ios-world-outline',
+                                //                 shape: 'circle',
+                                //                 size: 'small'
+                                //             },
+                                //             style: {
+                                //                 marginRight: '5px'
+                                //             },
+                                //             on: {
+                                //                 click: () => {
+                                //                     this.compName = bkShow
+                                //                     this.mess = params.row
+                                //                 }
+                                //             }
+                                //         }),
+                                //     ]
+                                // ),
                                 h('Tooltip',
                                     {
                                         props: {

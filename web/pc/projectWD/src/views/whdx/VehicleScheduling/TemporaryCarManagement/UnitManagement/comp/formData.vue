@@ -12,7 +12,7 @@
 				:rules="ruleInline"
 				:label-width="100"
 				:styles="{top: '20px'}">
-				<div style="overflow: auto;height: 360px;">
+				<div style="overflow: auto;">
 					<Row>
 						<Col span="12">
 							<FormItem prop="cdmc" label='车队名称：'>
@@ -22,22 +22,22 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="dzxm" label='队长姓名：'>
-								<!--<Input type="text" v-model="addmess.dzxm" placeholder="请输入队长姓名">
-								</Input>-->
-								<Select filterable clearable remote
-									:remote-method="remoteMethod"  v-model="userSelectMss" @on-change='userSelect()'>
-									<Option v-for="(item,index) in userList" :value="item.yhid">{{item.xm}}</Option>
-								</Select>
+								<Input type="text" v-model="addmess.dzxm" placeholder="请输入队长姓名">
+								</Input>
+								<!--<Select filterable clearable remote-->
+									<!--:remote-method="remoteMethod"  v-model="userSelectMss" @on-change='userSelect()'>-->
+									<!--<Option v-for="(item,index) in userList" :value="item.yhid">{{item.xm}}</Option>-->
+								<!--</Select>-->
 							</FormItem>
 						</Col>
 					</Row>
 					<Row>
-						<!--<Col span="12">
+						<Col span="12">
 							<FormItem prop="sjhm" label='手机号码：'>
 								<Input type="text" v-model="addmess.sjhm" placeholder="请输入手机号码">
 								</Input>
 							</FormItem>
-						</Col>-->
+						</Col>
 						<Col span="12">
 							<FormItem prop="zt" label='状态：'>
 								<Select filterable clearable  v-model="addmess.zt">
