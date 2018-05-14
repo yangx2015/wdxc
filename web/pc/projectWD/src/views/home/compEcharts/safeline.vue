@@ -1,9 +1,9 @@
 <template>
 	<div style="width:100%;height:100%;position: relative;">
-		<div style="position: absolute;top:0;right: 0;">
+		<div style="position: absolute;top:0;right: 0;z-index: 1000">
 			<ButtonGroup size="small" shape="circle">
-		        <Button type="primary">月</Button>
-		        <Button type="primary">周</Button>
+		        <Button type="primary" @click="changeDays(30)">月</Button>
+		        <Button type="primary" @click="changeDays(7)">周</Button>
 		    </ButtonGroup>
 		</div>
 		<div style="width:100%;height:100%;" :id="Eid"></div>
@@ -28,7 +28,8 @@
 				result:{},
 				form:{
 				    days:30
-				}
+				},
+                day:'月'
 
 			};
 		},
@@ -47,13 +48,28 @@
 		    this.getData();
 		},
 		methods:{
+            changeDays(d){
+                this.form.days = d;
+                switch(d){
+                    case 30:
+                        this.day = '月';
+                        break;
+                    case 7:
+                        this.day = '周';
+                        break;
+                    default:
+                        this.day = '月';
+                        break;
+                }
+                this.getData();
+            },
 		    initChart(){
                 var v = this
                 this.$nextTick(() => {
                     var dataSourceLine = echarts.init(document.getElementById(v.Eid));
                     const option = {
                         title: {
-                            text: '安全驾驶',
+                            text: '安全驾驶('+this.day+')',
                             textStyle: {
                             }
                         },
