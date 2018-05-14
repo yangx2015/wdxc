@@ -99,14 +99,6 @@
         }).catch((error)=>{
 
         })
-      },
-      feedbackList(){
-        var v = this
-        v.$http.post(this.apis.FEEDBACK.LIST, {yhId:'2334232',yjlx:'',yjId:''}).then((res) =>{
-          console.log('*****',res)
-        }).catch((error)=>{
-
-        })
       }
     }
 	}

@@ -7,7 +7,7 @@ import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
 // 	baseURL: 'http://47.98.39.45:9999',
-	baseURL: 'http://192.168.31.180:9998',
+	baseURL: 'http://192.168.31.223:9998',
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true
@@ -27,8 +27,8 @@ httpInstance.interceptors.request.use((config) => {
         }
     }
     // 在发送请求之前做些什么
-    if(Cookies.get('token')){
-        config.headers.token = Cookies.get('token');
+    if(Cookies.get('result')){
+        config.headers.token = Cookies.get('result');
     }
     return config;
 }, function (error) {

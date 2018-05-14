@@ -12,7 +12,7 @@
 	.ElistDemo{
 		width: 400px;
 		height: 76px;
-		z-index: 300;
+		z-index: 999;
 		background-color: #c8eaef;
 		box-shadow: 2px 5px 5px #888888;
 		position: absolute;
@@ -108,7 +108,17 @@
 					<div class="titmess">
 						<span>订单分派</span>
 					</div>
-					<div class="body-r-1 inputSty">
+					<div class="body-r-1 inputSty" style="text-align: left">
+						<Menu mode="horizontal" :theme="'light'" active-name="1">
+							<Menu-item name="1">
+								<Icon type="ios-paper"></Icon>
+								内部车
+							</Menu-item>
+							<Menu-item name="2">
+								<Icon type="ios-people"></Icon>
+								外接车
+							</Menu-item>
+						</Menu>
 					</div>
 					<div class="butevent">
 					</div>
@@ -227,7 +237,7 @@
                 mess:{},
                 compName:'',
                 drvlist:[],
-                jrpd:{}
+                jrpd:{},
             }
         },
         created(){

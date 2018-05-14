@@ -12,7 +12,7 @@
     <div class="login" @keydown.enter="handleSubmit">
     	<!--<img src="../../static/3.png"/>-->
         <div class="yc">
-          <h1>欢迎约车</h1>
+          <h1>Welcome</h1>
           <!--<h1 class="huan">-->
             <!--欢-->
           <!--</h1>-->
@@ -67,8 +67,8 @@ export default {
     data () {
         return {
             form: {
-                xm: '张三',
-                sfzhm: '420123199911112222'
+                xm: '测试订单A',
+                sfzhm: '2123123'
             },
             rules: {
                 xm: [
@@ -89,9 +89,10 @@ export default {
                 	this.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
                 		console.log('登陆结果',res)
                 		if(res.code===200){
-                          Cookies.set('usermess', this.form.username);
                           Cookies.set('result', res.result);
-                          // this.$router.push('home')
+                          this.$router.push({
+                            name:'center'
+                          })
                     }else{
                 		}
                 	})

@@ -18,32 +18,40 @@
           </div>
           <div class="body DDlist">
               <div class="DDitem"
-                   @click="fiveStar(item)"
-                   v-for="item in [,,,,,,,,,,,]">
-                  <div class="tit box-row">
+                   v-for="item in mesliat">
+                  <div class="tit box-row" v-if="item.sjxm!=''">
                         <div class="body-O">
                           周师傅-鄂A00000
                         </div>
-                        <div>
+                        <div @click="fiveStar(item)">
                           已完成
                           <i class="iconfont icon-right"></i>
                         </div>
                   </div>
+                  <div class="tit box-row" v-else>
+                    <div class="body-O">
+                      订单指派中……
+                    </div>
+                    <!--<div>-->
+                      <!--已完成-->
+                      <!--<i class="iconfont icon-right"></i>-->
+                    <!--</div>-->
+                  </div>
                   <div>
                     <i class="iconfont icon-shijian"></i>
-                    时间
+                    {{item.yysj}}
                   </div>
                   <div>
                     <i class="iconfont icon-dian1"
                         style="color: #00a854"
                     ></i>
-                    出发
+                    {{item.hcdz}}
                   </div>
                   <div>
                     <i class="iconfont icon-dian1"
                        style="color: #ff8f00"
                     ></i>
-                    目的地
+                    {{item.mdd}}
                   </div>
               </div>
           </div>
@@ -56,6 +64,11 @@
         name: "",
         components:{
         },
+        data(){
+          return{
+            mesliat:[]
+          }
+        },
         created(){
           if (this.cok.get('result')) {
 
@@ -64,6 +77,7 @@
               name:'login'
             })
           }
+          this.getList()
         },
         methods:{
           starNum(val){
@@ -77,6 +91,16 @@
           fiveStar(item){
             this.$router.push({
                 name:'evaluate'
+            })
+          },
+          getList(){
+            var v = this
+            v.$http.post(this.apis.DDLIST.QUERTY).then((res) =>{
+                if (res.code==200) {
+                  this.mesliat = res.result
+                }
+            }).catch((error)=>{
+
             })
           }
         }

@@ -11,5 +11,5 @@ export default {
 </script>
 
 <style>
-  @import "//at.alicdn.com/t/font_605313_q8qniwavtf4oyldi.css";
+  @import "//at.alicdn.com/t/font_605313_rbqc2w5cfq392j4i.css";
 </style>

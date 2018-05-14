@@ -32,15 +32,12 @@
 			<div class="box">
 				<div class="">
 					<tab>
-				      <tab-item selected @on-item-click="onItemClick">今日单据</tab-item>
-				      <tab-item @on-item-click="onItemClick">待确认</tab-item>
+				      <!--<tab-item selected @on-item-click="onItemClick">今日单据</tab-item>-->
+				      <tab-item selected @on-item-click="onItemClick">待确认</tab-item>
               <tab-item @on-item-click="onItemClick">历史单据</tab-item>
 				    </tab>
 				</div>
-				<div v-if="school==0" class="body" style="position: relative;padding: 5px 12px">
-					<!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
-						<!--今日单据-->
-					<!--</div>-->
+				<div v-if="school==2" class="body" style="position: relative;padding: 5px 12px">
           <Card style="width:100%;margin-top: 6px">
             <p slot="title">
               <Icon type="ios-film-outline"></Icon>
@@ -67,16 +64,10 @@
               </div>
           </Card>
 				</div>
-				<div v-else-if="school==1" class="body"  style="position: relative;padding: 5px 12px">
-          <!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
-            <!--待确认-->
-          <!--</div>-->
+				<div v-else-if="school==0" class="body"  style="position: relative;padding: 5px 12px">
           <ok-list></ok-list>
         </div>
-        <div v-else-if="school==2" class="body"  style="padding: 5px 12px">
-          <!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
-            <!--历史单据-->
-          <!--</div>-->
+        <div v-else-if="school==1" class="body"  style="padding: 5px 12px">
           <Card style="width:100%;margin-top: 6px">
             <p slot="title">
               <Icon type="ios-film-outline"></Icon>
@@ -144,6 +135,7 @@
 
 <script>
 	import { Swiper, SwiperItem, Cell, XButton, Tab, TabItem } from 'vux'
+  import Cookies from 'js-cookie';
   import okList from './comp/okList'
 	export default{
 		name:'',
@@ -170,8 +162,16 @@
 			}
 		},
 		created(){
+      if(Cookies.get('result')) {
+
+      }else{
+        this.$router.push({
+          name:'login'
+        })
+      }
 			// this.getSwiperMess()
 			// this.getLineMess()
+      this.dqr()
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -184,7 +184,7 @@
 		    		name:'feedback'
 		    	})
 		  	},
-		  	getSwiperMess(){
+		  	getSwiperMess(){//获取图片
 		  		var v = this
 		  		this.$http.post(this.apis.SWIPER.QUERTY).then((res)=>{
 		  			if(res.code ==200){
@@ -212,7 +212,7 @@
 	        		console.log('出错了',error)
 	        	})
 		  	},
-			demo01_onIndexChange (index) {
+			  demo01_onIndexChange (index) {
 //				console.log(index)
 		    },
 		    lineMess(id){
@@ -221,7 +221,12 @@
 		    onItemClick(index){
 		  	  console.log(index)
           this.school = index
-		    }
+		    },
+        dqr(){
+		  	  this.$http.post(this.apis.MESLIST.QUERTY,{'type':'2'}).then((res)=>{
+
+          })
+        }
 		}
 	}
 </script>
