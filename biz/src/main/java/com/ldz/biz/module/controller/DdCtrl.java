@@ -22,6 +22,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.CcTjTx;
 import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTjTxReturn;
 import com.ldz.biz.module.bean.DdTongjiTJ;
@@ -41,7 +42,7 @@ import com.ldz.util.exception.RuntimeCheck;
  *   请求地址要加上：api  因为api的话，可以加上权限的鉴权。
  */
 @RestController
-@RequestMapping("/api/dd")
+@RequestMapping("/pub/dd")
 public class DdCtrl{
     @Autowired
     private DdService service;
@@ -410,6 +411,18 @@ public class DdCtrl{
 
     	return service.chucheTj(dd);
     }
+    
+    /*
+     * 今日派单统计条形图 饼状图
+     */
+    @PostMapping("/ccTTj")
+    public  ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd){
+
+    	return service.chucheTTj(dd);
+    }
+    
+    
+    
     /*
      * 订单付款统计
      */

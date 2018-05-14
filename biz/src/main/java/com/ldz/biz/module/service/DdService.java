@@ -3,6 +3,7 @@ package com.ldz.biz.module.service;
 import java.util.List;
 import java.util.Map;
 
+import com.ldz.biz.module.bean.CcTjTx;
 import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTjTxReturn;
 import com.ldz.biz.module.bean.DdTongjiTJ;
@@ -66,4 +67,6 @@ public interface DdService extends BaseService<ClDd,String>{
     ApiResponse<String> paymentConfirm(List<String> idList);
    // 统计一周订单 
     ApiResponse<DdTjTxReturn> ddzTj(DdTongjiTJ dd);
+    //司机出车统计条形图
+	ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd);
 }
