@@ -85,6 +85,8 @@ public class DdCtrl {
      */
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(ClDd entity){
+        String type=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(type,"jzg"),"请用教职工角色登录");
         String userId = getCurrentUser(true);
         return service.saveEntity(entity,userId);
     }
@@ -98,6 +100,8 @@ public class DdCtrl {
      */
     @RequestMapping(value="/ddxq/{pkid}", method={RequestMethod.GET})
     public ApiResponse<ClDd> get(@PathVariable("pkid")String pkid){
+        String type=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(type,"jsy"),"请用司机角色登录");
         String userId = getCurrentUser(true);
         ClDd whereClDd=new ClDd();
         whereClDd.setId(pkid);
@@ -110,7 +114,7 @@ public class DdCtrl {
     }
 
     /**
-     * 订单确认-订单编辑(司机和队长共用的修改功能。)
+     * 订单确认-订单编辑(司机的修改功能。)
      * 1、订单处于：司机确认(行程结束)
      * 2、只有该队队长才能有限制
      * @param entity
@@ -127,56 +131,44 @@ public class DdCtrl {
      */
     @RequestMapping(value="/update", method={RequestMethod.POST})
     public ApiResponse<String> update(ClDd entity){
+        String type=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(type,"jsy"),"请用司机角色登录");
         String userId = getCurrentUser(true);
         return service.updateOrder(entity,userId);
     }
-    /**
-     * 订单确认 操作
-     * 1、订单处于：司机确认(行程结束)
-     * 2、只有该队队长才能有限制
-     * 3、修改订单状态为 队长确认
-     * 4、复制订单表到原始订单表中
-     *
-     *
-     * @param entity
-     * 订单ID 必填
-     * @return
-     * 成功与否
-     */
-    @RequestMapping(value="/ddqr", method={RequestMethod.POST})
-    public ApiResponse<String> affirmOracle(ClDd entity){
-        String userId = getCurrentUser(true);
-        return service.updateAffirmOracle(entity,userId);
-    }
-
-    /**
-     * 司机确认
-     * @param id
-     * @return
-     */
-    @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
-    public ApiResponse<String> driverConfirm(String id){
-        String userId = getCurrentUser(true);
-        return service.driverConfirm(id,userId);
-    }
+//
+//    /**
+//     * 司机确认
+//     * @param id
+//     * @return
+//     */
+//    @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
+//    public ApiResponse<String> driverConfirm(String id){
+//        String userId = getCurrentUser(true);
+//        return service.driverConfirm(id,userId);
+//    }
 
     /**
      * 教职工 订单查询
-     * @param id
      * @return
      */
     @RequestMapping(value = "/getorderworkerslis",method = {RequestMethod.POST})
     public ApiResponse<List<ClDd>> getOrderWorkersList(){
+        String type=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(type,"jzg"),"请用教职工角色登录");
+
         String userId = getCurrentUser(true);
         return service.getOrderWorkersList(userId);
     }
     /**
      * 列表 订单查询
-     * @param type  1、今日单据  2、待确认  3、历史单据
+     * @param type 2、待确认  3、历史单据
      * @return
      */
     @RequestMapping(value = "/getsjlist",method = {RequestMethod.POST})
     public ApiResponse<List<ClDd>> getOrderDriverList(String type){
+        String userType=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
         String userId = getCurrentUser(true);
         return service.getOrderDriverList(userId,type);
     }
