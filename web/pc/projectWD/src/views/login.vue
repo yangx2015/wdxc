@@ -107,7 +107,6 @@ export default {
     },
     methods: {
         handleSubmit () {
-            debugger
         	var v = this
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
