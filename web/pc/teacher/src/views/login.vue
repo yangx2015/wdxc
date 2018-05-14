@@ -6,6 +6,9 @@
       <div class="backSty" @click="back">
         <i class="iconfont icon-left"></i>
       </div>
+      <div class="backCenter" @click="backCenter">
+        首页
+      </div>
       <div class="form">
         <md-field>
           <md-input-item
@@ -55,13 +58,23 @@
       back(){
         this.$router.back()
       },
+      backCenter(){
+        this.$router.push({
+            name:'Home'
+        })
+      },
       login(){
         var v = this
-        v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
-
-        }).catch((error)=>{
-
-        })
+        this.cok.set('result',this.form)
+        this.$router.back()
+        // this.$router.push({
+        //     name:'Home'
+        // })
+        // v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
+        //
+        // }).catch((error)=>{
+        //
+        // })
       }
     }
   }

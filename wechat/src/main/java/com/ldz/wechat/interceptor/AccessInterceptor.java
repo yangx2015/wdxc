@@ -1,6 +1,8 @@
 package com.ldz.wechat.interceptor;
 
+import com.ldz.util.commonUtil.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -11,7 +13,7 @@ import java.util.List;
 
 /**
  * 访问接口控制
- * 
+ *
  * @author 李彬彬
  *
  */
@@ -42,6 +44,16 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		if (anonymousList.contains(request.getRequestURI())){
 			return true;
 		}
+		String token = request.getHeader("token");
+		if (token == null)
+			token = request.getParameter("token");
+		if ( StringUtils.isEmpty(token)) {
+			return false;
+		}
+
+		log.debug("访问地址[{}],请求token[{}]]", request.getRequestURI(), token);
+		String id = JwtUtil.getClaimAsString(token, "id");
+		log.debug("id=" + id);
 		 if (true)return true;
 
 		return super.preHandle(request, response, handler);

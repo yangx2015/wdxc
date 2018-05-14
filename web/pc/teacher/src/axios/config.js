@@ -14,5 +14,8 @@ module.exports = {
   FEEDBACK:{//建议、投诉
     QUERTY:'put/yj/save',
     LIST:'put/yj/pager'
+  },
+  DDSAVE:{
+	  SAVE:'/pub/dd/save'
   }
 }

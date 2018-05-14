@@ -18,7 +18,7 @@ public class SysJzgxxCtrl {
 	
 	
 	@PostMapping("/getJzg")
-	ApiResponse<SysJzgxx> findJzg(String name ,String idCard){
+	ApiResponse<String> findJzg(String name ,String idCard){
 		
 		return jzgxxService.findJzg(name, idCard);
 	}

@@ -11,16 +11,18 @@
       <head-tit tit="约车"></head-tit>
       <div class="body">
         <md-field>
-            <md-input-item
-              ref="input0"
-              title="出发地"
-              placeholder="您的候车地点"
-              :maxlength="5"
-            ></md-input-item>
           <md-input-item
             ref="input0"
-            title="目的地"
-            placeholder="您的目的地"
+            title="约车人"
+            :readonly="true"
+            v-model="form.ycr"
+            :maxlength="5"
+          ></md-input-item>
+          <md-input-item
+            ref="input0"
+            title="乘车人"
+            placeholder="请输入乘车人姓名"
+            v-model="form.ccr"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
@@ -28,6 +30,18 @@
             type="phone"
             title="联系方式"
             placeholder="请输入您的联系方式"
+            :maxlength="5"
+          ></md-input-item>
+          <md-input-item
+            ref="input0"
+            title="出发地"
+            placeholder="您的候车地点"
+            :maxlength="5"
+          ></md-input-item>
+          <md-input-item
+            ref="input0"
+            title="目的地"
+            placeholder="您的目的地"
             :maxlength="5"
           ></md-input-item>
           <md-input-item
@@ -85,20 +99,26 @@
             currentDate: new Date(),
             isDatePickerShow: false,
             datePickerValue: '',
+            form:{
+              ycr:JSON.parse(this.cok.get('result')).name
+            }
+          }
+        },
+        created(){
+          if (this.cok.get('result')) {
+
+          }else{
+            this.$router.push({
+              name:'login'
+            })
           }
         },
         mounted() {
         },
         methods: {
           textRender() {
-            // debugger
             const args = Array.prototype.slice.call(arguments)
-            console.log('***************',args)
             const typeFormat = args[0] // 类型
-            // const column0Value = args[1] // 第1列选中值
-            // const column1Value = args[2] // 第2列选中值
-            // const column2Value = args[3] // 第3列选中值
-            //
             if (typeFormat === 'yyyy') {
               return args[1].toString().substring(2,4) + '年'
             }

@@ -9,11 +9,11 @@ spring:
     username: 'C##wdxc_admin'
     password: 'wdxc123456'
 
-  
+
 server:
-  port: 9998
-  
-spk: 
+  port: 9096
+
+spk:
   url: http://127.0.0.1:8080/
 
 wechat:
@@ -23,5 +23,5 @@ wechat:
     token: wdxc18
     aesKey: tjlq1glUbSsxADd2fsxExFvDUDo1RgdoQveqrSWyhoy
     agentId: 37
-    
+
 staticPath: /develop/static/8081/
