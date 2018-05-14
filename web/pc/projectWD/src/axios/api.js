@@ -8,6 +8,13 @@ module.exports = {
         INIT_MENU:'/api/gn/initMenu',
         MODIFY_PSD:'/api/yh/mdfPwd'
     },
+    CHART_DATA:{
+       SAFE_DRIVING:'/api/cl/carAccStatistics',
+       WEEK:'/api/dd/ddzTj',
+       PD:'/api/dd/ccTTj',
+        nianshenbt:'/api/cl/nianshenbt',
+        xbkb:'/api/pb/xbkb',//今日校巴开班条形图
+    },
     LOGIN:{
         QUERY:'login'
     },
