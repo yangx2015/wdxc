@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.biz.module.bean.ClLsGjInfo;
+import com.ldz.biz.module.bean.CsTxTj;
 import com.ldz.biz.module.bean.GuiJiGps;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
@@ -57,7 +58,14 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 		return service.getSafeDrivig();
 	}
 	
-	/*@PostMapping("OverSpeed")
-	public 
-	*/
+	/*
+	 * 获取时间段内超数值
+	 */
+	@PostMapping("/csxxtj")
+	public ApiResponse<CsTxTj> getcs(String cph,String day){
+		
+		return service.getcs(cph,day);
+		
+	}
+	
 }

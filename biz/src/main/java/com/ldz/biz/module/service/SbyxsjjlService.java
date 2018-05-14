@@ -3,6 +3,7 @@ package com.ldz.biz.module.service;
 import java.util.List;
 
 import com.ldz.biz.module.bean.ClLsGjInfo;
+import com.ldz.biz.module.bean.CsTxTj;
 import com.ldz.biz.module.bean.GuiJiGps;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
@@ -16,4 +17,6 @@ public interface SbyxsjjlService extends BaseService<ClSbyxsjjl,String>{
 	ApiResponse<List<GuiJiGps>> getGuiJiGps(gpsSJInfo gpssjinfo);
 	
 	ApiResponse<List<SafedrivingModel>> getSafeDrivig();
+	//获取时间段内超数值
+	ApiResponse<CsTxTj> getcs(String cph, String day);
 }

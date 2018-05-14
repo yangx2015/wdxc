@@ -39,4 +39,8 @@
 		<result column="CJSJ" property="cjsj" />
   
   </resultMap> -->
+  
+  <select id="findByCphAndTime" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
+  	SELECT t.* FROM CL_SBYXSJJL t WHERE t.SJLX='40' AND t.CPH=#{cph} AND t.CJSJ BETWEEN #{start} and#{end}
+  </select>
 </mapper>
