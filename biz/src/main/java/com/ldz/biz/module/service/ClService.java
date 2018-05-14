@@ -17,7 +17,7 @@ public interface ClService extends BaseService<ClCl,String>{
     
 	ApiResponse<List<ClCl>> nianshen(ClCl car);
 
-    ApiResponse<Map<String,Object>> carAccStatistics();
+    ApiResponse<Map<String,Object>> carAccStatistics(Integer days);
 
 	//获取当前登陆用户获取车辆年审饼图
 	ApiResponse<Map<String, Integer>> getnianshen();

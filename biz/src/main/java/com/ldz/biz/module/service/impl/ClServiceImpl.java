@@ -201,14 +201,17 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	}
 
 	@Override
-	public ApiResponse<Map<String, Object>> carAccStatistics() {
-//		SysYh user = getCurrentUser();
-//		String jgdm = user.getJgdm();
-		Date now = new Date();
-		String weekStart = convertWeekDate(now);
-		String jgdm = "100";
-//		String dateRange = " and cjsj> to_date('"+weekStart+"','yyyy-mm-dd') ";
-		String dateRange = "  ";
+	public ApiResponse<Map<String, Object>> carAccStatistics(Integer days) {
+		SysYh user = getCurrentUser();
+		String jgdm = user.getJgdm();
+		Calendar now = Calendar.getInstance();
+		if (days == null)days = -3;
+		if (days > 0)days = -days;
+		now.add(Calendar.DATE, days);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
+		String weekStart = sdf.format(now.getTime());
+//		String jgdm = "100";
+		String dateRange = " and cjsj> to_date('"+weekStart+"','yyyy-mm-dd') ";
 		String sql = "SELECT T1.sjxm,T1.cph,T2.speedupCount,t3.speedownCount,t4.wheelCount,t5.overspeedCount  FROM CL_CL t1 \n" +
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedupCount FROM CL_SBYXSJJL  t WHERE t.SJLX='10' "+dateRange+" GROUP BY zdbh) t2 on T1.ZDBH=T2.ZDBH\n" +
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedownCount FROM CL_SBYXSJJL  t WHERE t.SJLX='20' "+dateRange+"  GROUP BY zdbh) t3 on T1.ZDBH=T3.ZDBH\n" +
@@ -223,12 +226,24 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		List<Object> overSpeedCountList = new ArrayList<>(result.size());
 		for (Object o : result) {
 			Map<String,Object> map = (Map<String, Object>) o;
-			String carNumber = (String) map.get("cph");
+			String carNumber = (String) map.get("sjxm");
 			carNumberList.add(carNumber);
-			speedUpCountList.add(map.get("speedupCount"));
-			speedDownCountList.add(map.get("speedownCount"));
-			wheelCountList.add(map.get("wheelCount"));
-			overSpeedCountList.add(map.get("overspeedCount"));
+
+			String speedupCountStr = map.get("speedupCount") == null ? "0" : map.get("speedupCount").toString();
+			int count1 = StringUtils.isEmpty(speedupCountStr) ? 0 : Integer.parseInt(speedupCountStr);
+			speedUpCountList.add(count1);
+
+			String speeddownCountStr = map.get("speedownCount") == null ? "0" : map.get("speedownCount").toString();
+			int count2 = StringUtils.isEmpty(speeddownCountStr) ? 0 : Integer.parseInt(speeddownCountStr);
+			speedDownCountList.add(count2);
+
+			String wheelCountStr = map.get("wheelCount") == null ? "0" : map.get("wheelCount").toString();
+			int count3 = StringUtils.isEmpty(wheelCountStr) ? 0 : Integer.parseInt(wheelCountStr);
+			wheelCountList.add(count3);
+
+			String overspeedpCountStr = map.get("overspeedCount") == null ? "0" : map.get("overspeedCount").toString();
+			int count4 = StringUtils.isEmpty(overspeedpCountStr) ? 0 : Integer.parseInt(overspeedpCountStr);
+			overSpeedCountList.add(count4);
 		}
 
 		Map<String,Object> map = new HashMap<>();
