@@ -1,6 +1,8 @@
 package com.ldz.wechat.interceptor;
 
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.wechat.module.model.SysJzgxx;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -47,15 +49,18 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		String token = request.getHeader("token");
 		if (token == null)
 			token = request.getParameter("token");
-		if ( StringUtils.isEmpty(token)) {
-			return false;
+		if (StringUtils.isEmpty(token)){
+			return true;
 		}
 
 		log.debug("访问地址[{}],请求token[{}]]", request.getRequestURI(), token);
-		String id = JwtUtil.getClaimAsString(token, "id");
-		log.debug("id=" + id);
-		 if (true)return true;
-
+		String type = JwtUtil.getClaimAsString(token, "type");
+		String userInfo = JwtUtil.getClaimAsString(token, "userInfo");
+		if (StringUtils.isEmpty(userInfo)){
+			return true;
+		}
+		request.setAttribute("type",type);
+		request.setAttribute("userInfo",type);
 		return super.preHandle(request, response, handler);
 	}
 
