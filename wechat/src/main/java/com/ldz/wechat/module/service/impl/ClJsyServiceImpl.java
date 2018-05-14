@@ -1,5 +1,8 @@
 package com.ldz.wechat.module.service.impl;
 
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.wechat.module.model.SysJzgxx;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +17,13 @@ public class ClJsyServiceImpl implements ClJsyService{
     private ClJsyMapper jsymapper;
     
 	@Override
-	public ApiResponse<ClJsy> findJsy(String sfzhm, String xm) {
-		ClJsy findJzg = jsymapper.findJzg(sfzhm, xm);
-		RuntimeCheck.ifNull(findJzg, "姓名或者身份证号码有误");
-		 ApiResponse<ClJsy> response = new ApiResponse<>();
-		 response.setResult(findJzg);
-		return response;
+	public ApiResponse<String> findJsy(String sfzhm, String xm) {
+		ClJsy jsy = jsymapper.findJzg(sfzhm, xm);
+		RuntimeCheck.ifNull(jsy, "身份证或者姓名有误");
+		String token = JwtUtil.createToken("jsy",JsonUtil.toJson(jsy));
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setResult(token);
+		return res;
 	}
 
 	@Override

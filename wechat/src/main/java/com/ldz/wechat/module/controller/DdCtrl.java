@@ -1,10 +1,12 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.module.model.ClDd;
-import com.ldz.wechat.module.model.SysZdxm;
+import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.model.SysJzgxx;
 import com.ldz.wechat.module.service.DdService;
-import com.ldz.wechat.module.service.ZdxmService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -31,11 +33,22 @@ public class DdCtrl {
      * @return
      */
     public static String getCurrentUser(boolean require) {
-        return "1";
-//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//        String userInfo = (String) request.getAttribute("userInfo");
-//        RuntimeCheck.ifTrue(require && userInfo == null,"当前登录用户未空！");
-//        return userInfo;
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String type = (String) request.getAttribute("type");
+        String userInfo = (String) request.getAttribute("userInfo");
+        RuntimeCheck.ifTrue((StringUtils.isEmpty(type) || StringUtils.isEmpty(userInfo)) && require,"当前登录用户未空！");
+        if ("jzg".equals(type)){
+            SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
+            RuntimeCheck.ifNull(jzg,"未找到教职工信息");
+            return jzg.getId();
+        }else if ("jsy".equals(type)){
+            ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
+            RuntimeCheck.ifNull(jsy,"未找到驾驶员信息");
+            return jsy.getSfzhm();
+        }else{
+            RuntimeCheck.ifTrue(true,"未知用户类型");
+        }
+        return "";
     }
     @InitBinder
     public void initBinder(WebDataBinder binder) {
