@@ -56,6 +56,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			return true;
 		}
 
+//		if (true)return true;
 		// 访问权限值
 		// String userid = "1";
 		// String token =
