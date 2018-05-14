@@ -11,6 +11,11 @@ import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.module.mapper.ClJsyMapper;
 import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.service.ClJsyService;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+
 @Service
 public class ClJsyServiceImpl implements ClJsyService{
     @Autowired
@@ -20,7 +25,11 @@ public class ClJsyServiceImpl implements ClJsyService{
 	public ApiResponse<String> findJsy(String sfzhm, String xm) {
 		ClJsy jsy = jsymapper.findJzg(sfzhm, xm);
 		RuntimeCheck.ifNull(jsy, "身份证或者姓名有误");
-		String token = JwtUtil.createWechatToken("jsy",JsonUtil.toJson(jsy));
+		String userInfo = JsonUtil.toJson(jsy);
+		String token = JwtUtil.createWechatToken("jsy",userInfo);
+//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//		request.setAttribute("type",jsy);
+//		request.setAttribute("userInfo",userInfo);
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);
 		return res;
