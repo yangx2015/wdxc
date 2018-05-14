@@ -200,4 +200,50 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		return apiResponse;
 	}
 
+	@Override
+	public ApiResponse<Map<String, Integer>> getnianshen() {
+		//获取当前登陆用户
+		SysYh user = getCurrentUser();
+		ClCl clCl= new ClCl();
+		clCl.setJgdm(user.getJgdm());
+		
+		List<ClCl> cllist = entityMapper.select(clCl);
+		
+		
+		int thirty=0;
+		int sixty=0;
+		int ninety=0;
+		Date now = new Date();
+		for (ClCl cl : cllist) {
+			if (cl.getNssj()==null) {
+				continue;
+			}
+			Date nssj = cl.getNssj();
+			int cha = differentDaysByMillisecond(now,nssj);
+			if (cha<=30) {
+				thirty++;
+			}
+			if (cha>30&&cha<=60) {
+				sixty++;
+			}
+			if (cha>60&&cha<=90) {
+				ninety++;
+			}
+			
+		}
+		ApiResponse<Map<String, Integer>> apiResponse = new ApiResponse<>();
+		Map<String, Integer> map = new HashMap<>();
+		map.put("30", thirty);
+		map.put("60", sixty);
+		map.put("90", ninety);
+		apiResponse.setResult(map);
+		return apiResponse;
+	}
+	
+	 public static int differentDaysByMillisecond(Date date1,Date date2)
+	    {
+	        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+	        return days;
+	    }
+
 }
