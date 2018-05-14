@@ -15,7 +15,7 @@
 							<span>报销记账</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
+							<Input v-model="form.bxrLike" placeholder="请输入报销人姓名" style="width: 200px"
 								   @on-change="getPageData()"></Input>
 						</div>
 						<div class="butevent">
@@ -64,7 +64,7 @@
                 ],
                 pageData: [],
                 form: {
-                    gnmcLike: '',
+                    bxrLike: '',
                     total: 0,
                     pageNum: 1,
                     pageSize: 8,
