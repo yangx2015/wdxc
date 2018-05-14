@@ -43,7 +43,7 @@
     </div>
     <div class="body" style="padding: 8px">
         <div class="hisList" v-for="item in listmess">
-            <div class="close" @click="remove">
+            <div class="close" @click="remove(item.yjId)">
               <i class="iconfont icon-guanbi"></i>
             </div>
             <div class="time">
@@ -111,8 +111,14 @@
 
           })
         },
-        remove(){
-          alert('132')
+        remove(id){
+          var v = this
+          v.$http.post(this.apis.REMOVE.DELE, {'ids':[id]}).then((res) =>{
+            console.log('*****',res)
+            v.feedbackList()
+          }).catch((error)=>{
+
+          })
         }
       }
     }
