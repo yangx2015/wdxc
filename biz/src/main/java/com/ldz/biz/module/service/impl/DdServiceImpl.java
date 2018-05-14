@@ -1165,6 +1165,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifTrue(i == 0, "操作数据库失败");
 
 		// 计算里程费
+		order.setSjqrsj(new Date());
 		BigDecimal lcf = overWorkMoney(order);
 		order.setLcf(lcf.doubleValue());
 		order.setDdzt("20");

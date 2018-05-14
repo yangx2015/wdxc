@@ -717,7 +717,7 @@ public class ClDd implements Serializable {
     /**
      * 设置订单状态
      *
-     * 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(出车)；21-司机完成行程(行程结束)；30-队长确认
+     * 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机完成行程(行程结束)；30-队长确认
      * @param ddzt 订单状态
      */
     public void setDdzt(String ddzt) {
@@ -1156,7 +1156,8 @@ public class ClDd implements Serializable {
         dzqrsj("DZQRSJ"),
         shsj("SHSJ"),
         dzxm("DZXM"),
-        fkbz("FKBZ");
+        fkbz("FKBZ"),
+        ckCjl("CK_CJL");
 
         private final String column;
 

@@ -42,7 +42,7 @@ import com.ldz.util.exception.RuntimeCheck;
  *   请求地址要加上：api  因为api的话，可以加上权限的鉴权。
  */
 @RestController
-@RequestMapping("/pub/dd")
+@RequestMapping("/api/dd")
 public class DdCtrl{
     @Autowired
     private DdService service;

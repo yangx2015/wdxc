@@ -14,7 +14,13 @@ public interface DdService extends BaseService<ClDd,String> {
 
     ApiResponse<String> updateOrder(ClDd entity,String userId);
 
-    ApiResponse<String> updateAffirmOracle(ClDd entity, String userId);
 
-    ApiResponse<String> driverConfirm(String id,String userId);
+//    ApiResponse<String> driverConfirm(String id,String userId);
+    /**
+     * 教职工 订单查询
+     * @return
+     */
+    ApiResponse<List<ClDd>> getOrderWorkersList(String userId);
+
+    ApiResponse<List<ClDd>> getOrderDriverList(String userId, String type);
 }

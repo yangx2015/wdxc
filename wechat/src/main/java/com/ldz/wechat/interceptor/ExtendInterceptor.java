@@ -16,7 +16,7 @@ public class ExtendInterceptor extends BaseWebConfigure {
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		registry.addInterceptor(new AccessInterceptor(redisDao))
-				.addPathPatterns("/api/**")
+				.addPathPatterns("/api/**","/put/**")
 				.excludePathPatterns("/pub/**"
 						,"**/export"
 						,"/login"
