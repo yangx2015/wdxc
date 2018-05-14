@@ -1,3 +1,46 @@
+<style scoped>
+    .demo-upload-list{
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+    }
+    .demo-upload-list-box{
+        width: 100%;
+        height: 100%;
+    }
+    .demo-upload-list img{
+        width: 100%;
+        height: 100%;
+        margin: auto;
+    }
+    .demo-upload-list-cover{
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.6);
+    }
+    .demo-upload-list:hover .demo-upload-list-cover{
+        display: block;
+    }
+    .demo-upload-list-cover i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
+</style>
 <template>
     <div>
         <Modal
@@ -46,6 +89,16 @@
                                             placeholder="请选着保险时间"></DatePicker>
                             </FormItem>
                         </Col>
+                        <Col span="12">
+                            <FormItem label="车辆图片：">
+                                <div>
+                                    添加图片
+                                </div>
+                                <addlistfileImg @addImg="addImg"
+                                                @removeFile = "removeFile"
+                                                :urlList = "otherMess.tp"></addlistfileImg>
+                            </FormItem>
+                        </Col>
                     </Row>
                 </div>
             </Form>
@@ -59,15 +112,20 @@
 
 <script>
 
+    import addlistfileImg from './addlistfileImg.vue'
 
     export default {
         name:'',
+        components: {
+            addlistfileImg,
+        },
         data(){
             return {
                 showModal:true,
                 //车辆配置信息
                 otherMess:{
-                    cph:'123'
+                    cph:'',
+                    tp:''
                 },
             }
         },
@@ -82,7 +140,25 @@
             this.otherMess = this.mess
 
         },
+        mounted () {
+        },
         methods:{
+            addImg(path){
+                this.otherMess.tp += path+",";
+            },
+            removeFile(url){
+                log('图片',url)
+                log('原图片',this.otherMess.tp)
+
+                let aindex = this.otherMess.tp.indexOf(url)//开始的位置
+                let urlLength = url.length//传递的长度
+                let filePath = this.otherMess.tp//原数据拼接
+                let filelength = filePath.length//原数据长度
+
+                this.otherMess.tp = filePath.slice(0,aindex)+filePath.slice(aindex+urlLength,filelength)
+
+                log('修改数据',this.otherMess.tp)
+            },
             colse(){
                 var v = this
                 v.$parent.compName = ''
