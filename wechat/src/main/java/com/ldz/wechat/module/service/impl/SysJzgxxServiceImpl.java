@@ -21,7 +21,7 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 	public ApiResponse<String> findJzg(String idCard, String name) {
 		SysJzgxx jzg = jzgmapper.findJzg(idCard, name);
 		RuntimeCheck.ifNull(jzg, "身份证或者姓名有误");
-		String token = JwtUtil.createToken("jzg",JsonUtil.toJson(jzg));
+		String token = JwtUtil.createWechatToken("jzg",JsonUtil.toJson(jzg));
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);
 		return res;

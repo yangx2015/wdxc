@@ -81,4 +81,18 @@ public class ClCtrl extends BaseController<ClCl, String> {
 		
 	}
 
+	@RequestMapping("carAccStatistics")
+	public ApiResponse<Map<String,Object>> carAccStatistics(Integer days){
+		return clservice.carAccStatistics(days);
+	}
+
+    /*
+     * 获取年审饼图 30/60/90天
+     */
+	@GetMapping("/nianshenbt")
+	public ApiResponse<Map<String, Integer>> getnianshen(){
+
+		return clservice.getnianshen();
+	}
+
 }

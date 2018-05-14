@@ -33,6 +33,12 @@ public class DdCtrl {
     @Autowired
     private ZdxmService zdxmService;
 
+    public static String getUserType(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String type = (String) request.getAttribute("type");
+        RuntimeCheck.ifBlank(type,"当前登录用户未空！");
+        return type;
+    }
     /**
      * 获取当前登录用户信息
      * @return
@@ -52,12 +58,12 @@ public class DdCtrl {
             return jsy.getSfzhm();
         }else{
             RuntimeCheck.ifTrue(true,"未知用户类型");
+            return null;
         }
-        return "";
     }
     @InitBinder
     public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         dateFormat.setLenient(false);
         //true:允许输入空值，false:不能为空值
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
@@ -152,5 +158,26 @@ public class DdCtrl {
     public ApiResponse<String> driverConfirm(String id){
         String userId = getCurrentUser(true);
         return service.driverConfirm(id,userId);
+    }
+
+    /**
+     * 教职工 订单查询
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "/getorderworkerslis",method = {RequestMethod.POST})
+    public ApiResponse<List<ClDd>> getOrderWorkersList(){
+        String userId = getCurrentUser(true);
+        return service.getOrderWorkersList(userId);
+    }
+    /**
+     * 列表 订单查询
+     * @param type  1、今日单据  2、待确认  3、历史单据
+     * @return
+     */
+    @RequestMapping(value = "/getsjlist",method = {RequestMethod.POST})
+    public ApiResponse<List<ClDd>> getOrderDriverList(String type){
+        String userId = getCurrentUser(true);
+        return service.getOrderDriverList(userId,type);
     }
 }
