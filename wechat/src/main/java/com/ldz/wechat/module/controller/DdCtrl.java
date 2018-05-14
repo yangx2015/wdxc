@@ -1,18 +1,18 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.module.model.ClDd;
+import com.ldz.wechat.module.model.SysZdxm;
 import com.ldz.wechat.module.service.DdService;
+import com.ldz.wechat.module.service.ZdxmService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,16 +23,36 @@ import java.util.List;
 public class DdCtrl {
     @Autowired
     private DdService service;
+    @Autowired
+    private ZdxmService zdxmService;
+
     /**
      * 获取当前登录用户信息
      * @return
      */
     public static String getCurrentUser(boolean require) {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        String userInfo = (String) request.getAttribute("userInfo");
-        RuntimeCheck.ifTrue(require && userInfo == null,"当前登录用户未空！");
-        return userInfo;
+        return "1";
+//        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//        String userInfo = (String) request.getAttribute("userInfo");
+//        RuntimeCheck.ifTrue(require && userInfo == null,"当前登录用户未空！");
+//        return userInfo;
     }
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateFormat.setLenient(false);
+        //true:允许输入空值，false:不能为空值
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+    }
+    @RequestMapping(value="/getzdxm", method={RequestMethod.POST})
+    public ApiResponse<List<SysZdxm>> save(String zdlmdm){
+        if(StringUtils.isEmpty(zdlmdm)){
+            zdlmdm="ZDCLK0041";
+        }
+        List<SysZdxm> list=zdxmService.findByTypeCode(zdlmdm);
+        return ApiResponse.success(list);
+    }
+//
     /**
      * 订单新增页面
      * @param entity
@@ -103,5 +123,16 @@ public class DdCtrl {
     public ApiResponse<String> affirmOracle(ClDd entity){
         String userId = getCurrentUser(true);
         return service.updateAffirmOracle(entity,userId);
+    }
+
+    /**
+     * 司机确认
+     * @param id
+     * @return
+     */
+    @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
+    public ApiResponse<String> driverConfirm(String id){
+        String userId = getCurrentUser(true);
+        return service.driverConfirm(id,userId);
     }
 }

@@ -15,4 +15,6 @@ public interface DdService extends BaseService<ClDd,String> {
     ApiResponse<String> updateOrder(ClDd entity,String userId);
 
     ApiResponse<String> updateAffirmOracle(ClDd entity, String userId);
+
+    ApiResponse<String> driverConfirm(String id,String userId);
 }
