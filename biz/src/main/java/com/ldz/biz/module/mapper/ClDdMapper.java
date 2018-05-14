@@ -3,10 +3,13 @@ package com.ldz.biz.module.mapper;
 import java.util.List;
 import java.util.Map;
 
-import com.ldz.biz.module.bean.DdTongjiTJ;
-import com.ldz.biz.module.model.ClDd;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+
+import com.ldz.biz.module.bean.DdTjTx;
+import com.ldz.biz.module.bean.DdTongjiTJ;
+import com.ldz.biz.module.model.ClDd;
+
 import tk.mybatis.mapper.common.Mapper;
 
 public interface ClDdMapper extends Mapper<ClDd> {
@@ -43,4 +46,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
                     " </script>"
     })
     Map<String,Object> selectVeryDayOrderCount(List<String> list);
+    
+    
+   List<DdTjTx>  weekTj(DdTongjiTJ dd);
 }
