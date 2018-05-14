@@ -74,7 +74,7 @@
           @confirm="onDatePickerConfirm"
         ></md-date-picker>
       </div>
-      <div class="button">
+      <div class="button" @click="addList">
         <button>
           提    交
         </button>
@@ -100,7 +100,14 @@
             isDatePickerShow: false,
             datePickerValue: '',
             form:{
-              ycr:JSON.parse(this.cok.get('result')).name
+              ycr:JSON.parse(this.cok.get('result')).name,
+              xm:'',//乘车人
+              cklxdh:'',//联系电话
+              gethcdz:'',//候车地址
+              mdd:'',//目的地
+              cllx:'10',//10小车20大车
+              zws:'',//座位数
+              yysj:''//约车时间按
             }
           }
         },
@@ -116,6 +123,13 @@
         mounted() {
         },
         methods: {
+          addList(){
+            v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
+
+            }).catch((error)=>{
+
+            })
+          },
           textRender() {
             const args = Array.prototype.slice.call(arguments)
             const typeFormat = args[0] // 类型
