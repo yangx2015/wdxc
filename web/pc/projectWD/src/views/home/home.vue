@@ -18,17 +18,17 @@
 </style>
 <template>
 	<div class="box" style="height: 100%;background:#fff">
-		<div class="body" style="position: relative">
-			<span style="position: absolute;top: 45%;left: 50%;transform: translate(-50%,-50%);font-size: 26px;text-align: center;color: #a4a4a4">
-				<h1>
-					欢迎登录
-				</h1>
-				<h1>
-					武汉大学车辆管理信息平台
-				</h1>
-			</span>
-		</div>
-		<div v-if="false" class="homeE" style="padding: 5px 3px;">
+		<!--<div class="body" style="position: relative">-->
+			<!--<span style="position: absolute;top: 45%;left: 50%;transform: translate(-50%,-50%);font-size: 26px;text-align: center;color: #a4a4a4">-->
+				<!--<h1>-->
+					<!--欢迎登录-->
+				<!--</h1>-->
+				<!--<h1>-->
+					<!--武汉大学车辆管理信息平台-->
+				<!--</h1>-->
+			<!--</span>-->
+		<!--</div>-->
+		<div class="homeE" style="padding: 5px 3px;">
 			<Row :gutter="8" class="margin-bottom-10 indexCarType">
 				<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
 				<infor-card id-name="user_created_count" :end-val="count.createUser" iconType="planet" color="#2d8cf0" intro-text="设备总数"></infor-card>
