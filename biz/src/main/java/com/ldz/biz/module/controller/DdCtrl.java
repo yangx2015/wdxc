@@ -22,6 +22,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.CcTjTx;
 import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTjTxReturn;
 import com.ldz.biz.module.bean.DdTongjiTJ;
@@ -410,6 +411,17 @@ public class DdCtrl{
 
     	return service.chucheTj(dd);
     }
+    
+    /*
+     * 司机出车统计条形图
+     */
+    @PostMapping("/ccTTj")
+    public  ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd){
+
+    	return service.chucheTTj(dd);
+    }
+    
+    
     /*
      * 订单付款统计
      */

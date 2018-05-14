@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.ldz.biz.module.bean.CcTjTx;
 import com.ldz.biz.module.bean.ClJsyModel;
 import com.ldz.biz.module.bean.DdTjTx;
 import com.ldz.biz.module.bean.DdTjTxReturn;
@@ -1116,9 +1117,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 			for (ClDd clDd : value) {
 				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
-				Integer stateInt = Integer.parseInt(clDd.getDdzt());
-				if (stateInt >= 13) {
-					ddtongji.setSjname(clDd.getSjxm());
+				if (StringUtils.equals(clDd.getDdzt(), "20")) {
 					ddzsCount++;
 				}
 				continue;
@@ -1504,6 +1503,57 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		return sdf.format(cal.getTime()); // 周一时间
 
+	}
+
+	@Override
+	public ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd) {
+		
+		if (StringUtils.isEmpty(dd.getJgdm())) {
+			SysYh currentUser = getCurrentUser();
+			String jgdm = currentUser.getJgdm();
+			dd.setJgdmlike(jgdm);
+		}
+		if (StringUtils.isEmpty(dd.getKssj())) {
+			String kssj = DateUtils.getToday() + " 00:00:00";
+			dd.setKssj(kssj);
+		}
+		if (StringUtils.isEmpty(dd.getJssj())) {
+			String jssj = DateUtils.getToday() + " 23:59:59";
+			dd.setJssj(jssj);
+		}
+
+		ApiResponse<CcTjTx> apiResponse = new ApiResponse<>();
+
+		    CcTjTx ccTjTx = new CcTjTx();
+		    List<String> sjxm=new ArrayList<>();
+		    List<Integer> count = new ArrayList<>();
+		
+		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
+	
+		// 将订单按照司机分类
+		Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s -> StringUtils.isNotEmpty(s.getSjxm()))
+				.collect(Collectors.groupingBy(ClDd::getSjxm));
+
+		Iterator<Entry<String, List<ClDd>>> it = ddmp.entrySet().iterator();
+		while (it.hasNext()) {
+			Entry<String, List<ClDd>> next = it.next();
+			List<ClDd> value = next.getValue();
+			int ddzsCount = 0;
+
+			for (ClDd clDd : value) {
+				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+				if (StringUtils.equals(clDd.getDdzt(), "20")) {
+					ddzsCount++;
+				}
+				continue;
+			}
+			sjxm.add(next.getKey());
+			count.add(ddzsCount);
+		}
+		ccTjTx.setSjxm(sjxm);
+		ccTjTx.setCount(count);
+		apiResponse.setResult(ccTjTx);
+		return apiResponse;
 	}
 
 }
