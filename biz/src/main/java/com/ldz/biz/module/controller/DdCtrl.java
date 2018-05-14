@@ -8,23 +8,30 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ldz.biz.module.bean.ClJsyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.ClJsyModel;
+import com.ldz.biz.module.bean.DdTjTxReturn;
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.DdService;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.exception.RuntimeCheck;
 
 /**
  * 订单表维护
@@ -419,4 +426,14 @@ public class DdCtrl{
 
     	return service.ShoukuanTj(dd);
     }
+    
+    /*
+     * 订单周统计
+     */
+    @PostMapping("/ddzTj")
+    public  ApiResponse<DdTjTxReturn>  ddzTj(DdTongjiTJ dd){
+
+    	return service.ddzTj(dd);
+    }
+    
 }
