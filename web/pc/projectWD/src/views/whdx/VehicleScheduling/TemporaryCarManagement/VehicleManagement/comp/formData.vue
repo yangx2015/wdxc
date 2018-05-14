@@ -104,11 +104,10 @@
 		},
 		methods: {
             getLsdw(){
-                this.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}},(res)=>{
-                    console.log(res);
+                let v = this;
+                v.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if (res.code == 200 && res.page.list){
                         this.lswdList = res.page.list;
-                        console.log(this.lswdList);
                     }
                 })
             },
