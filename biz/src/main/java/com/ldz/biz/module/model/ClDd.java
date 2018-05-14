@@ -296,9 +296,22 @@ public class ClDd implements Serializable {
 
     @Transient
     private Date endTime;
-
+    /**
+     * 过桥费
+     */
+    @Column(name = "GQF")
+    private Double gqf;
 
     private static final long serialVersionUID = 1L;
+
+    public Double getGqf() {
+        return gqf;
+    }
+
+    public void setGqf(Double gqf) {
+        this.gqf = gqf;
+    }
+
     /**
      * 课题编号  课题字典 [ZDCLK0045]
      */

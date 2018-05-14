@@ -584,6 +584,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		newClDd.setSj(userId);// 修改人
 		newClDd.setXgsj(new Date());// 修改时间
 		newClDd.setGlf(entity.getGlf());// 过路费
+		newClDd.setGqf(entity.getGqf());//过桥费
 		newClDd.setSy(entity.getSy());// 事由
 		newClDd.setZj(entity.getZj());// 总价
 		newClDd.setSc(entity.getSc());// 时长
