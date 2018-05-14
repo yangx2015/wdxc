@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.sys.mapper.SysRlbMapper;
+import com.ldz.sys.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,10 +55,6 @@ import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.mapper.SysHsgsMapper;
-import com.ldz.sys.model.SysHsgs;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.model.SysMessage;
-import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.bean.ApiResponse;
@@ -78,6 +76,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	private ClDdMapper entityMapper;
 	@Autowired
 	private JgService jgService;
+	@Autowired
+	private SysRlbMapper rlbMapper;
 	/*
 	 * @Autowired private ClService clService;
 	 */
@@ -1272,34 +1272,102 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
-
-	private BigDecimal overWorkMoney(ClDd order) {
+	private BigDecimal overWorkMoney(ClDd order){
 		SimpleCondition condition = new SimpleCondition(SysHsgs.class);
-		condition.eq(SysHsgs.InnerColumn.lx, "10");
+		condition.eq(SysHsgs.InnerColumn.lx,"10");
 		List<SysHsgs> hsgsList = hsgsMapper.selectByExample(condition);
-		RuntimeCheck.ifTrue(hsgsList.size() == 0, "未找到核算公式");
+		RuntimeCheck.ifTrue(hsgsList.size() == 0,"未找到核算公式");
 		SysHsgs hsgs = hsgsList.get(0);
 		BigDecimal price = hsgs.getJe();
 		String nr = hsgs.getNr();
-		long durationMs = getExtraTime(nr, order.getYysj(), order.getSjqrsj());
-		BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000 * 60 * 60), 2);
-		System.out.println(amount);
+		long durationMs = 0;
+		List<Map<String,Date>> dateList = splitDate(order.getYysj(),order.getSjqrsj());
+		for (Map<String, Date> map : dateList) {
+			Date startTime = map.get("startTime");
+			String startTimeStr = DateUtils.getDateStr(startTime,"yyyy-MM-dd");
+			SimpleCondition rlCond = new SimpleCondition(SysRlb.class);
+			rlCond.eq(SysRlb.InnerColumn.rq,startTimeStr);
+			List<SysRlb> rlbs = rlbMapper.selectByExample(rlCond);
+			RuntimeCheck.ifEmpty(rlbs,"未找到日历");
+			SysRlb rlb = rlbs.get(0);
+			if (!"1".equals(rlb.getZt()))continue;
+			durationMs += getExtraTime(nr,map.get("startTime"),map.get("startTime"));
+		}
+		BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000*60*60),2,BigDecimal.ROUND_HALF_UP);
 		return amount;
 	}
 
-	/*
-	 * public static void main(String[] ars){ String time =
-	 * "8:30-12:00,14:00-17:00"; Date startTime = new Date(); Date endTime = new
-	 * Date(); startTime.setHours(7); startTime.setMinutes(30);
-	 * 
-	 * endTime.setHours(20); endTime.setMinutes(0); long s =
-	 * getExtraTime(time,startTime,endTime); System.out.println("s="+s); BigDecimal
-	 * price = new BigDecimal(10); BigDecimal amount = price.multiply(new
-	 * BigDecimal(s)).divide(new BigDecimal(1000*60*60),BigDecimal.ROUND_HALF_UP);
-	 * System.out.println(amount); }
-	 */
 
-	private static long getExtraTime(String workTimeStr, Date orderStartTime, Date orderEndTime) {
+	private static List<Map<String,Date>> splitDate(Date startTime,Date endTime){
+		int startDate = startTime.getDate();
+		int endDate = endTime.getDate();
+		List<Map<String,Date>> list = new ArrayList<>();
+		if (startDate == endDate){
+			Map<String,Date> map = new HashMap<>();
+			map.put("startTime",startTime);
+			map.put("endTime",endTime);
+			list.add(map);
+			return list;
+		}
+		for (int i = startDate; i <= endDate; i++){
+			Map<String,Date> map = new HashMap<>();
+			Date sTime = null;
+			Date eTime = null;
+			if (i == startDate){
+				sTime = startTime;
+			}else if (i == endDate){
+				eTime = endTime;
+			}
+			if (sTime == null){
+				sTime = new Date();
+				sTime.setDate(i);
+				sTime.setHours(0);
+				sTime.setMinutes(0);
+				sTime.setSeconds(0);
+			}
+			if (eTime == null){
+				eTime = new Date();
+				eTime.setDate(i);
+				eTime.setHours(23);
+				eTime.setMinutes(59);
+				eTime.setSeconds(59);
+			}
+			map.put("startTime",sTime);
+			map.put("endTime",eTime);
+			list.add(map);
+		}
+		return list;
+	}
+
+	private static void testSplitDate(){
+		Date startTime = new Date();
+		Date endTime = new Date();
+		startTime.setDate(12);
+		List<Map<String,Date>> list = splitDate(startTime,endTime);
+		for (Map<String, Date> map : list) {
+			System.out.println("startTime:"+map.get("startTime").toLocaleString());
+			System.out.println("endTime:"+map.get("endTime").toLocaleString());
+			System.out.println("======================");
+		}
+	}
+//	public static void main(String[] ars){
+//		testSplitDate();
+//        String workTime = "8:30-12:00,14:00-17:00";
+//        Date orderStartTime = new Date();
+//        Date orderEndTime = new Date();
+//        orderStartTime.setHours(7);
+//        orderStartTime.setMinutes(20);
+//
+//        orderEndTime.setHours(20);
+//        orderEndTime.setMinutes(0);
+//        long s = getExtraTime(workTime,orderStartTime,orderEndTime);
+//        System.out.println("s="+s);
+//        BigDecimal price = new BigDecimal(10);
+//        BigDecimal amount = price.multiply(new BigDecimal(s)).divide(new BigDecimal(1000*60*60),2,BigDecimal.ROUND_HALF_UP);
+//        System.out.println(amount);
+//	}
+
+	private static long getExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime){
 		String[] times = workTimeStr.split(",");
 		String time0 = times[0];
 		Date midTime = new Date();
@@ -1308,43 +1376,48 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		int midEndMinute = Integer.parseInt(midEndTime.split(":")[1]);
 		midTime.setHours(midEndHour);
 		midTime.setMinutes(midEndMinute);
+		midTime.setSeconds(0);
 		long duration = 0;
-		if (orderEndTime.getTime() - midTime.getTime() > 0) {
-			for (int i = 0; i < times.length; i++) {
-				duration += getPartExtraTime(times[i], orderStartTime, midTime, i);
-			}
-		} else {
-			duration += getPartExtraTime(times[0], orderStartTime, midTime, 0);
+		if (orderEndTime.getTime() - midTime.getTime() > 0){
+			duration += getPartExtraTime(times[0],orderStartTime,midTime,0);
+			duration += getPartExtraTime(times[1],midTime,orderEndTime,1);
+		}else{
+			duration += getPartExtraTime(times[0],orderStartTime,midTime,0);
 		}
 		return duration;
 	}
 
-	private static long getPartExtraTime(String workTimeStr, Date orderStartTime, Date orderEndTime, int i) {
-		String startWorkTime = workTimeStr.split("-")[0];
-		String endWorkTime = workTimeStr.split("-")[1];
-		int workStartHour = Integer.parseInt(startWorkTime.split(":")[0]);
-		int workStartMinute = Integer.parseInt(startWorkTime.split(":")[1]);
+	private static long getPartExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime,int i){
+		String[] workTimeArray = workTimeStr.split("-");
+		String startWorkTime = workTimeArray[0];
+		String endWorkTime = workTimeArray[1];
+
+		String[] startWorkTimeArr = startWorkTime.split(":");
+		int workStartHour = Integer.parseInt(startWorkTimeArr[0]);
+		int workStartMinute = Integer.parseInt(startWorkTimeArr[1]);
 
 		long duration = 0;
-		if (i == 1) {// 下午
-			int workEndHour = Integer.parseInt(endWorkTime.split(":")[0]);
-			int workEndMinute = Integer.parseInt(endWorkTime.split(":")[1]);
-			Date workEndTime = new Date(orderEndTime.getTime());
-			workEndTime.setHours(workEndHour);
-			workEndTime.setMinutes(workEndMinute);
-			long duration2 = orderEndTime.getTime() - workEndTime.getTime();
-			if (duration2 > 0)
-				duration += duration2;
-		}
 
 		Date workStartTime = new Date(orderStartTime.getTime());
 		workStartTime.setHours(workStartHour);
 		workStartTime.setMinutes(workStartMinute);
-
+		workStartTime.setSeconds(0);
 		long duration1 = workStartTime.getTime() - orderStartTime.getTime();
-		if (duration1 > 0)
-			duration += duration1;
-		System.out.println(duration / (1000 * 60 * 60));
+		if (duration1 > 0)duration += duration1;
+
+		if (i == 1){
+			String[] endWorkTimeArr = endWorkTime.split(":");
+			int workEndHour = Integer.parseInt(endWorkTimeArr[0]);
+			int workEndMinute = Integer.parseInt(endWorkTimeArr[1]);
+			Date workEndTime = new Date(orderEndTime.getTime());
+			workEndTime.setHours(workEndHour);
+			workEndTime.setMinutes(workEndMinute);
+			workEndTime.setSeconds(0);
+			long duration2 = orderEndTime.getTime() - workEndTime.getTime();
+			if (duration2 > 0){
+				duration += duration2;
+			}
+		}
 		return duration;
 	}
 
