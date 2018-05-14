@@ -174,4 +174,27 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
            return ApiResponse.success();
        }
    }
+
+   public ApiResponse<String> driverConfirm(String id,String userId){
+       RuntimeCheck.ifBlank(id,"请选择订单");
+       ClDd order = findById(id);
+       RuntimeCheck.ifNull(order,"订单不存在");
+       RuntimeCheck.ifFalse(StringUtils.equals(order.getSj(),userId),"该订单不属于本司机");
+
+//        2、验证当前状态必须是 11-订单确认状态
+       String ddzt = order.getDdzt();
+       RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"13"),"订单没有被派单，不能进行司机确认操作");
+
+
+       ClDd newClDd=new ClDd();
+       newClDd.setId(order.getId());
+       newClDd.setDdzt("20");//订单状态
+       newClDd.setSjqrsj(new Date());
+       int i=update (newClDd);
+       RuntimeCheck.ifTrue(i==0,"操作数据库失败");
+
+       order.setDdzt("20");
+       ddrzService.log(order);
+       return ApiResponse.success();
+   }
 }
