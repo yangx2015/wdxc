@@ -11,7 +11,10 @@ module.exports = {
   LOGIN:{
     QUERTY:'/put/jsy/getjsy',//登录
   },
-  MESLIST:{
+  MESLIST:{//订单列表
     QUERTY:'/put/dd/getsjlist'
+  },
+  LISTOK:{
+    CHANGE:'/put/dd/update'
   }
 }

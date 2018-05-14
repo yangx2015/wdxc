@@ -6,36 +6,37 @@
         <div class="Ymess">
           <p class="mesPadd">
               <Icon type="ios-film-outline"></Icon>
-              信息工程学院-小名
+              {{mess.jgmc}}-{{mess.ck}}
           </p>
           <p class="mesPadd">
             <Icon type="ios-clock"></Icon>
-            2018-11-11 09:00:00
+            {{mess.yysj}}
           </p>
           <p class="mesPadd">
             <Icon type="ios-telephone"></Icon>
-            <a>123456789000</a>
+            <a>{{mess.cklxdh}}</a>
           </p>
           <p>
             <Icon type="ios-location" color="#15b740"></Icon>
-            候车地点
+            {{mess.hcdz}}
           </p>
           <p><Icon type="arrow-down-c"></Icon></p>
           <p>
             <Icon type="ios-location" color="#ff9b00"></Icon>
-            目的地
+            {{mess.mdd}}
           </p>
         </div>
         <Form ref="formValidate" :model="formValidate" :rules="ruleValidate" :label-width="0">
             <Row :gutter="16">
                 <Col span="12">
-                    <FormItem label="里程" prop="lc">
-                        <Input v-model="formValidate.lc" placeholder="里程/公里数"></Input>
+                    <FormItem label="里程">
+                        <Input type="text" v-model="formValidate.lc" placeholder="里程/公里数"></Input>
                     </FormItem>
                 </Col>
                 <Col span="12">
-                    <FormItem label="单价" prop="dj">
-                        <Input type="number" v-model="formValidate.dj"
+                    <FormItem label="单价"
+                    >
+                        <Input type="text" v-model="formValidate.dj"
                                placeholder="行程单价"></Input>
                     </FormItem>
                 </Col>
@@ -43,13 +44,13 @@
             <Row :gutter="16">
                 <Col span="12">
                   <FormItem label="过桥费">
-                    <Input type="number" v-model="formValidate.gqf"
+                    <Input :number="true" v-model="formValidate.gqf"
                            placeholder="过桥费"></Input>
                   </FormItem>
                 </Col>
                 <Col span="12">
                   <FormItem label="路停费">
-                    <Input type="number" v-model="formValidate.ltf"
+                    <Input :number="true" v-model="formValidate.glf"
                            placeholder="路停费"></Input>
                   </FormItem>
                 </Col>
@@ -99,10 +100,11 @@
         data(){
           return {
             formValidate: {
+              id:this.mess.id,
               lc: '',
               dj: '',
               gqf: '',
-              ltf: ''
+              glf: ''
             },
             ruleValidate: {
               lc: [
@@ -114,10 +116,27 @@
             }
           }
         },
+      props:{
+        mess:{
+          type:Object,
+          default:{}
+        }
+      },
+      created(){
+      },
         methods: {
           handleSubmit (name) {
+            var v = this
             this.$refs[name].validate((valid) => {
               if (valid) {
+                this.$http.post(this.apis.LISTOK.CHANGE,this.formValidate).then((res)=>{
+                    if(res.code==200){
+                      this.$parent.close()
+                    }
+                  console.log(res)
+                }).catch((error) =>{
+                  console.log('出错了',error)
+                })
               } else {
               }
             })
