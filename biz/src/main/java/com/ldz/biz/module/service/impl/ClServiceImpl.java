@@ -1,5 +1,18 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
@@ -8,7 +21,6 @@ import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysZdxm;
@@ -17,19 +29,11 @@ import com.ldz.sys.service.ZdxmService;
 import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import com.ldz.util.exception.RuntimeCheck;
+
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.*;
-import java.util.stream.Collectors;
 
-@Slf4j
 @Service
 public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClService {
 	@Autowired
