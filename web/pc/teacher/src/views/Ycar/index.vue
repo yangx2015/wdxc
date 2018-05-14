@@ -74,7 +74,7 @@
           @confirm="onDatePickerConfirm"
         ></md-date-picker>
       </div>
-      <div class="button">
+      <div class="button" @click="addList">
         <button>
           提    交
         </button>
@@ -99,8 +99,17 @@
             currentDate: new Date(),
             isDatePickerShow: false,
             datePickerValue: '',
+            Azws:200,
+            Lzws:[10,7,5],
             form:{
-              ycr:JSON.parse(this.cok.get('result')).name
+              ycr:JSON.parse(this.cok.get('result')).name,
+              xm:'',//乘车人
+              cklxdh:'',//联系电话
+              gethcdz:'',//候车地址
+              mdd:'',//目的地
+              cllx:'10',//10小车20大车
+              zws:'',//座位数
+              yysj:''// 约车时间按
             }
           }
         },
@@ -112,10 +121,42 @@
               name:'login'
             })
           }
+          this.getzws()
         },
         mounted() {
         },
         methods: {
+          zwsList(){
+              // if(a<=5){
+              //   ==5
+              // }else if(5<a<=7){
+              //   ==7
+              // }else if(7<a<=10){
+              //   ==10
+              // }else if(10<a){
+              //   ==10
+              //
+              //   a= a-10
+              //
+              //   this.zwsList()
+              // }
+          },
+          getzws(){
+            var v =this
+            v.$http.post(this.apis.ZWS.QUERTY, {'zdlmdm':'ZDCLK0041'}).then((res) =>{
+
+            }).catch((error)=>{
+
+            })
+          },
+          addList(){//订单创建
+            var v =this
+            v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
+
+            }).catch((error)=>{
+
+            })
+          },
           textRender() {
             const args = Array.prototype.slice.call(arguments)
             const typeFormat = args[0] // 类型
