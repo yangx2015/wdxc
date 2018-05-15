@@ -7,5 +7,9 @@ module.exports = {
 	},
 	LINEMESS:{
 		QUERTY:'/put/xl/getzdcl'//车辆到站信息
-	}
+	},
+  FEEDBACK:{//建议、投诉
+    QUERTY:'put/yj/save',
+    LIST:'put/yj/pager'
+  },
 }
