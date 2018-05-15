@@ -50,7 +50,7 @@
 			        <span slot="extra">
 			        	<span>
 			        		收款金额：{{item.amount}}元
-			        		<Button type="success" size="small">打印</Button>
+			        		<Button type="success" size="small" @click="print(item)">打印</Button>
 			        		<Button v-if="form.fkzt === '00'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
 			        	</span>
 			        </span>
@@ -81,10 +81,11 @@
 
     }
     import edit from './edit'
+    import print from './print'
 	export default{
 		name:'client',
 		components:{
-		  edit
+		  edit,print
 		},
 		data(){
 			return {
@@ -217,9 +218,10 @@
 			changeLimit(mes){
 				alert(mes)
 			},
-			print(){
-				alert('打印')
-			},
+            print(item){
+                this.choosedItem = item;
+                this.componentName = 'print';
+            },
 			show(){
 
 			}

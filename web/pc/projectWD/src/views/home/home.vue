@@ -35,29 +35,10 @@
 				</Col>
 			</Row>
 			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="12">
+				<Col span="8">
 					<div class="divpadd">
 						<div class="divbgcolor">
 							<e-Line Eid="Eline"></e-Line>
-						</div>
-					</div>
-				</Col>
-				<Col span="12">
-				<!--今日派单统计-->
-					<div class="divpadd">
-						<div class="divbgcolor">
-							<listpie Eid="listpie"></listpie>
-						</div>
-					</div>
-				</Col>
-				
-			</Row>
-			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="8">
-				<!--超速统计-->
-					<div class="divpadd">
-						<div class="divbgcolor">
-							<extra Eid="extra"></extra>
 						</div>
 					</div>
 				</Col>
@@ -70,25 +51,39 @@
 					</div>
 				</Col>
 				<Col span="8">
-					<!--安全驾驶统计-->
-					<div class="divpadd">
-						<div class="divbgcolor">
-							<safeline Eid="saveline"></safeline>
-						</div>
-					</div>
-				</Col>
-			</Row>
-			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="16">
 					<div class="divpadd">
 						<div class="divbgcolor">
 							<scbar Eid="scbar"></scbar>
 						</div>
 					</div>
 				</Col>
-				<Col span="8">
+
+			</Row>
+			<Row :gutter="12" class="margin-bottom-15">
+				<Col span="12">
+				<!--超速统计-->
 					<div class="divpadd">
-						<risk></risk>
+						<div class="divbgcolor">
+							<extra Eid="extra"></extra>
+						</div>
+					</div>
+				</Col>
+				<Col span="12">
+					<!--今日派单统计-->
+					<div class="divpadd">
+						<div class="divbgcolor">
+							<listpie Eid="listpie"></listpie>
+						</div>
+					</div>
+				</Col>
+			</Row>
+			<Row :gutter="12" class="margin-bottom-15">
+				<Col span="24">
+					<!--安全驾驶统计-->
+					<div class="divpadd">
+						<div class="divbgcolor">
+							<safeline Eid="saveline"></safeline>
+						</div>
 					</div>
 				</Col>
 			</Row>

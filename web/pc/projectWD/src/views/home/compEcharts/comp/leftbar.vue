@@ -31,7 +31,7 @@
 					title: {
 				        text: "今日派单统计",
 				        textStyle: {
-				            color: "rgb(255, 255, 255)"
+				            // color: "rgb(255, 255, 255)"
 				        }
 				    },
 					color: ['#3398DB'],
