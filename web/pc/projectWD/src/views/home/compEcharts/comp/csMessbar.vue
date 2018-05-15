@@ -8,7 +8,6 @@
 		       width="80%"
 		       :mask-closable=false>
 			<div :style="{height: boxHeight}">
-					{{ech.time}}{{ech.cph}}
 				<div style="width:100%;height:100%;position: relative;">
 					<div style="width:100%;height:100%;" :id="Eid"></div>
 					<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
@@ -38,9 +37,6 @@
 				SpinShow:true,
 				loading:this.$store.state.app.loading,
 				result:{},
-				form:{
-					days:3
-				},
 			    	ech:{}
 			};
 		},
@@ -79,7 +75,7 @@
 
                     const option = {
                         title: {
-                            text: "超速统计("+this.day+')',
+                            text: "超速统计("+this.ech.cph+')',
                             textStyle: {
                             }
                         },
@@ -117,7 +113,7 @@
                                 }
                             },
                             barWidth: '60%',
-                            data: this.result.list
+                            data: this.result.count
                         }],
                         color: ["#6495ed", "#da70d6", "#ff69b4", "#ba55d3", "#cd5c5c", "#ffa500", "#40e0d0", "#1e90ff", "#ff6347", "#7b68ee", "#00fa9a", "#ffd700", "#6699FF", "#ff6666", "#3cb371", "#b8860b", "#30e0e0"]
                     };
