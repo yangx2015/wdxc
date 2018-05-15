@@ -117,8 +117,10 @@
                 })
             },
             getUserList(){
-                let userInfo = sessionStorage.getItem("userInfo");
+                let userInfoJson = sessionStorage.getItem("userInfo");
+                let userInfo = JSON.parse(userInfoJson);
                 let jgdm = userInfo.jgdm;
+                console.log('jgdm',jgdm);
                 this.$http.get(this.apis.USER.QUERY,{params:{jgdmStartWith:jgdm}}).then((res) =>{
                     if(res.code===200 && res.page.list){
                         this.userList = res.page.list;
