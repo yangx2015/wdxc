@@ -106,8 +106,8 @@
 			}
 		},
 		created(){
-            console.log(sessionStorage);
-            let userInfo = sessionStorage.getItem("userInfo");
+            let userInfoJson = sessionStorage.getItem("userInfo");
+            let userInfo = JSON.parse(userInfoJson);
             this.jgdm = userInfo.jgdm;
 			if (this.$parent.choosedRow){
 				this.form = this.$parent.choosedRow;
