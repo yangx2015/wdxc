@@ -11,7 +11,7 @@ spring:
 
 
 server:
-  port: 9998
+  port: 9099
 
 spk:
   url: http://127.0.0.1:8080/
