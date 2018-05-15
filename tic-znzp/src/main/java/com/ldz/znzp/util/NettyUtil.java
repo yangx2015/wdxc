@@ -42,8 +42,8 @@ public class NettyUtil {
         return channels;
     }
     public  Channel getChannelByTid(String tid){
-//        Set<String> keys =  redisDao.keys(tid+"-*-"+ZnzpOnlineBean.class.getSimpleName());
-        Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
+        Set<String> keys =  redisDao.keys(tid+"-*-"+ZnzpOnlineBean.class.getSimpleName());
+//        Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
         if (keys.size() == 0)return null;
         Iterator<String> keyIt = keys.iterator();
         String key = keyIt.next();

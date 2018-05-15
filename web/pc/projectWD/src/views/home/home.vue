@@ -50,10 +50,9 @@
 						</div>
 					</div>
 				</Col>
-				
 			</Row>
 			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="8">
+				<Col span="12">
 				<!--超速统计-->
 					<div class="divpadd">
 						<div class="divbgcolor">
@@ -61,7 +60,7 @@
 						</div>
 					</div>
 				</Col>
-				<Col span="8">
+				<Col span="12">
 					<!--年审提醒-->
 					<div class="divpadd">
 						<div class="divbgcolor">
@@ -69,7 +68,9 @@
 						</div>
 					</div>
 				</Col>
-				<Col span="8">
+			</Row>
+			<Row :gutter="12" class="margin-bottom-15">
+				<Col span="12">
 					<!--安全驾驶统计-->
 					<div class="divpadd">
 						<div class="divbgcolor">
@@ -77,18 +78,11 @@
 						</div>
 					</div>
 				</Col>
-			</Row>
-			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="16">
+				<Col span="12">
 					<div class="divpadd">
 						<div class="divbgcolor">
 							<scbar Eid="scbar"></scbar>
 						</div>
-					</div>
-				</Col>
-				<Col span="8">
-					<div class="divpadd">
-						<risk></risk>
 					</div>
 				</Col>
 			</Row>
