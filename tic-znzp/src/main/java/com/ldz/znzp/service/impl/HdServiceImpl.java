@@ -86,32 +86,47 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         SimpleCondition condition = new SimpleCondition(SysHdyx.class);
         condition.lte(SysHdyx.InnerColumn.kssj, new Date());//开始时间
         condition.gte(SysHdyx.InnerColumn.jssj, new Date());//结束时间
-        condition.eq(SysHdyx.InnerColumn.hdlx, "01");//活动类型
+        condition.in(SysHdyx.InnerColumn.hdlx, Arrays.asList("01","02"));//活动类型
 //        condition.eq(SysHdyx.InnerColumn.zt, "10");//状态(00未开始 10 已开始  20 已结束)
 
-        List<Map<String,String>> urlList= new ArrayList<>();
+        List<Map<String,String>> mediaList= new ArrayList<>();
+        String ledContent = null;
         List<SysHdyx> list=sysHdyxMapper.selectByExample(condition);
         if (list.size() != 0){
             for (SysHdyx hdyx : list) {
-                condition = new SimpleCondition(SysYxhdwj.class);
-                condition.eq(SysYxhdwj.InnerColumn.hdId,hdyx.getHdId());
-                List<SysYxhdwj> files = yxhdwjMapper.selectByExample(condition);
-                if (files.size() != 0){
-                    for (SysYxhdwj file : files) {
-                        Map<String,String> map=new HashMap<String,String>();
-                        map.put("path",file.getWjlj());
-                        map.put("md5",file.getWjlj());
-                        map.put("size","");
-                        map.put("group",hdyx.getWz());
-                        urlList.add(map);
+                if ("01".equals(hdyx.getHdlx())){
+                    condition = new SimpleCondition(SysYxhdwj.class);
+                    condition.eq(SysYxhdwj.InnerColumn.hdId,hdyx.getHdId());
+                    List<SysYxhdwj> files = yxhdwjMapper.selectByExample(condition);
+                    if (files.size() != 0){
+                        for (SysYxhdwj file : files) {
+                            Map<String,String> map=new HashMap<String,String>();
+                            map.put("path",file.getWjlj());
+                            map.put("md5",file.getWjlj());
+                            map.put("size","");
+                            map.put("group",hdyx.getWz());
+                            mediaList.add(map);
+                        }
                     }
+                }else if ("02".equals(hdyx.getHdlx())){
+                    ledContent = hdyx.getUrl();
                 }
             }
         }
         Map<String,Object> map = new HashMap<>();
         map.put("command","media");
         map.put("tid",tid);
-        map.put("url",urlList);
+        map.put("url",mediaList);
         nettyUtil.sendData(ctx,map);
+
+        if (ledContent != null){
+            Map<String,Object> map1 = new HashMap<>();
+            map1.put("command","led");
+            map1.put("tid",tid);
+            map1.put("content",ledContent);
+            map1.put("speed",4);
+            map1.put("method","up-down");
+            nettyUtil.sendData(ctx,map1);
+        }
     }
 }

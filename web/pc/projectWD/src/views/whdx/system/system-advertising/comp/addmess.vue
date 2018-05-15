@@ -33,6 +33,7 @@
 								<Select filterable clearable  v-model="formItem.hdlx">
 									<Option value="00">微信</Option>
 									<Option value="01">智能站牌</Option>
+									<Option value="02">LED</Option>
 								</Select>
 							</FormItem>
 						</Col>
