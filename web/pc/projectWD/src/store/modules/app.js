@@ -6,6 +6,10 @@ import session from '../../libs/session';
 
 const app = {
     state: {
+        ech:{
+            time:'',
+            cph:''
+        },
         userInfo:null,
         dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
@@ -47,6 +51,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+        echChanged(state,data){
+            state.ech = data
+        },
         setUserInfo(state,data){
             state.userInfo = data;
         },
