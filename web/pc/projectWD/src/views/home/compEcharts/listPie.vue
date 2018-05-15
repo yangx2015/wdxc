@@ -7,7 +7,7 @@
 			<div class="body-F" style="height: 100%;" v-if="result != null">
 				<leftbar leid='leftbars' :result="result"></leftbar>
 			</div>
-			<div style="width:180px;height:100%;" :id="Eid"></div>
+			<div style="width:100px;height:100%;" :id="Eid"></div>
 		</div>
 		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 			<Spin fix>
@@ -56,7 +56,7 @@ export default {
                 var dataSourcePie = echarts.init(document.getElementById(v.Eid));
                 const option = {
 					title: {
-								text: '今日派单统计'
+								// text: '今日派单统计'
 						},
                     tooltip: {
                         trigger: 'item',
@@ -72,7 +72,7 @@ export default {
                             name: '今日订单',
                             type: 'pie',
                             radius: '66%',
-                            center: ['50%', '40%'],
+                            // center: ['50%', '40%'],
                             label: {
                                 normal: {
                                     position: 'inner'

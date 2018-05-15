@@ -71,7 +71,7 @@ export default {
                             name: '年审提醒',
                             type: 'pie',
                             radius: '66%',
-                            center: ['50%', '60%'],
+                            // center: ['50%', '60%'],
                             data: this.pieData,
                             itemStyle: {
                                 emphasis: {
