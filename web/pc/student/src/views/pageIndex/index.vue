@@ -12,9 +12,9 @@
 				<div class="titCenter body-O" style="text-align: center;">
 					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
 				</div>
-				<!--<div class="titRight" @click="feedback()">-->
-					<!--<Icon type="ios-compose" color="#949494" size='26'></Icon>-->
-				<!--</div>-->
+				<div class="titRight" @click="feedback()">
+					<Icon type="ios-compose" color="#949494" size='26'></Icon>
+				</div>
 			</div>
 		</div>
 		<div>
@@ -30,15 +30,10 @@
 			<div class="box">
 				<div class="">
 					<tab>
-				      <tab-item selected @on-item-click="onItemClick">校园巴士</tab-item>
-				      <tab-item @on-item-click="onItemClick">通勤巴士</tab-item>
+				      <tab-item :selected="barNum==0" @on-item-click="onItemClick">校园巴士</tab-item>
+				      <tab-item :selected="barNum==1" @on-item-click="onItemClick">通勤巴士</tab-item>
 				    </tab>
 				</div>
-				<!--<div v-if="!school" class="body" style="position: relative;">-->
-					<!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
-						<!--功能开发中-->
-					<!--</div>-->
-				<!--</div>-->
 				<div class="body">
 					<div class="list">
 						<div class="listTiT box-row"
@@ -110,20 +105,19 @@
 			return{
 				school:true,
 				titFind:'',
-				imglistV:0,
-				imglist: [{
-				  img: 'https://static.vux.li/demo/1.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/2.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/3.jpg',
-				}],
+				imglistV:1,
+        barNum:this.$store.state.app.barNum,
+				imglist: [],
 				lineList:[]
 			}
 		},
 		created(){
+		  if(this.barNum == 0){
+			  this.getLineMess(30)
+      }else if(this.barNum == 1){
+        this.getLineMess(20)
+      }
 			this.getSwiperMess()
-			this.getLineMess(30)
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -176,6 +170,7 @@
 		    	}else if(index==1){
             this.getLineMess(20)
 		    	}
+          this.$store.commit('barCh',index)
 		    }
 		}
 	}

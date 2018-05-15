@@ -9,9 +9,13 @@ import apis from './axios/config';
 import http from './axios/index';
 import Cookies from 'js-cookie';
 
+import vux from 'vux'
+
 Vue.prototype.$http = http;
 Vue.prototype.apis = apis;
 Vue.prototype.cok = Cookies;
+Vue.prototype.$vux = vux;
+
 
 FastClick.attach(document.body)
 
