@@ -65,7 +65,7 @@
                       this.$parent.compName = ''
 		    },
             getData(){
-                this.$http.get(this.apis.CHART_DATA.SAFE_DRIVING,{params:this.form}).then((res)=>{
+                this.$http.post(this.apis.CHART_DATA.csxxtj,{'cph':this.ech.cph,'day':this.ech.time}).then((res)=>{
                     if (res.code == 200){
                         this.result = res.result;
                         this.initChart();

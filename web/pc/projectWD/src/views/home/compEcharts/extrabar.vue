@@ -128,7 +128,15 @@
                     };
                     dataSourceBar.setOption(option);
                     dataSourceBar.on('click', function (params) {
-                        v.$store.commit('echChanged',{'cph':params.name,'time':v.day})
+                        let time = ''
+                        if(v.day == '三天'){
+                            time = 3
+                        }else if(v.day == '五天'){
+                            time = 5
+                        }else if(v.day == '七天'){
+                            time = 7
+                        }
+                        v.$store.commit('echChanged',{'cph':params.name,'time':time})
                         console.log('-**---------------------**-',params)
                     });
                     window.addEventListener('resize', function() {
