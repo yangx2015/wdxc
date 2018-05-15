@@ -113,18 +113,18 @@
                         width: 120,
                         key: 'apiHz'
                     },
-                    {
-                        title: '创建人',
-                        width: 100,
-                        align: 'center',
-                        key: 'cjr'
-                    },
-                    {
-                        title: '创建时间',
-                        width: 100,
-                        align: 'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建人',
+                    //     width: 100,
+                    //     align: 'center',
+                    //     key: 'cjr'
+                    // },
+                    // {
+                    //     title: '创建时间',
+                    //     width: 100,
+                    //     align: 'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '操作',
                         key: 'action',

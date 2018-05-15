@@ -15,14 +15,13 @@
 							<span>临时车管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
-								   @on-change="getPageData()"></Input>
+							<Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="getPageData()">
+							<Button type="primary" @click="v.util.getPageData(v)">
 								<Icon type="search"></Icon>
 							</Button>
-							<Button type="primary" @click="add()">
+							<Button type="primary" @click="v.util.add(v)">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -53,8 +52,9 @@
         },
         data() {
             return {
+                v:this,
                 SpinShow: true,
-                pagerUrl: this.apis.TEMP_CAR.QUERY,
+                apiRoot: this.apis.TEMP_CAR,
                 tabHeight: 220,
                 componentName: '',
                 choosedItem: null,
@@ -73,7 +73,11 @@
                     {
                         title: '临时单位',
                         align:'center',
-                        key: 'lsdwmc'
+                        key: 'lsdwId',
+						render:(h,p)=>{
+							let s = this.getLsdwmcById(p.row.lsdwId);
+							return h('div',s);
+						}
                     },
                     {
                         title: '车辆类型',
@@ -126,7 +130,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.listDele(params.row.id)
+                                            this.util.delete(this,[params.row.id])
                                         }
                                     }
                                 })
@@ -148,24 +152,28 @@
         },
         created() {
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-            this.tabHeight = this.getWindowHeight() - 300
-            this.getPageData()
+			this.util.initTable(this);
             this.getDict()
+            this.getLsdw()
         },
         methods: {
+            getLsdwmcById(id){
+                for (let r of this.lswdList){
+                    if (r.id == id){
+                        return r.dwmc;
+					}
+				}
+			},
+            getLsdw(){
+                let v = this;
+                v.$http.get(this.apis.TEMP_UNIT.QUERY,{params:{pageSize:1000}}).then((res) =>{
+                    if (res.code == 200 && res.page.list){
+                        this.lswdList = res.page.list;
+                    }
+                })
+            },
             getDict(){
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
-            },
-            getPageData() {
-                this.util.getPageData(this);
-            },
-            //删除数据
-            listDele(id) {
-                this.util.del(this, this.apis.TEMP_CAR.DELE, [id]);
-            },
-            add() {
-                this.componentName = 'formData'
-                this.choosedItem = null;
             },
             pageChange(event) {
                 this.util.pageChange(this, event);

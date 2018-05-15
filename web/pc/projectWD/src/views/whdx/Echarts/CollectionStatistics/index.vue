@@ -1,195 +1,147 @@
 <style lang="less">
 	@import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-	.fromTiT {
-		/*text-align: right;*/
-	}
-</style>
-<!--收款统计-->
+<!--角色管理-->
 <template>
 	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
-	    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
-	    			</span>
+    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
+    			</span>
 				<div style="height: 45px;line-height: 45px;">
-					<Row class="margin-top-10">
-						<Col span="4">
-							<span class="titmess">收款统计</span>
-						</Col>
-						<Col span="14">
-							<DatePicker v-model="datetime" type="datetime" placeholder="请输时间" style="width: 220px" @on-change="changeTime"></DatePicker>
-							<Input v-model="findMess.like_CarNumber" placeholder="请输入用户名" style="width: 200px" @on-change="findMessList"></Input>
-							<Input v-model="findMess.like_ScName" placeholder="请输入用户类型..." style="width: 200px" @on-change="findMessList"></Input>
-						</Col>
-						<Col span="6" class="butevent">
-							<Button type="primary" @click="AddDataList()">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>收款统计</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
+							<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
+							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="getData()">
 								<Icon type="search"></Icon>
-								<!--查询-->
 							</Button>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
+			<Row style="position: relative;">
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
-
-			<!-- <Row class="margin-top-10" style="text-align: right;">
-			    	<Page :total=pageTotal
-			    		:current=page.pageNum
-			    		:page-size=page.pageSize
-			    		show-total
-			    		show-elevator
-			    		@on-change='pageChange'></Page>
-			    </Row> -->
 		</Card>
 	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-	//	import axios from '@/axios'
-	export default {
-		name: 'char',
-		mixins: [mixins],
-		data() {
-			return {
-				//分页
-				pageTotal: 1,
-				page: {
-					pageNum: 1,
-					pageSize:8
-				},
-				//弹层--角色分配
-				RootShow: false,
-				indeterminate: false,
-				checkAll: false,
-				checkAllGroup: [],
-				roleList: [{
-						value: '司机',
-						key: '01'
-					},
-					{
-						value: '队长',
-						key: '02'
-					}
-				],
-				//弹层--新增用户
-				showModal: false,
-				tableTiT: [{
-						title: "序号",
-						width: 80,
-						align: 'center',
-						type: 'index'
-					},
-					{
-						title: '部门/单位',
-						align: 'center',
-						key: 'unit'
-					},
-					{
-						title: '日期',
-						align: 'center',
-						key: 'time'
-					},
-					{
-						title: '收款金额',
-						align: 'center',
-						key: 'money'
-					},
-				],
-				tableData: [{
-					unit: '生物学院',
-					time: '2018-02-01',
-					money: '10250元'
-				}],
-				//收索
-				datetime: [],
-				findMess: {
-					like_CarNumber: '',
-					like_ScName: '',
-					pageNum: 1,
-					pageSize:8
-				}
-			}
-		},
-		created() {
-			this.$store.commit('setCurrentPath', [{
-				title: '首页',
-			}, {
-				title: '数据报表',
-			}, {
-				title: '收款统计',
-			}])
-		},
-		methods: {
-			//收索事件
-			changeTime(val) {},
-			findMessList() {
-				var v = this
-				//      		axios.get('carLogs/pager',this.findMess).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
-			},
-			//添加新用户信息
-			AddDataList() {
-				var v = this
-				v.showModal = true
+    import mixins from '@/mixins'
 
-				//              axios.get('carLogs/pager',this.page).then((res) => {
-				//                  v.tableData = res.data
-				//                  v.pageTotal = res.total
-				//              })
-			},
-			//分页点击事件按
-			pageChange(event) {
-				var v = this
-				v.page.pageNum = event
-				v.getDataList(v.page)
-				//      		log(v.page)
-			},
-			//角色分配选项
-			handleCheckAll() {
-				var v = this
-				if(v.indeterminate) {
-					v.checkAll = false;
-				} else {
-					v.checkAll = !this.checkAll;
-				}
-				v.indeterminate = false;
-				//
-				if(v.checkAll) {
-					// debugger
-					v.roleList.forEach((item, index) => {
-						v.checkAllGroup.push(item.key)
-					})
-				} else {
-					v.checkAllGroup = [];
-				}
-			},
-			checkAllGroupChange(data) {
-				// alert(data)
-				var v = this
-				if(data.length == v.roleList.length) {
-					v.checkAll = true;
-				} else {
-					v.checkAll = false;
-				}
-				// if (data.length === 3) {
-				//     this.indeterminate = false;
-				//     this.checkAll = true;
-				// } else if (data.length > 0) {
-				//     this.indeterminate = true;
-				//     this.checkAll = false;
-				// } else {
-				//     this.indeterminate = false;
-				//     this.checkAll = false;
-				// }
-			}
-		}
-	}
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
+    export default {
+        name: 'char',
+        mixins: [mixins],
+        components: {
+        },
+        data() {
+            return {
+                v:this,
+                dateOpts: {
+                    shortcuts: [
+                        {
+                            text: '今天',
+                            value () {
+                                return new Date();
+                            }
+                        },
+                        {
+                            text: '三天前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 3);
+                                return date;
+                            }
+                        },
+                        {
+                            text: '一周前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                return date;
+                            }
+                        }
+                    ]
+                },
+                SpinShow: true,
+                tabHeight: 220,
+                tableColumns: [{
+                    title: "序号",
+                    width: 80,
+                    align: 'center',
+                    type: 'index'
+                },
+                    {
+                        title: '机构名称',
+                        align: 'center',
+                        key: 'jgmc'
+                    },
+                    {
+                        title: '收款金额',
+                        align: 'center',
+                        key: 'fkze'
+                    },
+                ],
+                pageData: [],
+                form: {
+                    sjxmLike: '',
+                },
+            }
+        },
+        created() {
+            this.form.kssj  = this.getTodayDate() + " 00:00:00";
+            this.form.jssj  = this.getTodayDate() + " 23:59:59";
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '收款统计',}])
+            this.tabHeight = this.getWindowHeight() - 295
+            this.getData()
+        },
+        methods: {
+            getTodayDate(){
+                let now = new Date();
+                return now.format("yyyy-MM-dd");
+            },
+            getData(){
+                let startTime = this.form.kssj;
+                let endTime = this.form.jssj;
+                if (typeof startTime === 'object'){
+                    this.form.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    this.form.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                this.$http.post(this.apis.ORDER.sktj,this.form).then((res) =>{
+                    if (res.code == 200){
+                        this.pageData = res.result;
+                    }
+                })
+            },
+        }
+    }
 </script>

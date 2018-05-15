@@ -167,13 +167,13 @@ export let appRouter = [
 				title: '异常行驶记录',
 				component: () => import('@/views/whdx/VehicleScheduling/abnormal')
         	},
-        	{
-        		path:'/',
-				icon: 'android-clipboard',
-				name: 'TemporaryCarManagement',
-				title: '临时车管理',
-				component: () => import('@/views/whdx/VehicleScheduling/TemporaryCarManagement/index'),
-				children: [
+        	// {
+        	// 	path:'/',
+				// icon: 'android-clipboard',
+				// name: 'TemporaryCarManagement',
+				// title: '临时车管理',
+				// component: () => import('@/views/whdx/VehicleScheduling/TemporaryCarManagement/index'),
+				// children: [
 					{
 						path: 'TemporaryCarManagement/UnitManagement',
 						icon: 'android-clipboard',
@@ -185,10 +185,10 @@ export let appRouter = [
 						path: 'TemporaryCarManagement/VehicleManagement',
 						icon: 'android-clipboard',
 						name: 'VehicleManagement',
-						title: '车辆管理',
+						title: '临时车辆管理',
 						component: () => import('@/views/whdx/VehicleScheduling/TemporaryCarManagement/VehicleManagement')
-					},
-				]
+				// 	},
+				// ]
 			},
 			{
 				path: 'DriverManagement',

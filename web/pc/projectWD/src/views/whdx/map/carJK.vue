@@ -17,7 +17,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
     import carInfo from '../OperationMonitoring/VehicleMonitoring/carInfo'
 
     export default {
@@ -54,7 +54,7 @@
             showFance(carId) {
                 this.fancePoints = [];
                 var v = this
-                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + carId).then((res) => {
+                this.$http.get(this.apis.DZWL.GET_BY_CAR_ID + "?clId=" + carId).then((res) => {
                     if (res.code === 200) {
                         let s = res.result.dlxxzb;
                         let ps = s.split(";");

@@ -61,7 +61,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import newmes from './comp/newmes.vue'
 	export default {
@@ -183,7 +183,7 @@
 		methods: {
 			getmess(){
 				var v = this
-				this.$http.get(configApi.SG.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.SG.QUERY,{params:v.findMess}).then((res) =>{
 					log('事故数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total

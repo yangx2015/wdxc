@@ -3,10 +3,18 @@ package com.ldz.wechat.base;
 
 import com.github.pagehelper.Page;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.model.SysJzgxx;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,7 +33,31 @@ public abstract class BaseController<T, PK extends Serializable> {
 	//@Autowird通过Spring加载的Service基础类
     protected abstract BaseService<T, PK> getBaseService();
 
-    /**
+
+	/**
+	 * 获取当前登录用户信息
+	 * @return
+	 */
+	public static String getCurrentUserId(boolean require){
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		String type = (String) request.getAttribute("type");
+		String userInfo = (String) request.getAttribute("userInfo");
+		RuntimeCheck.ifTrue((StringUtils.isEmpty(type) || StringUtils.isEmpty(userInfo)) && require,"当前登录用户未空！");
+		if ("jzg".equals(type)){
+			SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
+			RuntimeCheck.ifNull(jzg,"未找到教职工信息");
+			return jzg.getId();
+		}else if ("jsy".equals(type)){
+			ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
+			RuntimeCheck.ifNull(jsy,"未找到驾驶员信息");
+			return jsy.getSfzhm();
+		}else{
+			RuntimeCheck.ifTrue(true,"未知用户类型");
+		}
+		return "";
+	}
+
+	/**
      * 根据主键获取对象基本信息
      * @param pkid
      * @return

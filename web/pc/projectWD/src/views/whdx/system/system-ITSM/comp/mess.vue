@@ -61,7 +61,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name: '',
@@ -105,7 +105,7 @@
 						delete this.addmess.functions
 						delete this.addmess.cjsj
 						delete this.addmess.xgsj
-						this.$http.post(configApi.ITMS.CHANGE,this.addmess).then((res) =>{
+						this.$http.post(this.apis.ITMS.CHANGE,this.addmess).then((res) =>{
 							log('服务数据',res)
 							if(res.code===200){
 								v.$Message.success('操作成功');

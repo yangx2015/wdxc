@@ -12,8 +12,44 @@ export default new Router({
     },
     {
       path: '/login',
-      name: 'Home',
+      name: 'login',
       component: () => import('@/views/login')
+    },
+    {
+      path: '/center',
+      name: 'center',
+      component: () => import('@/views/myCenter')
+    },
+    {
+      path: '/feedBack',
+      name: 'feedBack',
+      component: () => import('@/views/feedback')
+    },
+    {
+      path: '/feedbackHis',
+      name: 'feedbackHis',
+      component: () => import('@/views/feedbackHis')
+    },
+    {
+      path: '/list',
+      name: 'list',
+      component: () => import('@/views/pageList')
+    },
+    {
+      path: '/Ycar',
+      name: 'Ycar',
+      component: () => import('@/views/Ycar')
+    },
+    {
+      path: '/evaluate',
+      name: 'evaluate',
+      component: () => import('@/views/evaluate')
+    }
+    ,
+    {
+      path: '/messList',
+      name: 'messList',
+      component: () => import('@/views/comp/lineMess')
     }
   ]
 })

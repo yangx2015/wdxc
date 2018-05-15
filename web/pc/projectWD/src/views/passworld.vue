@@ -25,7 +25,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 	export default{
 		name:'',
 		data(){
@@ -78,7 +78,7 @@
 	            this.$refs['editPasswordForm'].validate((valid) => {
 	                if (valid) {
 	                    this.savePassLoading = true;
-	                    this.$http.post(configApi.USERROOT.MODIFY_PSD,this.editPasswordForm).then((res) => {
+	                    this.$http.post(this.apis.USERROOT.MODIFY_PSD,this.editPasswordForm).then((res) => {
 	                        if(res.code == 200){
 	                            this.$Message.success('密码改成功,请重新登陆');
 	                            this.editPasswordModal = false;

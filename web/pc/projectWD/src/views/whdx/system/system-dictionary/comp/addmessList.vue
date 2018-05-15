@@ -31,7 +31,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		data() {
@@ -71,7 +71,7 @@
 			addDicList(){
 				var v = this
 				log('字典数据',v.addmess)
-				this.$http.post(configApi.DICTIONARY_LIST.ADD,v.addmess).then((res) =>{
+				this.$http.post(this.apis.DICTIONARY_LIST.ADD,v.addmess).then((res) =>{
 					log('字典添加',res)
 					if(res.code===200){
 						v.$parent.getmess()

@@ -1,16 +1,17 @@
 package com.ldz.biz.module.controller;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.ldz.biz.module.bean.ClJsyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,14 +22,17 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.github.pagehelper.Page;
+import com.ldz.biz.module.bean.CcTjTx;
+import com.ldz.biz.module.bean.ClJsyModel;
+import com.ldz.biz.module.bean.DdTjTxReturn;
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.bean.Ddtongji;
 import com.ldz.biz.module.model.ClDd;
 import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.DdService;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.exception.RuntimeCheck;
 
 /**
  * 订单表维护
@@ -140,9 +144,9 @@ public class DdCtrl{
      * 运输中心-司机列表
      * 派单司机列表
      * @param entity
-     * 1、司机名 xm like 查询
+     * 1、司机名 xm like 查询  外部车不支持该查询
      * 2、驾驶员车型  zjcx   车辆类型 10、小车 20、大车 30、校巴
-     * 2030是查询大车、校巴
+     * 2030是查询大车、校巴   40 是外部车
      * 3、载客量    zkl
      * @return
      * 司机列表
@@ -275,6 +279,18 @@ public class DdCtrl{
         return service.updateAffirmOracle(entity);
     }
 
+//    /**
+//     * 收款管理  这个功能放弃了
+//     * @param entity
+//     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+//     * ck       乘客姓名
+//     * @return
+//     */
+//    @RequestMapping(value="/skgl", method={RequestMethod.POST})
+//    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
+//        return service.proceedsDetail(entity);
+//    }
+
     /**
      * 收款管理
      * @param entity
@@ -282,10 +298,23 @@ public class DdCtrl{
      * ck       乘客姓名
      * @return
      */
-    @RequestMapping(value="/skgl", method={RequestMethod.POST})
-    public ApiResponse<List<Map<String,Object>>> proceedsDetail(ClDd entity){
-        return service.proceedsDetail(entity);
+    @GetMapping(value="/collectingList")
+    public ApiResponse<List<Map<String,Object>>> collectingList(ClDd entity){
+        return service.collectingList(entity);
     }
+    /**
+     * 确认收款 - 财务
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @PostMapping(value="/collectingConfirm")
+    public ApiResponse<String> collectingConfirm(String ids){
+        RuntimeCheck.ifBlank(ids,"请选择订单");
+        List<String> idList = Arrays.asList(ids.split(","));
+        return service.collectingConfirm(idList);
+    }
+
     /**
      * 付款管理
      * @param entity
@@ -293,10 +322,34 @@ public class DdCtrl{
      * ck       乘客姓名
      * @return
      */
-    @RequestMapping(value="/fkgl", method={RequestMethod.POST})
-    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
-        return service.paymentDetail(entity);
+    @GetMapping(value="/paymentList")
+    public ApiResponse<List<Map<String,Object>>> paymentList(ClDd entity){
+        return service.paymentList(entity);
     }
+
+    /**
+     * 付款确认 -司机
+     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+     * ck       乘客姓名
+     * @return
+     */
+    @PostMapping(value="/paymentConfirm")
+    public ApiResponse<String> paymentConfirm(String ids){
+        RuntimeCheck.ifBlank(ids,"请选择订单");
+        List<String> idList = Arrays.asList(ids.split(","));
+        return service.paymentConfirm( idList);
+    }
+//    /**
+//     * 付款管理   这个功能放弃了
+//     * @param entity
+//     * ddzt     订单状态  30：因收单据  40：已收单据  必填
+//     * ck       乘客姓名
+//     * @return
+//     */
+//    @RequestMapping(value="/fkgl", method={RequestMethod.POST})
+//    public ApiResponse<List<Map<String,Object>>> paymentDetail(ClDd entity){
+//        return service.paymentDetail(entity);
+//    }
     /**
      * 财务结算-订单编辑
      * 1、订单处于：队长确认(队长确定价格)
@@ -342,16 +395,58 @@ public class DdCtrl{
         return service.getVeryDayOrder(cllx);
     }
 
-
+    /*
+     * 订单各种状态的统计
+     */
     @PostMapping("/ddtj")
     public ApiResponse<List<Ddtongji>> ddtongji(DdTongjiTJ dd){
 
     	return service.ddtongji(dd);
     }
-
+    /*
+     * 司机出车统计
+     */
     @PostMapping("/cctj")
     public  ApiResponse<List<Ddtongji>> chucheTj(DdTongjiTJ dd){
 
     	return service.chucheTj(dd);
     }
+    
+    /*
+     * 今日派单统计条形图 饼状图
+     */
+    @PostMapping("/ccTTj")
+    public  ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd){
+
+    	return service.chucheTTj(dd);
+    }
+    
+    
+    
+    /*
+     * 订单付款统计
+     */
+    @PostMapping("/fktj")
+    public  ApiResponse<List<Ddtongji>> FukuanTj(DdTongjiTJ dd){
+
+    	return service.FukuanTj(dd);
+    }
+    /*
+     * 机构收款统计
+     */
+    @PostMapping("/sktj")
+    public  ApiResponse<List<Ddtongji>> ShoukuanTj(DdTongjiTJ dd){
+
+    	return service.ShoukuanTj(dd);
+    }
+    
+    /*
+     * 订单周统计
+     */
+    @PostMapping("/ddzTj")
+    public  ApiResponse<DdTjTxReturn>  ddzTj(DdTongjiTJ dd){
+
+    	return service.ddzTj(dd);
+    }
+    
 }

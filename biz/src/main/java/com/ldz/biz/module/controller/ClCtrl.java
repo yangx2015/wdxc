@@ -75,10 +75,29 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	}
 	
 	@GetMapping("/nianshen")
-	public ApiResponse<List<ClCl>> nianshen(){
+	public ApiResponse<List<ClCl>> nianshen(ClCl car){
 		
-		return clservice.nianshen();
+		return clservice.nianshen(car);
 		
+	}
+
+	/**
+	 *安全驾驶统计（返回图表所需的数据结构）
+	 * @param days
+	 * @return
+	 */
+	@RequestMapping("carAccStatistics")
+	public ApiResponse<Map<String,Object>> carAccStatistics(Integer days){
+		return clservice.carAccStatistics(days);
+	}
+
+    /*
+     * 获取年审饼图 30/60/90天
+     */
+	@GetMapping("/nianshenbt")
+	public ApiResponse<Map<String, Integer>> getnianshen(){
+
+		return clservice.getnianshen();
 	}
 
 }

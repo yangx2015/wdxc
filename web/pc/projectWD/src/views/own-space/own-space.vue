@@ -88,7 +88,7 @@
 
 <script>
 
-    import configApi from '@/axios/config.js'
+
     import Cookies from 'js-cookie';
 export default {
     name: 'ownspace_index',
@@ -251,7 +251,7 @@ export default {
             this.$refs['editPasswordForm'].validate((valid) => {
                 if (valid) {
                     this.savePassLoading = true;
-                    this.$http.post(configApi.USERROOT.MODIFY_PSD,this.editPasswordForm).then((res) => {
+                    this.$http.post(this.apis.USERROOT.MODIFY_PSD,this.editPasswordForm).then((res) => {
                         if(res.code == 200){
                             this.$Message.success(res.message);
                             this.savePassLoading = false;

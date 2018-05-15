@@ -84,9 +84,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             }
         }
         log.info(reportData.toString());
-        List<Channel> channels = nettyUtil.getChannelList(tid);
-//        if (channel == null) return;
-        writeResult(channels,reportData);
+        Channel channel = nettyUtil.getChannelByTid(reportData.getTid());
+        if (channel == null){
+            return ApiResponse.fail("未找到通道");
+        }
+        writeResult(channel,reportData);
         return ApiResponse.success(JsonUtil.toJson(reportData));
     }
 
@@ -105,11 +107,32 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         // 原始gps转百度gps
         log.info("转换前-经度："+gpsInfo.getLongitude()+",纬度："+gpsInfo.getLatitude());
+        Date now = new Date();
+        if (gpsInfo.getLatitude().equals("-1") || gpsInfo.getLongitude().equals("-1")){
+            if (record == null){
+                log.info("gps为 -1");
+                record = new ClClyxjl();
+                record.setCjsj(now);
+                record.setClId(car.getClId());
+                record.setCphm(car.getCph());
+                record.setId(""+idGenerator.nextId());
+                record.setZt("off");
+                if(route != null){
+                    record.setXlId(route.getId());
+                    record.setXlmc(route.getXlmc());
+                }
+                clyxjlMapper.insertSelective(record);
+            }else{
+                record.setZt("off");
+                clyxjlMapper.updateByPrimaryKeySelective(record);
+            }
+            return ApiResponse.fail("设备已离线");
+        }
+
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
         log.info("转换后-经度："+clGps.getBdjd()+",纬度："+clGps.getBdwd());
 
         // 获取车辆运行记录
-        Date now = new Date();
         // 获取当前站点
         boolean hasRecord = record != null;
         ClZd currentStation = null;
@@ -143,7 +166,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 currentStation = findCurrentZd(gps,car,pb);
             }
         }
-        log.info("zt:"+zt);
         if (zt == null){
             if ("80".equals(gpsInfo.getEventType())){
                 zt = "off";
@@ -157,7 +179,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 }
             }
         }
-        log.info("zt:"+zt);
         currentStation.setXlId(route.getId());
         zdService.setStationOrder(currentStation);
         record.setZdbh(currentStation.getRouteOrder());

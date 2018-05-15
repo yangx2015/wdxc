@@ -12,7 +12,7 @@
 	.ElistDemo{
 		width: 400px;
 		height: 76px;
-		z-index: 300;
+		z-index: 999;
 		background-color: #c8eaef;
 		box-shadow: 2px 5px 5px #888888;
 		position: absolute;
@@ -77,7 +77,7 @@
 			</div>
 			<div class="body-1">
 				<div class="box">
-					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;">
+					<div class="body hg" style="border-bottom: solid 2px #b0bbc8;cursor: pointer"  @click="getDrvList()">
 						待派定单
 						<span style="color: #ff8300;font-size: 16px;font-weight: 600;">
 							{{jrpd.num}}
@@ -85,7 +85,7 @@
 					</div>
 					<div class="body hg">
 						<div class="box-row-nh" v-if="jrpd.list.length>0">
-							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list">
+							<div class="body-1 zwxz" v-for="(item,index) in jrpd.list" @click="getDrvList(item.ZWS)">
 								{{item.ZWS}}座
 								<span class="num">
 									{{item.COU}}
@@ -108,7 +108,19 @@
 					<div class="titmess">
 						<span>订单分派</span>
 					</div>
-					<div class="body-r-1 inputSty">
+					<div class="body-r-1 inputSty" style="text-align: left">
+						<Menu mode="horizontal" :theme="'light'"
+						      @on-select="menuClick"
+						      active-name="1">
+							<Menu-item name="1" style="font-size: 22px">
+								<Icon type="ios-paper"></Icon>
+								内部车
+							</Menu-item>
+							<Menu-item name="2"  style="font-size: 22px">
+								<Icon type="ios-people"></Icon>
+								外接车
+							</Menu-item>
+						</Menu>
 					</div>
 					<div class="butevent">
 					</div>
@@ -124,15 +136,15 @@
 								<Icon type="ios-film-outline"></Icon>
 								{{item.xm}}
 							</div>
-							<div class="body-O" style="padding-left:8px ">
+							<div class="body-O" style="padding-left:8px " v-if="zjcx==2030">
 									<span>
-										总（*）
+										总（{{item.endOrderCount+item.startOrderCount}}）
 									</span>
 								<span>
-										完（*）
+										完（{{item.endOrderCount}}）
 									</span>
 								<span>
-										未（*）
+										未（{{item.startOrderCount}}）
 									</span>
 							</div>
 						</div>
@@ -148,7 +160,7 @@
 						</div>
 					</div>
 					<span slot="extra">
-						<i-switch size="large" v-model="item.zt=='00'">
+						<i-switch  v-if="zjcx==2030" size="large" v-model="item.zt=='00'" @on-change="switchCh(item)">
 							<span slot="open">在班</span>
 							<span slot="close">休息</span>
 						</i-switch>
@@ -210,13 +222,12 @@
 				</Card>
 			</div>
 		</div>
-		<component :is="compName" :mess="mess"></component>
+		<component :is="compName" :mess="mess" :type="zjcx"></component>
 	</div>
 </template>
 
 <script>
     import pageList from './comp/list'
-    import configApi from '@/axios/config.js'
     export default{
         name:'driver',
         components: {
@@ -228,7 +239,8 @@
                 mess:{},
                 compName:'',
                 drvlist:[],
-                jrpd:{}
+                jrpd:{},
+                zjcx:'2030'
             }
         },
         created(){
@@ -247,9 +259,35 @@
         mounted(){
         },
         methods:{
+            menuClick(val){//内部车与外部车
+                // alert(val)
+		if(val==1){
+                    this.zjcx = '2030'
+		}else if(val==2){
+                    this.zjcx = '40'
+		}
+		this.getDrvList()
+	    },
+            switchCh(item){
+                let zt = ''
+                if(item.zt=='00'){
+                    zt = '10'
+                }else {
+                    zt = '00'
+                }
+                this.$http.post(this.apis.ORDER.DRZT,{'sfzhm':item.sfzhm,'zt':zt}).then((res) =>{
+                    log('驾驶员数据',res)
+                    if(res.code==200){
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                    this.getDrvList()
+                })
+            },
             pdtj(){//派单统计
                 var v = this
-                this.$http.post(configApi.ORDER.PDTJ,{'cllx':2030}).then((res) =>{
+                this.$http.post(this.apis.ORDER.PDTJ,{'cllx':2030}).then((res) =>{
                     // debugger
                     if(res.code == 200){
                         let num = 0
@@ -269,9 +307,12 @@
 
                 })
             },
-            getDrvList(){//司机列表
+            getDrvList(zkl){//司机列表
                 var v = this
-                this.$http.post(configApi.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
+                if(!zkl){
+                    zkl = ''
+                }
+                this.$http.post(this.apis.ORDER.SJLB,{'zjcx':v.zjcx}).then((res) =>{
                     if(res.code == 200){
                         v.drvlist = res.result
                     }
@@ -280,7 +321,7 @@
             },
             dele(id){//取消分派
                 var v = this
-                this.$http.post(configApi.ORDER.QXPD,{'id':id}).then((res) =>{
+                this.$http.post(this.apis.ORDER.QXPD,{'id':id}).then((res) =>{
                     if(res.code===200){
                         v.$Message.success(res.message);
                         v.getDrvList()

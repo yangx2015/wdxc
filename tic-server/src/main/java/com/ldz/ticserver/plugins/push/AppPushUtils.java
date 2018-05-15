@@ -326,7 +326,7 @@ public class AppPushUtils {
 		// template.setDuration("2015-01-16 11:40:00", "2015-01-16 12:24:00");
 		return template;
 	}
-
+ 
 	public static void main(String[] args) {//87aa0967aa2c2e69c60c045479b40c54  e6feafe1ae47694fbb2e64b77402c60a
 		/*865923030006602
 		
@@ -337,13 +337,22 @@ public class AppPushUtils {
 		System.out.println(JsonUtil.toJson(AppPushUtils
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030032376", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-v0.0.8.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
 			 /*	
+	
+		PushModel p=new PushModel(4, "巡检已经完成22", "这是一条消息", "", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-v0.1.2.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}");
+		p.setPushAll(true);
 		System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(p)));
+			
+		/*System.out.println(JsonUtil.toJson(AppPushUtils
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030006602", "{\"cmdType\":\"11\",\"cmd\":\"22222\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
-
+*/
 		/**/
 		/*System.out.println(JsonUtil.toJson(AppPushUtils
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039041", "{\"cmdType\":\"50\",\"cmd\":\"30\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));*/
 
+	/*	System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030039041", "{\"cmdType\":\"50\",\"cmd\":\"30\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+*/
 	}
 
 	// public static

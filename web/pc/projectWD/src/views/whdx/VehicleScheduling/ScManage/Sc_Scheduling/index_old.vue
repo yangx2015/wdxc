@@ -105,7 +105,7 @@
 	import drlist from '../../../components/draggable-list/draggable-list.vue'
 	import mixins from '@/mixins'
 	
-	import configApi from '@/axios/config.js'
+
 	export default {
 		name: '',
 		mixins:[mixins],
@@ -207,7 +207,7 @@
 			getmess(){
 				var v = this
 				log('排班数据2')
-				this.$http.post(configApi.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
+				this.$http.post(this.apis.PB.QUERY,{"clcx":"30","lulx":"10","date2":v.todaytime}).then((res) =>{
 					log('排班数据',res)
 					v.tableData = res.result
 				})

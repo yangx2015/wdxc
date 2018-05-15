@@ -14,7 +14,7 @@
 </template>
 <script>
     import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
     export default {
         name:'',
         mixins: [mixins],
@@ -79,7 +79,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(configApi.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					console.log('数据',res)
 					v.tabmess = res.page.list
 				})

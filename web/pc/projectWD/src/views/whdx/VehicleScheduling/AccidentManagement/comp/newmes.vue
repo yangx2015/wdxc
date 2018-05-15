@@ -60,7 +60,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 
 	export default {
 		name:'',
@@ -130,14 +130,14 @@
                     if (valid) {
 //                    	新增
                     	if(v.messType){
-                    		v.$http.post(configApi.USER.ADD,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.USER.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('用户注册成功');
 									v.$emit('listF',res)
 								}
 							})
                     	}else{
-                    		v.$http.post(configApi.USER.CHANGE,v.addmess).then((res) =>{
+                    		v.$http.post(this.apis.USER.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('用户修改成功');
 									v.$emit('listF',res)

@@ -12,10 +12,12 @@
   "dependencies": {
     "fastclick": "^1.0.6",
     "mand-mobile": "^1.2.1",
+    "js-cookie": "^2.2.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
   "devDependencies": {
+    "axios": "^0.17.1",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",
     "autoprefixer": "^7.1.2",

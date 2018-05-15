@@ -282,6 +282,8 @@ public class ClDd implements Serializable {
      */
     @Column(name = "ZDBH")
     private String zdbm;
+    
+ 
 
     /**
      * 载客量  筛选条件
@@ -289,13 +291,47 @@ public class ClDd implements Serializable {
     @Transient
     private String zkl;
 
+    @Transient
+    private Date startTime;
+
+    @Transient
+    private Date endTime;
+    /**
+     * 过桥费
+     */
+    @Column(name = "GQF")
+    private Double gqf;
 
     private static final long serialVersionUID = 1L;
+
+    public Double getGqf() {
+        return gqf;
+    }
+
+    public void setGqf(Double gqf) {
+        this.gqf = gqf;
+    }
+
     /**
      * 课题编号  课题字典 [ZDCLK0045]
      */
     @Column(name = "KTCODE")
     private String ktcode;
+
+
+    /**
+     * 乘客创建人，这个订单是由乘客创建时，这里填写申请的人姓名
+     */
+    @Column(name = "CK_CJL")
+    private String ckCjl;
+
+    public String getCkCjl() {
+        return ckCjl;
+    }
+
+    public void setCkCjl(String ckCjl) {
+        this.ckCjl = ckCjl;
+    }
 
     public String getZkl() {
         return zkl;
@@ -319,6 +355,26 @@ public class ClDd implements Serializable {
 
     public void setBhyy(String bhyy) {
         this.bhyy = bhyy;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
     }
 
     /**

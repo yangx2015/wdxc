@@ -30,7 +30,7 @@
 </template>
 
 <script>
-    import configApi from '@/axios/config.js'
+
     export default {
         name:'',
         data(){
@@ -75,7 +75,7 @@
             //电子围栏点
             bkDot(id){
                 var v = this
-                this.$http.get(configApi.DZWL.GET_BY_CAR_ID + "?clId=" + id).then((res) => {
+                this.$http.get(this.apis.DZWL.GET_BY_CAR_ID + "?clId=" + id).then((res) => {
                     console.log('电子围栏点',res)
                     if (res.code === 200 && res.result) {
                         let ditMess  = res.result.dlxxzb.split(';');

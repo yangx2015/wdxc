@@ -12,4 +12,6 @@ public interface JsyService extends BaseService<ClJsy,String>{
     ApiResponse<String> updateEntity(ClJsy entity);
 
     ApiResponse<List<ClJsy>> notBindList(SysYh user);
+
+    ApiResponse<String> updateJsyType(ClJsy entity);
 }

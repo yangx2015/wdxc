@@ -49,7 +49,7 @@
 
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
 	import formData from './formData'
 	export default {
     	name:'char',
@@ -101,16 +101,16 @@
                         align:'center',
                         key: 'dz'
                     },
-                    {
-                        title: '创建时间',
-                        align:'center',
-                        key: 'cjsj'
-                    },
-                    {
-                        title: '创建人',
-                        align:'center',
-                        key: 'cjr'
-                    },
+                    // {
+                    //     title: '创建时间',
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
+                    // {
+                    //     title: '创建人',
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
                     {
                         title:'操作',
                         align:'center',
@@ -187,7 +187,7 @@
                 }else{
                     this.form.cjsjInRange = '';
                 }
-                this.$http.get(configApi.ZNZP.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.ZNZP.QUERY,{params:this.form}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
                         this.tableData = res.page.list;
@@ -210,7 +210,7 @@
 				})
 				.then((willDelete) => {
 				  if (willDelete) {
-					v.$http.post(configApi.ZNZP.DELE,{'ids':[r.zdbh]}).then((res) =>{
+					v.$http.post(this.apis.ZNZP.DELE,{'ids':[r.zdbh]}).then((res) =>{
 						if(res.code===200){
 							this.$Message.success('操作成功');
 						}

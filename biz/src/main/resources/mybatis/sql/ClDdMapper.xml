@@ -8,11 +8,35 @@ select * from CL_DD t where t.CJSJ between
 		and
 		to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss') 
 		<if test="jgdm != null">
-			and t.JGDM=#{jgdm}
+			and t.JGDM = #{jgdm}
 		</if>
-		<if test="sj != null">
-			and t.sj=#{sj}
+		<if test="jgdmlike != null">
+			and t.JGDM like '${jgdmlike}%'
 		</if>
+		<if test="sjxm != null and sjxm != ''">
+			and t.sjxm like '%${sjxm}%'
+		</if>
+</select>
+
+<select id="weekTj"  resultType="com.ldz.biz.module.bean.DdTjTx" parameterType="com.ldz.biz.module.bean.DdTongjiTJ">
+SELECT
+ 	t1.today,
+ 	count (CL_DD.cjsj)
+ VALUE 
+ FROM
+ 	(
+ 		<![CDATA[ select 
+to_char (to_date(#{cxsj},'yyyy-mm-dd')-to_char(sysdate,'d')+8 - LEVEL + 1, 'yyyy-mm-dd') today  from dual   connect BY LEVEL <= 7 ]]>
+	) t1
+ LEFT JOIN CL_DD ON t1.today = to_char(CL_DD.cjsj,'yyyy-mm-dd') 
+       <if test="jgdm != null">
+			and JGDM = #{jgdm}
+		</if>
+     <if test="jgdmlike != null">
+			and JGDM like '${jgdmlike}%'
+		</if>
+ GROUP BY
+ 	t1.today ORDER BY t1.today
 </select>
 
 </mapper>

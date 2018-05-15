@@ -69,6 +69,9 @@
 	.pageListCarH:hover{
 		border: solid 1px #fff;
 	}
+	.choosed{
+		border:1px solid white;
+	}
 </style>
 <template>
 	<div class="box-row" style="background-color: #fff">
@@ -150,7 +153,7 @@
 					</div>
 				</div>
 				<div class="body" style="padding: 8px;margin-top: 8px">
-					<div class="pageListCarH" v-for="item in pathList" @click="itemClick(item)">
+					<div class="pageListCarH" v-for="(item,index) in pathList" @click="itemClick(item,index)" :class="{'choosed':choosedIndex == index}">
 						<div>
 							<Icon type="ios-location"
 								color="#00c3c1" size="22"></Icon>
@@ -223,6 +226,7 @@
             "M+" : this.getMonth()+1, //month
             "d+" : this.getDate(),    //day
             "h+" : this.getHours(),   //hour
+            "H+" : this.getHours(),   //hour
             "m+" : this.getMinutes(), //minute
             "s+" : this.getSeconds(), //second
             "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
@@ -248,11 +252,11 @@
                     return;
                 }
                 if (newQuestion.length > 0 && newQuestion[0] != ''){
-                    this.formItem.startTime = this.getdateParaD(newQuestion[0])
-                    this.formItem.endTime = this.getdateParaD(newQuestion[1])
+                    this.formItem.startTime = this.getdateParaD(newQuestion[0]) + " 00:00:00";
+                    this.formItem.endTime = this.getdateParaD(newQuestion[1]) + " 23:59:59";
                 }else{
-                    this.formItem.startTime  = ''
-                    this.formItem.endTime  = ''
+                    this.formItem.startTime  = this.getTodayDate() + " 00:00:00";
+                    this.formItem.endTime  = this.getTodayDate() + " 23:59:59";
                 }
             },
         },
@@ -298,18 +302,23 @@
                     brennschluss:'60'
                 },
 				item:{},
-				totalTime:0
+				totalTime:0,
+				speeds:{},
+                choosedIndex:0,
 			}
 		},
 		mounted(){
             this.formItem.startTime = this.getTodayDate() + " 00:00:00";
             this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            this.formItem.zdbh = this.$route.params.zdbh;
             this.timeRange = [this.formItem.startTime,this.formItem.endTime];
+            this.choosedIndex = 0;
 			this.getCarList();
 		},
 		methods:{
-            itemClick(item){
+            itemClick(item,index){
                 this.item = item;
+                this.choosedIndex = index;
                 this.getData();
 			},
 			getMinute(longTypeDate){
@@ -339,10 +348,8 @@
                     if (res.code === 200 && res.page.list){
                         this.carList = res.page.list;
                         if (this.carList.length != 0){
-							this.formItem.zdbh = this.carList[0].zdbh;
                             this.formItemList();
 						}
-                        this.formItem.zdbh = this.$route.params.zdbh;
                     }
                 })
 			},
@@ -368,16 +375,18 @@
                     brennschluss:this.formItem.brennschluss
                 }
                 this.totalTime = 0;
+                this.pathList = [];
+                this.item = {};
                 this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         var geoc = new BMap.Geocoder();
                         for (let r of res.result){
                             let ksgps = r.ksgps.split(',');
                             let jsgps = r.jsjps.split(',');
-                            r.ksjd = ksgps[1],
-                                r.kswd = ksgps[0],
-                                r.jsjd = jsgps[1],
-                                r.jswd = jsgps[0];
+                            r.ksjd = ksgps[1];
+                            r.kswd = ksgps[0];
+							r.jsjd = jsgps[1];
+							r.jswd = jsgps[0];
                             r.ksdz = '出发地';
                             r.jsdz = '目的地';
                             this.totalTime += r.sc;
@@ -395,6 +404,7 @@
                         }
                         this.pathList = res.result;
                         if (this.pathList.length > 0){
+                            this.item = this.pathList[0];
                             this.getData();
 						}
                     }
@@ -404,18 +414,32 @@
                 var v = this
 				let p = {
                     zdbh:this.formItem.zdbh,
-					startTime:this.formItem.startTime,
-					endTime:this.formItem.endTime,
+					startTime:this.item.kssj,
+					endTime:this.item.jssj,
 				}
+                this.speedList = [];
+                this.speeds = {};
                 this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,p).then((res) =>{
                     if (res.code === 200){
                         this.stationList = res.result;
                         for(let r of res.result){
-                            this.speedList.push([r.cjsj,r.yxsd]);
+                            let date = new Date(r.cjsj);
+                            let speed = parseInt(r.yxsd);
+                            this.speedList.push([r.cjsj,speed]);
+                            this.speeds[date.getTime()] = speed;
                         }
                         this.Buildmap()
                     }
                 })
+            },
+			formatDate(s){
+				let date = new Date(s);
+                let min = date.getMinutes()
+                let sec = date.getSeconds()
+                if (min < 10)min = '0'+min;
+                if (sec < 10)sec = '0'+sec;
+                var texts = (date.getMonth() + 1) +'-'+date.getDate()+' '+min+':'+sec;
+				return texts;
             },
             Buildmap() {
                 var v = this
@@ -452,7 +476,6 @@
                 this.map.addOverlay(polyline);          //增加折线
 
                 // 增加起点
-                log((v.stationList[0].bdjd, v.stationList[0].bdwd));
                 var pt1 = new BMap.Point(v.stationList[0].bdjd, v.stationList[0].bdwd);
                 var myIcon1 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker1 = new BMap.Marker(pt1,{icon:myIcon1});  // 创建标注
@@ -472,6 +495,7 @@
                 this.drawLineChart();
             },
             drawLineChart(){
+                let v = this;
                 // 基于准备好的dom，初始化echarts实例
                 this.movingChart = echarts.init(document.getElementById('trackLineChart'));
                 //运行轨迹chart数据集合，格式:['日期时间（格式化成MM-dd HH:mm，分两行显示日期和时间，界面会美观）','速度值']
@@ -488,25 +512,20 @@
                     xAxis: {
                         type: 'time',
                         axisLabel:{
+                            // interval:0,//横轴信息全部显示
+                            // rotate:-90,//-90度角倾斜显示
                             // 使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
                             formatter: function (value, index) {
                                 // 格式化成月/日，只在第一个刻度显示年份
                                 var date = new Date(value);
-                                let min = date.getMinutes()
-                                let sec = date.getSeconds()
-								if (min < 10)min = '0'+min;
-								if (sec < 10)sec = '0'+sec;
-                                var texts = (date.getMonth() + 1) +'-'+date.getDate()+' '+min+':'+sec;
-                                // if (index === 0) {
-                                //     texts.unshift(date.getYear());
-                                // }
+                                let texts = date.format('MM-dd HH:mm');
                                 return texts;
                             }
 						},
                         axisPointer: {
                             animation: true,
                             //给出pointer显示的位置点，和数据参数关联
-                            value: '2016-03-29',
+                            // value: '2016-03-29',
                             snap: true,
                             triggerTooltip:false,
                             lineStyle: {
@@ -518,10 +537,9 @@
                             label: {
                                 show: true,
                                 formatter: function (params) {
-                                    var value = 0;
-                                    if (params.seriesData.length == 1){
-                                        value = params.seriesData[0].data[1];
-                                    }
+                                    let time = params.value;
+                                    let speed = v.speeds[time];
+                                    var value = speed;
                                     return "车辆瞬时速度："+value+" Km/h";
                                 },
                                 backgroundColor: '#004E52'
@@ -550,10 +568,11 @@
                         z: 10
                     },
                     grid: {
-                        top: 110,
-                        left: 15,
-                        right: 15,
-                        height: 160
+                        y2:150,
+                        // top: 110,
+                        // left: 25,
+                        // right: 25,
+                        // height: 160
                     },
                     series: [
                         {

@@ -7,7 +7,8 @@
         <div class="infor-card-con">
             <Col class="infor-card-icon-con" :style="{backgroundColor: color, color: 'white'}" span="8">
                 <Row class="height-100" type="flex" align="middle" justify="center">
-                    <Icon :type="iconType" :size="iconSize"></Icon>
+                    <img :src="iconSrc">
+                    <!--<Icon :type="iconType" :size="iconSize"></Icon>-->
                 </Row>
             </Col>
             <Col span="16" class="height-100">
@@ -41,6 +42,7 @@ export default {
         endVal: Number,
         color: String,
         iconType: String,
+        iconSrc: String,
         introText: String,
         countSize: {
             type: String,

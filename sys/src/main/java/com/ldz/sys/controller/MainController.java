@@ -107,6 +107,7 @@ public class MainController {
 				userInfomodel.setXm(item.getXm());
 				userInfomodel.setYhid(item.getYhid());
 				userInfomodel.setJgdm(item.getJgdm());
+				userInfomodel.setType(item.getLx());
 				rMap.put("accessToken", aToken);
 				rMap.put("userInfo", userInfomodel);
 				SysJg org = jgService.findByOrgCode(item.getJgdm());

@@ -15,4 +15,6 @@ public class userInfoModel {
 	private String xm;
 
 	private String jgdm;
+
+	private String type;
 }

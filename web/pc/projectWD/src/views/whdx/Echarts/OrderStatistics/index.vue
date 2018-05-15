@@ -1,155 +1,174 @@
 <style lang="less">
-    @import '../../../../styles/common.less';
+	@import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-    .fromTiT{
-    	/*text-align: right;*/
-    }
-</style>
-<!--订单统计-->
+<!--角色管理-->
 <template>
-    <div class="boxbackborder">
+	<div class="boxbackborder">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-    			<span class="tabPageTit">
+				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
-					<Row class="margin-top-10">
-						<Col span="4">
-							<span class="titmess">订单统计</span>
-						</Col>
-						<Col span="14">
-							<Input v-model="findMess.like_ScName" placeholder="请输入查询信息..." style="width: 200px" @on-change="getPageData"></Input>
-						</Col>
-						<Col span="6" class="butevent">
-							<Button type="primary" @click="getPageData()">
+					<div class="margin-top-10 box-row">
+						<div class="titmess">
+							<span>订单统计</span>
+						</div>
+						<div class="body-r-1 inputSty">
+							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
+							<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
+							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+						</div>
+						<div class="butevent">
+							<Button type="primary" @click="getData()">
 								<Icon type="search"></Icon>
-								<!--查询-->
 							</Button>
-						</Col>
-					</Row>
+						</div>
+					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table
-						:row-class-name="rowClassName"
-						:columns="tableTiT"
-						:data="tableData"></Table>
+			<Row style="position: relative;">
+				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
-			<!-- <Row class="margin-top-10" style="text-align: right;">
-                <Page :total=pageTotal
-                    :current=page.pageNum
-                    :page-size=page.pageSize
-                    show-total
-                    show-elevator
-                    @on-change='pageChange'></Page>
-            </Row> -->
 		</Card>
-    </div>
+	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-//	import axios from '@/axios'
-	export default {
-    	name:'char',
-    	mixins:[mixins],
-        data () {
+    import mixins from '@/mixins'
+
+    Date.prototype.format = function(format)
+    {
+        var o = {
+            "M+" : this.getMonth()+1, //month
+            "d+" : this.getDate(),    //day
+            "h+" : this.getHours(),   //hour
+            "m+" : this.getMinutes(), //minute
+            "s+" : this.getSeconds(), //second
+            "q+" : Math.floor((this.getMonth()+3)/3),  //quarter
+            "S" : this.getMilliseconds() //millisecond
+        }
+        if(/(y+)/.test(format)) format=format.replace(RegExp.$1,
+            (this.getFullYear()+"").substr(4 - RegExp.$1.length));
+        for(var k in o)if(new RegExp("("+ k +")").test(format))
+            format = format.replace(RegExp.$1,
+                RegExp.$1.length==1 ? o[k] :
+                    ("00"+ o[k]).substr((""+ o[k]).length));
+        return format;
+    }
+    export default {
+        name: 'char',
+        mixins: [mixins],
+        components: {
+        },
+        data() {
             return {
-            	//分页
-            	//弹层--角色分配
-            	RootShow:false,
-            	showModal:false,
-              tableTiT: [
-                	{
-	                	title:"序号",
-	                	width:80,
-	                	align:'center',
-	                	type:'index'
-	                },
-	                {
-	                    title: '用车单位',
-	                    align:'center',
-	                    key: 'unit'
-	                },
-	                {
-	                    title: '时间',
-	                    align:'center',
-	                    width:100,
-	                    key: 'time'
-	                },
-	                {
+                v:this,
+                SpinShow: true,
+                tabHeight: 220,
+                dateOpts: {
+                    shortcuts: [
+                        {
+                            text: '今天',
+                            value () {
+                                return new Date();
+                            }
+                        },
+                        {
+                            text: '三天前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 3);
+                                return date;
+                            }
+                        },
+                        {
+                            text: '一周前',
+                            value () {
+                                const date = new Date();
+                                date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+                                return date;
+                            }
+                        }
+                    ]
+                },
+                tableColumns: [
+                    {
+                        title:"序号",
+                        width:80,
+                        align:'center',
+                        type:'index'
+                    },
+                    {
+                        title: '用车单位',
+                        align:'center',
+                        key: 'jgmc'
+                    },
+                    {
                         title: '订单总数',
                         align:'center',
-                        key: 'allpage'
+                        key: 'ddzsCount'
                     },
                     {
                         title: '已审核',
                         align:'center',
-                        key: 'OKaudit'
+                        key: 'yshCount'
                     },
                     {
                         title: '未审核',
                         align:'center',
-                        key: 'UNaudit'
+                        key: 'wshCount'
                     },
                     {
                         title: '已取消',
                         align:'center',
-                        key: 'cancel'
+                        key: 'yqxCount'
                     },
                     {
                         title: '司机确认',
                         align:'center',
-                        key: 'dr'
+                        key: 'dsjCount'
                     },
                     {
                         title: '对长确认',
                         align:'center',
-                        key: 'drM'
+                        key: 'ddzCount'
                     }
                 ],
-                tableData: [
-	                {
-	                	unit:'法学院',
-	                	time:'2017-05-02',
-	                	allpage:'25',
-	                	OKaudit:'23',
-	                	UNaudit:'2',
-	                	cancel:'0',
-	                	dr:'20',
-	                	drM:'18'
-	                }
-                ],
-                //收索
-                datetime:[],
-                findMess:{
-                	like_CarNumber:'',
-                	like_ScName:'',
-                	pageNum:1,
-            		pageSize:8
-                }
+                pageData: [],
+                form: {
+                    sjxmLike: '',
+                    total: 0,
+                },
             }
         },
-        created(){
-        	this.$store.commit('setCurrentPath', [{
-                title: '首页',
-            },{
-                title: '数据报表',
-            },{
-                title: '订单统计',
-            }])
-            this.getPageData()
+        created() {
+            this.form.kssj  = this.getTodayDate() + " 00:00:00";
+            this.form.jssj  = this.getTodayDate() + " 23:59:59";
+            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
+            this.tabHeight = this.getWindowHeight() - 295
+            this.getData()
+
         },
         methods: {
-            getPageData() {
-                this.$http.post(this.apis.ORDER.TJ,{},(res)=>{
-                    this.tableData = res.result;
-				})
+            getTodayDate(){
+                let now = new Date();
+                return now.format("yyyy-MM-dd");
             },
-            pageChange(event) {
-                this.util.pageChange(this, event);
+            getData(){
+                let startTime = this.form.kssj;
+                let endTime = this.form.jssj;
+                if (typeof startTime === 'object'){
+                    this.form.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    this.form.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                this.$http.post(this.apis.ORDER.TJ,this.form).then((res) =>{
+                    if (res.code == 200){
+                        this.pageData = res.result;
+                    }
+                })
             },
         }
     }

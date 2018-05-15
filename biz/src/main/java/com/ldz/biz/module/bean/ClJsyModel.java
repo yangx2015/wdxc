@@ -1,14 +1,9 @@
 package com.ldz.biz.module.bean;
 
-import com.ldz.biz.module.model.ClDd;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
+
+import com.ldz.biz.module.model.ClDd;
 
 /**
  * 驾驶员表自定义类型

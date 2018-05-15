@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -42,6 +43,9 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         condition.eq(SysHdyx.InnerColumn.hdlx, "00");//活动类型 00微信、10智能站牌
         condition.eq(SysHdyx.InnerColumn.zt, "10");//状态(00未开始 10 已开始  20 已结束)
         List<SysHdyx> list=hdyxMapper.selectByExample(condition);
+        if(list==null){
+            list=new ArrayList<SysHdyx>();
+        }
         return setFiles(list);
     }
 

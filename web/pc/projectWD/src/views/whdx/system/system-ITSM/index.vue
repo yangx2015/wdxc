@@ -45,7 +45,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import addmess from './comp/addmess.vue'
 	import mess from './comp/mess.vue'
@@ -130,12 +130,12 @@
 							]);
 						}
 					},
-					{
-						title: '创建时间',
-						width: '100',
-						align: 'center',
-						key: 'cjsj'
-					},
+					// {
+					// 	title: '创建时间',
+					// 	width: '100',
+					// 	align: 'center',
+					// 	key: 'cjsj'
+					// },
 					{
 						title: '操作',
 						key: 'action',
@@ -228,7 +228,7 @@
             },
 			getmess(){
 				var v = this
-				this.$http.get(configApi.ITMS.QUERY).then((res) =>{
+				this.$http.get(this.apis.ITMS.QUERY).then((res) =>{
 					v.tableData = res.page.list
 					v.SpinShow = false;
 					v.pageTotal=res.page.total
@@ -236,7 +236,7 @@
 			},
 			//删除数据
 			listDele(id){
-				this.util.del(this,configApi.ITMS.DELE,[id],()=>{
+				this.util.del(this,this.apis.ITMS.DELE,[id],()=>{
                     this.getmess();
 				});
 			},
@@ -251,7 +251,7 @@
 			findMessList() {
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(configApi.ITMS.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.ITMS.QUERY,{params:v.findMess}).then((res) =>{
 					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;

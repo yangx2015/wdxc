@@ -1,5 +1,16 @@
 package com.ldz.biz.module.service.impl;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
@@ -7,7 +18,7 @@ import com.ldz.biz.module.model.ClJsy;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysZdxm;
@@ -16,18 +27,11 @@ import com.ldz.sys.service.ZdxmService;
 import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import com.ldz.util.exception.RuntimeCheck;
+
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.*;
 
-@Slf4j
 @Service
 public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClService {
 	@Autowired
@@ -44,6 +48,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private String deleteZnzpRedisKeyUrl;
 	@Autowired
 	private RedisUtil redisUtil;
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
 	@Override
 	protected Mapper<ClCl> getBaseMapper() {
 		return entityMapper;
@@ -166,14 +172,20 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	}
 
 	@Override
-	public ApiResponse<List<ClCl>> nianshen() {
+	public ApiResponse<List<ClCl>> nianshen(ClCl car) {
 		ApiResponse<List<ClCl>> apiResponse = new ApiResponse<>();
 		long now = new Date().getTime();
 
-
-		List<ClCl> cllist = entityMapper.selectAll();
+		LimitedCondition condition = new LimitedCondition(ClCl.class);
+		if (StringUtils.isNotEmpty(car.getCph())){
+			condition.like(ClCl.InnerColumn.cph,car.getCph());
+		}
+		List<ClCl> cllist = entityMapper.selectByExample(condition);
 		List<ClCl> cls= new ArrayList<>();
 		/*cllist.stream().filter(s -> s.getNssj() != null).filter(s -> (now-s.getNssj().getTime()) < a);*/
+		// 年审时间正序
+		cllist = cllist.stream().filter(p->p.getNssj() != null).collect(Collectors.toList());
+		cllist.sort(Comparator.comparing(ClCl::getNssj));
 		for (ClCl clCl : cllist) {
 			if (clCl.getNssj()!=null) {
 				long nianshen= clCl.getNssj().getTime();
@@ -187,5 +199,159 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		apiResponse.setResult(cls);
 		return apiResponse;
 	}
+
+	@Override
+	public ApiResponse<Map<String, Object>> carAccStatistics(Integer days) {
+		SysYh user = getCurrentUser();
+		String jgdm = user.getJgdm();
+		Calendar now = Calendar.getInstance();
+		if (days == null)days = -3;
+		if (days > 0)days = -(days-1);
+		now.add(Calendar.DATE, days);
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
+		String weekStart = sdf.format(now.getTime());
+//		String jgdm = "100";
+		String dateRange = " and cjsj> to_date('"+weekStart+"','yyyy-mm-dd') ";
+		String sql = "SELECT T1.sjxm,T1.cph,T2.speedupCount,t3.speedownCount,t4.wheelCount,t5.overspeedCount  FROM CL_CL t1 \n" +
+				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedupCount FROM CL_SBYXSJJL  t WHERE t.SJLX='10' "+dateRange+" GROUP BY zdbh) t2 on T1.ZDBH=T2.ZDBH\n" +
+				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedownCount FROM CL_SBYXSJJL  t WHERE t.SJLX='20' "+dateRange+"  GROUP BY zdbh) t3 on T1.ZDBH=T3.ZDBH\n" +
+				"  LEFT JOIN (select ZDBH ,count(SJLX) as wheelCount FROM CL_SBYXSJJL  t WHERE t.SJLX='30' "+dateRange+"  GROUP BY zdbh) t4 on T1.ZDBH=T4.ZDBH\n" +
+				"  LEFT JOIN (select ZDBH ,count(SJLX) as overspeedCount FROM CL_SBYXSJJL  t WHERE t.SJLX='40' "+dateRange+"  GROUP BY zdbh) t5 on T1.ZDBH=T5.ZDBH "+
+				"  where t1.jgdm like '"+jgdm+"%' ";
+		List result = jdbcTemplate.queryForList(sql);
+		List<String> carNumberList = new ArrayList<>(result.size());
+		List<Object> speedUpCountList = new ArrayList<>(result.size());
+		List<Object> speedDownCountList = new ArrayList<>(result.size());
+		List<Object> wheelCountList = new ArrayList<>(result.size());
+		List<Object> overSpeedCountList = new ArrayList<>(result.size());
+		List<String> driverNames = new ArrayList<>(result.size());
+		for (Object o : result) {
+			Map<String,Object> map = (Map<String, Object>) o;
+			String carNumber = (String) map.get("cph");
+			String driverName = (String) map.get("sjxm");
+			carNumberList.add(carNumber);
+			driverNames.add(driverName);
+
+			String speedupCountStr = map.get("speedupCount") == null ? "0" : map.get("speedupCount").toString();
+			int count1 = StringUtils.isEmpty(speedupCountStr) ? 0 : Integer.parseInt(speedupCountStr);
+			speedUpCountList.add(count1);
+
+			String speeddownCountStr = map.get("speedownCount") == null ? "0" : map.get("speedownCount").toString();
+			int count2 = StringUtils.isEmpty(speeddownCountStr) ? 0 : Integer.parseInt(speeddownCountStr);
+			speedDownCountList.add(count2);
+
+			String wheelCountStr = map.get("wheelCount") == null ? "0" : map.get("wheelCount").toString();
+			int count3 = StringUtils.isEmpty(wheelCountStr) ? 0 : Integer.parseInt(wheelCountStr);
+			wheelCountList.add(count3);
+
+			String overspeedpCountStr = map.get("overspeedCount") == null ? "0" : map.get("overspeedCount").toString();
+			int count4 = StringUtils.isEmpty(overspeedpCountStr) ? 0 : Integer.parseInt(overspeedpCountStr);
+			overSpeedCountList.add(count4);
+		}
+
+		Map<String,Object> map = new HashMap<>();
+
+		Map<String,Object> speedUpMap = new HashMap<>();
+		speedUpMap.put("name","急加速");
+		speedUpMap.put("yAxis",speedUpCountList);
+
+		Map<String,Object> wheelMap = new HashMap<>();
+		wheelMap.put("name","急转弯");
+		wheelMap.put("yAxis",wheelCountList);
+
+
+		Map<String,Object> breakMap = new HashMap<>();
+		breakMap.put("name","急刹车");
+		breakMap.put("yAxis",speedDownCountList);
+
+
+		Map<String,Object> overSpeedMap = new HashMap<>();
+		overSpeedMap.put("name","超速");
+		overSpeedMap.put("yAxis",overSpeedCountList);
+
+		map.put("driverNames",driverNames);
+		map.put("carNumbers",carNumberList);
+		map.put("xAxis",carNumberList);
+		map.put("speedUpMap",speedUpMap);
+		map.put("wheelMap",wheelMap);
+		map.put("breakMap",breakMap);
+		map.put("overSpeedMap",overSpeedMap);
+		return ApiResponse.success(map);
+	}
+
+
+	private static String convertWeekDate(Date date) {
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+
+		// 判断要计算的日期是否是周日，如果是则减一天计算周六的，否则会出问题，计算到下一周去了
+
+		int dayWeek = cal.get(Calendar.DAY_OF_WEEK);// 获得当前日期是一个星期的第几天
+
+		if (1 == dayWeek) {
+
+			cal.add(Calendar.DAY_OF_MONTH, -1);
+
+		}
+
+		cal.setFirstDayOfWeek(Calendar.MONDAY);// 设置一个星期的第一天，按中国的习惯一个星期的第一天是星期一
+
+		int day = cal.get(Calendar.DAY_OF_WEEK);// 获得当前日期是一个星期的第几天
+
+		cal.add(Calendar.DATE, cal.getFirstDayOfWeek() - day);// 根据日历的规则，给当前日期减去星期几与一个星期第一天的差值
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
+		return sdf.format(cal.getTime()); // 周一时间
+
+	}
+
+	public static void main(String[] args) {
+
+	}
+	@Override
+	public ApiResponse<Map<String, Integer>> getnianshen() {
+		//获取当前登陆用户
+		SysYh user = getCurrentUser();
+		ClCl clCl= new ClCl();
+		clCl.setJgdm(user.getJgdm());
+
+		List<ClCl> cllist = entityMapper.select(clCl);
+
+
+		int thirty=0;
+		int sixty=0;
+		int ninety=0;
+		Date now = new Date();
+		for (ClCl cl : cllist) {
+			if (cl.getNssj()==null) {
+				continue;
+			}
+			Date nssj = cl.getNssj();
+			int cha = differentDaysByMillisecond(now,nssj);
+			if (cha<=30) {
+				thirty++;
+			}
+			if (cha>30&&cha<=60) {
+				sixty++;
+			}
+			if (cha>60&&cha<=90) {
+				ninety++;
+			}
+
+		}
+		ApiResponse<Map<String, Integer>> apiResponse = new ApiResponse<>();
+		Map<String, Integer> map = new HashMap<>();
+		map.put("30", thirty);
+		map.put("60", sixty);
+		map.put("90", ninety);
+		apiResponse.setResult(map);
+		return apiResponse;
+	}
+
+	 public static int differentDaysByMillisecond(Date date1,Date date2)
+	    {
+	        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
+	        return days;
+	    }
 
 }

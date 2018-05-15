@@ -144,7 +144,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
     import mixins from '@/mixins'
     
 	export default{
@@ -158,7 +158,7 @@
 				maxUrl:'',
 				maxIndex:'',
                 vadeoShow:true,
-                videoPath :configApi.VIDEO_PATH,
+                videoPath :this.apis.VIDEO_PATH,
 				activeName:0,
 				cjsjInRange:[],
 				carList:[],
@@ -200,7 +200,7 @@
 			        buttons:['取消','确认'],
 			    }).then((willDelete) => {
 		            if (willDelete) {
-		                this.$http.post(configApi.CLOUD.DELE+'/'+item.id).then((res) =>{
+		                this.$http.post(this.apis.CLOUD.DELE+'/'+item.id).then((res) =>{
 							if(res.code==200){
 								v.$Message.success(res.message);
 							}else{
@@ -221,7 +221,7 @@
                 }
 				var v = this
                 v.findMess.wjmEndwith = '.jpg';
-				this.$http.get(configApi.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
             	    v.pageTotal = res.page.total
 					for (let r of res.page.list){
 					    if (r.url){
@@ -236,7 +236,7 @@
 			},
 			getCarList(){
                 var v = this
-                this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
+                this.$http.get(this.apis.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
                     this.getmess();
                 })

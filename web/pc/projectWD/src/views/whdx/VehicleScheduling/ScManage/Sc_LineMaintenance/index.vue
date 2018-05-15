@@ -42,7 +42,7 @@
 </template>
 <script>
 	import mixins from '@/mixins'
-    import configApi from '@/axios/config.js'
+
 	import expandRow from './table-expand.vue';
 	import compModal from './comp/modal.vue'
 	export default {
@@ -241,7 +241,7 @@
                 }else{
                     this.findMess.cjsjInRange = '';
                 }
-                this.$http.get(configApi.XL.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.XL.QUERY,{params:this.findMess}).then((res) =>{
                     if(res.code===200){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;
@@ -259,7 +259,7 @@
 				this.compName = 'compModal'
 			},
 			listDele(id){
-				this.util.del(this,configApi.XL.DELE,[id],()=>{
+				this.util.del(this,this.apis.XL.DELE,[id],()=>{
                     this.getmess();
 				});
 			},

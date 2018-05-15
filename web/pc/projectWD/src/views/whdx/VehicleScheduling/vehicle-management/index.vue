@@ -56,7 +56,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
@@ -131,18 +131,18 @@
                         width:80,
                         key: 'zkl'
                     },
-                    {
-                        title: '创建人',
-                        width:160,
-                        align:'center',
-                        key: 'cjr'
-                    },
-                    {
-                        title: '创建时间',
-                        width:150,
-                        align:'center',
-                        key: 'cjsj'
-                    },
+                    // {
+                    //     title: '创建人',
+                    //     width:160,
+                    //     align:'center',
+                    //     key: 'cjr'
+                    // },
+                    // {
+                    //     title: '创建时间',
+                    //     width:150,
+                    //     align:'center',
+                    //     key: 'cjsj'
+                    // },
                     {
                         title: '司机',
                         align:'center',
@@ -325,14 +325,6 @@
                     }
                 ],
                 tableData: [
-	                {
-	                	carNumber:'201701010914230001',
-	                	LicensePlate:'鄂A12345',
-	                	carType:'大巴车',
-	                	carModel:'48人座',
-	                	time:'2017-05-02 09:10:00',
-	                	carState:'离线'
-	                }
                 ],
                 //收索
 				findMess: {
@@ -366,7 +358,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(configApi.CLGL.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
 					log('车辆数据',res.page.list)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -383,7 +375,7 @@
                 this.getmess()
         	},
         	listDele(id){
-                this.util.del(this,configApi.CLGL.DELE,[id.clId],()=>{
+                this.util.del(this,this.apis.CLGL.DELE,[id.clId],()=>{
                     this.getmess()
 				})
 			},

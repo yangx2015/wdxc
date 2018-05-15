@@ -8,6 +8,8 @@ public interface SysJzgxxService {
 	/*
 	 * 通过身份证,姓名获取到教职工信息
 	 */
-	
-	ApiResponse<SysJzgxx> findJzg(String idCard,String name);
+
+	ApiResponse<String> findJzg(String idCard,String name);
+
+	SysJzgxx findById(String id);
 }

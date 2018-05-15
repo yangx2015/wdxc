@@ -65,7 +65,7 @@
         return format;
     }
 	import historyMap from '../../map/historyTarckMap'
-	import configApi from '@/axios/config.js'
+
 	export default {
 		name: 'char',
 		components:{historyMap},
@@ -220,7 +220,7 @@
 			},
 			getCarInfo(){
                 var v = this
-                this.$http.get(configApi.CLGL.QUERY+'?zdbh='+this.formItem.zdbh).then((res) =>{
+                this.$http.get(this.apis.CLGL.QUERY+'?zdbh='+this.formItem.zdbh).then((res) =>{
                     if (res.code === 200 && res.page.list.length > 0){
                         this.car = res.page.list[0];
                         log(res);
@@ -244,7 +244,7 @@
                     ignition: this.formItem.ignition,
                     brennschluss:this.formItem.brennschluss
 				}
-                this.$http.post(configApi.CLGL.GPS_HITSOR,p).then((res) =>{
+                this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         //var geoc = new BMap.Geocoder();
                         for (let r of res.result){

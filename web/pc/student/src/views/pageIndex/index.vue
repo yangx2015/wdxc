@@ -6,22 +6,21 @@
 	<div class="box">
 		<div class="header">
 			<div class="box-row">
-				<div class="titLeft" @click="MyCenter()">
-					<Icon type="person" color="#949494" size='26'></Icon>
-				</div>
+				<!--<div class="titLeft" @click="MyCenter()">-->
+					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
 				<div class="titCenter body-O" style="text-align: center;">
 					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
 				</div>
 				<div class="titRight" @click="feedback()">
 					<Icon type="ios-compose" color="#949494" size='26'></Icon>
 				</div>
-				
 			</div>
 		</div>
 		<div>
-			<swiper 
-				:list="imglist" 
-				v-model="imglistV" 
+			<swiper
+				:list="imglist"
+				v-model="imglistV"
 				:auto="true"
 				:loop="true"
 				:interval="2000"
@@ -31,19 +30,14 @@
 			<div class="box">
 				<div class="">
 					<tab>
-				      <tab-item selected @on-item-click="onItemClick">校园巴士</tab-item>
-				      <tab-item @on-item-click="onItemClick">通勤巴士</tab-item>
+				      <tab-item :selected="barNum==0" @on-item-click="onItemClick">校园巴士</tab-item>
+				      <tab-item :selected="barNum==1" @on-item-click="onItemClick">通勤巴士</tab-item>
 				    </tab>
 				</div>
-				<div v-if="!school" class="body" style="position: relative;">
-					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-						功能开发中
-					</div>
-				</div>		
-				<div v-else class="body">
+				<div class="body">
 					<div class="list">
-						<div class="listTiT box-row" 
-							v-for="(item,index) in lineList" 
+						<div class="listTiT box-row"
+							v-for="(item,index) in lineList"
 							@click="lineMess(item.id)">
 							<div class="body-O">
 								<i class="iconfont icon-003lubiao"></i>
@@ -88,7 +82,7 @@
 									</div>
 								</div>
 							</li>
-						</ul>			
+						</ul>
 					</div>
 				</div>
 			</div>
@@ -111,20 +105,19 @@
 			return{
 				school:true,
 				titFind:'',
-				imglistV:0,
-				imglist: [{
-				  img: 'https://static.vux.li/demo/1.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/2.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/3.jpg',
-				}],
+				imglistV:1,
+        barNum:this.$store.state.app.barNum,
+				imglist: [],
 				lineList:[]
 			}
 		},
 		created(){
+		  if(this.barNum == 0){
+			  this.getLineMess(30)
+      }else if(this.barNum == 1){
+        this.getLineMess(20)
+      }
 			this.getSwiperMess()
-			this.getLineMess()
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -151,9 +144,9 @@
 	        		console.log('出错了',error)
 	        	})
 		  	},
-		  	getLineMess(){
+		  	getLineMess(lx){
 		  		var v = this
-		  		this.$http.post(configApi.LINE.QUERTY).then((res)=>{
+		  		this.$http.post(configApi.LINE.QUERTY,{'lx':lx}).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('线路数据',res)
 //		  				v.$Message.success('This is a success tip');
@@ -172,11 +165,12 @@
 		    	this.$router.push('/lineMess?lineID='+id)
 		    },
 		    onItemClick(index){
-		    	if(index==1){
-		    		this.school = false
-		    	}else{
-		    		this.school = true
+		    	if(index==0){
+            this.getLineMess(30)
+		    	}else if(index==1){
+            this.getLineMess(20)
 		    	}
+          this.$store.commit('barCh',index)
 		    }
 		}
 	}

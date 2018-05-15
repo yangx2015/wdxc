@@ -1,6 +1,7 @@
 package com.ldz.biz.module.controller;
 
 import com.ldz.biz.module.bean.ClClModel;
+import com.ldz.biz.module.bean.JrXbKb;
 import com.ldz.biz.module.bean.PbClXlmodel;
 import com.ldz.biz.module.bean.PbInfo;
 import com.ldz.biz.module.bean.XbXlPb;
@@ -84,5 +85,27 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	@RequestMapping(value="/getcllist", method={RequestMethod.POST})
 	public ApiResponse<List<ClClModel>> getAllNotPbClList(String xlId, String date,String cx){
 		return pbservice.getAllNotPbClList(xlId,date,cx);
+	}
+
+	/**
+	 * 班车统计
+	 * @param 
+	 * @return
+	 */
+	@PostMapping("/banchetj")
+	public ApiResponse<List<PbInfo>> bancheTj(PbClXlmodel pbclxlmodel){
+		
+		return pbservice.bancheTj(pbclxlmodel);
+	}
+	
+	/**
+	 * 今日校巴开班条形图
+	 * @param 
+	 * @return
+	 */
+	@PostMapping("/xbkb")
+	public ApiResponse<JrXbKb> xbkb(PbClXlmodel pbclxlmodel){
+		
+		return pbservice.xbkb(pbclxlmodel);
 	}
 }

@@ -19,6 +19,12 @@ public class PbClXlmodel {
 
 	private Date date2;
 	
+	private String kssj;
 	
+	private String jssj;
+	
+	private String jgdm;
+	
+	private String sjxm;
 	
 }

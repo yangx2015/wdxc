@@ -1,5 +1,5 @@
 module.exports = {
-    UPLOAD:'http://47.98.39.45:8080/biz/upload',
+    UPLOAD:'http://47.98.39.45:8080/upload',
     STATIC_PATH:'http://47.98.39.45:9092/',
     VIDEO_PATH:'http://47.98.39.45:9091/',
     USERROOT:{
@@ -7,6 +7,15 @@ module.exports = {
         GET_MENU_TREE:'/api/gn/getMenuTree',
         INIT_MENU:'/api/gn/initMenu',
         MODIFY_PSD:'/api/yh/mdfPwd'
+    },
+    CHART_DATA:{
+       SAFE_DRIVING:'/api/cl/carAccStatistics',
+       WEEK:'/api/dd/ddzTj',
+       PD:'/api/dd/ccTTj',
+        nianshenbt:'/api/cl/nianshenbt',
+        xbkb:'/api/pb/xbkb',//今日校巴开班条形图
+        csxxtj:'/api/clsbyxsjjl/csxxtj',//获取时间段内超数值
+        zdcx:'/api/zdgl/zdcx',//获取设备状况展示
     },
     LOGIN:{
         QUERY:'login'
@@ -43,6 +52,7 @@ module.exports = {
         DELE:'/api/dd/removeIds',
         AUDIT:'/api/dd/orderAuditing',
         //订单分派
+        PDTJ:'/api/dd/dtddtj',
         SJLB:'/api/dd/pdsjlb',//司机列表
         DFP:'/api/dd/dfp',//待分派订单
         QXPD:'/api/dd/qxpd',//取消派单
@@ -51,6 +61,16 @@ module.exports = {
         orderDetails:'/api/dd/orderDetails',//订单详情
         FP:'/api/dd/pd',//订单分派
         TJ:'/api/dd/ddtj',//订单统计
+        skgl:'/api/dd/skgl',//收款管理
+        cctj:'/api/dd/cctj', // 出车统计
+        fktj:'/api/dd/fktj', // 付款统计
+        sktj:'/api/dd/sktj', // 收款统计
+        collectingList:'/api/dd/collectingList', // 收款列表
+        paymentList:'/api/dd/paymentList', // 付款列表
+        cwupdate:'/api/dd/cwupdate', // 财务编辑
+        collectingConfirm:'/api/dd/collectingConfirm', // 收款确认
+        paymentConfirm:'/api/dd/paymentConfirm', // 付款确认
+        DRZT:'/api/jsy/jsytype ',//司机状态修改
     },
     ROLE:{
         QUERY:'/api/js/pager',//角色管理
@@ -90,6 +110,16 @@ module.exports = {
         CHANGE:'/api/fw/update',
         DELE:'/api/fw/removeIds'
     },
+    HSGS:{
+        QUERY:'api/hsgs/pager',//核算公式
+        ADD:'/api/hsgs/save',
+        CHANGE:'/api/hsgs/update',
+        DELE:'/api/hsgs/removeIds'
+    },
+    AQJS:{
+        QUERY:'/api/clsbyxsjjl/Safedriving',
+
+    },
     FUNCTION:{
         QUERY:'api/gn/pager',//功能管理
         ADD:'/api/gn/save',
@@ -124,6 +154,12 @@ module.exports = {
         CHANGE:'/api/hd/update',
         DELE:'/api/hd/removeIds'
     },
+    ACCIDENT:{
+        QUERY:'api/sg/pager',//事故管理
+        ADD:'/api/sg/save',
+        CHANGE:'/api/sg/update',
+        DELE:'/api/sg/removeIds'
+    },
     //******************车辆管理******************
     CLOUD:{//云视频库
         QUERY:'/api/spk/pager',
@@ -137,6 +173,7 @@ module.exports = {
         GET_ORG_CAR_LIST:'/api/cl/getOrgCarList',
         GPS_HITSOR:'/api/clsbyxsjjl/history',
         GPS_HITSOR_GPS:'/api/clsbyxsjjl/historygps',
+        nianshen:'/api/cl/nianshen',
     },
     XL:{
         QUERY: '/api/xl/pager',
@@ -162,6 +199,7 @@ module.exports = {
         CHANGE: '/api/jsy/update',
         DELE:   '/api/jsy/removeIds',
         NOT_BIND_LIST:   '/api/jsy/notBindList',
+        jsytype:   '/api/jsy/jsytype',
     },
     CD:{
         QUERY:  '/api/cd/pager',
@@ -188,6 +226,7 @@ module.exports = {
     },
     PB:{//校巴排版
         QUERY:  '/api/pb/xbpb/',
+        banchetj :  '/api/pb/banchetj',
     },
     XLPBXX:{//车辆排班信息
         QUERY: '/api/pb/xbbjpb/',

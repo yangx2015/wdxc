@@ -41,7 +41,7 @@
 </template>
 
 <script>
-	import configApi from '@/axios/config.js'
+
 	
 	export default {
 		name:'',
@@ -82,7 +82,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 //                    	修改
-	                		v.$http.post(configApi.CS.ADD,{'cphs':v.mess.cph, 'csz':v.mess.sdsx}).then((res) =>{
+	                		v.$http.post(this.apis.CS.ADD,{'cphs':v.mess.cph, 'csz':v.mess.sdsx}).then((res) =>{
 								if(res.code===200){
 									v.$parent.getmess();
 			                    	v.$Message.success(res.message);

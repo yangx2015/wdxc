@@ -5,6 +5,17 @@ import * as FastClick from "fastclick"
 import App from './App'
 import router from './router'
 import './styles/global.css'
+import apis from './axios/config';
+import http from './axios/index';
+import Cookies from 'js-cookie';
+
+import vux from 'vux'
+
+Vue.prototype.$http = http;
+Vue.prototype.apis = apis;
+Vue.prototype.cok = Cookies;
+Vue.prototype.$vux = vux;
+
 
 FastClick.attach(document.body)
 

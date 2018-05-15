@@ -4,6 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ldz.biz.module.model.ClDd;
+import com.ldz.biz.module.service.DdService;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +29,9 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
     private ClJsyMapper entityMapper;
     @Autowired
     private ClService clService;
+    @Autowired
+    private DdService ddService;
+
    
 
     @Override
@@ -57,6 +63,7 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
 	        RuntimeCheck.ifNull(findById,"未找到记录");
 	        entity.setXgr(getOperateUser());
 	        entity.setXgsj(new Date());
+            entity.setZt(null);//数据操作时，驾驶员状态是禁止被修改的。
 	        update(entity);
 		return ApiResponse.success();
 	}
@@ -79,4 +86,25 @@ public class JsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements Jsy
         return ApiResponse.success(drivers);
     }
 
+    public ApiResponse<String> updateJsyType(ClJsy entity){
+        ClJsy findById = findById(entity.getSfzhm());
+        RuntimeCheck.ifNull(findById,"未找到记录");
+
+        String zt=StringUtils.trim(entity.getZt());
+        RuntimeCheck.ifTrue(StringUtils.isEmpty(zt),"入参错误，请重新填写参数！");
+       if(StringUtils.equals("10",zt)){
+            SimpleCondition condition = new SimpleCondition(ClDd.class);
+            condition.eq(ClDd.InnerColumn.sj.name(), entity.getSfzhm());//通过司机查询订单
+            condition.lte(ClDd.InnerColumn.yysj.name(), new Date());//查询
+            condition.eq(ClDd.InnerColumn.ddzt.name(), "13");//订单状态
+            Integer count = ddService.countByCondition(condition);
+            RuntimeCheck.ifTrue(count > 0,"该司机还有未完成的订单，请完结订单、撤销订单后再休息！");
+       }
+
+        ClJsy obj=new ClJsy();
+        obj.setSfzhm(entity.getSfzhm());//驾驶员身份证号码
+        obj.setZt(entity.getZt());//
+        int i=update(obj);
+        return  i>0?ApiResponse.success():ApiResponse.fail("数据库操作失败");
+    }
 }

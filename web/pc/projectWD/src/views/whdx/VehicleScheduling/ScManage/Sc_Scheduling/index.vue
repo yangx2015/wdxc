@@ -47,7 +47,7 @@
 
 <script>
 	import mixins from '@/mixins'
-	import configApi from '@/axios/config.js'
+
 
 	import addmess from './comp/addmess'
 
@@ -176,7 +176,7 @@
 				var v = this
 				console.log('排班数据2')
 				//线路数据
-				this.$http.post(configApi.XLPBXX.QUERY,{"clcx":"30","date2":v.giveTime,'lulx':'30'}).then((res) =>{
+				this.$http.post(this.apis.XLPBXX.QUERY,{"clcx":"30","date2":v.giveTime,'lulx':'30'}).then((res) =>{
 					console.log('排班数据2',res)
 					v.tableData = res.result
 				}).then((res) =>{

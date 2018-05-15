@@ -79,7 +79,7 @@
                     ("00"+ o[k]).substr((""+ o[k]).length));
         return format;
     }
-	import configApi from '@/axios/config.js'
+
     import mixins from '@/mixins'
 	import loading from './loadingModal'
     
@@ -93,7 +93,7 @@
 			return {
                 componentName:'',
                 SpinShow:false,
-                videoPath :configApi.VIDEO_PATH,
+                videoPath :this.apis.VIDEO_PATH,
 				cjsjInRange:[],
                 ruleInline: {
                     startTime: [
@@ -140,7 +140,7 @@
 			},
             getCarList(){
                 var v = this
-                this.$http.get(configApi.CLGL.GET_ORG_CAR_LIST).then((res) =>{
+                this.$http.get(this.apis.CLGL.GET_ORG_CAR_LIST).then((res) =>{
                     this.carList = res.result
                     v.SpinShow = false;
                 })
@@ -180,7 +180,7 @@
                     endTime  :endTime.format('yyyy-MM-dd hh:mm:ss'),
                 }
                 // this.SpinShow = true;
-                this.$http.post(configApi.CLJK.SEND_CONTROLL,params).then((res) =>{
+                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
 						this.bj = res.result;
@@ -200,7 +200,7 @@
                 let params = {
                     bj:this.bj,
                 }
-                this.$http.post(configApi.CLOUD.QUERY,params).then((res) =>{
+                this.$http.post(this.apis.CLOUD.QUERY,params).then((res) =>{
                     if (res.code === 200){
                         if (res.page.total > 0){
                             this.SpinShow = false;
