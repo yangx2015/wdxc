@@ -5,6 +5,7 @@ import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ZdglService extends BaseService<ClZdgl,String>{
     ApiResponse<String> saveEntity(ClZdgl entity);
@@ -20,4 +21,6 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
      * @return
      */
     ApiResponse<List<ClZdgl>> unboundList();
+    //获取设备暂时
+	ApiResponse<Map<String, Integer>> getzdxc();
 }
