@@ -32,101 +32,77 @@
 			<div class="box">
 				<div class="">
 					<tab>
-				      <!--<tab-item selected @on-item-click="onItemClick">今日单据</tab-item>-->
 				      <tab-item selected @on-item-click="onItemClick">待确认</tab-item>
               <tab-item @on-item-click="onItemClick">历史单据</tab-item>
 				    </tab>
 				</div>
-				<div v-if="school==2" class="body" style="position: relative;padding: 5px 12px">
-          <Card style="width:100%;margin-top: 6px">
-            <p slot="title">
-              <Icon type="ios-film-outline"></Icon>
-              信息工程学院-小名
-            </p>
-              <div style="font-size: 16px">
+				<div v-if="school==0" class="body"  style="position: relative;padding: 5px 12px">
+          <ok-list></ok-list>
+        </div>
+        <div v-else-if="school==1" class="body"  style="padding: 5px 12px">
+          <div v-for="item in hisList">
+              <Card style="width:100%;margin-top: 6px">
+                <p slot="title">
+                  <Icon type="ios-film-outline"></Icon>
+                  {{item.jgmc}}-{{item.ck}}
+                </p>
+                <div style="font-size: 16px">
                   <p>
                     <Icon type="ios-clock"></Icon>
-                    2018-11-11 09:00:00
+                    {{item.yysj}}
                   </p>
                   <p>
                     <Icon type="ios-telephone"></Icon>
-                    <a>123456789000</a>
+                    <a>{{item.cklxdh}}</a>
                   </p>
                   <p>
                     <Icon type="ios-location" color="#15b740"></Icon>
-                    候车地点
+                    {{item.hcdz}}
                   </p>
                   <p><Icon type="arrow-down-c"></Icon></p>
                   <p>
                     <Icon type="ios-location" color="#ff9b00"></Icon>
-                    目的地
+                    {{item.mdd}}
                   </p>
-              </div>
-          </Card>
-				</div>
-				<div v-else-if="school==0" class="body"  style="position: relative;padding: 5px 12px">
-          <ok-list></ok-list>
-        </div>
-        <div v-else-if="school==1" class="body"  style="padding: 5px 12px">
-          <Card style="width:100%;margin-top: 6px">
-            <p slot="title">
-              <Icon type="ios-film-outline"></Icon>
-              信息工程学院-小名
-            </p>
-            <div style="font-size: 16px">
-              <p>
-                <Icon type="ios-clock"></Icon>
-                2018-11-11 09:00:00
-              </p>
-              <p>
-                <Icon type="ios-telephone"></Icon>
-                <a>123456789000</a>
-              </p>
-              <p>
-                <Icon type="ios-location" color="#15b740"></Icon>
-                候车地点
-              </p>
-              <p><Icon type="arrow-down-c"></Icon></p>
-              <p>
-                <Icon type="ios-location" color="#ff9b00"></Icon>
-                目的地
-              </p>
-            </div>
-            <div class="box-row" style="text-align: center">
-                <div class="body-O">
-                    <div>
-                      里程:
+                </div>
+                <div class="box-row"
+                     style="text-align: center">
+                    <div class="body-O">
+                        <div>
+                          里程:
+                        </div>
+                        <div>
+                          {{item.lc}}公里
+                        </div>
                     </div>
-                    <div>
-                      45公里
+                    <div class="body-O">
+                        <div>
+                          单价:
+                        </div>
+                        <div>
+                          {{item.dj}}元/公里
+                        </div>
+                    </div>
+                    <div class="body-O">
+                      <div>
+                        过桥费:
+                      </div>
+                      <div>
+                        {{item.gqf}}元
+                      </div>
+                    </div>
+                    <div class="body-O">
+                      <div>
+                        路停费:
+                      </div>
+                      <div>
+                        {{item.glf}}元
+                      </div>
                     </div>
                 </div>
-                <div class="body-O">
-                    <div>
-                      单价:
-                    </div>
-                    <div>
-                      15元/公里
-                    </div>
-                </div>
-                <div class="body-O">
-                  <div>
-                    过桥费:
-                  </div>
-                  <div>
-                    25元
-                  </div>
-                </div>
-                <div class="body-O">
-                  <div>
-                    路停费:
-                  </div>
-                  <div>
-                    25元
-                  </div>
-                </div>
-            </div>
-          </Card>
+              </Card>
+
+          </div>
         </div>
 			</div>
 		</div>
@@ -151,14 +127,9 @@
 				school:0,
 				titFind:'',
 				imglistV:0,
-				imglist: [{
-				  img: 'https://static.vux.li/demo/1.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/2.jpg',
-				}, {
-				  img: 'https://static.vux.li/demo/3.jpg',
-				}],
-				lineList:[]
+				imglist: [],
+				lineList:[],
+        hisList:[]
 			}
 		},
 		created(){
@@ -169,9 +140,9 @@
           name:'login'
         })
       }
-			// this.getSwiperMess()
+			this.getSwiperMess()
 			// this.getLineMess()
-      this.dqr()
+      this.His()
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -189,7 +160,6 @@
 		  		this.$http.post(this.apis.SWIPER.QUERTY).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('图片数据',res)
-//		  				v.$Message.success('This is a success tip');
 		  				v.imglist = res.result
 		  			}else{
 		  				v.$Message.success('图片获取失败');
@@ -222,9 +192,11 @@
 		  	  console.log(index)
           this.school = index
 		    },
-        dqr(){
-		  	  this.$http.post(this.apis.MESLIST.QUERTY,{'type':'2'}).then((res)=>{
-
+        His(){//历史订单列表
+		  	  this.$http.post(this.apis.MESLIST.QUERTY,{'type':'3'}).then((res)=>{
+            if(res.code == 200){
+              this.hisList = res.result
+            }
           })
         }
 		}

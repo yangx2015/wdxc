@@ -6,15 +6,15 @@
 	<div class="box">
 		<div class="header">
 			<div class="box-row">
-				<div class="titLeft" @click="MyCenter()">
-					<Icon type="person" color="#949494" size='26'></Icon>
-				</div>
+				<!--<div class="titLeft" @click="MyCenter()">-->
+					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
 				<div class="titCenter body-O" style="text-align: center;">
 					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
 				</div>
-				<div class="titRight" @click="feedback()">
-					<Icon type="ios-compose" color="#949494" size='26'></Icon>
-				</div>
+				<!--<div class="titRight" @click="feedback()">-->
+					<!--<Icon type="ios-compose" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
 			</div>
 		</div>
 		<div>
@@ -34,12 +34,12 @@
 				      <tab-item @on-item-click="onItemClick">通勤巴士</tab-item>
 				    </tab>
 				</div>
-				<div v-if="!school" class="body" style="position: relative;">
-					<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-						功能开发中
-					</div>
-				</div>
-				<div v-else class="body">
+				<!--<div v-if="!school" class="body" style="position: relative;">-->
+					<!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
+						<!--功能开发中-->
+					<!--</div>-->
+				<!--</div>-->
+				<div class="body">
 					<div class="list">
 						<div class="listTiT box-row"
 							v-for="(item,index) in lineList"
@@ -123,7 +123,7 @@
 		},
 		created(){
 			this.getSwiperMess()
-			this.getLineMess()
+			this.getLineMess(30)
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -150,9 +150,9 @@
 	        		console.log('出错了',error)
 	        	})
 		  	},
-		  	getLineMess(){
+		  	getLineMess(lx){
 		  		var v = this
-		  		this.$http.post(configApi.LINE.QUERTY).then((res)=>{
+		  		this.$http.post(configApi.LINE.QUERTY,{'lx':lx}).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('线路数据',res)
 //		  				v.$Message.success('This is a success tip');
@@ -171,10 +171,10 @@
 		    	this.$router.push('/lineMess?lineID='+id)
 		    },
 		    onItemClick(index){
-		    	if(index==1){
-		    		this.school = false
-		    	}else{
-		    		this.school = true
+		    	if(index==0){
+            this.getLineMess(30)
+		    	}else if(index==1){
+            this.getLineMess(20)
 		    	}
 		    }
 		}

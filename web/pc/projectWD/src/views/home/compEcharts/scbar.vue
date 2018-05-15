@@ -55,7 +55,6 @@
                         title: {
                             text: "今日校巴开班",
                             textStyle: {
-                                color: "rgb(255, 255, 255)"
                             }
                         },
                         color: ['#3398DB'],

@@ -109,12 +109,14 @@
 						<span>订单分派</span>
 					</div>
 					<div class="body-r-1 inputSty" style="text-align: left">
-						<Menu mode="horizontal" :theme="'light'" active-name="1">
-							<Menu-item name="1">
+						<Menu mode="horizontal" :theme="'light'"
+						      @on-select="menuClick"
+						      active-name="1">
+							<Menu-item name="1" style="font-size: 22px">
 								<Icon type="ios-paper"></Icon>
 								内部车
 							</Menu-item>
-							<Menu-item name="2">
+							<Menu-item name="2"  style="font-size: 22px">
 								<Icon type="ios-people"></Icon>
 								外接车
 							</Menu-item>
@@ -134,15 +136,15 @@
 								<Icon type="ios-film-outline"></Icon>
 								{{item.xm}}
 							</div>
-							<div class="body-O" style="padding-left:8px ">
+							<div class="body-O" style="padding-left:8px " v-if="zjcx==2030">
 									<span>
-										总（*）
+										总（{{item.endOrderCount+item.startOrderCount}}）
 									</span>
 								<span>
-										完（*）
+										完（{{item.endOrderCount}}）
 									</span>
 								<span>
-										未（*）
+										未（{{item.startOrderCount}}）
 									</span>
 							</div>
 						</div>
@@ -158,7 +160,7 @@
 						</div>
 					</div>
 					<span slot="extra">
-						<i-switch size="large" v-model="item.zt=='00'" @on-change="switchCh(item)">
+						<i-switch  v-if="zjcx==2030" size="large" v-model="item.zt=='00'" @on-change="switchCh(item)">
 							<span slot="open">在班</span>
 							<span slot="close">休息</span>
 						</i-switch>
@@ -220,7 +222,7 @@
 				</Card>
 			</div>
 		</div>
-		<component :is="compName" :mess="mess"></component>
+		<component :is="compName" :mess="mess" :type="zjcx"></component>
 	</div>
 </template>
 
@@ -238,6 +240,7 @@
                 compName:'',
                 drvlist:[],
                 jrpd:{},
+                zjcx:'2030'
             }
         },
         created(){
@@ -256,6 +259,15 @@
         mounted(){
         },
         methods:{
+            menuClick(val){//内部车与外部车
+                // alert(val)
+		if(val==1){
+                    this.zjcx = '2030'
+		}else if(val==2){
+                    this.zjcx = '40'
+		}
+		this.getDrvList()
+	    },
             switchCh(item){
                 let zt = ''
                 if(item.zt=='00'){
@@ -300,7 +312,7 @@
                 if(!zkl){
                     zkl = ''
                 }
-                this.$http.post(this.apis.ORDER.SJLB,{'zjcx':2030}).then((res) =>{
+                this.$http.post(this.apis.ORDER.SJLB,{'zjcx':v.zjcx}).then((res) =>{
                     if(res.code == 200){
                         v.drvlist = res.result
                     }

@@ -38,20 +38,19 @@
           :titles="titles"
         ></md-tab-bar>
       </div>
-      <div v-if="!school" class="body" style="position: relative;">
-          <div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">
-              功能开发中
-          </div>
-      </div>
-      <div v-else class="body">
+      <!--<div v-if="!school" class="body" style="position: relative;">-->
+          <!--<div style="position: absolute;top: 50%;left: 50%;transform: translate(-50%,-150%);font-size: 28px;">-->
+              <!--功能开发中-->
+          <!--</div>-->
+      <!--</div>-->
+      <div class="body">
           <div class="list">
             <div class="listTiT box-row"
                  v-for="(item,index) in lineList"
                  @click="lineMess(item)">
               <div class="body-O">
                 <i class="iconfont icon-003lubiao"></i>
-                <!--{{item.xlmc}}-->
-                123
+                {{item.xlmc}}
               </div>
               <div>
                 <i class="iconfont icon-right"></i>
@@ -107,9 +106,13 @@
         simple,
         findInput:'',
         titles: ['校巴线路', '班车线路','约车'],
-        lineList:[,,,,,],
+        lineList:[],
         school:true
       }
+    },
+    created(){
+      this.getSwiperMess()
+      this.getLineMess(30)
     },
     mounted() {
     },
@@ -126,19 +129,46 @@
         // console.log('after',to)
       },
       tabbarC(n,o){//tab切换
-        if(n==1){
-          this.school = false
-        }else if(n==0) {
-          this.school = true
+        if(n==0){
+          this.getLineMess(30)
+        }else if(n==1) {
+          this.getLineMess(20)
         }else if(n==2) {
           this.$router.push({
             name: 'Ycar'
           });
         }
       },
+      getSwiperMess(){//获取图片
+        var v = this
+        this.$http.post(this.apis.SWIPER.QUERTY).then((res)=>{
+          if(res.code ==200){
+            console.log('图片数据',res)
+//		  				v.$Message.success('This is a success tip');
+            v.imglist = res.result
+          }else{
+            v.$Message.success('图片获取失败');
+          }
+        }).catch((error) =>{
+          console.log('出错了',error)
+        })
+      },
       lineMess(){
         this.$router.push({
           name:'messList'
+        })
+      },
+      getLineMess(lx){
+        var v = this
+        this.$http.post(this.apis.LINE.QUERTY,{'lx':lx}).then((res)=>{
+          if(res.code ==200){
+            console.log('线路数据',res)
+            v.lineList = res.result
+          }else{
+            v.$Message.success('线路数据获取失败');
+          }
+        }).catch((error) =>{
+          console.log('出错了',error)
         })
       },
       MyCenter(){//个人中心

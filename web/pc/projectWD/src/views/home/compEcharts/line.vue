@@ -49,7 +49,6 @@
                         title: {
                             text: '每日订单走势图',
                             textStyle: {
-                                color: "rgb(255, 255, 255)"
                             }
                         },
                         tooltip: {
