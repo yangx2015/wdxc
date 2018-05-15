@@ -112,7 +112,7 @@
             datePickerValue: '',
             Azws:"",
             form:{
-              ycr:JSON.parse(this.cok.get('result')).name,
+              ycr:'',
               ck:'',//乘车人
               cklxdh:'',//联系电话
               hcdz:'',//候车地址
@@ -139,7 +139,7 @@
         },
         created(){
           if (this.cok.get('result')) {
-
+              this.ycr = JSON.parse(this.cok.get('result')).name
           }else{
             this.$router.push({
               name:'login'
@@ -194,11 +194,6 @@
             this.datePickerValue = ''
             let a = '-'
             c.forEach((item, index) => {
-              // if(index==0){
-              //   var NowDate = new Date
-              //   let Year = NowDate.getFullYear()
-              //   item.value=Year
-              // }else
                 if((item.type == "Date")) {
                   a = ' '
                 }else if(item.type == "Minute"){

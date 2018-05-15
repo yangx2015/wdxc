@@ -12,13 +12,13 @@
             </div>
             <div class="body-r-1 mess">
                 <div>
-                   周师傅
+                   {{mess.sjxm}}
                 </div>
                 <div>
-                    鄂A12345
+                  {{mess.cph}}
                 </div>
                 <div>
-                  车型
+                  座位数：{{mess.zws}}
                 </div>
             </div>
           </div>
@@ -30,7 +30,7 @@
                   里程
               </div>
               <div class="mess">
-                  65公里
+                  {{mess.lc}}公里
               </div>
             </div>
             <div class="body-r-1">
@@ -38,7 +38,7 @@
                   金额
                 </div>
                 <div class="mess">
-                  105元
+                  {{zj}}元
                 </div>
             </div>
           </div>
@@ -46,8 +46,11 @@
       <div class="boxStar">
           <five-star @starNum="starNum" :num="4" :bj="true"></five-star>
       </div>
-      <div class="button">
-        <button @click="back()">
+      <div class="button" style=" overflow: hidden">
+        <button style="float: left;width: 45%" @click="close()">
+          取消
+        </button>
+        <button style="float: right;width: 45%" @click="back()">
           提    交
         </button>
       </div>
@@ -61,9 +64,20 @@
         components:{
           fiveStar
         },
+        data(){
+          return{
+            mess:this.$store.state.app.pjMess
+          }
+        },
+        created(){
+          console.log(this.mess)
+        },
         methods:{
           starNum(val){
 
+          },
+          close(){
+            this.$router.back()
           },
           back(){
             this.$router.push({

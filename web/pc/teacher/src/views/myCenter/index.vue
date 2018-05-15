@@ -4,10 +4,21 @@
 <template>
 	<div class="myCenter box">
     <div class="body" style="margin-top: 0.2rem">
+      <div style="text-align: center">
+        <img
+          style="width: 1.6rem"
+          src="/static/logo.png" alt="">
+      </div>
       <div class="Flist" @click="pageList">
         <i class="iconfont icon-list"></i>
         <span>
            订单
+        </span>
+      </div>
+      <div class="Flist" @click="feedback()">
+        <i class="iconfont icon-ybbfeedback"></i>
+        <span>
+           建议反馈
         </span>
       </div>
       <div class="Flist">
@@ -39,6 +50,11 @@
         this.$router.push({
           name:'list'
         })
+      },
+      feedback(){//信息反馈
+        this.$router.push({
+          name: 'feedBack'
+        });
       }
     }
 	}

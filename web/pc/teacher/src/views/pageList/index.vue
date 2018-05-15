@@ -21,10 +21,16 @@
                    v-for="item in mesliat">
                   <div class="tit box-row" v-if="item.sjxm!=''">
                         <div class="body-O">
-                          周师傅-鄂A00000
+                          {{item.sjxm}}-{{item.cph}}
                         </div>
                         <div @click="fiveStar(item)">
                           已完成
+                          <span v-if="item.pjdj==''">
+                            待评价
+                          </span>
+                          <span v-else>
+                            已平价
+                          </span>
                           <i class="iconfont icon-right"></i>
                         </div>
                   </div>
@@ -92,6 +98,7 @@
             this.$router.push({
                 name:'evaluate'
             })
+            this.$store.commit('pjMessCh',item)
           },
           getList(){
             var v = this
