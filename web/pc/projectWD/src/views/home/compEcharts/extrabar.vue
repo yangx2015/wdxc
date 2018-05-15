@@ -104,7 +104,7 @@
                         },
                         xAxis: [{
                             type: 'category',
-                            data: this.result.driverNames,
+                            data: this.result.carNumbers,
                             axisTick: {
                                 alignWithLabel: true
                             }
