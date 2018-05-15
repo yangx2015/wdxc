@@ -14,6 +14,7 @@ module.exports = {
        PD:'/api/dd/ccTTj',
         nianshenbt:'/api/cl/nianshenbt',
         xbkb:'/api/pb/xbkb',//今日校巴开班条形图
+        csxxtj:'/api/clsbyxsjjl/csxxtj',//获取时间段内超数值
     },
     LOGIN:{
         QUERY:'login'
