@@ -37,9 +37,6 @@
 				SpinShow:true,
 				loading:this.$store.state.app.loading,
 				result:{},
-				form:{
-					days:3
-				},
 			    	ech:{}
 			};
 		},
@@ -78,7 +75,7 @@
 
                     const option = {
                         title: {
-                            text: "超速统计("+this.day+')',
+                            text: "超速统计("+this.ech.cph+')',
                             textStyle: {
                             }
                         },
