@@ -289,7 +289,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	 * 运输中心-司机列表 派单司机列表
 	 * 
 	 * @param entity
-	 *            1、司机名 xm like 查询 2、驾驶员车型 zjcx 车辆类型 10、小车 20、大车 30、校巴 0203是查询大车、校巴
+	 *            1、司机名 xm like 查询
+	 *            2、驾驶员车型 zjcx 车辆类型 10、小车 20、大车 30、校巴 0203是查询大车、校巴  40 是外部车
 	 *            3、载客量 zkl
 	 * @return
 	 */
@@ -301,7 +302,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifTrue(StringUtils.isBlank(cllx), "请填写车辆类型");
 		// 车辆类型 车辆类型 10、小车 20、大车 30、校巴
 		List<String> li = new ArrayList<String>();
-		if (StringUtils.equals(cllx, "2030")) {
+		if (cllx.indexOf("2030")>-1) {
 			li.add("20");
 			li.add("30");
 		} else {
@@ -324,6 +325,31 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			}
 		} else {
 			list = new ArrayList<ClJsyModel>();
+		}
+		//如果需要查外部车，就需要转40接口
+		if(cllx.indexOf("40")>-1){
+			SimpleCondition condition = new SimpleCondition(ClLsc.class);
+			condition.eq(ClLsc.InnerColumn.zt, "00");
+			List<ClLsc> lscList = clLscMapper.selectByExample(condition);
+			parameters = new ClDd();// 入参
+			parameters.setSjSx("11");// 默认身份证号码
+			if(lscList!=null&& lscList.size()>0){
+				for(ClLsc l:lscList){
+					ClJsyModel obj=new ClJsyModel();
+					obj.setCph(l.getCph());//车牌号
+					obj.setZkl(l.getZws()+"");//坐位数
+					obj.setXm(l.getLsdwmc());//临时车
+
+					//设置订单列表
+					parameters.setCph(l.getCph());// 设置车牌号
+					ApiResponse<List<ClDd>> retObject = affirmOrderList(parameters);
+					if (retObject.isSuccess()) {
+						List<ClDd> clDdList = retObject.getResult();
+						obj.setClDdList(clDdList);
+					}
+					list.add(obj);
+				}
+			}
 		}
 		result.setResult(list);
 		return result;
