@@ -206,7 +206,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		String jgdm = user.getJgdm();
 		Calendar now = Calendar.getInstance();
 		if (days == null)days = -3;
-		if (days > 0)days = -days;
+		if (days > 0)days = -(days-1);
 		now.add(Calendar.DATE, days);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
 		String weekStart = sdf.format(now.getTime());
