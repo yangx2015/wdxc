@@ -55,8 +55,8 @@
 				<span>收款人：_____________________</span>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
-				<Button type="primary" @click="print">确定</Button>
+				<Button type="ghost" v-if="showFooter" @click="close">取消</Button>
+				<Button type="primary" v-if="showFooter" @click="print">确定</Button>
 			</div>
 		</Modal>
 	</div>
@@ -87,6 +87,7 @@
         name: '',
         data() {
             return {
+                showFooter:true,
                 showModal:true,
 				item:{},
 				startTime:'',
@@ -121,7 +122,14 @@
                 v.$parent.componentName = ''
             },
             print(){
-              window.print();
+                this.showFooter = false;
+                setTimeout(function(){
+                    window.print();
+				},10)
+                let v = this;
+				setTimeout(function(){
+                    v.close();
+				},150)
 			}
         }
     }
