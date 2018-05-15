@@ -1,22 +1,28 @@
 <style lang="less">
-	@import "../../../styles/common.less";
+	@import "../../../../styles/common.less";
 </style>
 <template>
-	<div style="width:100%;height:100%;position: relative;">
-		<div style="position: absolute;top:0;right: 0;z-index: 1000">
-			<ButtonGroup size="small" shape="circle">
-		        <Button type="primary" @click="changeDays(3)">三天</Button>
-		        <Button type="primary" @click="changeDays(5)">五天</Button>
-		        <Button type="primary" @click="changeDays(7)">七天</Button>
-		    </ButtonGroup>
-		</div>
-		<div style="width:100%;height:100%;" :id="Eid"></div>
-		<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
-			<Spin fix>
-	            <Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
-	            <div style="font-size: 30px;">{{loading.text}}</div>
-	        </Spin>
-		</div>
+	<div>
+		<Modal v-model="editPasswordModal"
+		       :closable='false'
+		       width="80%"
+		       :mask-closable=false>
+			<div :style="{height: boxHeight}">
+					{{ech.time}}{{ech.cph}}
+				<div style="width:100%;height:100%;position: relative;">
+					<div style="width:100%;height:100%;" :id="Eid"></div>
+					<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
+						<Spin fix>
+							<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
+							<div style="font-size: 30px;">{{loading.text}}</div>
+						</Spin>
+					</div>
+				</div>
+			</div>
+			<div slot='footer'>
+				<Button type="ghost" @click="close">关闭</Button>
+			</div>
+		</Modal>
 	</div>
 </template>
 
@@ -27,22 +33,26 @@
 		name: 'dataSourceBar',
 		data() {
 			return {
+			    	boxHeight:'200px',
+                           	editPasswordModal:true,
 				SpinShow:true,
 				loading:this.$store.state.app.loading,
 				result:{},
 				form:{
 					days:3
 				},
-				day:'三天'
+			    	ech:{}
 			};
 		},
 		props: {
 			Eid: {
 				type: String,
-				default: 'eBar'
+				default: 'eBar00'
 			}
 		},
 		created(){
+                    	this.ech = this.$store.state.app.ech
+		    	this.boxHeight = (window.innerHeight-300)+'px'
 			setTimeout(() => {
                 this.SpinShow = false;
             }, 1000);
@@ -51,24 +61,9 @@
 		    this.getData();
 		},
 		methods:{
-		    changeDays(d){
-                this.form.days = d;
-                switch(d){
-					case 3:
-					    this.day = '三天';
-					    break;
-					case 5:
-					    this.day = '五天';
-					    break;
-					case 7:
-					    this.day = '七天';
-					    break;
-					default:
-                        this.day = '三天';
-                        break;
-				}
-		        this.getData();
-			},
+                    close(){
+                      this.$parent.compName = ''
+		    },
             getData(){
                 this.$http.get(this.apis.CHART_DATA.SAFE_DRIVING,{params:this.form}).then((res)=>{
                     if (res.code == 200){
@@ -127,13 +122,6 @@
                         color: ["#6495ed", "#da70d6", "#ff69b4", "#ba55d3", "#cd5c5c", "#ffa500", "#40e0d0", "#1e90ff", "#ff6347", "#7b68ee", "#00fa9a", "#ffd700", "#6699FF", "#ff6666", "#3cb371", "#b8860b", "#30e0e0"]
                     };
                     dataSourceBar.setOption(option);
-                    dataSourceBar.on('click', function (params) {
-                        v.$store.commit('echChanged',{'cph':params.name,'time':v.day})
-                        console.log('-**---------------------**-',params)
-                    });
-                    window.addEventListener('resize', function() {
-                        dataSourceBar.resize();
-                    });
                 });
 			}
 		}

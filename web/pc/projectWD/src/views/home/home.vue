@@ -28,6 +28,8 @@
 				<!--</h1>-->
 			<!--</span>-->
 		<!--</div>-->
+		<component
+			:is="compName"></component>
 		<div class="homeE" style="padding: 5px 3px;">
 			<Row :gutter="8" class="margin-bottom-10 indexCarType">
 				<Col :xs="24" :sm="12" :md="6" :style="{marginBottom: '10px'}">
@@ -114,15 +116,19 @@
 	import extra from './compEcharts/extrabar.vue'
 	import scbar from './compEcharts/scbar.vue'
 	import risk from './compEcharts/riskRecord.vue'
-	
+
+
+        import csMessbar from './compEcharts/comp/csMessbar'
 	export default {
 		name: 'home',
 		components: {
 			inforCard,eLine,yPie,
-			safeline,listpie,extra,scbar,risk
+			safeline,listpie,extra,scbar,risk,
+                    	csMessbar
 		},
 		data() {
 			return {
+                		compName:'',
 				count: {
 					createUser: 496,
 					visit: 400,
@@ -131,7 +137,16 @@
 				},
 			};
 		},
-		computed: {},
+		    computed:{
+			echData(){
+			    return this.$store.state.app.ech
+			}
+		    },
+		    watch:{
+			echData:function (n,o) {
+				this.compName = 'csMessbar'
+			}
+		    },
 		created() {
 			this.$store.commit('setCurrentPath', [{
 				title: '首页'
