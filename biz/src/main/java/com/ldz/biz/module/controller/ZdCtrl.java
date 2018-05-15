@@ -1,10 +1,12 @@
 package com.ldz.biz.module.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,8 +22,7 @@ import com.ldz.util.bean.ApiResponse;
  */
 @RestController
 @RequestMapping("api/zdgl")
-public class
-ZdCtrl extends BaseController<ClZdgl,String> {
+public class ZdCtrl extends BaseController<ClZdgl,String> {
     @Autowired
     private ZdglService service;
     @Override
@@ -49,6 +50,13 @@ ZdCtrl extends BaseController<ClZdgl,String> {
     public ApiResponse<List<ClZdgl>> UnboundList(){
         return service.unboundList();
     }
-
+    /*
+     * 获取设备状况展示
+     */
+    @GetMapping("/zdcx")
+    public ApiResponse<Map<String, Integer>> getzdxc(){
+    	
+    	return service.getzdxc();
+    }
 
 }

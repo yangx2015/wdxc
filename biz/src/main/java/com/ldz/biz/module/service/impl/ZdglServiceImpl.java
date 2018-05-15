@@ -1,5 +1,15 @@
 package com.ldz.biz.module.service.impl;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.github.pagehelper.PageInfo;
 import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClCl;
@@ -8,14 +18,9 @@ import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
+import com.ldz.util.exception.RuntimeCheck;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ZdglService{
@@ -113,4 +118,37 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             }
         }
     }
+
+	@Override
+	public ApiResponse<Map<String, Integer>> getzdxc() {
+		int dianhuo =0;
+		int xihuo =0;
+		int lixian=0;
+		List<ClZdgl> selectAll = entityMapper.selectAll();
+	       RuntimeCheck.ifEmpty(selectAll, "暂无设备");
+		for (ClZdgl clZdgl : selectAll) {
+			//点火
+			if (StringUtils.equals(clZdgl.getZxzt(), "00")) {
+				dianhuo++;
+			}
+			//熄火
+			if (StringUtils.equals(clZdgl.getZxzt(), "10")) {
+				xihuo++;
+			}
+			//离线
+			if (StringUtils.equals(clZdgl.getZxzt(), "20")) {
+				lixian++;
+			}
+			
+		}
+		Map<String,Integer> map = new HashMap<>();
+		map.put("设备总数", selectAll.size());
+		map.put("设备在线数量", dianhuo);
+		map.put("设备熄火数量", xihuo);
+		map.put("设备离线数量", lixian);
+		ApiResponse<Map<String, Integer>>  apiResponse = new ApiResponse<>();
+		apiResponse.setResult(map);
+		
+		return apiResponse;
+	}
 }
