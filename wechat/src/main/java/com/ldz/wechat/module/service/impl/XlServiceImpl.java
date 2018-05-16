@@ -8,8 +8,12 @@ import com.ldz.wechat.exception.RuntimeCheck;
 import com.ldz.wechat.module.bean.ClClyxjlModel;
 import com.ldz.wechat.module.bean.DdClModel;
 import com.ldz.wechat.module.mapper.ClXlMapper;
+import com.ldz.wechat.module.mapper.ClXlzdMapper;
+import com.ldz.wechat.module.mapper.ClZdMapper;
 import com.ldz.wechat.module.model.ClClyxjl;
 import com.ldz.wechat.module.model.ClXl;
+import com.ldz.wechat.module.model.ClXlzd;
+import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.service.ClyxjlService;
 import com.ldz.wechat.module.service.XlService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +21,17 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service("wxXlService")
 public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlService {
 	@Autowired
 	private ClXlMapper entityMapper;
+	@Autowired
+	private ClXlzdMapper xlzdMapper;
+	@Autowired
+	private ClZdMapper zdMapper;
 
 	@Autowired
 	private ClyxjlService clyxjlService;
@@ -101,6 +110,64 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
 		apiResponse.setResult(map);
 		return apiResponse;
+	}
+
+	@Override
+	public ApiResponse<List<Integer>> getNextCars(String xlId, String zdId) {
+		RuntimeCheck.ifBlank(xlId,"参数错误，xlId");
+		RuntimeCheck.ifBlank(zdId,"参数错误，zdId");
+		ApiResponse<Map<String,Object>> carsRes = getBySiteVehicleList(xlId);
+		Map<String,Object> res = carsRes.getResult();
+		List<DdClModel> clZds = (List<DdClModel>) res.get("list");
+		List<Map<String, Object>> result = new ArrayList<>();
+		DdClModel currentZd = null;
+		int currentZdIndex = 0;
+		List<Integer> stationNumbers = new ArrayList<>();
+		for (int i = clZds.size() - 1 ;i>=0;i--){
+			DdClModel zd = clZds.get(i);
+			if (currentZd == null){ // 查找当前站点
+				if (!zdId.equals(zd.getZdId())){
+					continue;
+				}else{
+					currentZdIndex = i;
+					currentZd = zd;
+				}
+			}else{
+				if (zd.getVehicleCount() > 0){
+					stationNumbers.add(currentZdIndex - i);
+				}
+			}
+		}
+		return ApiResponse.success(stationNumbers);
+	}
+
+	@Override
+	public List<ClZd> getStationList(String xlId) {
+		SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+		condition.eq(ClXlzd.InnerColumn.xlId,xlId);
+		List<ClXlzd> xlZds = xlzdMapper.selectByExample(condition);
+		if (xlZds.size() == 0)new ArrayList<>();
+		List<String> stationIds = xlZds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
+		condition = new SimpleCondition(ClZd.class);
+		condition.in(ClZd.InnerColumn.id,stationIds);
+		List<ClZd> stations = zdMapper.selectByExample(condition);
+		return stations;
+	}
+
+	@Override
+	public ApiResponse<List<Map<String,Object>>> getStationGpsList(String xlId) {
+		List<ClZd> stations = getStationList(xlId);
+		if (stations.size() == 0){
+			return ApiResponse.success(new ArrayList<>());
+		}
+		List<Map<String,Object>> list = new ArrayList<>(stations.size());
+		for (ClZd station : stations) {
+			Map<String,Object> map = new HashMap<>();
+			map.put("jd",station.getJd());
+			map.put("wd",station.getWd());
+			list.add(map);
+		}
+		return ApiResponse.success(list);
 	}
 
 }

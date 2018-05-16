@@ -2,6 +2,7 @@ package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.wechat.module.model.ClXl;
+import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.model.SysHdyx;
 import com.ldz.wechat.module.service.HdService;
 import com.ldz.wechat.module.service.XlService;
@@ -23,6 +24,16 @@ public class ClXlCtrl {
     @Autowired
     private HdService wxHdService;
 
+    @RequestMapping("getStationList")
+	public ApiResponse<List<ClZd>> getStationList(String xlId){
+    	return ApiResponse.success(wxXlService.getStationList(xlId));
+	}
+
+    @RequestMapping("getStationGpsList")
+	public ApiResponse<List<Map<String,Object>>> getStationGpsList(String xlId){
+    	return wxXlService.getStationGpsList(xlId);
+	}
+
 	/**
 	 * 查询所有线路
 	 * @return
@@ -40,6 +51,11 @@ public class ClXlCtrl {
 	@RequestMapping(value = "/getzdcl", method = {RequestMethod.POST})
 	public ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlid) {
 		return wxXlService.getBySiteVehicleList(xlid);
+	}
+
+	@RequestMapping("getNextCars")
+	public ApiResponse<List<Integer>> getNextCars(String xlId,String zdId){
+		return wxXlService.getNextCars(xlId,zdId);
 	}
 	/**
 	 * 获取活动图片列表 也就是广告位的图片列表
