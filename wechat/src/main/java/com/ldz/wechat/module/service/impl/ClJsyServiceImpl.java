@@ -27,9 +27,9 @@ public class ClJsyServiceImpl implements ClJsyService{
 		RuntimeCheck.ifNull(jsy, "身份证或者姓名有误");
 		String userInfo = JsonUtil.toJson(jsy);
 		String token = JwtUtil.createWechatToken("jsy",userInfo);
-//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//		request.setAttribute("type",jsy);
-//		request.setAttribute("userInfo",userInfo);
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		request.setAttribute("type",jsy);
+		request.setAttribute("userInfo",userInfo);
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);
 		return res;

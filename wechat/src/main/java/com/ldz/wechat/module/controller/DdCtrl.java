@@ -175,9 +175,9 @@ public class DdCtrl {
      */
     @RequestMapping(value = "/getsjlist",method = {RequestMethod.POST})
     public ApiResponse<List<ClDd>> getOrderDriverList(String type){
-        String userType=getUserType();//
-        RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
-        String userId = getCurrentUser(true);
-        return service.getOrderDriverList(userId,type);
+//        String userType=getUserType();//
+//        RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
+//        String userId = getCurrentUser(true);
+        return service.getOrderDriverList("",type);
     }
 }

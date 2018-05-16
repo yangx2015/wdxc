@@ -27,9 +27,9 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 		String userInfo = JsonUtil.toJson(jzg);
 		RuntimeCheck.ifNull(jzg, "身份证或者姓名有误");
 		String token = JwtUtil.createWechatToken("jzg",userInfo);
-//		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//		request.setAttribute("type",jzg);
-//		request.setAttribute("userInfo",userInfo);
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		request.setAttribute("type",jzg);
+		request.setAttribute("userInfo",userInfo);
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);
 		return res;
