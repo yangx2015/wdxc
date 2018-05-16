@@ -147,13 +147,7 @@
                         }
                     }
 				],
-				tableData: [{
-					numCar: '鄂A12345',
-					dr:'李成',
-					time: '2017-05-02',
-					mess:"5",
-					max:"75km/h"
-				}],
+				tableData: [],
 				//收索
 				findMess: {
                     cphLike: '',

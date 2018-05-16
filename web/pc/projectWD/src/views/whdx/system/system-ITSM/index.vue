@@ -182,16 +182,7 @@
 						}
 					}
 				],
-				tableData: [{
-						fwmc: '学生服务',
-						fwdm: 'C0123654',
-						zt: '正常',
-						apiQz: '163.160.255.03',
-						tb: 'arrow-expand',
-						cjr: '李达',
-						cjsj: '2017-05-02 09:10:00'
-					}
-				],
+				tableData: [],
 				//收索
 //				cjsjInRange: [],
 				findMess: {

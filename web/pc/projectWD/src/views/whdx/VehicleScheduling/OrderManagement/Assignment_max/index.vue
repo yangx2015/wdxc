@@ -118,7 +118,7 @@
 							</Menu-item>
 							<Menu-item name="2"  style="font-size: 22px">
 								<Icon type="ios-people"></Icon>
-								外接车
+								外借车
 							</Menu-item>
 						</Menu>
 					</div>

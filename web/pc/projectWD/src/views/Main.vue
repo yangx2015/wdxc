@@ -82,7 +82,6 @@
     import themeSwitch from './main-components/theme-switch/theme-switch.vue';
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
-    import index from '../axios/index'
 
 	import SockJS from 'sockjs-client';
     // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
@@ -104,7 +103,7 @@
         data () {
             return {
             	compName:'',
-				socket : new SockJS(index.baseURL+"/gps"),
+				socket : new SockJS(this.$http.url+"/gps"),
 //				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],

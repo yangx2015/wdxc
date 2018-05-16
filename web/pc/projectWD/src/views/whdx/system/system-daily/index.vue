@@ -145,8 +145,7 @@
                         align: 'center',
                     }
                 ],
-                tableData: [
-                ],
+                tableData: [],
                 //form表单
                 formTop: {
                 },

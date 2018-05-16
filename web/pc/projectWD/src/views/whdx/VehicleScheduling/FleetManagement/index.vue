@@ -175,8 +175,7 @@
                         }
                     }
                 ],
-                tableData: [
-                ],
+                tableData: [],
                 //收索
                 cjsjInRange:[],
 				findMess: {

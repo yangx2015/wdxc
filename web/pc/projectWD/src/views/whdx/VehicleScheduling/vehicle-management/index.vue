@@ -324,8 +324,7 @@
                         }
                     }
                 ],
-                tableData: [
-                ],
+                tableData: [],
                 //收索
 				findMess: {
                     cphLike: '',

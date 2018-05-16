@@ -1,8 +1,10 @@
 package com.ldz.wechat.module.service.impl;
 
 
-import java.util.Date;
+import java.util.*;
 
+import com.ldz.wechat.module.mapper.ClClMapper;
+import com.ldz.wechat.module.model.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,6 @@ import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.module.mapper.ClDdMapper;
 import com.ldz.wechat.module.mapper.ClDdrzMapper;
-import com.ldz.wechat.module.model.ClDd;
-import com.ldz.wechat.module.model.ClDdrz;
-import com.ldz.wechat.module.model.ClJsy;
-import com.ldz.wechat.module.model.SysJzgxx;
-import com.ldz.wechat.module.model.SysYh;
 import com.ldz.wechat.module.service.ClJsyService;
 import com.ldz.wechat.module.service.DdService;
 import com.ldz.wechat.module.service.DdrzService;
@@ -28,9 +25,8 @@ import com.ldz.wechat.module.service.YhService;
 
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -42,6 +38,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private ClJsyService jsyService;
     @Autowired
     private DdrzService ddrzService;
+    @Autowired
+    private ClClMapper clMapper;
     @Autowired
     private JgService jgService;
 
@@ -141,13 +139,25 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      */
     public ApiResponse<List<ClDd>> getOrderWorkersList(String userId){
-
         ApiResponse<List<ClDd>> result = new ApiResponse<List<ClDd>>();
         SimpleCondition condition = new SimpleCondition(ClDd.class);
         condition.eq(ClDd.InnerColumn.ckCjl.name(),userId);
         condition.setOrderByClause(ClDd.InnerColumn.yysj.desc());
-        List<ClDd> orgs = findByCondition(condition);
-        result.setResult(orgs);
+        List<ClDd> orders = findByCondition(condition);
+        List<String> carIds = orders.stream().map(ClDd::getClId).collect(Collectors.toList());
+        condition = new SimpleCondition(ClCl.class);
+        condition.in(ClCl.InnerColumn.clId,carIds);
+        List<ClCl> cars = clMapper.selectByExample(condition);
+        Map<String,ClCl> carMap = cars.stream().collect(Collectors.toMap(ClCl::getClId,p->p));
+        for (ClDd order : orders) {
+            String carId = order.getClId();
+            if (StringUtils.isEmpty(carId))continue;
+            ClCl car = carMap.get(carId);
+            if (car == null)continue;
+            order.setScs(car.getScs());
+            order.setXh(car.getXh());
+        }
+        result.setResult(orders);
         return result;
     }
     /**

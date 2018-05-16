@@ -150,16 +150,7 @@
 						}
 					}
 				],
-				tableData: [{
-						userName: '杨毛毛',
-						start: '01',
-						typ:'建议',
-						mess: '定位不精确',
-						Result: '处理完成',
-						phone: '13146137985',
-						time: '2017-05-02 09:10:00',
-					}
-				],
+				tableData: [],
 				//form表单
 				formTop: {},
 				//select

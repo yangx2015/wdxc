@@ -174,15 +174,7 @@
                         }
                     }
                 ],
-                tableData: [
-	                {
-	                	jsId:'123456',
-	                	jsmc:'驾驶员角色',
-	                	jslx:'员工',
-	                	bz:'角色说明',
-	                	cjsj:'2017-05-02 09:10:00'
-	                }
-                ],
+                tableData: [],
                 //form表单
                 formTop: {
                 },

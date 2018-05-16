@@ -131,7 +131,6 @@
                     },
                     {
                         title: '身份证号',
-						width:240,
                         align:'center',
                         key: 'sfzhm'
                     },
@@ -181,7 +180,6 @@
                     },
                     {
                         title:'车队编号',
-                        width:180,
                         align:'center',
                         key:'cdbh'
                     },
