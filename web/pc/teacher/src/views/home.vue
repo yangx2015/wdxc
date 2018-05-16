@@ -50,28 +50,28 @@
               </div>
           </div>
           <div class="box-row carZws">
-            <div class="body-O carimg">
+            <div class="body-O carimg" v-for="(item,index) in carZws" @click="zws(item.val,index)">
               <img src="/static/car.jpg" alt="">
-              <div>
-                5人座
+              <div :style="{color:item.color,fontWeight:'600'}">
+                {{item.text}}
               </div>
             </div>
-            <div class="body-O carimg">
-              <img src="/static/car.jpg" alt="">
-              <div>
-                7人座
-              </div>
-            </div>
-            <div class="body-O carimg">
-              <img src="/static/car.jpg" alt="">
-              <div>
-                11人座
-              </div>
-            </div>
+            <!--<div class="body-O carimg" @click="zws(7)">-->
+              <!--<img src="/static/car.jpg" alt="">-->
+              <!--<div>-->
+                <!--7人座-->
+              <!--</div>-->
+            <!--</div>-->
+            <!--<div class="body-O carimg" @click="zws(11)">-->
+              <!--<img src="/static/car.jpg" alt="">-->
+              <!--<div>-->
+                <!--11人座-->
+              <!--</div>-->
+            <!--</div>-->
           </div>
         </div>
 
-        <div class="button">
+        <div class="button" @click="addList">
           <button>
             提    交
           </button>
@@ -150,11 +150,27 @@
     data() {
       return {
         form:{
-          hcdz:'',
-          mdd:'',
+          hcdz:'',//候车地址
+          mdd:'',//目的地
           yysj:'',
-          lxfs:''
+          cklxdh:'',
+          zws:5
         },
+        carZws:[
+          {
+            text:'5人座',
+            val:5,
+            color:'#000',
+          },{
+            text:'7人座',
+            val:7,
+            color:'#000',
+          },{
+            text:'11人座',
+            val:11,
+            color:'#000',
+          }
+        ],
         lxfsF:'',
         lxfs:'换乘车人',
         showPic:false,
@@ -172,7 +188,7 @@
       lxfsF:function(n,o) {
         if(n){
           this.lxfs = n
-          this.form.lxfs = n
+          this.form.cklxdh = n
         }else {
           this.lxfs = '换乘车人'
           this.form.lxfs = ''
@@ -180,10 +196,36 @@
       }
     },
     created(){
+      if(this.cok.get('result')){
+
+      }else {
+        this.$router.push({
+          name:'login'
+        })
+      }
     },
     mounted() {
     },
     methods: {
+      zws(val,index){
+          this.form.zws = val
+          this.carZws.forEach((it,vl)=>{
+              if(vl == index){
+                it.color = '#1faa41'
+              }else {
+                it.color = '#000'
+              }
+          })
+      },
+      addList(){//订单创建
+        var v =this
+        console.log('***********',this.form)
+        v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
+
+        }).catch((error)=>{
+
+        })
+      },
       MyCenter(){//个人中心
         this.show = !this.show
       },

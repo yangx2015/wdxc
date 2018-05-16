@@ -4,7 +4,7 @@
 </style>
 <template>
       <div class="pagelist box" style="font-size: 16px">
-          <div class="header">
+          <div class="header" >
               <div class="box-row">
                 <div class="titLeft" @click="back()">
                   <i class="iconfont icon-left"></i>
@@ -16,21 +16,15 @@
                 </div>
               </div>
           </div>
-          <div class="body DDlist">
+          <div class="body DDlist" style="background-color: #e8e8e8">
               <div class="DDitem"
                    v-for="item in mesliat">
                   <div class="tit box-row" v-if="item.sjxm!=''">
-                        <div class="body-O">
+                        <div class="body-O" style="color: #3b3b3b;font-weight: 600;font-size: 14px;">
                           {{item.sjxm}}-{{item.cph}}
                         </div>
                         <div @click="fiveStar(item)">
                           已完成
-                          <span v-if="item.pjdj==''">
-                            待评价
-                          </span>
-                          <span v-else>
-                            已平价
-                          </span>
                           <i class="iconfont icon-right"></i>
                         </div>
                   </div>
@@ -38,26 +32,30 @@
                     <div class="body-O">
                       订单指派中……
                     </div>
-                    <!--<div>-->
-                      <!--已完成-->
-                      <!--<i class="iconfont icon-right"></i>-->
-                    <!--</div>-->
                   </div>
-                  <div>
-                    <i class="iconfont icon-shijian"></i>
+                  <div style="margin: 8px 0;">
+                    <i class="iconfont icon-shijian"
+                        style="font-size: 14px"
+                    ></i>
+                    <span style="font-size: 14px;font-weight: 600">
                     {{item.yysj}}
+                    </span>
+                  </div>
+                  <div style="margin: 6px 0">
+                    <i class="iconfont icon-dian1"
+                        style="color: #00a854;font-size: 14px"
+                    ></i>
+                    <span style="font-size: 14px">
+                      {{item.hcdz}}
+                    </span>
                   </div>
                   <div>
                     <i class="iconfont icon-dian1"
-                        style="color: #00a854"
+                       style="color: #ff8f00;font-size: 14px"
                     ></i>
-                    {{item.hcdz}}
-                  </div>
-                  <div>
-                    <i class="iconfont icon-dian1"
-                       style="color: #ff8f00"
-                    ></i>
-                    {{item.mdd}}
+                    <span style="font-size: 14px">
+                      {{item.mdd}}
+                    </span>
                   </div>
               </div>
           </div>
