@@ -1,6 +1,9 @@
 <style lang="less">
   @import '../styles/box.less';
   @import "./hone.less";
+  .md-popup .md-popup-box{
+    background:rgba(255,255,255,0);
+  }
 </style>
 <template>
   <div class="box bodylist">
@@ -71,12 +74,16 @@
           </div>
         </div>
 
-        <div class="button" @click="addList">
+        <div v-if="form.hcdz!==''&&form.mdd!=''&&form.yysj!=''&&form.zws!=0" class="button" @click="addList">
           <button>
             提    交
           </button>
         </div>
-
+        <div v-else class="button" @click="tsi('请将信息填写完整')">
+              <button style="background-color: #d8d8d8">
+                提    交
+              </button>
+        </div>
 
 
         <md-landscape v-model="showPic">
@@ -135,7 +142,7 @@
   </div>
 </template>
 <script>
-  import {DatePicker,FieldItem,InputItem,Landscape,Button} from 'mand-mobile'
+  import {DatePicker,FieldItem,InputItem,Landscape,Button,Toast} from 'mand-mobile'
   import  myCenter from './myCenter'
   export default {
     name: 'swiper-demo',
@@ -146,15 +153,18 @@
       [InputItem.name]: InputItem,
       [FieldItem.name]: FieldItem,
       [DatePicker.name]: DatePicker,
+      [Button.name]: Button,
     },
     data() {
       return {
+        save:false,
         form:{
           hcdz:'',//候车地址
           mdd:'',//目的地
+          cllx:'10',//10小车20大车
           yysj:'',
           cklxdh:'',
-          zws:5
+          zws:0
         },
         carZws:[
           {
@@ -183,6 +193,8 @@
         lineList:[],
         barNum:this.$store.state.app.barNum,
       }
+    },
+    computed:{
     },
     watch:{
       lxfsF:function(n,o) {
@@ -217,6 +229,12 @@
               }
           })
       },
+      tsi(mes){//表单验证提示
+        Toast.info(mes)
+        setTimeout(function () {
+          Toast.hide()
+        },1800)
+      },
       addList(){//订单创建
         var v =this
         console.log('***********',this.form)
@@ -236,11 +254,17 @@
       },
       onDatePickerConfirm(c) {
         console.log('-************',c)
-        this.datePickerValue = ''
-        this.form.yysj = ''
+        var NowDate = new Date
+        // debugger
         let a = '-'
+        this.form.yysj = NowDate.getFullYear()+a
+        this.datePickerValue = ''
+        // this.form.yysj = ''
         c.forEach((item, index) => {
-          if((item.type == "Date")) {
+          if((item.type == "Month"&&item.value.toString().length==1)){
+            item.value = '0'+item.value
+          }else
+            if((item.type == "Date")) {
             a = ' '
           }else if(item.type == "Minute"){
             a = ':00'
