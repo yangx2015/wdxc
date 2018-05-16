@@ -76,7 +76,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         entity.setJgdm(clJsy.getJgdm());
         entity.setJgmc(clJsy.getJdmc());
-        entity.setCklxdh(clJsy.getSjhm());
+        if (StringUtils.isEmpty(entity.getCklxdh())){
+            entity.setCklxdh(clJsy.getSjhm());
+        }
         entity.setCjsj(new Date());
         entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认

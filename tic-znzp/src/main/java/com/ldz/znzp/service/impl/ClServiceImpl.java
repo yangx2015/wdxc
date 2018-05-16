@@ -84,11 +84,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             }
         }
         log.info(reportData.toString());
-        Channel channel = nettyUtil.getChannelByTid(reportData.getTid());
-        if (channel == null){
+        List<Channel> channels = nettyUtil.getAllChannel();
+        if (channels.size() == 0){
             return ApiResponse.fail("未找到通道");
         }
-        writeResult(channel,reportData);
+        writeResult(channels,reportData);
         return ApiResponse.success(JsonUtil.toJson(reportData));
     }
 
