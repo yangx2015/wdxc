@@ -57,11 +57,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
-        String xm=entity.getCk();
-        String cklxdh=entity.getCklxdh();//
-        RuntimeCheck.ifBlank(xm,"乘客姓名不能为空");
-        RuntimeCheck.ifBlank(cklxdh,"乘客联系电话不能为空");
-
         SysJzgxx clJsy= jzgxxService.findById(userId);
         RuntimeCheck.ifNull(clJsy, "未找到记录");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
@@ -73,7 +68,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setId(orderId);
 //        entity.setCjr(userId);
         entity.setCkCjl(userId);//乘客创建人
-
+        entity.setCk(clJsy.getXm());
         entity.setJgdm(clJsy.getJgdm());
         entity.setJgmc(clJsy.getJdmc());
         if (StringUtils.isEmpty(entity.getCklxdh())){
