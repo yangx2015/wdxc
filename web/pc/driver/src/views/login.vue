@@ -12,7 +12,7 @@
     <div class="login" @keydown.enter="handleSubmit">
     	<!--<img src="../../static/3.png"/>-->
         <div class="yc">
-          <h1>Welcome</h1>
+          <h1 style="color: #cce8ff;">Welcome</h1>
           <!--<h1 class="huan">-->
             <!--欢-->
           <!--</h1>-->

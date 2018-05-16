@@ -45,6 +45,7 @@
 </template>
 <script>
   import okModal from './comp/okModal'
+  import Cookies from 'js-cookie';
   export default {
     name:'',
     components:{
@@ -58,7 +59,13 @@
       }
     },
     created(){
-      this.dqr()
+      if(Cookies.get('result')) {
+          this.dqr()
+      }else{
+        this.$router.push({
+          name:'login'
+        })
+      }
     },
     methods:{
       oklist(item){
