@@ -24,11 +24,11 @@
 
 		</div>
 		<div class="body bodylist" style="background-color: #fff;">
-			<div class="box">
+			<div class="box" style="background-color: #f3f3f3">
 				<div class="">
 					<tab>
-				      <tab-item selected @on-item-click="onItemClick">待确认</tab-item>
-              <tab-item @on-item-click="onItemClick">历史单据</tab-item>
+				      <tab-item selected @on-item-click="onItemClick">今日接单</tab-item>
+              <tab-item @on-item-click="onItemClick">历史接单</tab-item>
 				    </tab>
 				</div>
 				<div v-if="school==0" class="body"  style="position: relative;padding: 5px 12px">
@@ -104,15 +104,12 @@
 </template>
 
 <script>
-	import { Swiper, SwiperItem, Cell, XButton, Tab, TabItem } from 'vux'
+	import { XButton, Tab, TabItem } from 'vux'
   import Cookies from 'js-cookie';
   import okList from './comp/okList'
 	export default{
 		name:'',
 		components: {
-		    Swiper,
-		    SwiperItem,
-		    Cell,
 		    XButton, Tab, TabItem,
         okList
 		 },

@@ -5,6 +5,8 @@ import router from './router'
 
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import store from './store';
+
 
 import http from './axios/index';
 import apis from './axios/config';
@@ -20,7 +22,8 @@ const RouterConfig = {
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router: router,
+  store:store,
   components: { App },
   template: '<App/>'
 })

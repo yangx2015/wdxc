@@ -41,6 +41,11 @@ const router = new Router({
       path: '/mapMess',
       name: 'mapMess',
       component: () => import('@/views/pageIndex/comp/mapMess')
+    },
+    {
+      path: '/XCmess',
+      name: 'XCmess',
+      component: () => import('@/views/XCmess')
     }
   ]
 })
