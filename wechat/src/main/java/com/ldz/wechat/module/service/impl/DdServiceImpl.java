@@ -57,11 +57,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
-        String xm=entity.getCk();
-        String cklxdh=entity.getCklxdh();//
-        RuntimeCheck.ifBlank(xm,"乘客姓名不能为空");
-        RuntimeCheck.ifBlank(cklxdh,"乘客联系电话不能为空");
-
         SysJzgxx clJsy= jzgxxService.findById(userId);
         RuntimeCheck.ifNull(clJsy, "未找到记录");
         RuntimeCheck.ifBlank(entity.getHcdz(),"候车地址不能为空");
@@ -73,8 +68,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setId(orderId);
 //        entity.setCjr(userId);
         entity.setCkCjl(userId);//乘客创建人
+        entity.setCk(clJsy.getXm());
         entity.setJgdm(clJsy.getJgdm());
         entity.setJgmc(clJsy.getJdmc());
+        if (StringUtils.isEmpty(entity.getCklxdh())){
+            entity.setCklxdh(clJsy.getSjhm());
+        }
         entity.setCjsj(new Date());
         entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认
@@ -180,5 +179,18 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         result.setResult(orgs);
         return result;
+    }
+
+    @Override
+    public ApiResponse<String> evaluate(String orderId, String grade) {
+        RuntimeCheck.ifBlank(orderId,"请选择订单");
+        RuntimeCheck.ifBlank(grade,"请输入评分");
+        ClDd order = findById(orderId);
+        RuntimeCheck.ifNull(order,"未找到订单");
+        ClDd newOrder = new ClDd();
+        newOrder.setId(orderId);
+        newOrder.setPjdj(new Short(grade));
+        entityMapper.updateByPrimaryKeySelective(newOrder);
+        return ApiResponse.success();
     }
 }

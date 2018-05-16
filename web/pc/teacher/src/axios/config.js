@@ -26,5 +26,8 @@ module.exports = {
   },
   REMOVE:{
 	  DELE:'/put/yj/removeIds'
+  },
+  PJDD:{
+    QUERTY:'/put/dd/evaluate'
   }
 }

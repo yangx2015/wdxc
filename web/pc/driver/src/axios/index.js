@@ -6,8 +6,8 @@ import router from '../router/index';
 import qs from 'qs';
 //订单分配权限
 let httpInstance = axios.create({
-	// baseURL: 'http://192.168.31.181:9998',
-	baseURL: 'http://192.168.31.223:9998',
+	baseURL: 'http://47.98.39.45:9099',
+	// baseURL: 'http://192.168.31.223:9998',
     timeout: 300000,
     headers: {'Content-Type':'application/x-www-form-urlencoded'},
     withCredentials:true

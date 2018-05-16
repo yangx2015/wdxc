@@ -140,7 +140,7 @@
           name:'login'
         })
       }
-			this.getSwiperMess()
+			// this.getSwiperMess()
 			// this.getLineMess()
       this.His()
 		},

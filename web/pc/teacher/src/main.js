@@ -8,13 +8,11 @@ import './styles/global.css'
 import apis from './axios/config';
 import http from './axios/index';
 import Cookies from 'js-cookie';
-
-import vux from 'vux'
+import store from './store';
 
 Vue.prototype.$http = http;
 Vue.prototype.apis = apis;
 Vue.prototype.cok = Cookies;
-Vue.prototype.$vux = vux;
 
 
 FastClick.attach(document.body)
@@ -24,7 +22,8 @@ Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router: router,
+  store:store,
   components: { App },
   template: '<App/>'
 })

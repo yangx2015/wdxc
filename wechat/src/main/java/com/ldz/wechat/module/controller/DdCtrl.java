@@ -39,6 +39,8 @@ public class DdCtrl {
         RuntimeCheck.ifBlank(type,"当前登录用户未空！");
         return type;
     }
+
+
     /**
      * 获取当前登录用户信息
      * @return
@@ -68,6 +70,12 @@ public class DdCtrl {
         //true:允许输入空值，false:不能为空值
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
     }
+
+    @RequestMapping("evaluate")
+    public ApiResponse<String> evaluate(String orderId,String grade){
+        return service.evaluate(orderId,grade);
+    }
+
     @RequestMapping(value="/getzdxm", method={RequestMethod.POST})
     public ApiResponse<List<SysZdxm>> save(String zdlmdm){
         if(StringUtils.isEmpty(zdlmdm)){

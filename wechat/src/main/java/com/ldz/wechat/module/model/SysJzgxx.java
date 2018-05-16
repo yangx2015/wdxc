@@ -43,7 +43,18 @@ public class SysJzgxx implements Serializable {
     @Column(name = "XGSJ")
     private Date xgsj;
 
+    @Column(name = "SJHM")
+    private String sjhm;
+
     private static final long serialVersionUID = 1L;
+
+    public String getSjhm() {
+        return sjhm;
+    }
+
+    public void setSjhm(String sjhm) {
+        this.sjhm = sjhm;
+    }
 
     /**
      * @return ID

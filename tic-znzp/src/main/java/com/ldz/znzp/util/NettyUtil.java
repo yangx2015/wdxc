@@ -41,6 +41,13 @@ public class NettyUtil {
         }
         return channels;
     }
+    public List<Channel> getAllChannel(){
+        List<Channel> channels = new ArrayList<>();
+        for (Channel channel : IotServer.onlineChannels) {
+            channels.add(channel);
+        }
+        return channels;
+    }
     public  Channel getChannelByTid(String tid){
         Set<String> keys =  redisDao.keys(tid+"-*-"+ZnzpOnlineBean.class.getSimpleName());
 //        Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
