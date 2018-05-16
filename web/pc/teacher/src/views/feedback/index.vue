@@ -44,7 +44,7 @@
 </template>
 
 <script>
-  import {TabBar} from 'mand-mobile'
+  import {TabBar,Toast} from 'mand-mobile'
   import headTit from "@/views/comp/headTit"
 	export default{
 		name:'',
@@ -60,7 +60,7 @@
             yhId:'2334232',
             yjlx:'00',//意见类型
             lxrxm:'宋林殊',//联系人姓名
-            lxfs:'38381438',//联系方式
+            lxfs:'',//联系方式
             nr:'',//内容
         }
       }
@@ -95,11 +95,22 @@
       feedbackSave(){
         var v = this
         v.$http.post(this.apis.FEEDBACK.QUERTY, this.form).then((res) =>{
+          if(res.code==200){
+              v.tsi('信息提交成功')
+          }
             console.log('*****',res)
         }).catch((error)=>{
 
         })
-      }
+      },
+      tsi(mes){//表单验证提示
+        var v=this
+        Toast.info(mes)
+        setTimeout(function () {
+          Toast.hide()
+          v.form.nr = ''
+        },1800)
+      },
     }
 	}
 </script>

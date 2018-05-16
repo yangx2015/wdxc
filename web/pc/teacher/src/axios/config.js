@@ -27,7 +27,7 @@ module.exports = {
   REMOVE:{
 	  DELE:'/put/yj/removeIds'
   },
-  PJDD:{
+  PJDD:{//订单评分
     QUERTY:'/put/dd/evaluate'
   }
 }

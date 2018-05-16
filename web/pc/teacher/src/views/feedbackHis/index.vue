@@ -42,7 +42,15 @@
       ></md-tab-bar>
     </div>
     <div class="body" style="padding: 8px">
-        <div class="hisList" v-for="item in listmess">
+        <div  v-if="listmess.length==0" style="text-align: center;line-height: 4rem">
+          <div v-if="form.yjlx=='00'">
+            无建议数据
+          </div>
+          <div v-else>
+            无投诉数据
+          </div>
+        </div>
+        <div class="hisList" v-for="item in listmess" v-else>
             <div class="close" @click="remove(item.yjId)">
               <i class="iconfont icon-guanbi"></i>
             </div>
@@ -99,6 +107,7 @@
           }else if(n==1){
             this.form.yjlx = '10'
           }
+          this.feedbackList()
         },
         feedbackList(){
           var v = this

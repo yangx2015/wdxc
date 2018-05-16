@@ -3,7 +3,7 @@
   @import "./eval.less";
 </style>
 <template>
-    <div class="box evaluate">
+    <div class="box evaluate" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=333&center=武汉&markers='+'汉口火车站'+'|'+'武汉大学'+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
       <div class="body">
       </div>
       <div class="carMess">
@@ -15,10 +15,10 @@
                   </div>
                   <div class="driName">
                       <div>
-                        张师傅
+                        {{mess.sjxm}}
                       </div>
                       <div>
-                        5座位
+                        {{mess.zws}}座位
                       </div>
                   </div>
               </div>
@@ -30,10 +30,10 @@
                 </div>
                 <div>
                   <div>
-                    鄂A12345
+                    {{mess.cph}}
                   </div>
                   <div>
-                    5座位车
+                    {{mess.scs}}.{{mess.xh}}
                   </div>
                 </div>
               </div>
@@ -46,7 +46,7 @@
                   里程
                 </div>
                 <div class="mess">
-                  <!--{{mess.lc}}-->99
+                  {{mess.lc}}
                   公里
                 </div>
               </div>
@@ -55,20 +55,20 @@
                   金额
                 </div>
                 <div class="mess">
-                  <!--{{zj}}-->1000
+                  {{mess.zj}}
                   元
                 </div>
               </div>
             </div>
           </div>
           <div class="boxStar">
-            <five-star @starNum="starNum" :num="0" :bj="true"></five-star>
+            <five-star @starNum="starNum" :num="pf" :bj="bj"></five-star>
           </div>
           <div class="button" style=" overflow: hidden">
             <button style="float: left;width: 45%" @click="close()">
               关闭
             </button>
-            <button v-if="pf!=0" style="float: right;width: 45%" @click="back()">
+            <button v-if="pfzt" style="float: right;width: 45%" @click="save()">
               提    交
             </button>
             <button v-else style="float: right;width: 45%;background-color: #d9d9d9">
@@ -76,64 +76,13 @@
             </button>
           </div>
       </div>
-
-
-
-      <div class="boxTop" v-if="false">
-          <div class="box-row">
-            <div class="iconImg">
-                <i class="iconfont icon-wo"
-                ></i>
-            </div>
-            <div class="body-r-1 mess">
-                <div>
-                   {{mess.sjxm}}
-                </div>
-                <div>
-                  {{mess.cph}}
-                </div>
-                <div>
-                  座位数：{{mess.zws}}
-                </div>
-            </div>
-          </div>
-      </div>
-      <div class="boxCenter" v-if="false">
-          <div class="box-row">
-            <div class="body-r-1">
-              <div class="tit">
-                  里程
-              </div>
-              <div class="mess">
-                  {{mess.lc}}公里
-              </div>
-            </div>
-            <div class="body-r-1">
-                <div class="tit">
-                  金额
-                </div>
-                <div class="mess">
-                  {{zj}}元
-                </div>
-            </div>
-          </div>
-      </div>
-      <div class="boxStar"  v-if="false">
-          <five-star @starNum="starNum" :num="pf" :bj="true"></five-star>
-      </div>
-      <div class="button" style=" overflow: hidden" v-if="false">
-        <button style="float: left;width: 45%" @click="close()">
-          取消
-        </button>
-        <button style="float: right;width: 45%" @click="back()">
-          提    交
-        </button>
-      </div>
     </div>
 </template>
 
 <script>
-    import fiveStar from '@/views/comp/fiveStar'
+  import {Toast} from 'mand-mobile'
+
+  import fiveStar from '@/views/comp/fiveStar'
     export default {
         name: "",
         components:{
@@ -141,25 +90,61 @@
         },
         data(){
           return{
+
             mess:this.$store.state.app.pjMess,
             pf:0,
+            pfzt:false,
+            bj:true
           }
         },
         created(){
+          if(this.cok.get('result')) {
+
+          }else{
+            this.$router.push({
+              name:'login'
+            })
+          };
+
+          if(this.mess.pjdj==""){
+            this.bj = true
+          }else {
+            this.bj = false
+            this.pf = this.mess.pjdj
+          }
           console.log(this.mess)
         },
         methods:{
           starNum(val){
-
+            this.pf = val
+            if(val!=0){
+              this.pfzt = true
+            }
           },
           close(){
+            var v = this
             this.$router.back()
           },
-          back(){
-            this.$router.push({
-              name:'list'
+          save(){
+            var v = this
+            v.$http.post(this.apis.PJDD.QUERTY,{'orderId':v.mess.id,'grade':v.pf}).then((res) =>{
+              if (res.code==200) {
+                v.tsi('评价成功')
+              }
+            }).catch((error)=>{
+
             })
-          }
+
+          },
+          tsi(mes){//表单验证提示
+            var v=this
+            Toast.info(mes)
+            setTimeout(function () {
+              Toast.hide()
+              v.close()
+            },1800)
+          },
+
       }
     }
 </script>

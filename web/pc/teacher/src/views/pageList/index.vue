@@ -23,9 +23,12 @@
                         <div class="body-O" style="color: #3b3b3b;font-weight: 600;font-size: 14px;">
                           {{item.sjxm}}-{{item.cph}}
                         </div>
-                        <div @click="fiveStar(item)">
+                        <div @click="fiveStar(item)" v-if="item.ddzt!=13">
                           已完成
                           <i class="iconfont icon-right"></i>
+                        </div>
+                        <div style="padding-right:18px" v-else>
+                          未完成
                         </div>
                   </div>
                   <div class="tit box-row" v-else>
@@ -107,7 +110,7 @@
             }).catch((error)=>{
 
             })
-          }
+          },
         }
     }
 </script>
