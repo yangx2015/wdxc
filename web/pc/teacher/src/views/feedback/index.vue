@@ -109,7 +109,6 @@
         setTimeout(function () {
           Toast.hide()
           v.form.nr = ''
-          // v.close()
         },1800)
       },
     }
