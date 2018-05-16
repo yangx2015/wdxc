@@ -25,7 +25,7 @@ public class RzServiceImpl extends BaseServiceImpl<SysRz,String> implements RzSe
     }
 
     @Override
-    public boolean fillCondition(LimitedCondition condition){
+    public boolean fillPagerCondition(LimitedCondition condition){
         condition.setOrderByClause("czsj desc");
         return true;
     }
