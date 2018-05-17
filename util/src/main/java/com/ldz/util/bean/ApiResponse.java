@@ -24,10 +24,14 @@ public class ApiResponse<T> implements Serializable {
 	public final static int SUCCESS = 200;
 	//失败
 	public final static int FAILED = 500;
+	//参数错误
+	public final static int PARAM_ERROR = 400;
 	//授权认证失败
 	public final static int AUTH_FAILED = 999;
 	// 无权限访问
 	public final static int FORBIDDEN = 403;
+	// 未找到资源
+	public final static int NOT_FOUND = 404;
 
 	/**
 	 * 返回消息code编码
@@ -92,6 +96,18 @@ public class ApiResponse<T> implements Serializable {
 	public static ApiResponse<String> fail(String msg){
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setCode(FAILED);
+		res.setMessage(msg);
+		return res;
+	}
+	public static ApiResponse<String> notFound(String msg){
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setCode(NOT_FOUND);
+		res.setMessage(msg);
+		return res;
+	}
+	public static ApiResponse<String> paramError(String msg){
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setCode(PARAM_ERROR);
 		res.setMessage(msg);
 		return res;
 	}

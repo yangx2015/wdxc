@@ -15,6 +15,7 @@ import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -86,7 +87,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         log.info(reportData.toString());
         List<Channel> channels = nettyUtil.getAllChannel();
         if (channels.size() == 0){
-            return ApiResponse.fail("未找到通道");
+            return ApiResponse.notFound("未找到通道");
         }
         writeResult(channels,reportData);
         return ApiResponse.success(JsonUtil.toJson(reportData));
@@ -108,7 +109,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         // 原始gps转百度gps
         log.info("转换前-经度："+gpsInfo.getLongitude()+",纬度："+gpsInfo.getLatitude());
         Date now = new Date();
-        if (gpsInfo.getLatitude().equals("-1") || gpsInfo.getLongitude().equals("-1")){
+        if (gpsInfo.getLatitude().equals("-1")
+                || gpsInfo.getLongitude().equals("-1")
+                || StringUtils.isEmpty(gpsInfo.getLongitude())
+                || StringUtils.isEmpty(gpsInfo.getLatitude())
+                ){
             if (record == null){
                 log.info("gps为 -1");
                 record = new ClClyxjl();
