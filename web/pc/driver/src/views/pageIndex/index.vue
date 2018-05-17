@@ -19,8 +19,16 @@
 				<!--</div>-->
 			</div>
 		</div>
-		<div style="height: 200px;background-color: #2b85e4">
-
+		<div style="text-align: center;height: 200px;background:url('/static/backTit.png');background-repeat: no-repeat;background-size: cover;background-position: center;">
+        <div style="padding: 16px 0">
+          <img src="/static/drive.png" alt="" width="65px">
+        </div>
+        <div style="color: #8c8585;font-size: 16px;font-weight: 600">
+          {{user.xm}}
+        </div>
+        <div style="margin: 12px 0;color: #ff9400;font-size: 24px;font-weight: 600">
+          {{pf}}分
+        </div>
 
 		</div>
 		<div class="body bodylist" style="background-color: #fff;">
@@ -51,23 +59,29 @@
 		 },
 		data(){
 			return{
+			  user:{},
+        pf:'',
         listType:0,
 				titFind:'',
-				imglistV:0,
-				imglist: [],
-				lineList:[],
-        hisList:[]
 			}
 		},
 		created(){
-		  this.listType = this.$store.state.app.listType
-      if(Cookies.get('result')) {
-          this.His()
-      }else{
+      if(this.$store.state.app.user=='null'){
         this.$router.push({
-          name:'login'
-        })
+            name:'login'
+          })
+      }else{
+          if(Cookies.get('result')) {
+              this.listType = this.$store.state.app.listType
+              this.pf = this.$store.state.app.user.grade
+              this.user = JSON.parse(this.$store.state.app.user.userInfo)
+          }else{
+            this.$router.push({
+              name:'login'
+            })
+          }
       }
+
 		},
 		methods:{
 		  	MyCenter(){//个人中心
@@ -87,13 +101,6 @@
           //     this.His()
           // }
 		    },
-        His(){//历史订单列表
-		  	  this.$http.post(this.apis.MESLIST.QUERTY,{'type':'3'}).then((res)=>{
-            if(res.code == 200){
-              this.hisList = res.result
-            }
-          })
-        }
 		}
 	}
 </script>

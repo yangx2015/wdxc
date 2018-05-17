@@ -142,8 +142,16 @@
         filters: {
           text: function (value) {
             if (!value) return '***'
+            else return value
           }
         },
+      created(){
+        if(this.$store.state.app.user==null){
+          this.$router.push({
+            name:'login'
+          })
+        }
+      },
         methods:{
           center(){
             this.$router.push({

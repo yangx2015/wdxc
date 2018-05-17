@@ -1,8 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-
+import store from '../store';
 Vue.use(Router)
-
 const router = new Router({
   routes: [
   	{
@@ -56,6 +55,13 @@ const router = new Router({
 })
 
 router.beforeEach(function(to, from, next){
+  if(store.state.app.user=='null'){
+    next({
+      name:'login'
+    })
+  }else {
+    next()
+  }
 //	if(to.path!='/login'&&(state.user.name==''||state.user.password=='')){
 //		next({
 //	  			path: '/login'
@@ -63,7 +69,6 @@ router.beforeEach(function(to, from, next){
 //	}else{
 //			next()
 //		}
-next()
 })
 
 export default router

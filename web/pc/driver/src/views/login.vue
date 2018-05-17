@@ -84,12 +84,14 @@ export default {
     },
     methods: {
         handleSubmit () {
+          var v = this
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	this.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
                 		console.log('登陆结果',res)
                 		if(res.code===200){
-                          Cookies.set('result', res.result);
+                		      v.$store.state.app.user = res.result
+                          Cookies.set('result', res.result.token);
                           this.$router.push({
                             name:'center'
                           })

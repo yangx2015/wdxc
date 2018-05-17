@@ -56,6 +56,7 @@
                 </Col>
             </Row>
         </Form>
+        <loading :show="loadingShow" :text="loadingText"></loading>
         <div class="but">
           <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
           <Button type="ghost" @click="handleReset()" style="margin-left: 8px">取消</Button>
@@ -95,10 +96,16 @@
   }
 </style>
 <script>
+    import { Loading } from 'vux'
     export default {
         name: "modal",
+        components: {
+          Loading
+        },
         data(){
           return {
+            loadingShow:false,
+            loadingText:'数据提交中',
             mess:this.$store.state.app.lineData,
             formValidate: {
               id:this.$store.state.app.lineData.id,
@@ -128,11 +135,20 @@
         methods: {
           handleSubmit (name) {
             var v = this
+            this.loadingShow = true
             // this.$refs[name].validate((valid) => {
             //   if (valid) {
                 this.$http.post(this.apis.LISTOK.CHANGE,this.formValidate).then((res)=>{
                     if(res.code==200){
-                      this.$parent.close()
+                      v.loadingText = '数据提交成功'
+                      v.$router.push({
+                        name:'center'
+                      })
+                    }else {
+                      v.loadingText = '数据提交失败  ,  请重新提交！'
+                      setTimeout(function () {
+                        v.loadingShow = false
+                      },1000*1.2)
                     }
                   console.log(res)
                 }).catch((error) =>{
@@ -143,8 +159,6 @@
             // })
           },
           handleReset () {
-              // this.$parent.compName= ''
-            // this.$emit('close')
             this.$router.back()
           }
         }

@@ -15,7 +15,7 @@
 			<div class="titRight">
 				<Icon type="ios-compose" color="#949494" size='26'></Icon>
 			</div>
-			
+
 		</div>-->
   	<!--</div>-->
   	<div class="body center">
@@ -47,6 +47,8 @@
 	    	titFind:''
 	    }
 	  },
+    created(){
+    },
 	  methods:{
 	  	MyCenter(){
 	  		alert('left')

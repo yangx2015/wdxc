@@ -3,6 +3,7 @@ import Vue from 'vue';
 
 const app = {
     state: {
+      user:null,
       listType:0,
       lineData:{}
     },
