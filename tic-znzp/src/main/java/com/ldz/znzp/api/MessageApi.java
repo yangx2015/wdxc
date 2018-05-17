@@ -55,25 +55,25 @@ public class MessageApi {
 	@RequestMapping(value="/reporting", method={RequestMethod.POST})
 	public ApiResponse<String> reporting(@RequestBody GpsInfo gpsInfo ){
 		if (StringUtils.isEmpty(gpsInfo.getDeviceId())){
-			return ApiResponse.fail("设备id不能为空");
+			return ApiResponse.paramError("设备id不能为空");
 		}
 		if (StringUtils.isEmpty(gpsInfo.getLongitude())){
-			return ApiResponse.fail("经度不能为空");
+			return ApiResponse.paramError("经度不能为空");
 		}
 		if (StringUtils.isEmpty(gpsInfo.getLatitude())){
-			return ApiResponse.fail("纬度不能为空");
+			return ApiResponse.paramError("纬度不能为空");
 		}
 
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
-		if (car == null)return ApiResponse.fail("未找到车辆");
+		if (car == null)return ApiResponse.notFound("未找到车辆");
 
 		List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
 
 		ClPb pb = clService.getCarPb(car.getClId());
-		if (pb == null)return ApiResponse.fail("未找到车辆排班");
+		if (pb == null)return ApiResponse.notFound("未找到车辆排班");
 
 		ClXl route = xlService.findById(pb.getXlId());
-		if (route == null)return ApiResponse.fail("未找到车辆线路");
+		if (route == null)return ApiResponse.notFound("未找到车辆线路");
 
 		ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
 

@@ -34,7 +34,7 @@
 		<div>
 			附件：
 		</div>
-		<div v-if="row.wjlx=='00'">
+		<div>
 			<div class="demo-upload-list" 
 				v-for="(item,index) in uploadList"
 				v-if="(index+1)!=uploadList.length">
@@ -54,30 +54,6 @@
 			           <Icon type="arrow-right-b" size='24'></Icon>
 			        </Button>
 					<img :src="staticPath+imgUrl" style="width: 100%">
-				</div>
-			</Modal>
-		</div>
-		<div v-else-if="row.wjlx=='01'">
-			<div class="demo-upload-list" 
-				v-for="(item,index) in uploadList" 
-				v-if="(index+1)!=uploadList.length">
-				<div>
-					<video :src="staticPath+imgUrl" controls="controls" height="100%"></video>
-					<div class="demo-upload-list-cover">
-						<Icon type="arrow-right-b" @click.native="handleView(index)"></Icon>
-					</div>
-				</div>
-			</div>
-			<Modal title="View Image" v-model="visible">
-				<div class="ModalSty">
-					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
-			           <Icon type="arrow-left-b" size='24'></Icon>
-			        </Button>
-					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
-			           <Icon type="arrow-right-b" size='24'></Icon>
-			        </Button>
-					<!--<img :src="staticPath+imgUrl" style="width: 100%">-->
-					<video :src="staticPath+imgUrl" controls="controls"  style="width: 100%"></video>
 				</div>
 			</Modal>
 		</div>

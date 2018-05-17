@@ -9,6 +9,8 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.service.ClJsyService;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("put/jsy")
 public class ClJsyCtrl {
@@ -17,7 +19,7 @@ public class ClJsyCtrl {
 	private ClJsyService jsyService;
 
 	@PostMapping("/getjsy")
-	public ApiResponse<String> findJsy(String sfzhm, String xm) {
+	public ApiResponse<Map<String,Object>> findJsy(String sfzhm, String xm) {
 
 		return jsyService.findJsy(sfzhm, xm);
 	}

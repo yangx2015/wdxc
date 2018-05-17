@@ -3,12 +3,14 @@ package com.ldz.wechat.module.service;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.wechat.module.model.ClJsy;
 
+import java.util.Map;
+
 public interface ClJsyService {
 
 	/*
 	 * 通过驾驶员身份证号码,驾驶员姓名获取驾驶员
 	 */
-	ApiResponse<String> findJsy(String sfzhm,String xm);
+	ApiResponse<Map<String,Object>> findJsy(String sfzhm, String xm);
 	/*
 	 * 修改驾驶员信息
 	 */

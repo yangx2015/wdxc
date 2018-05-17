@@ -1,9 +1,11 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+import com.github.pagehelper.PageInfo;
+import com.ldz.biz.module.mapper.ClJsyMapper;
+import com.ldz.biz.module.model.ClJsy;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,8 @@ public class SgServiceImpl extends BaseServiceImpl<ClSg,String> implements SgSer
    
     @Autowired
     private ClSgwjMapper sgwjMapper;
+    @Autowired
+    private ClJsyMapper jsyMapper;
 
     @Override
     protected Mapper<ClSg> getBaseMapper() {
@@ -40,37 +44,82 @@ public class SgServiceImpl extends BaseServiceImpl<ClSg,String> implements SgSer
     }
 
     @Override
-    public ApiResponse<String> saveEntity(ClSg entity) {
+    public void afterPager(PageInfo<ClSg> pageInfo){
+        List<ClSg> list = pageInfo.getList();
+        List<String > sgIds = list.stream().map(ClSg::getId).collect(Collectors.toList());
+        SimpleCondition condition = new SimpleCondition(ClSgwj.class);
+        condition.in(ClSgwj.InnerColumn.sgId,sgIds);
+        List<ClSgwj> sgwjs = sgwjMapper.selectByExample(condition);
+        Map<String,List<ClSgwj>> wjMap = new HashMap<>();
+        for (ClSgwj sgwj : sgwjs) {
+            String sgId = sgwj.getSgId();
+            if (StringUtils.isEmpty(sgId))continue;
+            if (wjMap.containsKey(sgId)){
+                wjMap.get(sgId).add(sgwj);
+            }else{
+                List<ClSgwj> sgwjList = new ArrayList<>();
+                sgwjList.add(sgwj);
+                wjMap.put(sgId,sgwjList);
+            }
+        }
+        for (ClSg sg : list) {
+            if (!wjMap.containsKey(sg.getId()))continue;
+            List<ClSgwj> sgwjsList = wjMap.get(sg.getId());
+            StringBuilder filePaths = new StringBuilder();
+            for (ClSgwj sgwj : sgwjsList) {
+                filePaths.append(sgwj.getWldz()).append(",");
+            }
+            sg.setFilePaths(filePaths.toString());
+        }
+    }
+
+    @Override
+    public ApiResponse<String> validAndSave(ClSg entity) {
         SysYh user = getCurrentUser();
         Date now = new Date();
         entity.setCjr(getOperateUser());
         entity.setCjsj(now);
         entity.setId(genId());
         entity.setJgdm(user.getJgdm());
+        if (StringUtils.isNotEmpty(entity.getSj())){
+            ClJsy jsy = jsyMapper.selectByPrimaryKey(entity.getSj());
+            RuntimeCheck.ifNull(jsy,"驾驶员不存在");
+            entity.setLxdh(jsy.getSjh());
+        }
         save(entity);
+        updateSgwj(entity);
         return ApiResponse.saveSuccess();
     }
 
     @Override
-    public ApiResponse<String> updateEntity(ClSg entity) {
+    public ApiResponse<String> validAndUpdate(ClSg entity) {
         ClSg oldRecord = findById(entity.getId());
         RuntimeCheck.ifNull(oldRecord,"未找到记录");
         entity.setXgr(getOperateUser());
         update(entity);
+        updateSgwj(entity);
         return ApiResponse.success();
     }
 
-    @Override
-    public List<ClSgwj> getSgwj(String sgId) {
-        if (StringUtils.isEmpty(sgId))return new ArrayList<>();
+    private void updateSgwj(ClSg sg){
+        if (StringUtils.isEmpty(sg.getFilePaths())){
+            return;
+        }
         SimpleCondition condition = new SimpleCondition(ClSgwj.class);
-        condition.eq(ClSgwj.InnerColumn.sgId,sgId);
-        return sgwjMapper.selectByExample(condition);
-    }
+        condition.eq(ClSgwj.InnerColumn.sgId,sg.getId());
+        sgwjMapper.deleteByExample(condition);
 
-    @Override
-    public void setSgwj(ClSg sg) {
-        List<ClSgwj> sgwjs = getSgwj(sg.getId());
-        sg.setSgwjs(sgwjs);
+        String creator = getOperateUser();
+        Date now = new Date();
+        String[] paths = sg.getFilePaths().split(",");
+        for (String path : paths) {
+            ClSgwj sgwj = new ClSgwj();
+            sgwj.setCjr(creator);
+            sgwj.setCjsj(now);
+            sgwj.setId(genId());
+            sgwj.setSgId(sg.getId());
+            sgwj.setWldz(path);
+            sgwjMapper.insertSelective(sgwj);
+        }
     }
 }

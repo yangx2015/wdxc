@@ -15,62 +15,35 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="cph" label='车牌号'>
-								<Input type="text" v-model="formItem.cph" placeholder="请填写车牌号...">
-								</Input>
+								<Input type="text" v-model="formItem.cph" placeholder="请填写车牌号..."></Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
-							<FormItem prop="cdbh" label='车队编号'>
-								<Input type="text" v-model="formItem.cdbh" placeholder="请填写车队编号...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-
-					<Row>
 						<Col span="12">
 							<FormItem prop="sj" label='司机'>
-								<Select filterable clearable  v-model="formItem.hdlx">
-									<Option value="00">微信</Option>
-									<Option value="01">智能站牌</Option>
-									<Option value="02">LED</Option>
+								<Select filterable clearable  v-model="formItem.sj">
+									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='事故地点'>
-								<Select filterable clearable  v-model="formItem.sgdd">
-									<Option value="10">上</Option>
-									<Option value="20">中</Option>
-									<Option value="30">下</Option>
-								</Select>
+								<Input type="text" v-model="formItem.sgdd" placeholder="请填写车牌号..."></Input>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
 						<Col span="12">
 							<FormItem prop="hdsj" label='事故时间'>
-								<DatePicker v-model="formItem.hdsj"
-									format="yyyy-MM-dd" type="daterange"
+								<DatePicker v-model="formItem.sgsj"
+									format="yyyy-MM-dd" type="datetime"
 									placement="bottom-end"
 									placeholder="请输事故时间"
 									style="width: 100%"></DatePicker>
-
-								<!--<Input type="text" v-model="formItem.wjlx" placeholder="请填写广告类型...">
-								</Input>-->
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem prop="wjlx" label='事故描述'>
-								<Select filterable clearable  v-model="formItem.wjlx" @on-change="selectC()">
-									<Option value="00">图片</Option>
-									<Option value="01">视频</Option>
-								</Select>
+							<FormItem prop="sgms" label='事故描述'>
+								<Input type="text" v-model="formItem.sgms" placeholder="请填写事故描述..."></Input>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
 						<Col span="24">
 							<FormItem>
 								<div>
@@ -115,8 +88,10 @@
 					kssj:'',
 					jssj:'',
 					filePaths:'',
-					wz:'10'
+					wz:'10',
+					sj:''
 				},
+                drivers:[],//驾驶员
                 ruleInline:{
                 	hdbt: [
               	    	{ required: true, message: '请输入事故标题', trigger: 'blur' }
@@ -140,8 +115,27 @@
 		watch: {
 		},
 		created(){
+            this.getDrivers();
 		},
 		methods: {
+            getDriverName(){
+                for(let r of this.drivers){
+                    if (r.sfzhm ===  this.formItem.sj){
+                        this.addmess.sjxm = r.xm;
+                    }
+                }
+            },
+            getDrivers(){
+                let v = this;
+                v.$http.get(this.apis.JSY.NOT_BIND_LIST).then((res) =>{
+                    if(res.code===200){
+                        if(res.result==undefined||res.result==null){
+                            res.result = []
+                        }
+                        this.drivers = res.result;
+                    }
+                })
+            },
             addImg(path){
                 this.formItem.filePaths += path+",";
 			},
@@ -154,10 +148,9 @@
                 var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                        let hdsj = this.formItem.hdsj;
-                        this.formItem.kssj = this.getdateParaD(hdsj[0])
-                        this.formItem.jssj = this.getdateParaD(hdsj[1])
-                        delete this.formItem.hdsj;
+                        if (typeof this.formItem.sgsj == 'object'){
+                            this.formItem.sgsj = this.formItem.sgsj.format('yyyy-MM-dd hh:mm:ss');
+						}
 		                let url = this.apis.SG.ADD;
 		                this.$http.post(url,this.formItem).then((res) =>{
 		                    if(res.code===200){

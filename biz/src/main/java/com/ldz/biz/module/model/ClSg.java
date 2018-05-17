@@ -116,7 +116,7 @@ public class ClSg implements Serializable {
      * 联系电话
      */
     @Column(name = "LXDH")
-    private Date lxdh;
+    private String lxdh;
     /**
      * 备注
      */
@@ -124,15 +124,17 @@ public class ClSg implements Serializable {
     private Date bz;
 
     @Transient
-    private List<ClSgwj> sgwjs;
+    private String filePaths;
 
-    public List<ClSgwj> getSgwjs() {
-        return sgwjs;
+
+    public String getFilePaths() {
+        return filePaths;
     }
 
-    public void setSgwjs(List<ClSgwj> sgwjs) {
-        this.sgwjs = sgwjs;
+    public void setFilePaths(String filePaths) {
+        this.filePaths = filePaths;
     }
+
 
     private static final long serialVersionUID = 1L;
 
@@ -144,11 +146,11 @@ public class ClSg implements Serializable {
         this.bz = bz;
     }
 
-    public Date getLxdh() {
+    public String getLxdh() {
         return lxdh;
     }
 
-    public void setLxdh(Date lxdh) {
+    public void setLxdh(String lxdh) {
         this.lxdh = lxdh;
     }
 

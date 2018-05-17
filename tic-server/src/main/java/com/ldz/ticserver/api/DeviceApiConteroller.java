@@ -15,6 +15,7 @@ import com.ldz.ticserver.service.BizApiService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.Consts;
 import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.commonUtil.JsonUtil;
 
 /**
  * 设备信息收集接口
@@ -24,7 +25,7 @@ import com.ldz.util.bean.RequestCommonParamsDto;
 @RestController
 @RequestMapping("/api/device")
 public class DeviceApiConteroller {
-
+	Logger accessLog = LoggerFactory.getLogger("access_info");
 	private static final Logger logger = LoggerFactory.getLogger(DeviceApiConteroller.class);
 	@Autowired
 	private BizApiService bizApiService;
@@ -37,6 +38,7 @@ public class DeviceApiConteroller {
 	@RequestMapping("/gps")
 	public ApiResponse<String> postGpsData(@RequestBody RequestCommonParamsDto dto){
 		ApiResponse<String> ar = new ApiResponse<>();
+		accessLog.debug("接收到客户端的数据postGpsData:"+JsonUtil.toJson(dto));
 		//logger.debug("请求了GPS上传的方法");
 		if(dto!=null && StringUtils.isNotBlank(dto.getDeviceId())){
 			if(StringUtils.isNotBlank(dto.getSpeed())){
