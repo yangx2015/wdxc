@@ -68,7 +68,7 @@
         v.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
             if (res.code == 200){
                 this.cok.set('result',this.form)
-                this.cok.set("token",res.result);
+                this.cok.set("loginResult",res.result);
                 this.$router.push({
                     name:'Home'
                 })

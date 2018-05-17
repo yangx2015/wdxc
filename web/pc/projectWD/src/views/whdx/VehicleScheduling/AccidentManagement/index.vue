@@ -1,18 +1,55 @@
+<!--订单查阅-->
 <style lang="less">
-	@import '../../../../styles/common.less';
+    @import '../../../../styles/common.less';
 </style>
-<style lang="less" scoped="scoped">
-	.fromTiT {
-		/*text-align: right;*/
-	}
-
+<style>
+    .demo-upload-list{
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        text-align: center;
+        line-height: 60px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        overflow: hidden;
+        background: #fff;
+        position: relative;
+        box-shadow: 0 1px 1px rgba(0,0,0,.2);
+        margin-right: 4px;
+    }
+    .demo-upload-list-box{
+    	width: 100%;
+    	height: 100%;
+    }
+    .demo-upload-list img{
+        width: 100%;
+        height: 100%;
+        margin: auto;
+    }
+    .demo-upload-list-cover{
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,.6);
+    }
+    .demo-upload-list:hover .demo-upload-list-cover{
+        display: block;
+    }
+    .demo-upload-list-cover i{
+        color: #fff;
+        font-size: 20px;
+        cursor: pointer;
+        margin: 0 2px;
+    }
 </style>
-<!--事故管理-->
 <template>
-	<div class="boxbackborder">
+	<div class="boxbackborder acdive">
 		<Card>
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
-				<span class="tabPageTit">
+    			<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
 				<div style="height: 45px;line-height: 45px;">
@@ -21,15 +58,14 @@
 							<span>事故管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>
-							<Input v-model="findMess.zjhmLike" placeholder="请输入用户名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.hdbtLike" placeholder="请输入活动名称" style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
-							<Button type="primary" @click="AddDataList()">
+							<Button type="primary" @click="getDataList()">
 								<Icon type="plus-round"></Icon>
 							</Button>
 						</div>
@@ -38,55 +74,64 @@
 			</Row>
 			<Row>
 				<Table
-						:row-class-name="rowClassName"
-						:columns="tableTiT"
 						:height="tabHeight"
-						:data="tableData"></Table>
+						:row-class-name="rowClassName"
+						:columns="columns10"
+						:data="data9"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
-					  show-total
-					  show-elevator
-					  @on-change='pageChange'></Page>
+				<Page
+						:total=pageTotal
+						:current=page.pageNum
+						:page-size=page.pageSize
+						show-total
+						show-elevator
+						@on-change='pageChange'></Page>
 			</Row>
 		</Card>
-		<component
-			:is="compName"
-			:mess="mess"
-			:messType="messType"></component>
+    	<component :is="compName"
+    		:mess = 'choosedRow'
+    		@colsemodal='colsemodal'></component>
 	</div>
 </template>
-
 <script>
 	import mixins from '@/mixins'
 
 
-	import newmes from './comp/newmes.vue'
-	export default {
-		name: 'char',
-		components: {
-			newmes
+    import expandRow from './table-expand.vue';
+    import addmess from './comp/addmess.vue'
+	import mess from './comp/mess.vue'
+    export default {
+        components: {
+        	expandRow,
+        	addmess,
+			mess
         },
-		mixins: [mixins],
-		data() {
-			return {
-				mess:{},
-            	messType:true,
-            	compName:'',
-
-				SpinShow:true,
+        mixins:[mixins],
+        data () {
+            return {
+            	Carousel:3,
+            	SpinShow:true,
 				tabHeight: 220,
-				//分页
-				pageTotal: 1,
-				page: {
-					pageNum: 1,
-					pageSize:8
-				},
-				tableTiT: [
-					{
-                	  	title:'序号',
+            	compName: '',
+            	//收索
+                datetime:[],
+                choosedRow:{},
+                findMess:{
+                	hdbtLike:'',
+                	pageNum:1,
+            		pageSize:8
+                },
+            	//弹层
+            	pageTotal:1,
+            	page:{
+            		pageNum:1,
+            		pageSize:8
+            	},
+            	showModal:false,
+                columns10: [
+                    {
+                        title:'序号',
                         type: 'index',
                         align:'center',
                         width: 60,
@@ -117,35 +162,35 @@
                         key: 'bz'
                     },
                     {
-                      	title:'操作',
-                      	align:'center',
+                        title:'操作',
+                        align:'center',
                         type: 'action',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
                                     props: {
                                         type: 'success',
-										icon: 'edit',
-										shape: 'circle',
-										size: 'small'
+                                        icon: 'edit',
+                                        shape: 'circle',
+                                        size: 'small'
                                     },
                                     style: {
                                         marginRight: '5px'
                                     },
                                     on: {
                                         click: () => {
-                                        	this.messType = false
-                                        	this.mess = params.row
+                                            this.messType = false
+                                            this.mess = params.row
                                             this.compName = 'newmes'
                                         }
                                     }
                                 }),
                                 h('Button', {
                                     props: {
-                                       type: 'error',
-										icon: 'close',
-										shape: 'circle',
-										size: 'small'
+                                        type: 'error',
+                                        icon: 'close',
+                                        shape: 'circle',
+                                        size: 'small'
                                     },
                                     on: {
                                         click: () => {
@@ -156,56 +201,64 @@
                             ]);
                         }
                     },
-				],
-				tableData: [],
-				//收索
-                cjsjInRange:[],
-				findMess: {
-					cjsjInRange:'',
-					zjhmLike: '',
-					pageNum: 1,
-					pageSize:8
-				}
-			}
-		},
-		created() {
-			this.$store.commit('setCurrentPath', [{
-				title: '首页',
-			}, {
-				title: '车辆管理',
-			}, {
-				title: '事故管理',
-			}])
+                ],
+                data9: []
+            }
+        },
+        watch:{
+        	defaultList:function(n,o){
+        	}
+        },
+        created(){
+        	this.$store.commit('setCurrentPath', [{
+                title: '首页',
+            },{
+                title: '车辆管理',
+            },{
+                title: '事故管理',
+            }]),
 			this.tabHeight = this.getWindowHeight() - 290
-            this.SpinShow = false;
-            this.getmess()
-		},
-		methods: {
-			getmess(){
+			this.SpinShow = false;
+     		this.getmess()
+        },
+        methods:{
+        	getmess(){
 				var v = this
+				v.SpinShow = true;
 				this.$http.get(this.apis.SG.QUERY,{params:v.findMess}).then((res) =>{
-					log('事故数据',res)
-					v.tableData = res.page.list
+					v.data9 = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
 				})
 			},
-        	AddDataList() {
-				var v = this
-				v.compName = 'newmes'
-				this.messType = true;
-			},
+        	changeTime(val){
+        	},
+        	pageChange(event){
+        		var v = this
+        	},
         	findMessList(){
         		var v = this
+        		v.SpinShow = true;
+				this.$http.get(this.apis.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
+					 v.data9 = res.page.list
+					 v.pageTotal = res.page.total
+					 v.SpinShow = false;
+				 })
         	},
-        	listDele(){
-
+        	remove(id){
+        		this.util.del(this,this.apis.ADVERTISING.DELE,[id],()=>{
+                    this.getmess();
+				});
         	},
-            pageChange(event){
-        		var v = this
-        		v.page.pageNum = event
-//      		log(v.page)
-        	},
-		}
-	}
+        	getDataList() {
+				var v = this
+				this.choosedRow = null;
+				v.compName = 'addmess'
+				v.choosedRow = null
+			},
+			colsemodal() {
+				this.compName = ''
+			},
+        }
+    }
 </script>
