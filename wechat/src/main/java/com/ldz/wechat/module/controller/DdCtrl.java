@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -179,5 +180,10 @@ public class DdCtrl {
         RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
         String userId = getCurrentUser(true);
         return service.getOrderDriverList(userId,type);
+    }
+
+    @RequestMapping("getStartPointAndEndPoint")
+    public ApiResponse<Map<String,Object>> getStartPointAndEndPoint(String orderId){
+        return service.getStartPointAndEndPoint(orderId);
     }
 }

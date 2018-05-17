@@ -25,4 +25,6 @@ public interface DdService extends BaseService<ClDd,String> {
     ApiResponse<List<ClDd>> getOrderDriverList(String userId, String type);
 
     ApiResponse<String> evaluate(String orderId, String grade);
+
+    ApiResponse<Map<String,Object>> getStartPointAndEndPoint(String orderId);
 }

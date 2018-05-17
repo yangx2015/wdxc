@@ -4,8 +4,10 @@ package com.ldz.wechat.module.service.impl;
 import java.util.*;
 
 import com.ldz.wechat.module.mapper.ClClMapper;
+import com.ldz.wechat.module.mapper.ClGpsLsMapper;
 import com.ldz.wechat.module.model.*;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,6 +44,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private ClClMapper clMapper;
     @Autowired
     private JgService jgService;
+    @Autowired
+    private ClGpsLsMapper gpsLsMapper;
 
     @Autowired
     private YhService yhService;
@@ -202,5 +206,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         newOrder.setPjdj(new Short(grade));
         entityMapper.updateByPrimaryKeySelective(newOrder);
         return ApiResponse.success();
+    }
+
+    @Override
+    public ApiResponse<Map<String, Object>> getStartPointAndEndPoint(String orderId) {
+        RuntimeCheck.ifBlank(orderId,"请选择订单");
+        ClDd order = entityMapper.selectByPrimaryKey(orderId);
+        RuntimeCheck.ifNull(order,"订单不存在");
+        String zdbh = order.getZdbm();
+        RuntimeCheck.ifBlank(zdbh,"未指派车辆");
+        SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
+        condition.eq(ClGpsLs.InnerColumn.zdbh,zdbh);
+        condition.gte(ClGpsLs.InnerColumn.cjsj,order.getYysj());
+        List<ClGpsLs> gpsLs = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        return null;
     }
 }
