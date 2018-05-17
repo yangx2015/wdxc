@@ -128,7 +128,7 @@
 
 				</div>
 	        </div>
-	        <div v-show="horizontal=='4'" style="overflow: hidden;" class="topmar">
+	        <div v-if="horizontal=='4' && detail.initialOracle.length > 0" style="overflow: hidden;" class="topmar">
 	        	<Col span="6" class="margin-top-5">
 					<h5>用车单位：</h5>{{detail.initialOracle[0].jgmc}}
 				</Col>

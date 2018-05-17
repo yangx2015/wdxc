@@ -271,8 +271,6 @@
                 this.treeValue = vaule;
             },
             changeCLLX(v,s){
-                // console.log(v)
-				// console.log(s)
                 this.formItem.cllx=v[0]
                 this.formItem.zws=v[1]
 			},

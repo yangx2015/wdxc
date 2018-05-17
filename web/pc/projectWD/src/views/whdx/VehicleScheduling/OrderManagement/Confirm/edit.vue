@@ -80,9 +80,10 @@
 								</Col>
 								<Col span="12">
 									<FormItem label="车型">
-										<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
-											<Option v-for="item in zwsList" :value="item.value"></Option>
-										</Select>
+										<Cascader @on-change="changeCLLX" :data="CasData" v-model="cllx" ></Cascader>
+										<!--<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>-->
+											<!--<Option v-for="item in zwsList" :value="item.value"></Option>-->
+										<!--</Select>-->
 									</FormItem>
 								</Col>
 							</Row>
@@ -162,6 +163,37 @@
                     cs: '',
                     dz:'',
                 },
+                CasData:[{
+                    value: '20',
+                    label: '大车',
+                    children: [{
+                        value: '20',
+                        label: '20',
+                    },{
+                        value: '32',
+                        label: '32',
+                    },{
+                        value: '45',
+                        label: '45',
+                    },{
+                        value: '48',
+                        label: '48',
+                    }]
+                }, {
+                    value: '10',
+                    label: '小车',
+                    disabled: false,
+                    children: [{
+                        value: '5',
+                        label: '5',
+                    },{
+                        value: '7',
+                        label: '7',
+                    },{
+                        value: '11',
+                        label: '11',
+                    }]
+                }],
                 jgdmList:[],
                 ruleInline:{
 
@@ -169,6 +201,7 @@
                 addmess:{
 
                 },
+				cllx:[],
                 fromMoneyList:[
                     {
                         value:'行政费用'
@@ -208,13 +241,18 @@
         created(){
             if (this.$parent.choosedRow){
                 this.form = this.$parent.choosedRow;
-                this.operate = '编辑'
+                this.operate = '编辑';
+                this.cllx = [this.form.cllx,this.form.zws];
             }
         },
         mounted(){
             this.getOrgList();
         },
         methods: {
+            changeCLLX(v,s){
+                this.form.cllx=v[0]
+                this.form.zws=v[1]
+            },
             getOrgList(){
                 this.$http.get(this.apis.FRAMEWORK.getSubOrgList).then((res) =>{
                     this.jgdmList = res.result
