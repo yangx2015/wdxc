@@ -27,8 +27,8 @@ httpInstance.interceptors.request.use((config) => {
         }
     }
     // 在发送请求之前做些什么
-   if(Cookies.get('token')){
-    config.headers.token = Cookies.get('token');
+   if(Cookies.get('loginResult')){
+    config.headers.token = Cookies.get('loginResult');
    }
     return config;
 }, function (error) {

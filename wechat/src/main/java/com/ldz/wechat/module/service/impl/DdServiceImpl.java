@@ -168,7 +168,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     public ApiResponse<List<ClDd>> getOrderDriverList(String userId, String type){
         ApiResponse<List<ClDd>> result = new ApiResponse<List<ClDd>>();
         SimpleCondition condition = new SimpleCondition(ClDd.class);
-        userId = "2123123";
         condition.eq(ClDd.InnerColumn.sj.name(),userId);
 
        if(StringUtils.equals(type,"2")) {//待确认
