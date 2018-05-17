@@ -63,9 +63,9 @@
 	  				<i class="iconfont icon-left"></i>
 	  			</span>
 	  			<span class="tit">{{XBline.name}}</span>
-	  			<!--<span slot="right" @click="mapmess">
+	  			<span slot="right" @click="mapmess">
 	  				<i class="iconfont icon-ditu"></i>
-	  			</span>-->
+	  			</span>
 	  			</x-header>
 	  	</div>
 	  	<div class="carmess">
@@ -131,7 +131,7 @@
 	  		</div>
 	  	</div>
 	  	<!--<div class="footer">
-	  		
+
 	  	</div>-->
 	</div>
 </template>
@@ -139,7 +139,7 @@
 <script>
 	import {XHeader } from 'vux'
 	import carline from './comp/carline'
-	
+
 	import configApi from '@/axios/config.js'
 	export default {
 		name:'',
@@ -154,7 +154,7 @@
 			}
 		},
 		created(){
-//			console.log(this.$route.query.lineID)	
+//			console.log(this.$route.query.lineID)
 			this.lineMess()
 		},
 		mounted(){
@@ -189,4 +189,4 @@
 </script>
 
 <style>
-</style> 
+</style>

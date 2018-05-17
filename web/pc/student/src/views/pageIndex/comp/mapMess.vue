@@ -51,7 +51,7 @@
 			}
 		},
 		created(){
-			
+
 		},
 		mounted(){
 			var v = this
@@ -63,17 +63,17 @@
 				mapTypes:[
 		            BMAP_NORMAL_MAP
 //		            BMAP_HYBRID_MAP
-		        ]}));	  
+		        ]}));
 
 			this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-		    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-		    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-		    this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
-		  	
+		    // this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+		    // this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+		    // this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
+
 		  	this.areaF();
-			
+
 			this.messPoint(this.mess);
-			
+
 			this.polyline()
 		},
 		methods:{

@@ -87,6 +87,9 @@
 				</div>
 			</div>
 		</div>
+    <component
+      :is="componentName"
+      :mess="choosedRow"></component>
 	</div>
 </template>
 
