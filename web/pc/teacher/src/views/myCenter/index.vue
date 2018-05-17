@@ -18,17 +18,18 @@
       <div class="Flist" @click="feedback()">
         <i class="iconfont icon-ybbfeedback"></i>
         <span>
-           建议反馈
+          建议反馈
+          <!--<a href="tel:18620202022"></a>-->
         </span>
       </div>
-      <div class="Flist">
-        <i class="iconfont icon-setting"></i>
-        <span>
-           设置
-        </span>
-      </div>
+      <!--<div class="Flist">-->
+        <!--<i class="iconfont icon-setting"></i>-->
+        <!--<span>-->
+           <!--设置-->
+        <!--</span>-->
+      <!--</div>-->
     </div>
-    <div class="LoginClose">
+    <div class="LoginClose" @click="esc">
         <button>退出登录</button>
     </div>
 	</div>
@@ -55,7 +56,15 @@
         this.$router.push({
           name: 'feedBack'
         });
+      },
+      esc(){
+        this.cok.set("token",'');
+        this.cok.set('result','')
+        this.$router.push({
+          name: 'login'
+        });
       }
+
     }
 	}
 </script>

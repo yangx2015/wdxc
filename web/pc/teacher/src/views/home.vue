@@ -239,7 +239,14 @@
         var v =this
         console.log('***********',this.form)
         v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
-
+          if (res.code==200){
+            v.tsi('订单创建成功')
+            setTimeout(function () {
+              this.$router.push({
+                name:'list'
+              })
+            },1000*1.5)
+          }
         }).catch((error)=>{
 
         })

@@ -3,12 +3,12 @@
 </style>
 <template>
   <div class="login">
-      <div class="backSty" @click="back">
-        <i class="iconfont icon-left"></i>
-      </div>
-      <div class="backCenter" @click="backCenter">
-        首页
-      </div>
+      <!--<div class="backSty" @click="back">-->
+        <!--<i class="iconfont icon-left"></i>-->
+      <!--</div>-->
+      <!--<div class="backCenter" @click="backCenter">-->
+        <!--首页-->
+      <!--</div>-->
       <div class="form">
         <md-field>
           <md-input-item
