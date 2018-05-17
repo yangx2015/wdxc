@@ -38,7 +38,7 @@ public class DeviceApiConteroller {
 	@RequestMapping("/gps")
 	public ApiResponse<String> postGpsData(@RequestBody RequestCommonParamsDto dto){
 		ApiResponse<String> ar = new ApiResponse<>();
-		accessLog.info("接收到客户端的数据postGpsData:"+JsonUtil.toJson(dto));
+		accessLog.debug("接收到客户端的数据postGpsData:"+JsonUtil.toJson(dto));
 		//logger.debug("请求了GPS上传的方法");
 		if(dto!=null && StringUtils.isNotBlank(dto.getDeviceId())){
 			if(StringUtils.isNotBlank(dto.getSpeed())){
