@@ -58,7 +58,7 @@
 							<span>事故管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.hdbtLike" placeholder="请输入活动名称" style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -97,7 +97,6 @@
 <script>
 	import mixins from '@/mixins'
 
-
     import expandRow from './table-expand.vue';
     import addmess from './comp/addmess.vue'
 	import mess from './comp/mess.vue'
@@ -118,7 +117,7 @@
                 datetime:[],
                 choosedRow:{},
                 findMess:{
-                	hdbtLike:'',
+                    cphLike:'',
                 	pageNum:1,
             		pageSize:8
                 },
@@ -157,9 +156,21 @@
                         key: 'sgsj'
                     },
                     {
-                        title: '备注',
+                        title: '事故描述',
                         align:'center',
-                        key: 'bz'
+                        key: 'sgms'
+                    },
+                    {
+                        title:'附件',
+                        type: 'expand',
+                        width: 65,
+                        render: (h, params) => {
+                            return h(expandRow, {
+                                props: {
+                                    row: params.row
+                                }
+                            })
+                        }
                     },
                     {
                         title:'操作',
@@ -180,8 +191,8 @@
                                     on: {
                                         click: () => {
                                             this.messType = false
-                                            this.mess = params.row
-                                            this.compName = 'newmes'
+                                            this.choosedRow = params.row
+                                            this.compName = 'mess'
                                         }
                                     }
                                 }),
@@ -194,7 +205,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.listDele(params.row)
+                                            this.remove(params.row.id)
                                         }
                                     }
                                 })
@@ -239,14 +250,14 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(this.apis.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
+				this.$http.get(this.apis.SG.QUERY,{params:this.findMess}).then((res) => {
 					 v.data9 = res.page.list
 					 v.pageTotal = res.page.total
 					 v.SpinShow = false;
 				 })
         	},
         	remove(id){
-        		this.util.del(this,this.apis.ADVERTISING.DELE,[id],()=>{
+        		this.util.del(this,this.apis.SG.DELE,[id],()=>{
                     this.getmess();
 				});
         	},

@@ -14,64 +14,38 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
-							<FormItem label='事故标题'>
-								<Input type="text" v-model="formItem.hdbt" placeholder="请填写事故标题...">
-								</Input>
+							<FormItem prop="cph" label='车牌号'>
+								<Input type="text" v-model="formItem.cph" placeholder="请填写车牌号..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='URL'>
-								<Input type="text" v-model="formItem.url" placeholder="请填写URL...">
-								</Input>
-							</FormItem>
-						</Col>
-					</Row>
-
-					<Row>
-						<Col span="12">
-							<FormItem label='事故类型'>
-								<Select filterable clearable  v-model="formItem.hdlx">
-									<Option value="00">微信</Option>
-									<Option value="01">智能站牌</Option>
+							<FormItem prop="sj" label='司机'>
+								<Select filterable clearable  v-model="formItem.sj">
+									<Option v-for="(item) in drivers" :value="item.sfzhm" :key="item.sfzhm">{{item.xm}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='位置'>
-								<Select filterable clearable  v-model="formItem.wz">
-									<Option value="00">上</Option>
-									<Option value="01">中</Option>
-									<Option value="02">下</Option>
-								</Select>
-							</FormItem>
-						</Col>
-					</Row>
-					<Row>
-						<Col span="12">
-							<FormItem label='事故时间'>
-								<DatePicker v-model="cjsjInRange"
-									format="yyyy-MM-dd" type="daterange"
-									placement="bottom-end"
-									placeholder="请输事故时间"
-									style="width: 100%"></DatePicker>
-
-								<!--<Input type="text" v-model="formItem.wjlx" placeholder="请填写广告类型...">
-								</Input>-->
+							<FormItem label='事故地点'>
+								<Input type="text" v-model="formItem.sgdd" placeholder="请填写车牌号..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
-							<FormItem label='附件类型'>
-								<Select filterable clearable  v-model="formItem.wjlx">
-									<Option value="00">图片</Option>
-									<Option value="01">视频</Option>
-								</Select>
+							<FormItem prop="hdsj" label='事故时间'>
+								<DatePicker v-model="formItem.sgsj"
+											format="yyyy-MM-dd" type="datetime"
+											placement="bottom-end"
+											placeholder="请输事故时间"
+											style="width: 100%"></DatePicker>
 							</FormItem>
 						</Col>
-					</Row>
-
-					<Row>
+						<Col span="12">
+							<FormItem prop="sgms" label='事故描述'>
+								<Input type="text" v-model="formItem.sgms" placeholder="请填写事故描述..."></Input>
+							</FormItem>
+						</Col>
 						<Col span="24">
-							<FormItem v-if="formItem.wjlx==='00'">
+							<FormItem>
 								<div>
 									添加图片
 								</div>
@@ -80,12 +54,6 @@
 									@removeFile = "removeFile"
 									:urlList = "mess.filePaths"
 								></addlistfileImg>
-							</FormItem>
-							<FormItem v-else-if="formItem.wjlx==='01'">
-								<div>
-									添加视频
-								</div>
-								<addlistfileVideo></addlistfileVideo>
 							</FormItem>
 						</Col>
 					</Row>
@@ -118,10 +86,10 @@
 				showModal: true,
 				mesF: false,
 				formItem: {
-					wjlx:'00',
 					kssj:'',
 					jssj:''
 				},
+                drivers:[],//驾驶员
                 ruleInline:{},
                 cjsjInRange:[]
 			}
@@ -133,16 +101,31 @@
 			}
 		},
 		watch: {
-			cjsjInRange:function(newQuestion, oldQuestion){
-				this.formItem.kssj = this.getdateParaD(newQuestion[0])
-				this.formItem.jssj = this.getdateParaD(newQuestion[1])
-			},
 		},
 		created(){
+            this.getDrivers();
 			this.formItem = this.mess
-			this.cjsjInRange = [this.mess.kssj,this.mess.jssj]
-		},
+            console.log(this.formItem);
+        },
 		methods: {
+            getDriverName(){
+                for(let r of this.drivers){
+                    if (r.sfzhm ===  this.formItem.sj){
+                        this.addmess.sjxm = r.xm;
+                    }
+                }
+            },
+            getDrivers(){
+                let v = this;
+                v.$http.get(this.apis.JSY.NOT_BIND_LIST).then((res) =>{
+                    if(res.code===200){
+                        if(res.result==undefined||res.result==null){
+                            res.result = []
+                        }
+                        this.drivers = res.result;
+                    }
+                })
+            },
             addImg(path){
                 this.formItem.filePaths += path+",";
 			},

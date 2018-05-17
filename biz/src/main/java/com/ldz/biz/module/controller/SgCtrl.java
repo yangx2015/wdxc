@@ -25,17 +25,5 @@ public class SgCtrl extends BaseController<ClSg,String>{
     protected BaseService<ClSg, String> getBaseService() {
         return service;
     }
-    @RequestMapping(value="/update", method={RequestMethod.POST})
-    public ApiResponse<String> update(ClSg entity){
-        return service.updateEntity(entity);
-    }
 
-    @RequestMapping("detail")
-    public ApiResponse<ClSg> detail(String sgId){
-        RuntimeCheck.ifBlank(sgId,"记录不存在");
-        ClSg sg = service.findById(sgId);
-        RuntimeCheck.ifNull(sg,"未找到记录");
-        service.setSgwj(sg);
-        return ApiResponse.success(sg);
-    }
 }
