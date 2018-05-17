@@ -3,7 +3,7 @@
   @import "./eval.less";
 </style>
 <template>
-    <div class="box evaluate" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=333&center=武汉&markers='+'汉口火车站'+'|'+'武汉大学'+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
+    <div class="box evaluate" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center=武汉&markers='+mess.mdd+'|'+mess.hcdz+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
       <div class="body">
       </div>
       <div class="carMess">
