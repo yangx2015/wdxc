@@ -38,6 +38,11 @@
         padding:10px 0 10px 25px;
       }
     }
+    /*行程详细*/
+    .xcxx{
+        padding: 8px 14px;
+    }
+    /*行程确认*/
     .xcqr{
       padding: 1rem;
     }
@@ -73,8 +78,55 @@
         <div class="body">
 
         </div>
-        <div class="xcqr">
-          <Button type="success" long>行程确认</Button>
+        <div class="xcxx" v-show="mess.ddzt==20||mess.ddzt==30">
+            <div class="box-row"
+                 style="text-align: center;height: 75p;background: #fff">
+              <div class="body-O">
+                <div>
+                  里程:
+                </div>
+                <div>
+                  {{mess.lc | text}}公里
+                </div>
+              </div>
+              <div class="body-O">
+                <div>
+                  单价:
+                </div>
+                <div>
+                  {{mess.dj | text}}元/公里
+                </div>
+              </div>
+              <div mess="body-O">
+                <div>
+                  过桥费:
+                </div>
+                <div>
+                  {{mess.gqf | text}}元
+                </div>
+              </div>
+              <div class="body-O">
+                <div>
+                  路停费:
+                </div>
+                <div>
+                  {{mess.glf | text}}元
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="xcqr" v-show="mess.ddzt!=20&&mess.ddzt!=30">
+          <div class="box-row">
+              <div class="body-O" style="margin: 0 8px">
+                 <Button long @click="center">首页</Button>
+              </div>
+              <div class="body-O" style="margin: 0 8px">
+                <Button type="success" long @click="lineOk">行程确认</Button>
+              </div>
+          </div>
+        </div>
+        <div class="xcqr" v-show="mess.ddzt==20||mess.ddzt==30">
+          <Button type="success" long @click="center">首页</Button>
         </div>
     </div>
 </template>
@@ -85,6 +137,23 @@
         data(){
           return{
             mess:this.$store.state.app.lineData,
+          }
+        },
+        filters: {
+          text: function (value) {
+            if (!value) return '***'
+          }
+        },
+        methods:{
+          center(){
+            this.$router.push({
+              name:'center'
+            })
+          },
+          lineOk(){
+            this.$router.push({
+              name:'okModal'
+            })
           }
         }
     }

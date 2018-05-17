@@ -46,6 +46,11 @@ const router = new Router({
       path: '/XCmess',
       name: 'XCmess',
       component: () => import('@/views/XCmess')
+    },
+    {
+      path: '/okModal',
+      name: 'okModal',
+      component: () => import('@/views/pageIndex/comp/comp/okModal')
     }
   ]
 })

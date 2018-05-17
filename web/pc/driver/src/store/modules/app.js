@@ -3,9 +3,13 @@ import Vue from 'vue';
 
 const app = {
     state: {
+      listType:0,
       lineData:{}
     },
     mutations: {
+      listTypeCh(state,data){
+        state.listType = data
+      },
       lineMess(state,data){
             state.lineData = data
         }

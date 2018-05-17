@@ -99,8 +99,9 @@
         name: "modal",
         data(){
           return {
+            mess:this.$store.state.app.lineData,
             formValidate: {
-              id:this.mess.id,
+              id:this.$store.state.app.lineData.id,
               lc: '',
               dj: '',
               gqf: '',
@@ -117,18 +118,18 @@
           }
         },
       props:{
-        mess:{
-          type:Object,
-          default:{}
-        }
+        // mess:{
+        //   type:Object,
+        //   default:{}
+        // }
       },
       created(){
       },
         methods: {
           handleSubmit (name) {
             var v = this
-            this.$refs[name].validate((valid) => {
-              if (valid) {
+            // this.$refs[name].validate((valid) => {
+            //   if (valid) {
                 this.$http.post(this.apis.LISTOK.CHANGE,this.formValidate).then((res)=>{
                     if(res.code==200){
                       this.$parent.close()
@@ -137,13 +138,14 @@
                 }).catch((error) =>{
                   console.log('出错了',error)
                 })
-              } else {
-              }
-            })
+            //   } else {
+            //   }
+            // })
           },
           handleReset () {
               // this.$parent.compName= ''
-            this.$emit('close')
+            // this.$emit('close')
+            this.$router.back()
           }
         }
     }

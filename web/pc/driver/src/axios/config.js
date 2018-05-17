@@ -14,7 +14,7 @@ module.exports = {
   MESLIST:{//订单列表
     QUERTY:'/put/dd/getsjlist'
   },
-  LISTOK:{
+  LISTOK:{//行程确认
     CHANGE:'/put/dd/update'
   }
 }
