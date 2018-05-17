@@ -12,4 +12,10 @@ module.exports = {
     QUERTY:'put/yj/save',
     LIST:'put/yj/pager'
   },
+  MAPMDATA:{
+    QUERTY:'/put/xl/getStationGpsList'
+  },
+  GETCAR:{
+    QUERTY:'/put/xl/getNextCars'
+  }
 }

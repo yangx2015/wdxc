@@ -87,9 +87,9 @@
 				</div>
 			</div>
 		</div>
-    <component
-      :is="componentName"
-      :mess="choosedRow"></component>
+    <!--<component-->
+      <!--:is="componentName"-->
+      <!--:mess="choosedRow"></component>-->
 	</div>
 </template>
 
@@ -161,11 +161,14 @@
 	        		console.log('出错了',error)
 	        	})
 		  	},
-			demo01_onIndexChange (index) {
+		  	demo01_onIndexChange (index) {
 //				console.log(index)
 		    },
 		    lineMess(id){
-		    	this.$router.push('/lineMess?lineID='+id)
+          this.$store.commit('ChlineID',id)
+		    	this.$router.push({
+            name:'lineMess'
+          })
 		    },
 		    onItemClick(index){
 		    	if(index==0){

@@ -7,7 +7,7 @@
 			height: 18px;
 			border: solid 4px #fba05e;
 			border-radius: 20px;
-			background-color: #fffa8a;
+			/*background-color: #fffa8a;*/
 			position: absolute;
 			left: 0;
 			top: 0;
@@ -16,7 +16,7 @@
 			width: 18px;
 			height: 18px;
 			border-radius: 20px;
-			background-color: #ffc573;
+			/*background-color: #ffc573;*/
 			position: absolute;
 			left: 0;
 			top: 0;
@@ -24,7 +24,8 @@
 		.line{
 			width: 80px;
 			height: 2px;
-			background-color: #ffe7a1;
+			/*background-color: #ffe7a1;*/
+      /*background-color: red;*/
 			position: absolute;
 			left: 18px;
 			top: 9px;
@@ -66,14 +67,20 @@
 </style>
 <template>
 	<div class="carline">
-		<div class="bar" v-if="!zd"></div>
-		<div class="barT" v-else></div>
-		
-		<div class="line" v-show="lineShow"></div>
-		
+		<div class="bar"
+         :style="{backgroundColor:barColor}"
+         v-if="!zd"></div>
+		<div class="barT"
+         :style="{backgroundColor:barColor}"
+         v-else></div>
+
+		<div class="line"
+         :style="{backgroundColor:lineColor}"
+         v-show="lineShow"></div>
+
 		<div class="name" v-if="!zd">{{siteName}}</div>
 		<div class="nameT" v-else>{{siteName}}</div>
-		
+
 		<i class="carT iconfont icon-weibiaoti507" v-show="zd"></i>
 		<i class="car iconfont icon-weibiaoti507" v-show="linecar"></i>
 	</div>
@@ -99,6 +106,14 @@
 				type:Boolean,
 				default:true
 			},
+      lineColor:{
+        type:String,
+        default:'#ffa700'
+      },
+      barColor:{
+        type:String,
+        default:'#ffa700'
+      },
 			siteName:{
 				type:String,
 				default:"站点名称"

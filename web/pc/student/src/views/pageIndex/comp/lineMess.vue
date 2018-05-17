@@ -80,10 +80,10 @@
 	  		</div>
 	  	</div>
 	  	<div class="cartime box-row">
-	  		<!--<div class="body-O body-left">
+	  		<div class="body-O body-left">
 	  			<div>
 	  				<i class="iconfont icon-xinhao"></i>
-	  				<span class="text">2</span>
+	  				<span class="text">{{carZD[0] | carMess}}</span>
 	  				站后
 	  			</div>
 	  			<div>
@@ -93,20 +93,22 @@
 	  		<div class="body-O">
 	  			<div>
 	  				<i class="iconfont icon-xinhao"></i>
-	  				<span class="text">4</span>
+	  				<span class="text">{{carZD[1] | carMess}}</span>
 	  				站后
 	  			</div>
 	  			<div>
 	  				第二辆车抵达
 	  			</div>
-	  		</div>-->
+	  		</div>
 	  	</div>
 	  	<div class="carlines body">
 	  		<div class="box-row-z">
-	  			<div v-for="(item,index) in XBline.list">
+	  			<div v-for="(item,index) in XBline.list" @click="getZD(item,index)">
 	    			<carline
 	    				:zd="item.entryCount!=0"
 	    				:linecar='item.exportCount!=0'
+              :lineColor="item.lineColor"
+              :barColor="item.bar"
 	    				:siteName="item.zdName"
 	    				:lineShow="!(index==XBline.list.length-1)"></carline>
 	    		</div>
@@ -146,16 +148,29 @@
 		components: {
 		    XHeader,carline
 		},
+    filters: {
+      carMess: function (value) {
+        if (value==null||value==undefined||value=='') return '*'
+        return value
+      }
+    },
 		data(){
 			return{
 				XBline:{
 					list:[{}]
-				}
+				},
+        carZD:['','']
 			}
 		},
 		created(){
 //			console.log(this.$route.query.lineID)
-			this.lineMess()
+      if(this.$store.state.app.lineID !=0){
+			  this.lineMess(this.$store.state.app.lineID)
+      }else {
+        this.$router.push({
+          name:'center'
+        })
+      }
 		},
 		mounted(){
 		},
@@ -170,11 +185,15 @@
 					name:'mapMess'
 				})
 			},
-			lineMess(){
+			lineMess(id){
 				var v = this
-				this.$http.post(configApi.LINEMESS.QUERTY,{'xlid':this.$route.query.lineID}).then((res)=>{
+				this.$http.post(configApi.LINEMESS.QUERTY,{'xlid':id}).then((res)=>{
 		  			if(res.code ==200){
 		  				console.log('线路详情 ',res)
+              res.result.list.forEach((item,index)=>{
+                item.lineColor = '#ffa700'
+                item.bar = '#ffa700'
+              })
 		  				v.XBline = res.result
 //		  				v.$Message.success('This is a success tip');
 		  			}else{
@@ -183,7 +202,28 @@
 		  		}).catch((error) =>{
 	        		console.log('出错了',error)
 	        	})
-			}
+			},
+      getZD(item,index){
+			  this.XBline.list.forEach((it,dex)=>{
+			    if(dex>=index){
+            it.lineColor = '#c9c9c9'
+          }else {
+            it.lineColor = '#ffa700'
+          }
+
+          if(dex>index){
+            it.bar = '#c9c9c9'
+          }else {
+            it.bar = '#ffa700'
+          }
+
+        })
+        this.$http.post(configApi.GETCAR.QUERTY,{'xlId':this.$store.state.app.lineID,'zdId':item.zdId}).then((res)=>{
+          if(res.code == 200&&res.result){
+            this.carZD = res.result
+          }
+        })
+      }
 		}
 	}
 </script>
