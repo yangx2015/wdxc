@@ -218,7 +218,20 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
         condition.eq(ClGpsLs.InnerColumn.zdbh,zdbh);
         condition.gte(ClGpsLs.InnerColumn.cjsj,order.getYysj());
-        List<ClGpsLs> gpsLs = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
-        return null;
+        condition.setOrderByClause("cjsj asc");
+        Map<String,Object> map = new HashMap<>();
+        List<ClGpsLs> gpsLs1 = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        if (gpsLs1.size() != 0){
+            map.put("ksjd",gpsLs1.get(0).getBdjd());
+            map.put("kswd",gpsLs1.get(0).getBdwd());
+        }
+
+        condition.gte(ClGpsLs.InnerColumn.cjsj,order.getSjqrsj());
+        List<ClGpsLs> gpsLs2 = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        if (gpsLs2.size() != 0){
+            map.put("jsjd",gpsLs2.get(0).getBdjd());
+            map.put("jswd",gpsLs2.get(0).getBdwd());
+        }
+        return ApiResponse.success(map);
     }
 }
