@@ -201,7 +201,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SimpleCondition condition = new SimpleCondition(ClDd.class);
         condition.eq(ClDd.InnerColumn.sj.name(),userId);
 
-       if(StringUtils.equals(type,"2")) {//待确认
+        if ("1".equals(type)){
+            Date today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            condition.gte(ClDd.InnerColumn.yysj,today);
+            condition.setOrderByClause(ClDd.InnerColumn.yysj.asc());
+        }else if(StringUtils.equals(type,"2")) {//待确认
             // 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机完成行程(行程结束)；30-队长确认
             condition.eq(ClDd.InnerColumn.ddzt.name(),"13");
            condition.setOrderByClause(ClDd.InnerColumn.yysj.asc());
