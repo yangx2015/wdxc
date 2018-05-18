@@ -38,6 +38,7 @@ public class ClJsyServiceImpl implements ClJsyService{
 		String token = JwtUtil.createWechatToken("jsy",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		request.setAttribute("type","jsy");
+		request.setAttribute("orgCode",jsy.getJgdm());
 		request.setAttribute("userInfo",userInfo);
 		Map<String,Object> map = new HashMap<>();
 		map.put("token",token);

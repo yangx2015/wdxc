@@ -3,6 +3,7 @@ package com.ldz.wechat.module.service.impl;
 
 import java.util.*;
 
+import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
 import com.ldz.wechat.module.mapper.ClGpsLsMapper;
 import com.ldz.wechat.module.model.*;
@@ -56,6 +57,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     @Override
     protected Mapper<ClDd> getBaseMapper() {
         return entityMapper;
+    }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        String userId = getCurrentUser(true);
+        condition.eq(ClDd.InnerColumn.ckCjl,userId);
+        condition.setOrderByClause("cjsj desc");
+        return true;
     }
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
