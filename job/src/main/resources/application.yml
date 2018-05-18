@@ -3,9 +3,11 @@ spring:
   thread:
     pool:
       corePoolSize: 10
-      maxPoolSize: 20
+      maxPoolSize: 100
       keepAliveSeconds: 120
-      queueCapacity: 50
+      queueCapacity: 200
+      waitForTasksToCompleteOnShutdown: true
+      awaitTerminationSeconds: 30
   #redis配置信息
   redis:
     host: 127.0.0.1
