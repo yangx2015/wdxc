@@ -130,7 +130,7 @@
 									驾驶时长(min)
 								</div>
 								<div class="mess">
-									{{getMinute(totalTime)}}
+									{{getMinute(totalTime) | GLmess}}
 								</div>
 							</div>
 							<div class="body-1" style="margin: 4px;">
@@ -138,7 +138,7 @@
 									驾驶次数
 								</div>
 								<div class="mess">
-									{{pathList.length}}
+									{{pathList.length | GLmess}}
 								</div>
 							</div>
 							<!--<div class="body-1" style="margin: 4px">-->
@@ -243,6 +243,12 @@
 	export default{
 		name:'historyTarck',
         mixins: [mixins],
+	    filters:{
+                GLmess(val){
+                    if(val) return val
+		    return '0'
+		}
+	    },
 		components:{
             bkshow
 		},
