@@ -1,15 +1,19 @@
 <style lang="less">
   @import './login.less';
+  @import "../styles/box";
 </style>
 <template>
-  <div class="login">
+  <div class="login box">
       <!--<div class="backSty" @click="back">-->
         <!--<i class="iconfont icon-left"></i>-->
       <!--</div>-->
       <!--<div class="backCenter" @click="backCenter">-->
         <!--首页-->
       <!--</div>-->
-      <div class="form">
+      <div class="titIcon">
+        <img src="../img/logo.png" alt="">
+      </div>
+      <div class="form body-D">
         <md-field>
           <md-input-item
             title="姓名"
@@ -26,10 +30,11 @@
             clearable
           ></md-input-item>
         </md-field>
+        <div class="submit"  @click="login">
+          <md-button>登录</md-button>
+        </div>
       </div>
-    <div class="submit"  @click="login">
-      <md-button>登录</md-button>
-    </div>
+    <img style="width: 100%" src="../img/logbotImg.jpg" alt="">
   </div>
 </template>
 

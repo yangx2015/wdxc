@@ -8,6 +8,27 @@
       </div>
       <div class="carMess">
           <div class="box-row tit">
+              <div class="titIcon">
+                <img src="./img/drive.png" style="width: 1rem">
+              </div>
+              <div class="drivMess body-O">
+                  <div class="drvName">
+                    {{mess.sjxm}}
+                  </div>
+                  <div class="drivCar">
+                    {{mess.cph}}
+                  </div>
+                  <div class="carZws">
+                    {{mess.zws}}座位
+                  </div>
+              </div>
+              <div class="drivPhone">
+                <a :href="'tel:'+mess.sjdh">
+                  <i class="iconfont icon-dianhua1"></i>
+                </a>
+              </div>
+          </div>
+          <div class="box-row tit" v-show="false">
             <div class="body-r-2 titBox">
               <div class="box-row xxxx">
                   <div class="body-O img">
@@ -46,7 +67,7 @@
                   里程
                 </div>
                 <div class="mess">
-                  {{mess.lc}}
+                  {{mess.lc | messCh}}
                   公里
                 </div>
               </div>
@@ -55,7 +76,7 @@
                   金额
                 </div>
                 <div class="mess">
-                  {{mess.zj}}
+                  {{mess.zj | messCh}}
                   元
                 </div>
               </div>
@@ -88,6 +109,12 @@
         components:{
           fiveStar
         },
+      filters:{
+        messCh(val){
+          if(val=='')return '0'
+          return val
+        }
+      },
         data(){
           return{
 
@@ -99,15 +126,16 @@
         },
         created(){
           if(this.cok.get('result')) {
-
           }else{
             this.$router.push({
               name:'login'
             })
           };
-
+          console.log(this.mess)
           if(this.mess.pjdj==""){
             this.bj = true
+          }else if(this.mess.pjdj==undefined){
+            this.$router.back()
           }else {
             this.bj = false
             this.pf = this.mess.pjdj

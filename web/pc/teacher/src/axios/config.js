@@ -22,7 +22,8 @@ module.exports = {
     QUERTY:'/put/dd/getzdxm'
   },
   DDLIST:{//订单列表
-    QUERTY:'/put/dd/getorderworkerslis'
+    // QUERTY:'/put/dd/getorderworkerslis'
+    QUERTY:'/put/dd/pager'
   },
   REMOVE:{
 	  DELE:'/put/yj/removeIds'

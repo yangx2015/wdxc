@@ -6,9 +6,9 @@
 	<div class="box">
 		<div class="header">
 			<div class="box-row">
-				<!--<div class="titLeft" @click="MyCenter()">-->
-					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
-				<!--</div>-->
+				<div class="titLeft" @click="backlogin()">
+        <Icon type="chevron-left" color="#949494" size='26'></Icon>
+      </div>
 				<div class="titCenter body-O"
              style="text-align: center;font-size: 16px;font-weight: 600;color:#a8a8a8">
 					 <!--<Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>-->
@@ -84,6 +84,11 @@
 
 		},
 		methods:{
+        backlogin(){
+          this.$router.push({
+            name:'login'
+          })
+        },
 		  	MyCenter(){//个人中心
 		  		this.$router.push({
 		    		name:'myCenter'

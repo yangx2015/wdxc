@@ -94,14 +94,22 @@
       },
       feedbackSave(){
         var v = this
-        v.$http.post(this.apis.FEEDBACK.QUERTY, this.form).then((res) =>{
-          if(res.code==200){
-              v.tsi('信息提交成功')
-          }
-            console.log('*****',res)
-        }).catch((error)=>{
+        if(v.form.nr==''){
+          v.tsi('请填写完整信息后，进行提交')
+        }else (
+            v.$http.post(this.apis.FEEDBACK.QUERTY, this.form).then((res) =>{
+              if(res.code==200){
+                  v.tsi('信息提交成功')
+                  this.$router.push({
+                    name:'feedbackHis'
+                  })
+              }
+                console.log('*****',res)
+            }).catch((error)=>{
 
-        })
+            })
+
+        )
       },
       tsi(mes){//表单验证提示
         var v=this

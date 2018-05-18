@@ -49,7 +49,7 @@
   }
 </style>
 <template>
-    <div class="box linemess" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center=武汉&markers='+mess.mdd+'|'+mess.hcdz+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
+    <div class="box linemess" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center=武汉&markers='+mess.hcdz+'|'+mess.mdd+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
         <div class="titBox">
           <div class="box-row ck">
               <div class="iconImg">

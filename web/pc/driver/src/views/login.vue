@@ -1,18 +1,19 @@
 <style lang="less">
+    @import "../styles/common";
     @import './login.less';
   .loginBytton{
-      position: fixed;
-      bottom: 0;
-      width:100%;
-      padding: 45px;
+      /*position: fixed;*/
+      /*top: 56%;*/
+      /*width:100%;*/
+      padding:0 20px;
   }
 </style>
 
 <template>
-    <div class="login" @keydown.enter="handleSubmit">
+    <div class="login box" @keydown.enter="handleSubmit">
     	<!--<img src="../../static/3.png"/>-->
         <div class="yc">
-          <h1 style="color: #cce8ff;">Welcome</h1>
+            <img src="../img/logo.png" alt="">
           <!--<h1 class="huan">-->
             <!--欢-->
           <!--</h1>-->
@@ -26,7 +27,7 @@
             <!--车-->
           <!--</h1>-->
         </div>
-        <div class="login-con">
+        <div class="login-con body">
             <Card :bordered="false">
                 <!--<p slot="title">-->
                     <!--<Icon type="log-in"></Icon>-->
@@ -51,11 +52,15 @@
                     </Form>
                 </div>
             </Card>
+            <div class="loginBytton">
+                <Button @click="handleSubmit"
+                        size="large"
+                        type="primary" long>登录</Button>
+            </div>
         </div>
-        <div class="loginBytton">
-            <Button @click="handleSubmit"
-                    size="large"
-                    type="primary" long>登录</Button>
+        <div class="botimg">
+          <img src="../img/logbotImg.jpg" alt="" width="100%">
+
         </div>
     </div>
 </template>

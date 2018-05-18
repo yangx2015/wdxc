@@ -25,13 +25,14 @@
           <i class="iconfont icon-dian2"
              style="color: #46ac00"></i>
           <md-input-item
+            style="border-bottom: solid #ff9e00 2px"
             v-model="form.hcdz"
             title=""
             placeholder="你在哪"
             align="left"
           ></md-input-item>
         </div>
-        <div class="formlist">
+        <div class="formlist" @click="compName='mddLIdt'">
           <i class="iconfont icon-dian2"
              style="color: #ffa817"></i>
           <md-input-item
@@ -47,7 +48,7 @@
                   <i class="iconfont icon-shijian"></i>
                   {{datePickerValue}}
               </div>
-              <div class="body-O" @click="showPic = true">
+              <div class="body-O" @click="compName='newCk'">
                   <i class="iconfont icon-wo"></i>
                   {{lxfs}}
               </div>
@@ -74,8 +75,8 @@
           </div>
         </div>
 
-        <div v-if="form.hcdz!==''&&form.mdd!=''&&form.yysj!=''&&form.zws!=0" class="button" @click="addList">
-          <button>
+        <div v-if="form.hcdz!=''&&form.mdd!=''&&form.yysj!=''&&form.zws!=0" class="button" @click="addList">
+          <button style="background: linear-gradient(to right, #f8b145 , #ff7f5c)">
             提    交
           </button>
         </div>
@@ -86,25 +87,25 @@
         </div>
 
 
-        <md-landscape v-model="showPic">
-          <div>
-            <div>
-              <md-input-item
-                title=""
-                type="phone"
-                v-model="lxfsF"
-                size="large"
-                align="center"
-                placeholder="请输入联系方式"
-              ></md-input-item>
-            </div>
-            <div class="button"  @click="showPic = false">
-              <button>
-                确    定
-              </button>
-            </div>
-          </div>
-        </md-landscape>
+        <!--<md-landscape v-model="showPic">-->
+          <!--<div>-->
+            <!--<div>-->
+              <!--<md-input-item-->
+                <!--title=""-->
+                <!--type="phone"-->
+                <!--v-model="lxfsF"-->
+                <!--size="large"-->
+                <!--align="center"-->
+                <!--placeholder="请输入联系方式"-->
+              <!--&gt;</md-input-item>-->
+            <!--</div>-->
+            <!--<div class="button"  @click="showPic = false">-->
+              <!--<button>-->
+                <!--确    定-->
+              <!--</button>-->
+            <!--</div>-->
+          <!--</div>-->
+        <!--</md-landscape>-->
       </div>
       <md-date-picker
         ref="datePicker"
@@ -120,6 +121,11 @@
           <div class="centerMess box">
               <div class="header">
                 <div class="box-row">
+                  <div @click="show=false"
+                      style="color: #838383;line-height: 0.68rem"
+                  >
+                    <i class="iconfont icon-left"></i>
+                  </div>
                   <div class="titCenter body-O" style="text-align:center;line-height: 0.68rem">
                     <i class="iconfont icon-wo"
                         style="font-size: 0.4rem;color: #949494;"
@@ -139,11 +145,17 @@
           </div>
         </div>
       </transition>
+      <component
+        :is="compName"
+        @getMdd="getMdd"
+        @getNck='getNck'></component>
   </div>
 </template>
 <script>
   import {DatePicker,FieldItem,InputItem,Landscape,Button,Toast} from 'mand-mobile'
   import  myCenter from './myCenter'
+  import newCk from './comp/newCK'
+  import mddLIdt from './comp/mddLIdt'
   export default {
     name: 'swiper-demo',
     components: {
@@ -154,16 +166,19 @@
       [FieldItem.name]: FieldItem,
       [DatePicker.name]: DatePicker,
       [Button.name]: Button,
+      newCk,mddLIdt
     },
     data() {
       return {
-        save:false,
+        compName:'',
+        // save:false,
         form:{
           hcdz:'',//候车地址
           mdd:'',//目的地
           cllx:'10',//10小车20大车
           yysj:'',
           cklxdh:'',
+          ck:'',
           zws:0
         },
         carZws:[
@@ -183,7 +198,7 @@
         ],
         lxfsF:'',
         lxfs:'换乘车人',
-        showPic:false,
+        // showPic:false,
         currentDate: new Date(),
         isDatePickerShow:false,
         datePickerValue:'乘车时间',
@@ -219,6 +234,17 @@
     mounted() {
     },
     methods: {
+      getMdd(it){
+        this.form.mdd = it.mdd
+      },
+      getMdd(it){
+        this.form.mdd = it.mdd
+      },
+      getNck(it){
+        this.form.ck = it.ck
+        this.lxfsF = it.ck
+        this.form.cklxdh = it.cklxdh
+      },
       zws(val,index){
           this.form.zws = val
           this.carZws.forEach((it,vl)=>{
@@ -239,13 +265,17 @@
         var v =this
         console.log('***********',this.form)
         v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
+          debugger
           if (res.code==200){
-            v.tsi('订单创建成功')
+            Toast({
+              content: '订单创建成功',
+              icon: 'circle-alert'
+            })
             setTimeout(function () {
-              this.$router.push({
+              v.$router.push({
                 name:'list'
               })
-            },1000*1.5)
+            },1000*0.8)
           }
         }).catch((error)=>{
 
@@ -290,21 +320,21 @@
 </script>
 
 <style lang="less" scoped>
-  .md-example-child{
-    height:320px;
-    .banner-item{
-        float:left;
-        width:100%;
-        height:100%;
-        line-height:250px;
-        text-align:center;
-        font-size:28px;
-        color:#FFF;
-        box-align:center;
-        align-items:center;
-        box-pack:center;
-        justify-content:center;
-        text-decoration-line:none;
-    }
-  }
+  /*.md-example-child{*/
+    /*height:320px;*/
+    /*.banner-item{*/
+        /*float:left;*/
+        /*width:100%;*/
+        /*height:100%;*/
+        /*line-height:250px;*/
+        /*text-align:center;*/
+        /*font-size:28px;*/
+        /*color:#FFF;*/
+        /*box-align:center;*/
+        /*align-items:center;*/
+        /*box-pack:center;*/
+        /*justify-content:center;*/
+        /*text-decoration-line:none;*/
+    /*}*/
+  /*}*/
 </style>
