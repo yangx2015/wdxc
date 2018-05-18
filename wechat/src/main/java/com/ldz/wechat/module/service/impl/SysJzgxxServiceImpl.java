@@ -29,6 +29,7 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 		String token = JwtUtil.createWechatToken("jzg",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		request.setAttribute("type","jzg");
+		request.setAttribute("orgCode",jzg.getJgdm());
 		request.setAttribute("userInfo",userInfo);
 		ApiResponse<String> res = new ApiResponse<>();
 		res.setResult(token);

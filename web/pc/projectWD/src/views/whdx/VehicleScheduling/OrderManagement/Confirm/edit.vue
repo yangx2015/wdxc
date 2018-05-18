@@ -89,9 +89,10 @@
 							</Row>
 							<Row v-else	>
 								<FormItem label="车型">
-									<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
-										<Option v-for="item in zwsList" :value="item.value"></Option>
-									</Select>
+									<Cascader @on-change="changeCLLX" :data="CasData" v-model="cllx" ></Cascader>
+									<!--<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>-->
+										<!--<Option v-for="item in zwsList" :value="item.value"></Option>-->
+									<!--</Select>-->
 								</FormItem>
 							</Row>
 						</Col>
@@ -242,7 +243,7 @@
             if (this.$parent.choosedRow){
                 this.form = this.$parent.choosedRow;
                 this.operate = '编辑';
-                this.cllx = [this.form.cllx,this.form.zws];
+                this.cllx = [this.form.cllx,''+this.form.zws];
             }
         },
         mounted(){

@@ -179,12 +179,12 @@
             },
 		    getDrivers(){
 		        let v = this;
-                v.$http.get(this.apis.JSY.NOT_BIND_LIST).then((res) =>{
+                v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
                     	if(res.result==undefined||res.result==null){
                     		res.result = []
                     	}
-                        this.drivers = res.result;
+                        this.drivers = res.result.page.list;
                         if(v.derMess.sjId!=null&&!v.messType){
 		                	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
 		                	log('驾驶员添加数据',v.drivers)

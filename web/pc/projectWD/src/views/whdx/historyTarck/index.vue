@@ -78,10 +78,11 @@
 		<div class="body-F">
 			<Row>
 				<Col span="24">
-					<div id="allmap" style="width: 100%;height: 500px;"></div>
+					<div v-show="showMap" id="allmap" style="width: 100%;height: 500px;"></div>
+					<div v-show="!showMap" style="width: 100%;height: 500px;text-align: center;padding-top: 30%"><h1>暂无轨迹信息......</h1></div>
 				</Col>
 			</Row>
-			<Row>
+			<Row v-if="showMap" >
 				<Col span="2">
 					<ButtonGroup vertical style="margin-top: 120px">
 						<Button type="primary" shape="circle" icon="play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
@@ -268,6 +269,7 @@
         },
 		data(){
 			return {
+                showMap:false,
 			    map: '',
                 //控制动画播放属性
                 playAndStopBtnGroup:{
@@ -383,6 +385,7 @@
                 this.totalTime = 0;
                 this.pathList = [];
                 this.item = {};
+                this.showMap = false;
                 this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         var geoc = new BMap.Geocoder();
@@ -411,7 +414,9 @@
                         this.pathList = res.result;
                         if (this.pathList.length > 0){
                             this.item = this.pathList[0];
-                            this.getData();
+                            setTimeout(()=>{
+                                this.getData();
+                            },100)
 						}
                     }
                 })
@@ -434,8 +439,10 @@
                             this.speedList.push([r.cjsj,speed]);
                             this.speeds[date.getTime()] = speed;
                         }
-                        this.Buildmap()
-                    }
+                        setTimeout(()=>{
+                            this.Buildmap()
+						},100)
+					}
                 })
             },
 			formatDate(s){
@@ -448,6 +455,7 @@
 				return texts;
             },
             Buildmap() {
+                this.showMap = true;
                 var v = this
                 // 百度地图API功能
                 this.map = new BMap.Map("allmap"); // 创建Map实例

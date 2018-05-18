@@ -3,6 +3,9 @@ package com.ldz.wechat.module.controller;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.wechat.base.BaseController;
+import com.ldz.wechat.base.BaseService;
+import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.model.ClDd;
 import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.model.SysJzgxx;
@@ -28,7 +31,7 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("put/dd")
-public class DdCtrl {
+public class DdCtrl extends BaseController<ClDd,String> {
     @Autowired
     private DdService service;
     @Autowired
@@ -99,6 +102,12 @@ public class DdCtrl {
         String userId = getCurrentUser(true);
         return service.saveEntity(entity,userId);
     }
+
+    @Override
+    protected BaseService<ClDd, String> getBaseService() {
+        return service;
+    }
+
     /**
      * 订单确认-订单详情
      * 通过订单ID 加 来验证驾驶员ID该订单的有效性

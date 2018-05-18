@@ -3,6 +3,8 @@ package com.ldz.wechat.module.service.impl;
 
 import java.util.*;
 
+import com.github.pagehelper.PageInfo;
+import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
 import com.ldz.wechat.module.mapper.ClGpsLsMapper;
 import com.ldz.wechat.module.model.*;
@@ -57,6 +59,31 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     protected Mapper<ClDd> getBaseMapper() {
         return entityMapper;
     }
+
+    @Override
+    public boolean fillCondition(LimitedCondition condition){
+        String userId = getCurrentUser(true);
+        condition.eq(ClDd.InnerColumn.ckCjl,userId);
+        condition.setOrderByClause("cjsj desc");
+        return true;
+    }
+
+    @Override
+    public void afterPager(PageInfo<ClDd> pageInfo){
+        List<String> driverIds = pageInfo.getList().stream().map(ClDd::getSj).collect(Collectors.toList());
+        if (driverIds.size() == 0)return;
+        List<ClJsy> drivers =  jsyService.findIn(ClJsy.InnerColumn.sfzhm,driverIds);
+        if (drivers.size() == 0)return;
+        Map<String,ClJsy> driverMap = drivers.stream().collect(Collectors.toMap(ClJsy::getSfzhm,p->p));
+        for (ClDd dd : pageInfo.getList()) {
+            String driverId = dd.getSj();
+            if (StringUtils.isEmpty(driverId))continue;
+            ClJsy driver = driverMap.get(driverId);
+            if (driver == null)continue;
+            dd.setSjdh(driver.getSjh());
+        }
+    }
+
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
         SysJzgxx clJsy= jzgxxService.findById(userId);
@@ -174,7 +201,14 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SimpleCondition condition = new SimpleCondition(ClDd.class);
         condition.eq(ClDd.InnerColumn.sj.name(),userId);
 
-       if(StringUtils.equals(type,"2")) {//待确认
+        if ("1".equals(type)){
+            Date today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            condition.gte(ClDd.InnerColumn.yysj,today);
+            condition.setOrderByClause(ClDd.InnerColumn.yysj.asc());
+        }else if(StringUtils.equals(type,"2")) {//待确认
             // 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机完成行程(行程结束)；30-队长确认
             condition.eq(ClDd.InnerColumn.ddzt.name(),"13");
            condition.setOrderByClause(ClDd.InnerColumn.yysj.asc());
@@ -218,7 +252,23 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
         condition.eq(ClGpsLs.InnerColumn.zdbh,zdbh);
         condition.gte(ClGpsLs.InnerColumn.cjsj,order.getYysj());
-        List<ClGpsLs> gpsLs = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
-        return null;
+        condition.setOrderByClause("cjsj asc");
+        Map<String,Object> map = new HashMap<>();
+        List<ClGpsLs> gpsLs1 = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        if (gpsLs1.size() != 0){
+            map.put("ksjd",gpsLs1.get(0).getBdjd());
+            map.put("kswd",gpsLs1.get(0).getBdwd());
+        }
+
+        condition = new SimpleCondition(ClGpsLs.class);
+        condition.eq(ClGpsLs.InnerColumn.zdbh,zdbh);
+        condition.setOrderByClause("cjsj asc");
+        condition.gte(ClGpsLs.InnerColumn.cjsj,order.getSjqrsj());
+        List<ClGpsLs> gpsLs2 = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        if (gpsLs2.size() != 0){
+            map.put("jsjd",gpsLs2.get(0).getBdjd());
+            map.put("jswd",gpsLs2.get(0).getBdwd());
+        }
+        return ApiResponse.success(map);
     }
 }

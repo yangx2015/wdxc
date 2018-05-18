@@ -84,17 +84,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 从redis(实时gps点位)里面取出历史数据
 		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
+		String formatdate = formatdate(object2.getCjsj());
+		if (StringUtils.equals(gpsinfo.getStartTime(), formatdate)) {
+			return ApiResponse.fail("两次离线时间一致");
+		}
 		// 记录事件
 		ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
-		clSbyxsjjl.setCjsj(object2.getCjsj());
+		clSbyxsjjl.setCjsj(simpledate(gpsinfo.getStartTime()));
 		clSbyxsjjl.setId(genId());
-		clSbyxsjjl.setJd(object2.getBdjd());
-		clSbyxsjjl.setWd(object2.getBdwd());
-		clSbyxsjjl.setJid(new BigDecimal(object2.getDwjd()));
+		clSbyxsjjl.setJd(new BigDecimal(gpsinfo.getLongitude()));
+		clSbyxsjjl.setWd(new BigDecimal(gpsinfo.getLatitude()));
+		clSbyxsjjl.setJid(new BigDecimal(gpsinfo.getGpsjd()));
 		clSbyxsjjl.setSjjb("10");
 		clSbyxsjjl.setSjlx("80");
-		clSbyxsjjl.setYxfx(object2.getFxj().doubleValue());
-		clSbyxsjjl.setZdbh(object2.getZdbh());
+		clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
+		clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
 		clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
 		// 推送坐标去前端
 		String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
@@ -443,6 +447,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			e.printStackTrace();
 		}
 		return date2;
+	}
+	
+	public String formatdate(Date date) {
+		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		String format = simpleDateFormat.format(date);
+		return format;
 	}
 
     public long  nowTime(Date time) {

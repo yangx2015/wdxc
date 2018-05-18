@@ -3,6 +3,7 @@ package com.ldz.wechat.module.service.impl;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.module.mapper.ClDdMapper;
 import com.ldz.wechat.module.model.ClDd;
 import com.ldz.wechat.module.model.SysJzgxx;
@@ -16,6 +17,7 @@ import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.service.ClJsyService;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
@@ -24,7 +26,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
-public class ClJsyServiceImpl implements ClJsyService{
+public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements ClJsyService{
     @Autowired
     private ClJsyMapper jsymapper;
     @Autowired
@@ -38,6 +40,7 @@ public class ClJsyServiceImpl implements ClJsyService{
 		String token = JwtUtil.createWechatToken("jsy",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		request.setAttribute("type","jsy");
+		request.setAttribute("orgCode",jsy.getJgdm());
 		request.setAttribute("userInfo",userInfo);
 		Map<String,Object> map = new HashMap<>();
 		map.put("token",token);
@@ -64,6 +67,11 @@ public class ClJsyServiceImpl implements ClJsyService{
 		jsy.setZt(null);
 		jsymapper.updateByPrimaryKeySelective(jsy);
 		return ApiResponse.updateSuccess();
+	}
+
+	@Override
+	protected Mapper<ClJsy> getBaseMapper() {
+		return jsymapper;
 	}
 
 	public ClJsy findById(String sfzhm){
