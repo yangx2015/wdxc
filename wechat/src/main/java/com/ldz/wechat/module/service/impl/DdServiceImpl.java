@@ -3,6 +3,7 @@ package com.ldz.wechat.module.service.impl;
 
 import java.util.*;
 
+import com.github.pagehelper.PageInfo;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
 import com.ldz.wechat.module.mapper.ClGpsLsMapper;
@@ -66,6 +67,23 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.setOrderByClause("cjsj desc");
         return true;
     }
+
+    @Override
+    public void afterPager(PageInfo<ClDd> pageInfo){
+        List<String> driverIds = pageInfo.getList().stream().map(ClDd::getSj).collect(Collectors.toList());
+        if (driverIds.size() == 0)return;
+        List<ClJsy> drivers =  jsyService.findIn(ClJsy.InnerColumn.sfzhm,driverIds);
+        if (drivers.size() == 0)return;
+        Map<String,ClJsy> driverMap = drivers.stream().collect(Collectors.toMap(ClJsy::getSfzhm,p->p));
+        for (ClDd dd : pageInfo.getList()) {
+            String driverId = dd.getSj();
+            if (StringUtils.isEmpty(driverId))continue;
+            ClJsy driver = driverMap.get(driverId);
+            if (driver == null)continue;
+            dd.setSjdh(driver.getSjh());
+        }
+    }
+
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
         SysJzgxx clJsy= jzgxxService.findById(userId);
