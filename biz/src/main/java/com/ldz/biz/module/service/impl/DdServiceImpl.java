@@ -620,6 +620,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		newClDd.setLcf(entity.getLcf());// 里程费
 		newClDd.setFkzt("00"); // 未付款
 		newClDd.setYysj(entity.getYysj());
+		newClDd.setSjqrsj(entity.getSjqrsj());
 
 		int i = update(newClDd);
 		if (i == 0) {
@@ -1194,7 +1195,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		newClDd.setLcf(lcf.doubleValue());
 		newClDd.setId(order.getId());
 		newClDd.setDdzt("20");// 订单状态
-		newClDd.setSjqrsj(new Date());
+		if (order.getSjqrsj() == null){
+			newClDd.setSjqrsj(new Date());
+		}
 		int i = update(newClDd);
 		RuntimeCheck.ifTrue(i == 0, "操作数据库失败");
 

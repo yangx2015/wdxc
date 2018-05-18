@@ -414,7 +414,9 @@
                         this.pathList = res.result;
                         if (this.pathList.length > 0){
                             this.item = this.pathList[0];
-                            this.getData();
+                            setTimeout(()=>{
+                                this.getData();
+                            },100)
 						}
                     }
                 })

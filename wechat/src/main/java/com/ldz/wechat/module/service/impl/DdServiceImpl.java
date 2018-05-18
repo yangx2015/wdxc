@@ -226,6 +226,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             map.put("kswd",gpsLs1.get(0).getBdwd());
         }
 
+        condition = new SimpleCondition(ClGpsLs.class);
+        condition.eq(ClGpsLs.InnerColumn.zdbh,zdbh);
+        condition.setOrderByClause("cjsj asc");
         condition.gte(ClGpsLs.InnerColumn.cjsj,order.getSjqrsj());
         List<ClGpsLs> gpsLs2 = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
         if (gpsLs2.size() != 0){
