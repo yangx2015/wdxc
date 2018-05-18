@@ -12,7 +12,8 @@
                 <div class="titCenter body-O" style="text-align: center;">
                       历史订单
                 </div>
-                <div class="titLeft">
+                <div class="titLeft" :class="anima" @click="Nfive">
+                  <i class="iconfont icon-msnui-refresh-line"></i>
                 </div>
               </div>
           </div>
@@ -79,7 +80,7 @@
 </template>
 
 <script>
-    import {TabBar} from 'mand-mobile'
+    import {TabBar,Toast} from 'mand-mobile'
     export default {
         name: "",
         components:{
@@ -98,6 +99,7 @@
       },
         data(){
           return{
+            anima:'',
             barNum:0,
             titles: ['待出发','待派单', '待审核','历史行程','驳回'],
             mesliat:[]
@@ -114,7 +116,19 @@
           this.getList(this.barNum)
         },
         methods:{
+          Nfive(){
+            // this.anima='leftf5'
+            this.getList(this.barNum)
+            Toast({
+              content: '数据更新中……',
+              icon: 'spinner',
+            })
+            // setTimeout(function () {
+            //   this.anima=''
+            // },4*1000)
+          },
           tabbarC(n,o){//tab切换
+            this.barNum = n
             this.getList(n)
           },
           starNum(val){

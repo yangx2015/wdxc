@@ -5,8 +5,9 @@
     background-repeat:no-repeat;
     .titBox{
       /*height: 142px;*/
-      background: rgba(255,255,255,1);
+      background: rgba(255,255,255,0.8);
       margin: 14px;
+      margin-bottom: 0;
       .ck{
         border-bottom: 2px solid #C8C8C8;
         height: 71px;
@@ -40,7 +41,7 @@
     }
     /*行程详细*/
     .xcxx{
-        padding: 8px 14px;
+        padding:0 14px 0 14px;
     }
     /*行程确认*/
     .xcqr{
@@ -50,6 +51,18 @@
 </style>
 <template>
     <div class="box linemess" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center=武汉&markers='+mess.hcdz+'|'+mess.mdd+'&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">
+        <div class="box-row" style="height: auto;">
+          <div @click="center">
+            <i class="iconfont icon-left"
+              style="font-size: 28px"
+            ></i>
+          </div>
+          <div class="body-O" style="text-align: center;line-height:40px;">
+            <h2>
+              单据详情
+            </h2>
+          </div>
+        </div>
         <div class="titBox">
           <div class="box-row ck">
               <div class="iconImg">
@@ -60,6 +73,7 @@
               </div>
               <div class="ckPhone">
                 <div  class="phoneBorder">
+                  <a :href="'tel:'+ mess.cklxdh"></a>
                   <Icon type="ios-telephone" size="28" color="#fdc087"></Icon>
                 </div>
               </div>
@@ -75,9 +89,7 @@
             </div>
           </div>
         </div>
-        <div class="body">
 
-        </div>
         <div class="xcxx" v-show="mess.ddzt==20||mess.ddzt==30">
             <div class="box-row"
                  style="text-align: center;height: 75p;background: #fff">
@@ -115,19 +127,20 @@
               </div>
             </div>
         </div>
+      <div class="body">
+
+      </div>
+      <!--v-show="mess.ddzt!=20&&mess.ddzt!=30"-->
         <div class="xcqr" v-show="mess.ddzt!=20&&mess.ddzt!=30">
           <div class="box-row">
               <div class="body-O" style="margin: 0 8px">
-                 <Button long @click="center">首页</Button>
-              </div>
-              <div class="body-O" style="margin: 0 8px">
-                <Button type="success" long @click="lineOk">行程确认</Button>
+                <Button type="warning" size="large" long @click="lineOk">行程确认</Button>
               </div>
           </div>
         </div>
-        <div class="xcqr" v-show="mess.ddzt==20||mess.ddzt==30">
-          <Button type="success" long @click="center">首页</Button>
-        </div>
+        <!--<div class="xcqr" v-show="mess.ddzt==20||mess.ddzt==30">-->
+          <!--<Button type="success" long @click="center">首页</Button>-->
+        <!--</div>-->
     </div>
 </template>
 

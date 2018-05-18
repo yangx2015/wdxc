@@ -318,23 +318,3 @@
   }
 
 </script>
-
-<style lang="less" scoped>
-  /*.md-example-child{*/
-    /*height:320px;*/
-    /*.banner-item{*/
-        /*float:left;*/
-        /*width:100%;*/
-        /*height:100%;*/
-        /*line-height:250px;*/
-        /*text-align:center;*/
-        /*font-size:28px;*/
-        /*color:#FFF;*/
-        /*box-align:center;*/
-        /*align-items:center;*/
-        /*box-pack:center;*/
-        /*justify-content:center;*/
-        /*text-decoration-line:none;*/
-    /*}*/
-  /*}*/
-</style>
