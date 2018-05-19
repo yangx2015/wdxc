@@ -3,12 +3,14 @@ package com.ldz.util.yingyan;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 public class GuiJIApi {
 
@@ -37,13 +39,8 @@ public class GuiJIApi {
     }
 
 public static void main(String[] args) {
-	YyEntity yyEntity= new  YyEntity();
-	yyEntity.setAk(AK);
-	yyEntity.setService_id(SERVICE_ID);
-	yyEntity.setEntity_name("赤焰军-宋老狗");
-	
-	YingyanResponse addEntity = addEntity(yyEntity);
-	System.out.println(addEntity);
+
+
 }
 
 
