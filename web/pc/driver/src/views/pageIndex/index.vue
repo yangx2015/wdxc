@@ -66,21 +66,25 @@
 			}
 		},
 		created(){
-      if(this.$store.state.app.user=='null'){
-        this.$router.push({
-            name:'login'
-          })
-      }else{
+      // if(this.$store.state.app.user=='null'){
+      //   this.$router.push({
+      //       name:'login'
+      //     })
+      // }else{
           if(Cookies.get('result')) {
+              // debugger
               this.listType = this.$store.state.app.listType
-              this.pf = this.$store.state.app.user.grade
-              this.user = JSON.parse(this.$store.state.app.user.userInfo)
+
+              // this.pf = this.$store.state.app.user.grade
+              this.pf = JSON.parse(Cookies.get('user')).grade
+              // this.user = JSON.parse(this.$store.state.app.user.userInfo)
+              this.user = JSON.parse(JSON.parse(Cookies.get('user')).userInfo)
           }else{
             this.$router.push({
               name:'login'
             })
           }
-      }
+      // }
 
 		},
 		methods:{

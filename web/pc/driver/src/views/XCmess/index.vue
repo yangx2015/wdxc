@@ -159,9 +159,9 @@
           }
         },
       created(){
-        if(this.$store.state.app.user==null){
+        if(!this.$store.state.app.lineData.ck){
           this.$router.push({
-            name:'login'
+            name:'center'
           })
         }
       },
