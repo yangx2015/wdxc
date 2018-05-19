@@ -74,6 +74,9 @@
                       {{item.mdd}}
                     </span>
                   </div>
+                  <div style="font-size: 14px" v-show="barNum==4">
+                    驳回原因:{{item.bhyy}}
+                  </div>
               </div>
           </div>
       </div>
@@ -117,15 +120,11 @@
         },
         methods:{
           Nfive(){
-            // this.anima='leftf5'
             this.getList(this.barNum)
             Toast({
               content: '数据更新中……',
               icon: 'spinner',
             })
-            // setTimeout(function () {
-            //   this.anima=''
-            // },4*1000)
           },
           tabbarC(n,o){//tab切换
             this.barNum = n

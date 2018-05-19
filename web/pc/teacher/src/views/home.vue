@@ -60,18 +60,6 @@
                 {{item.text}}
               </div>
             </div>
-            <!--<div class="body-O carimg" @click="zws(7)">-->
-              <!--<img src="/static/car.jpg" alt="">-->
-              <!--<div>-->
-                <!--7人座-->
-              <!--</div>-->
-            <!--</div>-->
-            <!--<div class="body-O carimg" @click="zws(11)">-->
-              <!--<img src="/static/car.jpg" alt="">-->
-              <!--<div>-->
-                <!--11人座-->
-              <!--</div>-->
-            <!--</div>-->
           </div>
         </div>
 
@@ -85,27 +73,6 @@
                 提    交
               </button>
         </div>
-
-
-        <!--<md-landscape v-model="showPic">-->
-          <!--<div>-->
-            <!--<div>-->
-              <!--<md-input-item-->
-                <!--title=""-->
-                <!--type="phone"-->
-                <!--v-model="lxfsF"-->
-                <!--size="large"-->
-                <!--align="center"-->
-                <!--placeholder="请输入联系方式"-->
-              <!--&gt;</md-input-item>-->
-            <!--</div>-->
-            <!--<div class="button"  @click="showPic = false">-->
-              <!--<button>-->
-                <!--确    定-->
-              <!--</button>-->
-            <!--</div>-->
-          <!--</div>-->
-        <!--</md-landscape>-->
       </div>
       <md-date-picker
         ref="datePicker"
@@ -256,16 +223,19 @@
           })
       },
       tsi(mes){//表单验证提示
-        Toast.info(mes)
-        setTimeout(function () {
-          Toast.hide()
-        },1800)
+        Toast({
+          content: mes,
+          icon: 'circle-alert'
+        })
+        // Toast.info(mes)
+        // setTimeout(function () {
+        //   Toast.hide()
+        // },1800)
       },
       addList(){//订单创建
         var v =this
         console.log('***********',this.form)
         v.$http.post(this.apis.DDSAVE.SAVE, this.form).then((res) =>{
-          debugger
           if (res.code==200){
             Toast({
               content: '订单创建成功',

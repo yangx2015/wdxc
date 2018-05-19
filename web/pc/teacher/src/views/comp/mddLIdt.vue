@@ -135,7 +135,7 @@
         if(v.mdd==''){
           v.tos('目的地不能为空！')
         }else {
-          v.$emit('getMdd',v.Nname.mdd)
+          v.$emit('getMdd',v.Nname)
           v.mesForeach(v.Nname)
           v.close()
         }
