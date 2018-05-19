@@ -55,13 +55,15 @@ const router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => {
-  console.log(from)
-  // if(cok.get('result')==undefined){
-    next()
-  // }else {
-  //   next({
-  //     name: 'login'
-  //   });
-  // }
+    if (to.name === 'login'){
+        next();
+        return;
+    }
+    if (cok.get('result')){
+        next();
+        return;
+    }else{
+        next({ name: 'login'});
+    }
 })
 export default router
