@@ -1,8 +1,11 @@
 package com.ldz.util.bean;
 
+import lombok.ToString;
+
 /**
- * 鹰眼轨迹模型
+ * 上传鹰眼轨迹模型
  */
+@ToString
 public class TrackPoint {
 
     /**
@@ -23,18 +26,18 @@ public class TrackPoint {
     /**
      * 纬度 (必填)
      */
-    private String latitude;    //30.5427744502
+    private Double latitude;    //30.5427744502
 
     /**
      * 经度 (必填)
      */
-    private String longitude;   //114.2618477088
+    private Double longitude;   //114.2618477088
 
     /**
      * 定位时设备的时间 (必填)  Unix 时间戳
      * 输入的loc_time不能大于当前服务端时间10分钟以上，即不支持存未来的轨迹点。
      */
-    private String loc_time;    //1526637383
+    private Long loc_time;    //1526637383
 
     /**
      * 坐标类型 (坐标类型)  (必填)
@@ -49,40 +52,27 @@ public class TrackPoint {
     /**
      * 速度
      * 单位：km/h
-     */
+     *//*
     private String speed;   //30.25
 
-    /**
+    *//**
      * 方向
      * 范围为[0,359]，0度为正北方向，顺时针
-     */
+     *//*
     private String direction;   //12
-    /**
+    *//**
      * 高度
      * 米
-     */
+     *//*
     private String height;  //113.76
 
-    /**
+    *//**
      * 定位精度，GPS或定位SDK返回的值
-     */
-    private String radius;  //3
-    /**
-     *
-     */
-    private String _object_key; //liu_201805181744
-    private String city;    //hubei
-    private String province;    //wuhan
+     *//*
+    private String radius;  //3*/
+  
 
-    private String error;
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
+  
 
     public String getAk() {
         return ak;
@@ -108,27 +98,27 @@ public class TrackPoint {
         this.entity_name = entity_name;
     }
 
-    public String getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(String latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public String getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(String longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public String getLoc_time() {
+    public Long getLoc_time() {
         return loc_time;
     }
 
-    public void setLoc_time(String loc_time) {
+    public void setLoc_time(Long loc_time) {
         this.loc_time = loc_time;
     }
 
@@ -140,7 +130,7 @@ public class TrackPoint {
         this.coord_type_input = coord_type_input;
     }
 
-    public String getSpeed() {
+    /*public String getSpeed() {
         return speed;
     }
 
@@ -170,29 +160,7 @@ public class TrackPoint {
 
     public void setRadius(String radius) {
         this.radius = radius;
-    }
+    }*/
 
-    public String get_object_key() {
-        return _object_key;
-    }
-
-    public void set_object_key(String _object_key) {
-        this._object_key = _object_key;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getProvince() {
-        return province;
-    }
-
-    public void setProvince(String province) {
-        this.province = province;
-    }
+  
 }

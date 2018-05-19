@@ -1,14 +1,20 @@
 package com.ldz.util.yingyan;
 
+import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.ldz.util.bean.AddPointResponse;
+import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.TrackPoints;
 import org.apache.commons.lang.StringUtils;
 
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 
@@ -27,6 +33,9 @@ public class GuiJIApi {
     private final static String listEntityURL = "http://yingyan.baidu.com/api/v3/entity/list";
 
     private final static  String addPointsURL = "http://yingyan.baidu.com/api/v3/track/addpoints";
+
+
+	private final static  String addPointURL = "http://yingyan.baidu.com/api/v3/track/addpoint";
     
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
@@ -52,7 +61,7 @@ public class GuiJIApi {
       return bean;
     }
 
-    public static  void addPoints(TrackPoints entity , String url){
+    public static  AddPointResponse addPoints(TrackPoints entity , String url){
 		Map<String, String> beanmap = new HashMap<>();
 
 		beanmap.put("ak", entity.getAk());
@@ -67,15 +76,35 @@ public class GuiJIApi {
 
 		AddPointResponse addPointResponse = JsonUtil.toBean(postJson,AddPointResponse.class);
 
-
+    	return addPointResponse;
 
 	}
 
-  
 
+	public static void addPoint(TrackPoint entity , String url){
 
+		Map<String, String> beanmap = new HashMap<>();
 
+		beanmap.put("ak", entity.getAk());
+		beanmap.put("service_id", entity.getService_id());
+		beanmap.put("entity_name",entity.getEntity_name());
+		beanmap.put("coord_type_input",entity.getCoord_type_input());
+		beanmap.put("latitude",entity.getLatitude()+"");
+		beanmap.put("loc_time",entity.getLoc_time()+"");
+		beanmap.put("longitude",entity.getLongitude()+"");
 
+		String postJson = null;
+		try {
+			postJson = HttpUtil.post(url, beanmap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		YingyanResponse addPointResponse = JsonUtil.toBean(postJson,YingyanResponse.class);
+
+		System.out.println(addPointResponse);
+
+	}
 
 
 
