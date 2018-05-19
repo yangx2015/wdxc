@@ -1,5 +1,8 @@
 package com.ldz.util.bean;
 
+import lombok.ToString;
+
+@ToString
 public class AddPointResponse {
 
     private int status;
@@ -13,7 +16,7 @@ public class AddPointResponse {
 
 
 
-
+    @ToString
     public static  class  FailInfo{
 
         private TrackPoint[] param_error;
