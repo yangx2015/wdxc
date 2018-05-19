@@ -74,6 +74,16 @@ public class TrackPoint {
     private String city;    //hubei
     private String province;    //wuhan
 
+    private String error;
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
     public String getAk() {
         return ak;
     }

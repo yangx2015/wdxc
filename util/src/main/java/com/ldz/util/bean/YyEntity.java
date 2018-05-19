@@ -30,11 +30,37 @@ public class YyEntity {
      */
     private String entity_desc;
     /**
-     * city  和 district 为自定义字段
+     *
      */
-    private String city;
+    private String modify_time;
 
-    private String district;
+    private String create_time;
+
+    private LatestLocation latest_location;
+
+    public String getModify_time() {
+        return modify_time;
+    }
+
+    public void setModify_time(String modify_time) {
+        this.modify_time = modify_time;
+    }
+
+    public String getCreate_time() {
+        return create_time;
+    }
+
+    public void setCreate_time(String create_time) {
+        this.create_time = create_time;
+    }
+
+    public LatestLocation getLatest_location() {
+        return latest_location;
+    }
+
+    public void setLatest_location(LatestLocation latest_location) {
+        this.latest_location = latest_location;
+    }
 
     public String getAk() {
         return ak;
@@ -68,19 +94,5 @@ public class YyEntity {
         this.entity_desc = entity_desc;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
+    
 }
