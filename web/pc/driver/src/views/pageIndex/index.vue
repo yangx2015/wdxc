@@ -27,7 +27,7 @@
           {{user.xm}}
         </div>
         <div style="margin: 12px 0;color: #ff9400;font-size: 24px;font-weight: 600">
-          {{pf}}分
+          {{pf | strT}}分
         </div>
 
 		</div>
@@ -35,7 +35,7 @@
 			<div class="box" style="background-color: #f3f3f3">
 				<div class="">
 					<tab>
-				      <tab-item :selected="listType==0" @on-item-click="onItemClick">今日接单</tab-item>
+				      <tab-item :selected="listType==0" @on-item-click="onItemClick">待确认</tab-item>
               <tab-item :selected="listType==1" @on-item-click="onItemClick">历史接单</tab-item>
 				    </tab>
 				</div>
@@ -57,6 +57,11 @@
 		    XButton, Tab, TabItem,
         okList
 		 },
+    filters:{
+      strT(val){
+        return val.toString().substr(0,4)
+      }
+    },
 		data(){
 			return{
 			  user:{},
@@ -66,26 +71,15 @@
 			}
 		},
 		created(){
-      // if(this.$store.state.app.user=='null'){
-      //   this.$router.push({
-      //       name:'login'
-      //     })
-      // }else{
           if(Cookies.get('result')) {
-              // debugger
               this.listType = this.$store.state.app.listType
-
-              // this.pf = this.$store.state.app.user.grade
               this.pf = JSON.parse(Cookies.get('user')).grade
-              // this.user = JSON.parse(this.$store.state.app.user.userInfo)
               this.user = JSON.parse(JSON.parse(Cookies.get('user')).userInfo)
           }else{
             this.$router.push({
               name:'login'
             })
           }
-      // }
-
 		},
 		methods:{
         backlogin(){

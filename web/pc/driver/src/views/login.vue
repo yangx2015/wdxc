@@ -72,8 +72,8 @@ export default {
     data () {
         return {
             form: {
-                xm: '测试订单A',
-                sfzhm: '2123123'
+                xm: '小车7坐',
+                sfzhm: '320333333333333333'
             },
             rules: {
                 xm: [
