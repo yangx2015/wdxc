@@ -33,9 +33,9 @@ public class GuiJIApi {
     private final static String listEntityURL = "http://yingyan.baidu.com/api/v3/entity/list";
 
     private final static  String addPointsURL = "http://yingyan.baidu.com/api/v3/track/addpoints";
-    
-    private final static  String addPointUrl = "http://yingyan.baidu.com/api/v3/track/addpoint";
-    
+
+
+	private final static  String addPointURL = "http://yingyan.baidu.com/api/v3/track/addpoint";
     
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
@@ -61,16 +61,38 @@ public class GuiJIApi {
       return bean;
     }
 
-    public static  YingyanResponse addPoint(TrackPoint entity , String url){
+    public static  AddPointResponse addPoints(TrackPoints entity , String url){
 		Map<String, String> beanmap = new HashMap<>();
 
 		beanmap.put("ak", entity.getAk());
 		beanmap.put("service_id", entity.getService_id());
-		beanmap.put("entity_name", entity.getEntity_name());
-		beanmap.put("latitude", entity.getLatitude().toString());
-		beanmap.put("longitude", entity.getLongitude().toString());
-		beanmap.put("loc_time", entity.getLoc_time().toString());
-		beanmap.put("coord_type_input", entity.getCoord_type_input());
+		beanmap.put("point_list", entity.getPoint_list());
+		String postJson = null;
+		try {
+			postJson = HttpUtil.post(url, beanmap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		AddPointResponse addPointResponse = JsonUtil.toBean(postJson,AddPointResponse.class);
+
+    	return addPointResponse;
+
+	}
+
+
+	public static void addPoint(TrackPoint entity , String url){
+
+		Map<String, String> beanmap = new HashMap<>();
+
+		beanmap.put("ak", entity.getAk());
+		beanmap.put("service_id", entity.getService_id());
+		beanmap.put("entity_name",entity.getEntity_name());
+		beanmap.put("coord_type_input",entity.getCoord_type_input());
+		beanmap.put("latitude",entity.getLatitude()+"");
+		beanmap.put("loc_time",entity.getLoc_time()+"");
+		beanmap.put("longitude",entity.getLongitude()+"");
+
 		String postJson = null;
 		try {
 			postJson = HttpUtil.post(url, beanmap);
@@ -80,31 +102,9 @@ public class GuiJIApi {
 
 		YingyanResponse addPointResponse = JsonUtil.toBean(postJson,YingyanResponse.class);
 
-    return addPointResponse;
+		System.out.println(addPointResponse);
 
 	}
-
-  
-
-  public static void main(String[] args) throws ParseException {
-	
-	 
-	  
-	  TrackPoint point = new TrackPoint();
-	  point.setAk(AK);
-	  point.setService_id(SERVICE_ID);
-	  point.setEntity_name("赤焰军-宋老狗");
-	  point.setLatitude(29.7149175565);
-	  point.setLongitude(115.9997820579);
-	  point.setCoord_type_input("bd09ll");
-	  Date date = DateUtils.getDate("2018-05-17 18:59:45", "yyyy-MM-dd HH:mm:ss");
-	  long time = date.getTime();
-	  point.setLoc_time(time/1000);
-	  YingyanResponse addPoints = addPoint(point,addPointUrl);
-	  System.out.println(addPoints);
-}
-
-
 
 
 

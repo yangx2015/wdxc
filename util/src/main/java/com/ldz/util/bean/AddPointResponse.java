@@ -19,23 +19,23 @@ public class AddPointResponse {
     @ToString
     public static  class  FailInfo{
 
-        private TrackPoint[] param_error;
+        private TrackPointForReturn[] param_error;
 
-        private TrackPoint[] internal_error;
+        private TrackPointForReturn[] internal_error;
 
-        public TrackPoint[] getParam_error() {
+        public TrackPointForReturn[] getParam_error() {
             return param_error;
         }
 
-        public void setParam_error(TrackPoint[] param_error) {
+        public void setParam_error(TrackPointForReturn[] param_error) {
             this.param_error = param_error;
         }
 
-        public TrackPoint[] getInternal_error() {
+        public TrackPointForReturn[] getInternal_error() {
             return internal_error;
         }
 
-        public void setInternal_error(TrackPoint[] internal_error) {
+        public void setInternal_error(TrackPointForReturn[] internal_error) {
             this.internal_error = internal_error;
         }
     }
