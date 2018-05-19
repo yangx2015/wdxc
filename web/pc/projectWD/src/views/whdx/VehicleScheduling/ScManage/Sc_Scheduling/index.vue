@@ -28,7 +28,9 @@
 			</Row>
 			<div class="body" style="border: solid 1px #dedede;padding: 0 8px;background-color: #eef3fa">
 				<Row :gutter="16">
-					<Col class="margin-top-10" span="8" v-for="item in tableData">
+					<Col class="margin-top-10" span="8"
+					     :lg="8" :md="8" :sm="12" :xs="24"
+					     v-for="item in tableData">
 						<Card style="width:100%">
 							<div slot="title">
 								<p>
@@ -42,11 +44,23 @@
 								size="small"
 								@click="BJ(item)"
 								shape="circle" icon="edit"></Button>
-							<div style="min-height: 260px">
-								<div v-for="it in item.clList">
-									{{it.cph}}~{{it.sjxm}}
+							<div style="min-height: 260px" class="box">
+								<div class="body">
+									<div class="box-row-list">
+										<div class="carListsty" v-for="it in item.clList" style="height: 45px">
+											<div>
+												<Icon type="person" size="16" color="#3bb84b"></Icon>
+												：
+												{{it.sjxm}}
+											</div>
+											<div>
+												<Icon type="android-car" size="16" color="#ff8300"></Icon>
+												：
+												{{it.cph}}
+											</div>
+										</div>
+									</div>
 								</div>
-
 							</div>
 						</Card>
 					</Col>
