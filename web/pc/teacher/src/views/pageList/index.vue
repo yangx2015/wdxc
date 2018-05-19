@@ -35,9 +35,26 @@
                         <div class="body-O" style="color: #3b3b3b;font-weight: 600;font-size: 14px;">
                           {{item.sjxm}}-{{item.cph}}
                         </div>
-                        <div @click="fiveStar(item)" v-if="item.ddzt==20||item.ddzt==30">
+                        <div style="position: relative"
+                             @click="fiveStar(item)" v-if="item.ddzt==20||item.ddzt==30">
                           已完成
                           <i class="iconfont icon-right"></i>
+                          <div style="position: absolute;
+                                      top: 45px;
+                                      right: 5px;
+                                      text-align: center;
+                                      border: solid 2px #ff8a00;
+                                      color: #ff8a00;
+                                      width: 65px;
+                                      border-radius: 9px;
+                                      padding: 4px;">
+                            <div>
+                                合计
+                            </div>
+                            <div>
+                              {{item.zj | zj}}元
+                            </div>
+                          </div>
                         </div>
                         <div style="padding-right:18px" v-else>
                           待出发
@@ -90,6 +107,10 @@
           [TabBar.name]: TabBar,
         },
       filters:{
+        zj(val){
+          if(val=='')return 0
+          return val
+        },
         ddztCH(val){
           switch (val){
             case '10':
@@ -103,7 +124,7 @@
         data(){
           return{
             anima:'',
-            barNum:0,
+            barNum:this.$store.state.app.barNum,
             titles: ['待出发','待派单', '待审核','历史行程','驳回'],
             mesliat:[]
           }
@@ -128,6 +149,7 @@
           },
           tabbarC(n,o){//tab切换
             this.barNum = n
+            this.$store.commit('barCh',n)
             this.getList(n)
           },
           starNum(val){

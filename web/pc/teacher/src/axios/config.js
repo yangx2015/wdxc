@@ -30,5 +30,8 @@ module.exports = {
   },
   PJDD:{//订单评分
     QUERTY:'/put/dd/evaluate'
+  },
+  GPS:{
+    DOT:'/put/dd/getStartPointAndEndPoint'
   }
 }

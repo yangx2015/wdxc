@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.util.*;
 
 import com.github.pagehelper.PageInfo;
+import com.ldz.util.commonUtil.MathUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
@@ -33,6 +34,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static com.ldz.util.commonUtil.MathUtil.mul;
 
 
 @Service
@@ -138,7 +141,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setGlf(entity.getGlf());//过路费
       newClDd.setGqf(entity.getGqf());//过桥费
       newClDd.setSy(entity.getSy());//事由
-      newClDd.setZj(entity.getZj());//总价
       newClDd.setSc(entity.getSc());//时长
       newClDd.setDj(entity.getDj());//单价
       newClDd.setLc(entity.getLc());//里程
@@ -147,6 +149,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setFkzt("00"); // 未付款
       newClDd.setDdzt("20");//订单状态
       newClDd.setSjqrsj(new Date());
+      double amount = MathUtil.mul(entity.getLc(),entity.getDj());
+      amount = MathUtil.add(amount,entity.getGqf());
+      amount = MathUtil.add(amount,entity.getGlf());
+      newClDd.setZj(amount);
 
       int i=update(newClDd);
       if(i==0){

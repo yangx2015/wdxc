@@ -3,7 +3,7 @@
 </style>
 <!--班车排班-->
 <template>
-	<div class="boxbackborder">
+	<div class="box boxbackborder">
 		<!--<Card>-->
 			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
@@ -27,14 +27,54 @@
 					</div>
 				</div>
 			</Row>
-			<Row style="position: relative;">
-				<Table
-						size='large'
-						:height="tabHeight"
-						:row-class-name="rowClassName"
-						:columns="tableTiT"
-						:data="tableData"></Table>
-			</Row>
+			<div class="body" style="border: solid 1px #dedede;padding: 0 8px;background-color: #eef3fa">
+				<Row :gutter="16">
+					<Col class="margin-top-10" span="8"
+					     :lg="8" :md="8" :sm="12" :xs="24"
+					     v-for="item in tableData">
+						<Card style="width:100%">
+							<div slot="title">
+								<p>
+									<Icon type="ios-film-outline"></Icon>
+									{{item.xlmc}}
+								</p>
+								<Icon type="ios-clock"></Icon>
+								{{item.yxkssj}}~{{item.yxjssj}}
+							</div>
+							<Button slot="extra" type="success"
+								size="small"
+								@click="BJ(item)"
+								shape="circle" icon="edit"></Button>
+							<div style="min-height: 260px" class="box">
+								<div class="body">
+									<div class="box-row-list">
+										<div class="carListsty" v-for="it in item.clList" style="height: 45px">
+											<div>
+												<Icon type="person" size="16" color="#3bb84b"></Icon>
+												：
+												{{it.sjxm}}
+											</div>
+											<div>
+												<Icon type="android-car" size="16" color="#ff8300"></Icon>
+												：
+												{{it.cph}}
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</Card>
+					</Col>
+				</Row>
+			</div>
+			<!--<Row style="position: relative;">-->
+				<!--<Table-->
+						<!--size='large'-->
+						<!--:height="tabHeight"-->
+						<!--:row-class-name="rowClassName"-->
+						<!--:columns="tableTiT"-->
+						<!--:data="tableData"></Table>-->
+			<!--</Row>-->
 			<!--<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
 			</Row>-->
@@ -172,6 +212,15 @@
 		mounted(){
 		},
 		methods: {
+		    	BJ(item){
+                            if(item.clList!=null && item.clList.length > 0){
+                                item.clList.forEach(function(item,index){
+                                    item.ico = false
+                                })
+                            }
+                            this.mess = item
+                            this.compName = 'addmess'
+			},
 			getmess(){
 				var v = this
 				console.log('排班数据2')
