@@ -1,6 +1,9 @@
 <template>
       <div class="modal">
-        <div class="modaltit">
+        <div class="modaltit" style="position: relative">
+          <div style="position: absolute;left: 5px;top: 1px;" @click="handleReset()">
+            <Icon type="chevron-left" color="#9e9e9e" size="22"></Icon>
+          </div>
             单据确认
         </div>
         <div class="Ymess">
@@ -57,9 +60,8 @@
             </Row>
         </Form>
         <loading :show="loadingShow" :text="loadingText"></loading>
-        <div class="but">
-          <Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
-          <Button type="ghost" @click="handleReset()" style="margin-left: 8px">取消</Button>
+        <div class="but box-row" style="height: 40px">
+          <Button type="primary" @click="handleSubmit('formValidate')" long>提交</Button>
         </div>
       </div>
 </template>
@@ -131,6 +133,12 @@
         // }
       },
       created(){
+          console.log(this.mess.ck)
+          if(this.mess.ck==undefined){
+            this.$router.push({
+              name:'center'
+            })
+          }
       },
         methods: {
           handleSubmit (name) {
