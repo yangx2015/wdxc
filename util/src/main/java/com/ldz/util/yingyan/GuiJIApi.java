@@ -34,6 +34,9 @@ public class GuiJIApi {
 
     private final static  String addPointsURL = "http://yingyan.baidu.com/api/v3/track/addpoints";
     
+    private final static  String addPointUrl = "http://yingyan.baidu.com/api/v3/track/addpoint";
+    
+    
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
     	Map<String, String> beanmap = new HashMap<>();
@@ -58,12 +61,16 @@ public class GuiJIApi {
       return bean;
     }
 
-    public static  AddPointResponse addPoints(TrackPoints entity , String url){
+    public static  YingyanResponse addPoint(TrackPoint entity , String url){
 		Map<String, String> beanmap = new HashMap<>();
 
 		beanmap.put("ak", entity.getAk());
 		beanmap.put("service_id", entity.getService_id());
-		beanmap.put("point_list", entity.getPoint_list());
+		beanmap.put("entity_name", entity.getEntity_name());
+		beanmap.put("latitude", entity.getLatitude().toString());
+		beanmap.put("longitude", entity.getLongitude().toString());
+		beanmap.put("loc_time", entity.getLoc_time().toString());
+		beanmap.put("coord_type_input", entity.getCoord_type_input());
 		String postJson = null;
 		try {
 			postJson = HttpUtil.post(url, beanmap);
@@ -71,7 +78,7 @@ public class GuiJIApi {
 			e.printStackTrace();
 		}
 
-		AddPointResponse addPointResponse = JsonUtil.toBean(postJson,AddPointResponse.class);
+		YingyanResponse addPointResponse = JsonUtil.toBean(postJson,YingyanResponse.class);
 
     return addPointResponse;
 
@@ -81,10 +88,7 @@ public class GuiJIApi {
 
   public static void main(String[] args) throws ParseException {
 	
-	  TrackPoints entity = new TrackPoints();
-	  
-	  entity.setAk(AK);
-	  entity.setService_id(SERVICE_ID);
+	 
 	  
 	  TrackPoint point = new TrackPoint();
 	  point.setAk(AK);
@@ -92,16 +96,11 @@ public class GuiJIApi {
 	  point.setEntity_name("赤焰军-宋老狗");
 	  point.setLatitude(29.7149175565);
 	  point.setLongitude(115.9997820579);
+	  point.setCoord_type_input("bd09ll");
 	  Date date = DateUtils.getDate("2018-05-17 18:59:45", "yyyy-MM-dd HH:mm:ss");
 	  long time = date.getTime();
 	  point.setLoc_time(time/1000);
-	  
-	  point.setCoord_type_input("bd09ll");
-	  List<TrackPoint> points = new ArrayList<>();
-	  points.add(point);
-	  String json = JsonUtil.toJson(points);
-	  entity.setPoint_list(json);
-	  AddPointResponse addPoints = addPoints(entity,addPointsURL);
+	  YingyanResponse addPoints = addPoint(point,addPointUrl);
 	  System.out.println(addPoints);
 }
 
