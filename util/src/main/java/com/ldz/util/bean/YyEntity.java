@@ -30,11 +30,8 @@ public class YyEntity {
      */
     private String entity_desc;
     /**
-     * city  和 district 为自定义字段
      */
-    private String city;
-
-    private String district;
+ 
 
     public String getAk() {
         return ak;
@@ -68,19 +65,5 @@ public class YyEntity {
         this.entity_desc = entity_desc;
     }
 
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
-    }
-
-    public String getDistrict() {
-        return district;
-    }
-
-    public void setDistrict(String district) {
-        this.district = district;
-    }
+    
 }
