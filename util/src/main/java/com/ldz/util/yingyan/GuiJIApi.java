@@ -3,6 +3,8 @@ package com.ldz.util.yingyan;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.ldz.util.bean.AddPointResponse;
+import com.ldz.util.bean.TrackPoints;
 import org.apache.commons.lang.StringUtils;
 
 import com.ldz.util.bean.YingyanResponse;
@@ -21,6 +23,10 @@ public class GuiJIApi {
     private final static  String  updateEntityuRL="http://yingyan.baidu.com/api/v3/entity/update";
     
     private final static  String  deleteEntityuRL="http://yingyan.baidu.com/api/v3/entity/delete";
+
+    private final static String listEntityURL = "http://yingyan.baidu.com/api/v3/entity/list";
+
+    private final static  String addPointsURL = "http://yingyan.baidu.com/api/v3/track/addpoints";
     
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
@@ -46,7 +52,30 @@ public class GuiJIApi {
       return bean;
     }
 
+    public static  void addPoints(TrackPoints entity , String url){
+		Map<String, String> beanmap = new HashMap<>();
+
+		beanmap.put("ak", entity.getAk());
+		beanmap.put("service_id", entity.getService_id());
+		beanmap.put("point_list", entity.getPoint_list());
+		String postJson = null;
+		try {
+			postJson = HttpUtil.post(url, beanmap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		AddPointResponse addPointResponse = JsonUtil.toBean(postJson,AddPointResponse.class);
+
+
+
+	}
+
   
+
+
+
+
 
 
 
