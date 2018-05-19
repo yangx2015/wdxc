@@ -4,6 +4,16 @@
   .md-popup .md-popup-box{
     background:rgba(255,255,255,0);
   }
+  #pickerTime{
+    .bottom{
+      .top{
+        height:2rem!important;
+      }
+      .bottom{
+        height: 1.3rem!important;
+      }
+    }
+  }
 </style>
 <template>
   <div class="box bodylist">
@@ -75,6 +85,7 @@
         </div>
       </div>
       <md-date-picker
+        id="pickerTime"
         ref="datePicker"
         v-model="isDatePickerShow"
         type="custom"
