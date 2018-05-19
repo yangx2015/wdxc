@@ -62,7 +62,10 @@
 		 },
     filters:{
       fist(val){
-        return val.substr(0,1)
+        if(val){
+          return val.substr(0,1)
+        }
+        return val
       },
       strT(val){
         return val.toString().substr(0,4)
