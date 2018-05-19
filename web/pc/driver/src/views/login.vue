@@ -95,7 +95,8 @@ export default {
                 	this.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
                 		console.log('登陆结果',res)
                 		if(res.code===200){
-                		      v.$store.state.app.user = res.result
+                		      // v.$store.state.app.user = res.result
+                          Cookies.set('user', res.result);
                           Cookies.set('result', res.result.token);
                           this.$router.push({
                             name:'center'
