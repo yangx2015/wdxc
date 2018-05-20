@@ -65,7 +65,7 @@ public class GuiJIApi {
 		Map<String, String> beanmap = new HashMap<>();
 
 		beanmap.put("ak", entity.getAk());
-		beanmap.put("service_id", entity.getService_id());
+		beanmap.put("service_id", entity.getService_id()+"");
 		beanmap.put("point_list", entity.getPoint_list());
 		String postJson = null;
 		try {
@@ -81,12 +81,12 @@ public class GuiJIApi {
 	}
 
 
-	public static void addPoint(TrackPoint entity , String url){
+		public static YingyanResponse addPoint(TrackPoint entity , String url){
 
 		Map<String, String> beanmap = new HashMap<>();
 
 		beanmap.put("ak", entity.getAk());
-		beanmap.put("service_id", entity.getService_id());
+		beanmap.put("service_id", entity.getService_id()+"");
 		beanmap.put("entity_name",entity.getEntity_name());
 		beanmap.put("coord_type_input",entity.getCoord_type_input());
 		beanmap.put("latitude",entity.getLatitude()+"");
@@ -102,11 +102,37 @@ public class GuiJIApi {
 
 		YingyanResponse addPointResponse = JsonUtil.toBean(postJson,YingyanResponse.class);
 
-		System.out.println(addPointResponse);
+		return addPointResponse;
+		//System.out.println(addPointResponse);
 
 	}
 
 
+	public static TrackPointForReturn getPoints(TrackJiuPian entity , String url){
+
+		Map<String, String> beanmap = new HashMap<>();
+
+		beanmap.put("ak", entity.getAk());
+		beanmap.put("service_id", entity.getService_id()+"");
+		beanmap.put("entity_name",entity.getEntity_name());
+		beanmap.put("start_time",entity.getStart_time());
+		beanmap.put("end_time",entity.getEnd_time()+"");
+		beanmap.put("is_processed",entity.getIs_processed()+"");
+		beanmap.put("process_option",entity.getProcess_option());
+
+		String postJson = null;
+		try {
+			postJson = HttpUtil.get(url, beanmap);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		TrackPointForReturn addPointResponse = JsonUtil.toBean(postJson,TrackPointForReturn.class);
+
+		return addPointResponse;
+
+
+	}
 
 
 
