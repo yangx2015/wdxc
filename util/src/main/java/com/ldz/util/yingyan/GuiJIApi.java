@@ -32,7 +32,6 @@ public class GuiJIApi {
 
     private final static  String addPointsURL = "http://yingyan.baidu.com/api/v3/track/addpoints";
 
-
 	private final static  String addPointURL = "http://yingyan.baidu.com/api/v3/track/addpoint";
 
 	private final static String getPointsURL = "http://yingyan.baidu.com/api/v3/track/gettrack";
@@ -119,6 +118,11 @@ public class GuiJIApi {
 		beanmap.put("end_time",entity.getEnd_time()+"");
 		beanmap.put("is_processed",entity.getIs_processed()+"");
 		beanmap.put("process_option",entity.getProcess_option());
+		beanmap.put("supplement_mode",entity.getSupplement_mode());
+		beanmap.put("sort_type",entity.getSort_type());
+		beanmap.put("coord_type_output",entity.getCoord_type_output());
+		beanmap.put("page_size",entity.getPage_size());
+		beanmap.put("page_index",entity.getPage_index());
 
 		String postJson = null;
 		try {
@@ -130,7 +134,6 @@ public class GuiJIApi {
 		TrackPointForReturn addPointResponse = JsonUtil.toBean(postJson,TrackPointForReturn.class);
 
 		return addPointResponse;
-
 
 	}
 
