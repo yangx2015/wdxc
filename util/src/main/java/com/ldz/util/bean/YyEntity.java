@@ -1,8 +1,15 @@
 package com.ldz.util.bean;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 鹰眼设备 entity
  */
+@Getter
+@Setter
+@ToString
 public class YyEntity {
 
     /**
@@ -38,61 +45,6 @@ public class YyEntity {
 
     private LatestLocation latest_location;
 
-    public String getModify_time() {
-        return modify_time;
-    }
-
-    public void setModify_time(String modify_time) {
-        this.modify_time = modify_time;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public LatestLocation getLatest_location() {
-        return latest_location;
-    }
-
-    public void setLatest_location(LatestLocation latest_location) {
-        this.latest_location = latest_location;
-    }
-
-    public String getAk() {
-        return ak;
-    }
-
-    public void setAk(String ak) {
-        this.ak = ak;
-    }
-
-    public String getService_id() {
-        return service_id;
-    }
-
-    public void setService_id(String service_id) {
-        this.service_id = service_id;
-    }
-
-    public String getEntity_name() {
-        return entity_name;
-    }
-
-    public void setEntity_name(String entity_name) {
-        this.entity_name = entity_name;
-    }
-
-    public String getEntity_desc() {
-        return entity_desc;
-    }
-
-    public void setEntity_desc(String entity_desc) {
-        this.entity_desc = entity_desc;
-    }
-
+    private  String gpsid;
     
 }

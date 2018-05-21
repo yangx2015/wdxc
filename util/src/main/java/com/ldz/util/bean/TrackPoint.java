@@ -1,11 +1,15 @@
 package com.ldz.util.bean;
 
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 /**
  * 上传鹰眼轨迹模型
  */
 @ToString
+@Getter
+@Setter
 public class TrackPoint {
 
     /**
@@ -48,14 +52,17 @@ public class TrackPoint {
      * bd09ll：百度经纬度坐标
      */
     private String coord_type_input;    //wgs84
+    
+    
+    private String _object_key;    
 
     /**
      * 速度
      * 单位：km/h
-     *//*
-    private String speed;   //30.25
-
-    *//**
+     */
+   /* private String speed;   //30.25
+*/
+    /**
      * 方向
      * 范围为[0,359]，0度为正北方向，顺时针
      *//*
@@ -73,94 +80,6 @@ public class TrackPoint {
   
 
   
-
-    public String getAk() {
-        return ak;
-    }
-
-    public void setAk(String ak) {
-        this.ak = ak;
-    }
-
-    public String getService_id() {
-        return service_id;
-    }
-
-    public void setService_id(String service_id) {
-        this.service_id = service_id;
-    }
-
-    public String getEntity_name() {
-        return entity_name;
-    }
-
-    public void setEntity_name(String entity_name) {
-        this.entity_name = entity_name;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Long getLoc_time() {
-        return loc_time;
-    }
-
-    public void setLoc_time(Long loc_time) {
-        this.loc_time = loc_time;
-    }
-
-    public String getCoord_type_input() {
-        return coord_type_input;
-    }
-
-    public void setCoord_type_input(String coord_type_input) {
-        this.coord_type_input = coord_type_input;
-    }
-
-    /*public String getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(String speed) {
-        this.speed = speed;
-    }
-
-    public String getDirection() {
-        return direction;
-    }
-
-    public void setDirection(String direction) {
-        this.direction = direction;
-    }
-
-    public String getHeight() {
-        return height;
-    }
-
-    public void setHeight(String height) {
-        this.height = height;
-    }
-
-    public String getRadius() {
-        return radius;
-    }
-
-    public void setRadius(String radius) {
-        this.radius = radius;
-    }*/
 
   
 }

@@ -19,5 +19,7 @@ public class GuiJiGps {
 	
 	private String yxsd;
 	
+	private Double fxj;
+	
 	private  Date cjsj;
 }
