@@ -21,7 +21,10 @@
 		</div>
 		<div style="text-align: center;height: 200px;background:url('/static/backTit.png');background-repeat: no-repeat;background-size: cover;background-position: center;">
         <div style="padding: 16px 0">
-          <img src="/static/drive.png" alt="" width="65px">
+          <div style="border-radius: 25px;margin:auto;background-color: #5e6dbd;color: #fff;font-weight: 700;font-size: 22px;width: 50px;height: 50px;text-align: center;line-height: 50px">
+            {{user.xm | fist}}
+          </div>
+          <!--<img src="/static/drive.png" alt="" width="65px">-->
         </div>
         <div style="color: #8c8585;font-size: 16px;font-weight: 600">
           {{user.xm}}
@@ -58,6 +61,12 @@
         okList
 		 },
     filters:{
+      fist(val){
+        if(val){
+          return val.substr(0,1)
+        }
+        return val
+      },
       strT(val){
         return val.toString().substr(0,4)
       }

@@ -16,10 +16,39 @@
             img{
               margin: 8px 8px;
             }
+          .iconBack{
+            background-color: #375a7e;
+            text-align: center;
+            line-height: 50px;
+            font-size:22px;
+            font-weight: 700px;
+            margin: 5px;
+            margin-top: 10px;
+            /*position: absolute;*/
+            /*left: 50%;*/
+            /*top: 50%;*/
+            /*transform: translate(-50%,-50%);*/
+            height: 50px;
+            width: 50px;
+            border-radius: 25px;
+            color: #fff;
+
+          }
         }
         .ckName{
           font-size: 18px;
-          line-height: 71px;
+          /*line-height: 71px;*/
+          .name{
+            margin-top: 12px;
+            margin-left: 15px;
+            font-size: 15px;
+            font-weight: 600;
+          }
+          .time{
+            margin-left: 15px;
+            font-size: 15px;
+            font-weight: 500;
+          }
         }
         .ckPhone{
           line-height: 50px;
@@ -80,10 +109,18 @@
           <div class="titBox">
             <div class="box-row ck">
                 <div class="iconImg">
-                  <img src="/static/tou.jpg" alt="">
+                  <!--<img src="/static/tou.jpg" alt="">-->
+                  <div class="iconBack">
+                    {{mess.ck | fist}}
+                  </div>
                 </div>
                 <div class="body-O ckName">
-                  {{mess.ck}}
+                  <div class="name">
+                    {{mess.jgmc}}-{{mess.ck}}
+                  </div>
+                  <div class="time">
+                    {{mess.yysj}}
+                  </div>
                 </div>
                 <div class="ckPhone">
                   <div  class="phoneBorder">
@@ -170,7 +207,11 @@
           text: function (value) {
             if (!value) return '***'
             else return value
+          },
+          fist(val){
+            return val.substr(0,1)
           }
+
         },
       created(){
           console.log(this.mess)

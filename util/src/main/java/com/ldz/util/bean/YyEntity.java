@@ -21,7 +21,7 @@ public class YyEntity {
      * service的ID，service 的唯一标识  （必填）
      * 在轨迹管理台创建鹰眼服务时，系统返回的 service_id
      */
-    private String service_id;
+    private int service_id;
 
     /**
      * entity名称，作为其唯一标识 String(128)  （必填）
@@ -45,6 +45,7 @@ public class YyEntity {
 
     private LatestLocation latest_location;
 
-    private  String gpsid;
+
+
     
 }

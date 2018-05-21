@@ -8,8 +8,8 @@ import lombok.ToString;
  * 上传鹰眼轨迹模型
  */
 @ToString
-@Getter
 @Setter
+@Getter
 public class TrackPoint {
 
     /**
@@ -20,7 +20,7 @@ public class TrackPoint {
     /**
      * servicede ID，作为其唯一标识 (必填)
      */
-    private String service_id;  //200383
+    private int service_id;  //200383
 
     /**
      * entity唯一标识 (必填)
@@ -52,17 +52,14 @@ public class TrackPoint {
      * bd09ll：百度经纬度坐标
      */
     private String coord_type_input;    //wgs84
-    
-    
-    private String _object_key;    
 
     /**
      * 速度
      * 单位：km/h
-     */
-   /* private String speed;   //30.25
-*/
-    /**
+     *//*
+    private String speed;   //30.25
+
+    *//**
      * 方向
      * 范围为[0,359]，0度为正北方向，顺时针
      *//*
@@ -80,6 +77,7 @@ public class TrackPoint {
   
 
   
+
 
   
 }

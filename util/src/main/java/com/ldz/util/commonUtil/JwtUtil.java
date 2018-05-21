@@ -1,5 +1,8 @@
 package com.ldz.util.commonUtil;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Map;
+
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -8,17 +11,12 @@ import com.auth0.jwt.exceptions.JWTDecodeException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import java.io.UnsupportedEncodingException;
-import java.util.Map;
 
 /**
  * Created by chenwei on 2017/9/18
  */
 public class JwtUtil {
-    private static Logger logger = LogManager.getLogger(JwtUtil.class);
+   
 
     private static Algorithm algorithm;
     private static JWTVerifier verifier;

@@ -92,7 +92,7 @@
 			pbTime:''
 		},
 		created(){
-			if(this.mess.clList==null){
+			if(this.mess.clList==(null||"")){
 				this.mess.clList = []
 			}
 			console.log('信息传递',this.mess)
@@ -123,7 +123,6 @@
 					console.log('排版新增',res)
 					if(res.code==200){
 						v.$Message.success(res.message);
-						// v.$parent.getmess();
 						v.mess.clList.push({'cph':cph,'clId':carID,'sjxm':sjxm})
 						v.getCarList()
 					}else{
