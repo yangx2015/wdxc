@@ -90,6 +90,7 @@ public class GuiJIApi {
 		beanmap.put("latitude",entity.getLatitude()+"");
 		beanmap.put("loc_time",entity.getLoc_time()+"");
 		beanmap.put("longitude",entity.getLongitude()+"");
+		beanmap.put("_object_key",entity.get_object_key());
 
 		String postJson = null;
 		try {
