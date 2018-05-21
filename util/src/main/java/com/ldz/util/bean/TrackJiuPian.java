@@ -1,8 +1,15 @@
 package com.ldz.util.bean;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 /**
  * 轨迹纠偏模型
  */
+@Getter
+@Setter
+@ToString
 public class TrackJiuPian {
     /**
      * 用户的ak，授权使用 (必填)
@@ -12,7 +19,7 @@ public class TrackJiuPian {
     /**
      *service唯一标识 (必填)
      */
-    private String service_id; //200383
+    private int service_id; //200383
 
     /**
      * entity唯一标识 (必填)
@@ -93,99 +100,5 @@ public class TrackJiuPian {
 
 
 
-    public String getAk() {
-        return ak;
-    }
 
-    public void setAk(String ak) {
-        this.ak = ak;
-    }
-
-    public String getService_id() {
-        return service_id;
-    }
-
-    public void setService_id(String service_id) {
-        this.service_id = service_id;
-    }
-
-    public String getEntity_name() {
-        return entity_name;
-    }
-
-    public void setEntity_name(String entity_name) {
-        this.entity_name = entity_name;
-    }
-
-    public String getIs_processed() {
-        return is_processed;
-    }
-
-    public void setIs_processed(String is_processed) {
-        this.is_processed = is_processed;
-    }
-
-    public String getProcess_option() {
-        return process_option;
-    }
-
-    public void setProcess_option(String process_option) {
-        this.process_option = process_option;
-    }
-
-    public String getSupplement_mode() {
-        return supplement_mode;
-    }
-
-    public void setSupplement_mode(String supplement_mode) {
-        this.supplement_mode = supplement_mode;
-    }
-
-    public String getSort_type() {
-        return sort_type;
-    }
-
-    public void setSort_type(String sort_type) {
-        this.sort_type = sort_type;
-    }
-
-    public String getCoord_type_output() {
-        return coord_type_output;
-    }
-
-    public void setCoord_type_output(String coord_type_output) {
-        this.coord_type_output = coord_type_output;
-    }
-
-    public String getPage_size() {
-        return page_size;
-    }
-
-    public void setPage_size(String page_size) {
-        this.page_size = page_size;
-    }
-
-    public String getPage_index() {
-        return page_index;
-    }
-
-    public void setPage_index(String page_index) {
-        this.page_index = page_index;
-    }
-
-    public String getStart_time() {
-        return start_time;
-    }
-
-    public void setStart_time(String start_time) {
-        this.start_time = start_time;
-    }
-
-    public String getEnd_time() {
-        return end_time;
-    }
-
-    public void setEnd_time(String end_time) {
-        this.end_time = end_time;
-    }
 }

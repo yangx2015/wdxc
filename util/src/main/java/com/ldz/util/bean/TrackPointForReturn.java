@@ -17,7 +17,7 @@ public class TrackPointForReturn {
     /**
      * servicede ID，作为其唯一标识 (必填)
      */
-    private String service_id;  //200383
+    private int service_id;  //200383
 
     /**
      * entity唯一标识 (必填)
