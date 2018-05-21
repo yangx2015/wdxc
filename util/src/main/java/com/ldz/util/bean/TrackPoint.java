@@ -52,6 +52,8 @@ public class TrackPoint {
      * bd09ll：百度经纬度坐标
      */
     private String coord_type_input;    //wgs84
+    
+    private String _object_key;
 
     /**
      * 速度
