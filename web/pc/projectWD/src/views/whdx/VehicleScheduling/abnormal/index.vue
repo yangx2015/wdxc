@@ -13,7 +13,7 @@
 				<div style="height: 45px;line-height: 45px;">
 					<div class="margin-top-10 box-row">
 						<div class="titmess">
-							<span>异常行驶记录</span>
+							<span>事件记录</span>
 						</div>
 						<div class="body-r-1 inputSty">
 							<Select v-model="findMess.cx" 
@@ -26,16 +26,8 @@
 				                	style="text-align: left;"
 				                	:key="index">{{item.val}}</Option>
 				            </Select>
-				            <Select v-model="findMess.cph"
-				            	@on-change = 'findMessList'
-				            	clearable 
-				            	placeholder="请选择车牌号码"
-				            	filterable style="width: 160px;">
-				                <Option v-for="(item,index) in carnumber" 
-				                	:value="item.cph" 
-				                	style="text-align: left;"
-				                	:key="index">{{item.cph}}</Option>
-				            </Select>
+							<Input v-model="findMess.cphLike" placeholder="请输入车牌号...." style="width: 160px;"></Input>
+							<Input v-model="findMess.zdbhLike" placeholder="请输入终端编号...." style="width: 160px;"></Input>
 				            <Select v-model="findMess.sjlx"
 				            	@on-change = 'findMessList'
 				            	clearable 
@@ -105,18 +97,23 @@
 	                	type:'index'
 	                },
                     {
-                        title: '异常事件',
+                        title: '车牌号',
+                        key: 'cph',
+                        align: 'center',
+                    },
+                    {
+                        title: '终端编号',
+                        key: 'zdbh',
+                        align: 'center',
+                    },
+                    {
+                        title: '事件类型',
                         key: 'sjlx',
                         align: 'center',
                         render: (h, p) => {
 							let val = this.dictUtil.getValByCode(this,this.dicSJcode,p.row.sjlx)
 							return h('div',val)
 						}
-                    },
-                    {
-                        title: '车牌号',
-                        key: 'cph',
-                        align: 'center',
                     },
                     {
                         title: '驾驶员',
@@ -213,7 +210,7 @@
         		var v = this
         		v.SpinShow = true;
         		if (v.findMess.sjlx == ''){
-                    v.findMess.sjlxIn = '10,20,30,40';
+                    v.findMess.sjlxIn = '10,20,30,40,50,60';
 				}else{
                     delete v.findMess.sjlxIn
 				}
