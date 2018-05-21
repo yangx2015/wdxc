@@ -1,0 +1,91 @@
+<style lang="less">
+	@import '../../../../styles/common.less';
+</style>
+<template>
+	<div>
+		<Modal v-model="showModal" width='900' 
+			:closable='false' :mask-closable="mesF" 
+			title="在线升级">
+			<div style="overflow: auto;">
+				<Form
+					:model="form"
+					:rules="ruleInline"
+					ref="addmess"
+					:label-width="100"
+					:styles="{top: '20px'}">
+					<Row>
+						<Col v-if="form.zdbh != ''" span="12">
+							<FormItem label='终端编号'>
+								<Input :readonly="dataRead" type="text" v-model="form.zdbh" placeholder="请填写终端编号..."></Input>
+							</FormItem>
+						</Col>
+						<Col span="24" v-show="dataRead">
+							<FormItem label='接口地址:'>
+								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
+							</FormItem>
+						</Col>
+					</Row>
+				</Form>
+			</div>
+			<div slot='footer'>
+				<Button type="ghost" @click="close">关闭</Button>
+				<Button type="success" @click="seet('addmess')">确定</Button>
+			</div>
+		</Modal>
+	</div>
+</template>
+
+<script>
+	import treelist from '@/data/list.js'
+
+	export default {
+		name: '',
+		data() {
+			return {
+				dataRead:true,
+				showModal: true,
+                mesF:false,
+				updateMode:'single',
+				form: {
+                    zdbh:'',//终端编号
+				},
+				ruleInline: {
+              	},
+			}
+		},
+		props:{
+			mess:{}
+		},
+		created(){
+		    if (this.$parent.choosedRow){
+                this.form.zdbh = this.$parent.choosedRow.zdbh;
+			}
+		    this.updateMode = this.$parent.updateMode;
+		},
+        mounted(){
+        },
+		methods: {
+			seet(name){
+		    	var v = this
+            	v.$http.post(this.apis.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd}).then((res) =>{
+            	    if(res.code == 200){
+                        v.$Message.success(res.message);
+                        v.$parent.getPageData()
+                        v.close()
+					}else{
+                        v.$Message.error(res.message);
+					}
+                }).catch((error) =>{
+				})
+			},
+			close(){
+		        this.$parent.componentName = '';
+			}
+
+		}
+	}
+</script>
+
+<style>
+
+</style>
