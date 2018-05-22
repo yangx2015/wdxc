@@ -51,7 +51,7 @@ public class TrackPoint {
      * gcj02：国测局加密坐标
      * bd09ll：百度经纬度坐标
      */
-    private String coord_type_input;    //wgs84
+    private String coord_type_input;    //bd09ll
     
     private String _object_key;
 

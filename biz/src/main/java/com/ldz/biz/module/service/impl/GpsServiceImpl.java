@@ -475,19 +475,32 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public void sbyxsjjl(GpsInfo info,ClCl clcl) {
 		ClGps clgps = changeCoordinates(info);
 		
+		if (StringUtils.isNotEmpty(info.getEventType())) {
+			
+			if (StringUtils.equals(info.getEventType(), "50")) {
+				 //熄火状态的redis 设置为空
+				redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
+			    redis.boundValueOps("ignition"+info.getDeviceId()).set(clgps);
+			    return;
+			}
+			if (StringUtils.equals(info.getEventType(), "60")) {
+				 //点火状态的redis 设置为空
+				redis.boundValueOps("flameout"+info.getDeviceId()).set(clgps);
+			    redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
+				return;
+			}
+		}
+	  
 		
+	    
 		if (StringUtils.equals(info.getSczt(), "10")) {
 		
-			if (StringUtils.isNotEmpty(info.getEventType())&&StringUtils.equals(info.getEventType(), "50")) {
 				 //熄火状态的redis 设置为空
-				 redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
-				    return;
-			}	
-			
+			 redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
 			 ClGps object = (ClGps) redis.boundValueOps("ignition"+info.getDeviceId()).get();
+			 
 			 if (ObjectUtils.isEmpty(object)) {
-				 //熄火状态的redis 设置为空
-				 redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
+				 //点火状态redis赋值
 				 redis.boundValueOps("ignition"+info.getDeviceId()).set(clgps);
 				 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
 				 clsbyxsjjl.setCjsj(simpledate(info.getStartTime()));
@@ -503,17 +516,18 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
 				 clsbyxsjjl.setZdbh(info.getDeviceId());
 				 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+				 return;
+			}else {
+				return;
 			}
 		}
 		
 		if (StringUtils.equals(info.getSczt(), "20")) {
-			
-			if (StringUtils.isNotEmpty(info.getEventType())&&StringUtils.equals(info.getEventType(), "60")) {
-				    return;
-			}	
-			
+			//将点火设置为空
+			redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
 			 ClGps object = (ClGps) redis.boundValueOps("flameout"+info.getDeviceId()).get();
 			 if (ObjectUtils.isEmpty(object)) {
+				 //熄火状态的redis赋值
 				 redis.boundValueOps("flameout"+info.getDeviceId()).set(clgps);
 				 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
 				 clsbyxsjjl.setCjsj(simpledate(info.getStartTime()));
@@ -529,15 +543,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
 				 clsbyxsjjl.setZdbh(info.getDeviceId());
 				 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+				 return;
+			}else {
+				return;
 			}
 		}
 		
-		if(StringUtils.isNotEmpty(info.getEventType())) {
-			
-			if (StringUtils.equals(info.getEventType(), "60")) {
-				redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
-			}
-		}
+	
 		
 		
 	}

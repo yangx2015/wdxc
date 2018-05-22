@@ -1,19 +1,19 @@
 package com.ldz.wechat.module.service.impl;
 
-import com.ldz.util.commonUtil.JsonUtil;
-import com.ldz.util.commonUtil.JwtUtil;
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.module.mapper.SysJzgxxMapper;
 import com.ldz.wechat.module.model.SysJzgxx;
 import com.ldz.wechat.module.service.SysJzgxxService;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class SysJzgxxServiceImpl implements SysJzgxxService {
@@ -22,10 +22,12 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 	private SysJzgxxMapper jzgmapper;
 
 	@Override
-	public ApiResponse<String> findJzg(String idCard, String name) {
-		SysJzgxx jzg = jzgmapper.findJzg(idCard, name);
-		String userInfo = JsonUtil.toJson(jzg);
+	public ApiResponse<String> findJzg(String zjhm, String name) {
+		RuntimeCheck.ifBlank(zjhm, "证件号码不为空");
+		RuntimeCheck.ifBlank(name, "姓名不为空");
+		SysJzgxx jzg = jzgmapper.findJzg(zjhm, name);
 		RuntimeCheck.ifNull(jzg, "身份证或者姓名有误");
+		String userInfo = JsonUtil.toJson(jzg);
 		String token = JwtUtil.createWechatToken("jzg",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		request.setAttribute("type","jzg");

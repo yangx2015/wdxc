@@ -9,14 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.CsTxTj;
-import com.ldz.biz.module.bean.GuiJiGps;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
+import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.model.ClSbyxsjjl;
 import com.ldz.biz.module.service.SbyxsjjlService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.TrackPointsForReturn.Point;
 
 @RestController
 @RequestMapping("api/clsbyxsjjl")
@@ -46,11 +47,17 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	 * 入参 开始时间  结束时间 终端编号
 	 */
 	@PostMapping("/historygps")
-	public ApiResponse<List<GuiJiGps>>  getGuiJiGps(gpsSJInfo gpssjinfo) {
+	public ApiResponse<List<ClGpsLs>>  getGuiJiGps(gpsSJInfo gpssjinfo) {
 
 		return service.getGuiJiGps(gpssjinfo);
 	}
     
+	@PostMapping("/baiduGuiJi")
+	public ApiResponse<List<Point>>  getBaiDuGuiJi(gpsSJInfo gpssjinfo) {
+		
+		return service.baiduGuiJi(gpssjinfo);
+		
+	}
 	
 	@RequestMapping("/Safedriving")
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig(){
