@@ -19,9 +19,9 @@ public class ClJsyCtrl {
 	private ClJsyService jsyService;
 
 	@PostMapping("/getjsy")
-	public ApiResponse<Map<String,Object>> findJsy(String sfzhm, String xm) {
+	public ApiResponse<Map<String,Object>> findJsy(String sjh, String xm) {
 
-		return jsyService.findJsy(sfzhm, xm);
+		return jsyService.findJsy(sjh, xm);
 	}
 	@PostMapping("/update")
 	public ApiResponse<String> updatejsy(ClJsy jsy){
