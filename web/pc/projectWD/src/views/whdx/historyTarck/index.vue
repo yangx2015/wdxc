@@ -82,8 +82,8 @@
 					<div v-show="!showMap" style="width: 100%;height: 500px;text-align: center;padding-top: 30%"><h1>暂无轨迹信息......</h1></div>
 				</Col>
 			</Row>
-			<Row v-if="showMap" >
-				<Col span="2">
+			<Row >
+				<Col span="2" v-if="showMap">
 					<ButtonGroup vertical style="margin-top: 120px">
 						<Button type="primary" shape="circle" icon="play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
 						<Button type="error" shape="circle" icon="stop" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
@@ -91,7 +91,7 @@
 						<Button type="warning" shape="circle" icon="ios-skipbackward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
 					</ButtonGroup>
 				</Col>
-				<Col span="22">
+				<Col span="22" v-show="showMap">
 					<div id="trackLineChart" style="width: 90%;height: 400px;"></div>
 				</Col>
 			</Row>
@@ -269,6 +269,7 @@
         },
 		data(){
 			return {
+			    v:this,
                 showMap:false,
 			    map: '',
                 //控制动画播放属性
@@ -366,7 +367,6 @@
                 return now.format("yyyy-MM-dd");
             },
             formItemList(){
-                var v = this
                 let startTime = this.formItem.startTime;
                 let endTime = this.formItem.endTime;
                 if (typeof startTime === 'object'){
@@ -413,16 +413,12 @@
                         }
                         this.pathList = res.result;
                         if (this.pathList.length > 0){
-                            this.item = this.pathList[0];
-                            setTimeout(()=>{
-                                this.getData();
-                            },100)
+                            this.itemClick(this.pathList[0],0);
 						}
                     }
                 })
             },
             getData(){
-                var v = this
 				let p = {
                     zdbh:this.formItem.zdbh,
 					startTime:this.item.kssj,
@@ -430,8 +426,9 @@
 				}
                 this.speedList = [];
                 this.speeds = {};
+                let v = this;
                 this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,p).then((res) =>{
-                    if (res.code === 200){
+                    if (res.code === 200 && res.result){
                         this.stationList = res.result;
                         for(let r of res.result){
                             let date = new Date(r.cjsj);
@@ -439,9 +436,9 @@
                             this.speedList.push([r.cjsj,speed]);
                             this.speeds[date.getTime()] = speed;
                         }
-                        setTimeout(()=>{
-                            this.Buildmap()
-						},100)
+                        v.Buildmap()
+                        // setTimeout(()=>{
+                        // },500)
 					}
                 })
             },
@@ -456,24 +453,27 @@
             },
             Buildmap() {
                 this.showMap = true;
-                var v = this
                 // 百度地图API功能
                 this.map = new BMap.Map("allmap"); // 创建Map实例
-                this.map.centerAndZoom(new BMap.Point(this.stationList[0].bdwd, this.stationList[0].bdjd), this.zoom); // 初始化地图,设置中心点坐标和地图级别
+                console.log(this.stationList[0].bdjd);
+                console.log(this.stationList[0].bdwd);
+                console.log(this.zoom);
+                this.map.centerAndZoom(new BMap.Point(114.3594106674, 30.5378865135), 15); // 初始化地图,设置中心点坐标和地图级别
+                // this.map.centerAndZoom(new BMap.Point(290.23423,114.34563245), this.zoom); // 初始化地图,设置中心点坐标和地图级别
                 //添加地图类型控件
-                this.map.addControl(new BMap.MapTypeControl({
-                    mapTypes: [
-                        BMAP_NORMAL_MAP
-                    ]
-                }));
+                // this.map.addControl(new BMap.MapTypeControl({
+                //     mapTypes: [
+                //         BMAP_NORMAL_MAP
+                //     ]
+                // }));
                 this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
                 this.map.addControl(new BMap.ScaleControl()); // 添加比例尺控件
                 this.map.addControl(new BMap.OverviewMapControl()); //添加缩略地图控件
                 this.map.addControl(new BMap.NavigationControl()); // 添加平移缩放控件
-                this.line()
+                this.line();
             },
             line(){
-                var v = this
+                let v = this;
                 var pois = [];
                 for(let r of v.stationList){
                     pois.push(new BMap.Point(r.bdjd,r.bdwd));
@@ -509,6 +509,7 @@
                 this.drawLineChart();
             },
             drawLineChart(){
+                this.showMap = true;
                 let v = this;
                 // 基于准备好的dom，初始化echarts实例
                 this.movingChart = echarts.init(document.getElementById('trackLineChart'));
