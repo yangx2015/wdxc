@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.wechat.module.model.SysJzgxx;
 import com.ldz.wechat.module.service.SysJzgxxService;
 
 @RestController

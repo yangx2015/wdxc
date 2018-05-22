@@ -13,6 +13,7 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import com.ldz.job.job.ClNianShenJob;
+import com.ldz.job.job.GpsJuPianJob;
 import com.ldz.job.job.GpsSaveJob;
 import com.ldz.job.job.GpsZtSyncJob;
 
@@ -34,13 +35,18 @@ public class ScheduleComponent {
 		// 车辆年审日期获取job
 				JobDetail nianshenJob = JobBuilder.newJob(ClNianShenJob.class).withIdentity(ClNianShenJob.class.getName(), "clnssync")
 						.build();
-
+		// 纠偏gps轨迹job
+				JobDetail jiuPianJob = JobBuilder.newJob(GpsJuPianJob.class).withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
+						.build();
+				
+				
 		// gps同步定执行周期，每1分钟执行一次
 		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *");
 		// 终端状态监测定时周期 每10分钟执行一次
-		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/10 * * * ? *");
+		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/3 * * * ? *");
 		// 车辆年审日期设置  每天中午12点执行一次
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
+		
 		
 		// gps同步创建一个trigger
 		CronTrigger cronTrigger = TriggerBuilder.newTrigger().withIdentity(GpsSaveJob.class.getName(), "GPSSync")
@@ -48,14 +54,20 @@ public class ScheduleComponent {
 		// 创建设备状态同步trigger
 		CronTrigger cronTriggerzdgl = TriggerBuilder.newTrigger().withIdentity(GpsZtSyncJob.class.getName(), "zdglsync")
 				.withSchedule(scheduleBuilderZD).build();
-		//创间车辆年审日期获取job
+		//创建车辆年审日期获取trigger
 			CronTrigger cronTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClNianShenJob.class.getName(), "clnssync")
 					.withSchedule(scheduleBuilderns).build();
+		//创建gps点位纠偏trigger
+			CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
+					.withSchedule(scheduleBuilderZD).build();
+					
+			
 		
 		try {
-			schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
 			schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
 			schedulerFactory.getScheduler().scheduleJob(zdglJob, cronTriggerzdgl);
+			schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
+		/*	schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);*/
 		} catch (SchedulerException e) {
 			errorLog.error("任务创建失败", e);
 		}

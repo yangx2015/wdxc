@@ -8,8 +8,8 @@ import org.apache.commons.lang.StringUtils;
 import com.ldz.util.bean.AddPointResponse;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPoint;
-import com.ldz.util.bean.TrackPointForReturn;
 import com.ldz.util.bean.TrackPoints;
+import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
 import com.ldz.util.commonUtil.HttpUtil;
@@ -35,6 +35,7 @@ public class GuiJIApi {
 
     public final static String getPointsURL = "http://yingyan.baidu.com/api/v3/track/gettrack";
 
+    //status:3005 设备已存在  status:0 新增成功  
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
     	Map<String, String> beanmap = new HashMap<>();
@@ -107,7 +108,7 @@ public class GuiJIApi {
 	}
 
 
-	public static TrackPointForReturn getPoints(TrackJiuPian entity , String url){
+	public static TrackPointsForReturn getPoints(TrackJiuPian entity , String url){
 
 		Map<String, String> beanmap = new HashMap<>();
 
@@ -121,8 +122,6 @@ public class GuiJIApi {
 		beanmap.put("supplement_mode",entity.getSupplement_mode());
 		beanmap.put("sort_type",entity.getSort_type());
 		beanmap.put("coord_type_output",entity.getCoord_type_output());
-		beanmap.put("page_size",entity.getPage_size());
-		beanmap.put("page_index",entity.getPage_index());
 
 		String postJson = null;
 		try {
@@ -131,13 +130,26 @@ public class GuiJIApi {
 			e.printStackTrace();
 		}
 
-		TrackPointForReturn addPointResponse = JsonUtil.toBean(postJson,TrackPointForReturn.class);
+		TrackPointsForReturn addPointResponse = JsonUtil.toBean(postJson,TrackPointsForReturn.class);
 
 		return addPointResponse;
 
 	}
 
-
+  public static void main(String[] args) {
+	  
+	  YyEntity yyEntity=  new YyEntity();
+	  yyEntity.setAk(AK);
+	  yyEntity.setEntity_name("865923030032376");
+	  yyEntity.setService_id(SERVICE_ID);
+	
+	   YingyanResponse changeEntity = changeEntity(yyEntity, saveEntityuRL);
+	  
+	  System.out.println(changeEntity);
+	  
+	  
+	  
+}
 
 
 }
