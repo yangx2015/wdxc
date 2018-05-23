@@ -25,8 +25,8 @@ public class SysJzgxxServiceImpl implements SysJzgxxService {
 	public ApiResponse<String> findJzg(String zjhm, String name) {
 		RuntimeCheck.ifBlank(zjhm, "证件号码不为空");
 		RuntimeCheck.ifBlank(name, "姓名不为空");
-		SysJzgxx jzg = jzgmapper.findJzg(zjhm, name);
-		RuntimeCheck.ifNull(jzg, "身份证或者姓名有误");
+		SysJzgxx jzg = jzgmapper.findJzg(name,zjhm);
+		RuntimeCheck.ifNull(jzg, "证件号码或姓名有误");
 		String userInfo = JsonUtil.toJson(jzg);
 		String token = JwtUtil.createWechatToken("jzg",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
