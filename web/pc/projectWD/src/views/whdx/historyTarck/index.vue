@@ -82,8 +82,8 @@
 					<div v-show="!showMap" style="width: 100%;height: 500px;text-align: center;padding-top: 30%"><h1>暂无轨迹信息......</h1></div>
 				</Col>
 			</Row>
-			<Row >
-				<Col span="2" v-if="showMap">
+			<Row  span="2" v-if="showMap" >
+				<Col>
 					<ButtonGroup vertical style="margin-top: 120px">
 						<Button type="primary" shape="circle" icon="play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
 						<Button type="error" shape="circle" icon="stop" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
@@ -91,7 +91,7 @@
 						<Button type="warning" shape="circle" icon="ios-skipbackward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
 					</ButtonGroup>
 				</Col>
-				<Col span="22" v-show="showMap">
+				<Col span="22" v-if="showMap"  style="width: 100%">
 					<div id="trackLineChart" style="width: 90%;height: 400px;"></div>
 				</Col>
 			</Row>
@@ -220,6 +220,7 @@
 
     import echarts from 'echarts'
     import mixins from '@/mixins'
+	import $ from 'jquery'
 
     Date.prototype.format = function(format)
     {
@@ -427,21 +428,61 @@
                 this.speedList = [];
                 this.speeds = {};
                 let v = this;
+
                 this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         this.stationList = res.result;
                         for(let r of res.result){
-                            let date = new Date(r.cjsj);
-                            let speed = parseInt(r.yxsd);
-                            this.speedList.push([r.cjsj,speed]);
+                            let date = new Date(r.loc_time);
+                            let speed = parseInt(r.speed);
+                            this.speedList.push([r.loc_time,speed]);
                             this.speeds[date.getTime()] = speed;
                         }
                         v.Buildmap()
-                        // setTimeout(()=>{
-                        // },500)
 					}
                 })
             },
+			getBdData(){
+                let v = this;
+                let startTime = this.item.kssj;
+                let endTime = this.item.jssj;
+                if (typeof startTime === 'object'){
+                    startTime = startTime.getTime()/1000;
+                }else{
+                    let time = new Date(startTime);
+                    startTime = time.getTime()/1000;
+				}
+                if (typeof endTime === 'object'){
+                    endTime = endTime.getTime()/1000;
+                }else{
+                    let time = new Date(endTime);
+                    endTime = time.getTime()/1000;
+                }
+                let url = 'http://yingyan.baidu.com/api/v3/track/gettrack?ak=2pVOrCuBldNDOgDtwaYSP8gpQ2VQdZY9&service_id=200383&is_processed=1&process_option=need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving&supplement_mode=driving&sort_type=asc&coord_type_output=bd09ll';
+                url += '&entity_name='+this.formItem.zdbh;
+                url += '&start_time='+startTime+'&end_time='+endTime;
+                this.speedList = [];
+                this.speeds = {};
+                $.ajax({
+					url:url,
+					type:"get",
+                    dataType:'JSONP',
+					crossDomain:true,
+                    success:function(data){
+                        console.log(data);
+                        if (data.status === 0 && data.points){
+                            v.stationList = data.points;
+                            for(let r of v.stationList){
+                                let date = new Date(r.create_time);
+                                let speed = parseInt(r.speed);
+                                v.speedList.push([r.create_time,speed]);
+                                v.speeds[date.getTime()] = speed;
+                            }
+                            v.Buildmap()
+						}
+                    }
+				})
+			},
 			formatDate(s){
 				let date = new Date(s);
                 let min = date.getMinutes()
@@ -452,31 +493,32 @@
 				return texts;
             },
             Buildmap() {
+                let v = this;
                 this.showMap = true;
                 // 百度地图API功能
                 this.map = new BMap.Map("allmap"); // 创建Map实例
-                console.log(this.stationList[0].bdjd);
-                console.log(this.stationList[0].bdwd);
-                console.log(this.zoom);
-                this.map.centerAndZoom(new BMap.Point(114.3594106674, 30.5378865135), 15); // 初始化地图,设置中心点坐标和地图级别
-                // this.map.centerAndZoom(new BMap.Point(290.23423,114.34563245), this.zoom); // 初始化地图,设置中心点坐标和地图级别
                 //添加地图类型控件
-                // this.map.addControl(new BMap.MapTypeControl({
-                //     mapTypes: [
-                //         BMAP_NORMAL_MAP
-                //     ]
-                // }));
+                this.map.addControl(new BMap.MapTypeControl({
+                    mapTypes: [
+                        BMAP_NORMAL_MAP
+                    ]
+                }));
                 this.map.enableScrollWheelZoom(true); //开启鼠标滚轮缩放
                 this.map.addControl(new BMap.ScaleControl()); // 添加比例尺控件
                 this.map.addControl(new BMap.OverviewMapControl()); //添加缩略地图控件
                 this.map.addControl(new BMap.NavigationControl()); // 添加平移缩放控件
-                this.line();
+                this.map.centerAndZoom(new BMap.Point(this.stationList[0].longitude, this.stationList[0].latitude), this.zoom); // 初始化地图,设置中心点坐标和地图级别
+
+                setTimeout(()=>{
+                    v.line();
+                },100)
             },
             line(){
+                this.showMap = true;
                 let v = this;
                 var pois = [];
                 for(let r of v.stationList){
-                    pois.push(new BMap.Point(r.bdjd,r.bdwd));
+                    pois.push(new BMap.Point(r.longitude,r.latitude));
                 }
                 v.map.setViewport(pois)
                 var polyline = new BMap.Polyline(pois, {
@@ -490,7 +532,7 @@
                 this.map.addOverlay(polyline);          //增加折线
 
                 // 增加起点
-                var pt1 = new BMap.Point(v.stationList[0].bdjd, v.stationList[0].bdwd);
+                var pt1 = new BMap.Point(v.stationList[0].longitude, v.stationList[0].latitude);
                 var myIcon1 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker1 = new BMap.Marker(pt1,{icon:myIcon1});  // 创建标注
                 this.map.addOverlay(marker1);
@@ -501,15 +543,16 @@
                 this.map.addOverlay(this.movingMarker);
 
                 // 增加终点
-                var pt2 = new BMap.Point(v.stationList[v.stationList.length-1].bdjd, v.stationList[v.stationList.length-1].bdwd);
+                var pt2 = new BMap.Point(v.stationList[v.stationList.length-1].longitude, v.stationList[v.stationList.length-1].latitude);
                 var myIcon2 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_end.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker2 = new BMap.Marker(pt2,{icon:myIcon2});  // 创建标注
                 this.map.addOverlay(marker2);
                 //画轨迹线
-                this.drawLineChart();
+				setTimeout(()=>{
+                    v.drawLineChart();
+				},100)
             },
             drawLineChart(){
-                this.showMap = true;
                 let v = this;
                 // 基于准备好的dom，初始化echarts实例
                 this.movingChart = echarts.init(document.getElementById('trackLineChart'));
@@ -627,7 +670,7 @@
                         //取出下一个动画节点
                         var moveData = this.stationList[this.playAndStopBtnGroup.playIndex];
                         //更新地图移动轨迹
-                        var movePoint = new BMap.Point(moveData.bdjd, moveData.bdwd);
+                        var movePoint = new BMap.Point(moveData.latitude, moveData.longitude);
                         this.movingMarker.setPosition(movePoint);
 
                         //给chart补充完数据后，再开启该方法
