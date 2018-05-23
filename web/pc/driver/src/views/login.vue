@@ -42,10 +42,10 @@
                                 </span>
                             </Input>
                         </FormItem>
-                        <FormItem prop="sfzhm">
-                            <Input type="password" v-model="form.sjh" placeholder="请输入手机号">
+                        <FormItem prop="sjh">
+                            <Input type="text" v-model="form.sjh" placeholder="请输入手机号">
                                 <span slot="prepend">
-                                    <Icon :size="14" type="card"></Icon>
+                                    <Icon :size="14" type="iphone"></Icon>
                                 </span>
                             </Input>
                         </FormItem>
