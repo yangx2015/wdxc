@@ -220,7 +220,6 @@
 
     import echarts from 'echarts'
     import mixins from '@/mixins'
-	import $ from 'jquery'
 
     Date.prototype.format = function(format)
     {
@@ -442,47 +441,47 @@
 					}
                 })
             },
-			getBdData(){
-                let v = this;
-                let startTime = this.item.kssj;
-                let endTime = this.item.jssj;
-                if (typeof startTime === 'object'){
-                    startTime = startTime.getTime()/1000;
-                }else{
-                    let time = new Date(startTime);
-                    startTime = time.getTime()/1000;
-				}
-                if (typeof endTime === 'object'){
-                    endTime = endTime.getTime()/1000;
-                }else{
-                    let time = new Date(endTime);
-                    endTime = time.getTime()/1000;
-                }
-                let url = 'http://yingyan.baidu.com/api/v3/track/gettrack?ak=2pVOrCuBldNDOgDtwaYSP8gpQ2VQdZY9&service_id=200383&is_processed=1&process_option=need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving&supplement_mode=driving&sort_type=asc&coord_type_output=bd09ll';
-                url += '&entity_name='+this.formItem.zdbh;
-                url += '&start_time='+startTime+'&end_time='+endTime;
-                this.speedList = [];
-                this.speeds = {};
-                $.ajax({
-					url:url,
-					type:"get",
-                    dataType:'JSONP',
-					crossDomain:true,
-                    success:function(data){
-                        console.log(data);
-                        if (data.status === 0 && data.points){
-                            v.stationList = data.points;
-                            for(let r of v.stationList){
-                                let date = new Date(r.create_time);
-                                let speed = parseInt(r.speed);
-                                v.speedList.push([r.create_time,speed]);
-                                v.speeds[date.getTime()] = speed;
-                            }
-                            v.Buildmap()
-						}
-                    }
-				})
-			},
+			// getBdData(){
+             //    let v = this;
+             //    let startTime = this.item.kssj;
+             //    let endTime = this.item.jssj;
+             //    if (typeof startTime === 'object'){
+             //        startTime = startTime.getTime()/1000;
+             //    }else{
+             //        let time = new Date(startTime);
+             //        startTime = time.getTime()/1000;
+			// 	}
+             //    if (typeof endTime === 'object'){
+             //        endTime = endTime.getTime()/1000;
+             //    }else{
+             //        let time = new Date(endTime);
+             //        endTime = time.getTime()/1000;
+             //    }
+             //    let url = 'http://yingyan.baidu.com/api/v3/track/gettrack?ak=2pVOrCuBldNDOgDtwaYSP8gpQ2VQdZY9&service_id=200383&is_processed=1&process_option=need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving&supplement_mode=driving&sort_type=asc&coord_type_output=bd09ll';
+             //    url += '&entity_name='+this.formItem.zdbh;
+             //    url += '&start_time='+startTime+'&end_time='+endTime;
+             //    this.speedList = [];
+             //    this.speeds = {};
+             //    $.ajax({
+			// 		url:url,
+			// 		type:"get",
+             //        dataType:'JSONP',
+			// 		crossDomain:true,
+             //        success:function(data){
+             //            console.log(data);
+             //            if (data.status === 0 && data.points){
+             //                v.stationList = data.points;
+             //                for(let r of v.stationList){
+             //                    let date = new Date(r.create_time);
+             //                    let speed = parseInt(r.speed);
+             //                    v.speedList.push([r.create_time,speed]);
+             //                    v.speeds[date.getTime()] = speed;
+             //                }
+             //                v.Buildmap()
+			// 			}
+             //        }
+			// 	})
+			// },
 			formatDate(s){
 				let date = new Date(s);
                 let min = date.getMinutes()
