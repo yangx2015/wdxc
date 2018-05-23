@@ -88,6 +88,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			for (ClGpsLs clGpsLs : list) {
 				TrackPoint changeModel = changeModel(clGpsLs);
 				try {
+					accessLog.debug("上传鹰眼的数据模型为:"+changeModel);
 					YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
 					accessLog.debug("上传鹰眼的点位:"+clGpsLs.getZdbh()+"状态为:"+addPoint);
 				} catch (Exception e) {
