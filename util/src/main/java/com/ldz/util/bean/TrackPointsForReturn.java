@@ -60,7 +60,7 @@ public class TrackPointsForReturn {
 
         private Long loc_time;
 
-
+       
     }
 
     @Setter
@@ -76,13 +76,15 @@ public class TrackPointsForReturn {
 
         private String _object_key;
 
+        private Integer direction;
+        
+        private Double speed;
+        
         /*private String create_time;
 
-        private Integer direction;
 
         private Double height;
 
-        private Double speed;
 
         private Double radius;
 

@@ -258,7 +258,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		guijis.setEntity_name(gpssjinfo.getZdbh());
 		guijis.setIs_processed("1");
 		guijis.setProcess_option(
-				"need_denoise=1,radius_threshold=0,need_vacuate=1,need_mapmatch=1,radius_threhold=0,transport_mode=driving");
+				"need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setSort_type("asc");
 

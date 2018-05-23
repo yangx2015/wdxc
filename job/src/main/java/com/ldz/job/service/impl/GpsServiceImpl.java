@@ -41,7 +41,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	private RedisTemplateUtil redis;
 	@Autowired
 	private ClGpsLsMapper clgpslsMapper;
-	
 
 	@Override
 	protected Mapper<ClGps> getBaseMapper() {
@@ -80,18 +79,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
 				list.add(gpssss);
 
-			
 			}
 
 			clgpslsMapper.insertList(list);
 
-			/*for (ClGpsLs clGpsLs : list) {
+			for (ClGpsLs clGpsLs : list) {
 				TrackPoint changeModel = changeModel(clGpsLs);
-				YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
-				log.info(addPoint + "");
-			}*/
-		}
+				try {
+					YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
+					log.info(addPoint + "");
+				} catch (Exception e) {
+					continue;
+				}
+			}
 
+		}
 	}
 
 	public TrackPoint changeModel(ClGpsLs clgps) {
@@ -101,44 +103,41 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		tracktPoint.setAk(GuiJIApi.AK);
 		tracktPoint.setCoord_type_input("bd09ll");
 		tracktPoint.setEntity_name(clgps.getZdbh());
-		tracktPoint.setLatitude(clgps.getBdwd().doubleValue());
+		tracktPoint.setLatitude(clgps.getBdwd());
 		tracktPoint.setLoc_time((clgps.getCjsj().getTime()) / 1000);
-		tracktPoint.setLongitude(clgps.getBdjd().doubleValue());
+		tracktPoint.setLongitude(clgps.getBdjd());
 		tracktPoint.setService_id(GuiJIApi.SERVICE_ID);
+		tracktPoint.setSpeed(clgps.getYxsd());
+		tracktPoint.setDirection(String.valueOf(clgps.getFxj()));
 		return tracktPoint;
 	}
 
-	public static TrackPointsForReturn guiJiJiuPian1(ClCl clcl) {
-
-		long endTiem = System.currentTimeMillis();
-		long startTime = endTiem - (1 * 60 * 60 * 1000);
-
-		TrackJiuPian guijis = new TrackJiuPian();
-		guijis.setAk(GuiJIApi.AK);
-		guijis.setCoord_type_output("bd09ll");
-		guijis.setEnd_time(String.valueOf(endTiem / 1000));
-		guijis.setEntity_name(clcl.getZdbh());
-		guijis.setIs_processed("1");
-		guijis.setProcess_option(
-				"need_denoise=1,radius_threshold=0, need_vacuate=1,need_mapmatch=1, radius_threhold=0,transport_mode=driving");
-		guijis.setService_id(GuiJIApi.SERVICE_ID);
-		guijis.setSort_type("desc");
-		guijis.setStart_time(String.valueOf(startTime / 1000));
-		guijis.setSupplement_mode("driving");
-
-		TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
-		return points;
-
-	}
-
-	public static void main(String[] args) {
-
-		ClCl cl = new ClCl();
-
-		cl.setZdbh("865923030039405");
-		TrackPointsForReturn guiJiJiuPian = guiJiJiuPian1(cl);
-		System.out.println(guiJiJiuPian);
-	}
+	/*
+	 * public static TrackPointsForReturn guiJiJiuPian1(ClCl clcl) {
+	 * 
+	 * long endTiem = System.currentTimeMillis(); long startTime = endTiem - (1 * 60
+	 * * 60 * 1000);
+	 * 
+	 * TrackJiuPian guijis = new TrackJiuPian(); guijis.setAk(GuiJIApi.AK);
+	 * guijis.setService_id(GuiJIApi.SERVICE_ID);
+	 * guijis.setEntity_name(clcl.getZdbh()); guijis.setProcess_option(
+	 * "need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
+	 * guijis.setSupplement_mode("driving"); guijis.setSort_type("asc");
+	 * guijis.setCoord_type_output("bd09ll"); guijis.setStart_time("1526967180");
+	 * guijis.setEnd_time("1526967360"); guijis.setIs_processed("1");
+	 * 
+	 * TrackPointsForReturn points = GuiJIApi.getPoints(guijis,
+	 * GuiJIApi.getPointsURL); return points;
+	 * 
+	 * }
+	 * 
+	 * public static void main(String[] args) {
+	 * 
+	 * ClCl cl = new ClCl();
+	 * 
+	 * cl.setZdbh("865923030039405"); TrackPointsForReturn guiJiJiuPian =
+	 * guiJiJiuPian1(cl); System.out.println(guiJiJiuPian); }
+	 */
 
 	@Override
 	public void guiJiJiuPian(ClCl clcl) {

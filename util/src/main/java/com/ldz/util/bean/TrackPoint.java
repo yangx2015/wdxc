@@ -1,5 +1,7 @@
 package com.ldz.util.bean;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -30,12 +32,12 @@ public class TrackPoint {
     /**
      * 纬度 (必填)
      */
-    private Double latitude;    //30.5427744502
+    private BigDecimal  latitude;    //30.5427744502
 
     /**
      * 经度 (必填)
      */
-    private Double longitude;   //114.2618477088
+    private BigDecimal  longitude;   //114.2618477088
 
     /**
      * 定位时设备的时间 (必填)  Unix 时间戳
@@ -58,15 +60,15 @@ public class TrackPoint {
     /**
      * 速度
      * 单位：km/h
-     *//*
+     */
     private String speed;   //30.25
 
-    *//**
+    /**
      * 方向
      * 范围为[0,359]，0度为正北方向，顺时针
-     *//*
+     */
     private String direction;   //12
-    *//**
+    /**
      * 高度
      * 米
      *//*
