@@ -669,7 +669,7 @@
                         //取出下一个动画节点
                         var moveData = this.stationList[this.playAndStopBtnGroup.playIndex];
                         //更新地图移动轨迹
-                        var movePoint = new BMap.Point(moveData.latitude, moveData.longitude);
+                        var movePoint = new BMap.Point(moveData.longitude, moveData.latitude);
                         this.movingMarker.setPosition(movePoint);
 
                         //给chart补充完数据后，再开启该方法
