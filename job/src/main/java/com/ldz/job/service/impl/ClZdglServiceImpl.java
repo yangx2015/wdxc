@@ -74,6 +74,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 				bean = JsonUtil.toBean(string, ApiResponse.class);
 			} catch (Exception e) {
 				log.error(e.getMessage());
+				continue;
 			}
 			if (bean.getCode() != 200) {
 				
