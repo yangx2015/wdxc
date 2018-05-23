@@ -34,6 +34,8 @@ import tk.mybatis.mapper.common.Mapper;
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
 
 	private static final Logger log = LoggerFactory.getLogger(GpsServiceImpl.class);
+	Logger errorLog = LoggerFactory.getLogger("error_info");
+    Logger accessLog= LoggerFactory.getLogger("access_info");  
 
 	@Autowired
 	private ClGpsMapper entityMapper;
@@ -87,8 +89,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				TrackPoint changeModel = changeModel(clGpsLs);
 				try {
 					YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
-					log.info(addPoint + "");
+					accessLog.debug("上传鹰眼的点位:"+clGpsLs.getZdbh()+"状态为:"+addPoint);
 				} catch (Exception e) {
+					errorLog.debug(e.getMessage());
 					continue;
 				}
 			}
@@ -152,7 +155,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		guijis.setEntity_name(clcl.getZdbh());
 		guijis.setIs_processed("1");
 		guijis.setProcess_option(
-				"need_denoise=1,radius_threshold=0,need_vacuate=1,need_mapmatch=1,radius_threhold=0,transport_mode=driving");
+				"need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setSort_type("asc");
 		guijis.setStart_time(String.valueOf(startTime / 1000));
