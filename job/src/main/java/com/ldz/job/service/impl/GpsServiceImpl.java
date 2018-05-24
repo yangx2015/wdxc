@@ -42,7 +42,8 @@ private static final Logger log = LoggerFactory.getLogger(GpsServiceImpl.class);
 	@Autowired
 	private ClGpsMapper entityMapper;
 	@Autowired
-	private RedisTemplateUtil redis;
+	private RedisTemplateUtil redis; 
+	
 	@Autowired
 	private ClGpsLsMapper clgpslsMapper;
 
