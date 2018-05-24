@@ -102,7 +102,19 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		//job发送80事件
 		String formatdate = formatdate(object2.getCjsj());
 		if (StringUtils.equals(gpsinfo.getStartTime(), formatdate)) {
-			 
+			//补发一次60事件
+			ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
+			clSbyxsjjl.setCjsj(simpledate(gpsinfo.getStartTime()));
+			clSbyxsjjl.setId(genId());
+			clSbyxsjjl.setJd(new BigDecimal(gpsinfo.getLongitude()));
+			clSbyxsjjl.setWd(new BigDecimal(gpsinfo.getLatitude()));
+			clSbyxsjjl.setJid(new BigDecimal(gpsinfo.getGpsjd()));
+			clSbyxsjjl.setSjjb("10");
+			clSbyxsjjl.setSjlx("60");
+			clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
+			clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
+			clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
+			
 			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
 			log.info("推送前端的数据为" + socket);
 			websocket.convertAndSend("/topic/sendgps", socket);
