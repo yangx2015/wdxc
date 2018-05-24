@@ -92,7 +92,7 @@
 			pbTime:''
 		},
 		created(){
-			if(this.mess.clList==null){
+			if(this.mess.clList==(null||"")){
 				this.mess.clList = []
 			}
 			console.log('信息传递',this.mess)
@@ -121,9 +121,11 @@
 				var v = this
 				this.$http.post(this.apis.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'20'}).then((res) =>{
 					console.log('排版新增',res)
+					    	// debugger
 					if(res.code==200){
 						v.$Message.success(res.message);
 						v.mess.clList.push({'cph':cph,'clId':carID,'sjxm':sjxm})
+					    	// v.$parent.getmess()
 						v.getCarList()
 					}else{
 						v.$Message.error(res.message);

@@ -1,39 +1,44 @@
 package com.ldz.wechat.module.service.impl;
 
-import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.commonUtil.JsonUtil;
-import com.ldz.util.commonUtil.JwtUtil;
-import com.ldz.wechat.module.mapper.ClDdMapper;
-import com.ldz.wechat.module.model.ClDd;
-import com.ldz.wechat.module.model.SysJzgxx;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.wechat.module.mapper.ClJsyMapper;
-import com.ldz.wechat.module.model.ClJsy;
-import com.ldz.wechat.module.service.ClJsyService;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.wechat.base.BaseServiceImpl;
+import com.ldz.wechat.module.mapper.ClDdMapper;
+import com.ldz.wechat.module.mapper.ClJsyMapper;
+import com.ldz.wechat.module.model.ClDd;
+import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.service.ClJsyService;
+
+import tk.mybatis.mapper.common.Mapper;
+
 @Service
-public class ClJsyServiceImpl implements ClJsyService{
+public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements ClJsyService{
     @Autowired
     private ClJsyMapper jsymapper;
     @Autowired
 	private ClDdMapper ddMapper;
     
 	@Override
-	public ApiResponse<Map<String,Object>> findJsy(String sfzhm, String xm) {
-		ClJsy jsy = jsymapper.findJzg(sfzhm, xm);
-		RuntimeCheck.ifNull(jsy, "身份证或者姓名有误");
+	public ApiResponse<Map<String,Object>> findJsy(String sjh, String xm) {
+		RuntimeCheck.ifBlank(sjh, "手机号必填");
+	    RuntimeCheck.ifBlank(xm, "姓名必填");
+		ClJsy jsy = jsymapper.findJzg(xm,sjh);
+		RuntimeCheck.ifNull(jsy, "手机号或者姓名有误");
 		String userInfo = JsonUtil.toJson(jsy);
 		String token = JwtUtil.createWechatToken("jsy",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -65,6 +70,11 @@ public class ClJsyServiceImpl implements ClJsyService{
 		jsy.setZt(null);
 		jsymapper.updateByPrimaryKeySelective(jsy);
 		return ApiResponse.updateSuccess();
+	}
+
+	@Override
+	protected Mapper<ClJsy> getBaseMapper() {
+		return jsymapper;
 	}
 
 	public ClJsy findById(String sfzhm){

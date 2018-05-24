@@ -1,18 +1,19 @@
 <style lang="less">
+    @import "../styles/common";
     @import './login.less';
   .loginBytton{
-      position: fixed;
-      bottom: 0;
-      width:100%;
-      padding: 45px;
+      /*position: fixed;*/
+      /*top: 56%;*/
+      /*width:100%;*/
+      padding:0 20px;
   }
 </style>
 
 <template>
-    <div class="login" @keydown.enter="handleSubmit">
+    <div class="login box" @keydown.enter="handleSubmit">
     	<!--<img src="../../static/3.png"/>-->
         <div class="yc">
-          <h1 style="color: #cce8ff;">Welcome</h1>
+            <img src="../img/logo.png" alt="">
           <!--<h1 class="huan">-->
             <!--欢-->
           <!--</h1>-->
@@ -26,7 +27,7 @@
             <!--车-->
           <!--</h1>-->
         </div>
-        <div class="login-con">
+        <div class="login-con body">
             <Card :bordered="false">
                 <!--<p slot="title">-->
                     <!--<Icon type="log-in"></Icon>-->
@@ -41,21 +42,25 @@
                                 </span>
                             </Input>
                         </FormItem>
-                        <FormItem prop="sfzhm">
-                            <Input type="password" v-model="form.sfzhm" placeholder="请输入密码">
+                        <FormItem prop="sjh">
+                            <Input type="text" v-model="form.sjh" placeholder="请输入手机号">
                                 <span slot="prepend">
-                                    <Icon :size="14" type="card"></Icon>
+                                    <Icon :size="14" type="iphone"></Icon>
                                 </span>
                             </Input>
                         </FormItem>
                     </Form>
                 </div>
             </Card>
+            <div class="loginBytton">
+                <Button @click="handleSubmit"
+                        size="large"
+                        type="primary" long>登录</Button>
+            </div>
         </div>
-        <div class="loginBytton">
-            <Button @click="handleSubmit"
-                    size="large"
-                    type="primary" long>登录</Button>
+        <div class="botimg">
+          <img src="../img/logbotImg.jpg" alt="" width="100%">
+
         </div>
     </div>
 </template>
@@ -67,15 +72,15 @@ export default {
     data () {
         return {
             form: {
-                xm: '测试订单A',
-                sfzhm: '2123123'
+                xm: '小车7坐',
+                sjh: '320333333333333333'
             },
             rules: {
                 xm: [
-                    { required: true, message: '账号不能为空', trigger: 'blur' }
+                    { required: true, message: '姓名不能为空', trigger: 'blur' }
                 ],
-                sfzhm: [
-                    { required: true, message: '密码不能为空', trigger: 'blur' }
+                sjh: [
+                    { required: true, message: '手机号不能为空', trigger: 'blur' }
                 ]
             }
         };
@@ -90,7 +95,8 @@ export default {
                 	this.$http.post(this.apis.LOGIN.QUERTY, this.form).then((res) =>{
                 		console.log('登陆结果',res)
                 		if(res.code===200){
-                		      v.$store.state.app.user = res.result
+                		      // v.$store.state.app.user = res.result
+                          Cookies.set('user', res.result);
                           Cookies.set('result', res.result.token);
                           this.$router.push({
                             name:'center'

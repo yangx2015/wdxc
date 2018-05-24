@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.websocketInfo;
@@ -65,6 +66,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Override
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
 		log.info("上传的gps信息:" + gpsinfo);
+		
+		
+		
 		if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
 			if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
 				return justDoThat(gpsinfo);
@@ -77,10 +81,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 
 		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
+		sbyxsjjl(gpsinfo, seleByZdbh);
 		return justDoIt(gpsinfo,seleByZdbh);
 	}
 
 	public ApiResponse<String> justDoThat(GpsInfo gpsinfo) {
+		//移除掉存储的点火状态 熄火状态
+		 redis.boundValueOps("ignition"+gpsinfo.getDeviceId()).set(null);
+		 redis.boundValueOps("flameout"+gpsinfo.getDeviceId()).set(null);
 		// 从redis(实时gps点位)里面取出历史数据
 		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
@@ -147,7 +155,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	// 两次距离大于10米才存入redis(存储历史gps点位)
 	if(shortDistance<10){
 		return ApiResponse.success("距离上一次点位太近,该点位不存储");
-	}
+	}   
 	
 	ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
 			entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(), entity.getGdwd(),
@@ -462,5 +470,88 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     	long time3 = time.getTime();
     	return time2-time3;
     }
+
+	@Override
+	public void sbyxsjjl(GpsInfo info,ClCl clcl) {
+		ClGps clgps = changeCoordinates(info);
+		
+		if (StringUtils.isNotEmpty(info.getEventType())) {
+			
+			if (StringUtils.equals(info.getEventType(), "50")) {
+				 //熄火状态的redis 设置为空
+				redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
+			    redis.boundValueOps("ignition"+info.getDeviceId()).set(clgps);
+			    return;
+			}
+			if (StringUtils.equals(info.getEventType(), "60")) {
+				 //点火状态的redis 设置为空
+				redis.boundValueOps("flameout"+info.getDeviceId()).set(clgps);
+			    redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
+				return;
+			}
+		}
+	  
+		
+	    
+		if (StringUtils.equals(info.getSczt(), "10")) {
+		
+				 //熄火状态的redis 设置为空
+			 redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
+			 ClGps object = (ClGps) redis.boundValueOps("ignition"+info.getDeviceId()).get();
+			 
+			 if (ObjectUtils.isEmpty(object)) {
+				 //点火状态redis赋值
+				 redis.boundValueOps("ignition"+info.getDeviceId()).set(clgps);
+				 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
+				 clsbyxsjjl.setCjsj(simpledate(info.getStartTime()));
+				 clsbyxsjjl.setCph(clcl.getCph());
+				 clsbyxsjjl.setCx(clcl.getCx());
+				 clsbyxsjjl.setId(genId());
+				 clsbyxsjjl.setJd(clgps.getBdjd());
+				 clsbyxsjjl.setJid(new BigDecimal(info.getGpsjd()));
+				 clsbyxsjjl.setSjjb("10");
+				 clsbyxsjjl.setSjlx("50");
+				 clsbyxsjjl.setSjxm(clcl.getSjxm());
+				 clsbyxsjjl.setWd(clgps.getBdwd());
+				 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
+				 clsbyxsjjl.setZdbh(info.getDeviceId());
+				 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+				 return;
+			}else {
+				return;
+			}
+		}
+		
+		if (StringUtils.equals(info.getSczt(), "20")) {
+			//将点火设置为空
+			redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
+			 ClGps object = (ClGps) redis.boundValueOps("flameout"+info.getDeviceId()).get();
+			 if (ObjectUtils.isEmpty(object)) {
+				 //熄火状态的redis赋值
+				 redis.boundValueOps("flameout"+info.getDeviceId()).set(clgps);
+				 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
+				 clsbyxsjjl.setCjsj(simpledate(info.getStartTime()));
+				 clsbyxsjjl.setCph(clcl.getCph());
+				 clsbyxsjjl.setCx(clcl.getCx());
+				 clsbyxsjjl.setId(genId());
+				 clsbyxsjjl.setJd(clgps.getBdjd());
+				 clsbyxsjjl.setJid(new BigDecimal(info.getGpsjd()));
+				 clsbyxsjjl.setSjjb("10");
+				 clsbyxsjjl.setSjlx("60");
+				 clsbyxsjjl.setSjxm(clcl.getSjxm());
+				 clsbyxsjjl.setWd(clgps.getBdwd());
+				 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
+				 clsbyxsjjl.setZdbh(info.getDeviceId());
+				 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+				 return;
+			}else {
+				return;
+			}
+		}
+		
+	
+		
+		
+	}
 
 }

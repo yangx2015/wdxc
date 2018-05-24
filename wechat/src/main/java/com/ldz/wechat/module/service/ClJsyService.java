@@ -1,11 +1,12 @@
 package com.ldz.wechat.module.service;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.wechat.base.BaseService;
 import com.ldz.wechat.module.model.ClJsy;
 
 import java.util.Map;
 
-public interface ClJsyService {
+public interface ClJsyService extends BaseService<ClJsy,String> {
 
 	/*
 	 * 通过驾驶员身份证号码,驾驶员姓名获取驾驶员

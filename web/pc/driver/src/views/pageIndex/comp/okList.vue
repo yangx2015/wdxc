@@ -10,8 +10,25 @@
       width: 75px;
       margin-right: 8px;
       text-align: center;
+      position: relative;
       img{
         margin-top: 10px;
+      }
+      .iconBack{
+        background-color: #375a7e;
+        text-align: center;
+        line-height: 50px;
+        font-size:22px;
+        font-weight: 700px;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%,-50%);
+        height: 50px;
+        width: 50px;
+        border-radius: 25px;
+        color: #fff;
+
       }
     }
     .lcmess{
@@ -35,7 +52,10 @@
       <div v-else v-for="item in mesList" @click="lineMess(item)" style="margin: 6px 0">
         <div class="box-row ddlist">
           <div class="icon">
-            <img src="/static/tou.jpg" alt="">
+            <!--<img src="/static/tou.jpg" alt="">-->
+            <div class="iconBack">
+              {{item.ck | fist}}
+            </div>
           </div>
           <div class="body-O lcmess">
             <div>
@@ -64,6 +84,11 @@
   export default {
     name:'',
     components:{
+    },
+    filters:{
+      fist(val){
+        return val.substr(0,1)
+      }
     },
     data () {
       return {

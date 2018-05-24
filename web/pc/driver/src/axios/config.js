@@ -16,5 +16,8 @@ module.exports = {
   },
   LISTOK:{//行程确认
     CHANGE:'/put/dd/update'
+  },
+  GPS:{
+	  DOT:'/put/dd/getStartPointAndEndPoint'
   }
 }

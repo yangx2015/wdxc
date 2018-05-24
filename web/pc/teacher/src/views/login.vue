@@ -1,15 +1,19 @@
 <style lang="less">
   @import './login.less';
+  @import "../styles/box";
 </style>
 <template>
-  <div class="login">
+  <div class="login box">
       <!--<div class="backSty" @click="back">-->
         <!--<i class="iconfont icon-left"></i>-->
       <!--</div>-->
       <!--<div class="backCenter" @click="backCenter">-->
         <!--首页-->
       <!--</div>-->
-      <div class="form">
+      <div class="titIcon">
+        <img src="../img/logo.png" alt="">
+      </div>
+      <div class="form body-D">
         <md-field>
           <md-input-item
             title="姓名"
@@ -19,17 +23,18 @@
             clearable
           ></md-input-item>
           <md-input-item
-            title="身份证号"
+            title="工号"
             type="text"
-            v-model="form.idCard"
-            placeholder="请输入您的身份证号码"
+            v-model="form.zjhm"
+            placeholder="请输入您的工号"
             clearable
           ></md-input-item>
         </md-field>
+        <div class="submit"  @click="login">
+          <md-button>登录</md-button>
+        </div>
       </div>
-    <div class="submit"  @click="login">
-      <md-button>登录</md-button>
-    </div>
+    <img style="width: 100%" src="../img/logbotImg.jpg" alt="">
   </div>
 </template>
 
@@ -50,7 +55,7 @@
       return{
         form:{
           name:'宋林殊',
-          idCard:'32948289347289'
+            zjhm:'32948289347289'
         }
       }
     },

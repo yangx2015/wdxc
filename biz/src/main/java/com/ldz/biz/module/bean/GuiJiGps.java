@@ -11,7 +11,7 @@ import lombok.ToString;
 @Setter
 @ToString
 public class GuiJiGps {
-
+    private String  id;
 	
 	private BigDecimal bdjd;
 	
@@ -19,5 +19,15 @@ public class GuiJiGps {
 	
 	private String yxsd;
 	
+	private Double fxj;
+	
 	private  Date cjsj;
+	
+    private String gdjd;
+	
+	private String gdwd;
+	
+    private BigDecimal jd;
+	
+	private BigDecimal wd;
 }

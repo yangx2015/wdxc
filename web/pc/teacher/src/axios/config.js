@@ -22,12 +22,16 @@ module.exports = {
     QUERTY:'/put/dd/getzdxm'
   },
   DDLIST:{//订单列表
-    QUERTY:'/put/dd/getorderworkerslis'
+    // QUERTY:'/put/dd/getorderworkerslis'
+    QUERTY:'/put/dd/pager'
   },
   REMOVE:{
 	  DELE:'/put/yj/removeIds'
   },
   PJDD:{//订单评分
     QUERTY:'/put/dd/evaluate'
+  },
+  GPS:{
+    DOT:'/put/dd/getStartPointAndEndPoint'
   }
 }

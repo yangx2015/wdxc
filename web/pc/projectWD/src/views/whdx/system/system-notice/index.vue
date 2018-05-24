@@ -26,6 +26,9 @@
 							<Button type="primary" @click="AddMess()">
 								<Icon type="plus-round"></Icon>
 							</Button>
+							<Button type="warning" @click="batchUpdate()">
+								<Icon type="arrow-up-a"></Icon>
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -51,20 +54,21 @@
 
 <script>
 	import mixins from '@/mixins'
-
 	import formData from './formData'
 	import change from './change'
 	import jkdz from './jkdz'
+	import update from './update'
 	import setting from './setting'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData,change,jkdz,setting
+            formData,change,jkdz,setting,update
 		},
         data () {
             return {
             	PickerTime:2017,
+				updateMode:'single',
                 SpinShow:false,
             	//分页
                 loading:this.$store.state.app.loading,
@@ -128,11 +132,6 @@
 	    					},val)
                         }
                     },
-                    // {
-                    //     title: '在线时间',
-                    //     align:'center',
-                    //     key: 'zxsj'
-                    // },
                     {
                         title: '终端状态',
                         align:'center',
@@ -146,23 +145,31 @@
 	    					},val)
                         }
                     },
-                    // {
-                    //     title: '创建时间',
-                    //     align:'center',
-                    //     key: 'cjsj'
-                    // },
-                    // {
-                    //     title: '创建人',
-                    //     align:'center',
-                    //     key: 'cjr'
-                    // },
                     {
                         title:'操作',
                         align:'center',
                         type: 'action',
-                        width: 150,
+                        width: 200,
                         render: (h, params) => {
                             return h('div', [
+                                h('Button', {
+                                    props: {
+                                        type: 'warning',
+										icon: 'arrow-up-a',
+										shape: 'circle',
+										size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.updateMode = 'single'
+                                        	this.choosedRow = params.row
+                                            this.componentName = 'update'
+                                        }
+                                    }
+                                }),
                                 h('Button', {
                                     props: {
                                         type: 'success',
@@ -265,6 +272,11 @@
 			this.getLXDic()
         },
         methods: {
+            batchUpdate(){
+                this.choosedRow = null;
+                this.updateMode = 'batch'
+                this.componentName = 'update';
+			},
         	getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);

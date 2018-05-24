@@ -1,8 +1,12 @@
 package com.ldz.wechat.module.service.impl;
 
 
+import java.math.BigDecimal;
 import java.util.*;
 
+import com.github.pagehelper.PageInfo;
+import com.ldz.util.commonUtil.MathUtil;
+import com.ldz.util.gps.DistanceUtil;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
 import com.ldz.wechat.module.mapper.ClGpsLsMapper;
@@ -30,6 +34,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.Date;
 import java.util.stream.Collectors;
+
+import static com.ldz.util.commonUtil.MathUtil.mul;
 
 
 @Service
@@ -66,6 +72,23 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         condition.setOrderByClause("cjsj desc");
         return true;
     }
+
+    @Override
+    public void afterPager(PageInfo<ClDd> pageInfo){
+        List<String> driverIds = pageInfo.getList().stream().map(ClDd::getSj).collect(Collectors.toList());
+        if (driverIds.size() == 0)return;
+        List<ClJsy> drivers =  jsyService.findIn(ClJsy.InnerColumn.sfzhm,driverIds);
+        if (drivers.size() == 0)return;
+        Map<String,ClJsy> driverMap = drivers.stream().collect(Collectors.toMap(ClJsy::getSfzhm,p->p));
+        for (ClDd dd : pageInfo.getList()) {
+            String driverId = dd.getSj();
+            if (StringUtils.isEmpty(driverId))continue;
+            ClJsy driver = driverMap.get(driverId);
+            if (driver == null)continue;
+            dd.setSjdh(driver.getSjh());
+        }
+    }
+
 
     public ApiResponse<String> saveEntity(ClDd entity, String userId){
         SysJzgxx clJsy= jzgxxService.findById(userId);
@@ -118,7 +141,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setGlf(entity.getGlf());//过路费
       newClDd.setGqf(entity.getGqf());//过桥费
       newClDd.setSy(entity.getSy());//事由
-      newClDd.setZj(entity.getZj());//总价
       newClDd.setSc(entity.getSc());//时长
       newClDd.setDj(entity.getDj());//单价
       newClDd.setLc(entity.getLc());//里程
@@ -127,6 +149,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setFkzt("00"); // 未付款
       newClDd.setDdzt("20");//订单状态
       newClDd.setSjqrsj(new Date());
+      double amount = MathUtil.mul(entity.getLc(),entity.getDj());
+      amount = MathUtil.add(amount,entity.getGqf());
+      amount = MathUtil.add(amount,entity.getGlf());
+      newClDd.setZj(amount);
 
       int i=update(newClDd);
       if(i==0){
@@ -175,7 +201,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
     /**
      * 列表 订单查询
-     * @param type  1、今日单据  2、待确认  3、历史单据
+     * @param type  2、待确认  3、历史单据
      * @return
      */
     public ApiResponse<List<ClDd>> getOrderDriverList(String userId, String type){
@@ -183,7 +209,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         SimpleCondition condition = new SimpleCondition(ClDd.class);
         condition.eq(ClDd.InnerColumn.sj.name(),userId);
 
-       if(StringUtils.equals(type,"2")) {//待确认
+        if(StringUtils.equals(type,"2")) {//待确认
             // 10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机完成行程(行程结束)；30-队长确认
             condition.eq(ClDd.InnerColumn.ddzt.name(),"13");
            condition.setOrderByClause(ClDd.InnerColumn.yysj.asc());
@@ -243,6 +269,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         if (gpsLs2.size() != 0){
             map.put("jsjd",gpsLs2.get(0).getBdjd());
             map.put("jswd",gpsLs2.get(0).getBdwd());
+        }
+
+        if (map.size() >= 4){
+            double d = DistanceUtil.getLongDistance(gpsLs1.get(0).getBdjd().doubleValue(),gpsLs1.get(0).getBdwd().doubleValue(),gpsLs2.get(0).getBdjd().doubleValue(),gpsLs2.get(0).getBdwd().doubleValue());
+            map.put("distance",d);
+            map.put("centerJd",(gpsLs1.get(0).getBdjd().add(gpsLs2.get(0).getBdjd())).divide(new BigDecimal(2),10,BigDecimal.ROUND_HALF_UP));
+            map.put("centerWd",(gpsLs1.get(0).getBdwd().add(gpsLs2.get(0).getBdwd())).divide(new BigDecimal(2),10,BigDecimal.ROUND_HALF_UP));
         }
         return ApiResponse.success(map);
     }

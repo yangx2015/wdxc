@@ -243,7 +243,7 @@
             if (this.$parent.choosedRow){
                 this.form = this.$parent.choosedRow;
                 this.operate = '编辑';
-                this.cllx = [this.form.cllx,this.form.zws];
+                this.cllx = [this.form.cllx,''+this.form.zws];
             }
         },
         mounted(){

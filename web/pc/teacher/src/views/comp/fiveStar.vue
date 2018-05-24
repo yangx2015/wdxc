@@ -1,7 +1,7 @@
 <style lang="less" scoped>
   .star{
     i{
-      font-size: 0.6rem;
+      font-size: 0.4rem;
       margin: 0.08rem;
     }
   }

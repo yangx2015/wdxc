@@ -299,6 +299,8 @@ public class ClDd implements Serializable {
     private String scs; // 车辆生产商
     @Transient
     private String xh;  // 车辆型号
+    @Transient
+    private String sjdh;
     /**
      * 载客量  筛选条件
      */
@@ -310,6 +312,14 @@ public class ClDd implements Serializable {
 
     @Transient
     private Date endTime;
+
+    public String getSjdh() {
+        return sjdh;
+    }
+
+    public void setSjdh(String sjdh) {
+        this.sjdh = sjdh;
+    }
 
     public String getScs() {
         return scs;

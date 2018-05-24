@@ -10,11 +10,14 @@
 					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
 				<!--</div>-->
 				<div class="titCenter body-O" style="text-align: center;">
-					 <Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>
+            <h2 style="color: #929292;">
+              武汉大学校巴班车线路查询
+            </h2>
+					 <!--<Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>-->
 				</div>
-				<div class="titRight" @click="feedback()">
-					<Icon type="ios-compose" color="#949494" size='26'></Icon>
-				</div>
+				<!--<div class="titRight" @click="feedback()">-->
+					<!--<Icon type="ios-compose" color="#949494" size='26'></Icon>-->
+				<!--</div>-->
 			</div>
 		</div>
 		<div>

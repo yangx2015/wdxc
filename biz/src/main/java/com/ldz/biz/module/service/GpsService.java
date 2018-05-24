@@ -55,4 +55,9 @@ public interface GpsService extends BaseService<ClGps,String>{
      * @parm 
      */
     ApiResponse<List<websocketInfo>>   inintGps();
+    
+    /*
+     * 补全设备点火熄火状态
+     */
+    void sbyxsjjl(GpsInfo info,ClCl cl);
 }
