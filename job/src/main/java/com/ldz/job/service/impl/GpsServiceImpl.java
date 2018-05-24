@@ -86,6 +86,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 			}
 			
+			clgpslsMapper.insertList(list);
 
 			//将集合按照100个拆分(鹰眼批量上传点位规则)
 			List<List<ClGpsLs>> splitList = splitList(list,100);
@@ -104,7 +105,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				}
 			}
 			
-			clgpslsMapper.insertList(list);
 			
 			
 			
