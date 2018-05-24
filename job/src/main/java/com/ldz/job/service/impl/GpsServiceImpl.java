@@ -33,7 +33,6 @@ import tk.mybatis.mapper.common.Mapper;
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
 
-	private static final Logger log = LoggerFactory.getLogger(GpsServiceImpl.class);
 	Logger errorLog = LoggerFactory.getLogger("error_info");
     Logger accessLog= LoggerFactory.getLogger("access_info");  
 

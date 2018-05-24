@@ -92,7 +92,8 @@ public class GuiJIApi {
 		beanmap.put("loc_time",entity.getLoc_time()+"");
 		beanmap.put("longitude",entity.getLongitude()+"");
 		beanmap.put("_object_key",entity.get_object_key());
-
+		beanmap.put("speed",entity.getSpeed());
+		beanmap.put("direction",entity.getDirection());
 		String postJson = null;
 		try {
 			postJson = HttpUtil.post(url, beanmap);
