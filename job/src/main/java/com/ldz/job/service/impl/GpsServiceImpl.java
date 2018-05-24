@@ -98,6 +98,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						accessLog.debug("成功上传鹰眼的点位:" + list2 + "状态为:" + addPoints);
 					} catch (Exception e) {
 						errorLog.error("上传鹰眼失败", e);
+						continue;
 					}
 					
 				}
