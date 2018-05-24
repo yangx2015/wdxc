@@ -95,9 +95,34 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 从redis(实时gps点位)里面取出历史数据
 		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
+		
+		//非job发送80事件
+		if (StringUtils.isEmpty(gpsinfo.getStartTime())) {
+			
+		
+           return ApiResponse.fail("非job发送离线");		
+		}
+		//job发送80事件
 		String formatdate = formatdate(object2.getCjsj());
 		if (StringUtils.equals(gpsinfo.getStartTime(), formatdate)) {
-			return ApiResponse.fail("两次离线时间一致");
+			//补发一次60事件
+			ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
+			clSbyxsjjl.setCjsj(simpledate(gpsinfo.getStartTime()));
+			clSbyxsjjl.setId(genId());
+			clSbyxsjjl.setJd(new BigDecimal(gpsinfo.getLongitude()));
+			clSbyxsjjl.setWd(new BigDecimal(gpsinfo.getLatitude()));
+			clSbyxsjjl.setJid(new BigDecimal(gpsinfo.getGpsjd()));
+			clSbyxsjjl.setSjjb("10");
+			clSbyxsjjl.setSjlx("60");
+			clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
+			clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
+			clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
+			
+			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
+			log.info("推送前端的数据为" + socket);
+			websocket.convertAndSend("/topic/sendgps", socket);
+			return ApiResponse.fail("job发送离线:两次离线时间一致");
+			
 		}
 		// 记录事件
 		ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();

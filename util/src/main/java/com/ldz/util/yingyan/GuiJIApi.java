@@ -1,8 +1,12 @@
 package com.ldz.util.yingyan;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 
 import com.ldz.util.bean.AddPointResponse;
@@ -35,7 +39,7 @@ public class GuiJIApi {
 
     public final static String getPointsURL = "http://yingyan.baidu.com/api/v3/track/gettrack";
 
-    //status:3005 设备已存在  status:0 新增成功  
+    //status:3005 设备已存在  status:0 新增成功
     public static YingyanResponse changeEntity(YyEntity entity,String url){
     	
     	Map<String, String> beanmap = new HashMap<>();
@@ -60,12 +64,12 @@ public class GuiJIApi {
       return bean;
     }
 
-    public static  AddPointResponse addPoints(TrackPoints entity , String url){
+    public static  AddPointResponse addPoints(List<TrackPoint> entity , String url){
 		Map<String, String> beanmap = new HashMap<>();
 
-		beanmap.put("ak", entity.getAk());
-		beanmap.put("service_id", entity.getService_id()+"");
-		beanmap.put("point_list", entity.getPoint_list());
+		beanmap.put("ak", AK);
+		beanmap.put("service_id", SERVICE_ID+"");
+		beanmap.put("point_list", createPointList(entity));
 		String postJson = null;
 		try {
 			postJson = HttpUtil.post(url, beanmap);
@@ -92,7 +96,8 @@ public class GuiJIApi {
 		beanmap.put("loc_time",entity.getLoc_time()+"");
 		beanmap.put("longitude",entity.getLongitude()+"");
 		beanmap.put("_object_key",entity.get_object_key());
-
+		beanmap.put("speed",entity.getSpeed()+"");
+		beanmap.put("direction",entity.getDirection()+"");
 		String postJson = null;
 		try {
 			postJson = HttpUtil.post(url, beanmap);
@@ -107,6 +112,32 @@ public class GuiJIApi {
 
 	}
 
+		/**
+		 * 构造 point_list
+		 */
+		public static  String createPointList(List<TrackPoint> entities){
+			
+			JSONArray jsonArray = new JSONArray();
+			
+			for(TrackPoint entity: entities) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("entity_name", entity.getEntity_name());
+				jsonObject.put("loc_time", entity.getLoc_time());
+				jsonObject.put("latitude", entity.getLatitude());
+				jsonObject.put("longitude", entity.getLongitude());
+				jsonObject.put("coord_type_input", "bd09ll");
+				jsonObject.put("speed", entity.getSpeed());
+				jsonObject.put("direction", entity.getDirection());
+				jsonObject.put("height", entity.getHeight());
+				jsonObject.put("radius", entity.getRadius());
+				jsonObject.put("_object_key", entity.get_object_key());
+				
+				jsonArray.add(jsonObject);
+			}
+			
+			return jsonArray.toString();
+			
+		}
 
 	public static TrackPointsForReturn getPoints(TrackJiuPian entity , String url){
 
@@ -136,20 +167,42 @@ public class GuiJIApi {
 
 	}
 
-  public static void main(String[] args) {
-	  
-	  YyEntity yyEntity=  new YyEntity();
-	  yyEntity.setAk(AK);
-	  yyEntity.setEntity_name("865923030032376");
-	  yyEntity.setService_id(SERVICE_ID);
-	
-	   YingyanResponse changeEntity = changeEntity(yyEntity, saveEntityuRL);
-	  
-	  System.out.println(changeEntity);
-	  
-	  
-	  
-}
+
+
+	/*public static void main(String[] args) {
+
+		TrackPoint t = new TrackPoint();
+
+		t.set_object_key("1111");
+		t.setEntity_name("测试多个坐标上传");
+		t.setLoc_time(System.currentTimeMillis()/1000);
+		t.setLatitude(35.3);
+		t.setLongitude(123.3);
+
+		TrackPoint t1 = new TrackPoint();
+
+		t1.set_object_key("2222");
+		t1.setEntity_name("测试多个坐标上传");
+		t1.setLoc_time(System.currentTimeMillis()/1000 + 10);
+		t1.setLatitude(35.7);
+		t1.setLongitude(123.6);
+
+		List<TrackPoint> trackPoints = new ArrayList<>();
+
+		trackPoints.add(t);
+		trackPoints.add(t1);
+
+		AddPointResponse a = addPoints(trackPoints,addPointsURL);
+
+		System.out.println(a.toString());
+
+
+
+	}*/
+
+
+
+
 
 
 }
