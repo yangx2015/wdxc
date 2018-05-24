@@ -111,6 +111,19 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
 
     protected abstract Mapper<T> getBaseMapper();
 
+    public Object getRequestParamter(String key){
+        HttpServletRequest request = getRequset();
+        return request.getParameter(key);
+    }
+    public String getRequestParamterAsString(String key){
+        HttpServletRequest request = getRequset();
+        return request.getParameter(key);
+    }
+
+    public HttpServletRequest getRequset(){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        return request;
+    }
     /**
      * 根据前台传值封装条件查询对象Example，属性名必须要和查询bean对象中的属性名要一致。
      * 也可实现前台自定义指定排序方式，排序关键字固定为：orderBy，排序可以多值组合
@@ -134,7 +147,7 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
     public LimitedCondition getQueryCondition() {
         LimitedCondition condition = new LimitedCondition(getEntityCls());
         //从请求中获取到所有参数名称，对参数名称进行解析，将符合搜索条件的参数取出来，参与到查询条件中
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        HttpServletRequest request = getRequset();
         Enumeration<String> params = request.getParameterNames();
         Pattern pattern = Pattern.compile("(In$)|(Like$)|(Endwith$)|(Startwith$)|(Gte$)|(Lte$)|(InRange$)|(IsNull$)|(IsNotNull$)");
         //排序关键字

@@ -36,7 +36,7 @@
 						<th width="40">事由</th>
 					</tr>
 					<tbody>
-						<tr v-for="(item,index) in item.orderList">
+						<tr v-for="(item,index) in item.choosedOrderList">
 							<td>{{index + 1}}</td>
 							<td>{{item.ck}}</td>
 							<td>{{item.hcdz}}</td>
@@ -101,9 +101,9 @@
             this.date = now.format("yyyy-MM-dd");
             this.number = now.format('yyyyMMddhhmmss');
             this.item = this.$parent.choosedItem;
-            if (this.item.orderList && this.item.orderList.length != 0){
-				this.startTime = this.item.orderList[0].cjsj.substring(0,10);
-				this.endTime = this.item.orderList[this.item.orderList.length - 1].cjsj.substring(0,10);
+            if (this.item.choosedOrderList && this.item.choosedOrderList.length != 0){
+				this.startTime = this.item.choosedOrderList[0].cjsj.substring(0,10);
+				this.endTime = this.item.choosedOrderList[this.item.choosedOrderList.length - 1].cjsj.substring(0,10);
 			}
         },
         mounted(){

@@ -17,7 +17,7 @@
 						<div class="body-r-1 inputSty">
 							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
 							<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
-							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 10px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -113,6 +113,8 @@
                 form: {
                     sjxmLike: '',
                 },
+                treeValue:[],
+                orgTree:[],
             }
         },
         created() {
@@ -121,11 +123,21 @@
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '收款统计',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
+            this.getOrgTree();
         },
         methods: {
+            getOrgTree(){
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                    this.orgTree = res.result
+                })
+            },
             getTodayDate(){
                 let now = new Date();
                 return now.format("yyyy-MM-dd");
+            },
+            change(vaule,selectedData){
+                this.form.jgdm=selectedData[selectedData.length-1].value
+                this.treeValue = vaule;
             },
             getData(){
                 let startTime = this.form.kssj;

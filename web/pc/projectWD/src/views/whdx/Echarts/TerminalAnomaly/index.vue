@@ -15,7 +15,7 @@
 							<span>终端异常</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.gnmcLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -74,12 +74,16 @@
                     {
                         title: '离线时长',
                         align: 'center',
-                        key: 'time'
+                        key: 'time',
+						render:(h,p)=>{
+                            let s = this.dateFormat(p.row.lxsc);
+                            return h('div',s);
+						}
                     },
                 ],
                 pageData: [],
                 form: {
-                    gnmcLike: '',
+                    cphLike: '',
                     total: 0,
                     pageNum: 1,
                     pageSize: 8,
@@ -92,16 +96,32 @@
             this.getData()
         },
         methods: {
+            dateFormat(longTypeDate){
+                if(!longTypeDate)return;
+                let hour = parseInt(longTypeDate / (1000*60*60));
+                let min = parseInt((longTypeDate - hour*1000*60*60) / (1000 * 60));
+                let sec = parseInt((longTypeDate - hour*1000*60*60 - min*1000*60) / (1000));
+                let s = '';
+                if (hour > 0){
+                    s += hour + '小时';
+                }
+                if (min > 0){
+                    s += min + '分';
+                }
+                if (sec > 0){
+                    s += sec + '秒';
+                }
+                return s;
+            },
             getData(){
                 this.pageData = [];
-                this.$http.get(this.apis.CLJK.QUERY,this.form).then((res) =>{
+                this.$http.get(this.apis.CLJK.QUERY,{params:this.form}).then((res) =>{
                     if (res.code == 200){
                         for (let r of res.result){
-                            if (r.zxzt == '10'){
+                            if (r.zxzt == '20'){
                                 this.pageData.push(r);
 							}
 						}
-                        console.log(this.pageData);
                     }
                 })
             },
