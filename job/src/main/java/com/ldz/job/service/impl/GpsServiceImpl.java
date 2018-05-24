@@ -19,11 +19,11 @@ import com.ldz.job.model.ClGps;
 import com.ldz.job.model.ClGpsLs;
 import com.ldz.job.service.GpsService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.util.bean.AddPointResponse;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
-import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
@@ -34,7 +34,7 @@ import tk.mybatis.mapper.common.Mapper;
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
 
 	Logger errorLog = LoggerFactory.getLogger("error_info");
-    Logger accessLog= LoggerFactory.getLogger("access_info");  
+	Logger accessLog = LoggerFactory.getLogger("access_info");
 
 	@Autowired
 	private ClGpsMapper entityMapper;
@@ -78,70 +78,49 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			for (int i = 0; i < length; i++) {
 				String clgpsls = (String) boundListOps.rightPop();
 				ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
-				
+
 				list.add(gpssss);
 
 			}
-
 			clgpslsMapper.insertList(list);
-
-			for (ClGpsLs clGpsLs : list) {
-				TrackPoint changeModel = changeModel(clGpsLs);
-				try {
-					accessLog.debug("上传鹰眼的数据模型为:"+changeModel);
-					YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
-					accessLog.debug("成功上传鹰眼的点位:"+clGpsLs.getZdbh()+"状态为:"+addPoint);
-				} catch (Exception e) {
-					errorLog.error("上传鹰眼失败",e);
-					continue;
+			//将集合按照100个拆分(鹰眼批量上传点位规则)
+			List<List<ClGpsLs>> splitList = splitList(list,100);
+			
+			for (List<ClGpsLs> list2 : splitList) {
+				
+				if (CollectionUtils.isNotEmpty(list2)) {
+					try {
+						AddPointResponse addPoints = GuiJIApi.addPoints(changeModel(list2), GuiJIApi.addPointsURL);
+						accessLog.debug("成功上传鹰眼的点位:" + list2 + "状态为:" + addPoints);
+					} catch (Exception e) {
+						errorLog.error("上传鹰眼失败", e);
+					}
+					
 				}
 			}
-
 		}
 	}
 
-	public TrackPoint changeModel(ClGpsLs clgps) {
+	public List<TrackPoint> changeModel(List<ClGpsLs> list) {
+		List<TrackPoint> TrackPointlist = new ArrayList<>();
+		for (ClGpsLs clgps : list) {
+			TrackPoint tracktPoint = new TrackPoint();
+			tracktPoint.set_object_key(clgps.getYxsd());
+			tracktPoint.setAk(GuiJIApi.AK);
+			tracktPoint.setCoord_type_input("bd09ll");
+			tracktPoint.setEntity_name(clgps.getZdbh());
+			tracktPoint.setLatitude(clgps.getBdwd());
+			tracktPoint.setLoc_time((clgps.getCjsj().getTime()) / 1000);
+			tracktPoint.setLongitude(clgps.getBdjd());
+			tracktPoint.setService_id(GuiJIApi.SERVICE_ID);
+			tracktPoint.setSpeed(Double.valueOf(clgps.getYxsd()));
+			tracktPoint.setDirection((int) Math.ceil(clgps.getFxj().doubleValue()));
+			TrackPointlist.add(tracktPoint);
+		}
 
-		TrackPoint tracktPoint = new TrackPoint();
-		tracktPoint.set_object_key(clgps.getYxsd());
-		tracktPoint.setAk(GuiJIApi.AK);
-		tracktPoint.setCoord_type_input("bd09ll");
-		tracktPoint.setEntity_name(clgps.getZdbh());
-		tracktPoint.setLatitude(clgps.getBdwd());
-		tracktPoint.setLoc_time((clgps.getCjsj().getTime()) / 1000);
-		tracktPoint.setLongitude(clgps.getBdjd());
-		tracktPoint.setService_id(GuiJIApi.SERVICE_ID);
-		tracktPoint.setSpeed(Double.valueOf(clgps.getYxsd()));
-		tracktPoint.setDirection((int)Math.ceil(clgps.getFxj().doubleValue()));
-		return tracktPoint;
+		return TrackPointlist;
 	}
 
-	/*
-	 * public static TrackPointsForReturn guiJiJiuPian1(ClCl clcl) {
-	 * 
-	 * long endTiem = System.currentTimeMillis(); long startTime = endTiem - (1 * 60
-	 * * 60 * 1000);
-	 * 
-	 * TrackJiuPian guijis = new TrackJiuPian(); guijis.setAk(GuiJIApi.AK);
-	 * guijis.setService_id(GuiJIApi.SERVICE_ID);
-	 * guijis.setEntity_name(clcl.getZdbh()); guijis.setProcess_option(
-	 * "need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
-	 * guijis.setSupplement_mode("driving"); guijis.setSort_type("asc");
-	 * guijis.setCoord_type_output("bd09ll"); guijis.setStart_time("1526967180");
-	 * guijis.setEnd_time("1526967360"); guijis.setIs_processed("1");
-	 * 
-	 * TrackPointsForReturn points = GuiJIApi.getPoints(guijis,
-	 * GuiJIApi.getPointsURL); return points;
-	 * 
-	 * }
-	 * 
-	 * public static void main(String[] args) {
-	 * 
-	 * ClCl cl = new ClCl();
-	 * 
-	 * cl.setZdbh("865923030039405"); TrackPointsForReturn guiJiJiuPian =
-	 * guiJiJiuPian1(cl); System.out.println(guiJiJiuPian); }
-	 */
 
 	@Override
 	public void guiJiJiuPian(ClCl clcl) {
@@ -155,8 +134,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		guijis.setEnd_time(String.valueOf(endTiem / 1000));
 		guijis.setEntity_name(clcl.getZdbh());
 		guijis.setIs_processed("1");
-		guijis.setProcess_option(
-				"need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
+		guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setSort_type("asc");
 		guijis.setStart_time(String.valueOf(startTime / 1000));
@@ -185,7 +163,36 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 
 	}
+
+	public static List<List<ClGpsLs>> splitList(List<ClGpsLs> list, int len) {
+		if (list == null || list.size() == 0 || len < 1) {
+			return null;
+		}
+
+		List<List<ClGpsLs>> result = new ArrayList<List<ClGpsLs>>();
+
+		int size = list.size();
+		int count = (size + len - 1) / len;
+
+		for (int i = 0; i < count; i++) {
+			List<ClGpsLs> subList = list.subList(i * len, ((i + 1) * len > size ? size : len * (i + 1)));
+			result.add(subList);
+		}
+		return result;
+	}
+	
+	
+	
 	public static void main(String[] args) {
+		List<ClGpsLs> list = new ArrayList<>();
+		for (int i = 0; i <199; i++) {
+			ClGpsLs clGpsLs = new ClGpsLs();
+			clGpsLs.setZdbh("1111");
+			list.add(clGpsLs);
+		}
+		List<List<ClGpsLs>> splitList = splitList(list,100);
+		
+		System.out.println(splitList.get(1).size());
 		
 		
 	}

@@ -77,7 +77,7 @@ public class TrackPoint {
     /**
      * 定位精度，GPS或定位SDK返回的值
      */
-    private String radius;  //3
+    private Double radius;  //3
   
 
   

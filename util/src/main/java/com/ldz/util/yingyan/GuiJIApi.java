@@ -112,6 +112,32 @@ public class GuiJIApi {
 
 	}
 
+		/**
+		 * 构造 point_list
+		 */
+		public static  String createPointList(List<TrackPoint> entities){
+			
+			JSONArray jsonArray = new JSONArray();
+			
+			for(TrackPoint entity: entities) {
+				JSONObject jsonObject = new JSONObject();
+				jsonObject.put("entity_name", entity.getEntity_name());
+				jsonObject.put("loc_time", entity.getLoc_time());
+				jsonObject.put("latitude", entity.getLatitude());
+				jsonObject.put("longitude", entity.getLongitude());
+				jsonObject.put("coord_type_input", "bd09ll");
+				jsonObject.put("speed", entity.getSpeed());
+				jsonObject.put("direction", entity.getDirection());
+				jsonObject.put("height", entity.getHeight());
+				jsonObject.put("radius", entity.getRadius());
+				jsonObject.put("_object_key", entity.get_object_key());
+				
+				jsonArray.add(jsonObject);
+			}
+			
+			return jsonArray.toString();
+			
+		}
 
 	public static TrackPointsForReturn getPoints(TrackJiuPian entity , String url){
 
@@ -142,32 +168,6 @@ public class GuiJIApi {
 	}
 
 
-	/**
-	 * 构造 point_list
-	 */
-	public static  String createPointList(List<TrackPoint> entities){
-
-		JSONArray jsonArray = new JSONArray();
-
-		for(TrackPoint entity: entities) {
-			JSONObject jsonObject = new JSONObject();
-			jsonObject.put("entity_name", entity.getEntity_name());
-			jsonObject.put("loc_time", entity.getLoc_time());
-			jsonObject.put("latitude", entity.getLatitude());
-			jsonObject.put("longitude", entity.getLongitude());
-			jsonObject.put("coord_type_input", "bd09ll");
-			jsonObject.put("speed", entity.getSpeed());
-			jsonObject.put("direction", entity.getDirection());
-			jsonObject.put("height", entity.getHeight());
-			jsonObject.put("radius", entity.getRadius());
-			jsonObject.put("_object_key", entity.get_object_key());
-
-			jsonArray.add(jsonObject);
-		}
-
-		return jsonArray.toString();
-
-	}
 
 	/*public static void main(String[] args) {
 
