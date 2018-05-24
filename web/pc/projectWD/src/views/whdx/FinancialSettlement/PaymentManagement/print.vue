@@ -32,8 +32,8 @@
 						<th width="40">车型</th>
 						<th width="40">出车时间</th>
 						<th width="40">里程</th>
-						<th width="40">车费合计</th>
 						<th width="40">事由</th>
+						<th width="40">车费合计</th>
 					</tr>
 					<tbody>
 						<tr v-for="(item,index) in item.choosedOrderList">
@@ -45,10 +45,24 @@
 							<td>{{getCx(item.cllx)+'-'+item.zws+'人'}}</td>
 							<td>{{format(item.yysj)}}</td>
 							<td>{{item.lc}}</td>
-							<td>{{item.zj}}</td>
 							<td>{{item.sy}}</td>
+							<td>￥{{item.zj}}</td>
 						</tr>
 					</tbody>
+					<tfoot>
+						<tr>
+							<td>合计</td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td>￥{{total}}</td>
+						</tr>
+					</tfoot>
 				</table>
 			</div>
 			<div style="overflow: auto;height: 400px;margin-top:60px;text-align: right">
@@ -87,6 +101,7 @@
         name: '',
         data() {
             return {
+                total:0,
                 showFooter:true,
                 showModal:true,
 				item:{},
@@ -104,6 +119,10 @@
             if (this.item.choosedOrderList && this.item.choosedOrderList.length != 0){
 				this.startTime = this.item.choosedOrderList[0].cjsj.substring(0,10);
 				this.endTime = this.item.choosedOrderList[this.item.choosedOrderList.length - 1].cjsj.substring(0,10);
+                for (let o of this.item.choosedOrderList){
+                    let zj = parseFloat(o.zj);
+                    this.total += isNaN(zj) ? 0 : zj;
+                }
 			}
         },
         mounted(){

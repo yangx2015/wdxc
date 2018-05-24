@@ -118,7 +118,7 @@
 				columns3: [
 					{
                         type: 'selection',
-                        width: 45,
+                        width: 60,
                         align: 'center'
                     },
                     {
@@ -177,9 +177,9 @@
                     }
                 ],
 				columns4: [
-					{
-                        type: 'index',
-                        width: 45,
+                    {
+                        type: 'selection',
+                        width: 60,
                         align: 'center'
                     },
                     {

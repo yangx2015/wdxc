@@ -236,6 +236,7 @@
         created(){
             if (this.$parent.choosedItem){
                 this.form = JSON.parse(JSON.stringify(this.$parent.choosedItem));
+                console.log(this.form);
                 this.operate = '编辑'
                 this.cllx = [this.form.cllx,''+this.form.zws];
             }

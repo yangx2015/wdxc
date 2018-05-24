@@ -2,8 +2,8 @@
 	<div style="width:100%;height:100%;position: relative;">
 		<div style="position: absolute;top:0;right: 0;z-index: 1000">
 			<ButtonGroup size="small" shape="circle">
-		        <Button type="primary" @click="changeDays(30)">月</Button>
-		        <Button type="primary" @click="changeDays(7)">周</Button>
+		        <Button :type="day == '月' ? 'primary' : 'default'" @click="changeDays(30)">月</Button>
+		        <Button :type="day == '周' ? 'primary' : 'default'" @click="changeDays(7)">周</Button>
 		    </ButtonGroup>
 		</div>
 		<div style="width:100%;height:100%;" :id="Eid"></div>
@@ -27,10 +27,10 @@
 				loading:this.$store.state.app.loading,
 				result:{},
 				form:{
-				    days:30
+				    days:30,
+                    type:'aqjs'
 				},
                 day:'月'
-
 			};
 		},
 		props: {

@@ -156,9 +156,9 @@
                     }
                 ],
 				columns4: [
-					{
-                        type: 'index',
-                        width: 45,
+                    {
+                        type: 'selection',
+                        width: 60,
                         align: 'center'
                     },
                     {
@@ -185,11 +185,11 @@
                         title: '里程(公里)',
                         key: 'lc'
                     },{
-                        title: '车费合计',
-                        key: 'zj'
-                    },{
                         title: '事由',
                         key: 'sy'
+                    },{
+                        title: '车费合计',
+                        key: 'zj'
                     },
                 ],
 				munName:'1',

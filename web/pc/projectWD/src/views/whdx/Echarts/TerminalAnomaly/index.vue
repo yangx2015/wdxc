@@ -67,7 +67,7 @@
                         key: 'cph'
                     },
                     {
-                        title: '最后线日期',
+                        title: '最后离线日期',
                         align: 'center',
                         key: 'time'
                     },
