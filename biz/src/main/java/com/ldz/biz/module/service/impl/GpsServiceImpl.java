@@ -92,9 +92,22 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 从redis(实时gps点位)里面取出历史数据
 		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
+		
+		//非job发送80事件
+		if (StringUtils.isEmpty(gpsinfo.getStartTime())) {
+			
+		
+           return ApiResponse.fail("非job发送离线");		
+		}
+		//job发送80事件
 		String formatdate = formatdate(object2.getCjsj());
 		if (StringUtils.equals(gpsinfo.getStartTime(), formatdate)) {
-			return ApiResponse.fail("两次离线时间一致");
+			 
+			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
+			log.info("推送前端的数据为" + socket);
+			websocket.convertAndSend("/topic/sendgps", socket);
+			return ApiResponse.fail("job发送离线:两次离线时间一致");
+			
 		}
 		// 记录事件
 		ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
