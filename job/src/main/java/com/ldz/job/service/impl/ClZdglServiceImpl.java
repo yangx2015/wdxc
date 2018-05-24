@@ -74,6 +74,7 @@ public class ClZdglServiceImpl implements ClZdglService {
 				bean = JsonUtil.toBean(string, ApiResponse.class);
 			} catch (Exception e) {
 				log.error(e.getMessage());
+				continue;
 			}
 			if (bean.getCode() != 200) {
 				
@@ -143,7 +144,8 @@ public class ClZdglServiceImpl implements ClZdglService {
 
 		String url1 = "http://47.98.39.45:9095/api/push/checkOnlin/";
 		String aString = "865923030032376";
-		System.out.println(url1 + aString);
+		String string = HttpUtil.get(url1 + aString);
+		System.out.println(string);
 
 	}
 }

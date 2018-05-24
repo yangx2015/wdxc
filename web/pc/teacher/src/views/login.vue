@@ -23,10 +23,10 @@
             clearable
           ></md-input-item>
           <md-input-item
-            title="身份证号"
+            title="工号"
             type="text"
-            v-model="form.idCard"
-            placeholder="请输入您的身份证号码"
+            v-model="form.zjhm"
+            placeholder="请输入您的工号"
             clearable
           ></md-input-item>
         </md-field>
@@ -55,7 +55,7 @@
       return{
         form:{
           name:'宋林殊',
-          idCard:'32948289347289'
+            zjhm:'32948289347289'
         }
       }
     },

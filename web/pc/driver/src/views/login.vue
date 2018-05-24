@@ -42,10 +42,10 @@
                                 </span>
                             </Input>
                         </FormItem>
-                        <FormItem prop="sfzhm">
-                            <Input type="password" v-model="form.sfzhm" placeholder="请输入密码">
+                        <FormItem prop="sjh">
+                            <Input type="text" v-model="form.sjh" placeholder="请输入手机号">
                                 <span slot="prepend">
-                                    <Icon :size="14" type="card"></Icon>
+                                    <Icon :size="14" type="iphone"></Icon>
                                 </span>
                             </Input>
                         </FormItem>
@@ -73,14 +73,14 @@ export default {
         return {
             form: {
                 xm: '小车7坐',
-                sfzhm: '320333333333333333'
+                sjh: '320333333333333333'
             },
             rules: {
                 xm: [
-                    { required: true, message: '账号不能为空', trigger: 'blur' }
+                    { required: true, message: '姓名不能为空', trigger: 'blur' }
                 ],
-                sfzhm: [
-                    { required: true, message: '密码不能为空', trigger: 'blur' }
+                sjh: [
+                    { required: true, message: '手机号不能为空', trigger: 'blur' }
                 ]
             }
         };

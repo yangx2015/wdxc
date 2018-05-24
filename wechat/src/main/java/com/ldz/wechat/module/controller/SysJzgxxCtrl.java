@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.wechat.module.model.SysJzgxx;
 import com.ldz.wechat.module.service.SysJzgxxService;
 
 @RestController
@@ -18,9 +17,9 @@ public class SysJzgxxCtrl {
 	
 	
 	@PostMapping("/getJzg")
-	ApiResponse<String> findJzg(String name ,String idCard){
+	ApiResponse<String> findJzg(String zjhm ,String name){
 		
-		return jzgxxService.findJzg(name, idCard);
+		return jzgxxService.findJzg(zjhm, name);
 	}
 	
 	
