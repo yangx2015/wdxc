@@ -2,7 +2,6 @@ package com.ldz.job.job;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,13 +32,13 @@ import com.ldz.util.yingyan.GuiJIApi;
 @DisallowConcurrentExecution
 public class GpsSaveJob implements Job {
 	Logger errorLog = LoggerFactory.getLogger("error_info");
+	Logger accessLog= LoggerFactory.getLogger("access_info");  
 
 	@Autowired
 	private ClClMapper clclmapper;
 	@Autowired
 	private GpsService GpsService;
-	@Autowired
-	private Executor executor;
+	
 	
  
 	
@@ -53,16 +52,14 @@ public class GpsSaveJob implements Job {
 	
 		//将所有设备上传到百度鹰眼
 		for (ClCl clCl : gpslist) {
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
+				
 					YyEntity yyEntity = new YyEntity();
 					yyEntity.setAk(GuiJIApi.AK);
 					yyEntity.setEntity_name(clCl.getZdbh());
 					yyEntity.setService_id(GuiJIApi.SERVICE_ID);
 					GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
-				}
-			});
+					accessLog.debug("添加设备至鹰眼服务器"+clCl.getZdbh());
+		
 			if (StringUtils.isNotEmpty(clCl.getZdbh())) {
 				zdbhs.add(clCl.getZdbh());
 			}

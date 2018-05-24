@@ -78,6 +78,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			for (int i = 0; i < length; i++) {
 				String clgpsls = (String) boundListOps.rightPop();
 				ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
+				
 				list.add(gpssss);
 
 			}
@@ -91,7 +92,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 					YingyanResponse addPoint = GuiJIApi.addPoint(changeModel, GuiJIApi.addPointURL);
 					accessLog.debug("成功上传鹰眼的点位:"+clGpsLs.getZdbh()+"状态为:"+addPoint);
 				} catch (Exception e) {
-					errorLog.debug(e.getMessage());
+					errorLog.error("上传鹰眼失败",e);
 					continue;
 				}
 			}
@@ -110,8 +111,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		tracktPoint.setLoc_time((clgps.getCjsj().getTime()) / 1000);
 		tracktPoint.setLongitude(clgps.getBdjd());
 		tracktPoint.setService_id(GuiJIApi.SERVICE_ID);
-		tracktPoint.setSpeed(clgps.getYxsd());
-		tracktPoint.setDirection(String.valueOf(clgps.getFxj()));
+		tracktPoint.setSpeed(Double.valueOf(clgps.getYxsd()));
+		tracktPoint.setDirection((int)Math.ceil(clgps.getFxj().doubleValue()));
 		return tracktPoint;
 	}
 
@@ -183,5 +184,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			return;
 		}
 
+	}
+	public static void main(String[] args) {
+		
+		
 	}
 }
