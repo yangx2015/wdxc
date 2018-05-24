@@ -769,8 +769,15 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			Map<String, Object> map = orderGroupMap.get(sjxm);
 			if (map != null) {
 				List<ClDd> orders = (List<ClDd>) map.get("orderList");
-				Double oldAmount = (Double) map.get("amount");
-				Double newAmount = MathUtil.add(oldAmount, o.getZj());
+				Double oldAmount = 0.00;
+				Double newAmount =0.00;
+				try {
+					oldAmount = (Double) map.get("amount");
+				}catch (Exception e){}
+
+				try{
+					newAmount = MathUtil.add(oldAmount, o.getZj());
+				}catch (Exception e){}
 				map.put("amount", newAmount);
 				orders.add(o);
 			} else {
