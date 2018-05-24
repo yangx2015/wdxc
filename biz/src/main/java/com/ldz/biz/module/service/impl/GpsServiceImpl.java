@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,8 @@ import com.ldz.util.redis.RedisTemplateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service
@@ -410,8 +413,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		ApiResponse<List<websocketInfo>> apiResponse = new ApiResponse<>();
 		List<websocketInfo> list = new ArrayList<>();
 
+		SimpleCondition condition = new SimpleCondition(ClCl.class);
+		String cphLike = getRequestParamterAsString("cphLike");
+		if (StringUtils.isNotEmpty(cphLike)){
+			condition.like(ClCl.InnerColumn.cph,cphLike);
+		}
+
 		// 将终端编号,车辆信息缓存
-		List<ClCl> selectAll = clclmapper.selectAll();
+		List<ClCl> selectAll = clclmapper.selectByExample(condition);
 		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 				.collect(Collectors.toMap(ClCl::getZdbh, ClCl -> ClCl));
 

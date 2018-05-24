@@ -2,6 +2,7 @@ package com.ldz.biz.module.mapper;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 
@@ -18,7 +19,7 @@ public interface ClSbyxsjjlMapper extends Mapper<ClSbyxsjjl> {
 /*	
 	List<ClSbyxsjjl> gpsInit();*/
 	
-	List<SafedrivingModel> Safedriving();
+	List<SafedrivingModel> Safedriving(Map<String,Object> param);
 	
 	List<ClSbyxsjjl> findByCphAndTime(@Param("cph") String cph, @Param("start") Date start, @Param("end") Date end);
 	

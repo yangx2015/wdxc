@@ -27,7 +27,7 @@ httpInstance.interceptors.request.use((config) => {
 
 	if(config.url =="/api/clzd/getzdcl/"
         || '/api/clsbyxsjjl/historygps' == config.url
-        || '/api/cl/carAccStatistics' == config.url
+        // || '/api/cl/carAccStatistics' == config.url
         || '/api/dd/ddzTj' == config.url
         || '/api/dd/ccTTj' == config.url
         || '/api/cl/nianshenbt' == config.url
@@ -71,7 +71,8 @@ httpInstance.interceptors.response.use((response) => {
     }
     if (response.status===200){
         if (response.data.code===403){
-            router.push({name: 'error-403'})
+            router.push({name: 'erro' +
+                'r-403'})
         }else{
             return response.data;
         }

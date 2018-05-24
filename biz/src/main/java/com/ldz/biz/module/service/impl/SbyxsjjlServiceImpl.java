@@ -2,10 +2,7 @@ package com.ldz.biz.module.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +29,8 @@ import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.yingyan.GuiJIApi;
 
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> implements SbyxsjjlService {
@@ -149,8 +148,11 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	@Override
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig() {
 		ApiResponse<List<SafedrivingModel>> apiResponse = new ApiResponse<>();
-
-		List<SafedrivingModel> safedriving = entityMapper.Safedriving();
+		HttpServletRequest request = getRequset();
+		String sjxmLike = request.getParameter("sjxmLike");
+		Map<String,Object> param = new HashMap<>();
+		param.put("sjxmLike",sjxmLike);
+		List<SafedrivingModel> safedriving = entityMapper.Safedriving(param);
 
 		for (SafedrivingModel safedrivingModel : safedriving) {
 

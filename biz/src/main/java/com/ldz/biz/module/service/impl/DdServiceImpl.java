@@ -691,6 +691,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		LimitedCondition condition = new LimitedCondition(ClDd.class);
 		condition.eq(ClDd.InnerColumn.ddzt, state);
+		if (StringUtils.isNotEmpty(order.getJgdm())){
+			condition.eq(ClDd.InnerColumn.jgdm,order.getJgdm());
+		}
 		if (StringUtils.isNotEmpty(order.getCk())) {
 			condition.like(ClDd.InnerColumn.ck, order.getCk());
 		}
@@ -748,6 +751,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		LimitedCondition condition = new LimitedCondition(ClDd.class);
 		condition.eq(ClDd.InnerColumn.fkzt, state);
+		condition.gte(ClDd.InnerColumn.ddzt,"20");
 		if (StringUtils.isNotEmpty(order.getSjxm())) {
 			condition.like(ClDd.InnerColumn.sjxm, order.getSjxm());
 		}
@@ -769,15 +773,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			Map<String, Object> map = orderGroupMap.get(sjxm);
 			if (map != null) {
 				List<ClDd> orders = (List<ClDd>) map.get("orderList");
-				Double oldAmount = 0.00;
-				Double newAmount =0.00;
-				try {
-					oldAmount = (Double) map.get("amount");
-				}catch (Exception e){}
-
-				try{
-					newAmount = MathUtil.add(oldAmount, o.getZj());
-				}catch (Exception e){}
+				Double oldAmount = (Double) map.get("amount");
+				Double newAmount = MathUtil.add(oldAmount, o.getZj() == null ? 0 : o.getZj());
 				map.put("amount", newAmount);
 				orders.add(o);
 			} else {
@@ -788,7 +785,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 				map.put("driverName", o.getSjxm());
 				map.put("driverId", o.getSj());
 				map.put("orderList", orders);
-				map.put("amount", o.getZj());
+				map.put("amount", o.getZj() == null ? 0 : o.getZj());
 				orderGroupMap.put(sjxm, map);
 			}
 		}
@@ -1047,16 +1044,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 
 		if (StringUtils.isEmpty(dd.getKssj())) {
 			String kssj = DateUtils.getToday() + " 00:00:00";
 			dd.setKssj(kssj);
+		}else{
+			dd.setKssj(dd.getKssj() + " 00:00:00");
 		}
 		if (StringUtils.isEmpty(dd.getJssj())) {
 			String jssj = DateUtils.getToday() + " 23:59:59";
 			dd.setJssj(jssj);
+		}else{
+			dd.setJssj(dd.getJssj() + " 23:59:59");
 		}
 
 		ApiResponse<List<Ddtongji>> apiResponse = new ApiResponse<>();
@@ -1119,15 +1121,20 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 		if (StringUtils.isEmpty(dd.getKssj())) {
 			String kssj = DateUtils.getToday() + " 00:00:00";
 			dd.setKssj(kssj);
+		}else{
+			dd.setKssj(dd.getKssj() + " 00:00:00");
 		}
 		if (StringUtils.isEmpty(dd.getJssj())) {
 			String jssj = DateUtils.getToday() + " 23:59:59";
 			dd.setJssj(jssj);
+		}else{
+			dd.setJssj(dd.getJssj() + " 23:59:59");
 		}
 
 		ApiResponse<List<Ddtongji>> apiResponse = new ApiResponse<>();
@@ -1219,6 +1226,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 
@@ -1271,6 +1279,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 

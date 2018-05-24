@@ -49,7 +49,7 @@
 							<Row>
 								<Col span="12">
 									<FormItem label="费用来源">
-										<Select filterable clearable  v-model="form.fromMoney" size="large" placeholder="请选择费用来源" filterable>
+										<Select filterable clearable  v-model="form.fkfs" size="large" placeholder="请选择费用来源" filterable>
 											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 										</Select>
 									</FormItem>
@@ -63,34 +63,30 @@
 									</FormItem>
 								</Col>
 							</Row>
-							<Row v-if="form.fromMoney=='课题费用'">
+							<Row v-if="form.fkfs=='课题费用'">
 								<Col span="12">
 									<FormItem label="课题">
 										<Input
-												v-if="form.task=='添加课题'"
+												v-if="form.ktcode=='添加课题'"
 												v-model="form.newtask"
 												size="large"
 												placeholder="添加课题"></Input>
 										<Select filterable clearable
 												v-else
-												v-model="form.task" size="large" placeholder="请选择用车单位" filterable>
+												v-model="form.ktcode" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in ctasklList" :value="item.value"></Option>
 										</Select>
 									</FormItem>
 								</Col>
 								<Col span="12">
 									<FormItem label="车型">
-										<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
-											<Option v-for="item in zwsList" :value="item.value"></Option>
-										</Select>
+										<Cascader @on-change="changeCLLX" :data="CasData" v-model="cllx" ></Cascader>
 									</FormItem>
 								</Col>
 							</Row>
 							<Row v-else	>
 								<FormItem label="车型">
-									<Select filterable clearable  v-model="form.zws" size="large" placeholder="请选择用车单位" filterable>
-										<Option v-for="item in zwsList" :value="item.value"></Option>
-									</Select>
+									<Cascader @on-change="changeCLLX" :data="CasData" v-model="cllx" ></Cascader>
 								</FormItem>
 							</Row>
 						</Col>
@@ -167,6 +163,38 @@
                 ruleInline:{
 
                 },
+
+                CasData:[{
+                    value: '20',
+                    label: '大车',
+                    children: [{
+                        value: '20',
+                        label: '20',
+                    },{
+                        value: '32',
+                        label: '32',
+                    },{
+                        value: '45',
+                        label: '45',
+                    },{
+                        value: '48',
+                        label: '48',
+                    }]
+                }, {
+                    value: '10',
+                    label: '小车',
+                    disabled: false,
+                    children: [{
+                        value: '5',
+                        label: '5',
+                    },{
+                        value: '7',
+                        label: '7',
+                    },{
+                        value: '11',
+                        label: '11',
+                    }]
+                }],
                 addmess:{
 
                 },
@@ -217,6 +245,10 @@
             this.getOrgList();
         },
         methods: {
+            changeCLLX(v,s){
+                this.form.cllx=v[0]
+                this.form.zws=v[1]
+            },
             getOrgList(){
                 this.$http.get(this.apis.FRAMEWORK.getSubOrgList).then((res) =>{
                     this.jgdmList = res.result
