@@ -85,6 +85,7 @@ private static final Logger log = LoggerFactory.getLogger(GpsServiceImpl.class);
 				list.add(gpssss);
 
 			}
+			log.info("历史轨迹导入模型"+list);
 			clgpslsMapper.insertList(list);
 			
 			log.info("上传鹰眼前服务器模型"+list);
