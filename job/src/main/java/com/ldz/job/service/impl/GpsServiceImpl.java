@@ -33,6 +33,8 @@ import tk.mybatis.mapper.common.Mapper;
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
   
+  
+private static final Logger log = LoggerFactory.getLogger(GpsServiceImpl.class);
 
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 	Logger accessLog = LoggerFactory.getLogger("access_info");
@@ -85,7 +87,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			}
 			clgpslsMapper.insertList(list);
 			
-			accessLog.debug("上传鹰眼前服务器模型"+list);
+			log.info("上传鹰眼前服务器模型"+list);
 			
 			//将集合按照100个拆分(鹰眼批量上传点位规则)
 			List<List<ClGpsLs>> splitList = splitList(list,100);
@@ -102,7 +104,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 					
 				}
 			}
-			accessLog.debug("成功上传鹰眼服务器模型"+splitList);
+			log.info("成功上传鹰眼服务器模型"+splitList);
 		}
 	}
 
