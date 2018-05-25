@@ -2,6 +2,7 @@ package com.ldz.job.job;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -17,8 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.ldz.job.mapper.ClClMapper;
 import com.ldz.job.model.ClCl;
 import com.ldz.job.service.GpsService;
-import com.ldz.util.bean.YyEntity;
-import com.ldz.util.yingyan.GuiJIApi;
 
 /**
  * 定时器说明:每隔1分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
@@ -40,32 +39,21 @@ public class GpsSaveJob implements Job {
 	private GpsService GpsService;
 	
 	
- 
+    private  List<String> zdbhs = new ArrayList<>();
 	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-	List<String> zdbhs= new ArrayList<>();
+	 zdbhs= new ArrayList<>();
 		
 	if (CollectionUtils.isEmpty(zdbhs)) {
 		// 获取所有的终端编号
 		List<ClCl> gpslist = clclmapper.selectAll();
 	
-		//将所有设备上传到百度鹰眼
-		for (ClCl clCl : gpslist) {
-				
-					YyEntity yyEntity = new YyEntity();
-					yyEntity.setAk(GuiJIApi.AK);
-					yyEntity.setEntity_name(clCl.getZdbh());
-					yyEntity.setService_id(GuiJIApi.SERVICE_ID);
-					GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
-					accessLog.debug("添加设备至鹰眼服务器"+clCl.getZdbh());
+		zdbhs = gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClCl::getZdbh).collect(Collectors.toList());
 		
-			if (StringUtils.isNotEmpty(clCl.getZdbh())) {
-				zdbhs.add(clCl.getZdbh());
-			}
 		}
 	
-	}
+	
 	
 		try {
 			for (String zdbh : zdbhs) {

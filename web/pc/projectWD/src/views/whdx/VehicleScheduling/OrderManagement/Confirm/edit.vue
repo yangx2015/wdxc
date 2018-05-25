@@ -49,7 +49,7 @@
 							<Row>
 								<Col span="12">
 									<FormItem label="费用来源">
-										<Select filterable clearable  v-model="form.fromMoney" size="large" placeholder="请选择费用来源" filterable>
+										<Select filterable clearable  v-model="form.fkfs" size="large" placeholder="请选择费用来源" filterable>
 											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
 										</Select>
 									</FormItem>
@@ -63,17 +63,17 @@
 									</FormItem>
 								</Col>
 							</Row>
-							<Row v-if="form.fromMoney=='课题费用'">
+							<Row v-if="form.fkfs=='20'">
 								<Col span="12">
 									<FormItem label="课题">
 										<Input
-												v-if="form.task=='添加课题'"
+												v-if="form.ktcode=='添加课题'"
 												v-model="form.newtask"
 												size="large"
 												placeholder="添加课题"></Input>
 										<Select filterable clearable
 												v-else
-												v-model="form.task" size="large" placeholder="请选择用车单位" filterable>
+												v-model="form.ktcode" size="large" placeholder="请选择用车单位" filterable>
 											<Option v-for="item in ctasklList" :value="item.value"></Option>
 										</Select>
 									</FormItem>
@@ -122,7 +122,7 @@
 					<Row>
 						<Col span="8">
 							<FormItem label="结束时间">
-								<DatePicker v-model="form.sjqrsj" format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写结束时间" ></DatePicker>
+								<DatePicker v-model="form.sjqrsj" format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="top-end" placeholder="请填写结束时间" ></DatePicker>
 							</FormItem>
 						</Col>
 						<Col span="8">
@@ -205,11 +205,14 @@
 				cllx:[],
                 fromMoneyList:[
                     {
-                        value:'行政费用'
+                        label:'行政费用',
+                        value:'10'
                     },{
-                        value:'课题费用'
+                        label:'课题费用',
+                        value:'20'
                     },{
-                        value:'自费'
+                        label:'自费',
+                        value:'30'
                     }
                 ],
                 ctasklList:[

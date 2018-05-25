@@ -148,11 +148,46 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		
 		
 		if (StringUtils.isNotEmpty(entity.getTaskId())) {
+			//比较拍视频
+			BoundListOperations<Object, Object> boundListOpsSp = redisutils.boundListOps("SP"+entity.getDeviceId());
+			String indexSp=(String) boundListOpsSp.index(0);
+		if (StringUtils.isNotEmpty(indexSp)) {
+				for (int i = 0; i < boundListOpsSp.size(); i++) {
+					String index2 = (String) boundListOpsSp.index(i);
+					if (StringUtils.equals(entity.getTaskId(), index2)) {
+						websocket.convertAndSend("/topic/sendsp", JsonUtil.toJson(clSpk));
+						log.info("拍摄视频成功,并推送至前端"+JsonUtil.toJson(clSpk));
+						Long remove = boundListOpsSp.remove(1, index2);
+						log.info("redis中移除"+"SP"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
+						return ApiResponse.success();
+					}
+					
+				}
+				
+			}
+		//比较拍照片
+		BoundListOperations<Object, Object> boundListOpsZp = redisutils.boundListOps("ZP"+entity.getDeviceId());
+		String indexZp=(String) boundListOpsZp.index(0);
+		if (StringUtils.isNotEmpty(indexZp)) {
+			for (int i = 0; i < boundListOpsZp.size(); i++) {
+				String index2 = (String) boundListOpsZp.index(i);
+				if (StringUtils.equals(entity.getTaskId(), index2)) {
+					websocket.convertAndSend("/topic/sendzp", JsonUtil.toJson(clSpk));
+					log.info("拍摄照片成功,并推送至前端"+JsonUtil.toJson(clSpk));
+					Long remove = boundListOpsZp.remove(1, index2);
+					log.info("redis中移除"+"ZP"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
+					return ApiResponse.success();
+				}
+				
+			}
 			
+		}
+			
+		//比较合并视频
 			BoundListOperations<Object, Object> boundListOps = redisutils.boundListOps("BJ"+entity.getDeviceId());
 			String index=(String) boundListOps.index(0);
-		if (StringUtils.isNotEmpty(index)) {
 			
+		if (StringUtils.isNotEmpty(index)) {
 			for (int i = 0; i < boundListOps.size(); i++) {
 				String index2 = (String) boundListOps.index(i);
 				if (StringUtils.equals(entity.getTaskId(), index2)) {
@@ -160,12 +195,14 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 					log.info("视屏合并成功,并推送至前端"+JsonUtil.toJson(clSpk));
 					Long remove = boundListOps.remove(1, index2);
 					log.info("redis中移除"+"BJ"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
-					break;
+					return ApiResponse.success();
 				}
 				
 			}
 			
 		}
+	
+	
 		
 	}
 		

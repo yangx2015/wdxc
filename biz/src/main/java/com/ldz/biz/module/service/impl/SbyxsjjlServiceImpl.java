@@ -2,10 +2,7 @@ package com.ldz.biz.module.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -32,6 +29,8 @@ import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.yingyan.GuiJIApi;
 
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> implements SbyxsjjlService {
@@ -61,7 +60,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		 * condition2.eq(ClCl.InnerColumn.cph, request.getAttribute("cph"));
 		 * condition2.eq(ClCl.InnerColumn.cx, request.getAttribute("cx")); List<ClCl>
 		 * selectByExample = clclmapper.selectByExample(condition2);
-		 * 
+		 *
 		 * List<String> collect = selectByExample.stream().filter(s ->
 		 * StringUtils.isNotEmpty(s.getZdbh()))
 		 * .map(ClCl::getZdbh).collect(Collectors.toList());
@@ -148,26 +147,26 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 
 	@Override
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig() {
+		String type = getRequestParamterAsString("type");
 		ApiResponse<List<SafedrivingModel>> apiResponse = new ApiResponse<>();
+		HttpServletRequest request = getRequset();
+		String sjxmLike = request.getParameter("sjxmLike");
+		Map<String,Object> param = new HashMap<>();
+		param.put("sjxmLike",sjxmLike);
+		List<SafedrivingModel> safedriving = entityMapper.Safedriving(param);
 
-		List<SafedrivingModel> safedriving = entityMapper.Safedriving();
-
-		for (SafedrivingModel safedrivingModel : safedriving) {
-
-			if (StringUtils.isEmpty(safedrivingModel.getOverspeedCount())) {
-				safedrivingModel.setOverspeedCount("0");
+		if ("aqjs".equals(type)){
+			for (SafedrivingModel safedrivingModel : safedriving) {
+				int total = safedrivingModel.getOverspeedCount() +
+						safedrivingModel.getSpeedownCount() +
+						safedrivingModel.getSpeedupCount() +
+						safedrivingModel.getWheelCount();
+				safedrivingModel.setTotal(total);
 			}
-			if (StringUtils.isEmpty(safedrivingModel.getSpeedownCount())) {
-				safedrivingModel.setSpeedownCount("0");
-			}
-			if (StringUtils.isEmpty(safedrivingModel.getSpeedupCount())) {
-				safedrivingModel.setSpeedupCount("0");
-			}
-			if (StringUtils.isEmpty(safedrivingModel.getWheelCount())) {
-				safedrivingModel.setWheelCount("0");
-			}
+			safedriving.sort(Comparator.comparingInt(SafedrivingModel::getTotal).reversed());
+		}else if ("cstj".equals(type)){
+			safedriving.sort(Comparator.comparingInt(SafedrivingModel::getOverspeedCount).reversed());
 		}
-
 		apiResponse.setResult(safedriving);
 		return apiResponse;
 	}

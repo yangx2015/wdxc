@@ -51,31 +51,57 @@ public class InstructionServiceImpl  implements InstructionService {
 			if (apiResponse.getCode()!=200) {
 				return apiResponse;
 			}
+			//合并视频
 			if (info.getCmdType().equals("13")) {
 				String results = apiResponse.getResult();
 				redisTemplate.boundListOps("BJ"+info.getDeviceId()).leftPush(results);
-				
+				return apiResponse;
+			}
+			//拍视频
+			if (info.getCmdType().equals("11")) {
+				String results = apiResponse.getResult();
+				redisTemplate.boundListOps("SP"+info.getDeviceId()).leftPush(results);
+				return apiResponse;
+			}
+			//拍照片
+            if (info.getCmdType().equals("12")) {
+            	String results = apiResponse.getResult();
+				redisTemplate.boundListOps("ZP"+info.getDeviceId()).leftPush(results);
+				return apiResponse;
 			}
 			
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
-			
+			//急加速灵敏度设置
 			if (info.getCmdType().equals("02")) {
 				clzd.setJslmd(info.getCmd());
+				service.update(clzd);
+				return apiResponse;
 			}
+			//碰撞灵敏度
 			if (info.getCmdType().equals("20")) {
 				clzd.setPzlmd(info.getCmd());
+				service.update(clzd);
+				return apiResponse;
 			}
+			//已废弃
 			if (info.getCmdType().equals("30")) {
 				clzd.setScms(info.getCmd());
+				service.update(clzd);
+				return apiResponse;
 			}
+			//终端数据上报地址
 			if (info.getCmdType().equals("91")) {
 				clzd.setCmd(info.getCmd());
+				service.update(clzd);
+				return apiResponse;
 			}
+			//上传视频模式
 			if (info.getCmdType().equals("50")) {
 				clzd.setSpscms(info.getCmd());
+				service.update(clzd);
+				return apiResponse;
 			}
 			
-			service.update(clzd);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

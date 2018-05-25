@@ -10,15 +10,17 @@ import lombok.ToString;
 public class SafedrivingModel {
 
 	private String sjxm;
-	
-	private String speedupCount;
-	
-	private String speedownCount;
-	
-	private String wheelCount;
-	
-	private String overspeedCount;
+
+	private int speedupCount;
+
+	private int speedownCount;
+
+	private int wheelCount;
+
+	private int overspeedCount;
 
 	private String cph;
-	
+
+	private int total;
+
 }

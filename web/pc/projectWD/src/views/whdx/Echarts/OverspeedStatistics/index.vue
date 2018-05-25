@@ -31,11 +31,13 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
 		</Card>
+		<component :is="compName"></component>
 	</div>
 </template>
 
 <script>
     import mixins from '@/mixins'
+    import csMessbar from '../../../home/compEcharts/comp/csMessbar'
 
     Date.prototype.format = function(format)
     {
@@ -60,9 +62,11 @@
         name: 'char',
         mixins: [mixins],
         components: {
+            csMessbar
         },
         data() {
             return {
+                compName:'',
                 dateOpts: {
                     shortcuts: [
                         {
@@ -96,13 +100,34 @@
                     {title: "序号",  align: 'center', type: 'index'},
                     {title: '驾驶人', align: 'center',  key: 'sjxm'},
                     {title: '车牌号', align: 'center', key: 'cph'},
-                    {title: '超速次数', align: 'center',  key: 'overspeedCount'},
+                    {title: '超速次数', align: 'center',  key: 'overspeedCount',
+					render:(h,p)=>{
+                        return h('div',{
+                            style:{color:'blue',cursor:'pointer'},
+							on:{
+                                click:()=>{
+                                    this.$store.commit('echChanged',{'cph':p.row.cph,'time':10000})
+								}
+							}},
+							p.row.overspeedCount)
+					}},
                 ],
                 pageData: [],
                 form: {
+                    type:'cstj',
                     sjxmLike: '',
                     total: 0,
                 },
+            }
+        },
+        computed:{
+            echData(){
+                return this.$store.state.app.ech
+            }
+        },
+        watch:{
+            echData:function (n,o) {
+                this.compName = 'csMessbar'
             }
         },
         created() {
