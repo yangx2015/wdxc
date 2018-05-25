@@ -93,7 +93,7 @@ public class FileApiController {
         try {
             // file.transferTo(dest);
             //FileUtil.uploadFile(file.getBytes(), filePath, fileName);
-            logger.debug("开始上传文件" + file.getOriginalFilename());
+            logger.info("开始上传文件" + file.getOriginalFilename());
             if (filesaveflag == 1) {
                 byte[] bytes = file.getBytes();
                 FileUtil.uploadFile(bytes, filePath, fileName);
@@ -106,7 +106,7 @@ public class FileApiController {
             } else {
                 FileUtil.uploadCopyFile(file.getInputStream(), filePath, fileName);
             }
-            logger.debug("文件上传结束" + file.getOriginalFilename());
+            logger.info("文件上传结束" + file.getOriginalFilename());
             dto.setFileLocalPath(filePath + fileName);
             dto.setFilePath(uriPath + fileName);
             dto.setFilePostfix(suffixName);
@@ -117,7 +117,7 @@ public class FileApiController {
             String cpimgDir = filelocalpath + dto.getDeviceId() + File.separator + DateUtils.getToday() + File.separator + cacheImgDir + File.separator;
 
             if (suffixName.contains("ts")) {//只有ts文件才转换
-                logger.debug("开始将ts文件转换为mp4" + file.getOriginalFilename());
+                logger.info("开始将ts文件转换为mp4" + file.getOriginalFilename());
 
                 dto.setFileLocalPath(filePath + fileName.replace(".ts", ".mp4"));
                 dto.setFilePath(fileName.replace(".ts", ".mp4"));
@@ -128,7 +128,7 @@ public class FileApiController {
                 FileUtil.fileExistsDir(cpimgDir);
                 extpic = extpic.replace("@cachefile", cpimgDir + fileName.replace(".ts", ".jpg"));
                 convertManager.convertMp4OrExtrPic(extpic);//抽取第一秒的截图
-                logger.debug("文件转换完成" + file.getOriginalFilename());
+                logger.info("文件转换完成" + file.getOriginalFilename());
             } else if (suffixName.contains("mp4")) {
                 extpic = extpic.replace("@cachefile", cpimgDir + fileName.replace(".mp4", ".jpg"));
                 FileUtil.fileExistsDir(cpimgDir);
