@@ -1,11 +1,10 @@
 package com.ldz.util.bean;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.apache.ibatis.type.IntegerTypeHandler;
-
-import java.util.List;
 
 @Getter
 @Setter

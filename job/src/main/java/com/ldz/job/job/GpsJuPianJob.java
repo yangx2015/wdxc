@@ -15,8 +15,8 @@ import com.ldz.job.mapper.ClClMapper;
 import com.ldz.job.model.ClCl;
 import com.ldz.job.service.GpsService;
 
-/**  (暂时不使用)
- * 定时器说明:每隔1分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
+/**  
+ * 定时器说明:
  * 
  * @author liuzhihao
  *

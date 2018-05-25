@@ -1,19 +1,23 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.ldz.biz.module.bean.SafedrivingModel;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClClModel;
+import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClJsy;

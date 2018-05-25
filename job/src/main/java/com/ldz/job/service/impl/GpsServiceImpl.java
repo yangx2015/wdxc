@@ -1,7 +1,9 @@
 package com.ldz.job.service.impl;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Service;
 
 import com.ldz.job.mapper.ClGpsLsMapper;
 import com.ldz.job.mapper.ClGpsMapper;
+import com.ldz.job.mapper.ClyyMapper;
 import com.ldz.job.model.ClCl;
 import com.ldz.job.model.ClGps;
 import com.ldz.job.model.ClGpsLs;
+import com.ldz.job.model.Clyy;
 import com.ldz.job.service.GpsService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.AddPointResponse;
@@ -42,7 +46,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	private ClGpsMapper entityMapper;
 	@Autowired
 	private RedisTemplateUtil redis; 
-	
+	@Autowired
+	private ClyyMapper clyymapper;
 	@Autowired
 	private ClGpsLsMapper clgpslsMapper;
 
@@ -137,37 +142,43 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public void guiJiJiuPian(ClCl clcl) {
 
 		long endTiem = System.currentTimeMillis();
-		long startTime = endTiem - (60 * 60 * 1000);
-
+		
+		//12小时前
+		long startTime = endTiem - (43200000);
+        
 		TrackJiuPian guijis = new TrackJiuPian();
 		guijis.setAk(GuiJIApi.AK);
-		guijis.setCoord_type_output("bd09ll");
-		guijis.setEnd_time(String.valueOf(endTiem / 1000));
+		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setEntity_name(clcl.getZdbh());
 		guijis.setIs_processed("1");
 		guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
-		guijis.setService_id(GuiJIApi.SERVICE_ID);
-		guijis.setSort_type("asc");
-		guijis.setStart_time(String.valueOf(startTime / 1000));
 		guijis.setSupplement_mode("driving");
-
+		guijis.setSort_type("asc");
+		guijis.setCoord_type_output("bd09ll");
+		guijis.setEnd_time(String.valueOf(endTiem / 1000));
+		guijis.setStart_time(String.valueOf(startTime / 1000));
+		guijis.setPage_size("5000");
 		TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
 		List<Point> points2 = points.getPoints();
 		if (CollectionUtils.isNotEmpty(points2)) {
+			
+			System.out.println(points2);
+			
+			List<Clyy>  yyList= new ArrayList<>();
+			
 			for (Point point : points2) {
-				if (StringUtils.isNotEmpty(point.get_object_key())) {
-
-					// 该 条数据的主键
-					String id = point.get_object_key();
-
-					ClGpsLs clgpsls = clgpslsMapper.selectByPrimaryKey(id);
-
-					clgpsls.setGdjd(BigDecimal.valueOf(point.getLongitude()));
-					clgpsls.setGdwd(BigDecimal.valueOf(point.getLatitude()));
-					clgpslsMapper.updateByPrimaryKeySelective(clgpsls);
-				}
-
+				Clyy clyy  = new Clyy();
+				clyy.setDirection(point.getDirection()+"");
+				clyy.setId(genId());
+				clyy.setLatitude(BigDecimal.valueOf(point.getLatitude()));
+				clyy.setLoc_time(parse(point.getLoc_time()));
+				clyy.setLongitude(BigDecimal.valueOf(point.getLongitude()));
+				clyy.setSpeed(BigDecimal.valueOf(point.getSpeed()));
+				clyy.setZdbh(clcl.getZdbh());
+				yyList.add(clyy);
 			}
+			
+			clyymapper.insertList(yyList);
 
 		} else {
 			return;
@@ -190,6 +201,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			result.add(subList);
 		}
 		return result;
+	}
+	public String parse(long time) {
+		SimpleDateFormat simpleDateFormat= new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+	      Long aLong =	time*1000;
+		  Date date = new Date(aLong);
+		  String format = simpleDateFormat.format(date);
+		  return  format;
 	}
 	
 	

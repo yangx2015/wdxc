@@ -136,7 +136,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 		clSpk.setCjsj(new Date()); //创建时间
 		clSpk.setClId(clinfo.getClId());//车辆id
 		clSpk.setCph(clinfo.getCph());//车牌号
-		clSpk.setId(genId());//自增长id
+		clSpk.setId(genId());
 		clSpk.setJgdm(clinfo.getJgdm());//机构代码
 		clSpk.setJgmc(clinfo.getJgmc());//机构名称
 		//这个视屏的任务id

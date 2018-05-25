@@ -1,17 +1,17 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.model.ClXl;
-import com.ldz.biz.module.model.ClZnzp;
-import com.ldz.biz.module.service.ZnzpService;
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
+import com.ldz.biz.module.model.ClZnzp;
+import com.ldz.biz.module.service.ZnzpService;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.util.bean.ApiResponse;
 
 @RestController
 @RequestMapping("api/znzp")

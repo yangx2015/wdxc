@@ -1,23 +1,22 @@
 package com.ldz.util.yingyan;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 
 import com.ldz.util.bean.AddPointResponse;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPoint;
-import com.ldz.util.bean.TrackPoints;
 import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 public class GuiJIApi {
   
@@ -153,7 +152,7 @@ public class GuiJIApi {
 		beanmap.put("supplement_mode",entity.getSupplement_mode());
 		beanmap.put("sort_type",entity.getSort_type());
 		beanmap.put("coord_type_output",entity.getCoord_type_output());
-
+		beanmap.put("page_size", entity.getPage_size());
 		String postJson = null;
 		try {
 			postJson = HttpUtil.get(url, beanmap);
