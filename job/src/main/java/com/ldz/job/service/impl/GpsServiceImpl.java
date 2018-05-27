@@ -143,8 +143,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 		long endTiem = System.currentTimeMillis();
 		
-		//12小时前
-		long startTime = endTiem - (43200000);
+		//6小时前
+		long startTime = endTiem - (21600000);
         
 		TrackJiuPian guijis = new TrackJiuPian();
 		guijis.setAk(GuiJIApi.AK);

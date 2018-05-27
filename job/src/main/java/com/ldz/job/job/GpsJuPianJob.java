@@ -16,7 +16,7 @@ import com.ldz.job.model.ClCl;
 import com.ldz.job.service.GpsService;
 
 /**  
- * 定时器说明:
+ * 定时器说明:每隔6小时把上传百度鹰眼的点位导入数据库
  * 
  * @author liuzhihao
  *
