@@ -129,12 +129,28 @@ public class ClZdgl implements Serializable {
     @Column(name = "GPSXT")
     private String gpsxt;
     
+    
+    /**
+     * 是否将设备上传到鹰眼
+     */
+    @Column(name = "SFYY")
+    private String sfyy;
+    
+    
     @Transient
     private ClCl cl;
    
     
     
     
+	public String getSfyy() {
+		return sfyy;
+	}
+
+	public void setSfyy(String sfyy) {
+		this.sfyy = sfyy;
+	}
+
 	public String getGpsxt() {
 		return gpsxt;
 	}

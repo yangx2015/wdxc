@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import com.ldz.job.mapper.ClGpsLsMapper;
 import com.ldz.job.mapper.ClGpsMapper;
 import com.ldz.job.mapper.ClyyMapper;
-import com.ldz.job.model.ClCl;
 import com.ldz.job.model.ClGps;
 import com.ldz.job.model.ClGpsLs;
 import com.ldz.job.model.Clyy;
@@ -70,6 +69,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Override
 	public void InsetRedisToDb(String zdbh) {
 
+		/*redis.keys(ClGps.class.getSimpleName()+"*");*/
+		
 		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
 		if (bean != null) {
 			ClGps object = JsonUtil.toBean(bean, ClGps.class);
@@ -139,7 +140,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 
 	@Override
-	public void guiJiJiuPian(ClCl clcl) {
+	public void guiJiJiuPian(String zdbh) {
 
 		long endTiem = System.currentTimeMillis();
 		
@@ -149,7 +150,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		TrackJiuPian guijis = new TrackJiuPian();
 		guijis.setAk(GuiJIApi.AK);
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
-		guijis.setEntity_name(clcl.getZdbh());
+		guijis.setEntity_name(zdbh);
 		guijis.setIs_processed("1");
 		guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
 		guijis.setSupplement_mode("driving");
@@ -174,7 +175,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				clyy.setLoc_time(parse(point.getLoc_time()));
 				clyy.setLongitude(BigDecimal.valueOf(point.getLongitude()));
 				clyy.setSpeed(BigDecimal.valueOf(point.getSpeed()));
-				clyy.setZdbh(clcl.getZdbh());
+				clyy.setZdbh(zdbh);
 				yyList.add(clyy);
 			}
 			
