@@ -212,6 +212,9 @@
 			    v.socket.onclose = function() {
 			        // log('关闭');
 			    };
+                /**
+                 * /topic/sendzp  订阅拍视频   /topic/sendhbsp订阅跑照片
+                 */
 		
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
@@ -230,8 +233,12 @@
 			            v.$store.commit('socketAllCarAdd',jsonMess)
 			        });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-                        console.log('=========================/topic/sendhbsp=======================')
-                        // let jsonMess = JSON.parse(data.body)
+			            v.$store.commit('addSendhbsp',data.body)
+			        });
+			        stompClient.subscribe('/topic/sendzp',  function(data) { //订阅消息
+			            v.$store.commit('addSendZp',data.body)
+			        });
+			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
 			            v.$store.commit('addSendhbsp',data.body)
 			        });
 			    });

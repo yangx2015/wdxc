@@ -50,7 +50,7 @@
 				</div>
 				<video v-if="videoUrl != null"
 						style="width: 100%;height: 600px;margin-top: 20px"
-						:src="videoPath+'/test/'+videoUrl"
+						:src="videoPath+videoUrl"
 						autoplay="autoplay"
 						controls="controls"></video>
 			</Row>

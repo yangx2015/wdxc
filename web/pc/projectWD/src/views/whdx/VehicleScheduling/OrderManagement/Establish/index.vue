@@ -56,7 +56,7 @@
 								<Input v-model="formItem.mdd" size="large" placeholder="请填写目的地点"></Input>
 							</FormItem>
 						</Col>
-						<Col span="8">
+						<Col span="4">
 							<FormItem label="">
 								<h3>
 									出车时间
@@ -67,17 +67,17 @@
 											type="datetime"
 											placeholder="请填写用车时间" ></DatePicker>
 							</FormItem>
-						<!--</Col>-->
-						<!--<Col span="4">-->
-							<!--<FormItem label="">-->
-								<!--<h3>-->
-									<!--单据类型-->
-								<!--</h3>-->
-								<!--<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>-->
-									<!--<Option value="00">单程</Option>-->
-									<!--<Option value="10">往返</Option>-->
-								<!--</Select>-->
-							<!--</FormItem>-->
+						</Col>
+						<Col span="4">
+							<FormItem label="">
+								<h3>
+									单据类型
+								</h3>
+								<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>
+									<Option value="00">单程</Option>
+									<Option value="10">往返</Option>
+								</Select>
+							</FormItem>
 						</Col>
 						<Col span="8">
 							<Row>

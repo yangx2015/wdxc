@@ -1,146 +1,40 @@
 <template>
     <div>
         <component :is="componentName"></component>
-        <Modal width="1000" v-model="showModal"  title="车辆详情" :closable="false">
-            <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-                <Spin fix>
-                    <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-                    <div style="font-size: 30px;">数据加载中请稍后</div>
-                </Spin>
+        <div style="position: absolute;z-index: 1000000;margin-top: 20%" v-if="car != null">
+            <Button type="success" @click="setControl('12','1-10')" icon="camera">前摄像头拍照</Button><br><br>
+            <Button type="success" @click="setControl('12','2-10')" icon="camera">后摄像头拍照</Button><br><br>
+            <Button type="success" @click="setControl('12','0-10')" icon="camera">前后摄像头拍照</Button><br><br>
+            <Button type="success" @click="setControl('11','1-10')" icon="ios-videocam">前摄像头视频</Button><br><br>
+            <Button type="success" @click="setControl('11','2-10')" icon="ios-videocam">后摄像头视频</Button><br><br>
+            <Button type="success" @click="setControl('11','0-10')" icon="ios-videocam">前后摄像头视频</Button><br><br>
+            <Button type="success" @click="showFance" icon="qr-scanner">电子围栏</Button><br><br>
+            <Button type="success" @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+        </div>
+        <Modal v-model="photo.showModal" width="1000" height="800"
+               :closable='false'
+               :mask-closable="false" title="预览">
+            <div style="width:100%;height: 100%;text-align: center;padding-top: 10%">
+                <i-circle v-if="photo.src == ''" :percent="photo.percent">
+                    <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
+                </i-circle>
+                <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
             </div>
-            <div>
-                <Row :gutter="16">
-                    <Col span="12">
-                        <Card style="height: 400px">
-                            <p slot="title"><Icon type="ios-game-controller-b"></Icon> 远程控制</p>
-                            <Row>
-                                <Col span="8">
-                                    <Button @click="setControl('12','1-10')" icon="camera">前摄像头拍照</Button>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="setControl('12','2-10')" icon="camera">后摄像头拍照</Button>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="setControl('12','0-10')" icon="camera">前后摄像头拍照</Button>
-                                </Col>
-                            </Row>
-                            <br>
-                            <Row>
-                                <Col span="8">
-                                    <Button @click="setControl('11','1-10')" icon="ios-videocam">前摄像头视频</Button>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="setControl('11','2-10')" icon="ios-videocam">后摄像头视频</Button>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="setControl('11','0-10')" icon="ios-videocam">前后摄像头视频</Button>
-                                </Col>
-                            </Row>
-                            <br>
-                            <Row>
-                                <Col span="8">
-                                    <Button @click="showFance" icon="qr-scanner">电子围栏</Button>
-                                </Col>
-                                <Col span="8">
-                                    <Button @click="showPathHistory" icon="pull-request">历史轨迹</Button>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <img v-if="imgSrc !=''" :src="imgSrc" style="height: 200px"/>
-                            </Row>
-                        </Card>
-                    </Col>
-                    <Col span="12">
-                        <Card style="height: 400px">
-                            <p slot="title"><Icon type="gear-b"></Icon> 终端设置</p>
-                            <Row class="height300">
-                                <Form :label-width="100">
-                                    <Row>
-                                        <!--<Col span="12">-->
-                                            <!--<FormItem label='急加速灵敏度'>-->
-                                                <!--<Select filterable clearable  v-model="carControl.jslmd" @on-change="selectChange02">-->
-                                                    <!--<Option value="1">1</Option>-->
-                                                    <!--<Option value="2">2</Option>-->
-                                                    <!--<Option value="3">3</Option>-->
-                                                    <!--<Option value="4">4</Option>-->
-                                                    <!--<Option value="5">5</Option>-->
-                                                    <!--<Option value="6">6</Option>-->
-                                                <!--</Select>-->
-                                            <!--</FormItem>-->
-                                        <!--</Col>-->
-                                        <Col span="20">
-                                            <FormItem label='碰撞灵敏度'>
-                                                <Select filterable clearable  v-model="carControl.pzlmd">
-                                                    <Option value=""></Option>
-                                                    <Option value="00">低</Option>
-                                                    <Option value="10">中</Option>
-                                                    <Option value="20">高</Option>
-                                                </Select>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="4">
-                                            <Button type="primary"  @click="selectChange20">确定</Button>
-                                        </Col>
-                                    </Row>
-                                    <!--<Row>-->
-                                        <!--<Col span="20">-->
-                                            <!--<FormItem label='上传模式'>-->
-                                                <!--<Select filterable clearable  v-model="carControl.scms">-->
-                                                    <!--<Option value=""></Option>-->
-                                                    <!--<Option value="00">实时</Option>-->
-                                                    <!--<Option value="10">仅WIFI</Option>-->
-                                                <!--</Select>-->
-                                            <!--</FormItem>-->
-                                        <!--</Col>-->
-                                        <!--<Col span="4">-->
-                                            <!--<Button type="primary"  @click="selectChange30">确定</Button>-->
-                                        <!--</Col>-->
-                                    <!--</Row>-->
-                                    <Row>
-                                        <Col span="20">
-                                            <FormItem label='上传视屏模式'>
-                                                <Select filterable clearable  v-model="carControl.spscms">
-                                                    <Option value="10">WIFI下上传普通视频</Option>
-                                                    <Option value="20">WIFI下不上传普通视频</Option>
-                                                    <Option value="30">WIFI/4G都上传</Option>
-                                                </Select>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="4">
-                                            <Button type="primary"  @click="selectChange50">确定</Button>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col span="20">
-                                            <FormItem label='超速设定'>
-                                                <Input type="text" v-model="cssd" placeholder="请填写超速设定..."><span slot="append">KM/h</span></Input>
-                                            </FormItem>
-                                        </Col>
-                                        <Col span="4">
-                                            <Button type="primary"  @click="setCssd">确定</Button>
-                                        </Col>
-                                    </Row>
-                                    <!--<Row>-->
-                                        <!--<Col span="20">-->
-                                            <!--<FormItem label='GPS心跳间隔'>-->
-                                                <!--<Input type="text" v-model="carControl.gpsxtjg" placeholder="请填写心跳间隔..."><span slot="append">秒</span></Input>-->
-                                            <!--</FormItem>-->
-                                        <!--</Col>-->
-                                        <!--<Col span="4">-->
-                                            <!--<Button type="primary"  @click="saveXtjg">确定</Button>-->
-                                        <!--</Col>-->
-                                    <!--</Row>-->
-                                    <Row>
-                                    </Row>
-                                </Form>
-                            </Row>
-                        </Card>
-                    </Col>
-                </Row>
-                <br>
+            <div slot='footer' style="text-align: center;">
+                <Button type="primary" @click="photo.showModal = false">关闭</Button>
             </div>
-            <div slot='footer'>
-                <Button type="ghost" @click="close">关闭</Button>
+        </Modal>
+        <Modal v-model="video.showModal" width="1000" height="800"
+               :closable='false'
+               :mask-closable="false" title="预览">
+            <div style="width:100%;height: 100%;text-align: center;padding-top: 10%">
+                <i-circle v-if="video.src == ''" :percent="video.percent">
+                    <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
+                </i-circle>
+                <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%"></video>
+            </div>
+            <div slot='footer' style="text-align: center;">
+                <Button type="primary" @click="video.showModal = false">关闭</Button>
             </div>
         </Modal>
     </div>
@@ -154,123 +48,147 @@
         },
         data(){
             return {
+                staticPath :this.apis.VIDEO_PATH,
                 showConfirmButton:false,
                 componentName:'',
-                showModal:true,
                 SpinShow:false,
                 car:'',
-                imgSrc:'',
-                carControl:{
-                    lmd:1,
-                    scms:1,
-                    jslmd:'',
-                    pzlmd:'',
-                    spscms:'',
-                    cssd:'',
-                    gpsxtjg:'',
+                video:{
+                    showModal:false,
+                    src:'',
+                    sec:120,
+                    percent:100,
+                    totalSec : 120
                 },
-                mergeVideoParam:{
-                    startTime:'',
-                    endTime:''
+                photo:{
+                    showModal:false,
+                    src:'',
+                    sec:120,
+                    percent:100,
+                    totalSec : 120
                 },
-                obd:null,
-                cssd:0,
             }
 
         },
+        computed: {
+            GetSendhbsp() {
+                return this.$store.state.app.sendhbsp
+            },
+            GetSendZp() {
+                return this.$store.state.app.sendzp
+            },
+        },
+        watch: {
+            GetSendhbsp: function(newQuestion, oldQuestion) {
+                this.onVideoResult(newQuestion);
+            },
+            GetSendZp: function(newQuestion, oldQuestion) {
+                this.onPhotoResult(newQuestion);
+            },
+        },
         created(){
-            this.init();
         },
         mounted(){
         },
         methods:{
-            formatDate(date){
-              return date.substring(0,4)+'年'+date.substring(4,6)+"月"+date.substring(6,8)+"日";
-            },
-            formatTime(time){
-              return time.substring(0,2)+':'+time.substring(2,4)+":"+time.substring(4,6);
-            },
-            tabClick(k){
-                this.showConfirmButton = k === 2
-            },
-            setCssd(){
-                var v = this
-                let params = {
-                    cphs:this.car.cph,
-                    csz:this.cssd,
+            countVideo(){
+                this.video.sec--;
+                this.video.percent = this.video.sec*100 / this.video.totalSec;
+                clearTimeout();
+                if (!this.video.showModal || this.video.sec <= 0){
+                    this.resetVideoCount();
+                    return;
                 }
-                this.SpinShow = true;
-                this.$http.post(this.apis.CS.ADD,params).then((res) =>{
-                    this.SpinShow = false;
-                    if (res.code === 200){
-                        this.$Message.success("设置成功!")
-                    }else{
-                        this.$Message.error(res.message)
-                    }
-                })
-            },
-            getCssd(){
-                var v = this
-                let params = {
-                    cph:this.car.cph,
+                if (this.$route.path != '/OperationMonitoring/VehicleMonitoring'){
+                    return;
                 }
-                this.$http.post(this.apis.CS.QUERY,params).then((res) =>{
-                    if (res.code === 200 && res.page.list &&  res.page.list.length>0){
-                        this.cssd = res.page.list[0].sdsx;
-                    }
-                })
-            },
-            saveCssd(){
-                this.setting('01',this.carControl.cssd);
-            },
-            saveXtjg(){
-                this.setting('40',this.carControl.gpsxtjg);
-            },
-            selectChange02(e){
-                this.setting('02',e);
-            },
-            selectChange20(){
-                this.setting('20',this.carControl.pzlmd);
-            },
-            selectChange30(){
-                this.setting('30',this.carControl.scms);
-            },
-            selectChange50(){
-                this.setting('50',this.carControl.spscms);
-            },
-            setting(type,param){
-                var v = this
-                let params = {
-                    deviceId:this.car.zdbh,
-                    cmdType:type,
-                    cmd:param
+                if (this.video.sec <= 0){
+                    this.$Message.error("等待超时！");
+                    this.resetVideoCount();
+                    return;
                 }
-                this.SpinShow = true;
-                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
-                    this.SpinShow = false;
-                    if (res.code === 200){
-                        this.$Message.success("设置成功!")
-                    }else{
-                        this.$Message.error(res.message)
+                let v = this;
+                setTimeout(()=>{
+                    if (!v.video.showModal){
+                        v.resetVideoCount();
+                        return;
                     }
-                })
+                    if (v.video.sec <= 0){
+                        v.$Message.error("等待超时！");
+                        v.resetVideoCount();
+                        return;
+                    }
+                    v.countVideo();
+                },1000)
+            },
+            countPhoto(){
+                this.photo.sec--;
+                this.photo.percent = this.photo.sec*100 / this.photo.totalSec;
+                clearTimeout();
+                if (!this.photo.showModal || this.photo.sec <= 0){
+                    this.resetPhotoCount();
+                    return;
+                }
+                if (this.$route.path != '/OperationMonitoring/VehicleMonitoring'){
+                    return;
+                }
+                if (this.photo.sec <= 0){
+                    this.$Message.error("等待超时！");
+                    this.resetPhotoCount();
+                    return;
+                }
+                let v = this;
+                setTimeout(()=>{
+                    if (!v.photo.showModal){
+                        v.resetPhotoCount();
+                        return;
+                    }
+                    if (v.photo.sec <= 0){
+                        v.$Message.error("等待超时！");
+                        v.resetPhotoCount();
+                        return;
+                    }
+                    v.countPhoto();
+                },1000)
+            },
+            resetPhotoCount(){
+                this.photo.showModal = false;
+                this.photo.sec = this.photo.totalSec;
+                this.photo.percent = 100;
+            },
+            resetVideoCount(){
+                this.video.showModal = false;
+                this.video.sec = this.video.totalSec;
+                this.video.percent = 100;
+            },
+            stopPhotoCount(){
+                this.photo.sec = this.photo.totalSec;
+                this.photo.percent = 100;
+            },
+            stopVideoCount(){
+                this.video.sec = this.video.totalSec;
+                this.video.percent = 100;
+            },
+            onPhotoResult(r){
+                let m = JSON.parse(r);
+                this.$Message.success("拍摄成功!")
+                this.photo.src = m.url;
+                this.photo.showModal = true;
+                this.stopPhotoCount();
+            },
+            onVideoResult(r){
+                let m = JSON.parse(r);
+                this.wait = false;
+                this.$Message.success("拍摄成功!")
+                this.video.src = m.url;
+                this.video.showModal = true;
+                this.stopVideoCount();
             },
             init(){
-                setTimeout(() => {
-                    this.showModal = true;
-                }, 100);
                 this.car = this.$parent.choosedItem;
-                this.getDeviceInfo();
-                this.getCssd();
-                if (this.car.obdId){
-                    this.getObdInfo();
-                }
             },
             close(){
-                this.showModal = false;
-                setTimeout(() => {
-                    this.$parent.$data.componentName = "";
-                }, 200)
+                this.showImgModal = false;
             },
             save(){
                 this.SpinShow = true;
@@ -300,9 +218,14 @@
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
-                        if (type === '12'){
-                            this.bj = res.result;
-                            this.checkImage();
+                        this.bj = res.result;
+                        console.log(type);
+                        if (type == '12'){
+                            this.photo.showModal = true;
+                            this.countPhoto();
+                        }else if (type == '11'){
+                            this.video.showModal = true;
+                            this.countVideo();
                         }
                     }else{
                         this.$Message.error(res.message)
@@ -327,47 +250,13 @@
                     }
                 })
             },
-            mergeVideo(param){
-                let params = {
-                    deviceId:this.car.zdbh,
-                    cmdType:13,
-                    cmdParams:param,
-                    startTime:this.mergeVideoParam.startTime,
-                    endTime  :this.mergeVideoParam.endTime,
-                }
-                this.SpinShow = true;
-                this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
-                    this.SpinShow = false;
-                    if (res.code === 200){
-                        this.$Message.success("发送成功!")
-                    }else{
-                        this.$Message.error(res.message)
-                    }
-                })
-            },
-            getObdInfo(){
-                var v = this
-                this.$http.post(this.apis.CLJK.getObdTimely,{obdId:this.car.obdId}).then((res) =>{
-                    if (res.code === 200){
-                        this.obd = res.result;
-                    }
-                })
-            },
-            getDeviceInfo(){
-                var v = this
-                this.$http.get(this.apis.ZDGL.GET_BY_ID+this.car.zdbh).then((res) =>{
-                    if (res.code === 200){
-                        this.carControl = res.result;
-                    }
-                })
-            },
             showPathHistory(){
                 this.$router.push({name: 'historyTarck_new',params:{zdbh:this.car.zdbh}});
-                this.close();
+                // this.close();
             },
             showFance(){
                 this.$parent.showFance(this.car.clid)
-                this.close();
+                // this.close();
             }
         }
     }

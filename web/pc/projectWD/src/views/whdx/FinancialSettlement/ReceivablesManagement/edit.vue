@@ -50,7 +50,7 @@
 								<Col span="12">
 									<FormItem label="费用来源">
 										<Select filterable clearable  v-model="form.fkfs" size="large" placeholder="请选择费用来源" filterable>
-											<Option v-for="item in fromMoneyList" :value="item.value"></Option>
+											<Option v-for="item in fromMoneyList" :value="item.key">{{item.val}}</Option>
 										</Select>
 									</FormItem>
 								</Col>
@@ -198,13 +198,6 @@
 
                 },
                 fromMoneyList:[
-                    {
-                        value:'行政费用'
-                    },{
-                        value:'课题费用'
-                    },{
-                        value:'自费'
-                    }
                 ],
                 ctasklList:[
                     {
@@ -239,6 +232,7 @@
                 this.operate = '编辑'
                 this.cllx = [this.form.cllx,''+this.form.zws];
             }
+            this.fromMoneyList = this.dictUtil.getByCode(this,'ZDCLK0043')
         },
         mounted(){
             this.getOrgList();

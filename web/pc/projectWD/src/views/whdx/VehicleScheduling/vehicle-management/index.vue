@@ -261,7 +261,7 @@
                                                 click: () => {
                                                     this.$router.push(
                                                         {
-                                                            name: 'historypath',
+                                                            name: 'historyTarck_new',
                                                             params:{zdbh:params.row.zdbh}
                                                         }
                                                     );

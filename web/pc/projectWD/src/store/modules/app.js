@@ -15,6 +15,7 @@ const app = {
     	socketMess:[],//校巴车辆数据
     	socketAllCar:[],//监控数据
         sendhbsp:'',
+        sendzp:'',
     	loadingType:false,
     	loading:{
     		size:55,
@@ -59,6 +60,9 @@ const app = {
         },
         addSendhbsp(state,data){
             state.sendhbsp = data;
+        },
+        addSendZp(state,data){
+            state.sendzp = data;
         },
     	AdddictMap(state,data){
     		state.dictMap = data

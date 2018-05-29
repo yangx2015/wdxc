@@ -23,6 +23,7 @@ import com.ldz.sys.mapper.SysRlbMapper;
 import com.ldz.sys.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -149,12 +150,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		int i = entityMapper.insertSelective(entity);
 		RuntimeCheck.ifTrue(i == 0, "订单入库失败");
 
-		// // 原始单据
-		// ClDdlsb initOrder = new ClDdlsb();
-		// BeanUtils.copyProperties(entity,initOrder,"id");
-		// initOrder.setId(genId());
-		// initOrder.setDdId(entity.getId());
-		// ddlsbMapper.insertSelective(initOrder);
 
 		ddrzService.log(entity);
 		return ApiResponse.success();
@@ -983,6 +978,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			RuntimeCheck.ifFalse(false, "创建订单历史表失败");
 			return ApiResponse.fail("操作数据库失败");
 		}
+
+			// 原始单据
+		 ClDdlsb initOrder = new ClDdlsb();
+		 BeanUtils.copyProperties(entity,initOrder,"id");
+		 initOrder.setId(genId());
+		 initOrder.setDdId(entity.getId());
+		 ddlsbMapper.insertSelective(initOrder);
 
 		// 4、插入日志表
 		ClDdrz clDdrz = new ClDdrz();
