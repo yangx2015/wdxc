@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,7 @@ import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -40,8 +40,6 @@ import com.ldz.util.redis.RedisTemplateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.common.Mapper;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Slf4j
 @Service

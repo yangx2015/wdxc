@@ -20,9 +20,9 @@ import net.sf.json.JSONObject;
 
 public class GuiJIApi {
   
-    public final static String AK = "2pVOrCuBldNDOgDtwaYSP8gpQ2VQdZY9";
+    public final static String AK = "B6w4WTVTXsCQSwU9T8uVBNDnYGb7PItF";
 
-    public final static int SERVICE_ID = 200383;
+    public final static int SERVICE_ID = 200779;
 
     public final static  String  saveEntityuRL="http://yingyan.baidu.com/api/v3/entity/add";
   
