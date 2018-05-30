@@ -128,40 +128,41 @@
 
 				</div>
 	        </div>
-	        <div v-if="horizontal=='4' && detail.initialOracle.length > 0" style="overflow: hidden;" class="topmar">
+	        <div v-if="horizontal=='4' && detail.initialOracle.length > 0" v-for="item in detail.initialOracle" style="overflow: hidden;" class="topmar">
 	        	<Col span="6" class="margin-top-5">
-					<h5>用车单位：</h5>{{detail.initialOracle[0].jgmc}}
+					<h5>用车单位：</h5>{{item.jgmc}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>用车人：</h5>{{detail.initialOracle[0].ck}}
+					<h5>用车人：</h5>{{item.ck}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>电话：</h5>{{detail.initialOracle[0].cklxdh}}
+					<h5>电话：</h5>{{item.cklxdh}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>出车时间：</h5>{{detail.initialOracle[0].yysj}}
+					<h5>出车时间：</h5>{{item.yysj}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>候车地点：</h5>{{detail.initialOracle[0].hcdz}}
+					<h5>候车地点：</h5>{{item.hcdz}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>目的地：</h5>{{detail.initialOracle[0].mdd}}
+					<h5>目的地：</h5>{{item.mdd}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>行车里程：</h5>{{detail.initialOracle[0].lc}}
+					<h5>行车里程：</h5>{{item.lc}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>等时：</h5>{{detail.initialOracle[0].ck}}
+					<h5>等时：</h5>{{item.ck}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>过桥费：</h5>{{detail.initialOracle[0].glf}}
+					<h5>过桥费：</h5>{{item.glf}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>过路费：</h5>{{detail.initialOracle[0].glf}}
+					<h5>过路费：</h5>{{item.glf}}
 				</Col>
 				<Col span="6" class="margin-top-5">
-					<h5>合计金额：</h5>{{detail.initialOracle[0].zj}}
+					<h5>合计金额：</h5>{{item.zj}}
 				</Col>
+				<Col><div style="border-bottom: 1px solid gainsboro"></div></Col>
 	        </div>
     </div>
 </template>

@@ -3,7 +3,7 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' :closable='mesF' 
+		<Modal v-model="showModal" width='900' :closable='mesF'
 			:mask-closable="mesF" title="新建课题">
 			<div style="overflow: auto;">
 				<Form
@@ -73,11 +73,11 @@
 				this.$http.post(this.apis.DICTIONARY_LIST.ADD,v.addmess).then((res) =>{
 					log('字典添加',res)
 					if(res.code===200){
-						v.$parent.getKT()
+					    v.dictUtil.reload(v,()=>{v.$parent.getKT()})
 						v.$Message.success('操作成功');
 						v.$parent.compName = ''
 					}else{
-						v.$Message.error('操作失败!');
+						v.$Message.error(res.message);
 					}
 				})
 			}

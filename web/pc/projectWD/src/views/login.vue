@@ -185,16 +185,16 @@ export default {
         initDict(){
             this.$http.get(this.apis.DICTIONARY.QUERY,{params:{pageSize:10000}}).then((res) =>{
                 if(res.code===200){
+                    let dictMap = new Map();
                     for (let r of res.page.list){
                         let a = [];
                         if (!r.zdxmList)continue
                         for (let e of r.zdxmList){
                             a.push({key:e.zddm,val:e.zdmc});
                         }
-                        this.$store.state.app.dictMap.set(r.lmdm,a)
-                        this.session.setItem('dictMap',this.$store.state.app.dictMap)
-//						log('字典',this.$store.state.app.dictMap)
+                        dictMap.set(r.lmdm,a)
                     }
+                    this.session.setItem('dictMap',dictMap)
                 }
             }).catch((error) =>{
                 log(error)
