@@ -38,12 +38,12 @@ spring:
     filters: stat,wall,log4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     cachePrepStmts: true
-  boot:
-   admin:
-      url: http://127.0.0.1:9078
-      client: 
-        name: WD-ZNZP
-management.security.enabled: false 
+#  boot:
+#   admin:
+#      url: http://127.0.0.1:9078
+#      client: 
+#        name: WD-ZNZP
+#management.security.enabled: false 
 #mybatis配置信息
 mybatis:
   configLocation: classpath:mybatis/MapperConfig.xml

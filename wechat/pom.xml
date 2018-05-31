@@ -15,7 +15,7 @@
 	<description>Demo project for Spring Boot</description>
 
 	<dependencies>
-	 <dependency>
+	<!--  <dependency>
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
             <exclusions>
@@ -25,7 +25,7 @@
                 </exclusion>
             </exclusions>
             <version>1.5.7</version>
-        </dependency>
+        </dependency> -->
 		<!-- <dependency>
 			<groupId>com.ldz</groupId>
 			<artifactId>sys</artifactId>
