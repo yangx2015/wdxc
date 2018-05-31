@@ -152,7 +152,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setEntity_name(zdbh);
 		guijis.setIs_processed("1");
-		guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
+		guijis.setProcess_option("need_denoise=0,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
 		guijis.setSupplement_mode("driving");
 		guijis.setSort_type("asc");
 		guijis.setCoord_type_output("bd09ll");
