@@ -8,13 +8,18 @@ spring:
     url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
     username: 'C##wdxc_admin'
     password: 'wdxc123456'
-
-
+  boot:
+    admin:
+      url: http://localhost:9078
+      client: 
+         name: WD-BIZ
+management.security.enabled: false
+    
 server:
   port: 80
 
 ticserver:
-   url: http://47.98.39.45:9095/api/push/carcmd
+  url: http://47.98.39.45:9095/api/push/carcmd
 biz:
   scTime: 30000
 

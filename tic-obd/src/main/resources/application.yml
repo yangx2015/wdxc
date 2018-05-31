@@ -16,6 +16,12 @@ spring:
     maxIdle: 200
     maxTotal: 1024
     maxWait: 1000
+  boot:
+   admin:
+      url: http://localhost:9078
+      client: 
+        name: WD-ODB
+management.security.enabled: false    
 #socket配置信息
 netty: 
   ip: 127.0.0.1
