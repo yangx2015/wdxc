@@ -27,7 +27,7 @@ spring:
       #enabled: true
   boot:
    admin:
-      url: http://localhost:9078
+      url: http://127.0.0.1:9078
       client: 
         name: WD-ticServer
 management.security.enabled: false 

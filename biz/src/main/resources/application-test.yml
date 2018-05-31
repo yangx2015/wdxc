@@ -10,7 +10,7 @@ spring:
     password: 'wdxc123456'
   boot:
     admin:
-      url: http://localhost:9078
+      url: http://127.0.0.1:9078
       client: 
          name: WD-BIZ
 management.security.enabled: false

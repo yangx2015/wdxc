@@ -40,7 +40,7 @@ spring:
     cachePrepStmts: true
   boot:
    admin:
-      url: http://localhost:9078
+      url: http://127.0.0.1:9078
       client: 
         name: WD-ZNZP
 management.security.enabled: false 
