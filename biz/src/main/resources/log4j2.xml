@@ -125,7 +125,10 @@
 		<logger name="com.ldz.biz.**.mapper" level="debug" includeLocation="false" additivity="false">
             <appender-ref ref="Console"/>
         </logger>
-        
+		<logger name="com.ldz.sys.**.mapper" level="debug" includeLocation="false" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
+
         <logger name="access_info" level="debug" includeLocation="false" additivity="false">
             <appender-ref ref="debug_appender"/>
             <appender-ref ref="accessInfoLog_appender"/>

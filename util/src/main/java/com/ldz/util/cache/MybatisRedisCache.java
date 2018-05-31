@@ -22,12 +22,14 @@ public class MybatisRedisCache implements Cache {
 	private String id;
 
 	private RedisTemplateUtil redisDao;
+
+	private static final String KEY_PERFIX = "whdxclglpt";
 	
 	public MybatisRedisCache(final String id) {
 		if (id == null) {
 			throw new IllegalArgumentException("Cache instances require an ID");
 		}
-		this.id = id;
+		this.id = KEY_PERFIX + id.substring(id.lastIndexOf("."));
 		//防止mybatis先于redis加载，造成redis对象为空，无法使用
 		new Thread(new Runnable() {
 			@Override
@@ -37,7 +39,6 @@ public class MybatisRedisCache implements Cache {
 					if (redisConn != null){
 						redisDao = new RedisTemplateUtil(redisConn);	
 					}
-					
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -62,14 +63,12 @@ public class MybatisRedisCache implements Cache {
 		className = className.substring(className.lastIndexOf(":") + 1);
 		String methodName = keyString.substring(keyString.lastIndexOf(".") + 1);
 		methodName = methodName.substring(0, methodName.indexOf(":"));
-
 		try {
 			Method method = ReflectionUtils.findMethod(Class.forName(className), methodName);
 			return method.getReturnType();
 		} catch (Exception e) {
 
 		}
-
 		return null;
 	}
 
@@ -80,9 +79,7 @@ public class MybatisRedisCache implements Cache {
 
 	@Override
 	public Object getObject(final Object key) {
-		Class<?> returnType = getMethodReturnType(key.toString());
-		
-		return redisDao.getSerializerHashValue(id, key.toString(), returnType);
+		return redisDao.getSerializerHashValue(id, key.toString());
 	}
 
 	@Override
