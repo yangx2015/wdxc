@@ -238,6 +238,36 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		return apiResponse;
 	}
 
+	/**
+	 * 纠偏选项默认值为：
+	 * need_denoise=1,radius_threshold=0, need_vacuate=1,need_mapmatch=0, radius_threhold=0,transport_mode=driving
+	 * 取值规则为：
+	 * 1.去噪，示例：
+	 * need_denoise =0：不去噪
+	 * need_denoise =1：去噪
+	 *
+	 * 2.抽稀，示例：
+	 * need_vacuate =0：不抽稀
+	 * need_vacuate=1：抽稀
+	 *
+	 * 3.绑路，示例：
+	 * need_mapmatch=0：不绑路
+	 * need_mapmatch=1：绑路
+	 *
+	 * 4.定位精度过滤，用于过滤掉定位精度较差的轨迹点，每个轨迹点示例：
+	 * radius_threshold=0：不过滤
+	 * radius_threshold=20：过滤掉radius大于20的轨迹点。
+	 *
+	 * radius_threshold的设置参考：若只希望保留GPS定位结果，则可设置为20（通常 GPS 定位精度不大于20）；若希望保留GPS和Wi-Fi定位结果，去除基站定位结果，则可设置为100（通常Wi-Fi 定位精度不超过100米）。
+	 *
+	 * 5.交通方式，鹰眼将根据不同交通工具选择不同的纠偏策略，目前支持驾车、骑行和步行，示例：
+	 * transport_mode=driving
+	 * transport_mode=riding
+	 * transport_mode=walking
+	 * 绑路时会依据道路形状进行补点，例如：原始轨迹在道路拐弯处缺点，绑路将进行补充，补点的定位时间目前取的是前一个原始点的定位时间。
+	 * @param gpssjinfo
+	 * @return
+	 */
 	@Override
 	public ApiResponse<List<Point>> baiduGuiJi(gpsSJInfo gpssjinfo) {
 		ApiResponse<List<Point>> apiResponse = new ApiResponse<>();
@@ -257,7 +287,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		guijis.setEntity_name(gpssjinfo.getZdbh());
 		guijis.setIs_processed("1");
 		guijis.setProcess_option(
-				"need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
+				"need_denoise=1,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setSort_type("asc");
 
