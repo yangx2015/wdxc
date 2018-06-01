@@ -328,7 +328,7 @@
             itemClick(item,index){
                 this.item = item;
                 this.choosedIndex = index;
-                this.getData();
+                this.getDbData();
 			},
 			getMinute(longTypeDate){
                 if(!longTypeDate)return;
@@ -418,7 +418,30 @@
                     }
                 })
             },
-            getData(){
+            getBdData(){
+				let p = {
+                    zdbh:this.formItem.zdbh,
+					startTime:this.item.kssj,
+					endTime:this.item.jssj,
+				}
+                this.speedList = [];
+                this.speeds = {};
+                let v = this;
+
+                this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS_BD,p).then((res) =>{
+                    if (res.code === 200 && res.result){
+                        this.stationList = res.result;
+                        for(let r of this.stationList){
+                            let date = new Date(r.loc_time);
+                            let speed = parseInt(r.speed);
+                            this.speedList.push([r.loc_time,speed]);
+                            this.speeds[date.getTime()] = speed;
+                        }
+                        v.Buildmap()
+					}
+                })
+            },
+            getDbData(){
 				let p = {
                     zdbh:this.formItem.zdbh,
 					startTime:this.item.kssj,
@@ -431,11 +454,13 @@
                 this.$http.post(this.apis.CLGL.GPS_HITSOR_GPS,p).then((res) =>{
                     if (res.code === 200 && res.result){
                         this.stationList = res.result;
-                        for(let r of res.result){
-                            let date = new Date(r.loc_time);
-                            let speed = parseInt(r.speed);
-                            this.speedList.push([r.loc_time,speed]);
+                        for(let r of this.stationList){
+                            let date = new Date(r.cjsj);
+                            let speed = parseInt(r.yxsd);
+                            this.speedList.push([r.cjsj,speed]);
                             this.speeds[date.getTime()] = speed;
+                            r.longitude = r.bdjd;
+                            r.latitude = r.bdwd;
                         }
                         v.Buildmap()
 					}

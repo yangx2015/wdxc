@@ -172,7 +172,8 @@ module.exports = {
         DELE:  '/api/cl/removeIds',
         GET_ORG_CAR_LIST:'/api/cl/getOrgCarList',
         GPS_HITSOR:'/api/clsbyxsjjl/history',
-        GPS_HITSOR_GPS:'/api/clsbyxsjjl/baiduGuiJi',
+        GPS_HITSOR_GPS:'/api/clsbyxsjjl/historygps',
+        GPS_HITSOR_GPS_BD:'/api/clsbyxsjjl/baiduGuiJi',
         nianshen:'/api/cl/nianshen',
     },
     XL:{

@@ -7,8 +7,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import com.google.common.eventbus.AsyncEventBus;
+import com.google.common.eventbus.EventBus;
+import com.google.common.eventbus.Subscribe;
+import com.ldz.biz.bean.SendGpsEvent;
+import com.ldz.util.bean.*;
+import com.ldz.util.yingyan.GuiJIApi;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,8 +39,6 @@ import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -40,6 +47,8 @@ import com.ldz.util.redis.RedisTemplateUtil;
 
 import lombok.extern.slf4j.Slf4j;
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.annotation.PostConstruct;
 
 @Slf4j
 @Service
@@ -58,6 +67,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 	@Autowired
 	private SimpMessagingTemplate websocket;
+
+	AsyncEventBus eventBus = new AsyncEventBus(Executors.newFixedThreadPool(1));
+
+	public GpsServiceImpl() {
+		eventBus.register(GpsInfo.class);
+	}
 
 	@Override
 	protected Mapper<ClGps> getBaseMapper() {
@@ -80,10 +95,40 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				|| StringUtils.isEmpty(gpsinfo.getDeviceId())) {
 			return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
 		}
+		// todo 判断-1
 
+		eventBus.post(new SendGpsEvent(gpsinfo));
 		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
 		sbyxsjjl(gpsinfo, seleByZdbh);
 		return justDoIt(gpsinfo,seleByZdbh);
+	}
+
+	@Subscribe
+	public  void sendGps(SendGpsEvent event){
+		log.info("sendGps");
+		ClGps entity = changeCoordinates(event.getGpsInfo());
+		ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
+				entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(), entity.getGdwd(),
+				entity.getLx(), entity.getDwjd(), entity.getFxj(), entity.getYxsd());
+		YingyanResponse addPoints = GuiJIApi.addPoint(changeModel(gpsls), GuiJIApi.addPointURL);
+		log.info(addPoints.toString());
+	}
+
+
+
+	public TrackPoint changeModel(ClGpsLs clgps) {
+		TrackPoint tracktPoint = new TrackPoint();
+		tracktPoint.set_object_key(clgps.getYxsd());
+		tracktPoint.setAk(GuiJIApi.AK);
+		tracktPoint.setCoord_type_input("bd09ll");
+		tracktPoint.setEntity_name(clgps.getZdbh());
+		tracktPoint.setLatitude(clgps.getBdwd());
+		tracktPoint.setLoc_time((clgps.getCjsj().getTime()) / 1000);
+		tracktPoint.setLongitude(clgps.getBdjd());
+		tracktPoint.setService_id(GuiJIApi.SERVICE_ID);
+		tracktPoint.setSpeed(Double.valueOf(clgps.getYxsd()));
+		tracktPoint.setDirection((int) Math.ceil(clgps.getFxj().doubleValue()));
+		return tracktPoint;
 	}
 
 	public ApiResponse<String> justDoThat(GpsInfo gpsinfo) {
