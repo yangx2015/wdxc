@@ -71,7 +71,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	AsyncEventBus eventBus = new AsyncEventBus(Executors.newFixedThreadPool(1));
 
 	public GpsServiceImpl() {
-		eventBus.register(GpsInfo.class);
+		eventBus.register(this);
 	}
 
 	@Override
@@ -82,9 +82,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Override
 	public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
 		log.info("上传的gps信息:" + gpsinfo);
-		
-		
-		
 		if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
 			if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
 				return justDoThat(gpsinfo);
@@ -95,9 +92,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				|| StringUtils.isEmpty(gpsinfo.getDeviceId())) {
 			return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
 		}
-		// todo 判断-1
 
-		eventBus.post(new SendGpsEvent(gpsinfo));
+		if (!gpsinfo.getLatitude().equals("-1") && !gpsinfo.getLongitude().equals("-1")){
+			eventBus.post(new SendGpsEvent(gpsinfo));
+		}
+
 		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
 		sbyxsjjl(gpsinfo, seleByZdbh);
 		return justDoIt(gpsinfo,seleByZdbh);
@@ -105,7 +104,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 	@Subscribe
 	public  void sendGps(SendGpsEvent event){
-		log.info("sendGps");
 		ClGps entity = changeCoordinates(event.getGpsInfo());
 		ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
 				entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(), entity.getGdwd(),
@@ -138,12 +136,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 从redis(实时gps点位)里面取出历史数据
 		String bean2 = (String) redis.boundValueOps(ClGps.class.getSimpleName() + gpsinfo.getDeviceId()).get();
 		ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
-		
+
 		//非job发送80事件
 		if (StringUtils.isEmpty(gpsinfo.getStartTime())) {
-			
-		
-           return ApiResponse.fail("非job发送离线");		
+
+
+           return ApiResponse.fail("非job发送离线");
 		}
 		//job发送80事件
 		String formatdate = formatdate(object2.getCjsj());
@@ -160,12 +158,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
 			clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
 			clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
-			
+
 			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
 			log.info("推送前端的数据为" + socket);
 			websocket.convertAndSend("/topic/sendgps", socket);
 			return ApiResponse.fail("job发送离线:两次离线时间一致");
-			
+
 		}
 		// 记录事件
 		ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
@@ -202,21 +200,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				return ApiResponse.fail(gpsinfo.getDeviceId()+"初始化失败该设备没有历史定位");
 			}
 		}
-		
+
 	 ClGps entity = changeCoordinates(gpsinfo);
 	// 判断该点位是否携带类型,或者是何种类型分类存储
         saveClSbyxsjjl(gpsinfo, entity,clcl);
-	
+
 	// 推送坐标去前端
 	String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity,null));
 	log.info("推送前端的数据为"+socket);
 	websocket.convertAndSend("/topic/sendgps",socket);
-	
+
 	if(StringUtils.isEmpty(bean)){
 		redis.boundValueOps(ClGps.class.getSimpleName() +  gpsinfo.getDeviceId()).set(JsonUtil.toJson(entity));
 		return ApiResponse.success("初始化点位成功");
 	}
-	
+
 	ClGps object2 = JsonUtil.toBean(bean, ClGps.class);
 
 	// 比较redis(实时gps点位)历史数据和这次接收到的数据距离
@@ -226,8 +224,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	// 两次距离大于10米才存入redis(存储历史gps点位)
 	if(shortDistance<10){
 		return ApiResponse.success("距离上一次点位太近,该点位不存储");
-	}   
-	
+	}
+
 	ClGpsLs gpsls = new ClGpsLs(genId(), entity.getZdbh(), entity.getCjsj(), entity.getJd(), entity.getWd(),
 			entity.getGgjd(), entity.getGgwd(), entity.getBdjd(), entity.getBdwd(), entity.getGdjd(), entity.getGdwd(),
 			entity.getLx(), entity.getDwjd(), entity.getFxj(), entity.getYxsd());
@@ -331,7 +329,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		if (StringUtils.isNotEmpty(entity.getStartTime())) {
 			clsbyxsjjl.setCjsj(simpledate(entity.getStartTime()));
 		}
-		
+
 		if (StringUtils.isNotEmpty(entity.getGpsjd())) {
 			clsbyxsjjl.setJid(new BigDecimal(entity.getGpsjd()));
 		}
@@ -504,8 +502,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						if (StringUtils.isNotEmpty(clCl.getObdCode())) {
 							websocketInfo.setObdId(clCl.getObdCode());
 						}
-						
-						
+
+
 						if (lostZD.contains(clgps.getZdbh())) {
 							websocketInfo.setZxzt("20");
 							websocketInfo.setLxsc(nowTime(clgps.getCjsj()));
@@ -533,7 +531,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		}
 		return date2;
 	}
-	
+
 	public String formatdate(Date date) {
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String format = simpleDateFormat.format(date);
@@ -541,7 +539,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
     public long  nowTime(Date time) {
-    	
+
     	Date now = new Date();
     	long time2 = now.getTime();
     	long time3 = time.getTime();
@@ -551,9 +549,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Override
 	public void sbyxsjjl(GpsInfo info,ClCl clcl) {
 		ClGps clgps = changeCoordinates(info);
-		
+
 		if (StringUtils.isNotEmpty(info.getEventType())) {
-			
+
 			if (StringUtils.equals(info.getEventType(), "50")) {
 				 //熄火状态的redis 设置为空
 				redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
@@ -567,15 +565,15 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				return;
 			}
 		}
-	  
-		
-	    
+
+
+
 		if (StringUtils.equals(info.getSczt(), "10")) {
-		
+
 				 //熄火状态的redis 设置为空
 			 redis.boundValueOps("flameout"+info.getDeviceId()).set(null);
 			 ClGps object = (ClGps) redis.boundValueOps("ignition"+info.getDeviceId()).get();
-			 
+
 			 if (ObjectUtils.isEmpty(object)) {
 				 //点火状态redis赋值
 				 redis.boundValueOps("ignition"+info.getDeviceId()).set(clgps);
@@ -598,7 +596,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				return;
 			}
 		}
-		
+
 		if (StringUtils.equals(info.getSczt(), "20")) {
 			//将点火设置为空
 			redis.boundValueOps("ignition"+info.getDeviceId()).set(null);
@@ -625,10 +623,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				return;
 			}
 		}
-		
-	
-		
-		
+
+
+
+
 	}
 
 }
