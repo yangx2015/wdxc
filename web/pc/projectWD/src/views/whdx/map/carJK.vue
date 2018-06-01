@@ -11,7 +11,6 @@
 <!--地图选点-->
 <template>
     <div style="height: 100%;background-color: #00FFFF;">
-        <!--<component :is="componentName"></component>-->
         <car-info ref="carInfoButton"></car-info>
         <div id="allmap"></div>
     </div>
@@ -85,14 +84,16 @@
             },
             init() {
                 this.carList = this.$parent.mapCarList;
-                if (this.carList.length == 1){
+                if (this.carList.length === 1){
                     this.car = this.carList[0];
                     this.chooseCar(this.car);
                 }else if (this.carList.length > 0) {
+                    this.$refs.carInfoButton.hide();
                     this.car = null;
                     this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }else {
                     this.car = null;
+                    this.$refs.carInfoButton.hide();
                 }
                 this.showCarPosition()
             },
@@ -186,13 +187,11 @@
                 var v = this
                 marker.addEventListener("click", function (e) {
                     v.choosedItem = item;
-                    v.$refs.carInfoButton.init();
+                    v.$refs.carInfoButton.init(item);
                 })
             },
             chooseCar(item){
-                var v = this
-                v.choosedItem = item;
-                v.$refs.carInfoButton.init();
+                this.$refs.carInfoButton.init(item);
             },
             clear() {
                 this.map.clearOverlays();//清楚数据点

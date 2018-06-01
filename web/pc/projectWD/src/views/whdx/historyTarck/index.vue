@@ -328,7 +328,7 @@
             itemClick(item,index){
                 this.item = item;
                 this.choosedIndex = index;
-                this.getDbData();
+                this.getBdData();
 			},
 			getMinute(longTypeDate){
                 if(!longTypeDate)return;

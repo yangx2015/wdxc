@@ -200,8 +200,11 @@
                 this.video.showModal = true;
                 this.stopVideoCount();
             },
-            init(){
-                this.car = this.$parent.choosedItem;
+            init(item){
+                this.car = item;
+            },
+            hide(){
+                this.car = null;
             },
             close(){
                 this.showImgModal = false;
