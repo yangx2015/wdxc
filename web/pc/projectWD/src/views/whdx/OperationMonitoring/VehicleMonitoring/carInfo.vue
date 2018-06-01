@@ -2,14 +2,30 @@
     <div>
         <component :is="componentName"></component>
         <div style="position: absolute;z-index: 1000000;margin-top: 20%" v-if="car != null">
-            <Button type="success" @click="setControl('12','1-10')" icon="camera">前摄像头拍照</Button><br><br>
-            <Button type="success" @click="setControl('12','2-10')" icon="camera">后摄像头拍照</Button><br><br>
-            <Button type="success" @click="setControl('12','0-10')" icon="camera">前后摄像头拍照</Button><br><br>
-            <Button type="success" @click="setControl('11','1-10')" icon="ios-videocam">前摄像头视频</Button><br><br>
-            <Button type="success" @click="setControl('11','2-10')" icon="ios-videocam">后摄像头视频</Button><br><br>
-            <Button type="success" @click="setControl('11','0-10')" icon="ios-videocam">前后摄像头视频</Button><br><br>
-            <Button type="success" @click="showFance" icon="qr-scanner">电子围栏</Button><br><br>
-            <Button type="success" @click="showPathHistory" icon="pull-request">历史轨迹</Button>
+            <Tooltip content="前摄像头拍照" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="后摄像头拍照" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="前后摄像头拍照" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="前摄像头视频" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="后摄像头视频" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="前后摄像头视频" placement="right">
+                <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="电子围栏" placement="right">
+                <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button>
+            </Tooltip><br><br>
+            <Tooltip content="历史轨迹" placement="right">
+                <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
+            </Tooltip>
         </div>
         <Modal v-model="photo.showModal" width="1000" height="800"
                :closable='false'
