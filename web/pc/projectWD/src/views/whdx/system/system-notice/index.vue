@@ -18,6 +18,7 @@
 						<div class="body-r-1 inputSty">
 							<Input v-model="form.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 							<Input v-model="form.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getPageData()">

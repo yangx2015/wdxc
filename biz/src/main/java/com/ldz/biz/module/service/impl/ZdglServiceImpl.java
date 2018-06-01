@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.sys.base.LimitedCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.exception.RuntimeCheck;
 
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 @Service
@@ -95,6 +97,20 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         return result;
     }
 
+
+    @Override
+    public boolean fillPagerCondition(LimitedCondition condition){
+        String cphLike = getRequestParamterAsString("cphLike");
+        if (StringUtils.isNotEmpty(cphLike)){
+            List<ClCl> carList = clService.findLike(ClCl.InnerColumn.cph,cphLike);
+            if (CollectionUtils.isEmpty(carList)){
+                return false;
+            }
+            List<String> zdbhs = carList.stream().map(ClCl::getZdbh).collect(Collectors.toList());
+            condition.in(ClZdgl.InnerColumn.zdbh,zdbhs);
+        }
+        return true;
+    }
     /**
      * 自定义分页的对象
      * @param resultPage
