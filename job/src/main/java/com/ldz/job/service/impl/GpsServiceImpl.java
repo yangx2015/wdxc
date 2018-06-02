@@ -35,8 +35,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
-  
-  
+
+
 
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 	Logger accessLog = LoggerFactory.getLogger("access_info");
@@ -44,7 +44,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	@Autowired
 	private ClGpsMapper entityMapper;
 	@Autowired
-	private RedisTemplateUtil redis; 
+	private RedisTemplateUtil redis;
 	@Autowired
 	private ClyyMapper clyymapper;
 	@Autowired
@@ -70,7 +70,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public void InsetRedisToDb(String zdbh) {
 
 		/*redis.keys(ClGps.class.getSimpleName()+"*");*/
-		
+
 		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
 		if (bean != null) {
 			ClGps object = JsonUtil.toBean(bean, ClGps.class);
@@ -91,30 +91,30 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				list.add(gpssss);
 
 			}
-			
+
 			clgpslsMapper.insertList(list);
 
 			//将集合按照100个拆分(鹰眼批量上传点位规则)
-			List<List<ClGpsLs>> splitList = splitList(list,100);
-			
-			for (List<ClGpsLs> list2 : splitList) {
-				
-				if (CollectionUtils.isNotEmpty(list2)) {
-					try {
-						AddPointResponse addPoints = GuiJIApi.addPoints(changeModel(list2), GuiJIApi.addPointsURL);
-						accessLog.debug("成功上传鹰眼的点位:" + list2 + "状态为:" + addPoints);
-					} catch (Exception e) {
-						errorLog.error("上传鹰眼失败", e);
-						continue;
-					}
-					
-				}
-			}
-			
-			
-			
-			
-		
+//			List<List<ClGpsLs>> splitList = splitList(list,100);
+//
+//			for (List<ClGpsLs> list2 : splitList) {
+//
+//				if (CollectionUtils.isNotEmpty(list2)) {
+//					try {
+//						AddPointResponse addPoints = GuiJIApi.addPoints(changeModel(list2), GuiJIApi.addPointsURL);
+//						accessLog.debug("成功上传鹰眼的点位:" + list2 + "状态为:" + addPoints);
+//					} catch (Exception e) {
+//						errorLog.error("上传鹰眼失败", e);
+//						continue;
+//					}
+//
+//				}
+//			}
+
+
+
+
+
 		}
 	}
 
@@ -143,10 +143,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	public void guiJiJiuPian(String zdbh) {
 
 		long endTiem = System.currentTimeMillis();
-		
+
 		//6小时前
 		long startTime = endTiem - (21600000);
-        
+
 		TrackJiuPian guijis = new TrackJiuPian();
 		guijis.setAk(GuiJIApi.AK);
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
@@ -162,11 +162,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
 		List<Point> points2 = points.getPoints();
 		if (CollectionUtils.isNotEmpty(points2)) {
-			
+
 			System.out.println(points2);
-			
+
 			List<Clyy>  yyList= new ArrayList<>();
-			
+
 			for (Point point : points2) {
 				Clyy clyy  = new Clyy();
 				clyy.setDirection(point.getDirection()+"");
@@ -178,7 +178,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				clyy.setZdbh(zdbh);
 				yyList.add(clyy);
 			}
-			
+
 			clyymapper.insertList(yyList);
 
 		} else {
@@ -210,9 +210,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		  String format = simpleDateFormat.format(date);
 		  return  format;
 	}
-	
-	
-	
+
+
+
 	public static void main(String[] args) {
 		List<ClGpsLs> list = new ArrayList<>();
 		for (int i = 0; i <9; i++) {
@@ -221,9 +221,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			list.add(clGpsLs);
 		}
 		List<List<ClGpsLs>> splitList = splitList(list,100);
-		
+
 		System.out.println(splitList.get(0).size());
-		
-		
+
+
 	}
 }
