@@ -16,6 +16,7 @@ const app = {
     	socketAllCar:[],//监控数据
         sendhbsp:'',
         sendzp:'',
+        sendsp:'',
     	loadingType:false,
     	loading:{
     		size:55,
@@ -63,6 +64,9 @@ const app = {
         },
         addSendZp(state,data){
             state.sendzp = data;
+        },
+        addSendsp(state,data){
+            state.sendsp = data;
         },
     	AdddictMap(state,data){
     		state.dictMap = data

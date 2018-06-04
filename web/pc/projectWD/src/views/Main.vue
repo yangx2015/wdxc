@@ -238,8 +238,8 @@
 			        stompClient.subscribe('/topic/sendzp',  function(data) { //订阅消息
 			            v.$store.commit('addSendZp',data.body)
 			        });
-			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-			            v.$store.commit('addSendhbsp',data.body)
+			        stompClient.subscribe('/topic/sendsp',  function(data) { //订阅消息
+			            v.$store.commit('addSendsp',data.body)
 			        });
 			    });
 			},

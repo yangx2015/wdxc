@@ -88,7 +88,7 @@
         },
         computed: {
             GetSendhbsp() {
-                return this.$store.state.app.sendhbsp
+                return this.$store.state.app.sendsp
             },
             GetSendZp() {
                 return this.$store.state.app.sendzp
