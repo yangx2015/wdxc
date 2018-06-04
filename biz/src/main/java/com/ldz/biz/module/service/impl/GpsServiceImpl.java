@@ -196,9 +196,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		      websocket.convertAndSend("/topic/sendgps",socket);
 		      return ApiResponse.success("经纬度为-1的点位事件存储成功,并推送给前端"+JsonUtil.toJson(socket));
 			}
-		    if (StringUtils.isEmpty(bean)) {
-				return ApiResponse.fail(gpsinfo.getDeviceId()+"初始化失败该设备没有历史定位");
-			}
+//		    if (StringUtils.isEmpty(bean)) {
+//				return ApiResponse.fail(gpsinfo.getDeviceId()+"初始化失败该设备没有历史定位");
+//			}
 		}
 
 	 ClGps entity = changeCoordinates(gpsinfo);
