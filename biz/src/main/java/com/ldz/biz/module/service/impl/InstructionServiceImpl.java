@@ -38,7 +38,7 @@ public class InstructionServiceImpl  implements InstructionService {
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 		String postEntity = JsonUtil.toJson(info);
-		String key = "sendInstruction:"+info.getDeviceId()+"-";
+		String key = "sendInstruction-"+info.getDeviceId()+"-";
 		if ("12".equals(info.getCmdType())){
 		    key += "photo";
         }else if ("11".equals(info.getCmdType())){
