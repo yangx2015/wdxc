@@ -38,7 +38,12 @@ public class InstructionServiceImpl  implements InstructionService {
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 		String postEntity = JsonUtil.toJson(info);
-		String key = "sendInstruction:"+info.getDeviceId()+"-" + info.getCmdType()+"-" +info.getCmdParams();
+		String key = "sendInstruction:"+info.getDeviceId()+"-";
+		if ("11".equals(info.getCmdType())){
+		    key += "photo";
+        }else if ("12".equals(info.getCmdType())){
+		    key += "video";
+        }
 		if (redisTemplate.hasKey(key)){
 			return ApiResponse.fail("指令发送过于频繁");
 		}
