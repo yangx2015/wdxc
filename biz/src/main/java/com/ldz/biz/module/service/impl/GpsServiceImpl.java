@@ -281,9 +281,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 		ClGps clGps = new ClGps();
 		if (entity.getLatitude() != null) {
+			if ("-1".equals(entity.getLatitude()))return clGps;
 			clGps.setWd(new BigDecimal(entity.getLatitude()));
 		}
 		if (entity.getLongitude() != null) {
+			if ("-1".equals(entity.getLongitude()))return clGps;
 			clGps.setJd(new BigDecimal(entity.getLongitude()));
 		}
 		// 设备记录时间
