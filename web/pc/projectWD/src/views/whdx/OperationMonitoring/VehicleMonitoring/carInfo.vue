@@ -37,7 +37,7 @@
                 <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
             </div>
             <div slot='footer' style="text-align: center;">
-                <Button type="primary" @click="photo.showModal = false">关闭</Button>
+                <Button type="primary" @click="closePhoto">关闭</Button>
             </div>
         </Modal>
         <Modal v-model="video.showModal" width="1000" height="800"
@@ -50,7 +50,7 @@
                 <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%"></video>
             </div>
             <div slot='footer' style="text-align: center;">
-                <Button type="primary" @click="video.showModal = false">关闭</Button>
+                <Button type="primary" @click="closeVideo">关闭</Button>
             </div>
         </Modal>
     </div>
@@ -107,6 +107,14 @@
         mounted(){
         },
         methods:{
+            closePhoto(){
+                this.photo.showModal = false
+                this.resetPhotoCount();
+            },
+            closeVideo(){
+                this.video.showModal = false
+                this.resetVideoCount();
+            },
             countVideo(){
                 this.video.sec--;
                 this.video.percent = this.video.sec*100 / this.video.totalSec;
@@ -170,11 +178,13 @@
             resetPhotoCount(){
                 this.photo.showModal = false;
                 this.photo.sec = this.photo.totalSec;
+                this.photo.src = '';
                 this.photo.percent = 100;
             },
             resetVideoCount(){
                 this.video.showModal = false;
                 this.video.sec = this.video.totalSec;
+                this.video.src = '';
                 this.video.percent = 100;
             },
             stopPhotoCount(){

@@ -2,6 +2,7 @@ package com.ldz.biz.module.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,10 +37,13 @@ public class InstructionServiceImpl  implements InstructionService {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
-
-
-
 		String postEntity = JsonUtil.toJson(info);
+		String key = info.getDeviceId() + info.getCmdType()+info.getCmd();
+		if (redisTemplate.hasKey(key)){
+			return ApiResponse.fail("指令发送过于频繁");
+		}
+		redisTemplate.boundValueOps(key).expire(1, TimeUnit.MINUTES);
+
 		String result = "";
 		ApiResponse<String> apiResponse =null;
 		try {

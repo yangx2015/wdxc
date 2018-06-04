@@ -192,7 +192,7 @@
         		this.compName = 'pass'
         	},
         	sco(){
-    		//数据推送
+                //数据推送
 				var v = this
 			/**
 		     * 建立成功的回调函数
