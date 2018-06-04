@@ -30,7 +30,7 @@
         <Modal v-model="photo.showModal" width="1000" height="800"
                :closable='false'
                :mask-closable="false" title="预览">
-            <div style="width:100%;height: 100%;text-align: center;padding-top: 10%">
+            <div style="width:100%;height: 100%;text-align: center;">
                 <i-circle v-if="photo.src == ''" :percent="photo.percent">
                     <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
                 </i-circle>
@@ -43,7 +43,7 @@
         <Modal v-model="video.showModal" width="1000" height="800"
                :closable='false'
                :mask-closable="false" title="预览">
-            <div style="width:100%;height: 100%;text-align: center;padding-top: 10%">
+            <div style="width:100%;height: 100%;text-align: center;">
                 <i-circle v-if="video.src == ''" :percent="video.percent">
                     <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
                 </i-circle>
