@@ -23,4 +23,6 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
     ApiResponse<List<ClZdgl>> unboundList();
     //获取设备暂时
 	ApiResponse<Map<String, Integer>> getzdxc();
+
+    ApiResponse<String> getVersionInfo(String deviceId);
 }

@@ -97,9 +97,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			eventBus.post(new SendGpsEvent(gpsinfo));
 		}
 
+		saveVersionInfoToRedis(gpsinfo);
+
 		ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
 		sbyxsjjl(gpsinfo, seleByZdbh);
 		return justDoIt(gpsinfo,seleByZdbh);
+	}
+
+	private void saveVersionInfoToRedis(GpsInfo gpsInfo){
+		if (StringUtils.isEmpty(gpsInfo.getCmdParams()) || !gpsInfo.getCmdParams().contains("versionCode"))return;
+		Map<String,Object> map = JsonUtil.toMap(gpsInfo.getCmdParams());
+		if (map == null)return;
+		if (!map.containsKey("versionCode") || !map.containsKey("versionName"))return;
+		String versionCode = map.get("versionCode").toString();
+		String versionName = map.get("versionName").toString();
+		redis.boundValueOps("versionInfo-"+gpsInfo.getDeviceId()).set(versionCode+"-"+versionName);
 	}
 
 	@Subscribe

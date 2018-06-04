@@ -59,4 +59,8 @@ public class ZdCtrl extends BaseController<ClZdgl,String> {
     	return service.getzdxc();
     }
 
+    @RequestMapping("getVersionInfo")
+    public ApiResponse<String> getVersionInfo(String deviceId){
+        return service.getVersionInfo(deviceId);
+    }
 }

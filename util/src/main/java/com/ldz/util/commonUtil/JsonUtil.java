@@ -54,8 +54,14 @@ public class JsonUtil {
         }
         return null;
     }
-    public static Map<String,Object> toMap(String s){
-//        return mapper.readValue(s,mapper)
+    public static Map toMap(String s){
+        Map map = null;
+        try {
+            map = mapper.readValue(s, Map.class);
+            return map;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 }

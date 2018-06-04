@@ -24,6 +24,11 @@
 								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
 							</FormItem>
 						</Col>
+						<Col span="24">
+							<FormItem label='当前版本:'>
+								<Input type="text" v-model="versionInfo" placeholder="..." readonly></Input>
+							</FormItem>
+						</Col>
 					</Row>
 				</Form>
 			</div>
@@ -45,6 +50,7 @@
 				dataRead:true,
 				showModal: true,
                 mesF:false,
+				versionInfo:'',
 				updateMode:'single',
 				form: {
                     zdbh:'',//终端编号
@@ -59,6 +65,7 @@
 		created(){
 		    if (this.$parent.choosedRow){
                 this.form.zdbh = this.$parent.choosedRow.zdbh;
+                this.getVersionInfo();
 			}
 		    this.updateMode = this.$parent.updateMode;
 		},
@@ -80,6 +87,13 @@
 			},
 			close(){
 		        this.$parent.componentName = '';
+			},
+			getVersionInfo(deviceId){
+			    let v = this;
+                v.$http.get(this.apis.SBZDDZ.getVersionInfo,{params:{deviceId:this.form.zdbh}}).then((res) =>{
+                    this.versionInfo = res.message;
+                }).catch((error) =>{
+                })
 			}
 
 		}
