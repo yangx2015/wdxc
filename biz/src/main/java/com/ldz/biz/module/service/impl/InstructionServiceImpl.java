@@ -26,13 +26,13 @@ public class InstructionServiceImpl  implements InstructionService {
 	private ZdglService service;
     @Autowired
     private RedisTemplateUtil redisTemplate;
-	
+
 	@Value("${ticserver.url}")
     private String url;
-	
 
 
-	
+
+
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -47,7 +47,9 @@ public class InstructionServiceImpl  implements InstructionService {
 		if (redisTemplate.hasKey(key)){
 			return ApiResponse.fail("指令发送过于频繁");
 		}
-        redisTemplate.boundValueOps(key).set("", 1, TimeUnit.MINUTES);
+		if ("11".equals(info.getCmdType()) || "12".equals(info.getCmdType())){
+			redisTemplate.boundValueOps(key).set("", 1, TimeUnit.MINUTES);
+		}
 
 
 		String result = "";
@@ -57,7 +59,7 @@ public class InstructionServiceImpl  implements InstructionService {
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
-			
+
 			if (apiResponse.getCode()!=200) {
 				return apiResponse;
 			}
@@ -79,7 +81,7 @@ public class InstructionServiceImpl  implements InstructionService {
 				redisTemplate.boundListOps("ZP"+info.getDeviceId()).leftPush(results);
 				return apiResponse;
 			}
-			
+
 			ClZdgl clzd = mapper.selectByPrimaryKey(info.getDeviceId());
 			//急加速灵敏度设置
 			if (info.getCmdType().equals("02")) {
@@ -111,8 +113,8 @@ public class InstructionServiceImpl  implements InstructionService {
 				service.update(clzd);
 				return apiResponse;
 			}
-			
-			
+
+
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
