@@ -50,8 +50,6 @@ public class InstructionServiceImpl  implements InstructionService {
         redisTemplate.boundValueOps(key).set("", 1, TimeUnit.MINUTES);
 
 
-        redisTemplate.boundValueOps(key).set(null,1,TimeUnit.SECONDS);
-
 		String result = "";
 		ApiResponse<String> apiResponse =null;
 		try {
