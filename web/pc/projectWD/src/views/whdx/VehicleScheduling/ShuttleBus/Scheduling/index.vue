@@ -223,15 +223,15 @@
 			},
 			getmess(){
 				var v = this
-				console.log('排班数据2')
+				log('排班数据2')
 				//线路数据
 				this.$http.post(this.apis.XLPBXX.QUERY,{"clcx":"20","date2":v.giveTime,'lulx':'20'}).then((res) =>{
-					console.log('排班数据2',res)
+					log('排班数据2',res)
 					v.tableData = res.result
 				}).then((res) =>{
 					v.SpinShow = false;
 				}).catch((err) =>{
-					console.log('bug')
+					log('bug')
 				})
 			},
         	changeClick(){

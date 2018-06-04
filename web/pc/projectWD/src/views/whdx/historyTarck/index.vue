@@ -493,7 +493,7 @@
              //        dataType:'JSONP',
 			// 		crossDomain:true,
              //        success:function(data){
-             //            console.log(data);
+             //            log(data);
              //            if (data.status === 0 && data.points){
              //                v.stationList = data.points;
              //                for(let r of v.stationList){

@@ -86,7 +86,7 @@
                 var v = this
                 this.$http.post(this.apis.ORDER.DFP,{'cllx':2030,'zkl':this.mess.zkl}).then((res) =>{
                     if(res.code ==200){
-                        console.log('******************',res)
+                        log('******************',res)
                         v.data1 = res.result
 
                     }
@@ -130,7 +130,7 @@
             },
             selectionClick(event){
                 this.seleList = event
-                console.log('*************************',event)
+                log('*************************',event)
             }
         }
     }

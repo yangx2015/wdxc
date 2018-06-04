@@ -203,7 +203,7 @@
 		     * 服务器有消息返回的回调函数
 		     */
 			    v.socket.onmessage = function(e) {
-			        // log('message', e.data);
+                    // log('message', e.data);
 			    };
 		
 		    /**

@@ -138,7 +138,7 @@
                             time = 7
                         }
                         v.$store.commit('echChanged',{'cph':params.name,'time':time})
-                        console.log('-**---------------------**-',params)
+                        log('-**---------------------**-',params)
                     });
                     window.addEventListener('resize', function() {
                         dataSourceBar.resize();

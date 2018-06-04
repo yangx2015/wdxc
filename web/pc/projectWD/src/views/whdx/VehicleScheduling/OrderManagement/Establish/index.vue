@@ -281,7 +281,7 @@
 			},
 			//表单数据提交
 			AddNewlist(){
-                console.log(this.formItem)
+                log(this.formItem)
                 // if (this.treeValue.length === 0){
                  //    this.$Message.error('请选择机构');
                  //    return;

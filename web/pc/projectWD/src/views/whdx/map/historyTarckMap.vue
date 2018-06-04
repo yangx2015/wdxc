@@ -335,9 +335,9 @@
 						 //给chart补充完数据后，再开启该方法
 						 this.movingChartOptions.animation = false;
 						 //更新chart移动轨迹
-                        console.log('index');
-                        console.log(this.playAndStopBtnGroup.playIndex);
-                        console.log(this.speedList[this.playAndStopBtnGroup.playIndex][0]);
+                        log('index');
+                        log(this.playAndStopBtnGroup.playIndex);
+                        log(this.speedList[this.playAndStopBtnGroup.playIndex][0]);
                         this.movingChartOptions.xAxis.axisPointer.value = this.speedList[this.playAndStopBtnGroup.playIndex][0];
 						 //重置chart属性来实现自动移动
 						 this.movingChart.setOption(this.movingChartOptions);

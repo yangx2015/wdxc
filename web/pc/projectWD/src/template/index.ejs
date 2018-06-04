@@ -10,12 +10,15 @@
 	<link rel="stylesheet" href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" />
 
     <script type="application/javascript">
+        window.console.log = function(){
+
+        };
         function log(t,s){
-            // return;
+            return;
             if (s){
-                console.log(t,s);
+                log(t,s);
             }else{
-                console.log(t);
+                log(t);
             }
         }
     </script>

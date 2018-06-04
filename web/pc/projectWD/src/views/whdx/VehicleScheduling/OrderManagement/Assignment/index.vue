@@ -279,7 +279,7 @@
 						}
                         v.jrpd = res.result
 
-                   		console.log('派单****',res.result)
+                   		log('派单****',res.result)
                     }
                 }).catch(()=>{
 
@@ -294,7 +294,7 @@
                     if(res.code == 200){
 						v.drvlist = res.result
 					}
-					console.log(res)
+					log(res)
                 }).catch(()=>{
 
                 })

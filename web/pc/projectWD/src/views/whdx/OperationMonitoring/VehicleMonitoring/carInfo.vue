@@ -69,6 +69,7 @@
                 componentName:'',
                 SpinShow:false,
                 car:'',
+                taskId:'',
                 video:{
                     showModal:false,
                     src:'',
@@ -180,23 +181,30 @@
                 this.photo.sec = this.photo.totalSec;
                 this.photo.src = '';
                 this.photo.percent = 100;
+                this.taskId = '';
             },
             resetVideoCount(){
                 this.video.showModal = false;
                 this.video.sec = this.video.totalSec;
                 this.video.src = '';
                 this.video.percent = 100;
+                this.taskId = '';
             },
             stopPhotoCount(){
                 this.photo.sec = this.photo.totalSec;
                 this.photo.percent = 100;
+                this.taskId = '';
             },
             stopVideoCount(){
                 this.video.sec = this.video.totalSec;
                 this.video.percent = 100;
+                this.taskId = '';
             },
             onPhotoResult(r){
                 let m = JSON.parse(r);
+                if (m.bj != this.taskId){
+                    return;
+                }
                 this.$Message.success("拍摄成功!")
                 this.photo.src = m.url;
                 this.photo.showModal = true;
@@ -204,6 +212,9 @@
             },
             onVideoResult(r){
                 let m = JSON.parse(r);
+                if (m.bj != this.taskId){
+                    return;
+                }
                 this.wait = false;
                 this.$Message.success("拍摄成功!")
                 this.video.src = m.url;
@@ -218,6 +229,7 @@
             },
             close(){
                 this.showImgModal = false;
+                this.taskId = '';
             },
             save(){
                 this.SpinShow = true;
@@ -247,8 +259,7 @@
                     this.SpinShow = false;
                     if (res.code === 200){
                         this.$Message.success("发送成功!")
-                        this.bj = res.result;
-                        console.log(type);
+                        this.taskId = res.result;
                         if (type == '12'){
                             this.photo.showModal = true;
                             this.countPhoto();
@@ -257,25 +268,7 @@
                             this.countVideo();
                         }
                     }else{
-                        this.$Message.error(res.message)
-                    }
-                })
-            },
-            checkImage(bh){
-                let params = {
-                    bj:this.bj,
-                }
-                this.$http.post(this.apis.CLOUD.QUERY,params).then((res) =>{
-                    if (res.code === 200 && res.page.list && res.page.list.length > 0){
-                        this.imgSrc = res.page.list[0].url;
-                    }else{
-                        clearTimeout();
-                        let parentComponentName = this.$parent.componentName;
-                        if (this.$route.path == 'OperationMonitoring/VehicleMonitoring' && parentComponentName == 'carInfo'){
-                            setTimeout(()=>{
-                                this.checkImage()
-                            },5000)
-                        }
+                        this.$Message.error(res ? res.message:"网络异常")
                     }
                 })
             },
