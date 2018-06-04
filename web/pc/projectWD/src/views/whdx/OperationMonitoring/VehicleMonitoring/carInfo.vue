@@ -47,7 +47,7 @@
                 <i-circle v-if="video.src == ''" :percent="video.percent">
                     <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
                 </i-circle>
-                <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%"></video>
+                <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%" controls></video>
             </div>
             <div slot='footer' style="text-align: center;">
                 <Button type="primary" @click="closeVideo">关闭</Button>
