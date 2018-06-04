@@ -159,7 +159,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 						log.info("拍摄视频成功,并推送至前端"+JsonUtil.toJson(clSpk));
 						Long remove = boundListOpsSp.remove(1, index2);
 						log.info("redis中移除"+"SP"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
-						String key = entity.getDeviceId()+entity.getCmdType()+entity.getCmd();
+						String key =  "sendInstruction:"+entity.getDeviceId()+"-" + entity.getCmdType()+"-" +entity.getCmdParams();
 						redisutils.delete(key);
 						return ApiResponse.success();
 					}

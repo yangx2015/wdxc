@@ -38,11 +38,11 @@ public class InstructionServiceImpl  implements InstructionService {
 	@Override
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 		String postEntity = JsonUtil.toJson(info);
-		String key = info.getDeviceId() + info.getCmdType()+info.getCmd();
+		String key = "sendInstruction:"+info.getDeviceId()+"-" + info.getCmdType()+"-" +info.getCmdParams();
 		if (redisTemplate.hasKey(key)){
 			return ApiResponse.fail("指令发送过于频繁");
 		}
-		redisTemplate.boundValueOps(key).expire(1, TimeUnit.MINUTES);
+        redisTemplate.boundValueOps(key).set("", 1, TimeUnit.MINUTES);
 
 		String result = "";
 		ApiResponse<String> apiResponse =null;
