@@ -39,15 +39,18 @@ public class InstructionServiceImpl  implements InstructionService {
 	public ApiResponse<String> sendinstruction(GpsInfo info) {
 		String postEntity = JsonUtil.toJson(info);
 		String key = "sendInstruction-"+info.getDeviceId()+"-";
+		boolean checkRedis = false;
 		if ("12".equals(info.getCmdType())){
 		    key += "photo";
+			checkRedis = true;
         }else if ("11".equals(info.getCmdType())){
 		    key += "video";
+			checkRedis = true;
         }
-		if (redisTemplate.hasKey(key)){
-			return ApiResponse.fail("指令发送过于频繁");
-		}
-		if ("11".equals(info.getCmdType()) || "12".equals(info.getCmdType())){
+		if (checkRedis){
+			if (redisTemplate.hasKey(key)){
+				return ApiResponse.fail("指令发送过于频繁");
+			}
 			redisTemplate.boundValueOps(key).set("", 1, TimeUnit.MINUTES);
 		}
 
