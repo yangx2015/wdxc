@@ -160,7 +160,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk,String> implements Spk
 						Long remove = boundListOpsSp.remove(1, index2);
 						log.info("redis中移除"+"SP"+entity.getDeviceId()+":"+remove+"个元素为:"+entity.getTaskId());
 						String key =  "sendInstruction:"+entity.getDeviceId()+"-" + entity.getCmdType()+"-" +entity.getCmdParams();
-						redisutils.delete(key);
+						redisutils.boundValueOps(key).set(null,1,TimeUnit.SECONDS);
 						return ApiResponse.success();
 					}
 					
