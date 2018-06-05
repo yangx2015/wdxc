@@ -57,7 +57,8 @@
                 sjBM:'ZDCLK0038',
                 sjDIC:[],
                 findMess:{
-                    sjlxIn:'10,20,30,40'
+                    sjlxIn:'10,20,30,40',
+                    cjsjGte:new Date().format("yyyy-MM-dd"),
                 }
             }
         },

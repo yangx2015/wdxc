@@ -7,6 +7,7 @@ import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
@@ -107,6 +108,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if(clZds!=null){
             SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
             condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+            condition.gte(ClClyxjl.InnerColumn.cjsj,DateUtils.getToday() + " 00:00:00");
             condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
             if(xlzds!=null&&xlzds.size()>0){
