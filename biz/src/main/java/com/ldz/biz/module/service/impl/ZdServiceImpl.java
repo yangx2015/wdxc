@@ -127,7 +127,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                         while (iter.hasNext()) {
                             ClClyxjl item = iter.next();
                             //判断车辆是否在当前站点
-                           if(StringUtils.equals(item.getZdbh(),clZd.getZdId())){
+                           if(StringUtils.equals(item.getZdId(),clZd.getZdId())){
                                ClClyxjlModel model=new ClClyxjlModel();
                                model.setCphm(item.getCphm());//车牌号码
                                model.setCjsj(item.getCjsj());//创建时间
