@@ -274,7 +274,7 @@ export default {
                 if (v.getLineInfo){
                     setTimeout(()=>{
                         v.getXBline(id,name)
-                    },1000)
+                    },2000)
                 }
 			})
     		v.lineName = name
