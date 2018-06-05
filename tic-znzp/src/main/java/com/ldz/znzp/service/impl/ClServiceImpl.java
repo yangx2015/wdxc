@@ -189,6 +189,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         record.setZdbh(currentStation.getRouteOrder());
         record.setZdmc(currentStation.getMc());
         record.setZdId(currentStation.getId());
+        record.setCjsj(new Date());
         record.setJd(clGps.getBdjd());
         record.setWd(clGps.getBdwd());
         record.setZt(zt);

@@ -215,6 +215,7 @@ export default {
         	mapheight:{
         		height:''
         	},
+			getLineInfo:true,
         	lineName:'',
         	lineID:'',
         	XBlineName:[],
@@ -261,13 +262,20 @@ export default {
     		var v = this
     		this.$http.post(this.apis.XL.QUERY,{'lx':30}).then((res) =>{
 				v.XBlineName = res.page.list
-				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
+				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc);
+
 			})
     	},
     	getXBline(id,name){//校巴线路
     		var v = this
     		this.$http.post(this.apis.XBDT.QUERY,{"xlId":id}).then((res) =>{
 				v.XBline = res.result
+                clearTimeout();
+                if (v.getLineInfo){
+                    setTimeout(()=>{
+                        v.getXBline(id,name)
+                    },1000)
+                }
 			})
     		v.lineName = name
     		v.lineID = id
