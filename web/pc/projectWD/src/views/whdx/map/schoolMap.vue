@@ -43,13 +43,6 @@
 		name:'',
 		data(){
 			return{
-				// let host = "127.0.0.1"
-			    host : "192.168.31.180",
-			    socket : new SockJS("http://"+"47.98.39.45:8080"+"/biz/gps"),
-//			    socket : new SockJS("http://"+"192.168.31.228"+"/gps"),
-			    
-			    
-				scoketMess:[],
 				map:'',
 				mapcenter:{
 					lng: 114.368383,
@@ -75,9 +68,9 @@
                         new BMap.Point(n[i].bdjd,n[i].bdwd)
                     )
                 }
-				setTimeout(function () {
-					v.map.setViewport(v.zoomDot);
-				},50)
+				// setTimeout(function () {
+				// 	v.map.setViewport(v.zoomDot);
+				// },50)
 
 			},
 		},
@@ -89,7 +82,6 @@
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
 		  	this.mapCenterF()
-//		  	this.sco()
 		},
 		methods:{
 			//撒点
@@ -153,41 +145,6 @@
                         return 'http://47.98.39.45:9092/icon/running.png'
                 }
             },
-			sco(){//数据推送
-				var v = this
-			/**
-		     * 建立成功的回调函数
-		     */
-			    v.socket.onopen = function() {
-			    };
-			/**
-		     * 服务器有消息返回的回调函数
-		     */
-			    v.socket.onmessage = function(e) {
-			        log('message', e.data);
-			    };
-		
-		    /**
-		     * websocket链接关闭的回调函数
-		     */
-			    v.socket.onclose = function() {
-			        log('关闭');
-			    };
-		
-			    var stompClient = Stomp.over(v.socket);
-			    stompClient.connect({}, function(frame) {
-			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-			            let jsonMess = JSON.parse(data.body)
-			            v.scoketMess.forEach((item,index) => {
-							if(item.clid==jsonMess.clid){
-								v.scoketMess.splice(index,1)
-							}
-						})
-				        v.scoketMess.push(jsonMess)
-			            v.$store.commit('socketMessAdd',v.scoketMess)
-			        });
-			    });	
-			},
 			//地图级别中心
 			mapCenterF(){
 				var v = this

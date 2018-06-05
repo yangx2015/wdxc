@@ -108,7 +108,11 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if(clZds!=null){
             SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
             condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
-            condition.gte(ClClyxjl.InnerColumn.cjsj,DateUtils.getToday() + " 00:00:00");
+            Date today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            condition.gte(ClClyxjl.InnerColumn.cjsj,today);
             condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
             if(xlzds!=null&&xlzds.size()>0){
@@ -139,7 +143,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                                model.setCjsj(item.getCjsj());
                                model.setZdjl(item.getZdjl());
                                list.add(model);
-                               iter.remove();
+//                               iter.remove();
                             }
                         }
                         clZd.setVehicleList(list);
