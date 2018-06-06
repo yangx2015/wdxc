@@ -116,10 +116,24 @@
                 this.xlIds = this.form.xlIds.split(",");
             }
             this.getXlList();
+            this.getHasXlIds();
 		},
         mounted(){
         },
 		methods: {
+		    getHasXlIds(){
+                this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
+                    if(res.code===200){
+                        var v = this
+                        v.$parent.componentName = ''
+                        v.$parent.getPageData()
+                        this.$Message.success(res.message);
+                        if (this.$parent.choosedRow){
+                            this.getXlIds();
+                        }
+                    }
+                })
+			},
 		    getXlIds(){
                 this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
                     if(res.code===200){

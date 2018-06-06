@@ -21,4 +21,7 @@ public interface ClService extends BaseService<ClCl,String>{
 
 	//获取当前登陆用户获取车辆年审饼图
 	ApiResponse<Map<String, Integer>> getnianshen();
+
+    ApiResponse<String> unbindDevice(String carId);
+    ApiResponse<String> unbindDriver(String carId);
 }

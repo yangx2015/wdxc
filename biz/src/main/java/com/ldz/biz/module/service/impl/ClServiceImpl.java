@@ -374,7 +374,28 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		return apiResponse;
 	}
 
-	 public static int differentDaysByMillisecond(Date date1,Date date2)
+	@Override
+	public ApiResponse<String> unbindDevice(String carId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		car.setZdbh(null);
+		entityMapper.updateByPrimaryKey(car);
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<String> unbindDriver(String carId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		car.setSjxm(null);
+		car.setSjId(null);
+		entityMapper.updateByPrimaryKey(car);
+		return ApiResponse.success();
+	}
+
+	public static int differentDaysByMillisecond(Date date1,Date date2)
 	    {
 	        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
 	        return days;

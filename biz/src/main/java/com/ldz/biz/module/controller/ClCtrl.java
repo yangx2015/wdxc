@@ -36,6 +36,15 @@ public class ClCtrl extends BaseController<ClCl, String> {
 		return ApiResponse.success(carList);
 	}
 
+
+	@RequestMapping("unbindDevice")
+	public ApiResponse<String> unbindDevice(String carId){
+		return clservice.unbindDevice(carId);
+	}
+	@RequestMapping("unbindDriver")
+	public ApiResponse<String> unbindDriver(String carId){
+		return clservice.unbindDriver(carId);
+	}
 	@Override
 	protected BaseService<ClCl, String> getBaseService() {
 		return clservice;

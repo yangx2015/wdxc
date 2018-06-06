@@ -175,6 +175,8 @@ module.exports = {
         GPS_HITSOR_GPS:'/api/clsbyxsjjl/historygps',
         GPS_HITSOR_GPS_BD:'/api/clsbyxsjjl/baiduGuiJi',
         nianshen:'/api/cl/nianshen',
+        unbindDevice:'/api/cl/unbindDevice',
+        unbindDriver:'/api/cl/unbindDriver',
     },
     XL:{
         QUERY: '/api/xl/pager',
