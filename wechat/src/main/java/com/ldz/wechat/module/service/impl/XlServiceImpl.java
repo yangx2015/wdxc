@@ -60,6 +60,11 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		List<DdClModel> clZds=entityMapper.getBySiteVehicleList(xlId);
 		if(clZds!=null){
 			SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+			Date today = new Date();
+			today.setHours(0);
+			today.setMinutes(0);
+			today.setSeconds(0);
+			condition.gte(ClClyxjl.InnerColumn.cjsj,today);
 			condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
 			condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
 			List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
@@ -75,7 +80,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 						while (iter.hasNext()) {
 							ClClyxjl item = iter.next();
 							//判断车辆是否在当前站点
-							if(StringUtils.equals(item.getZdbh(),clZd.getZdId())){
+							if(StringUtils.equals(item.getZdId(),clZd.getZdId())){
 								ClClyxjlModel model=new ClClyxjlModel();
 								model.setCphm(item.getCphm());//车牌号码
 								model.setCjsj(item.getCjsj());//创建时间
@@ -91,7 +96,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 								model.setCjsj(item.getCjsj());
 								model.setZdjl(item.getZdjl());
 								list.add(model);
-								iter.remove();
+//								iter.remove();
 							}
 						}
 						clZd.setVehicleList(list);

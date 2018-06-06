@@ -5,9 +5,11 @@ import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
 import com.ldz.znzp.mapper.ClZnzpMapper;
 import com.ldz.znzp.model.ClZnzp;
+import com.ldz.znzp.model.ClZpXl;
 import com.ldz.znzp.model.SysHdyx;
 import com.ldz.znzp.service.HdService;
 import com.ldz.znzp.service.ZnzpService;
+import com.ldz.znzp.service.ZpXlService;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,8 @@ import java.util.stream.Collectors;
 public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements ZnzpService{
     @Autowired
     private ClZnzpMapper entityMapper;
+    @Autowired
+    private ZpXlService zpXlService;
     @Autowired
     private HdService hdService;
 
@@ -68,5 +72,13 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
             nettyUtil.sendData(channel,map);
         }
         return ApiResponse.success(JsonUtil.toJson(map));
+    }
+
+    @Override
+    public List<ClZnzp> getByXlId(String xlId) {
+        List<ClZpXl> zpXlList = zpXlService.findEq(ClZpXl.InnerColumn.xlId,xlId);
+        List<String> zpIds = zpXlList.stream().map(ClZpXl::getZpId).collect(Collectors.toList());
+        List<ClZnzp> znzps = findIn(ClZnzp.InnerColumn.zdbh,zpIds);
+        return znzps;
     }
 }
