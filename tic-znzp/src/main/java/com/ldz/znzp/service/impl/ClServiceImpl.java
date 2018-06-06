@@ -148,7 +148,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (record == null){
             log.info("没有运行记录");
-            currentStation = findCurrentZd(gps,car,pb);
+            currentStation = findCurrentZd("",gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
             record.setClId(car.getClId());
@@ -171,7 +171,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                     zt = "inStation"; // 进站
                 }
             }else{
-                currentStation = findCurrentZd(gps,car,pb);
+                currentStation = findCurrentZd(record.getZdId(),gps,car,pb);
             }
         }
         if (zt == null){
@@ -243,7 +243,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (distance < currentZd.getFw()){ // 如果在站点范围之内，则这就是当前站点
             return currentZd;
         }else{ // 如果不在站点范围之内，查找最近的站点
-            return findCurrentZd(currentGps,car,pb);
+            return findCurrentZd(currentZdId,currentGps,car,pb);
         }
     }
 
@@ -260,22 +260,22 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ClZd findCurrentZd(Gps currentGps,ClCl car,ClPb pb){
+    public ClZd findCurrentZd(String prvStationId,Gps currentGps,ClCl car,ClPb pb){
         List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
         if (stations.size() == 1)return stations.get(0);
-        ClZd firstSataion = new ClZd();
-        BeanUtils.copyProperties(stations.get(0),firstSataion);
-        firstSataion.setId("fs-"+firstSataion.getId());
-        stations.add(firstSataion);
         Map<String,ClZd> stationMap = stations.stream().collect(Collectors.toMap(ClZd::getId,p->p));
 
         Map<String,Double> distanceMap = new HashMap<>();
+        short maxStationOrder = 0;
         for (ClZd station : stations) {
             Gps gps = new Gps(station.getJd(),station.getWd());
             Double d = DistanceUtil.getShortDistance(currentGps,gps);
             // 如果距离小于站点范围，则直接返回当前站点
             if (d < station.getFw()) return station;
+            if (station.getRouteOrder() > maxStationOrder){
+                maxStationOrder = station.getRouteOrder();
+            }
             distanceMap.put(station.getId(),d);
         }
         List<Map.Entry<String,Double>> entryList = new ArrayList<>(distanceMap.entrySet());
@@ -288,10 +288,20 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         String id1 = entryList.get(1).getKey();
         ClZd station0 = stationMap.get(id0);
         ClZd station1 = stationMap.get(id1);
-        ClZd currentStation = station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
-        if (currentStation.getId().contains("fs-")){
-            currentStation.setId(currentStation.getId().substring(3));
+        ClZd stationB = null;
+        // 如果比对站点包含
+        if (station0.getRouteOrder() > station1.getRouteOrder()){
+            stationB = station0;
+        }else{
+            stationB = station1;
         }
+        if (stationB.getRouteOrder() == maxStationOrder){
+            // 如果上一次站点是最后一个站点，并且状态为到站，则设置当前站点为离线
+            if (prvStationId.equals(stationB.getId())){
+                return stationB;
+            }
+        }
+        ClZd currentStation = station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
 //        zdService.setStationOrders(station0,station1);
         return currentStation;
     }
