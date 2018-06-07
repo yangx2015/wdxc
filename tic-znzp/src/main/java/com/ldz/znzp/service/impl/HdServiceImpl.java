@@ -8,6 +8,7 @@ import com.ldz.znzp.model.SysHdyx;
 import com.ldz.znzp.model.SysYxhdwj;
 import com.ldz.znzp.service.HdService;
 import com.ldz.znzp.util.NettyUtil;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,9 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         SimpleCondition condition = new SimpleCondition(SysHdyx.class);
         condition.lte(SysHdyx.InnerColumn.kssj, new Date());//开始时间
         condition.gte(SysHdyx.InnerColumn.jssj, new Date());//结束时间
-        condition.eq(SysHdyx.InnerColumn.hdlx, "10");//活动类型
+        condition.eq(SysHdyx.InnerColumn.hdlx, "01");//活动类型
         if (StringUtils.isNotEmpty(jgdm)){
-            condition.eq(SysHdyx.InnerColumn.jgdm, jgdm);//活动类型
+            condition.eq(SysHdyx.InnerColumn.jgdm, jgdm);
         }
         List<SysHdyx> list = sysHdyxMapper.selectByExample(condition);
         return list;
@@ -128,5 +129,10 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
             map1.put("method","up-down");
             nettyUtil.sendData(ctx,map1);
         }
+    }
+
+    @Override
+    public void sendActivitys(ChannelHandlerContext ctx, String tid) {
+
     }
 }

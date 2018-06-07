@@ -2,6 +2,7 @@ package com.ldz.znzp.service;
 
 import com.ldz.znzp.base.BaseService;
 import com.ldz.znzp.model.SysHdyx;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
@@ -17,4 +18,6 @@ public interface HdService extends BaseService<SysHdyx,String> {
 
     List<Map<String,String>> convert(List<SysHdyx> list);
     void sendActivityNews(ChannelHandlerContext ctx, String tid);
+
+    void sendActivitys(ChannelHandlerContext ctx,String tid);
 }

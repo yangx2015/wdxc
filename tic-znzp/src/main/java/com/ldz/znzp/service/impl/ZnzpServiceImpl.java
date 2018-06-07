@@ -57,21 +57,12 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         List<String> deviceIds = znzpList.stream().map(ClZnzp::getZdbh).collect(Collectors.toList());
         Map<String,Object> tidChannelMap = nettyUtil.getChannelByTids(deviceIds);
         if (tidChannelMap == null){
-            return ApiResponse.fail("未找到channel");
+//            return ApiResponse.fail("未找到channel");
         }
-        // 获取活动
-        List<SysHdyx> hdyxes = hdService.getHd(jgdm);
-        List<Map<String,String>> urlList = hdService.convert(hdyxes);
-
-        Map<String,Object> map = new HashMap<>();
-        map.put("command","media");
-        map.put("url",urlList);
-        for (Map.Entry<String, Object> entry : tidChannelMap.entrySet()) {
-            map.put("tid",entry.getKey());
-            Channel channel = (Channel) entry.getValue();
-            nettyUtil.sendData(channel,map);
-        }
-        return ApiResponse.success(JsonUtil.toJson(map));
+//        for (Map.Entry<String, Object> entry : tidChannelMap.entrySet()) {
+//            hdService.sendActivityNews(entry.getValue(),entry.getKey());
+//        }
+        return ApiResponse.success();
     }
 
     @Override
