@@ -98,7 +98,7 @@
 				        </div>
 				    </Card>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
@@ -230,7 +230,7 @@ export default {
 	},
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
-			var v = this 
+			var v = this
 //			this.tabmess = newQuestion//异常事件列表
 //			this.getXBline(v.lineID,v.lineName)
 		},
@@ -271,10 +271,15 @@ export default {
     		this.$http.post(this.apis.XBDT.QUERY,{"xlId":id}).then((res) =>{
 				v.XBline = res.result
                 clearTimeout();
+				let path = this.$route.path;
                 if (v.getLineInfo){
-                    setTimeout(()=>{
-                        v.getXBline(id,name)
-                    },2000)
+                    if ('/OperationMonitoring/BusMonitor' === path && v.lineID === id){
+                        setTimeout(()=>{
+                            if ('/OperationMonitoring/BusMonitor' === path && v.lineID === id){
+                                v.getXBline(id,name)
+                            }
+                        },2000)
+                    }
                 }
 			})
     		v.lineName = name
