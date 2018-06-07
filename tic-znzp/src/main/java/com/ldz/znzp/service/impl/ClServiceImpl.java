@@ -72,8 +72,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     @Override
     public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl,ClClyxjl clClyxjl) {
         RuntimeCheck.ifNull(clClyxjl,"未找到车辆运行记录");
-        RuntimeCheck.ifBlank(clClyxjl.getXlId(),"未找到线路");
-        List<ClZnzp> znzps = znzpService.getByXlId(clClyxjl.getXlId());
+        RuntimeCheck.ifBlank(clPb.getXlId(),"未找到线路");
+        List<ClZnzp> znzps = znzpService.getByXlId(clPb.getXlId());
         RuntimeCheck.ifEmpty(znzps,"未找到通道");
         List<String> zpIds = znzps.stream().map(ClZnzp::getZdbh).collect(Collectors.toList());
 
@@ -142,7 +142,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         // 获取车辆运行记录
         // 获取当前站点
-        boolean hasRecord = record != null;
+        boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
         ClZd currentStation = null;
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
