@@ -49,7 +49,6 @@
 		.car{
 			text-align: center;
 			position: absolute;
-			left: 45px;
 			top: -25px;
 			font-size: 22px;
 			color: #ff7800;
