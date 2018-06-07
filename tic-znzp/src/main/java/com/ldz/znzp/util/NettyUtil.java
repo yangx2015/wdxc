@@ -63,6 +63,32 @@ public class NettyUtil {
         }
         return null;
     }
+
+    public Map<String,Object> getAllChannelMap(){
+        Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
+        if (keys.size() == 0)return null;
+        Map<String,Object> tidChannelMap = new HashMap<>();
+        Map<String,Channel> channelMap = new HashMap<>();
+        for (String key : keys) {
+            String[] part = key.split("-");
+            String tid = part[0];
+            String cid = part[1];
+            channelMap.put(cid,null);
+            tidChannelMap.put(tid,cid);
+        }
+        for (Channel channel : IotServer.onlineChannels) {
+            String id = channel.id().asShortText();
+            if (channelMap.containsKey(id)){
+                channelMap.put(id,channel);
+            }
+        }
+        for (Map.Entry<String, Object> entry : tidChannelMap.entrySet()) {
+            String cid = (String) entry.getValue();
+            if (!channelMap.containsKey(cid))continue;
+            tidChannelMap.put(entry.getKey(),channelMap.get(cid));
+        }
+        return tidChannelMap;
+    }
     public Map<String,Object> getChannelByTids(List<String> tids){
         Set<String> keys =  redisDao.keys("*-"+ZnzpOnlineBean.class.getSimpleName());
         if (keys.size() == 0)return null;
@@ -71,6 +97,7 @@ public class NettyUtil {
         for (String key : keys) {
             String[] part = key.split("-");
             String tid = part[0];
+            if (!tids.contains(tid))continue;
             String cid = part[1];
             channelMap.put(cid,null);
             tidChannelMap.put(tid,cid);

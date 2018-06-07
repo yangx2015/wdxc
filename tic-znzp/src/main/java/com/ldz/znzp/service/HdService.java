@@ -19,5 +19,5 @@ public interface HdService extends BaseService<SysHdyx,String> {
     List<Map<String,String>> convert(List<SysHdyx> list);
     void sendActivityNews(ChannelHandlerContext ctx, String tid);
 
-    void sendActivitys(ChannelHandlerContext ctx,String tid);
+    void sendActivitys();
 }

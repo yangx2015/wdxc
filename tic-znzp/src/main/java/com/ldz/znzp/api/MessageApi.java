@@ -10,10 +10,7 @@ import com.ldz.znzp.model.ClCl;
 import com.ldz.znzp.model.ClClyxjl;
 import com.ldz.znzp.model.ClPb;
 import com.ldz.znzp.model.ClXl;
-import com.ldz.znzp.service.ClService;
-import com.ldz.znzp.service.ClyxjlService;
-import com.ldz.znzp.service.XlService;
-import com.ldz.znzp.service.ZnzpService;
+import com.ldz.znzp.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,6 +44,8 @@ public class MessageApi {
 
 	@ Autowired
 	private ZnzpService znzpService;
+	@Autowired
+	private HdService hdService;
 	/**
 	 * 将校巴实时位置信息发送给智能站牌展示。
 	 * 接收到车辆和位置信息后，需要查询当前车辆是在哪条线路上进行运行，确认运营路线，再通过经纬度解析车辆当前运行到哪个站点
@@ -89,7 +88,8 @@ public class MessageApi {
 
 	@RequestMapping(value="/updateMedia", method={RequestMethod.POST})
 	public ApiResponse<String> updateMedia(String jgdm){
-		return znzpService.updateMedia(jgdm);
+		hdService.sendActivitys();
+		return ApiResponse.success();
 	}
 
 	@RequestMapping(value="/led", method={RequestMethod.POST})
