@@ -101,8 +101,8 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
                     if (files.size() != 0){
                         for (SysYxhdwj file : files) {
                             Map<String,String> map=new HashMap<String,String>();
-                            map.put("path",file.getWjlj());
-                            map.put("md5",file.getWjlj());
+                            map.put("path",staticUrl + file.getWjlj());
+                            map.put("md5",staticUrl +file.getWjlj());
                             map.put("size","");
                             map.put("group",hdyx.getWz());
                             mediaList.add(map);
