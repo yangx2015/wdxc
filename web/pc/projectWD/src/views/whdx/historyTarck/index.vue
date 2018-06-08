@@ -82,8 +82,8 @@
 					<div v-show="!showMap" style="width: 100%;height: 500px;text-align: center;padding-top: 30%"><h1>暂无轨迹信息......</h1></div>
 				</Col>
 			</Row>
-			<Row  span="2" v-if="showMap" >
-				<Col>
+			<Row v-if="showMap" >
+				<Col span="2" >
 					<ButtonGroup vertical style="margin-top: 120px">
 						<Button type="primary" shape="circle" icon="play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
 						<Button type="error" shape="circle" icon="stop" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
@@ -91,7 +91,7 @@
 						<Button type="warning" shape="circle" icon="ios-skipbackward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
 					</ButtonGroup>
 				</Col>
-				<Col span="22" v-if="showMap"  style="width: 100%">
+				<Col span="22" v-if="showMap">
 					<div id="trackLineChart" style="width: 90%;height: 400px;"></div>
 				</Col>
 			</Row>
@@ -599,7 +599,7 @@
                             // 使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
                             formatter: function (value, index) {
                                 // 格式化成月/日，只在第一个刻度显示年份
-                                var date = new Date(value);
+                                var date = new Date(value*1000);
                                 let texts = date.format('MM-dd HH:mm');
                                 return texts;
                             }
