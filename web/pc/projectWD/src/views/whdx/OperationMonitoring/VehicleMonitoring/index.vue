@@ -278,6 +278,7 @@ export default {
         onGpsInfo(m){
             let has = false;
             let exist = null;
+            let newCar = {};
             for(let r of this.allCarList){
 			    if (r.zdbh === m.zdbh){
                     exist = r;
@@ -286,15 +287,21 @@ export default {
 			}
             if (exist){
                 let n = this.updateItem(exist,m);
+                newCar = n;
                 let index  = this.allCarList.indexOf(exist);
                 this.allCarList.splice(index,1,n);
 			}else{
                 this.handleItem(m);
+                newCar = m;
                 this.allCarList.push(m);
 			}
             this.classify();
             if (this.choosedCar){
-                this.mapCarList = [this.choosedCar];
+                if (this.choosedCar.zdbh == newCar.zdbh){
+                    this.mapCarList = [newCar];
+				}else{
+                    this.mapCarList = [this.choosedCar];
+				}
             }else{
                 this.mapCarList = this.carArray[this.status];
             }
