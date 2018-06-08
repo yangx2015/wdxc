@@ -34,7 +34,7 @@
                     lng: 114.357527,
                     lat: 30.550822
                 },
-                zoom: 12,
+                zoom: 18,
                 carList: [],
                 zoomDot:[],
                 fancePoints: [
@@ -72,15 +72,20 @@
             update() {
                 var v = this
                 v.carList = v.$parent.mapCarList;
+                v.moveMap();
                 v.showCarPosition();
-                for(var i = 0 ; i<v.carList.length ; i++){
-                    v.zoomDot.push(
-                        new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
-                    )
-                }
-                // setTimeout(function () {
-                //     v.map.setViewport(v.zoomDot);
-                // },50)
+            },
+            moveMap(){
+                var v = this
+                this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                //
+                // v.zoomDot = [];
+                // for(var i = 0 ; i<v.carList.length ; i++){
+                //     v.zoomDot.push(
+                //         new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
+                //     )
+                // }
+                // v.map.setViewport(v.zoomDot);
             },
             init() {
                 this.carList = this.$parent.mapCarList;
@@ -95,7 +100,8 @@
                     this.car = null;
                     this.$refs.carInfoButton.hide();
                 }
-                this.showCarPosition()
+                this.moveMap();
+                this.showCarPosition();
             },
             Buildmap() {
                 var v = this
