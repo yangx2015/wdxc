@@ -131,6 +131,7 @@
             	TreeListStyleF:"text-align: left",
                 componentName:'',
 				choosedRow:null,
+				choosedItem:null,
                 jgdm:'',
             	RootTree:{
             		title:'武汉大学',
@@ -223,6 +224,7 @@
         	},
         	treeClick(event){
                 if(event.length>0){
+                    this.choosedItem = event[0];
 		      		this.treeMess = event[0]
 					this.jgdm = event[0].jgdm;
 					this.gly = event[0].gly;

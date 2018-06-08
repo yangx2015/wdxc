@@ -75,12 +75,12 @@
                 this.edit = true;
 				this.formItem = this.$parent.choosedRow;
 			}else{
-                if (this.$parent.jgdm){
-                    this.formItem.fjgdm = this.$parent.jgdm;
-                    this.formItem.gly = this.$parent.gly;
+                if (this.$parent.choosedItem){
+                    this.formItem.fjgdm = this.$parent.choosedItem.jgdm;
+                    this.formItem.gly = this.$parent.choosedItem.gly;
                 }else{
                     log("请选择父节点")
-				}
+                }
 			}
             this.getOrgPermissionTree();
 			this.getUserList();
@@ -96,7 +96,7 @@
             },
             getOrgPermissionTree(){
                 this.data4 = [];
-                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.fjgdm).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }
