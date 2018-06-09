@@ -1,10 +1,8 @@
 package com.ldz.job.job;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executor;
+import java.util.stream.Collectors;
 
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
@@ -15,9 +13,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ldz.job.mapper.ClClMapper;
-import com.ldz.job.model.ClCl;
+import com.ldz.job.mapper.ClZdglMapper;
+import com.ldz.job.model.ClZdgl;
 import com.ldz.job.service.GpsService;
+import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
 import com.ldz.util.yingyan.GuiJIApi;
 
@@ -33,42 +32,37 @@ import com.ldz.util.yingyan.GuiJIApi;
 @DisallowConcurrentExecution
 public class GpsSaveJob implements Job {
 	Logger errorLog = LoggerFactory.getLogger("error_info");
+	Logger accessLog= LoggerFactory.getLogger("access_info");  
 
 	@Autowired
-	private ClClMapper clclmapper;
+	private ClZdglMapper clzdglmapper;
 	@Autowired
 	private GpsService GpsService;
-	@Autowired
-	private Executor executor;
 	
- 
 	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-	List<String> zdbhs= new ArrayList<>();
 		
-	if (CollectionUtils.isEmpty(zdbhs)) {
-		// 获取所有的终端编号
-		List<ClCl> gpslist = clclmapper.selectAll();
-	
-		//将所有设备上传到百度鹰眼
-		for (ClCl clCl : gpslist) {
-			executor.execute(new Runnable() {
-				@Override
-				public void run() {
-					YyEntity yyEntity = new YyEntity();
-					yyEntity.setAk(GuiJIApi.AK);
-					yyEntity.setEntity_name(clCl.getZdbh());
-					yyEntity.setService_id(GuiJIApi.SERVICE_ID);
-					GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
+		
+		List<ClZdgl> gpslist = clzdglmapper.selectAll();
+	     for (ClZdgl clZdgl : gpslist) {
+			if (StringUtils.isEmpty(clZdgl.getSfyy())) {
+				YyEntity yyEntity = new YyEntity();
+				yyEntity.setAk(GuiJIApi.AK);
+				yyEntity.setEntity_name(clZdgl.getZdbh());
+				yyEntity.setService_id(GuiJIApi.SERVICE_ID);
+				YingyanResponse changeEntity = GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
+				accessLog.debug(changeEntity+"");
+				if (StringUtils.equals(changeEntity.getStatus(), "0")) {
+					clZdgl.setSfyy("已上传鹰眼服务器");
+					clzdglmapper.updateByPrimaryKeySelective(clZdgl);
 				}
-			});
-			if (StringUtils.isNotEmpty(clCl.getZdbh())) {
-				zdbhs.add(clCl.getZdbh());
 			}
+	    	 
 		}
+	     List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());
 	
-	}
+	
 	
 		try {
 			for (String zdbh : zdbhs) {

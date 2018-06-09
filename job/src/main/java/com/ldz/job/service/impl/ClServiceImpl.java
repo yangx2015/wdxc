@@ -37,24 +37,27 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		List<ClCl> allcl = entityMapper.selectAll();
 		for (ClCl clCl : allcl) {
 			Date ccdjrq = clCl.getCcdjrq();
-			if (clCl.getZkl() < 7) {
-				int pareYear = pareYear(ccdjrq);
-				if (pareYear > 6) {
+			if (ccdjrq!=null) {
+				if (clCl.getZkl() < 7) {
+					int pareYear = pareYear(ccdjrq);
+					if (pareYear > 6) {
+						Date paseDate = paseDate(ccdjrq, -1);
+						clCl.setNssj(paseDate);
+						update(clCl);
+					}
+					if (pareYear <= 6) {
+						Date paseDate = paseDate(ccdjrq, pareYear);
+						clCl.setNssj(paseDate);
+						update(clCl);
+					}
+
+				} else {
 					Date paseDate = paseDate(ccdjrq, -1);
 					clCl.setNssj(paseDate);
 					update(clCl);
 				}
-				if (pareYear <= 6) {
-					Date paseDate = paseDate(ccdjrq, pareYear);
-					clCl.setNssj(paseDate);
-					update(clCl);
-				}
-
-			} else {
-				Date paseDate = paseDate(ccdjrq, -1);
-				clCl.setNssj(paseDate);
-				update(clCl);
 			}
+	
 
 		}
 

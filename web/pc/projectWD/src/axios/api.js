@@ -1,7 +1,7 @@
 module.exports = {
     UPLOAD:'http://47.98.39.45:8080/upload',
     STATIC_PATH:'http://47.98.39.45:9092/',
-    VIDEO_PATH:'http://47.98.39.45:9091/',
+    VIDEO_PATH:'http://47.98.39.45:9091/test/',
     USERROOT:{
         GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
@@ -172,8 +172,11 @@ module.exports = {
         DELE:  '/api/cl/removeIds',
         GET_ORG_CAR_LIST:'/api/cl/getOrgCarList',
         GPS_HITSOR:'/api/clsbyxsjjl/history',
-        GPS_HITSOR_GPS:'/api/clsbyxsjjl/baiduGuiJi',
+        GPS_HITSOR_GPS:'/api/clsbyxsjjl/historygps',
+        GPS_HITSOR_GPS_BD:'/api/clsbyxsjjl/baiduGuiJi',
         nianshen:'/api/cl/nianshen',
+        unbindDevice:'/api/cl/unbindDevice',
+        unbindDriver:'/api/cl/unbindDriver',
     },
     XL:{
         QUERY: '/api/xl/pager',
@@ -288,6 +291,7 @@ module.exports = {
         QUERY:'/api/cl/getcltj'
     },
     SBZDDZ:{//设备终端接口地址
-        ADD:'/pub/intstruction/send'
+        ADD:'/pub/intstruction/send',
+        getVersionInfo:'/api/zdgl/getVersionInfo'
     }
 }

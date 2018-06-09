@@ -1,6 +1,5 @@
 package com.ldz.job.service;
 
-import com.ldz.job.model.ClCl;
 import com.ldz.job.model.ClGps;
 import com.ldz.sys.base.BaseService;
 
@@ -23,5 +22,5 @@ public interface GpsService extends BaseService<ClGps, String>{
      * 根据终端编号 将存入百度鹰眼的gps纠偏后的数据写入更新
      */
     
-    void guiJiJiuPian(ClCl clcl);
+    void guiJiJiuPian(String zdbh);
 }

@@ -20,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -158,8 +155,13 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
 	}
 
 	private List<Bus> getBusList(ClXl xl){
+        Date today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
         SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
         condition.eq(ClClyxjl.InnerColumn.xlId,xl.getId());
+        condition.gte(ClClyxjl.InnerColumn.cjsj,today);
 	    List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 	    if (clClyxjls.size() == 0)return new ArrayList<>();
 

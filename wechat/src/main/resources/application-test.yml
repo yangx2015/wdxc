@@ -8,7 +8,12 @@ spring:
     url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
     username: 'C##wdxc_admin'
     password: 'wdxc123456'
-
+#  boot:
+#   admin:
+#      url: http://127.0.0.1:9078
+#      client: 
+#        name: WD-wechat
+#management.security.enabled: false 
 
 server:
   port: 9099

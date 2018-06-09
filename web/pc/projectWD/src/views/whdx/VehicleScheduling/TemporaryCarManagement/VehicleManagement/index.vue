@@ -96,7 +96,10 @@
                     {
                         title: '状态',
                         align:'center',
-                        key: 'zt'
+                        key: 'zt',
+                        render:(h,p)=>{
+                            return h('div',p.row.zt == '00' ? '正常' :'停用');
+                        }
                     },
                     {
                         title:'操作',

@@ -214,15 +214,6 @@ export default {
             obdFaultCode:[],
 			initTime:'',
 			allCarList:[
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:30.608123, bdwd:114.27226},
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.157277 ,bdwd:30.544446},
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'上线时间', status:0, bdjd:114.418288, bdwd:30.526529},
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.321703, bdwd:30.477739},
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.418288, bdwd:30.526529},
-				// {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'熄火时间', status:1, bdjd:114.157277 ,bdwd:30.544446},
-                // {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:1, bdjd:114.27226, bdwd:30.608123},
-				// {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, bdjd:114.157277 ,bdwd:30.544446},
-				// {zdbh:'asdzxc123456',cph:'鄂A12354',sjxm:'张三',speed:'100KM/h', time:'2017-12-12 08:00:00', text:'离线时间', status:2, bdjd:114.418288, bdwd: 30.526529}
 			],
         };
     },
@@ -287,6 +278,7 @@ export default {
         onGpsInfo(m){
             let has = false;
             let exist = null;
+            let newCar = {};
             for(let r of this.allCarList){
 			    if (r.zdbh === m.zdbh){
                     exist = r;
@@ -295,15 +287,21 @@ export default {
 			}
             if (exist){
                 let n = this.updateItem(exist,m);
+                newCar = n;
                 let index  = this.allCarList.indexOf(exist);
                 this.allCarList.splice(index,1,n);
 			}else{
                 this.handleItem(m);
+                newCar = m;
                 this.allCarList.push(m);
 			}
             this.classify();
             if (this.choosedCar){
-                this.mapCarList = [this.choosedCar];
+                if (this.choosedCar.zdbh == newCar.zdbh){
+                    this.mapCarList = [newCar];
+				}else{
+                    this.mapCarList = [this.choosedCar];
+				}
             }else{
                 this.mapCarList = this.carArray[this.status];
             }

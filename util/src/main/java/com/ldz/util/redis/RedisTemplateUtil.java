@@ -46,4 +46,7 @@ public class RedisTemplateUtil extends RedisTemplate<Object, Object>{
 	public <T>T getSerializerHashValue(String hash, String key, Class<T> cls){
 		return (T)this.boundHashOps(hash).get(key);
 	}
+	public Object getSerializerHashValue(String hash, String key){
+		return this.boundHashOps(hash).get(key);
+	}
 }

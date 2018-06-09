@@ -57,7 +57,8 @@
                 sjBM:'ZDCLK0038',
                 sjDIC:[],
                 findMess:{
-                    sjlxIn:'10,20,30,40'
+                    sjlxIn:'10,20,30,40',
+                    cjsjGte:new Date().format("yyyy-MM-dd"),
                 }
             }
         },
@@ -80,7 +81,7 @@
 			getmess(){
 				var v = this
 				this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					console.log('数据',res)
+					log('数据',res)
 					v.tabmess = res.page.list
 				})
 			},
@@ -88,7 +89,7 @@
                 var windowHeight = window.innerHeight
                 this.tabHeight = windowHeight/2 - 130
 //				this.tabHeight = windowHeight - 200
-                console.log('浏览器高',this.tabHeight)
+                log('浏览器高',this.tabHeight)
             }
         }
     }

@@ -98,7 +98,7 @@
 				        </div>
 				    </Card>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
@@ -215,6 +215,7 @@ export default {
         	mapheight:{
         		height:''
         	},
+			getLineInfo:true,
         	lineName:'',
         	lineID:'',
         	XBlineName:[],
@@ -229,7 +230,7 @@ export default {
 	},
 	watch: {
 		GetscoketMess: function(newQuestion, oldQuestion) {
-			var v = this 
+			var v = this
 //			this.tabmess = newQuestion//异常事件列表
 //			this.getXBline(v.lineID,v.lineName)
 		},
@@ -261,13 +262,25 @@ export default {
     		var v = this
     		this.$http.post(this.apis.XL.QUERY,{'lx':30}).then((res) =>{
 				v.XBlineName = res.page.list
-				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc)
+				v.getXBline(res.page.list[0].id,res.page.list[0].xlmc);
+
 			})
     	},
     	getXBline(id,name){//校巴线路
     		var v = this
     		this.$http.post(this.apis.XBDT.QUERY,{"xlId":id}).then((res) =>{
 				v.XBline = res.result
+                clearTimeout();
+				let path = this.$route.path;
+                if (v.getLineInfo){
+                    if ('/OperationMonitoring/BusMonitor' === path && v.lineID === id){
+                        setTimeout(()=>{
+                            if ('/OperationMonitoring/BusMonitor' === path && v.lineID === id){
+                                v.getXBline(id,name)
+                            }
+                        },2000)
+                    }
+                }
 			})
     		v.lineName = name
     		v.lineID = id

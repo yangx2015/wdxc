@@ -1,5 +1,6 @@
 package com.ldz.biz.module.bean;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,6 +11,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class GpsInfo {
 	private String id;
 	private String deviceId;//设备id（每次都必须上传）

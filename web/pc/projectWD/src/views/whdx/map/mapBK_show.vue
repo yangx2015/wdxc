@@ -76,7 +76,7 @@
             bkDot(id){
                 var v = this
                 this.$http.get(this.apis.DZWL.GET_BY_CAR_ID + "?clId=" + id).then((res) => {
-                    console.log('电子围栏点',res)
+                    log('电子围栏点',res)
                     if (res.code === 200 && res.result) {
                         let ditMess  = res.result.dlxxzb.split(';');
                         let dotLength = res.result.dlxxzb.split(';').length;
@@ -160,7 +160,7 @@
                     rectangleOptions: styleOptions //矩形的样式
                 })
                 drawingManager.addEventListener("overlaycomplete", function(e) {
-                    console.log(e);
+                    log(e);
                     v.$emit('choosePoint',e.overlay.ia)
                 });
             },

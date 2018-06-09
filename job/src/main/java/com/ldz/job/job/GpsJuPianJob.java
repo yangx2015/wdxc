@@ -1,7 +1,9 @@
 package com.ldz.job.job;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang.StringUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -11,12 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ldz.job.mapper.ClClMapper;
-import com.ldz.job.model.ClCl;
+import com.ldz.job.mapper.ClZdglMapper;
+import com.ldz.job.model.ClZdgl;
 import com.ldz.job.service.GpsService;
 
-/**
- * 定时器说明:每隔1分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
+/**  
+ * 定时器说明:每隔6小时把上传百度鹰眼的点位导入数据库
  * 
  * @author liuzhihao
  *
@@ -29,17 +31,18 @@ public class GpsJuPianJob implements Job {
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 
 	@Autowired
-	private ClClMapper clclmapper;
+	private ClZdglMapper clzdglmapper;
 	@Autowired
 	private GpsService service;
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		List<ClCl> selectAll = clclmapper.selectAll();
+		List<ClZdgl> gpslist = clzdglmapper.selectAll();
+	    List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());
 
 		try {
-			for (ClCl clCl : selectAll) {
-				service.guiJiJiuPian(clCl);
+			for (String zdbh : zdbhs) {
+				service.guiJiJiuPian(zdbh);
 			}
 		} catch (Exception e) {
 			errorLog.error("同步鹰眼纠偏数据异常", e);

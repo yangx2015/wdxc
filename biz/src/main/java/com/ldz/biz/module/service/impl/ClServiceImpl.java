@@ -1,8 +1,13 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang.StringUtils;
@@ -12,6 +17,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClClModel;
+import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClJsy;
@@ -201,7 +207,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	}
 
 	@Override
-	public ApiResponse<Map<String, Object>> carAccStatistics(Integer days) {
+	public ApiResponse<Map<String, Object>> carAccStatistics(Integer days,String type) {
 		SysYh user = getCurrentUser();
 		String jgdm = user.getJgdm();
 		Calendar now = Calendar.getInstance();
@@ -210,7 +216,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		now.add(Calendar.DATE, days);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
 		String weekStart = sdf.format(now.getTime());
-//		String jgdm = "100";
 		String dateRange = " and cjsj> to_date('"+weekStart+"','yyyy-mm-dd') ";
 		String sql = "SELECT T1.sjxm,T1.cph,T2.speedupCount,t3.speedownCount,t4.wheelCount,t5.overspeedCount  FROM CL_CL t1 \n" +
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedupCount FROM CL_SBYXSJJL  t WHERE t.SJLX='10' "+dateRange+" GROUP BY zdbh) t2 on T1.ZDBH=T2.ZDBH\n" +
@@ -219,34 +224,55 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as overspeedCount FROM CL_SBYXSJJL  t WHERE t.SJLX='40' "+dateRange+"  GROUP BY zdbh) t5 on T1.ZDBH=T5.ZDBH "+
 				"  where t1.jgdm like '"+jgdm+"%' ";
 		List result = jdbcTemplate.queryForList(sql);
-		List<String> carNumberList = new ArrayList<>(result.size());
-		List<Object> speedUpCountList = new ArrayList<>(result.size());
-		List<Object> speedDownCountList = new ArrayList<>(result.size());
-		List<Object> wheelCountList = new ArrayList<>(result.size());
-		List<Object> overSpeedCountList = new ArrayList<>(result.size());
-		List<String> driverNames = new ArrayList<>(result.size());
+		List<SafedrivingModel> list = new ArrayList<>(result.size());
 		for (Object o : result) {
 			Map<String,Object> map = (Map<String, Object>) o;
-			String carNumber = (String) map.get("cph");
-			String driverName = (String) map.get("sjxm");
+			SafedrivingModel model = new SafedrivingModel();
+			model.setCph((String) map.get("cph"));
+			model.setOverspeedCount(map.get("overspeedCount") == null ? 0 : Integer.parseInt(map.get("overspeedCount").toString()));
+			model.setSpeedownCount(map.get("speedownCount") == null ? 0 : Integer.parseInt(map.get("speedownCount").toString()));
+			model.setSpeedupCount(map.get("speedupCount") == null ? 0 : Integer.parseInt(map.get("speedupCount").toString()));
+			model.setWheelCount(map.get("wheelCount") == null ? 0 : Integer.parseInt(map.get("wheelCount").toString()));
+			model.setSjxm((String) map.get("sjxm"));
+
+			if ("aqjs".equals(type)){
+				int total = model.getSpeedupCount() +
+						model.getSpeedupCount() +
+						model.getWheelCount() +
+						model.getOverspeedCount();
+				model.setTotal(total);
+			}
+			list.add(model);
+		}
+
+		if ("aqjs".equals(type)){
+			list.sort(Comparator.comparingInt(SafedrivingModel::getTotal).reversed());
+			if (list.size()>10){
+				list = list.subList(0,10);
+			}
+		}else if ("cstj".equals(type)){
+			list.sort(Comparator.comparingInt(SafedrivingModel::getOverspeedCount).reversed());
+			if (list.size()>10){
+				list = list.subList(0,10);
+			}
+		}
+
+		List<String> carNumberList = new ArrayList<>(list.size());
+		List<Object> speedUpCountList = new ArrayList<>(list.size());
+		List<Object> speedDownCountList = new ArrayList<>(list.size());
+		List<Object> wheelCountList = new ArrayList<>(list.size());
+		List<Object> overSpeedCountList = new ArrayList<>(list.size());
+		List<String> driverNames = new ArrayList<>(list.size());
+		for (SafedrivingModel model : list) {
+			String carNumber = model.getCph();
+			String driverName = model.getSjxm();
 			carNumberList.add(carNumber);
 			driverNames.add(driverName);
 
-			String speedupCountStr = map.get("speedupCount") == null ? "0" : map.get("speedupCount").toString();
-			int count1 = StringUtils.isEmpty(speedupCountStr) ? 0 : Integer.parseInt(speedupCountStr);
-			speedUpCountList.add(count1);
-
-			String speeddownCountStr = map.get("speedownCount") == null ? "0" : map.get("speedownCount").toString();
-			int count2 = StringUtils.isEmpty(speeddownCountStr) ? 0 : Integer.parseInt(speeddownCountStr);
-			speedDownCountList.add(count2);
-
-			String wheelCountStr = map.get("wheelCount") == null ? "0" : map.get("wheelCount").toString();
-			int count3 = StringUtils.isEmpty(wheelCountStr) ? 0 : Integer.parseInt(wheelCountStr);
-			wheelCountList.add(count3);
-
-			String overspeedpCountStr = map.get("overspeedCount") == null ? "0" : map.get("overspeedCount").toString();
-			int count4 = StringUtils.isEmpty(overspeedpCountStr) ? 0 : Integer.parseInt(overspeedpCountStr);
-			overSpeedCountList.add(count4);
+			speedUpCountList.add(model.getSpeedupCount());
+			speedDownCountList.add(model.getSpeedownCount());
+			wheelCountList.add(model.getWheelCount());
+			overSpeedCountList.add(model.getOverspeedCount());
 		}
 
 		Map<String,Object> map = new HashMap<>();
@@ -348,7 +374,28 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		return apiResponse;
 	}
 
-	 public static int differentDaysByMillisecond(Date date1,Date date2)
+	@Override
+	public ApiResponse<String> unbindDevice(String carId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		car.setZdbh(null);
+		entityMapper.updateByPrimaryKey(car);
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<String> unbindDriver(String carId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		car.setSjxm(null);
+		car.setSjId(null);
+		entityMapper.updateByPrimaryKey(car);
+		return ApiResponse.success();
+	}
+
+	public static int differentDaysByMillisecond(Date date1,Date date2)
 	    {
 	        int days = (int) ((date2.getTime() - date1.getTime()) / (1000*3600*24));
 	        return days;

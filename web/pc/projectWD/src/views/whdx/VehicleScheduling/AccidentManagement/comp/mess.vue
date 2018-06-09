@@ -105,7 +105,7 @@
 		created(){
             this.getDrivers();
 			this.formItem = this.mess
-            console.log(this.formItem);
+            log(this.formItem);
         },
 		methods: {
             getDriverName(){

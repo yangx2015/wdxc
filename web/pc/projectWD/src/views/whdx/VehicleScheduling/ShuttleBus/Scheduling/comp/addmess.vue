@@ -95,7 +95,7 @@
 			if(this.mess.clList==(null||"")){
 				this.mess.clList = []
 			}
-			console.log('信息传递',this.mess)
+			log('信息传递',this.mess)
 			this.getCarList()
 		},
 		methods:{
@@ -103,24 +103,24 @@
 				var v = this
 				this.$http.post(this.apis.XLPBXX.CARLIST,{'xlId':v.mess.id,'date':v.pbTime,'cx':'20'}).then((res) =>{
 					if(res.code == 200){
-						console.log('车辆据',res)
+						log('车辆据',res)
 						if( res.result){
 							v.chrlist = res.result
 						}else{
 							v.chrlist = [{'cph':'无车辆数据','clId':'000000','sjxm':'****'}]
 						}
 					}else{
-						console.log('bug')
+						log('bug')
 					}
-					console.log('车辆数据',res)
+					log('车辆数据',res)
 				}).catch((err) =>{
-					console.log('bug')
+					log('bug')
 				})
 			},
 			AddList(carID,cph,sjxm){
 				var v = this
 				this.$http.post(this.apis.XLPBXX.ADD,{"clId":carID,"xlId":v.mess.id,"date":v.pbTime,'cx':'20'}).then((res) =>{
-					console.log('排版新增',res)
+					log('排版新增',res)
 					    	// debugger
 					if(res.code==200){
 						v.$Message.success(res.message);

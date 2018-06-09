@@ -1,5 +1,7 @@
 package com.ldz.job.model;
 
+
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -126,9 +128,16 @@ public class ClZdgl implements Serializable {
     /**
      * gps心跳
      */
-    
     @Column(name = "GPSXT")
     private String gpsxt;
+    
+    
+    /**
+     * 是否将设备上传到鹰眼
+     */
+    @Column(name = "SFYY")
+    private String sfyy;
+    
     
     @Transient
     private ClCl cl;
@@ -136,6 +145,14 @@ public class ClZdgl implements Serializable {
     
     
     
+	public String getSfyy() {
+		return sfyy;
+	}
+
+	public void setSfyy(String sfyy) {
+		this.sfyy = sfyy;
+	}
+
 	public String getGpsxt() {
 		return gpsxt;
 	}

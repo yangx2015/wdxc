@@ -64,13 +64,12 @@
 											placeholder="请输时间"
 											@on-keyup.enter="findMessList()"
 											style="width: 220px"></DatePicker>
-							   	<Select v-model="findMess.cphLike" filterable
-							   		@on-change="findMessList()"
-							   		style="width: 200px;text-align: left;">
-									<Option value="" key="">全部</Option>
-					                <Option  v-for="(item,index) in carList" 
-					                	:value="item.cph" :key="index">{{item.cph}}</Option>
-					            </Select>
+							</div>
+							<div class="body-r-1 inputSty">
+								<Input type="text" v-model="findMess.cphLike" placeholder="请输入车牌号"></Input>
+							</div>
+							<div class="body-r-1 inputSty">
+								<Input type="text" v-model="findMess.zdbhLike" placeholder="请输入终端编号"></Input>
 							</div>
 							<div class="butevent">
 								<Button type="primary" @click="findMessList()">
@@ -94,8 +93,8 @@
 						 style="min-height: 140px;"
 						 v-for="(item,index) in videoList">
                         <img
-							 :src="videoPath+'/test/'+item.url"
-							 @click="showMax(videoPath+'/test/'+item.url,index)"
+							 :src="videoPath+item.url"
+							 @click="showMax(videoPath+item.url,index)"
 							 style="width: 100%;">
 					    <div class="VideoTit">
 					    	{{item.cph}} [{{item.cjsj}}]
@@ -132,9 +131,9 @@
 				<div slot="footer">
 					<div style="width: 100%;overflow-y: auto;text-align: center">
 						<img v-for="(item,index) in videoList"
-							 :src="videoPath+'/test/'+item.url"
+							 :src="videoPath+item.url"
 							 width="7.5%"
-							 @click="showMax(videoPath+'/test/'+item.url,index)"
+							 @click="showMax(videoPath+item.url,index)"
 							 style="margin: 2px;">
 
 					</div>

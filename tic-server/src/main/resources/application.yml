@@ -25,6 +25,12 @@ spring:
       fileSizeThreshold: 5MB
       location: D://Temp//cache//
       #enabled: true
+#  boot:
+#   admin:
+#      url: http://127.0.0.1:9078
+#      client: 
+#        name: WD-ticServer
+#management.security.enabled: false 
 #接口配置，接口可以有多个地址，多个地址中间使用';'
 interface:
   #设备状态更新接口，点火、熄火、离线

@@ -16,6 +16,8 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="findMess.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -56,8 +58,6 @@
 
 <script>
 	import mixins from '@/mixins'
-
-
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
 	import allmes from './comp/otherMess.vue'
@@ -146,7 +146,27 @@
                     {
                         title: '司机',
                         align:'center',
-                        key: 'sjxm'
+                        key: 'sjxm',
+                        render:(h,p)=>{
+                            if (!p.row.sjxm)return h('div','-');
+                            return h('div', [
+                                h('span',p.row.sjxm+"  "),
+                                h('Tooltip',
+                                    {props: {placement: 'top', content: '解绑',},style:{float:'right'}},
+                                    [
+                                        h('Button', {
+                                            props: {type: 'success', icon: 'code-working', shape: 'circle', size: 'small'},
+                                            style: {marginRight: '5px'},
+                                            on: {
+                                                click: () => {
+                                                    this.unbindDriver(p.row.clId);
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                            ]);
+                        }
                     },
                     {
                         title: '车辆状态',
@@ -170,7 +190,27 @@
                     {
                         title: '终端编号',
                         align:'center',
-                        key: 'zdbh'
+                        key: 'zdbh',
+						render:(h,p)=>{
+                            if (!p.row.zdbh)return h('div','-');
+                            return h('div', [
+                                h('span',p.row.zdbh+"  "),
+                                h('Tooltip',
+                                    {props: {placement: 'top', content: '解绑',},style:{float:'right'}},
+                                    [
+                                        h('Button', {
+                                            props: {type: 'success', icon: 'code-working', shape: 'circle', size: 'small'},
+                                            style: {marginRight: '5px'},
+                                            on: {
+                                                click: () => {
+                                                    this.unbindDevice(p.row.clId);
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                            ]);
+						}
                     },
                     {
                         title: '操作',
@@ -261,7 +301,7 @@
                                                 click: () => {
                                                     this.$router.push(
                                                         {
-                                                            name: 'historypath',
+                                                            name: 'historyTarck_new',
                                                             params:{zdbh:params.row.zdbh}
                                                         }
                                                     );
@@ -358,11 +398,48 @@
         	getmess(){
 				var v = this
 				this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
-					log('车辆数据',res.page.list)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
 				})
+			},
+			unbindDevice(carId){
+                swal({
+                    title: "确定解绑该终端？",
+                    text: "",
+                    icon: "warning",
+                    buttons:['取消','确认'],
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        this.$http.post(this.apis.CLGL.unbindDevice,{carId:carId}).then((res)=>{
+                            if (res.code === 200){
+                                this.getmess();
+                                this.$Message.success("解绑成功");
+                            }else{
+                                this.$Message.error(res.message);
+                            }
+                        })
+                    }
+                });
+			},
+			unbindDriver(carId){
+                swal({
+                    title: "确定解绑驾驶员？",
+                    text: "",
+                    icon: "warning",
+                    buttons:['取消','确认'],
+                }).then((willDelete) => {
+                    if (willDelete) {
+                        this.$http.post(this.apis.CLGL.unbindDriver,{carId:carId}).then((res)=>{
+                            if (res.code === 200){
+                                this.getmess();
+                                this.$Message.success("解绑成功");
+                            }else{
+                                this.$Message.error(res.message);
+                            }
+                        })
+                    }
+                });
 			},
         	AddDataList() {
 				var v = this

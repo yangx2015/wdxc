@@ -43,9 +43,13 @@ public class ScheduleComponent {
 		// gps同步定执行周期，每1分钟执行一次
 		CronScheduleBuilder scheduleBuilder = CronScheduleBuilder.cronSchedule("0 0/1 * * * ? *");
 		// 终端状态监测定时周期 每10分钟执行一次
-		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/3 * * * ? *");
+		CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/10 * * * ? *");
+		
 		// 车辆年审日期设置  每天中午12点执行一次
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
+		
+		// 鹰眼数据纠偏记录 每6分小时执行一次
+		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 0/6 * * ? *");
 		
 		
 		// gps同步创建一个trigger
@@ -59,7 +63,7 @@ public class ScheduleComponent {
 					.withSchedule(scheduleBuilderns).build();
 		//创建gps点位纠偏trigger
 			CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
-					.withSchedule(scheduleBuilderZD).build();
+					.withSchedule(scheduleBuilderJP).build();
 					
 			
 		
@@ -67,7 +71,7 @@ public class ScheduleComponent {
 			schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
 			schedulerFactory.getScheduler().scheduleJob(zdglJob, cronTriggerzdgl);
 			schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
-		/*	schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);*/
+			schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);
 		} catch (SchedulerException e) {
 			errorLog.error("任务创建失败", e);
 		}

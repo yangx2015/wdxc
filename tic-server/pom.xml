@@ -20,6 +20,17 @@
 	    </repository>
 </repositories>
 	<dependencies>
+	<!--  <dependency>
+            <groupId>de.codecentric</groupId>
+            <artifactId>spring-boot-admin-starter-client</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+            <version>1.5.7</version>
+        </dependency> -->
 		<dependency>
 	        <groupId>com.ldz</groupId>
 	        <artifactId>util</artifactId>

@@ -16,7 +16,7 @@ public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> updateGps(GpsInfo gpsInfo, ClPb pb, ClCl car, ClXl route, ClClyxjl clClyxjl);
 
 
-    ClZd findCurrentZd(Gps currentGps, ClCl car, ClPb pb);
+    ClZd findCurrentZd(String prvStationId,Gps currentGps, ClCl car, ClPb pb);
 
     ClPb getCarPb(String carId);
     ClPb getCarPbByDeviceId(String deviceId);

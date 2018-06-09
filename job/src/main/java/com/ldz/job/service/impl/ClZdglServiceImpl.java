@@ -30,6 +30,8 @@ import com.ldz.util.redis.RedisTemplateUtil;
 public class ClZdglServiceImpl implements ClZdglService {
 
 	private static final Logger log = LoggerFactory.getLogger(ClZdglServiceImpl.class);
+	Logger errorLog = LoggerFactory.getLogger("error_info");
+	Logger accessLog = LoggerFactory.getLogger("access_info");
 	@Value("${ticserver.url}")
 	private String ticserverurl;
 
@@ -90,14 +92,11 @@ public class ClZdglServiceImpl implements ClZdglService {
 						
 						// 并将离线消息通知到gps上传
 						ApiResponse<String> senML = senML(zdbh, bizurl);
-						if (senML.getCode() == 200) {
-							log.info("上传离线信息到业务系统服务器成功终端编号为:" + zdbh);
-						}
-
+						accessLog.debug(senML+"biz接口离线消息返回");
+					
 						ApiResponse<String> znzpsenML = senML(zdbh, znzpurl);
-						if (znzpsenML.getCode() == 200) {
-							log.info("上传离线信息到智能站牌服务器成功终端编号为:" + zdbh);
-						}
+						accessLog.debug(znzpsenML+"znzp接口离线消息返回");
+						
 						
 					}
 				});

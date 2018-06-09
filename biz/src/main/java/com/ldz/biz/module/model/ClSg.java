@@ -1,12 +1,12 @@
 package com.ldz.biz.module.model;
 
+import java.io.Serializable;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 @Table(name = "CL_SG")
 public class ClSg implements Serializable {

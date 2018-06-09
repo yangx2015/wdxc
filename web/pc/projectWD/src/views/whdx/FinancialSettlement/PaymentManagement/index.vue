@@ -31,10 +31,10 @@
 		    </Col>
 		    <Col span="3">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<div v-show="form.fkzt === '30'">
+		    		<div v-show="form.fkzt === '00'">
 						应付单据：{{list.length}}单
 		    		</div>
-		    		<div v-show="form.fkzt === '40'">
+		    		<div v-show="form.fkzt === '10'">
 						已付单据：{{list.length}}单
 		    		</div>
 		    	</div>
@@ -50,8 +50,8 @@
 			        <span slot="extra">
 			        	<span>
 			        		收款金额：{{item.amount}}元
-			        		<Button type="success" size="small" @click="print(item)">打印</Button>
-			        		<Button v-if="form.fkzt === '00'" type="primary" size="small" @click="confirm(item.orderId)">确认</Button>
+			        		<Button type="success" size="small" @click="print(item,index)">打印</Button>
+			        		<Button v-if="form.fkzt === '00'" type="primary" size="small" @click="confirm(index)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
@@ -59,9 +59,11 @@
 			        	<Table
 			        		border
 			        		ref="selection"
-			        		:columns="columns3"
+			        		:columns="form.fkzt === '00' ? columns3 : columns4"
 			        		height="220"
-			        		:data="item.orderList"></Table>
+			        		:data="item.orderList"
+							@on-selection-change="(e)=>{tableSelectionChange(e,index)}"
+						></Table>
 			        </div>
 			    </Card>
 			</Col>
@@ -93,9 +95,9 @@
                 componentName:'',
                 choosedItem:null,
 				columns3: [
-					{
-                        type: 'index',
-                        width: 45,
+                    {
+                        type: 'selection',
+                        width: 60,
                         align: 'center'
                     },
                     {
@@ -153,13 +155,51 @@
                         }
                     }
                 ],
+				columns4: [
+                    {
+                        type: 'selection',
+                        width: 60,
+                        align: 'center'
+                    },
+                    {
+                        title: '用车人员',
+                        key: 'ck'
+                    },
+                    {
+                        title: '候车地点',
+                        key: 'hcdz'
+                    },
+                    {
+                        title: '目的地',
+                        key: 'mdd'
+                    },{
+                        title: '司机',
+                        key: 'sjxm'
+                    },{
+                        title: '车型',
+                        key: 'zws'
+                    },{
+                        title: '出车时间',
+                        key: 'yysj'
+                    },{
+                        title: '里程(公里)',
+                        key: 'lc'
+                    },{
+                        title: '事由',
+                        key: 'sy'
+                    },{
+                        title: '车费合计',
+                        key: 'zj'
+                    },
+                ],
 				munName:'1',
 				form:{
 				    fkzt:'00',
 					ck:'',
 					sjxm:'',
 				},
-                list:[]
+                list:[],
+                selectedData:[],
 			}
 		},
 		created(){
@@ -176,15 +216,33 @@
 
 		},
 		methods:{
+            tableSelectionChange(e,i){
+                this.selectedData[i] = e;
+            },
 		    getData(){
                 this.list = [];
+                let startTime = this.form.startTime;
+                let endTime = this.form.endTime;
+                if (typeof startTime === 'object'){
+                    this.form.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
+                }
+                if (typeof endTime === 'object'){
+                    this.form.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
+                }
 		      	this.$http.get(this.apis.ORDER.paymentList,{params:this.form}).then((res)=>{
 		      	    if (res.code === 200 && res.result){
 						this.list = res.result;
+						for (let r of this.list){
+						    this.selectedData.push([]);
+						}
                     }
 				})
 			},
-			confirm(id){
+			confirm(index){
+                if (this.selectedData[index].length === 0){
+                    this.$Message.error("请选择订单");
+                    return;
+                }
                 swal({
                     title: "确认已付款?",
                     text: "",
@@ -193,7 +251,7 @@
                 }).then((confirm) => {
                     if (confirm) {
                         let ids = '';
-                        for (let r of orderList){
+                        for (let r of this.selectedData[index]){
                             ids += r.id +',';
                         }
                         let v = this;
@@ -218,7 +276,12 @@
 			changeLimit(mes){
 				alert(mes)
 			},
-            print(item){
+            print(item,index){
+                if (this.selectedData[index].length === 0){
+                    this.$Message.error("请选择订单");
+                    return;
+                }
+                item.choosedOrderList = this.selectedData[index];
                 this.choosedItem = item;
                 this.componentName = 'print';
             },

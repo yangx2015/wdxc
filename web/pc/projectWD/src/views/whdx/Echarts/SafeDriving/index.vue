@@ -55,6 +55,7 @@
                 ],
                 pageData: [],
                 form: {
+                    type:'aqjs',
                     sjxmLike: '',
                     total: 0,
                 },

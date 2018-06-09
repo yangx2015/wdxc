@@ -12,8 +12,8 @@ import env from '../../build/env';
 let url = 'http://47.98.39.45:8080'; //
 // let url = 'http://127.0.0.1:80'; //
 // let url = 'http://localhost:8081'; // cw-mac
-// let url = 'http://192.168.31.180:80';//陈
-// let url = 'http://192.168.31.228:8080/';//羊
+// let url = 'http://192.168.31.181:80',//陈
+// let url = 'http://192.168.31.228:8088',//羊
 // let url = 'http://192.168.31.228:80';//羊
 let httpInstance = axios.create({
 baseURL: url,
@@ -27,7 +27,7 @@ httpInstance.interceptors.request.use((config) => {
 
 	if(config.url =="/api/clzd/getzdcl/"
         || '/api/clsbyxsjjl/historygps' == config.url
-        || '/api/cl/carAccStatistics' == config.url
+        // || '/api/cl/carAccStatistics' == config.url
         || '/api/dd/ddzTj' == config.url
         || '/api/dd/ccTTj' == config.url
         || '/api/cl/nianshenbt' == config.url
@@ -71,7 +71,8 @@ httpInstance.interceptors.response.use((response) => {
     }
     if (response.status===200){
         if (response.data.code===403){
-            router.push({name: 'error-403'})
+            router.push({name: 'erro' +
+                'r-403'})
         }else{
             return response.data;
         }

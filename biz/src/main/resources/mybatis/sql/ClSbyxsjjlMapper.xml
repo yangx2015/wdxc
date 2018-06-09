@@ -28,6 +28,9 @@
   LEFT JOIN (select ZDBH ,count(SJLX) as "speedownCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='20' GROUP BY zdbh) t3 on T1.ZDBH=T3.ZDBH
   LEFT JOIN (select ZDBH ,count(SJLX) as "wheelCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='30' GROUP BY zdbh) t4 on T1.ZDBH=T4.ZDBH
   LEFT JOIN (select ZDBH ,count(SJLX) as "overspeedCount" FROM CL_SBYXSJJL  t WHERE t.SJLX='40' GROUP BY zdbh) t5 on T1.ZDBH=T5.ZDBH
+      <if test="sjxmLike != null and sjxmLike != ''">
+          where T1.sjxm like '%${sjxmLike}%'
+      </if>
   </select>
   
 <!--   <resultMap type="" id="">
@@ -41,6 +44,6 @@
   </resultMap> -->
   
   <select id="findByCphAndTime" resultType="com.ldz.biz.module.model.ClSbyxsjjl">
-  	SELECT t.* FROM CL_SBYXSJJL t WHERE t.SJLX='40' AND t.CPH=#{cph} AND t.CJSJ BETWEEN #{start} and#{end}
+  	SELECT t.* FROM CL_SBYXSJJL t WHERE t.SJLX='40' AND t.CPH=#{cph} AND t.CJSJ BETWEEN #{start} and #{end}
   </select>
 </mapper>

@@ -102,7 +102,7 @@
 				    id:'',
                     xlmc:'',
                     zt:'00',
-                    lx:'20',
+                    lx:'30',
                     yxfs:'10',
 				},
 				stationList:[],

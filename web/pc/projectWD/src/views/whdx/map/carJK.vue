@@ -11,7 +11,7 @@
 <!--地图选点-->
 <template>
     <div style="height: 100%;background-color: #00FFFF;">
-        <component :is="componentName"></component>
+        <car-info ref="carInfoButton"></car-info>
         <div id="allmap"></div>
     </div>
 </template>
@@ -34,7 +34,7 @@
                     lng: 114.357527,
                     lat: 30.550822
                 },
-                zoom: 12,
+                zoom: 18,
                 carList: [],
                 zoomDot:[],
                 fancePoints: [
@@ -72,22 +72,36 @@
             update() {
                 var v = this
                 v.carList = v.$parent.mapCarList;
+                v.moveMap();
                 v.showCarPosition();
-                for(var i = 0 ; i<v.carList.length ; i++){
-                    v.zoomDot.push(
-                        new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
-                    )
-                }
-                // setTimeout(function () {
-                //     v.map.setViewport(v.zoomDot);
-                // },50)
+            },
+            moveMap(){
+                var v = this
+                this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                //
+                // v.zoomDot = [];
+                // for(var i = 0 ; i<v.carList.length ; i++){
+                //     v.zoomDot.push(
+                //         new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
+                //     )
+                // }
+                // v.map.setViewport(v.zoomDot);
             },
             init() {
                 this.carList = this.$parent.mapCarList;
-                if (this.carList.length > 0) {
+                if (this.carList.length === 1){
+                    this.car = this.carList[0];
+                    this.chooseCar(this.car);
+                }else if (this.carList.length > 0) {
+                    this.$refs.carInfoButton.hide();
+                    this.car = null;
                     this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                }else {
+                    this.car = null;
+                    this.$refs.carInfoButton.hide();
                 }
-                this.showCarPosition()
+                this.moveMap();
+                this.showCarPosition();
             },
             Buildmap() {
                 var v = this
@@ -111,9 +125,6 @@
                 this.clear()
                 var v = this
                 for (let r of this.carList) {
-                    log('showCarPosition');
-                    log(r.lng);
-                    log(r.lat);
                     var point = new BMap.Point(r.lng, r.lat);
                     this.addMarker(r, point);
                     this.addLabel(r, point);
@@ -182,8 +193,11 @@
                 var v = this
                 marker.addEventListener("click", function (e) {
                     v.choosedItem = item;
-                    v.componentName = 'carInfo';
+                    v.$refs.carInfoButton.init(item);
                 })
+            },
+            chooseCar(item){
+                this.$refs.carInfoButton.init(item);
             },
             clear() {
                 this.map.clearOverlays();//清楚数据点

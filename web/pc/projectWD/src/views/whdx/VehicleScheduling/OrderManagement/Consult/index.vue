@@ -15,7 +15,9 @@
 							<span>订单查询</span>
 						</div>
 						<div class="body-r-1 inputSty">
+							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 16px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 							<Input v-model="findMess.ckLike" type="text" placeholder="输入乘客姓名查询" style="width: 220px"></Input>
+							<Input v-model="findMess.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -132,8 +134,9 @@
 						}
                     }
                 ],
-                data9: [
-                ]
+                data9: [],
+                treeValue:[],
+                orgTree:[],
             }
         },
         created(){
@@ -147,8 +150,18 @@
                 title: '订单查阅',
             }])
 			this.findMessList()
+            this.getOrgTree();
         },
         methods:{
+            getOrgTree(){
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                    this.orgTree = res.result
+                })
+            },
+            change(vaule,selectedData){
+                this.findMess.jgdm=selectedData[selectedData.length-1].value
+                this.treeValue = vaule;
+            },
         	changeTime(val){
         	},
         	pageChange(event){

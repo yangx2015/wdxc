@@ -14,10 +14,10 @@
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="8">
-							<FormItem label='车牌号'>
-								<Select v-model="formItem.zdbh" filterable>
+							<FormItem label='终端编号'>
+								<Select v-model="formItem.zdbh" filterable clearable>
 									<Option  v-for="(item,index) in carList"
-											 :value="item.zdbh" :key="item.zdbh">{{item.cph}}</Option>
+											 :value="item.zdbh" :key="item.zdbh">{{item.zdbh}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
@@ -50,7 +50,7 @@
 				</div>
 				<video v-if="videoUrl != null"
 						style="width: 100%;height: 600px;margin-top: 20px"
-						:src="videoPath+'/test/'+videoUrl"
+						:src="videoPath+videoUrl"
 						autoplay="autoplay"
 						controls="controls"></video>
 			</Row>

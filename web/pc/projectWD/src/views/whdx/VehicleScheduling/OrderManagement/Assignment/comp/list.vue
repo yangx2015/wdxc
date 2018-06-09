@@ -119,7 +119,7 @@
             },
             selectionClick(event){
                 this.seleList = event
-                console.log('*************************',event)
+                log('*************************',event)
             }
         }
     }

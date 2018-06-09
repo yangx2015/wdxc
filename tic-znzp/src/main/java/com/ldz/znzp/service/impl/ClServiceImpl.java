@@ -4,6 +4,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.SnowflakeIdWorker;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
 import com.ldz.znzp.base.BaseServiceImpl;
@@ -16,6 +17,7 @@ import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -69,28 +71,27 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
     @Override
     public ApiResponse<String> report(String tid,ClPb clPb,ClCl car,ClXl xl,ClClyxjl clClyxjl) {
+        RuntimeCheck.ifNull(clClyxjl,"未找到车辆运行记录");
+        RuntimeCheck.ifBlank(clPb.getXlId(),"未找到线路");
+        List<ClZnzp> znzps = znzpService.getByXlId(clPb.getXlId());
+        RuntimeCheck.ifEmpty(znzps,"未找到通道");
+        List<String> zpIds = znzps.stream().map(ClZnzp::getZdbh).collect(Collectors.toList());
+
         ReportData reportData = new ReportData();
         reportData.setRouteId(xl.getId());
         reportData.setRouteName(xl.getXlmc());
-
-        // 获取车辆运行记录
-        if (clClyxjl != null){
-            reportData.setDirect(clClyxjl.getYxfx());
-            reportData.setStationNo(clClyxjl.getZdbh());
-            reportData.setType(clClyxjl.getZt());
-            reportData.setBus_plate(clClyxjl.getCphm());
-            List<ClZnzp> znzps = znzpService.findEq(ClZnzp.InnerColumn.zdId,clClyxjl.getZdId());
-            if (znzps.size() != 0){
-                reportData.setTid(znzps.get(0).getZdbh());
-            }
+        reportData.setDirect(clClyxjl.getYxfx());
+        reportData.setStationNo(clClyxjl.getZdbh());
+        reportData.setType(clClyxjl.getZt());
+        reportData.setBus_plate(clClyxjl.getCphm());
+        reportData.setDirect("up");
+        Map<String,Object> channelMap = nettyUtil.getChannelByTids(zpIds);
+        for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
+            reportData.setTid(entry.getKey());
+            log.info(JsonUtil.toJson(reportData));
+            writeResult((Channel)entry.getValue(),reportData);
         }
-        log.info(reportData.toString());
-        List<Channel> channels = nettyUtil.getAllChannel();
-        if (channels.size() == 0){
-            return ApiResponse.notFound("未找到通道");
-        }
-        writeResult(channels,reportData);
-        return ApiResponse.success(JsonUtil.toJson(reportData));
+        return ApiResponse.success();
     }
 
     @Override
@@ -109,7 +110,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         // 原始gps转百度gps
         log.info("转换前-经度："+gpsInfo.getLongitude()+",纬度："+gpsInfo.getLatitude());
         Date now = new Date();
-        if (gpsInfo.getLatitude().equals("-1")
+        if ("80".equals(gpsInfo.getEventType())
+                || "20".equals(gpsInfo.getSczt())
+                || gpsInfo.getLatitude().equals("-1")
                 || gpsInfo.getLongitude().equals("-1")
                 || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getLatitude())
@@ -131,7 +134,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 record.setZt("off");
                 clyxjlMapper.updateByPrimaryKeySelective(record);
             }
-            return ApiResponse.fail("设备已离线");
+            return ApiResponse.success("设备已离线");
         }
 
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
@@ -139,13 +142,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         // 获取车辆运行记录
         // 获取当前站点
-        boolean hasRecord = record != null;
+        boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
         ClZd currentStation = null;
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (record == null){
             log.info("没有运行记录");
-            currentStation = findCurrentZd(gps,car,pb);
+            currentStation = findCurrentZd("",gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
             record.setClId(car.getClId());
@@ -168,7 +171,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                     zt = "inStation"; // 进站
                 }
             }else{
-                currentStation = findCurrentZd(gps,car,pb);
+                currentStation = findCurrentZd(record.getZdId(),gps,car,pb);
             }
         }
         if (zt == null){
@@ -189,6 +192,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         record.setZdbh(currentStation.getRouteOrder());
         record.setZdmc(currentStation.getMc());
         record.setZdId(currentStation.getId());
+        record.setCjsj(new Date());
         record.setJd(clGps.getBdjd());
         record.setWd(clGps.getBdwd());
         record.setZt(zt);
@@ -198,7 +202,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             clyxjlMapper.insertSelective(record);
         }
         if ("80".equals(gpsInfo.getSczt()) || "20".equals(gpsInfo.getSczt())){
-            return ApiResponse.fail("设备已离线");
+            return ApiResponse.success("设备已离线");
         }
         return ApiResponse.success();
     }
@@ -239,7 +243,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (distance < currentZd.getFw()){ // 如果在站点范围之内，则这就是当前站点
             return currentZd;
         }else{ // 如果不在站点范围之内，查找最近的站点
-            return findCurrentZd(currentGps,car,pb);
+            return findCurrentZd(currentZdId,currentGps,car,pb);
         }
     }
 
@@ -256,18 +260,22 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ClZd findCurrentZd(Gps currentGps,ClCl car,ClPb pb){
+    public ClZd findCurrentZd(String prvStationId,Gps currentGps,ClCl car,ClPb pb){
         List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
         if (stations.size() == 1)return stations.get(0);
         Map<String,ClZd> stationMap = stations.stream().collect(Collectors.toMap(ClZd::getId,p->p));
 
         Map<String,Double> distanceMap = new HashMap<>();
+        short maxStationOrder = 0;
         for (ClZd station : stations) {
             Gps gps = new Gps(station.getJd(),station.getWd());
             Double d = DistanceUtil.getShortDistance(currentGps,gps);
             // 如果距离小于站点范围，则直接返回当前站点
             if (d < station.getFw()) return station;
+            if (station.getRouteOrder() > maxStationOrder){
+                maxStationOrder = station.getRouteOrder();
+            }
             distanceMap.put(station.getId(),d);
         }
         List<Map.Entry<String,Double>> entryList = new ArrayList<>(distanceMap.entrySet());
@@ -280,8 +288,22 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         String id1 = entryList.get(1).getKey();
         ClZd station0 = stationMap.get(id0);
         ClZd station1 = stationMap.get(id1);
+        ClZd stationB = null;
+        // 如果比对站点包含
+        if (station0.getRouteOrder() > station1.getRouteOrder()){
+            stationB = station0;
+        }else{
+            stationB = station1;
+        }
+        if (stationB.getRouteOrder() == maxStationOrder){
+            // 如果上一次站点是最后一个站点，并且状态为到站，则设置当前站点为离线
+            if (prvStationId.equals(stationB.getId())){
+                return stationB;
+            }
+        }
+        ClZd currentStation = station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
 //        zdService.setStationOrders(station0,station1);
-        return station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
+        return currentStation;
     }
 
     @Override
@@ -351,7 +373,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         nettyUtil.sendData(channel,reportData);
     }
     private void writeResult(List<Channel> channels,ReportData reportData){
-        log.info("channels");
         for (Channel channel : channels) {
             log.info(channel.id().asShortText());
             writeResult(channel,reportData);

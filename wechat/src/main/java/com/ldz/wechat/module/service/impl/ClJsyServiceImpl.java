@@ -37,7 +37,7 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 	public ApiResponse<Map<String,Object>> findJsy(String sjh, String xm) {
 		RuntimeCheck.ifBlank(sjh, "手机号必填");
 	    RuntimeCheck.ifBlank(xm, "姓名必填");
-		ClJsy jsy = jsymapper.findJzg(xm,sjh);
+		ClJsy jsy = jsymapper.findJzg(sjh,xm);
 		RuntimeCheck.ifNull(jsy, "手机号或者姓名有误");
 		String userInfo = JsonUtil.toJson(jsy);
 		String token = JwtUtil.createWechatToken("jsy",userInfo);

@@ -7,6 +7,7 @@ import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
@@ -107,6 +108,11 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if(clZds!=null){
             SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
             condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+            Date today = new Date();
+            today.setHours(0);
+            today.setMinutes(0);
+            today.setSeconds(0);
+            condition.gte(ClClyxjl.InnerColumn.cjsj,today);
             condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
             if(xlzds!=null&&xlzds.size()>0){
@@ -121,7 +127,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                         while (iter.hasNext()) {
                             ClClyxjl item = iter.next();
                             //判断车辆是否在当前站点
-                           if(StringUtils.equals(item.getZdbh(),clZd.getZdId())){
+                           if(StringUtils.equals(item.getZdId(),clZd.getZdId())){
                                ClClyxjlModel model=new ClClyxjlModel();
                                model.setCphm(item.getCphm());//车牌号码
                                model.setCjsj(item.getCjsj());//创建时间
@@ -137,7 +143,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                                model.setCjsj(item.getCjsj());
                                model.setZdjl(item.getZdjl());
                                list.add(model);
-                               iter.remove();
+//                               iter.remove();
                             }
                         }
                         clZd.setVehicleList(list);

@@ -15,9 +15,9 @@
 							<span>订单统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
-							<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
-							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<DatePicker v-model="form.kssj" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
+							<DatePicker v-model="form.jssj" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
+							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 10px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -139,18 +139,30 @@
                 form: {
                     sjxmLike: '',
                     total: 0,
+                    jgdm:'',
                 },
+                treeValue:[],
+                orgTree:[],
             }
         },
         created() {
-            this.form.kssj  = this.getTodayDate() + " 00:00:00";
-            this.form.jssj  = this.getTodayDate() + " 23:59:59";
+            this.form.kssj  = this.getTodayDate();
+            this.form.jssj  = this.getTodayDate();
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
-
+            this.getOrgTree();
         },
         methods: {
+            getOrgTree(){
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                    this.orgTree = res.result
+                })
+            },
+            change(vaule,selectedData){
+                this.form.jgdm=selectedData[selectedData.length-1].value
+                this.treeValue = vaule;
+            },
             getTodayDate(){
                 let now = new Date();
                 return now.format("yyyy-MM-dd");
@@ -159,10 +171,10 @@
                 let startTime = this.form.kssj;
                 let endTime = this.form.jssj;
                 if (typeof startTime === 'object'){
-                    this.form.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.form.kssj = startTime.format('yyyy-MM-dd');
                 }
                 if (typeof endTime === 'object'){
-                    this.form.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.form.jssj = endTime.format('yyyy-MM-dd');
                 }
                 this.$http.post(this.apis.ORDER.TJ,this.form).then((res) =>{
                     if (res.code == 200){

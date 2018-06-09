@@ -23,6 +23,7 @@ import com.ldz.sys.mapper.SysRlbMapper;
 import com.ldz.sys.model.*;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -109,7 +110,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 订单查询，所有的数据必须查询本人机构下的订单
-	 * 
+	 *
 	 * @param condition
 	 * @return
 	 */
@@ -149,12 +150,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		int i = entityMapper.insertSelective(entity);
 		RuntimeCheck.ifTrue(i == 0, "订单入库失败");
 
-		// // 原始单据
-		// ClDdlsb initOrder = new ClDdlsb();
-		// BeanUtils.copyProperties(entity,initOrder,"id");
-		// initOrder.setId(genId());
-		// initOrder.setDdId(entity.getId());
-		// ddlsbMapper.insertSelective(initOrder);
 
 		ddrzService.log(entity);
 		return ApiResponse.success();
@@ -162,7 +157,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 订单审核操作
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -203,7 +198,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 订单查询页面
-	 * 
+	 *
 	 * @param entity
 	 *            1、id 订单ID 必填
 	 * @return
@@ -251,7 +246,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 待分配订单 查询订单状态为
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -287,7 +282,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 运输中心-司机列表 派单司机列表
-	 * 
+	 *
 	 * @param entity
 	 *            1、司机名 xm like 查询
 	 *            2、驾驶员车型 zjcx 车辆类型 10、小车 20、大车 30、校巴 0203是查询大车、校巴  40 是外部车
@@ -358,7 +353,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 已分配订单查询
-	 * 
+	 *
 	 * @param entity
 	 *            1、司机属性 sjSx 司机属性：10:内部司机，关联CL_JSY表 11：外部车，关联临时车表 2、驾驶员ID(驾驶员证件号)
 	 *            SJ 当为内部车时，该值必填 3、车牌号 cph 当为外部车时，该值必填
@@ -389,7 +384,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	/**
 	 * 派单操作 请求方式为post 1、验证订单ID是否存在 2、验证该订单是否处于：待派单状态 3、验证该订单是分配给内部（司机证件号） 还是外部 (车牌号)
 	 * 3-1、验证司机证件号、车牌号的准备性 3-2、通过订单id修改派单操作 4、写入日志表。
-	 * 
+	 *
 	 * @param entity
 	 *            1、订单id id 必填 2、司机属性 sjSx 司机属性：10:内部司机，关联CL_JSY表 11：外部车，关联临时车表
 	 *            3、驾驶员ID(驾驶员证件号) SJ 当为内部车时，该值必填 4、车牌号 cph 当为外部车时，该值必填
@@ -522,7 +517,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 取消派单操作 请求方式为post 1、验证订单ID是否存在 2、验证该订单是否处于：已派单状态 3、将订单状态修改为待派单状态 4、写入日志表。
-	 * 
+	 *
 	 * @param entity
 	 *            1、订单id id 必填
 	 * @return 成功或失败提示
@@ -579,7 +574,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	 *
 	 * ---------------20180506修改如下------------- 1、订单处理13（派单）、20（司机确认）后都可以修改
 	 * 2、司机、队长、su(超级管理员)可以进行修改
-	 * 
+	 *
 	 * @param entity
 	 * @return
 	 */
@@ -633,7 +628,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 订单确认 操作 1、订单处于：司机确认(行程结束) 2、只有该队队长才能有限制 3、修改订单状态为 队长确认 4、复制订单表到原始订单表中
-	 * 
+	 *
 	 * @param entity
 	 *            订单ID 必填
 	 * @return 成功与否
@@ -691,6 +686,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		LimitedCondition condition = new LimitedCondition(ClDd.class);
 		condition.eq(ClDd.InnerColumn.ddzt, state);
+		if (StringUtils.isNotEmpty(order.getJgdm())){
+			condition.eq(ClDd.InnerColumn.jgdm,order.getJgdm());
+		}
 		if (StringUtils.isNotEmpty(order.getCk())) {
 			condition.like(ClDd.InnerColumn.ck, order.getCk());
 		}
@@ -748,6 +746,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		LimitedCondition condition = new LimitedCondition(ClDd.class);
 		condition.eq(ClDd.InnerColumn.fkzt, state);
+		condition.gte(ClDd.InnerColumn.ddzt,"20");
 		if (StringUtils.isNotEmpty(order.getSjxm())) {
 			condition.like(ClDd.InnerColumn.sjxm, order.getSjxm());
 		}
@@ -769,15 +768,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			Map<String, Object> map = orderGroupMap.get(sjxm);
 			if (map != null) {
 				List<ClDd> orders = (List<ClDd>) map.get("orderList");
-				Double oldAmount = 0.00;
-				Double newAmount =0.00;
-				try {
-					oldAmount = (Double) map.get("amount");
-				}catch (Exception e){}
-
-				try{
-					newAmount = MathUtil.add(oldAmount, o.getZj());
-				}catch (Exception e){}
+				Double oldAmount = (Double) map.get("amount");
+				Double newAmount = MathUtil.add(oldAmount, o.getZj() == null ? 0 : o.getZj());
 				map.put("amount", newAmount);
 				orders.add(o);
 			} else {
@@ -788,7 +780,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 				map.put("driverName", o.getSjxm());
 				map.put("driverId", o.getSj());
 				map.put("orderList", orders);
-				map.put("amount", o.getZj());
+				map.put("amount", o.getZj() == null ? 0 : o.getZj());
 				orderGroupMap.put(sjxm, map);
 			}
 		}
@@ -829,7 +821,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	/**
 	 * 收款管理
-	 * 
+	 *
 	 * @param entity
 	 *            ddzt 订单状态 30：因收单据 40：已收单据 必填 ck 乘客姓名
 	 * @return jgdm 机构ID jgmc 机构名称 ddList 订单列表
@@ -962,7 +954,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	// }
 	/**
 	 * 财务结算-订单编辑 1、订单处于：队长确认(队长确定价格)
-	 * 
+	 *
 	 * @return
 	 */
 	public ApiResponse<String> updateFinanceOrder(ClDd entity) {
@@ -986,6 +978,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			RuntimeCheck.ifFalse(false, "创建订单历史表失败");
 			return ApiResponse.fail("操作数据库失败");
 		}
+
+			// 原始单据
+		 ClDdlsb initOrder = new ClDdlsb();
+		 BeanUtils.copyProperties(entity,initOrder,"id");
+		 initOrder.setId(genId());
+		 initOrder.setDdId(entity.getId());
+		 ddlsbMapper.insertSelective(initOrder);
 
 		// 4、插入日志表
 		ClDdrz clDdrz = new ClDdrz();
@@ -1047,16 +1046,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 
 		if (StringUtils.isEmpty(dd.getKssj())) {
 			String kssj = DateUtils.getToday() + " 00:00:00";
 			dd.setKssj(kssj);
+		}else{
+			dd.setKssj(dd.getKssj() + " 00:00:00");
 		}
 		if (StringUtils.isEmpty(dd.getJssj())) {
 			String jssj = DateUtils.getToday() + " 23:59:59";
 			dd.setJssj(jssj);
+		}else{
+			dd.setJssj(dd.getJssj() + " 23:59:59");
 		}
 
 		ApiResponse<List<Ddtongji>> apiResponse = new ApiResponse<>();
@@ -1119,15 +1123,20 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 		if (StringUtils.isEmpty(dd.getKssj())) {
 			String kssj = DateUtils.getToday() + " 00:00:00";
 			dd.setKssj(kssj);
+		}else{
+			dd.setKssj(dd.getKssj() + " 00:00:00");
 		}
 		if (StringUtils.isEmpty(dd.getJssj())) {
 			String jssj = DateUtils.getToday() + " 23:59:59";
 			dd.setJssj(jssj);
+		}else{
+			dd.setJssj(dd.getJssj() + " 23:59:59");
 		}
 
 		ApiResponse<List<Ddtongji>> apiResponse = new ApiResponse<>();
@@ -1219,6 +1228,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 
@@ -1271,6 +1281,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
+			dd.setJgdm(null);
 			dd.setJgdmlike(jgdm);
 		}
 
@@ -1338,6 +1349,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			if (!"1".equals(rlb.getZt().trim()))continue;
 			durationMs += getExtraTime(nr,map.get("startTime"),map.get("endTime"));
 		}
+		order.setJbsc(new BigDecimal(durationMs/(1000*60*60)).shortValue());
+		entityMapper.updateByPrimaryKeySelective(order);
 		BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000*60*60),2,BigDecimal.ROUND_HALF_UP);
 		return amount;
 	}
@@ -1520,7 +1533,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	private static String convertWeekDate(String time) {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
-        
+
 		Calendar cal = Calendar.getInstance();
 		Date parse = null;
 		try {
@@ -1528,7 +1541,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
+
 		cal.setTime(parse);
 
 		// 判断要计算的日期是否是周日，如果是则减一天计算周六的，否则会出问题，计算到下一周去了
@@ -1553,7 +1566,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	@Override
 	public ApiResponse<CcTjTx> chucheTTj(DdTongjiTJ dd) {
-		
+
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
@@ -1575,7 +1588,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		    List<Integer> count = new ArrayList<>();
 		    Map<String, Integer> tjMap= new HashMap<>();
 		List<ClDd> ddTongji = entityMapper.DdTongji(dd);
-		
+
 		int ypddCount = 0;
 		int dpddCount=0;
 		for (ClDd clDd : ddTongji) {
@@ -1586,12 +1599,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 				}else {
 					dpddCount++;
 				}
-				
+
 		}
 		tjMap.put("已派单", ypddCount);
 		tjMap.put("待派单", dpddCount);
 		ccTjTx.setTjMap(tjMap);
-		
+
 		// 将订单按照司机分类
 		Map<String, List<ClDd>> ddmp = ddTongji.stream().filter(s -> StringUtils.isNotEmpty(s.getSjxm()))
 				.collect(Collectors.groupingBy(ClDd::getSjxm));
@@ -1601,7 +1614,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			Entry<String, List<ClDd>> next = it.next();
 			List<ClDd> value = next.getValue();
 			int ypdCount = 0;
-           
+
 			for (ClDd clDd : value) {
 				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 				Integer ddzt = Integer.parseInt(clDd.getDdzt());
@@ -1609,7 +1622,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 					ypdCount++;
 				}
 				continue;
-				
+
 			}
 			sjxm.add(next.getKey());
 			count.add(ypdCount);

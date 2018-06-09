@@ -68,6 +68,12 @@ public class ClDd implements Serializable {
     private Short sc;
 
     /**
+     * 加班时长
+     */
+    @Column(name = "JBSC")
+    private Short jbsc;
+
+    /**
      * 单价
      */
     @Column(name = "DJ")
@@ -282,8 +288,8 @@ public class ClDd implements Serializable {
      */
     @Column(name = "ZDBH")
     private String zdbm;
-    
- 
+
+
 
     /**
      * 载客量  筛选条件
@@ -324,6 +330,14 @@ public class ClDd implements Serializable {
      */
     @Column(name = "CK_CJL")
     private String ckCjl;
+
+    public Short getJbsc() {
+        return jbsc;
+    }
+
+    public void setJbsc(Short jbsc) {
+        this.jbsc = jbsc;
+    }
 
     public String getCkCjl() {
         return ckCjl;

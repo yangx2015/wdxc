@@ -36,6 +36,15 @@ public class ClCtrl extends BaseController<ClCl, String> {
 		return ApiResponse.success(carList);
 	}
 
+
+	@RequestMapping("unbindDevice")
+	public ApiResponse<String> unbindDevice(String carId){
+		return clservice.unbindDevice(carId);
+	}
+	@RequestMapping("unbindDriver")
+	public ApiResponse<String> unbindDriver(String carId){
+		return clservice.unbindDriver(carId);
+	}
 	@Override
 	protected BaseService<ClCl, String> getBaseService() {
 		return clservice;
@@ -73,12 +82,12 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	public ApiResponse<List<Map<String,Object>>> getVehicleTypeStatistics(String zxzt) {
 		return clservice.getVehicleTypeStatistics(zxzt);
 	}
-	
+
 	@GetMapping("/nianshen")
 	public ApiResponse<List<ClCl>> nianshen(ClCl car){
-		
+
 		return clservice.nianshen(car);
-		
+
 	}
 
 	/**
@@ -87,8 +96,8 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	 * @return
 	 */
 	@RequestMapping("carAccStatistics")
-	public ApiResponse<Map<String,Object>> carAccStatistics(Integer days){
-		return clservice.carAccStatistics(days);
+	public ApiResponse<Map<String,Object>> carAccStatistics(Integer days,String type){
+		return clservice.carAccStatistics(days,type);
 	}
 
     /*

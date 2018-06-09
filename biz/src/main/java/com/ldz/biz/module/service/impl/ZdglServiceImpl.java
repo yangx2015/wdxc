@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,7 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.exception.RuntimeCheck;
 
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 @Service
@@ -28,6 +31,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     private ClZdglMapper entityMapper;
     @Autowired
     private ClService clService;
+    @Autowired
+    private RedisTemplateUtil redisTemplateUtil;
 
     @Override
     protected Mapper<ClZdgl> getBaseMapper() {
@@ -95,6 +100,20 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         return result;
     }
 
+
+    @Override
+    public boolean fillPagerCondition(LimitedCondition condition){
+        String cphLike = getRequestParamterAsString("cphLike");
+        if (StringUtils.isNotEmpty(cphLike)){
+            List<ClCl> carList = clService.findLike(ClCl.InnerColumn.cph,cphLike);
+            if (CollectionUtils.isEmpty(carList)){
+                return false;
+            }
+            List<String> zdbhs = carList.stream().map(ClCl::getZdbh).collect(Collectors.toList());
+            condition.in(ClZdgl.InnerColumn.zdbh,zdbhs);
+        }
+        return true;
+    }
     /**
      * 自定义分页的对象
      * @param resultPage
@@ -151,4 +170,13 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 		
 		return apiResponse;
 	}
+
+    @Override
+    public ApiResponse<String> getVersionInfo(String deviceId) {
+        String val = (String) redisTemplateUtil.boundValueOps("versionInfo-"+deviceId).get();
+        if (StringUtils.isEmpty(val)){
+            return ApiResponse.fail("暂无版本信息");
+        }
+        return ApiResponse.success(val);
+    }
 }

@@ -42,7 +42,7 @@
         },
         created(){
             this.carID = this.mess.clId
-            console.log(this.mess)
+            log(this.mess)
             this.bodyH.height = (this.getWindowHeight() - 330)+'px'
         },
         methods:{

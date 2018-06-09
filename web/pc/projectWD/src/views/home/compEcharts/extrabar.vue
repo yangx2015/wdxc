@@ -5,9 +5,9 @@
 	<div style="width:100%;height:100%;position: relative;">
 		<div style="position: absolute;top:0;right: 0;z-index: 1000">
 			<ButtonGroup size="small" shape="circle">
-		        <Button type="primary" @click="changeDays(3)">三天</Button>
-		        <Button type="primary" @click="changeDays(5)">五天</Button>
-		        <Button type="primary" @click="changeDays(7)">七天</Button>
+		        <Button :type="day == '三天' ? 'primary' : 'default'" @click="changeDays(3)">三天</Button>
+		        <Button :type="day == '五天' ? 'primary' : 'default'" @click="changeDays(5)">五天</Button>
+		        <Button :type="day == '七天' ? 'primary' : 'default'" @click="changeDays(7)">七天</Button>
 		    </ButtonGroup>
 		</div>
 		<div style="width:100%;height:100%;" :id="Eid"></div>
@@ -31,7 +31,8 @@
 				loading:this.$store.state.app.loading,
 				result:{},
 				form:{
-					days:3
+					days:3,
+					type:'cstj'
 				},
 				day:'三天'
 			};
@@ -137,7 +138,7 @@
                             time = 7
                         }
                         v.$store.commit('echChanged',{'cph':params.name,'time':time})
-                        console.log('-**---------------------**-',params)
+                        log('-**---------------------**-',params)
                     });
                     window.addEventListener('resize', function() {
                         dataSourceBar.resize();

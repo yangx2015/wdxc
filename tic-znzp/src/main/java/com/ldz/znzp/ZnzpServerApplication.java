@@ -5,8 +5,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import com.ldz.znzp.bean.ThreadPoolBean;
+import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
+@ComponentScan("com.ldz")
 @EnableConfigurationProperties({ThreadPoolBean.class} ) // 开启配置属性支持  
 public class ZnzpServerApplication {
 

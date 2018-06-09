@@ -93,11 +93,11 @@
 									color="#b5b5b5" size='38'></Icon>
 							</div>
 							<img style="width: 100%;"
-								:src="videoPath+'/test/'+item.imgdz"/>
+								:src="videoPath+item.imgdz"/>
     					</div>
 						<video v-else
 							style="width: 100%;"
-					       :src="videoPath+'/test/'+item.url"
+					       :src="videoPath+item.url"
 					       autoplay="autoplay"
 					       controls="controls"></video>
 					    <div class="VideoTit">

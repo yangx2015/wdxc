@@ -61,23 +61,23 @@ public class TrackPoint {
      * 速度
      * 单位：km/h
      */
-    private String speed;   //30.25
+    private Double speed;   //30.25
 
     /**
      * 方向
      * 范围为[0,359]，0度为正北方向，顺时针
      */
-    private String direction;   //12
+    private Integer direction;   //12
     /**
      * 高度
      * 米
-     *//*
+     */
     private String height;  //113.76
 
-    *//**
+    /**
      * 定位精度，GPS或定位SDK返回的值
-     *//*
-    private String radius;  //3*/
+     */
+    private Double radius;  //3
   
 
   

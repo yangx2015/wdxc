@@ -12,6 +12,7 @@ spring:
   redis:
     host: 127.0.0.1
     port: 6379
+    database: 10
     maxIdle: 200
     maxActive: 1024
     maxWait: 1000
@@ -36,24 +37,30 @@ spring:
     filters: stat,wall,log4j
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
     cachePrepStmts: true
+#  boot:
+#   admin:
+#      url: http://127.0.0.1:9078
+#      client:
+#        name: WD-JOB
+#management.security.enabled: false
 #mybatis配置信息
 mybatis:
   configLocation: classpath:mybatis/MapperConfig.xml
   mapperLocations: classpath:mybatis/sql/*.xml,classpath:mybatis/sql/extend/*.xml
-  
+
 logging:
   config: classpath:log4j2.xml
-  
+
 mapper:
   identity: MYSQL
-  
+
 server:
   port: 81
 
 biz:
   url: http://47.98.39.45:8080/pub/gps/save
-  
-ticserver:  
-   url: http://47.98.39.45:9095/api/push/checkOnlin/ 
+
+ticserver:
+   url: http://47.98.39.45:9095/api/push/checkOnlin/
 znzp:
    url: http://47.98.39.45:9888/api/reporting

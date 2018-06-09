@@ -56,7 +56,7 @@
 								<Input v-model="formItem.mdd" size="large" placeholder="请填写目的地点"></Input>
 							</FormItem>
 						</Col>
-						<Col span="8">
+						<Col span="4">
 							<FormItem label="">
 								<h3>
 									出车时间
@@ -67,17 +67,17 @@
 											type="datetime"
 											placeholder="请填写用车时间" ></DatePicker>
 							</FormItem>
-						<!--</Col>-->
-						<!--<Col span="4">-->
-							<!--<FormItem label="">-->
-								<!--<h3>-->
-									<!--单据类型-->
-								<!--</h3>-->
-								<!--<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>-->
-									<!--<Option value="00">单程</Option>-->
-									<!--<Option value="10">往返</Option>-->
-								<!--</Select>-->
-							<!--</FormItem>-->
+						</Col>
+						<Col span="4">
+							<FormItem label="">
+								<h3>
+									单据类型
+								</h3>
+								<Select v-model="formItem.wf" filterable clearable  size="large" placeholder="请选择单据类型" filterable>
+									<Option value="00">单程</Option>
+									<Option value="10">往返</Option>
+								</Select>
+							</FormItem>
 						</Col>
 						<Col span="8">
 							<Row>
@@ -87,7 +87,7 @@
 											费用来源
 										</h3>
 										<Select filterable clearable
-												v-model="formItem.fromMoney"
+												v-model="formItem.fkfs"
 												@on-change="fyly"
 												size="large" placeholder="请选择费用来源" filterable>
 											<Option v-for="item in fromMoneyList" :value="item.key">{{item.val}}</Option>
@@ -102,7 +102,7 @@
 										<div class="box-row">
 											<div class="body-O">
 												<Select filterable clearable
-														:disabled="formItem.fromMoney!='20'"
+														:disabled="formItem.fkfs!='20'"
 														v-model="formItem.ktcode" size="large" placeholder="请选择课题" filterable>
 													<Option v-for="item in ctasklList" :value="item.key">{{item.val}}</Option>
 												</Select>
@@ -110,7 +110,7 @@
 											<div title="新建课题">
 												<Button type="info"
 														icon="plus-round"
-														:disabled="formItem.fromMoney!='20'"
+														:disabled="formItem.fkfs!='20'"
 														@click="newKT"></Button>
 											</div>
 										</div>
@@ -261,7 +261,7 @@
 				this.fromMoneyList = this.dictUtil.getByCode(this,'ZDCLK0043')
             },
             fyly(){
-                if(this.formItem.fromMoney!='课题费用'){
+                if(this.formItem.fkfs!='课题费用'){
                     this.formItem.task = ''
 				}
 			},
@@ -281,7 +281,7 @@
 			},
 			//表单数据提交
 			AddNewlist(){
-                console.log(this.formItem)
+                log(this.formItem)
                 // if (this.treeValue.length === 0){
                  //    this.$Message.error('请选择机构');
                  //    return;
