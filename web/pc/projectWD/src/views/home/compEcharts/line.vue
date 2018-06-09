@@ -47,7 +47,7 @@
 
                     const option = {
                         title: {
-                            text: '每日订单走势图',
+                            text: '每日订单走势图('+this.result.startTime+'-至今)',
                             textStyle: {
                             }
                         },

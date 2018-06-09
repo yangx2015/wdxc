@@ -6,7 +6,7 @@
 select * from CL_DD t where t.CJSJ between
 		to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
 		and
-		to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss') 
+		to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
 		<if test="jgdm != null">
 			and t.JGDM = #{jgdm}
 		</if>
@@ -22,13 +22,13 @@ select * from CL_DD t where t.CJSJ between
 SELECT
  	t1.today,
  	count (CL_DD.cjsj)
- VALUE 
+ VALUE
  FROM
  	(
- 		<![CDATA[ select 
-to_char (to_date(#{cxsj},'yyyy-mm-dd')-to_char(sysdate,'d')+8 - LEVEL + 1, 'yyyy-mm-dd') today  from dual   connect BY LEVEL <= 7 ]]>
+ 		<![CDATA[ select
+to_char (to_date(#{cxsj},'yyyy-mm-dd')-to_char(sysdate,'d')+14 - LEVEL, 'yyyy-mm-dd') today  from dual   connect BY LEVEL <= 7 ]]>
 	) t1
- LEFT JOIN CL_DD ON t1.today = to_char(CL_DD.cjsj,'yyyy-mm-dd') 
+ LEFT JOIN CL_DD ON t1.today = to_char(CL_DD.cjsj,'yyyy-mm-dd')
        <if test="jgdm != null">
 			and JGDM = #{jgdm}
 		</if>

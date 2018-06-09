@@ -1481,7 +1481,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 	@Override
 	public ApiResponse<DdTjTxReturn> ddzTj(DdTongjiTJ dd) {
-
+		DdTjTxReturn ddTjTxReturn = new DdTjTxReturn();
 		if (StringUtils.isEmpty(dd.getJgdm())) {
 			SysYh currentUser = getCurrentUser();
 			String jgdm = currentUser.getJgdm();
@@ -1490,6 +1490,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		if (StringUtils.isEmpty(dd.getCxsj())) {
 			String monday = getMONDAY();
+			ddTjTxReturn.setStartTime(monday);
 			dd.setCxsj(monday);
 		}else {
 			String convertWeekDate = convertWeekDate(dd.getCxsj());
@@ -1498,7 +1499,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		ApiResponse<DdTjTxReturn> apiResponse = new ApiResponse<>();
 
-		DdTjTxReturn ddTjTxReturn = new DdTjTxReturn();
 
 		List<String> dateList = new ArrayList<>();
 		List<String> countList = new ArrayList<>();
