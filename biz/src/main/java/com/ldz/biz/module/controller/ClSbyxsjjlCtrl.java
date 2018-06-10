@@ -20,7 +20,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
 
 @RestController
-@RequestMapping("pub/clsbyxsjjl")
+@RequestMapping("api/clsbyxsjjl")
 public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	@Autowired
 	private SbyxsjjlService service;

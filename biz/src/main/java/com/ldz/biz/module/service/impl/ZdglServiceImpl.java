@@ -1,49 +1,30 @@
 package com.ldz.biz.module.service.impl;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.github.pagehelper.PageInfo;
+import com.ldz.biz.module.mapper.ClZdglMapper;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClCssd;
+import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.biz.module.service.ClService;
+import com.ldz.biz.module.service.CssdService;
+import com.ldz.biz.module.service.ZdglService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
+import tk.mybatis.mapper.common.Mapper;
+
 import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.ldz.biz.module.model.ClCssd;
-import com.ldz.biz.module.service.CssdService;
-import com.ldz.sys.base.LimitedCondition;
-import com.ldz.util.redis.RedisTemplateUtil;
-import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.poifs.filesystem.POIFSFileSystem;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.github.pagehelper.PageInfo;
-import com.ldz.biz.module.mapper.ClZdglMapper;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.ZdglService;
-import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.exception.RuntimeCheck;
-
-import org.springframework.util.CollectionUtils;
-import org.springframework.web.multipart.MultipartFile;
-import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ZdglService{
@@ -213,42 +194,102 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     /**
      * 解析excel 批量导入终端
-     * @param file
+     * @param
      * @return
      */
     @Override
-    public  ApiResponse<String> saveBatch(MultipartFile file) throws IOException {
+    public  ApiResponse<String> saveBatch(String filePath) throws IOException {
 
-        File f = new File("E:\\批量新增终端模板.xls");
-        String fileToBeRead = "E:\\批量新增终端模板.xls";
-        POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(f));
-        HSSFWorkbook hssfWorkbook =  new HSSFWorkbook(poifsFileSystem);
-        HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
-
-        int rowstart = hssfSheet.getFirstRowNum();
-        int rowEnd = hssfSheet.getLastRowNum();
-        for(int i=rowstart;i<=rowEnd;i++)
-        {
-            HSSFRow row = hssfSheet.getRow(i);
-            if(null == row) continue;
-            int cellStart = row.getFirstCellNum();
-            int cellEnd = row.getLastCellNum();
-
-            for(int k=cellStart;k<=cellEnd;k++)
-            {
-                HSSFCell cell = row.getCell(k);
-                if(null==cell) {
+       /* Workbook workbook;
+        try {
+            if(filePath.indexOf(".xlsx")>-1){
+                workbook = new XSSFWorkbook(new FileInputStream(filePath));
+            } else {
+                workbook = new HSSFWorkbook(new FileInputStream(filePath));
+            }
+            //HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(fileToBeRead)); //2003 创建对Excel工作簿文件的引用
+            //XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(fileToBeRead)); //2007,2010 创建对Excel工作簿文件的引用
+            Sheet sheet = workbook.getSheetAt(0); // 创建对工作表的引用
+            int rows = sheet.getPhysicalNumberOfRows();// 获取表格的
+            int columns = 0;
+            for (int r = 0; r < rows; r++) { // 循环遍历表格的行
+                if(r==0){
+                    //在第一行标题行计算出列宽度,因为数据行中可能会有空值
+                    columns = sheet.getRow(r).getLastCellNum();
                     continue;
                 }
+                String value = "";
+                Row row = sheet.getRow(r); // 获取单元格中指定的行对象
+                if (row != null) {
+                    //int cells = row.getPhysicalNumberOfCells();// 获取一行中的单元格数
+                    //int cells = row.getLastCellNum();// 获取一行中最后单元格的编号（从1开始）
+                    for (short c = 0; c < columns; c++) { // 循环遍历行中的单元格
+                        Cell cell = row.getCell((short) c);
+                        if (cell != null) {
+
+                            ClZdgl clZdgl = new ClZdgl();
+                            if(cell.getCellType() != Cell.CELL_TYPE_STRING){
+
+                                return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的数据不是文本类型,请改成文本类型后上传" );
+                            }
+                            String v = cell.getStringCellValue();
+                            switch(c){
+                                case 0: // 终端号
+                                    if(StringUtils.isEmpty(v)){
+                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备终端号不能为空" );
+                                    }
+                                    ClZdgl zdgl = findById(cell.getStringCellValue());
+                                    if(zdgl == null){
+                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备终端号已经存在" );
+                                    }
+                                    clZdgl.setZdbh(cell.getStringCellValue());
+                                    break;
+                                case 1: // 名称
+                                    if(StringUtils.isEmpty(v)){
+                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备名称不能为空" );
+                                    }
+                                    clZdgl.setMc(v);
+                                    break;
+                                case 2: // 型号
+                                    if(StringUtils.isEmpty(v)){
+                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备型号不能为空" );
+                                    }
+                                    clZdgl.setXh(v);
+                                    break;
+                                case 3: // 碰撞灵敏度
+                                    if(StringUtils.isEmpty(v)){
+                                        clZdgl.setPzlmd("10");
+                                    }else{
+                                        clZdgl.setPzlmd(v);
+                                    }
+                                    break;
+                                case 4: //上传视频模式
 
 
+
+
+                            }
+
+
+
+
+
+
+                        }
+                    }
+                }
+                String[] str = value.split(",");
+                System.out.println(value);
             }
-            System.out.print("\n");
-        }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }*/
 
 
 
-        return null;
+
+
+        return ApiResponse.success();
     }
 
 
