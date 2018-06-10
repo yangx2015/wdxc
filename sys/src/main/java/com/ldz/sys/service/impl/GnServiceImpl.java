@@ -452,9 +452,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return getPermissionTree(services,functions,null);
     }
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions,List<String> hasFunctionCodes){
+        Set<String> functionCodes = functions.stream().map(SysGn::getGndm).collect(Collectors.toSet());
+        findParent(functions,functionCodes);
         Map<String,SysFw> serviceMap = services.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
-        List<SysGn> allFunctions = findAll();
-        Map<String,SysGn> functionMap = allFunctions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+        Map<String,SysGn> functionMap = functions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
 
         List<String> serviceCodes = new ArrayList<>();
         for (SysGn function : functions) {
@@ -499,6 +500,19 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             }
         }
         return services;
+    }
+
+    private void findParent(List<SysGn> functions,Set<String> functionCodes){
+        Set<String> addCodes = new HashSet<>();
+        for (SysGn function : functions) {
+            if (StringUtils.isEmpty(function.getFjd()))continue;
+            if (functionCodes.contains(function.getFjd()))continue;
+            addCodes.add(function.getFjd());
+        }
+        if (addCodes.size() != 0){
+            List<SysGn> addFunctions = findIn(SysGn.InnerColumn.gndm,addCodes);
+            functions.addAll(addFunctions);
+        }
     }
 
     @Override

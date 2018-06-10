@@ -134,12 +134,7 @@
                         key: 'pzlmd',
                         render:(h,p)=>{
                             let val = this.dictUtil.getValByCode(this,'pzlmd',p.row.pzlmd)
-                            return h('div',{
-                                style:{
-                                    // color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-				    color:'#000'
-                                }
-                            },val)
+                            return h('div',val)
                         }
                     },
                     {
@@ -147,13 +142,8 @@
                         align:'center',
                         key: 'spscms',
                         render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this,'spscms',p.row.spscms)
-                            return h('div',{
-                                style:{
-                                    // color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-				    color:'#000'
-                                }
-                            },val)
+                            let val = this.dictUtil.getValByCode(this,'scspms',p.row.spscms)
+                            return h('div',val)
                         }
                     },
                     {
@@ -346,9 +336,9 @@
             		pageSize:8
                 },
                 Dictionary:[],
-		lmdmDictionary:'ZDCLK0032',//在线状态
-		ztDictionary:[],
-		ztlmdmDictionary:'ZDCLK0031'//设备状态
+				lmdmDictionary:'ZDCLK0032',//在线状态
+				ztDictionary:[],
+				ztlmdmDictionary:'ZDCLK0031'//设备状态
             }
         },
         created(){
