@@ -155,7 +155,7 @@
             },
 			getOrgPath(orgCode){
                 this.orgPath = [];
-                this.$http.get(this.apis.FUNCTION.getOrgPath+'?orgCode='+orgCode).then((res)=>{
+                this.$http.get(this.apis.FRAMEWORK.getOrgPath+'?orgCode='+orgCode).then((res)=>{
                     if (res.code == 200){
                         for(let r of res.result){
                             this.orgPath.push(r.jgdm);
