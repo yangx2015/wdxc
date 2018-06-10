@@ -3,11 +3,13 @@ package com.ldz.sys.controller;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.sys.bean.TreeNode;
+import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,6 +40,12 @@ public class JgController extends BaseController<SysJg, String> {
 	@RequestMapping("getTree")
 	public ApiResponse<List<TreeNode>> getTree(){
 		return jgService.getTree();
+	}
+
+
+	@GetMapping("getOrgPath")
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode){
+		return jgService.getOrgPath(orgCode);
 	}
 
 	@Override

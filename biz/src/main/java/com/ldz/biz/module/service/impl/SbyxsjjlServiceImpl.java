@@ -60,36 +60,12 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		String minutes = getRequestParamterAsString("minutes"); // 获取请求异常信息时长
 		if(StringUtils.isNotBlank(minutes)) {
 			String startTime = DateUtils.calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt(minutes));
-			String endTime = DateUtils.getNowTime();
-
-
 			try {
 				condition.and().andGreaterThanOrEqualTo("cjsj", DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss"));
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			try {
-				condition.and().andLessThanOrEqualTo("cjsj",  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss"));
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
-
 		}
-		/*condition.and().andBetween(ClSbyxsjjl.InnerColumn.cjsj.name(),startTime,endTime);*/
-
-		/*
-		 * LimitedCondition condition2 = new LimitedCondition(ClCl.class);
-		 * HttpServletRequest request = ((ServletRequestAttributes)
-		 * RequestContextHolder.getRequestAttributes()) .getRequest();
-		 * condition2.eq(ClCl.InnerColumn.cph, request.getAttribute("cph"));
-		 * condition2.eq(ClCl.InnerColumn.cx, request.getAttribute("cx")); List<ClCl>
-		 * selectByExample = clclmapper.selectByExample(condition2);
-		 *
-		 * List<String> collect = selectByExample.stream().filter(s ->
-		 * StringUtils.isNotEmpty(s.getZdbh()))
-		 * .map(ClCl::getZdbh).collect(Collectors.toList());
-		 * condition.in(ClSbyxsjjl.InnerColumn.zdbh, collect);
-		 */
 		return true;
 	}
 

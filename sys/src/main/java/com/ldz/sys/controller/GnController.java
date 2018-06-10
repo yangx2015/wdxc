@@ -70,10 +70,6 @@ public class GnController extends BaseController<SysGn, String> {
         return ApiResponse.success(gnService.getMenuTree(user));
     }
 
-    @GetMapping("getOrgPath")
-    public ApiResponse<List<SysGn>> getOrgPath(String orgCode){
-        return gnService.getOrgPath(orgCode);
-    }
 
     @RequestMapping("setRoleFunctions")
     public ApiResponse<String> setRoleFunctions(String jsdm,String gndms){
