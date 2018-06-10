@@ -111,27 +111,29 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			entity.setSjxm(clCl.getSjxm());// 司机姓名
 			save(entity);
 			return ApiResponse.saveSuccess();
-		}
-
-		List<String> xlidList = findXlCl.stream().map(PbInfo::getXlId).collect(Collectors.toList());
-
-		if (!xlidList.contains(entity.getXlId())) {
-			SysYh user = getCurrentUser();
-			SysJg org = jgService.findByOrgCode(user.getJgdm());
-			entity.setCjr(getOperateUser());
-			entity.setId(genId());
-			entity.setJgdm(user.getJgdm());
-			entity.setJgmc(org.getJgmc());
-			entity.setCjsj(new Date());
-			entity.setCph(clCl.getCph());// 车牌号码
-			entity.setPbsj(pbDate);// 排班时间
-			entity.setSj(clCl.getSjId());// 司机ID
-			entity.setSjxm(clCl.getSjxm());// 司机姓名
-			save(entity);
-			return ApiResponse.saveSuccess();
-		} else {
+		}else{
 			return ApiResponse.fail("车辆与线路已经关联，需求重启关联");
 		}
+
+//		List<String> xlidList = findXlCl.stream().map(PbInfo::getXlId).collect(Collectors.toList());
+//
+//		if (!xlidList.contains(entity.getXlId())) {
+//			SysYh user = getCurrentUser();
+//			SysJg org = jgService.findByOrgCode(user.getJgdm());
+//			entity.setCjr(getOperateUser());
+//			entity.setId(genId());
+//			entity.setJgdm(user.getJgdm());
+//			entity.setJgmc(org.getJgmc());
+//			entity.setCjsj(new Date());
+//			entity.setCph(clCl.getCph());// 车牌号码
+//			entity.setPbsj(pbDate);// 排班时间
+//			entity.setSj(clCl.getSjId());// 司机ID
+//			entity.setSjxm(clCl.getSjxm());// 司机姓名
+//			save(entity);
+//			return ApiResponse.saveSuccess();
+//		} else {
+//			return ApiResponse.fail("车辆与线路已经关联，需求重启关联");
+//		}
 	}
 
 	@Override
