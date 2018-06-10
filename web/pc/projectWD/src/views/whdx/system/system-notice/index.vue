@@ -60,11 +60,12 @@
 	import jkdz from './jkdz'
 	import update from './update'
 	import setting from './setting'
+	import plmess from './plMess'
 	export default {
     	name:'char',
     	mixins:[mixins],
 		components:{
-            formData,change,jkdz,setting,update
+            formData,change,jkdz,setting,update,plmess
 		},
         data () {
             return {
@@ -76,7 +77,7 @@
             	pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
-                componentName:'',
+                componentName:'plmess',
                 choosedRow:{},
             	page:{
             		pageNum:1,
@@ -116,6 +117,21 @@
                         key: 'cs'
                     },
                     {
+                        title: '超速设定',
+                        align:'center',
+                        key: 'cssd'
+                    },
+                    {
+                        title: '碰撞灵敏度',
+                        align:'center',
+                        key: 'pzlmd'
+                    },
+                    {
+                        title: '视频上传模式',
+                        align:'center',
+                        key: 'spscms'
+                    },
+                    {
                         title: '接口地址',
                         align:'center',
                         key: 'cmd',
@@ -153,88 +169,138 @@
                         width: 200,
                         render: (h, params) => {
                             return h('div', [
-                                h('Button', {
-                                    props: {
-                                        type: 'warning',
-										icon: 'arrow-up-a',
-										shape: 'circle',
-										size: 'small'
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '设备升级',
+                                        },
                                     },
-                                    style: {
-                                        marginRight: '5px'
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'warning',
+                                                icon: 'arrow-up-a',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.updateMode = 'single'
+                                                    this.choosedRow = params.row
+                                                    this.componentName = 'update'
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '信息编辑',
+                                        },
                                     },
-                                    on: {
-                                        click: () => {
-                                            this.updateMode = 'single'
-                                        	this.choosedRow = params.row
-                                            this.componentName = 'update'
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'success',
-										icon: 'edit',
-										shape: 'circle',
-										size: 'small'
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'success',
+                                                icon: 'edit',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.choosedRow = params.row
+                                                    this.componentName = 'change'
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '设置接口地址',
+                                        },
                                     },
-                                    style: {
-                                        marginRight: '5px'
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'ios-pulse-strong',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.choosedRow = params.row
+                                                    this.componentName = 'jkdz'
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '终端设置',
+                                        },
                                     },
-                                    on: {
-                                        click: () => {
-                                        	this.choosedRow = params.row
-                                            this.componentName = 'change'
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-										icon: 'ios-pulse-strong',
-										shape: 'circle',
-										size: 'small'
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'primary',
+                                                icon: 'gear-b',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            style: {
+                                                marginRight: '5px'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.choosedRow = params.row
+                                                    this.componentName = 'setting'
+                                                }
+                                            }
+                                        }),
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '终端删除',
+                                        },
                                     },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                        	this.choosedRow = params.row
-                                            this.componentName = 'jkdz'
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'primary',
-										icon: 'gear-b',
-										shape: 'circle',
-										size: 'small'
-                                    },
-                                    style: {
-                                        marginRight: '5px'
-                                    },
-                                    on: {
-                                        click: () => {
-                                        	this.choosedRow = params.row
-                                            this.componentName = 'setting'
-                                        }
-                                    }
-                                }),
-                                h('Button', {
-                                    props: {
-                                        type: 'error',
-                                        icon: 'close',
-                                        shape: 'circle',
-                                        size: 'small'
-                                    },
-                                    on: {
-                                        click: () => {
-                                            this.listDele(params.row)
-                                        }
-                                    }
-                                })
+                                    [
+                                        h('Button', {
+                                            props: {
+                                                type: 'error',
+                                                icon: 'close',
+                                                shape: 'circle',
+                                                size: 'small'
+                                            },
+                                            on: {
+                                                click: () => {
+                                                    this.listDele(params.row)
+                                                }
+                                            }
+                                        })
+                                    ]
+                                ),
                             ]);
                         }
                     },
