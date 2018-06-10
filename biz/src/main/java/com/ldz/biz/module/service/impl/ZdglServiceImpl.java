@@ -208,10 +208,11 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
      * @return
      */
     @Override
-    public  ApiResponse<String> saveBatch(String filePath) throws IOException {
+    public ApiResponse<String> saveBatch(String filePath) throws IOException {
 
         List<ClZdgl> zdglList = new ArrayList<>();
         List<ClCssd> cssdList = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
 
         filePath = staticPath + filePath;
         Workbook workbook;
@@ -254,7 +255,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     ClCssd clCssd = new ClCssd();
                     clCssd.setCjr(getOperateUser());
                     clCssd.setCjsj(new Date());
-
+                    clCssd.setId(genId());
                     //int cells = row.getPhysicalNumberOfCells();// 获取一行中的单元格数
                     //int cells = row.getLastCellNum();// 获取一行中最后单元格的编号（从1开始）
                     for (short c = 0; c < columns; c++) { // 循环遍历行中的单元格
@@ -262,31 +263,31 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                         Cell cell = row.getCell((short) c);
                             if(cell != null) {
                                 if(cell.getCellType() != Cell.CELL_TYPE_STRING){
-                                    return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的数据不是文本类型,请改成文本类型后上传" );
+                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的数据不是文本类型,请改成文本类型后上传" );
                                 }
                                 v = cell.getStringCellValue();
                             }
                             switch(c){
                                 case 0: // 终端号
                                     if(StringUtils.isEmpty(v)  || cell == null){
-                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备终端号不能为空" );
+                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号不能为空" );
                                     }
 
                                     ClZdgl zdgl = findById(cell.getStringCellValue());
                                     if(zdgl != null){
-                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备终端号已经存在" );
+                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号已经存在" );
                                     }
                                     clZdgl.setZdbh(cell.getStringCellValue());
                                     break;
                                 case 1: // 名称
                                     if(StringUtils.isEmpty(v) || cell == null){
-                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备名称不能为空" );
+                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备名称不能为空" );
                                     }
                                     clZdgl.setMc(v);
                                     break;
                                 case 2: // 型号
                                     if(StringUtils.isEmpty(v) || cell == null){
-                                        return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的设备型号不能为空" );
+                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备型号不能为空" );
                                     }
                                     clZdgl.setXh(v);
                                     break;
@@ -309,7 +310,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                                        clCssd.setSdsx((short)60);
                                    }else{
                                        if(Integer.parseInt(v)>128 || Integer.parseInt(v)<-127){
-                                           return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的超速限定异常" );
+                                           errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的超速限定异常" );
                                        }
                                        clCssd.setSdsx(Short.parseShort(v));
                                    }
@@ -325,14 +326,31 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
                     }
                     // 遍历完每一行为一个终端对象 , 保存终端
-                    save(clZdgl);
-                    cssdService.saveEntity(clCssd);
+                    zdglList.add(clZdgl);
+                    cssdList.add(clCssd);
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return ApiResponse.success();
+        if(CollectionUtils.isEmpty(errors)){
+            saveBatch(zdglList);
+            cssdService.saveBatch(cssdList);
+            return ApiResponse.success();
+        }else{
+            return ApiResponse.fail(errors.toString());
+        }
+
+
+
+
+    }
+
+    @Override
+    public void saveBatch(List<ClZdgl> clZdgls) {
+        for (ClZdgl clZdgl: clZdgls) {
+            save(clZdgl);
+        }
     }
 
 
