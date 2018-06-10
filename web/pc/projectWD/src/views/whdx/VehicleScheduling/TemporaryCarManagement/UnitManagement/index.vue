@@ -159,7 +159,7 @@
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
+            this.$store.commit('setCurrentPath', [{title: '首页'}, {title: '车辆管理'},{title: '临时车管理'},{title: '单位管理'}])
             this.tabHeight = this.getWindowHeight() - 300
             this.getPageData()
         },

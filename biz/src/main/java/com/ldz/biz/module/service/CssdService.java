@@ -20,4 +20,8 @@ public interface CssdService extends BaseService<ClCssd,String>{
     void insetAndUpdate(ClCssd entity);
     
     public ApiResponse<String> senZl(GpsInfo info);
+
+    void saveBatch(List<ClCssd> clCssds);
+
+
 }

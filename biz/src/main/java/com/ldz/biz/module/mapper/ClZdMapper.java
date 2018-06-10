@@ -24,4 +24,8 @@ public interface ClZdMapper extends Mapper<ClZd> {
     
     //批量获取站点
     List<ClZd> getAllClzd(@Param("clzds") List<String> clzds);
+
+
+
+
 }

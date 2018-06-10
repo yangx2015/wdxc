@@ -62,4 +62,5 @@ public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> initMenu(List<Menu> menus);
 
     ApiResponse<String> setOrgFunctions(String jgdm, List<String> gndmList);
+
 }

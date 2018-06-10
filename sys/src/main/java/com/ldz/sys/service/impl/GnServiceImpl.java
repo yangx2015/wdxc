@@ -452,6 +452,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return getPermissionTree(services,functions,null);
     }
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions,List<String> hasFunctionCodes){
+        Set<String> functionCodes = functions.stream().map(SysGn::getGndm).collect(Collectors.toSet());
+        findParent(functions,functionCodes);
         Map<String,SysFw> serviceMap = services.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
         Map<String,SysGn> functionMap = functions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
 
@@ -500,6 +502,19 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return services;
     }
 
+    private void findParent(List<SysGn> functions,Set<String> functionCodes){
+        Set<String> addCodes = new HashSet<>();
+        for (SysGn function : functions) {
+            if (StringUtils.isEmpty(function.getFjd()))continue;
+            if (functionCodes.contains(function.getFjd()))continue;
+            addCodes.add(function.getFjd());
+        }
+        if (addCodes.size() != 0){
+            List<SysGn> addFunctions = findIn(SysGn.InnerColumn.gndm,addCodes);
+            functions.addAll(addFunctions);
+        }
+    }
+
     @Override
     public List<SysFw> getAllPermissionTree() {
         // todo  机构分权
@@ -511,7 +526,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         List<String> hasFunctionCodes = getOrgFunctionCodes(jgdm);
         SysJg org = jgService.findByOrgCode(jgdm);
         if (org == null)return new ArrayList<>();
-        return getPermissionTree(fwService.findByJgdm(jgdm),getOrgFunctions(org.getFjgdm()),hasFunctionCodes);
+        return getPermissionTree(fwService.findAll(),getOrgFunctions(org.getFjgdm()),hasFunctionCodes);
     }
 
     @Override

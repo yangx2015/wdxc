@@ -35,22 +35,22 @@
 				</Col>
 			</Row>
 			<Row :gutter="12" class="margin-bottom-15">
-				<Col span="8">
+				<Col span="12">
 					<div class="divpadd">
 						<div class="divbgcolor">
 							<e-Line Eid="Eline"></e-Line>
 						</div>
 					</div>
 				</Col>
-				<Col span="8">
-					<!--年审提醒-->
-					<div class="divpadd">
-						<div class="divbgcolor">
-							<y-pie Eid="ybar"></y-pie>
-						</div>
-					</div>
-				</Col>
-				<Col span="8">
+				<!--<Col span="8">-->
+					<!--&lt;!&ndash;年审提醒&ndash;&gt;-->
+					<!--<div class="divpadd">-->
+						<!--<div class="divbgcolor">-->
+							<!--<y-pie Eid="ybar"></y-pie>-->
+						<!--</div>-->
+					<!--</div>-->
+				<!--</Col>-->
+				<Col span="12">
 					<div class="divpadd">
 						<div class="divbgcolor">
 							<scbar Eid="scbar"></scbar>

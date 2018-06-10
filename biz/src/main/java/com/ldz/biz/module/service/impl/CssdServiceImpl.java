@@ -156,4 +156,13 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 		return apiResponse;
 	}
 
+	@Override
+	public void saveBatch(List<ClCssd> clCssds) {
+		clCssds.stream().forEach(
+				clCssd -> {
+					save(clCssd);
+				}
+		);
+	}
+
 }

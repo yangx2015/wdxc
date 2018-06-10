@@ -78,19 +78,19 @@
         	getLXDic(){
                 this.sjDIC = this.dictUtil.getByCode(this,this.sjBM);
 			},
-			getmess(){
-				var v = this
-				this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
-					log('数据',res)
-					v.tabmess = res.page.list
-				})
-			},
-            getalert(){
-                var windowHeight = window.innerHeight
-                this.tabHeight = windowHeight/2 - 130
-//				this.tabHeight = windowHeight - 200
-                log('浏览器高',this.tabHeight)
-            }
+                getmess(){
+                        var v = this
+                        this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+                                console.log('异常数据',res)
+                                v.tabmess = res.page.list
+                        })
+                },
+                getalert(){
+                    var windowHeight = window.innerHeight
+                    this.tabHeight = windowHeight/2 - 130
+    //				this.tabHeight = windowHeight - 200
+                    log('浏览器高',this.tabHeight)
+                }
         }
     }
 </script>

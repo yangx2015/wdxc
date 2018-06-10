@@ -1,7 +1,11 @@
 package com.ldz.util.commonUtil;
 
+import org.apache.commons.lang.StringUtils;
+import java.time.LocalDateTime;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -58,7 +62,31 @@ public class DateUtils {
 	public static long getTimes(){
 		return new Date().getTime();
 	}
-	
+
+
+	/**
+	 * 根据所有传入的参数进行时间计算
+	 * @param time 时间
+	 * @param operator 运算符
+	 * @param second 计算参数    秒
+	 */
+	public static String calculateTime(LocalDateTime time,String operator,int second){
+
+		if(StringUtils.equals(operator,"+")){
+			time = time.plusSeconds(second);
+		}else if(StringUtils.equals(operator, "-")){
+			time = time.minusSeconds(second);
+		}
+		DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		return time.format(df);
+
+	}
+
+
+
+
+
+
 //	/**
 //	 * 考试年份编码
 //	 * @return
@@ -73,6 +101,8 @@ public class DateUtils {
 	public static void main(String[] args){
 //		String dateStr = DateUtils.getDateStr(parseMills(1350994695000l), "yyyy-MM-dd HH:mm:ss");
 //		System.out.println(dateStr);
+		System.out.println(calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt("1")));
+
 		try {
 			DateUtils.getDate("2018-04-10","yyyy-MM-dd");
 		} catch (ParseException e) {
@@ -89,4 +119,5 @@ public class DateUtils {
 		}
 		return false;
 	}
+
 }

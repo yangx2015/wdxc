@@ -4,7 +4,7 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900' :closable='mesF'
-			   :mask-closable="mesF" 
+			   :mask-closable="mesF"
 			   :title="operate+'机构'">
 			<div style="overflow: auto;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
@@ -96,7 +96,7 @@
             },
             getOrgPermissionTree(){
                 this.data4 = [];
-                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.fjgdm).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.GET_ORG_PERMISSION_TREE+"?jgdm="+this.formItem.jgdm).then((res) =>{
                     if(res.code===200){
                         this.data4 = res.result[0].functions;
                     }

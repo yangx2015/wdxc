@@ -183,7 +183,7 @@ public class ClCl implements Serializable {
      */
     @Transient
     private List<ClDzwl> clDzwl;
-    
+
 	private static final long serialVersionUID = 1L;
 
     /**

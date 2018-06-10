@@ -1,5 +1,6 @@
 <style lang="less">
     @import "./main.less";
+    @import "../styles/common";
 </style>
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
@@ -20,19 +21,39 @@
             </shrinkable-menu>
         </div>
         <div class="main-header-con" :style="{paddingLeft: shrink?'60px':'200px'}">
-            <div class="main-header">
+            <div class="main-header box-row" style="height: 65px;">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
                         <Icon type="navicon" size="32"></Icon>
                     </Button>
                 </div>
-                <div class="header-middle-con">
+                <!--<div class="header-middle-con" style="background-color: #00cc66;width: 350px">-->
+                <div class="" style="line-height: 40px;width: 350px">
                     <div class="main-breadcrumb">
                         <breadcrumb-nav :currentPath="currentPath"></breadcrumb-nav>
                     </div>
                 </div>
-                <div class="header-avator-con">
-                    <div class="user-dropdown-menu-con">
+                <div class="body-O" style="line-height: 65px;padding: 0 20px">
+                      <marquee behavior="scroll" direction="left" align="middle"
+                               scrolldelay="120"
+                              style="font-size: 18px">
+                              <span v-if="ycMess.length==0">暂无异常数据！！！</span>
+                              <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
+                               {{item.cph}}-{{item.sjxm}} {{item.cjsj}} {{item.sjjb | sjjb}}
+                              </span>
+                      </marquee>
+
+                </div>
+                <div style="line-height: 65px;padding: 0 8px">
+                      <Tooltip content="更多异常信息">
+                            <Button type="primary"
+                                    size="small" icon="social-buffer"
+                            @click="compName='errmess'"></Button>
+                      </Tooltip>
+                </div>
+                <!--<div class="header-avator-con" style="background-color: #00cc66">-->
+                <div class="">
+                    <div class="user-dropdown-menu-con" style="height: 100%;line-height:65px">
                         <Row type="flex" justify="end" align="middle" class="user-dropdown-innercon">
                             <span style="margin-right: 30px;">
                             	<span style="font-size: 18px;">
@@ -108,10 +129,11 @@
     import Stomp from '@stomp/stompjs';
 
 	
-	import pass from './passworld'
+    import pass from './passworld'
+    import errmess from './components/mainAbnormess'
     export default {
         components: {
-        	pass,
+        	pass,errmess,
             shrinkableMenu,
             tagsPageOpened,
             breadcrumbNav,
@@ -119,6 +141,26 @@
             lockScreen,
             messageTip,
             themeSwitch
+        },
+        filters:{
+            sjjb:(val)=>{
+                switch (val){
+                    case '10':
+                        return '急加速'
+                    break;
+                    case '20':
+                        return '急刹车'
+                    break;
+                    case '30':
+                        return '急转弯'
+                    break;
+                    default:
+                        return '正常'
+                }
+                // let mes = this.dictUtil.getValByCode(this,'ZDCLK0038',val)
+                // return '123'
+
+            }
         },
         data () {
             return {
@@ -131,7 +173,8 @@
 				shrink: false,
                 userName: '',
                 isFullScreen: false,
-                openedSubmenuArr: this.$store.state.app.openedSubmenuArr
+                openedSubmenuArr: this.$store.state.app.openedSubmenuArr,
+                ycMess:[]
             };
         },
         computed: {
@@ -186,6 +229,11 @@
         created () {
             // 显示打开的页面的列表
             this.$store.commit('setOpenedList');
+            this.gdTxt()
+            // alert(this.dictUtil.getValByCode(this,'ZDCLK0038',20)+'2')
+            setInterval(function () {
+                this.gdTxt()
+            },1000*60*5)
         },
         methods: {
         	person(){
@@ -284,6 +332,14 @@
                 return true;
             },
             fullscreenChange (isFullScreen) {
+            },
+            gdTxt(){
+        	 this.$http.post(this.apis.TXT,{minutes:'5'}).then((res)=>{
+        	     console.log(res)
+                     this.ycMess = res.page.list
+                 }).catch((err)=>{
+
+                 })
             }
         }
     };
