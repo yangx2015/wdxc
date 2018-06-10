@@ -132,27 +132,29 @@
                         title: '碰撞灵敏度',
                         align:'center',
                         key: 'pzlmd',
-                        // render:(h,p)=>{
-                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-                        //     return h('div',{
-                        //         style:{
-                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-                        //         }
-                        //     },val)
-                        // }
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,'pzlmd',p.row.pzlmd)
+                            return h('div',{
+                                style:{
+                                    // color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+				    color:'#000'
+                                }
+                            },val)
+                        }
                     },
                     {
                         title: '视频上传模式',
                         align:'center',
                         key: 'spscms',
-                        // render:(h,p)=>{
-                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-                        //     return h('div',{
-                        //         style:{
-                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-                        //         }
-                        //     },val)
-                        // }
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,'spscms',p.row.spscms)
+                            return h('div',{
+                                style:{
+                                    // color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+				    color:'#000'
+                                }
+                            },val)
+                        }
                     },
                     {
                         title: '接口地址',
@@ -344,9 +346,9 @@
             		pageSize:8
                 },
                 Dictionary:[],
-				lmdmDictionary:'ZDCLK0032',//在线状态
-				ztDictionary:[],
-				ztlmdmDictionary:'ZDCLK0031'//设备状态
+		lmdmDictionary:'ZDCLK0032',//在线状态
+		ztDictionary:[],
+		ztlmdmDictionary:'ZDCLK0031'//设备状态
             }
         },
         created(){

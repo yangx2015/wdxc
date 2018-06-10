@@ -111,6 +111,9 @@
                         this.$Message.success(res.message);
                         this.$parent.getPageData()
                         this.close()
+                    }else {
+                        this.$Message.error(res.message);
+                        this.file = ''
                     }
                     console.log(res)
                 }).catch((err)=>{
