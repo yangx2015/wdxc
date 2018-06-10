@@ -62,8 +62,17 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 			String startTime = DateUtils.calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt(minutes));
 			String endTime = DateUtils.getNowTime();
 
-			condition.and().andGreaterThanOrEqualTo("cjsj", startTime);
-			condition.and().andLessThanOrEqualTo("cjsj", endTime);
+
+			try {
+				condition.and().andGreaterThanOrEqualTo("cjsj", DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			try {
+				condition.and().andLessThanOrEqualTo("cjsj",  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 
 		}
 		/*condition.and().andBetween(ClSbyxsjjl.InnerColumn.cjsj.name(),startTime,endTime);*/

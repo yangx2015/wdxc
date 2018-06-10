@@ -237,7 +237,9 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             for(int k=cellStart;k<=cellEnd;k++)
             {
                 HSSFCell cell = row.getCell(k);
-                if(null==cell) continue;
+                if(null==cell) {
+                    continue;
+                }
 
 
             }
