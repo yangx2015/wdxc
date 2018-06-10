@@ -67,7 +67,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="jgdm" label='组织机构：'>
-								<Cascader @on-change="change" change-on-select :data="orgTree"  placeholder="请选择组织机构"  filterable clearable  ></Cascader>
+								<Cascader @on-change="change" v-model="orgPath" change-on-select :data="orgTree"  placeholder="请选择组织机构"  filterable clearable  ></Cascader>
 							</FormItem>
 						</Col>
 					</Row>
@@ -122,6 +122,7 @@
 				orgList:[],
                 treeValue:[],
                 orgTree:[],
+                orgPath:[],
 			}
 		},
 		props:{
@@ -151,6 +152,13 @@
                 this.addmess.jgdm=selectedData[selectedData.length-1].value
                 this.treeValue = vaule;
             },
+			getOrgPath(orgCode){
+                this.$http.get(this.apis.FUNCTION.getOrgPath+'?orgCode='+orgCode).then((res)=>{
+                    if (res.code == 200){
+
+					}
+				})
+			},
             getOrgTree(){
                 this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
                     this.orgTree = res.result

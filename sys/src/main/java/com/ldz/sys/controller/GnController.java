@@ -8,6 +8,7 @@ import javax.validation.Valid;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -39,7 +40,7 @@ public class GnController extends BaseController<SysGn, String> {
     @Override
     @RequestMapping(value="/save", method={RequestMethod.POST})
     public ApiResponse<String> save(@Valid SysGn entity) {
-       
+
         return gnService.saveEntity(entity);
     }
 
@@ -55,18 +56,23 @@ public class GnController extends BaseController<SysGn, String> {
         return gnService.updateEntity(gn);
     }
 
-    
+
     @RequestMapping(value = "getUserFunctions",method = RequestMethod.GET)
     public ApiResponse<List<SysGn>> getUserFunctions(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getUserFunctions(user));
     }
 
-    
+
     @RequestMapping(value = "getMenuTree",method = RequestMethod.GET)
     public ApiResponse<List<Menu>> getMenuTree(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getMenuTree(user));
+    }
+
+    @GetMapping("getOrgPath")
+    public ApiResponse<List<SysGn>> getOrgPath(String orgCode){
+        return gnService.getOrgPath(orgCode);
     }
 
     @RequestMapping("setRoleFunctions")
@@ -86,26 +92,26 @@ public class GnController extends BaseController<SysGn, String> {
         return gnService.setOrgFunctions(jgdm,gndmList);
     }
 
-    
+
     @RequestMapping("getOrgFunctions")
     public ApiResponse<List<SysGn>> getOrgFunctions(String jgdm){
         return ApiResponse.success(gnService.getOrgFunctions(jgdm));
     }
 
-    
+
     @RequestMapping("getRoleFunctions")
     public ApiResponse<List<SysGn>> getRoleFunctions(String jsdm){
         return gnService.getRoleFunctions(jsdm);
     }
 
 
-    
+
     @RequestMapping("getAllPermissionTree")
     public ApiResponse<List<SysFw>> getAllPermissionTree(){
         return ApiResponse.success(gnService.getAllPermissionTree());
     }
 
-    
+
     @RequestMapping("getOrgPermissionTree")
     public ApiResponse<List<SysFw>> getOrgPermissionTree(String jgdm){
         if (StringUtils.isEmpty(jgdm)){
@@ -115,14 +121,14 @@ public class GnController extends BaseController<SysGn, String> {
         return ApiResponse.success(gnService.getOrgPermissionTree(jgdm));
     }
 
-    
+
     @RequestMapping("getUserPermissionTree")
     public ApiResponse<List<SysFw>> getUserPermissionTree(){
         SysYh user = getCurrentUser();
         return ApiResponse.success(gnService.getUserPermissionTree(user));
     }
 
-    
+
     @RequestMapping("getRolePermissionTree")
     public ApiResponse<List<SysFw>> getRolePermissionTree(String jsdm){
         return ApiResponse.success(gnService.getRolePermissionTree(jsdm));

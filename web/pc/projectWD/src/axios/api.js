@@ -130,7 +130,8 @@ module.exports = {
         GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
         SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
         SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
-        GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions'
+        GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions',
+        getOrgPath:'/api/gn/getOrgPath'
     },
     DAILY:{
         QUERY:'api/rz/pager',//日志管理
