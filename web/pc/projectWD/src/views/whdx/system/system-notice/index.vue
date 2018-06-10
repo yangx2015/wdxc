@@ -27,9 +27,16 @@
 							<Button type="primary" @click="AddMess()">
 								<Icon type="plus-round"></Icon>
 							</Button>
-							<Button type="warning" @click="batchUpdate()">
-								<Icon type="arrow-up-a"></Icon>
-							</Button>
+							<Tooltip content="批量导入" placement="top">
+								<Button type="success" @click="componentName='plmess'">
+									<Icon type="arrow-return-left"></Icon>
+								</Button>
+							</Tooltip>
+							<Tooltip content="升级设备" placement="top">
+								<Button type="warning" @click="batchUpdate()">
+									<Icon type="arrow-up-a"></Icon>
+								</Button>
+							</Tooltip>
 						</div>
 					</div>
 				</div>
@@ -77,7 +84,7 @@
             	pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
-                componentName:'plmess',
+                componentName:'',
                 choosedRow:{},
             	page:{
             		pageNum:1,
@@ -124,12 +131,28 @@
                     {
                         title: '碰撞灵敏度',
                         align:'center',
-                        key: 'pzlmd'
+                        key: 'pzlmd',
+                        // render:(h,p)=>{
+                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
+                        //     return h('div',{
+                        //         style:{
+                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+                        //         }
+                        //     },val)
+                        // }
                     },
                     {
                         title: '视频上传模式',
                         align:'center',
-                        key: 'spscms'
+                        key: 'spscms',
+                        // render:(h,p)=>{
+                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
+                        //     return h('div',{
+                        //         style:{
+                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+                        //         }
+                        //     },val)
+                        // }
                     },
                     {
                         title: '接口地址',

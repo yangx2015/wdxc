@@ -35,9 +35,10 @@
                 </div>
                 <div class="body-O" style="line-height: 65px;padding: 0 20px">
                       <marquee behavior="scroll" direction="left" align="middle"
-                               scrolldelay="60"
+                               scrolldelay="120"
                               style="font-size: 18px">
-                              <span v-for="(item,index) in ycMess" style="margin-right: 12px">
+                              <span v-if="ycMess.length==0">暂无异常数据！！！</span>
+                              <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
                                {{item.cph}}-{{item.sjxm}} {{item.cjsj}} {{item.sjjb | sjjb}}
                               </span>
                       </marquee>
@@ -230,6 +231,9 @@
             this.$store.commit('setOpenedList');
             this.gdTxt()
             // alert(this.dictUtil.getValByCode(this,'ZDCLK0038',20)+'2')
+            setInterval(function () {
+                this.gdTxt()
+            },1000*60*5)
         },
         methods: {
         	person(){
