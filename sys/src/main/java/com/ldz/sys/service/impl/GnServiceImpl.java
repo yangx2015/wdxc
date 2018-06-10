@@ -201,6 +201,25 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         return ApiResponse.success();
     }
 
+    @Override
+    public ApiResponse<List<SysGn>> getOrgPath(String orgCode) {
+        SysGn function = findById(orgCode);
+        RuntimeCheck.ifNull(function,"未找到记录");
+        List<SysGn> list = new ArrayList<>();
+        list.add(function);
+        findParent(function,list);
+        return ApiResponse.success(list);
+    }
+
+    private void findParent(SysGn function,List<SysGn> result){
+        if (function == null)return;
+        if (StringUtils.isEmpty(function.getFjd()))return;
+        SysGn father = findById(function.getFjd());
+        if (father == null)return;
+        result.add(father);
+        findParent(father,result);
+    }
+
     private void addToMenuList(List<Menu> menuList,List<SysGn> functionList){
         List<SysGn> functions = convertToFunctionList(menuList);
         functionList.addAll(functions);
@@ -511,7 +530,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         List<String> hasFunctionCodes = getOrgFunctionCodes(jgdm);
         SysJg org = jgService.findByOrgCode(jgdm);
         if (org == null)return new ArrayList<>();
-        return getPermissionTree(fwService.findByJgdm(jgdm),getOrgFunctions(org.getFjgdm()),hasFunctionCodes);
+        return getPermissionTree(fwService.findAll(),getOrgFunctions(org.getFjgdm()),hasFunctionCodes);
     }
 
     @Override
