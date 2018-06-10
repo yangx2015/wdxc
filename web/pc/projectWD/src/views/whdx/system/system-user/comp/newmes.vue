@@ -142,6 +142,7 @@
             }else{
                 this.addmess = this.usermes
                 this.operate = '编辑'
+                this.getOrgPath(this.addmess.jgdm);
 			}
 			this.yhlxDict = this.$parent.yhlxDict
 			// this.getOrgList();
@@ -153,9 +154,12 @@
                 this.treeValue = vaule;
             },
 			getOrgPath(orgCode){
+                this.orgPath = [];
                 this.$http.get(this.apis.FUNCTION.getOrgPath+'?orgCode='+orgCode).then((res)=>{
                     if (res.code == 200){
-
+                        for(let r of res.result){
+                            this.orgPath.push(r.jgdm);
+                        }
 					}
 				})
 			},

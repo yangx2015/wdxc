@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.ldz.sys.bean.TreeNode;
+import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -162,6 +163,26 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		List<SysJg> orgTree = jgService.getOrgTree(orgs);
 		response.setResult(orgTree);
 		return response;
+	}
+
+	@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
+		SysJg function = findById(orgCode);
+		RuntimeCheck.ifNull(function,"未找到记录");
+		List<SysJg> list = new ArrayList<>();
+		list.add(function);
+		findParent(function,list);
+		return ApiResponse.success(list);
+	}
+
+
+	private void findParent(SysJg function,List<SysJg> result){
+		if (function == null)return;
+		if (StringUtils.isEmpty(function.getFjgdm()))return;
+		SysJg father = findById(function.getFjgdm());
+		if (father == null)return;
+		result.add(father);
+		findParent(father,result);
 	}
 
 	@Override
