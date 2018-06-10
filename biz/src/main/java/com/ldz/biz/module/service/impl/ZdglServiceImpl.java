@@ -14,20 +14,28 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ZdglService{
+
+    @Value("${apiurl}")
+    private String apiurl;
     @Autowired
     private ClZdglMapper entityMapper;
     @Autowired
@@ -200,7 +208,11 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     @Override
     public  ApiResponse<String> saveBatch(String filePath) throws IOException {
 
-       /* Workbook workbook;
+        /*List<ClZdgl> zdglList = new ArrayList<>();
+        List<ClCssd> cssdList = new ArrayList<>();
+
+
+        Workbook workbook;
         try {
             if(filePath.indexOf(".xlsx")>-1){
                 workbook = new XSSFWorkbook(new FileInputStream(filePath));
@@ -218,7 +230,6 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     columns = sheet.getRow(r).getLastCellNum();
                     continue;
                 }
-                String value = "";
                 Row row = sheet.getRow(r); // 获取单元格中指定的行对象
                 if (row != null) {
                     //int cells = row.getPhysicalNumberOfCells();// 获取一行中的单元格数
@@ -226,8 +237,23 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     for (short c = 0; c < columns; c++) { // 循环遍历行中的单元格
                         Cell cell = row.getCell((short) c);
                         if (cell != null) {
-
+                            // 终端管理
                             ClZdgl clZdgl = new ClZdgl();
+                            // 设定默认值
+                            clZdgl.setZxzt("20"); // 默认离线
+                            //默认设备急加速灵敏度
+                            clZdgl.setJslmd("2");
+                            //默认设备的心跳
+                            clZdgl.setGpsxt("10");
+                            clZdgl.setCjr(getOperateUser());
+                            clZdgl.setCjsj(new Date());
+
+                            // 超速设定
+                            ClCssd clCssd = new ClCssd();
+                            clCssd.setCjr(getOperateUser());
+                            clCssd.setCjsj(new Date());
+
+
                             if(cell.getCellType() != Cell.CELL_TYPE_STRING){
 
                                 return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的数据不是文本类型,请改成文本类型后上传" );
@@ -264,7 +290,26 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                                     }
                                     break;
                                 case 4: //上传视频模式
+                                    if(StringUtils.isEmpty(v)){
+                                        clZdgl.setSpscms("20");
+                                    }else{
+                                        clZdgl.setSpscms(v);
+                                    }
+                                    break;
+                                case 5: // 超速设定
+                                   if(StringUtils.isEmpty(v)){
+                                       clCssd.setSdsx((short)60);
+                                   }else{
+                                       if(Integer.parseInt(v)>128 || Integer.parseInt(v)<-127){
+                                           return ApiResponse.fail("第" + r + "行 , " + "第" + c + "列的超速限定异常" );
+                                       }
+                                       clCssd.setSdsx(Short.parseShort(v));
+                                   }
+                                   break;
+                                case 6: // 接口地址
+                                        if(StringUtils.isEmpty(v)){
 
+                                        }
 
 
 
@@ -278,8 +323,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                         }
                     }
                 }
-                String[] str = value.split(",");
-                System.out.println(value);
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -293,12 +337,6 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     }
 
 
-    public static void main(String[] args) throws IOException {
-
-        ZdglServiceImpl a = new ZdglServiceImpl();
-        a.saveBatch(null);
-
-    }
 
 
 
