@@ -29,5 +29,5 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
 
     ApiResponse<String> getVersionInfo(String deviceId);
 
-    ApiResponse<String> saveBatch(MultipartFile file) throws IOException;
+    ApiResponse<String> saveBatch(String filePath) throws IOException;
 }

@@ -453,7 +453,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     }
     private List<SysFw> getPermissionTree(List<SysFw> services,List<SysGn> functions,List<String> hasFunctionCodes){
         Map<String,SysFw> serviceMap = services.stream().collect(Collectors.toMap(SysFw::getFwdm,p->p));
-        Map<String,SysGn> functionMap = functions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+        List<SysGn> allFunctions = findAll();
+        Map<String,SysGn> functionMap = allFunctions.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
 
         List<String> serviceCodes = new ArrayList<>();
         for (SysGn function : functions) {
