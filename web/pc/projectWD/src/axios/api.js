@@ -2,6 +2,7 @@ module.exports = {
     UPLOAD:'http://47.98.39.45:8080/upload',
     STATIC_PATH:'http://47.98.39.45:9092/',
     VIDEO_PATH:'http://47.98.39.45:9091/test/',
+    TXT:'/api/clsbyxsjjl/pager',
     USERROOT:{
         GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
