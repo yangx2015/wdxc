@@ -139,6 +139,9 @@ public class ClZdgl implements Serializable {
     
     @Transient
     private ClCl cl;
+
+    @Transient
+    private short cssd;
    
     
     
@@ -424,9 +427,22 @@ public class ClZdgl implements Serializable {
         this.zxsj = zxsj;
     }
 
-    
-    
-    
+    /**
+     * 获取超速速度值
+     * @return
+     */
+    public short getCssd() {
+        return cssd;
+    }
+
+    /**
+     * 设置超速速度值
+     * @param cssd
+     */
+    public void setCssd(short cssd) {
+        this.cssd = cssd;
+    }
+
     public enum InnerColumn {
         zdbh("ZDBH"),
         xh("XH"),
