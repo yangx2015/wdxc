@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 
 import com.ldz.util.commonUtil.DateUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -55,9 +56,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	}
 
 	@Override
-	public boolean fillCondition(LimitedCondition condition) {
-		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()) .getRequest();
-		String minutes = request.getParameter("minutes"); // 获取请求异常信息时长
+	public boolean fillPagerCondition(LimitedCondition condition) {
+		String minutes = getRequestParamterAsString("minutes"); // 获取请求异常信息时长
 		if(StringUtils.isNotBlank(minutes)) {
 			String startTime = DateUtils.calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt(minutes));
 			String endTime = DateUtils.getNowTime();
