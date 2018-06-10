@@ -103,6 +103,7 @@
                 })
             },
             setOrgPermission(){
+                this.choosedIds = [];
                 this.getChoosedIds(this.data4);
                 let ids = '';
                 for (let r of this.choosedIds){
