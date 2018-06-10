@@ -239,7 +239,8 @@ public class ClCssd implements Serializable {
         xgsj("XGSJ"),
         xgr("XGR"),
         jgdm("JGDM"),
-        jgmc("JGMC");
+        jgmc("JGMC"),
+        cph("CPH");
 
         private final String column;
 
