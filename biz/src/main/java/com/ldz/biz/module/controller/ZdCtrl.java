@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 终端管理
  */
 @RestController
-@RequestMapping("api/zdgl")
+@RequestMapping("pub/zdgl")
 public class ZdCtrl extends BaseController<ClZdgl,String> {
     @Autowired
     private ZdglService service;
