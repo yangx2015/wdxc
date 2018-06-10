@@ -88,7 +88,7 @@
         methods: {
             getChoosedIds(list){
                 for(let r of list){
-                    if (r.checked || r.indeterminate)this.choosedIds.push(r.gndm);
+                    if (r.checked)this.choosedIds.push(r.gndm);
                     if (r.children){
                         this.getChoosedIds(r.children);
                     }
