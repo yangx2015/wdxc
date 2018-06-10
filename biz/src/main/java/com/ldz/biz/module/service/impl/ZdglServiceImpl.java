@@ -346,7 +346,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                         }
                     }
                     // 遍历完每一行为一个终端对象 , 保存终端
-                    clZdgl.setZt("10");
+                    clZdgl.setZt("00");
                     zdglList.add(clZdgl);
                     cssdList.add(clCssd);
                 }
