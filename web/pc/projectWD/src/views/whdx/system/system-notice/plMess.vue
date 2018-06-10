@@ -11,7 +11,7 @@
                               模版下载：
                         </div>
                         <div class="body-O">
-                              <a href="http://47.98.39.45:9092/批量新增终端模板.xls">批量导入终端模版</a>
+                              <a :href="staticPath+'批量新增终端模板.xls'">批量导入终端模版</a>
                         </div>
                   </div>
                   <div class="box-row" style="height: 55px;font-size: 16px">
@@ -28,7 +28,7 @@
                                       :on-success="handleSuccess"
                                       :on-error="handleError">
                                     <Button type="ghost" icon="ios-cloud-upload-outline"
-                                            size="small">Upload files</Button>
+                                            size="small">上传文件</Button>
                               </Upload>
                               <div v-show="!upShow" class="box-row">
                                     <div class="body-O">
@@ -49,8 +49,8 @@
                                     </div>
                               </div>
                         </div>
-
                   </div>
+                  <div v-for="(item,index) in errors" style="color: red">{{item}}</div>
                   <div slot='footer'>
                         <Button type="ghost" @click="close">取消</Button>
                         <!--<Button type="primary" @click="save">确定</Button>-->
@@ -66,10 +66,12 @@
         name: '',
         data() {
             return {
+                staticPath:this.apis.STATIC_PATH,
                 mesF:false,
                 showModal: true,
                 file:'',
                 upShow:true,
+                errors:[]
             }
         },
         watch:{
@@ -87,9 +89,6 @@
         },
         methods: {
             handleSuccess (res, file) {
-                console.log('上传成功',)
-                console.log(res)
-                console.log(file)
                 this.file = '/'+res.message
 
             },
@@ -112,10 +111,9 @@
                         this.$parent.getPageData()
                         this.close()
                     }else {
-                        this.$Message.error(res.message);
+                        this.errors = res.result;
                         this.file = ''
                     }
-                    console.log(res)
                 }).catch((err)=>{
 
                 })

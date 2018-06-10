@@ -65,17 +65,17 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 		}
     	//默认设置终端在线状态为离线
     	entity.setZxzt("20");
-    	
+
     	//默认设备碰撞灵敏度
     	entity.setPzlmd("10");
     	//默认设备急加速灵敏度
     	entity.setJslmd("2");
-    
+
     	//默认设备视屏上传模式
     	entity.setSpscms("20");
     	//默认设备的心跳
     	entity.setGpsxt("10");
-    	
+
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
@@ -84,7 +84,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
 	@Override
 	public void insetAndUpdate(ClZdgl entity) {
-		
+
 	 boolean flag= ifExists("zdbh",entity.getZdbh());
 		if (flag==true) {
 			update(entity);
@@ -180,7 +180,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 			if (StringUtils.equals(clZdgl.getZxzt(), "20")) {
 				lixian++;
 			}
-			
+
 		}
 		Map<String,Integer> map = new HashMap<>();
 		map.put("设备总数", selectAll.size());
@@ -189,7 +189,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 		map.put("设备离线数量", lixian);
 		ApiResponse<Map<String, Integer>>  apiResponse = new ApiResponse<>();
 		apiResponse.setResult(map);
-		
+
 		return apiResponse;
 	}
 
@@ -202,19 +202,40 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         return ApiResponse.success(val);
     }
 
+    private List<String> checlDeviceCode(Sheet sheet){
+        List<String> errors = new ArrayList<>();
+        int rows = sheet.getPhysicalNumberOfRows();// 获取表格的
+        List<String> deviceCodes = new ArrayList<>(rows);
+        for (int r = 0; r < rows; r++) {
+            if(r==0){
+                continue;
+            }
+            Row row = sheet.getRow(r); // 获取单元格中指定的行对象
+            Cell cell = row.getCell(0);
+            String deviceCode = cell.toString();
+            if (!deviceCodes.contains(deviceCode)){
+                deviceCodes.add(deviceCode);
+            }else{
+                errors.add("第"+r+"行，终端编号重复");
+            }
+        }
+        return errors;
+    }
+
     /**
      * 解析excel 批量导入终端
      * @param
      * @return
      */
     @Override
-    public ApiResponse<String> saveBatch(String filePath) throws IOException {
-
+    public ApiResponse<List<String>> saveBatch(String filePath) throws IOException {
+        ApiResponse<List<String>> result = new ApiResponse<>();
         List<ClZdgl> zdglList = new ArrayList<>();
         List<ClCssd> cssdList = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
-        filePath = staticPath + filePath;
+//        filePath = staticPath + filePath;
+        filePath = "/Users/chenwei/Downloads/批量新增终端模板-2.xls";
         Workbook workbook;
         try {
             if(filePath.indexOf(".xlsx")>-1){
@@ -222,11 +243,18 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             } else if (filePath.indexOf(".xls")>-1){
                 workbook = new HSSFWorkbook(new FileInputStream(filePath));
             }else {
-                return ApiResponse.fail("请上传excel文件");
+                result.setMessage("请上传excel文件");
+                return result;
             }
             //HSSFWorkbook workbook = new HSSFWorkbook(new FileInputStream(fileToBeRead)); //2003 创建对Excel工作簿文件的引用
             //XSSFWorkbook workbook = new XSSFWorkbook(new FileInputStream(fileToBeRead)); //2007,2010 创建对Excel工作簿文件的引用
             Sheet sheet = workbook.getSheetAt(0); // 创建对工作表的引用
+            List<String> es = checlDeviceCode(sheet);
+            if (es.size() != 0){
+                result.setCode(100);
+                result.setResult(es);
+                return result;
+            }
             int rows = sheet.getPhysicalNumberOfRows();// 获取表格的
             int columns = 0;
             for (int r = 0; r < rows; r++) { // 循环遍历表格的行
@@ -259,73 +287,66 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     //int cells = row.getPhysicalNumberOfCells();// 获取一行中的单元格数
                     //int cells = row.getLastCellNum();// 获取一行中最后单元格的编号（从1开始）
                     for (short c = 0; c < columns; c++) { // 循环遍历行中的单元格
-                        String v = "";
-                        Cell cell = row.getCell((short) c);
-                            if(cell != null) {
-                                if(cell.getCellType() != Cell.CELL_TYPE_STRING){
-                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的数据不是文本类型,请改成文本类型后上传" );
+                        Cell cell = row.getCell(c);
+                        String v = cell == null ? "" : cell.toString();
+                        switch(c){
+                            case 0: // 终端号
+                                if(StringUtils.isEmpty(v)){
+                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号不能为空" );
                                 }
-                                v = cell.getStringCellValue();
-                            }
-                            switch(c){
-                                case 0: // 终端号
-                                    if(StringUtils.isEmpty(v)  || cell == null){
-                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号不能为空" );
+                                ClZdgl zdgl = findById(v);
+                                if(zdgl != null){
+                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号已经存在" );
+                                }
+                                clZdgl.setZdbh(v);
+                                break;
+                            case 1: // 名称
+                                if(StringUtils.isEmpty(v)){
+                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备名称不能为空" );
+                                }
+                                clZdgl.setMc(v);
+                                break;
+                            case 2: // 型号
+//                                if(StringUtils.isEmpty(v)){
+//                                    errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备型号不能为空" );
+//                                }
+                                clZdgl.setXh(v);
+                                break;
+                            case 3: // 碰撞灵敏度
+                                if(StringUtils.isEmpty(v)){
+                                    clZdgl.setPzlmd("10");
+                                }else{
+                                    clZdgl.setPzlmd(v);
+                                }
+                                break;
+                            case 4: //上传视频模式
+                                if(StringUtils.isEmpty(v)){
+                                    clZdgl.setSpscms("20");
+                                }else{
+                                    clZdgl.setSpscms(v);
+                                }
+                                break;
+                            case 5: // 超速设定
+                                if(StringUtils.isEmpty(v)){
+                                    clCssd.setSdsx((short)60);
+                                }else{
+                                    if(Integer.parseInt(v)>128 || Integer.parseInt(v)<-127){
+                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的超速限定异常" );
                                     }
-
-                                    ClZdgl zdgl = findById(cell.getStringCellValue());
-                                    if(zdgl != null){
-                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备终端号已经存在" );
-                                    }
-                                    clZdgl.setZdbh(cell.getStringCellValue());
-                                    break;
-                                case 1: // 名称
-                                    if(StringUtils.isEmpty(v) || cell == null){
-                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备名称不能为空" );
-                                    }
-                                    clZdgl.setMc(v);
-                                    break;
-                                case 2: // 型号
-                                    if(StringUtils.isEmpty(v) || cell == null){
-                                        errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的设备型号不能为空" );
-                                    }
-                                    clZdgl.setXh(v);
-                                    break;
-                                case 3: // 碰撞灵敏度
-                                    if(StringUtils.isEmpty(v) || cell == null ){
-                                        clZdgl.setPzlmd("10");
-                                    }else{
-                                        clZdgl.setPzlmd(v);
-                                    }
-                                    break;
-                                case 4: //上传视频模式
-                                    if(StringUtils.isEmpty(v) || cell == null){
-                                        clZdgl.setSpscms("20");
-                                    }else{
-                                        clZdgl.setSpscms(v);
-                                    }
-                                    break;
-                                case 5: // 超速设定
-                                   if(StringUtils.isEmpty(v) || cell == null ){
-                                       clCssd.setSdsx((short)60);
-                                   }else{
-                                       if(Integer.parseInt(v)>128 || Integer.parseInt(v)<-127){
-                                           errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的超速限定异常" );
-                                       }
-                                       clCssd.setSdsx(Short.parseShort(v));
-                                   }
-                                   break;
-                                case 6: // 接口地址
-                                    if(StringUtils.isEmpty(v) || cell == null){
-                                        clZdgl.setCmd(apiurl);
-                                    }else{
-                                        clZdgl.setCmd(v);
-                                    }
-                                    break;
-                            }
-
+                                    clCssd.setSdsx(Short.parseShort(v));
+                                }
+                                break;
+                            case 6: // 接口地址
+                                if(StringUtils.isEmpty(v) || cell == null){
+                                    clZdgl.setCmd(apiurl);
+                                }else{
+                                    clZdgl.setCmd(v);
+                                }
+                                break;
+                        }
                     }
                     // 遍历完每一行为一个终端对象 , 保存终端
+                    clZdgl.setZt("10");
                     zdglList.add(clZdgl);
                     cssdList.add(clCssd);
                 }
@@ -336,14 +357,12 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         if(CollectionUtils.isEmpty(errors)){
             saveBatch(zdglList);
             cssdService.saveBatch(cssdList);
-            return ApiResponse.success();
+            return result;
         }else{
-            return ApiResponse.fail(errors.toString());
+            result.setCode(100);
+            result.setResult(errors);
+            return result;
         }
-
-
-
-
     }
 
     @Override

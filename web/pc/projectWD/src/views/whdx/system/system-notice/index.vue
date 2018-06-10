@@ -119,11 +119,6 @@
 						}
                     },
                     {
-                        title: '厂商',
-                        align:'center',
-                        key: 'cs'
-                    },
-                    {
                         title: '超速设定',
                         align:'center',
                         key: 'cssd'
