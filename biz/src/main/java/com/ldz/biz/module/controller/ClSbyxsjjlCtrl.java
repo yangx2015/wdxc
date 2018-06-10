@@ -51,28 +51,28 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 
 		return service.getGuiJiGps(gpssjinfo);
 	}
-    
+
 	@PostMapping("/baiduGuiJi")
 	public ApiResponse<List<Point>>  getBaiDuGuiJi(gpsSJInfo gpssjinfo) {
-		
+
 		return service.baiduGuiJi(gpssjinfo);
-		
+
 	}
-	
+
 	@RequestMapping("/Safedriving")
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig(){
-		
+
 		return service.getSafeDrivig();
 	}
-	
+
 	/*
 	 * 获取时间段内超数值
 	 */
 	@PostMapping("/csxxtj")
 	public ApiResponse<CsTxTj> getcs(String cph,String day){
-		
+
 		return service.getcs(cph,day);
-		
+
 	}
-	
+
 }

@@ -154,8 +154,8 @@
             }
         },
         created() {
-            this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
-			this.util.initTable(this);
+            this.$store.commit('setCurrentPath', [{title: '首页'}, {title: '车辆管理'},{title: '临时车管理'},{title: '车辆管理'}])
+	    this.util.initTable(this);
             this.getDict()
             this.getLsdw()
         },

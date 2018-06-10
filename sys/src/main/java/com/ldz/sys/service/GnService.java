@@ -63,5 +63,4 @@ public interface GnService extends BaseService<SysGn, String> {
 
     ApiResponse<String> setOrgFunctions(String jgdm, List<String> gndmList);
 
-    ApiResponse<List<SysGn>> getOrgPath(String orgCode);
 }

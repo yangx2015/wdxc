@@ -2,6 +2,7 @@ module.exports = {
     UPLOAD:'http://47.98.39.45:8080/upload',
     STATIC_PATH:'http://47.98.39.45:9092/',
     VIDEO_PATH:'http://47.98.39.45:9091/test/',
+    TXT:'/api/clsbyxsjjl/pager',
     USERROOT:{
         GET_MENU_LIST:'/api/gn/getUserFunctions',
         GET_MENU_TREE:'/api/gn/getMenuTree',
@@ -90,6 +91,7 @@ module.exports = {
         GET_TREE:'/api/jg/getOrgTree',
         GET_TREE_Node:'/api/jg/getTree',
         getSubOrgList:'/api/jg/getSubOrgList',
+        getOrgPath:'/api/jg/getOrgPath'
     },
     DICTIONARY:{
         QUERY:'/api/zd/pager',// 查询字典
@@ -131,7 +133,6 @@ module.exports = {
         SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
         SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
         GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions',
-        getOrgPath:'/api/gn/getOrgPath'
     },
     DAILY:{
         QUERY:'api/rz/pager',//日志管理
