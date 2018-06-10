@@ -20,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
  * 终端管理
  */
 @RestController
-@RequestMapping("pub/zdgl")
+@RequestMapping("api/zdgl")
 public class ZdCtrl extends BaseController<ClZdgl,String> {
     @Autowired
     private ZdglService service;
@@ -54,7 +54,7 @@ public class ZdCtrl extends BaseController<ClZdgl,String> {
      */
     @GetMapping("/zdcx")
     public ApiResponse<Map<String, Integer>> getzdxc(){
-    	
+
     	return service.getzdxc();
     }
 

@@ -16,7 +16,7 @@
 </template>
 
 <script>
-      import abnor from '../whdx/OperationMonitoring/BusMonitor/comp/abnormal'
+      import abnor from './abnormal'
     export default {
         name: "mainAbnormess",
         components:{

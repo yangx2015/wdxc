@@ -132,27 +132,19 @@
                         title: '碰撞灵敏度',
                         align:'center',
                         key: 'pzlmd',
-                        // render:(h,p)=>{
-                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-                        //     return h('div',{
-                        //         style:{
-                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-                        //         }
-                        //     },val)
-                        // }
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,'pzlmd',p.row.pzlmd)
+                            return h('div',val)
+                        }
                     },
                     {
                         title: '视频上传模式',
                         align:'center',
                         key: 'spscms',
-                        // render:(h,p)=>{
-                        //     let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-                        //     return h('div',{
-                        //         style:{
-                        //             color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-                        //         }
-                        //     },val)
-                        // }
+                        render:(h,p)=>{
+                            let val = this.dictUtil.getValByCode(this,'scspms',p.row.spscms)
+                            return h('div',val)
+                        }
                     },
                     {
                         title: '接口地址',
