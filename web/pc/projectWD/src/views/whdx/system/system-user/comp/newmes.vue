@@ -67,9 +67,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="jgdm" label='组织机构：'>
-								<Select filterable clearable  v-model="addmess.jgdm">
-									<Option v-for="e in orgList" :value="e.jgdm" :key="e.jgdm">{{e.jgmc}}</Option>
-								</Select>
+								<Cascader @on-change="change" v-model="orgPath" change-on-select :data="orgTree"  placeholder="请选择组织机构"  filterable clearable  ></Cascader>
 							</FormItem>
 						</Col>
 					</Row>
@@ -122,6 +120,9 @@
                 yhlxDict:[],
                 yhlxDictCode:'ZDCLK0003',
 				orgList:[],
+                treeValue:[],
+                orgTree:[],
+                orgPath:[],
 			}
 		},
 		props:{
@@ -143,9 +144,26 @@
                 this.operate = '编辑'
 			}
 			this.yhlxDict = this.$parent.yhlxDict
-			this.getOrgList();
+			// this.getOrgList();
+            this.getOrgTree();
         },
 		methods:{
+            change(vaule,selectedData){
+                this.addmess.jgdm=selectedData[selectedData.length-1].value
+                this.treeValue = vaule;
+            },
+			getOrgPath(orgCode){
+                this.$http.get(this.apis.FUNCTION.getOrgPath+'?orgCode='+orgCode).then((res)=>{
+                    if (res.code == 200){
+
+					}
+				})
+			},
+            getOrgTree(){
+                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                    this.orgTree = res.result
+                })
+            },
 		    getOrgList(){
 		        let v = this;
                 v.$http.get(this.apis.FRAMEWORK.QUERY,{params:{pageSize:10000}}).then((res) =>{

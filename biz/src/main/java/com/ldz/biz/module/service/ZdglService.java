@@ -3,7 +3,10 @@ package com.ldz.biz.module.service;
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -25,4 +28,6 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
 	ApiResponse<Map<String, Integer>> getzdxc();
 
     ApiResponse<String> getVersionInfo(String deviceId);
+
+    ApiResponse<String> saveBatch(MultipartFile file) throws IOException;
 }

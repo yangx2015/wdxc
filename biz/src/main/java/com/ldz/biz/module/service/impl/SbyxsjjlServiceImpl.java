@@ -2,10 +2,13 @@ package com.ldz.biz.module.service.impl;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ldz.util.commonUtil.DateUtils;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +31,8 @@ import com.ldz.util.bean.TrackPointsForReturn.Point;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.yingyan.GuiJIApi;
 
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,7 +56,26 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	}
 
 	@Override
-	public boolean fillCondition(LimitedCondition condition) {
+	public boolean fillPagerCondition(LimitedCondition condition) {
+		String minutes = getRequestParamterAsString("minutes"); // 获取请求异常信息时长
+		if(StringUtils.isNotBlank(minutes)) {
+			String startTime = DateUtils.calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt(minutes));
+			String endTime = DateUtils.getNowTime();
+
+
+			try {
+				condition.and().andGreaterThanOrEqualTo("cjsj", DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			try {
+				condition.and().andLessThanOrEqualTo("cjsj",  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss"));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+		/*condition.and().andBetween(ClSbyxsjjl.InnerColumn.cjsj.name(),startTime,endTime);*/
 
 		/*
 		 * LimitedCondition condition2 = new LimitedCondition(ClCl.class);

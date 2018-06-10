@@ -1,14 +1,33 @@
 package com.ldz.biz.module.service.impl;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.ldz.biz.module.model.ClCssd;
+import com.ldz.biz.module.service.CssdService;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +42,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.exception.RuntimeCheck;
 
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.multipart.MultipartFile;
 import tk.mybatis.mapper.common.Mapper;
 
 @Service
@@ -31,6 +51,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     private ClZdglMapper entityMapper;
     @Autowired
     private ClService clService;
+    @Autowired
+    private CssdService cssdService;
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
@@ -123,15 +145,24 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             List<ClZdgl> list=resultPage.getList();
             if(list!=null&&list.size()>0){
                 List<String> listIds = list.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
-                List<ClCl>clList=clService.findIn(ClCl.InnerColumn.zdbh,listIds);
+                List<ClCl> clList=clService.findIn(ClCl.InnerColumn.zdbh,listIds);
                 Map<String,ClZdgl> zdbhMap = list.stream().collect(Collectors.toMap(ClZdgl::getZdbh, p->p));
+
                 if(clList!=null&&clList.size()>0){
                     for(ClCl cl:clList){
                         ClZdgl zdbh=zdbhMap.get(cl.getZdbh());
-                        if (zdbh == null)continue;
+                        if (zdbh == null){
+                            continue;
+                        }
 
                         zdbh.setCl(cl);
                         zdbh.setCph(cl.getCph());
+                        // 获取速度上限
+                        List<ClCssd> eq = cssdService.findEq(ClCssd.InnerColumn.cph.name(), cl.getCph());
+                        if(!CollectionUtils.isEmpty(eq)){
+                            zdbh.setCssd(eq.get(0).getSdsx());
+                        }
+
                     }
                 }
             }
@@ -179,4 +210,55 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         }
         return ApiResponse.success(val);
     }
+
+    /**
+     * 解析excel 批量导入终端
+     * @param file
+     * @return
+     */
+    @Override
+    public  ApiResponse<String> saveBatch(MultipartFile file) throws IOException {
+
+        File f = new File("E:\\批量新增终端模板.xls");
+        String fileToBeRead = "E:\\批量新增终端模板.xls";
+        POIFSFileSystem poifsFileSystem = new POIFSFileSystem(new FileInputStream(f));
+        HSSFWorkbook hssfWorkbook =  new HSSFWorkbook(poifsFileSystem);
+        HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(0);
+
+        int rowstart = hssfSheet.getFirstRowNum();
+        int rowEnd = hssfSheet.getLastRowNum();
+        for(int i=rowstart;i<=rowEnd;i++)
+        {
+            HSSFRow row = hssfSheet.getRow(i);
+            if(null == row) continue;
+            int cellStart = row.getFirstCellNum();
+            int cellEnd = row.getLastCellNum();
+
+            for(int k=cellStart;k<=cellEnd;k++)
+            {
+                HSSFCell cell = row.getCell(k);
+                if(null==cell) {
+                    continue;
+                }
+
+
+            }
+            System.out.print("\n");
+        }
+
+
+
+        return null;
+    }
+
+
+    public static void main(String[] args) throws IOException {
+
+        ZdglServiceImpl a = new ZdglServiceImpl();
+        a.saveBatch(null);
+
+    }
+
+
+
 }
