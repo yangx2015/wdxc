@@ -1,5 +1,8 @@
 <style lang="less">
     @import '../../../../styles/common.less';
+
+</style>
+<style>
 </style>
 <!--车辆管理-->
 <template>
@@ -34,7 +37,6 @@
 			<Row>
 				<Table
 						:height="tabHeight"
-						:row-class-name="rowClassName"
 						:columns="tableTiT"
 						:data="tableData"
 				></Table>
