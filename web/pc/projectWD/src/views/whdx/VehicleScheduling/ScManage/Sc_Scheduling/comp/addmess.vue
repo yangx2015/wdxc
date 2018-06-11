@@ -67,8 +67,8 @@
 		    	</div>
 		    </div>
 		    <div slot='footer'>
-		    	<Button type="primary" @click="colse">完成</Button>
-	        	<!--<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>-->
+				<Button type="primary" @click="finish">完成</Button>
+				<Button type="primary" @click="close">关闭</Button>
 		    </div>
 	    </Modal>
 	</div>
@@ -147,11 +147,15 @@
 					v.$Message.error('出错了！！！');
 				})
 			},
-			colse(){
-				var v = this
-                v.$parent.getmess();
-				v.$parent.compName = ''
-		   	}
+            finish(){
+                var v = this
+                v.$parent.getmess()
+                v.$parent.compName = ''
+            },
+            close(){
+                var v = this
+                v.$parent.compName = ''
+            }
 		}
 	}
 </script>

@@ -27,6 +27,7 @@ httpInstance.interceptors.request.use((config) => {
 
 	if(config.url =="/api/clzd/getzdcl/"
         || '/api/clsbyxsjjl/historygps' == config.url
+        || '/api/clsbyxsjjl/pager' == config.url
         // || '/api/cl/carAccStatistics' == config.url
         || '/api/dd/ddzTj' == config.url
         || '/api/dd/ccTTj' == config.url
