@@ -4,7 +4,7 @@
                    :closable='false'
                    :mask-closable=false
                    width="80%">
-                  <h2 slot="header">异常事件</h2>
+                  <h2 slot="header">异常事件（5分钟之内）</h2>
                   <div>
                         <abnor></abnor>
                   </div>

@@ -74,9 +74,6 @@
             this.getalert()
         },
         methods:{
-        	getLXDic(){
-                this.sjDIC = this.dictUtil.getByCode(this,this.sjBM);
-			},
                 getmess(){
                         var v = this
                         this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{

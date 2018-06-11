@@ -13,7 +13,7 @@
                 :open-names="openedSubmenuArr"
                 :menu-list="menuList">
                 <div slot="top" class="logo-con">
-                    <div v-show="!shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">武汉大学车辆管理信息平台</div>
+                    <div v-show="!shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">六点整车联网平台</div>
                     <div v-show="shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
                     <!--<img v-show="!shrink"  src="../images/logo.png" key="max-logo" />-->
                     <!--<img v-show="shrink" src="../images/logo-min.png" key="min-logo" />-->
@@ -37,9 +37,10 @@
                       <marquee behavior="scroll" direction="left" align="middle"
                                scrolldelay="120"
                               style="font-size: 18px">
-                              <span v-if="ycMess.length==0">暂无异常数据！！！</span>
+                                最近5分钟之内：
+                              <span v-if="ycMess.length==0">暂无异常数据</span>
                               <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
-                               {{item.cph}}-{{item.sjxm}} {{item.cjsj}} {{item.sjjb | sjjb}}
+                               [{{item.cph}}]{{item.sjxm}} {{getDictVal(item.sjjb)}} {{item.cjsj.substring(11)}}
                               </span>
                       </marquee>
 
@@ -144,26 +145,27 @@
         },
         filters:{
             sjjb:(val)=>{
-                switch (val){
-                    case '10':
-                        return '急加速'
-                    break;
-                    case '20':
-                        return '急刹车'
-                    break;
-                    case '30':
-                        return '急转弯'
-                    break;
-                    default:
-                        return '正常'
-                }
-                // let mes = this.dictUtil.getValByCode(this,'ZDCLK0038',val)
-                // return '123'
+                // switch (val){
+                //     case '10':
+                //         return '急加速'
+                //     break;
+                //     case '20':
+                //         return '急刹车'
+                //     break;
+                //     case '30':
+                //         return '急转弯'
+                //     break;
+                //     default:
+                //         return '正常'
+                // }
+                let mes = v.dictUtil.getValByCode(v,'ZDCLK0038',val)
+                return mes
 
             }
         },
         data () {
             return {
+                v:this,
             	compName:'',
 				socket : new SockJS(this.$http.url+"/gps"),
 //				socket : '',
@@ -230,12 +232,16 @@
             // 显示打开的页面的列表
             this.$store.commit('setOpenedList');
             this.gdTxt()
-            // alert(this.dictUtil.getValByCode(this,'ZDCLK0038',20)+'2')
+            let v = this;
             setInterval(function () {
-                this.gdTxt()
+                v.gdTxt()
             },1000*60*5)
         },
         methods: {
+            getDictVal(c){
+                let mes = this.dictUtil.getValByCode(this,'ZDCLK0038',c)
+                return mes
+            },
         	person(){
         		this.compName = 'pass'
         	},
@@ -335,7 +341,6 @@
             },
             gdTxt(){
         	 this.$http.post(this.apis.TXT,{minutes:'5'}).then((res)=>{
-        	     console.log(res)
                      this.ycMess = res.page.list
                  }).catch((err)=>{
 

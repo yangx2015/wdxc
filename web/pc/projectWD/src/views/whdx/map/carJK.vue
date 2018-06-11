@@ -77,15 +77,7 @@
             },
             moveMap(){
                 var v = this
-                this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-                //
-                // v.zoomDot = [];
-                // for(var i = 0 ; i<v.carList.length ; i++){
-                //     v.zoomDot.push(
-                //         new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
-                //     )
-                // }
-                // v.map.setViewport(v.zoomDot);
+                this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.map.getZoom());  // 初始化地图,设置中心点坐标和地图级别
             },
             init() {
                 this.carList = this.$parent.mapCarList;

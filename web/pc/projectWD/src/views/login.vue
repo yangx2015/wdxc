@@ -45,7 +45,7 @@
                 	<div class="body-O from">
 	                	<div class="loginTiT">
 	                		<h1>
-	                			武汉大学车辆管理信息平台
+	                			六点整车联网平台
 	                		</h1>
 	                	</div>
 	                    <Form ref="loginForm" :model="form" :rules="rules">
