@@ -76,6 +76,7 @@
                 v.showCarPosition();
             },
             moveMap(){
+                if (this.carList.length == 0)return;
                 var v = this
                 this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.map.getZoom());  // 初始化地图,设置中心点坐标和地图级别
             },
@@ -87,7 +88,7 @@
                 }else if (this.carList.length > 0) {
                     this.$refs.carInfoButton.hide();
                     this.car = null;
-                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                    this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }else {
                     this.car = null;
                     this.$refs.carInfoButton.hide();
