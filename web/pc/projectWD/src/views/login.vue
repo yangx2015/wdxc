@@ -80,7 +80,7 @@
 
 <script>
 import Cookies from 'js-cookie';
-
+import md5 from 'js-md5';
 import menuList from '../data/list'
 import {appRouter} from '../router/router';
 export default {
@@ -111,6 +111,10 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.SpinShow = true
+					// let params = {
+                     //    username:this.form.username,
+                     //    password:md5(this.form.password)
+					// }
                 	v.$http.post(this.apis.LOGIN.QUERY, this.form).then((res) =>{
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);

@@ -70,12 +70,13 @@ httpInstance.interceptors.response.use((response) => {
         router.push({name: 'error-404'})
     }
     if (response.status===200){
-        if (response.data.code===403){
-            router.push({name: 'erro' +
-                'r-403'})
-        }else{
-            return response.data;
-        }
+        return response.data;
+        // if (response.data.code===403){
+        //     router.push({name: 'erro' +
+        //         'r-403'})
+        // }else{
+        //     return response.data;
+        // }
     }else{
         router.push({name: 'error-500'})
     }

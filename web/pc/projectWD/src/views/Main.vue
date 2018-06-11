@@ -34,7 +34,7 @@
                     </div>
                 </div>
                 <div class="body-O" style="line-height: 65px;padding: 0 20px">
-                      <marquee behavior="scroll" direction="left" align="middle"
+                      <marquee  v-if="showTip" behavior="scroll" direction="left" align="middle"
                                scrolldelay="120"
                               style="font-size: 18px">
                                 最近5分钟之内：
@@ -165,6 +165,7 @@
         },
         data () {
             return {
+                showTip:false,
                 v:this,
             	compName:'',
 				socket : new SockJS(this.$http.url+"/gps"),
@@ -340,11 +341,15 @@
             fullscreenChange (isFullScreen) {
             },
             gdTxt(){
-        	 this.$http.post(this.apis.TXT,{minutes:'5'}).then((res)=>{
-                     this.ycMess = res.page.list
-                 }).catch((err)=>{
+                this.ycMess = [];
+                this.$http.post(this.apis.TXT,{minutes:'5'}).then((res)=>{
+                    if (res.code === 200){
+                        this.showTip = true;
+                        this.ycMess = res.page.list
+                    }
+                }).catch((err)=>{
 
-                 })
+                })
             }
         }
     };
