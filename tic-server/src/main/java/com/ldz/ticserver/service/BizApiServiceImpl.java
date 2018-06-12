@@ -1,21 +1,19 @@
 package com.ldz.ticserver.service;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.Executor;
-
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.commonUtil.HttpUtil;
+import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ldz.util.bean.RequestCommonParamsDto;
-import com.ldz.util.commonUtil.HttpUtil;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Executor;
 
 @Service("bizApiService")
 public class BizApiServiceImpl implements BizApiService{
@@ -36,6 +34,9 @@ public class BizApiServiceImpl implements BizApiService{
 	//文件上传的数据交互接口
 	@Value("${interface.fileapi}")
 	private String fileApi;
+
+	@Autowired
+	private RedisTemplateUtil redisTemplate;
 	
 	
 	
@@ -63,8 +64,9 @@ public class BizApiServiceImpl implements BizApiService{
 				//向所有配置接口写数据
 				System.err.println(apiUrl);
 				if (StringUtils.isNotEmpty(apiUrl)){
+					redisTemplate.convertAndSend("gps", dto);
 					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
-					executor.execute(new Runnable() {
+					/*executor.execute(new Runnable() {
 						@Override
 						public void run() {
 							//具体写入数据bean对象，数据库定义出来以后，会变为具体对象
@@ -83,7 +85,7 @@ public class BizApiServiceImpl implements BizApiService{
 								errorLog.error(serverUrl+"接口请求异常", e);
 							}
 						}
-					});
+					});*/
 				}
 			}
 		}
