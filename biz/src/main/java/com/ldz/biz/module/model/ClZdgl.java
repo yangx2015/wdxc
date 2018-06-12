@@ -136,17 +136,36 @@ public class ClZdgl implements Serializable {
     @Column(name = "SFYY")
     private String sfyy;
     
-    
+
+    /**
+     * 机构代码
+     */
+    @Column(name = "JGDM")
+    private String jgdm;
+
+    /**
+     * 机构名称
+     */
+    @Column(name = "JGMC")
+    private String jgmc;
+
+
     @Transient
     private ClCl cl;
 
     @Transient
     private short cssd;
-   
-    
-    
-    
-	public String getSfyy() {
+
+
+    public void setJgdm(String jgdm) {
+        this.jgdm = jgdm;
+    }
+
+    public void setJgmc(String jgmc) {
+        this.jgmc = jgmc;
+    }
+
+    public String getSfyy() {
 		return sfyy;
 	}
 
@@ -452,6 +471,7 @@ public class ClZdgl implements Serializable {
         cjr("CJR"),
         cjsj("CJSJ"),
         xgr("XGR"),
+        jgdm("JGDM"),
         xgsj("XGSJ"),
         zxzt("ZXZT"),
         zxsj("ZXSJ"),

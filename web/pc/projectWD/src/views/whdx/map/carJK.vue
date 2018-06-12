@@ -11,7 +11,7 @@
 <!--地图选点-->
 <template>
     <div style="height: 100%;background-color: #00FFFF;">
-        <car-info ref="carInfoButton"></car-info>
+        <!--<car-info ref="carInfoButton"></car-info>-->
         <div id="allmap"></div>
     </div>
 </template>
@@ -88,12 +88,10 @@
                     this.car = this.carList[0];
                     this.chooseCar(this.car);
                 }else if (this.carList.length > 0) {
-                    this.$refs.carInfoButton.hide();
                     this.car = null;
                     this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }else {
                     this.car = null;
-                    this.$refs.carInfoButton.hide();
                 }
                 this.moveMap();
                 this.showCarPosition();
@@ -103,17 +101,18 @@
                 // 百度地图API功能
                 this.map = new BMap.Map("allmap");    // 创建Map实例
                 this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-                //添加地图类型控件
-                this.map.addControl(new BMap.MapTypeControl({
-                        mapTypes: [
-                            BMAP_NORMAL_MAP
-                        ]
-                    })
-                );
+                // //添加地图类型控件
+                // this.map.addControl(new BMap.MapTypeControl({
+                //         mapTypes: [
+                //             BMAP_NORMAL_MAP
+                //         ]
+                //     })
+                // );
+                this.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
                 this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
-                this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
-                this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
-                this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
+                // this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件
+                // this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
+                // this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
             },
             //撒点
             showCarPosition() {
@@ -188,11 +187,9 @@
                 var v = this
                 marker.addEventListener("click", function (e) {
                     v.choosedItem = item;
-                    v.$refs.carInfoButton.init(item);
                 })
             },
             chooseCar(item){
-                this.$refs.carInfoButton.init(item);
             },
             clear() {
                 this.map.clearOverlays();//清楚数据点

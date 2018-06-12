@@ -73,6 +73,29 @@ public class ClZdgl implements Serializable {
     @Column(name = "ZXSJ")
     private Date zxsj;
 
+    /**
+     * 机构代码
+     */
+    @Column(name = "JGDM")
+    private String jgdm;
+
+    /**
+     * 机构名称
+     */
+    @Column(name = "JGMC")
+    private String jgmc;
+
+
+
+
+    public void setJgdm(String jgdm) {
+        this.jgdm = jgdm;
+    }
+
+    public void setJgmc(String jgmc) {
+        this.jgmc = jgmc;
+    }
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -280,6 +303,7 @@ public class ClZdgl implements Serializable {
         cs("CS"),
         zt("ZT"),
         cjr("CJR"),
+        jgdm("JGDM"),
         cjsj("CJSJ"),
         xgr("XGR"),
         xgsj("XGSJ"),

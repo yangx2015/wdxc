@@ -173,7 +173,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
 			log.info("推送前端的数据为" + socket);
-			websocket.convertAndSend("/topic/sendgps", socket);
+			websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(), socket);
 			return ApiResponse.fail("job发送离线:两次离线时间一致");
 
 		}
@@ -192,9 +192,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		// 推送坐标去前端
 		String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
 		log.info("推送前端的数据为" + socket);
-		websocket.convertAndSend("/topic/sendgps", socket);
+		websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(), socket);
 		return ApiResponse.success();
 	}
+
 
 	public ApiResponse<String> justDoIt(GpsInfo gpsinfo,ClCl clcl) {
 		// 获取redis(实时gps点位)里面数据
@@ -205,7 +206,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		    	// 判断该点位是否携带类型,或者是何种类型分类存储
 		      saveClSbyxsjjl(gpsinfo, bean2,clcl);
 		      String socket = JsonUtil.toJson(changeSocket(gpsinfo, bean2,null));
-		      websocket.convertAndSend("/topic/sendgps",socket);
+		      websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(),socket);
 		      return ApiResponse.success("经纬度为-1的点位事件存储成功,并推送给前端"+JsonUtil.toJson(socket));
 			}
 		    if (StringUtils.isEmpty(bean)) {
@@ -220,7 +221,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	// 推送坐标去前端
 	String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity,null));
 	log.info("推送前端的数据为"+socket);
-	websocket.convertAndSend("/topic/sendgps",socket);
+	websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(),socket);
 
 	if(StringUtils.isEmpty(bean)){
 		redis.boundValueOps(ClGps.class.getSimpleName() +  gpsinfo.getDeviceId()).set(JsonUtil.toJson(entity));

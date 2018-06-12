@@ -1,59 +1,79 @@
+<style>
+    .buttons .ivu-tooltip{
+        padding:8px;
+    }
+</style>
 <template>
-    <div>
-        <component :is="componentName"></component>
-        <div style="position: absolute;z-index: 1000000;margin-top: 20%" v-if="car != null">
-            <Tooltip content="前摄像头拍照" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="后摄像头拍照" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="前后摄像头拍照" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="前摄像头视频" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="后摄像头视频" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="前后摄像头视频" placement="right">
-                <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="电子围栏" placement="right">
-                <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button>
-            </Tooltip><br><br>
-            <Tooltip content="历史轨迹" placement="right">
-                <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
-            </Tooltip>
-        </div>
-        <Modal v-model="photo.showModal" width="1000" height="800"
-               :closable='false'
-               :mask-closable="false" title="预览">
-            <div style="width:100%;height: 100%;text-align: center;">
-                <i-circle v-if="photo.src == ''" :percent="photo.percent">
-                    <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
-                </i-circle>
-                <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
-            </div>
-            <div slot='footer' style="text-align: center;">
-                <Button type="primary" @click="closePhoto">关闭</Button>
-            </div>
-        </Modal>
-        <Modal v-model="video.showModal" width="1000" height="800"
-               :closable='false'
-               :mask-closable="false" title="预览">
-            <div style="width:100%;height: 100%;text-align: center;">
-                <i-circle v-if="video.src == ''" :percent="video.percent">
-                    <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
-                </i-circle>
-                <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%" controls></video>
-            </div>
-            <div slot='footer' style="text-align: center;">
-                <Button type="primary" @click="closeVideo">关闭</Button>
-            </div>
-        </Modal>
-    </div>
+    <Col span="24" v-if="car != null && car != ''">
+        <Card>
+            <p slot="title">
+                <Icon type="soup-can-outline"></Icon>
+                {{car.zdbh}}
+            </p>
+            <a href="#" slot="extra">
+                <Icon type="close" @click.native="close"></Icon>
+            </a>
+            <Row>
+                <div style="z-index: 1000000;" class="buttons" v-if="car != null">
+                    <Tooltip content="前摄像头拍照" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button>
+                    </Tooltip>
+                    <Tooltip content="后摄像头拍照" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button>
+                    </Tooltip>
+                    <Tooltip content="前后摄像头拍照" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button>
+                    </Tooltip>
+                    <Tooltip content="前摄像头视频" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button>
+                    </Tooltip>
+                    <Tooltip content="后摄像头视频" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button>
+                    </Tooltip>
+                    <Tooltip content="前后摄像头视频" placement="right">
+                        <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button>
+                    </Tooltip>
+                    <Tooltip content="电子围栏" placement="right">
+                        <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button>
+                    </Tooltip>
+                    <Tooltip content="历史轨迹" placement="right">
+                        <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
+                    </Tooltip>
+                </div>
+                <!--<Modal v-model="photo.showModal" width="1000" height="800"-->
+                       <!--:closable='false'-->
+                       <!--:mask-closable="false" title="预览">-->
+                <Row  v-if="photo.showModal">
+                    <div style="width:100%;height: 100%;text-align: center;">
+                        <i-circle v-if="photo.src == ''" :percent="photo.percent">
+                            <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
+                        </i-circle>
+                        <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
+                    </div>
+                    <div style="text-align: center;">
+                        <Button type="primary" @click="closePhoto">关闭</Button>
+                    </div>
+                </Row>
+                <Row v-if="video.showModal" >
+                    <div style="width:100%;height: 100%;text-align: center;">
+                        <i-circle v-if="video.src == ''" :percent="video.percent">
+                            <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
+                        </i-circle>
+                        <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%" controls></video>
+                    </div>
+                    <div style="text-align: center;">
+                        <Button type="primary" @click="closeVideo">关闭</Button>
+                    </div>
+                </Row>
+                <!--</Modal>-->
+                <!--<Modal v-model="video.showModal" width="1000" height="800"-->
+                       <!--:closable='false'-->
+                       <!--:mask-closable="false" title="预览">-->
+
+                <!--</Modal>-->
+            </Row>
+        </Card>
+    </Col>
 </template>
 
 <script>
@@ -222,14 +242,17 @@
                 this.stopVideoCount();
             },
             init(item){
+                console.log("init");
+                console.log(item);
                 this.car = item;
+                // this.$refs.carInfo.init(item);
             },
             hide(){
                 this.car = null;
             },
             close(){
-                this.showImgModal = false;
-                this.taskId = '';
+                this.car = null
+                this.$emit('close')
             },
             save(){
                 this.SpinShow = true;

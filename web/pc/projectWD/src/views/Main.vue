@@ -273,20 +273,20 @@
 		
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
-			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-			            let jsonMess = JSON.parse(data.body)
-			            
-			            if(jsonMess.cx==="30"){//校巴
-				            v.scoketMess.forEach((item,index) => {
-								if(item.clid==jsonMess.clid){
-									v.scoketMess.splice(index,1)
-								}
-							})
-					        v.scoketMess.push(jsonMess)
-				            v.$store.commit('socketMessAdd',v.scoketMess)
-			            }
-			            v.$store.commit('socketAllCarAdd',jsonMess)
-			        });
+			        // stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+			        //     let jsonMess = JSON.parse(data.body)
+			        //
+			        //     if(jsonMess.cx==="30"){//校巴
+				     //        v.scoketMess.forEach((item,index) => {
+						// 		if(item.clid==jsonMess.clid){
+						// 			v.scoketMess.splice(index,1)
+						// 		}
+						// 	})
+					 //        v.scoketMess.push(jsonMess)
+				     //        v.$store.commit('socketMessAdd',v.scoketMess)
+			        //     }
+			        //     v.$store.commit('socketAllCarAdd',jsonMess)
+			        // });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
 			            v.$store.commit('addSendhbsp',data.body)
 			        });

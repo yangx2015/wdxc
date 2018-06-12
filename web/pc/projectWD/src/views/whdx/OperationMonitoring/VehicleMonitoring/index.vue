@@ -1,173 +1,224 @@
 <style lang="less">
     @import "../../../../styles/common.less";
-    .VehicleMonitoringTiT{
-    	width: 225px;
-    	background-color: #fff;
-    	border-radius: 5px 5px 0 0 ;
-    	padding-left: 5px;
-    	.boxTiT{
-    		.cartypemess{
-    			text-align: center;
-    			.cartypebox{
-    				margin-top:12px;
-    				margin-bottom:12px;
-					margin-left: 16px;
-					float: left;
-    			}
-    		}
-    	}
-    	.carlistmess{
-			height: 150px;
-    		cursor: pointer;
-    		padding: 6px 16px 18px 16px;
-    		border-bottom: solid 1px #919191;
-    	}
-    }
-	.btn_obd{
-		padding: 2px;
-		border: 1px solid #5cadff;
-		border-radius: 4px;
-	}
-	.top_btn{
-		width: 76px;
-		height: 76px;
-		color:white;
-		border-radius: 10px;
-		font-size: 18px;
-	}
-	.search_input{
-		background-color: #cccccc;
-		border-radius: 10px;
-		border:none;
-		padding: 8px;
-		font-size: 15pt;
-		margin-left: 17px;
-		appearance: none;
-		-web-kit-appearance:none;
-		-moz-appearance: none;
-		outline:none;
-		text-decoration:none;
-	}
-	._18pt{
-		font-size: 18pt;
-	}
-	._16pt{
-		font-size: 16pt;
-	}
-	._14pt{
-		font-size: 14pt;
-	}
-	::-webkit-input-placeholder { /* WebKit browsers */
-		color: #999;
-	}
-	:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-		color: #999;
-	}
-	::-moz-placeholder { /* Mozilla Firefox 19+ */
-		color: #999;
-	}
-	:-ms-input-placeholder { /* Internet Explorer 10+ */
-		color: #999;
-	}
-	.obdFaultStatus{
-		float: right;
-	}
-	.obdFaultHandled{
-		color: dodgerblue;
-	}
-	.obdFaultNotHandle{
-		color: red;
+</style>
+<style>
+	.choosed{
+		background-color: #eee;
 	}
 </style>
 <template>
     <div class="box-row">
-		<component :is="componentName"></component>
-    	<div class="body-F" style="height:100%;">
-    		<my-map ref="map"></my-map>
-    	</div>
-    	<div class="VehicleMonitoringTiT" style="width: 300px">
-    		<div class="box">
-    			<div class="boxTiT">
-    				<div  class="cartypemess">
-						<div class="cartypebox">
-							<Button style="background-color: #6ebaff;" class="top_btn" @click="changeStatus(0)">
-								<div>{{carArray[0].length}}</div>
-								<div>启动</div>
-							</Button>
-						</div>
-						<div class="cartypebox">
-							<Button style="background-color: #ff9b87;" class="top_btn" @click="changeStatus(1)">
-								<div>{{carArray[1].length}}</div>
-								<div>熄火</div>
-							</Button>
-						</div>
-						<div class="cartypebox">
-							<Button style="background-color: #8190ff;" class="top_btn" @click="changeStatus(2)">
-								<div>{{carArray[2].length}}</div>
-								<div>离线</div>
-							</Button>
-						</div>
-    				</div>
-    			</div>
-    			<div class="body">
-					<div style="margin-top: 18px">
-						<input type="text" class="search_input" v-model="keyword" placeholder="请填写车牌号码..." @input="filter"></input>
-					</div>
-
-					<div class="carlistmess" v-for="(item,index) in rightCarList" @click="rowClick(item)">
-						<div>
-							<span class="_16pt">{{item.zdbh}}</span>
-							<Poptip v-if="item.obdId != ''" title="OBD信息"  placement="left" width="300"  style="float: right">
-								<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
-								<div slot="content">
-									<h2 v-if="gpsObdMessage == null" >暂无数据</h2>
-									<Row v-if="gpsObdMessage != null">
-										<Col span="8">更新日期</Col>
-										<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
-									</Row>
-									<Row v-if="gpsObdMessage != null">
-										<Col span="8">发动机转速</Col>
-										<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
-									</Row>
-									<Row v-if="gpsObdMessage != null">
-										<Col span="8">车速</Col>
-										<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
-									</Row>
-									<Row v-if="gpsObdMessage != null">
-										<Col span="8">剩余油量</Col>
-										<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
-									</Row>
-									<Row v-if="gpsObdMessage != null">
-										<Col span="8">耗油量</Col>
-										<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
-									</Row>
-									<Row v-if="obdFaultCode && obdFaultCode.length != 0">
-										<Col style="border-bottom: 1px solid #cccccc"></Col>
-										<Col span="8">故障报告</Col>
-										<Col span="16">
-											<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
-												<span>{{item.faultCode}}</span>
-												<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
-												<br>
-												<span>{{item.creationTime}}</span>
-											</div>
+		<div style="position:absolute;width:400px;padding-top:30px;padding-left:30px;z-index:9999">
+			<Col span="24">
+				<Input placeholder="查设备、找车辆、找司机" size="large" v-model="searchKey">
+				<Button slot="append" type="primary" icon="ios-search" @click="filter"></Button>
+				</Input>
+				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;">
+					<TabPane :label="dhlabel" name="name1" style="height:300px;overflow:auto;" v-show="tabShowFlag">
+						<Row v-for="(item,index) in carArray[0]" @click.native="rowClick(item)">
+							<Col span="24">
+								<Card style="margin:0 15px 5px 15px;" :class="{'choosed':choosedCar == item}">
+									<p slot="title">
+										<Icon type="soup-can-outline"></Icon>
+										{{item.zdbh}}
+									</p>
+									<p slot="extra" style="color:#19be6b">
+										{{formateLongDate(item.time)}}
+									</p>
+									<Row  type="flex" justify="start">
+										<Col span="8">
+											<Icon type="model-s"></Icon>
+											{{item.cph}}
+										</Col>
+										<Col span="8">
+											<Icon type="person"></Icon>
+											{{item.sjxm ? item.sjxm : '暂无绑定'}}
+										</Col>
+										<Col span="2" offset="6">
+											<Poptip v-if="item.obdId != ''" title="OBD信息"  placement="left" width="300"  style="float: right">
+												<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
+												<div slot="content">
+													<h3 v-if="gpsObdMessage == null" >暂无数据</h3>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">更新日期</Col>
+														<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">发动机转速</Col>
+														<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">车速</Col>
+														<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">剩余油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">耗油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
+													</Row>
+													<Row v-if="obdFaultCode && obdFaultCode.length != 0">
+														<Col style="border-bottom: 1px solid #cccccc"></Col>
+														<Col span="8">故障报告</Col>
+														<Col span="16">
+															<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
+																<span>{{item.faultCode}}</span>
+																<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
+																<br>
+																<span>{{item.creationTime}}</span>
+															</div>
+														</Col>
+													</Row>
+												</div>
+											</Poptip>
 										</Col>
 									</Row>
-								</div>
-							</Poptip>
-						</div>
-						<div>
-							<span class="_16pt">司机：</span>
-							<span class="_16pt">{{item.sjxm ? item.sjxm : '未绑定司机'}}</span>
-						</div>
-						<div style="margin-top: 18px">
-							<span  class="_14pt" style="color: #919191">{{item.text}}</span><br>
-							<span  class="_14pt" style="color: #919191">{{formateLongDate(item.time)}}</span>
-						</div>
-					</div>
-    			</div>
-    		</div>
-    	</div>
+								</Card>
+							</Col>
+						</Row>
+					</TabPane>
+					<TabPane :label="xhlabel" name="name2" style="height:300px;overflow:auto;" v-show="tabShowFlag">
+						<Row  v-for="(item,index) in carArray[1]" @click.native="rowClick(item)">
+							<Col span="24">
+								<Card style="margin:0 15px 5px 15px;" :class="{'choosed':choosedCar == item}">
+									<p slot="title">
+										<Icon type="soup-can-outline"></Icon>
+										{{item.zdbh}}
+									</p>
+									<p slot="extra" style="color:#19be6b">
+										{{formateLongDate(item.time)}}
+									</p>
+									<Row  type="flex" justify="start">
+										<Col span="8">
+											<Icon type="model-s"></Icon>
+											{{item.cph}}
+										</Col>
+										<Col span="8">
+											<Icon type="person"></Icon>
+											{{item.sjxm ? item.sjxm : '暂无绑定'}}
+										</Col>
+										<Col span="2" offset="6">
+											<Poptip v-if="item.obdId != ''" title="OBD信息"  placement="left" width="300"  style="float: right">
+												<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
+												<div slot="content">
+													<h3 v-if="gpsObdMessage == null" >暂无数据</h3>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">更新日期</Col>
+														<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">发动机转速</Col>
+														<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">车速</Col>
+														<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">剩余油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">耗油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
+													</Row>
+													<Row v-if="obdFaultCode && obdFaultCode.length != 0">
+														<Col style="border-bottom: 1px solid #cccccc"></Col>
+														<Col span="8">故障报告</Col>
+														<Col span="16">
+															<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
+																<span>{{item.faultCode}}</span>
+																<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
+																<br>
+																<span>{{item.creationTime}}</span>
+															</div>
+														</Col>
+													</Row>
+												</div>
+											</Poptip>
+										</Col>
+									</Row>
+								</Card>
+							</Col>
+						</Row>
+					</TabPane>
+					<TabPane :label="lxlabel" name="name3" style="height:300px;overflow:auto;" v-show="tabShowFlag">
+						<Row  v-for="(item,index) in carArray[2]" @click.native="rowClick(item)">
+							<Col span="24">
+								<Card style="margin:0 15px 5px 15px;" :class="{'choosed':choosedCar == item}">
+									<p slot="title">
+										<Icon type="soup-can-outline"></Icon>
+										{{item.zdbh}}
+									</p>
+									<p slot="extra" style="color:#19be6b">
+										{{formateLongDate(item.time)}}
+									</p>
+									<Row  type="flex" justify="start">
+										<Col span="8">
+											<Icon type="model-s"></Icon>
+											{{item.cph}}
+										</Col>
+										<Col span="8">
+											<Icon type="person"></Icon>
+											{{item.sjxm ? item.sjxm : '暂无绑定'}}
+										</Col>
+										<Col span="2" offset="6">
+											<Poptip v-if="item.obdId != ''" title="OBD信息"  placement="left" width="300"  style="float: right">
+												<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
+												<div slot="content">
+													<h3 v-if="gpsObdMessage == null" >暂无数据</h3>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">更新日期</Col>
+														<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">发动机转速</Col>
+														<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">车速</Col>
+														<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">剩余油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">耗油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
+													</Row>
+													<Row v-if="obdFaultCode && obdFaultCode.length != 0">
+														<Col style="border-bottom: 1px solid #cccccc"></Col>
+														<Col span="8">故障报告</Col>
+														<Col span="16">
+															<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
+																<span>{{item.faultCode}}</span>
+																<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
+																<br>
+																<span>{{item.creationTime}}</span>
+															</div>
+														</Col>
+													</Row>
+												</div>
+											</Poptip>
+										</Col>
+									</Row>
+								</Card>
+							</Col>
+						</Row>
+					</TabPane>
+					<Button type="primary" size="small" :icon="changeBtnIcon" slot="extra" style="margin:5px" @click.native="changeBtn"></Button>
+				</Tabs>
+			</Col>
+		</div>
+		<div style="position:absolute;width:280px;top:0;right:0;z-index:9990;padding-top:30px;padding-right:30px;float: right" type="flex" justify="end">
+			<car-info @close="closeItem" ref="carInfoRef"></car-info>
+		</div>
+		<div class="body-F" style="height:100%;">
+			<my-map ref="map"></my-map>
+		</div>
     </div>
 </template>
 
@@ -192,18 +243,20 @@
                     ("00"+ o[k]).substr((""+ o[k]).length));
         return format;
     }
-import myMap from '../../map/carJK.vue'
-
+import myMap from '../../map/carJK.vue';
+import carInfo from './carInfo';
+import Stomp from '@stomp/stompjs';
+import SockJS from 'sockjs-client';
 export default {
     name: 'VehicleMonitoring',
     components: {
-    	myMap
+    	myMap,carInfo
     },
     data () {
         return {
+            tabShowFlag:false,
             SpinShow:false,
             componentName:'',
-            rightCarList:[],
             mapCarList:[],
             carArray:[[],[],[]],
 			status:0,
@@ -213,20 +266,66 @@ export default {
             gpsObdMessage:null,
             obdFaultCode:[],
 			initTime:'',
-			allCarList:[
-			],
+            searchKey:'',
+            showTabs:false,
+			allCarList:[],
+			allCarList:[],
+
+            // socket : new SockJS(this.$http.url+"/gps"),
+            socket : new SockJS("http://127.0.0.1/gps"),
+
+            changeBtnIcon:'chevron-down',
+            dhlabel: (h) => {
+                return h('div', [
+                    h('span','点火 '),
+                    h('Button', {
+                        props: {
+                            shape:'circle',
+                            size:'small',
+                            disabled:true
+                        },
+                        style:'background-color:#19be6b;color:white'
+                    }, this.carArray[0].length)
+                ])
+            },
+            xhlabel: (h) => {
+                return h('div', [
+                    h('span','熄火 '),
+                    h('Button', {
+                        props: {
+                            shape:'circle',
+                            size:'small',
+                            disabled:true
+                        },
+                        style:'background-color:#ed3f14;color:white'
+                    }, this.carArray[1].length)
+                ])
+            },
+            lxlabel: (h) => {
+                return h('div', [
+                    h('span','离线 '),
+                    h('Button', {
+                        props: {
+                            shape:'circle',
+                            size:'small',
+                            disabled:true
+                        },
+                        style:'background-color:#657180;color:white'
+                    }, this.carArray[2].length)
+                ])
+            }
         };
     },
-    computed: {
-        GetsocketAllCar() {
-            return this.$store.state.app.socketAllCar
-        }
-    },
-    watch: {
-        GetsocketAllCar: function(newQuestion, oldQuestion) {
-            this.onGpsInfo(newQuestion);
-        },
-    },
+    // computed: {
+    //     GetsocketAllCar() {
+    //         return this.$store.state.app.socketAllCar
+    //     }
+    // },
+    // watch: {
+    //     GetsocketAllCar: function(newQuestion, oldQuestion) {
+    //         this.onGpsInfo(newQuestion);
+    //     },
+    // },
     created(){
         this.$store.commit('setCurrentPath', [{
             title: '首页',
@@ -239,6 +338,52 @@ export default {
         this.initGps()
     },
     methods: {
+        changeBtn(){
+            if (this.changeBtnIcon == "chevron-down"){
+                this.changeBtnIcon = "chevron-up";
+                this.tabShowFlag = true;
+            }else{
+                this.changeBtnIcon = "chevron-down";
+                this.tabShowFlag = false;
+            }
+        },
+        closeItem(){
+            this.choosedCar = null;
+		},
+        sco(){
+            //数据推送
+            var v = this
+            /**
+             * 建立成功的回调函数
+             */
+            v.socket.onopen = function() {
+            };
+            /**
+             * 服务器有消息返回的回调函数
+             */
+            v.socket.onmessage = function(e) {
+                // log('message', e.data);
+            };
+
+            /**
+             * websocket链接关闭的回调函数
+             */
+            v.socket.onclose = function() {
+                // log('关闭');
+            };
+            /**
+             * /topic/sendzp  订阅拍视频   /topic/sendhbsp订阅跑照片
+             */
+
+            var stompClient = Stomp.over(v.socket);
+            stompClient.connect({}, function(frame) {
+                for (let r of v.allCarList){
+                    stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
+                        v.onGpsInfo(data.body)
+                    });
+				}
+            });
+        },
         formateLongDate(long){
             log(long);
             if (typeof long == 'string'){
@@ -296,7 +441,6 @@ export default {
                 this.allCarList.push(m);
 			}
             this.classify();
-            this.rightCarList = this.carArray[this.status];
             if (this.choosedCar){
                 if (this.choosedCar.zdbh == newCar.zdbh){
                     this.mapCarList = [newCar];
@@ -313,13 +457,8 @@ export default {
         init(){
             this.classify();
             this.mapCarList = this.carArray[0];
-            this.rightCarList = this.carArray[0];
-		},
-        filter(){
-            this.classify();
-            this.rightCarList = this.carArray[this.status];
-            this.mapCarList = this.carArray[this.status];
-            this.$refs.map.init();
+            this.showTabs = true;
+            this.changeBtn();
 		},
 		initGps(){
             log('initGps');
@@ -331,6 +470,7 @@ export default {
                     for(let r of this.allCarList){
                         this.handleItem(r);
                     }
+                    this.sco();
 				}
                 this.init();
             })
@@ -341,20 +481,31 @@ export default {
         changeStatus(status){
             this.choosedCar = null;
             this.status = status;
-            this.rightCarList = this.carArray[status];
             this.mapCarList = this.carArray[status];
             this.$refs.map.init();
 		},
+        filter(){
+            console.log('filter');
+            this.classify();
+            this.mapCarList = this.carArray[this.status];
+            this.$refs.map.init();
+        },
 		classify(){
             this.carArray[0] = [];
             this.carArray[1] = [];
             this.carArray[2] = [];
 			for(let r of this.allCarList){
 			    let status = r.status;
-                if (this.keyword === '' || r.cph.indexOf(this.keyword) > 0){
+                if (this.searchKey === ''
+					|| r.cph.indexOf(this.searchKey) > 0
+					|| r.zdbh.indexOf(this.searchKey) > 0
+					|| r.sjxm.indexOf(this.searchKey) > 0
+				){
                     this.carArray[status].push(r);
 				}
 			}
+            this.showTabs = false;
+            this.showTabs = true;
 		},
 		updateItem(o,n){
             let r = {};
@@ -435,6 +586,7 @@ export default {
             this.choosedCar = item;
             this.mapCarList = [this.choosedCar];
             this.$refs.map.init();
+            this.$refs.carInfoRef.init(item);
 		}
     }
 };

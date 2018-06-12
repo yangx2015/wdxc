@@ -10,6 +10,7 @@ import com.ldz.biz.module.service.CssdService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
@@ -59,6 +60,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public ApiResponse<String> saveEntity(ClZdgl entity) {
+        SysYh user = getCurrentUser();
     	ClZdgl findById = findById(entity.getZdbh());
     	if (findById!=null) {
 			return ApiResponse.fail("终端编号已存在");
@@ -76,6 +78,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	//默认设备的心跳
     	entity.setGpsxt("10");
 
+    	entity.setJgmc(user.getJgdm());
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
