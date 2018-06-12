@@ -10,6 +10,10 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import com.ldz.util.redis.RedisTemplateUtil;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
+import org.springframework.data.redis.listener.Topic;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * redis配置
@@ -44,8 +48,13 @@ public class RedisConfig {
 	public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
+
 		//订阅了一个叫chat 的通道
-		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), new PatternTopic("gps"));
+
+		List<Topic> topics = new ArrayList<>();
+		topics.add(new PatternTopic("gps"));
+		topics.add(new PatternTopic("spk"));
+		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}

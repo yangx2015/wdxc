@@ -40,37 +40,40 @@
                         <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
                     </Tooltip>
                 </div>
-                <!--<Modal v-model="photo.showModal" width="1000" height="800"-->
-                       <!--:closable='false'-->
-                       <!--:mask-closable="false" title="预览">-->
-                <Row  v-if="photo.showModal">
+
+                <Row  v-if="photo.showModal && photo.src == ''">
                     <div style="width:100%;height: 100%;text-align: center;">
                         <i-circle v-if="photo.src == ''" :percent="photo.percent">
                             <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
                         </i-circle>
-                        <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
                     </div>
+                </Row>
+                <Modal v-model="photo.src != ''" width="1000" height="800"
+                    :closable='false'
+                    :mask-closable="false" title="预览">
+                    <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
                     <div style="text-align: center;">
                         <Button type="primary" @click="closePhoto">关闭</Button>
                     </div>
-                </Row>
-                <Row v-if="video.showModal" >
+                </Modal>
+                <Row v-if="video.showModal && video.src == ''">
                     <div style="width:100%;height: 100%;text-align: center;">
                         <i-circle v-if="video.src == ''" :percent="video.percent">
                             <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
                         </i-circle>
-                        <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%" controls></video>
                     </div>
                     <div style="text-align: center;">
                         <Button type="primary" @click="closeVideo">关闭</Button>
                     </div>
                 </Row>
-                <!--</Modal>-->
-                <!--<Modal v-model="video.showModal" width="1000" height="800"-->
-                       <!--:closable='false'-->
-                       <!--:mask-closable="false" title="预览">-->
-
-                <!--</Modal>-->
+                <Modal v-model="video.src != ''" width="1000" height="800"
+                       :closable='false'
+                       :mask-closable="false" title="预览">
+                    <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
+                    <div style="text-align: center;">
+                        <Button type="primary" @click="closePhoto">关闭</Button>
+                    </div>
+                </Modal>
             </Row>
         </Card>
     </Col>

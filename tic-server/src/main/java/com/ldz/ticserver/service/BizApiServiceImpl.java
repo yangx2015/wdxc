@@ -64,7 +64,7 @@ public class BizApiServiceImpl implements BizApiService{
 				//向所有配置接口写数据
 				System.err.println(apiUrl);
 				if (StringUtils.isNotEmpty(apiUrl)){
-					redisTemplate.convertAndSend("gps", dto);
+					redisTemplate.convertAndSend("spk", dto);
 					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
 					/*executor.execute(new Runnable() {
 						@Override
