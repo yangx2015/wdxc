@@ -3,8 +3,8 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' 
-			:closable='false' :mask-closable="mesF" 
+		<Modal v-model="showModal" width='900'
+			:closable='false' :mask-closable="mesF"
 			title="新建终端设备">
 			<div style="overflow: auto;height: 300px;">
 				<Form
@@ -33,12 +33,6 @@
 								<Select filterable :readonly="dataRead" filterable clearable  v-model="form.zt">
 									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem label='厂商：'>
-								<Input :readonly="dataRead" type="text" v-model="form.cs" placeholder="请填写厂商信息...">
-								</Input>
 							</FormItem>
 						</Col>
 					</Row>

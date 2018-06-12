@@ -209,11 +209,11 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-        		if (v.findMess.sjlx == ''){
-                    v.findMess.sjlxIn = '10,20,30,40,50,60';
-				}else{
-                    delete v.findMess.sjlxIn
-				}
+                // if (v.findMess.sjlx == ''){
+                 //    v.findMess.sjlxIn = '10,20,30,40,50,60';
+				// }else{
+                 //    delete v.findMess.sjlxIn
+				// }
         		this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list

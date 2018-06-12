@@ -157,6 +157,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     public List<Menu> getMenuTree(SysYh user) {
         List<SysGn> functions = getUserFunctions(user);
         if (functions == null || functions.size() == 0)return new ArrayList<>();
+        Set<String> functionCodes = functions.stream().map(SysGn::getGndm).collect(Collectors.toSet());
+        findParent(functions,functionCodes);
         functions.sort(Comparator.comparing(SysGn::getPx));
         List<Menu> menuList = convertToMenus(functions);
         return buildMenuTree(menuList);
@@ -504,10 +506,20 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 
     private void findParent(List<SysGn> functions,Set<String> functionCodes){
         Set<String> addCodes = new HashSet<>();
+        Set<String> fatherCodes = new HashSet<>();
         for (SysGn function : functions) {
             if (StringUtils.isEmpty(function.getFjd()))continue;
             if (functionCodes.contains(function.getFjd()))continue;
+            fatherCodes.add(function.getFjd());
             addCodes.add(function.getFjd());
+        }
+        if (fatherCodes.size() != 0){
+            List<SysGn> fathers = findIn(SysGn.InnerColumn.gndm,fatherCodes);
+            for (SysGn father : fathers) {
+                if (StringUtils.isEmpty(father.getFjd()))continue;
+                if (functionCodes.contains(father.getFjd()))continue;
+                addCodes.add(father.getFjd());
+            }
         }
         if (addCodes.size() != 0){
             List<SysGn> addFunctions = findIn(SysGn.InnerColumn.gndm,addCodes);

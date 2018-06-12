@@ -296,17 +296,19 @@ export default {
                 this.allCarList.push(m);
 			}
             this.classify();
+            this.rightCarList = this.carArray[this.status];
             if (this.choosedCar){
                 if (this.choosedCar.zdbh == newCar.zdbh){
                     this.mapCarList = [newCar];
+                    this.$refs.map.update();
+                    return;
 				}else{
                     this.mapCarList = [this.choosedCar];
 				}
             }else{
                 this.mapCarList = this.carArray[this.status];
+                this.$refs.map.update();
             }
-            this.rightCarList = this.carArray[this.status];
-            this.$refs.map.update();
 		},
         init(){
             this.classify();

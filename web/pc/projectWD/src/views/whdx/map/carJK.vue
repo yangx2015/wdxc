@@ -76,16 +76,11 @@
                 v.showCarPosition();
             },
             moveMap(){
+                if (this.carList.length == 0)return;
                 var v = this
-                this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
-                //
-                // v.zoomDot = [];
-                // for(var i = 0 ; i<v.carList.length ; i++){
-                //     v.zoomDot.push(
-                //         new BMap.Point(v.carList[i].bdjd,v.carList[i].bdwd)
-                //     )
-                // }
-                // v.map.setViewport(v.zoomDot);
+                if (this.carList.length == 1){
+                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.map.getZoom());  // 初始化地图,设置中心点坐标和地图级别
+                }
             },
             init() {
                 this.carList = this.$parent.mapCarList;
@@ -95,7 +90,7 @@
                 }else if (this.carList.length > 0) {
                     this.$refs.carInfoButton.hide();
                     this.car = null;
-                    this.map.centerAndZoom(new BMap.Point(this.carList[0].lng, this.carList[0].lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
+                    this.map.centerAndZoom(new BMap.Point(this.mapcenter.lng, this.mapcenter.lat), this.zoom);  // 初始化地图,设置中心点坐标和地图级别
                 }else {
                     this.car = null;
                     this.$refs.carInfoButton.hide();
@@ -154,7 +149,7 @@
                     // background:"url(http://cdn1.iconfinder.com/data/icons/CrystalClear/128x128/actions/gohome.png)",    //背景图片，这是房产标注的关键！
                     // cursor:"pointer"
                 });
-                myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
+                myLabel.setTitle("");               //为label添加鼠标提示
                 this.map.addOverlay(myLabel);
             },
             addLine(points) {

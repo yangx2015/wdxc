@@ -67,7 +67,7 @@ public class ZdCtrl extends BaseController<ClZdgl,String> {
      * 上传excel文件，批量导入终端
      */
     @PostMapping("/excel")
-    public ApiResponse<String> saveBatch(String filePath) throws IOException {
+    public ApiResponse<List<String>> saveBatch(String filePath) throws IOException {
         return service.saveBatch(filePath);
     }
 

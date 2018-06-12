@@ -12,7 +12,7 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
     ApiResponse<String> saveEntity(ClZdgl entity);
     /*
      * 插入一条数据 如果数据存在则更新
-     * 
+     *
      */
     void insetAndUpdate(ClZdgl entity);
 
@@ -27,7 +27,7 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
 
     ApiResponse<String> getVersionInfo(String deviceId);
 
-    ApiResponse<String> saveBatch(String filePath) throws IOException;
+    ApiResponse<List<String>> saveBatch(String filePath) throws IOException;
 
     void saveBatch(List<ClZdgl> clZdgls);
 }

@@ -2,7 +2,8 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-			height="400"
+			height="600"
+			width="900"
 		    :closable='false'
 		    :mask-closable="false"
 		    :title="operate+'用户'">
@@ -12,8 +13,13 @@
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
-	    		<div style="overflow: auto;height: 300px;">
+	    		<div style="overflow: auto;height: 400px;width:800px">
 					<Row>
+						<Col span="12">
+							<FormItem prop="jgdm" label='组织机构：'>
+								<Cascader @on-change="change" v-model="orgPath" change-on-select :data="orgTree"  placeholder="请选择组织机构"  filterable clearable  ></Cascader>
+							</FormItem>
+						</Col>
 						<Col span="12">
 							<FormItem prop="zh" label='用户名：'>
 								<Input :readonly="!usermesType" type="text" v-model="addmess.zh" placeholder="请设置用户帐号">
@@ -63,11 +69,6 @@
 							<FormItem prop="zjhm" label='证件号码：'>
 								<Input type="text" v-model="addmess.zjhm" placeholder="请输入证件号码">
 								</Input>
-							</FormItem>
-						</Col>
-						<Col span="12">
-							<FormItem prop="jgdm" label='组织机构：'>
-								<Cascader @on-change="change" v-model="orgPath" change-on-select :data="orgTree"  placeholder="请选择组织机构"  filterable clearable  ></Cascader>
 							</FormItem>
 						</Col>
 					</Row>
@@ -145,7 +146,6 @@
                 this.getOrgPath(this.addmess.jgdm);
 			}
 			this.yhlxDict = this.$parent.yhlxDict
-			// this.getOrgList();
             this.getOrgTree();
         },
 		methods:{

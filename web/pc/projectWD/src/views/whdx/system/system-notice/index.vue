@@ -21,12 +21,16 @@
 							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="getPageData()">
-								<Icon type="search"></Icon>
-							</Button>
-							<Button type="primary" @click="AddMess()">
-								<Icon type="plus-round"></Icon>
-							</Button>
+							<Tooltip content="查询" placement="top">
+								<Button type="primary" @click="getPageData()">
+									<Icon type="search"></Icon>
+								</Button>
+							</Tooltip>
+							<Tooltip content="新增" placement="top">
+								<Button type="primary" @click="AddMess()">
+									<Icon type="plus-round"></Icon>
+								</Button>
+							</Tooltip>
 							<Tooltip content="批量导入" placement="top">
 								<Button type="success" @click="componentName='plmess'">
 									<Icon type="arrow-return-left"></Icon>
@@ -117,11 +121,6 @@
                             let s = p.row.cph ? p.row.cph : '-';
                             return h('div',s);
 						}
-                    },
-                    {
-                        title: '厂商',
-                        align:'center',
-                        key: 'cs'
                     },
                     {
                         title: '超速设定',

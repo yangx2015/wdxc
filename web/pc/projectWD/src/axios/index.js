@@ -27,6 +27,7 @@ httpInstance.interceptors.request.use((config) => {
 
 	if(config.url =="/api/clzd/getzdcl/"
         || '/api/clsbyxsjjl/historygps' == config.url
+        || '/api/clsbyxsjjl/pager' == config.url
         // || '/api/cl/carAccStatistics' == config.url
         || '/api/dd/ddzTj' == config.url
         || '/api/dd/ccTTj' == config.url
@@ -70,12 +71,13 @@ httpInstance.interceptors.response.use((response) => {
         router.push({name: 'error-404'})
     }
     if (response.status===200){
-        if (response.data.code===403){
-            router.push({name: 'erro' +
-                'r-403'})
-        }else{
-            return response.data;
-        }
+        return response.data;
+        // if (response.data.code===403){
+        //     router.push({name: 'erro' +
+        //         'r-403'})
+        // }else{
+        //     return response.data;
+        // }
     }else{
         router.push({name: 'error-500'})
     }
