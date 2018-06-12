@@ -15,65 +15,66 @@
             </a>
             <Row>
                 <div style="z-index: 1000000;" class="buttons" v-if="car != null">
-                    <Tooltip content="前摄像头拍照" placement="right">
+                    <Tooltip content="前摄像头拍照" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button>
                     </Tooltip>
-                    <Tooltip content="后摄像头拍照" placement="right">
+                    <Tooltip content="后摄像头拍照" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button>
                     </Tooltip>
-                    <Tooltip content="前后摄像头拍照" placement="right">
+                    <Tooltip content="前后摄像头拍照" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button>
                     </Tooltip>
-                    <Tooltip content="前摄像头视频" placement="right">
+                    <Tooltip content="前摄像头视频" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button>
                     </Tooltip>
-                    <Tooltip content="后摄像头视频" placement="right">
+                    <Tooltip content="后摄像头视频" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button>
                     </Tooltip>
-                    <Tooltip content="前后摄像头视频" placement="right">
+                    <Tooltip content="前后摄像头视频" placement="top">
                         <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button>
                     </Tooltip>
-                    <Tooltip content="电子围栏" placement="right">
+                    <Tooltip content="电子围栏" placement="top">
                         <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button>
                     </Tooltip>
-                    <Tooltip content="历史轨迹" placement="right">
+                    <Tooltip content="历史轨迹" placement="top">
                         <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
                     </Tooltip>
                 </div>
 
-                <Row  v-if="photo.showModal && photo.src == ''">
+                <Row  v-if="photo.showModal">
                     <div style="width:100%;height: 100%;text-align: center;">
                         <i-circle v-if="photo.src == ''" :percent="photo.percent">
                             <span class="demo-Circle-inner" style="font-size:24px">{{photo.sec}} 秒</span>
                         </i-circle>
+                        <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%"  @click="showImg(staticPath+photo.src)">
                     </div>
                 </Row>
-                <Modal v-model="photo.src != ''" width="1000" height="800"
-                    :closable='false'
-                    :mask-closable="false" title="预览">
-                    <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
-                    <div slot='footer' style="text-align: center;">
-                        <Button type="primary" @click="closePhoto">关闭</Button>
-                    </div>
-                </Modal>
+                <!--<Modal v-model="photo.src != ''" width="1000" height="800"-->
+                    <!--:closable='false'-->
+                    <!--:mask-closable="false" title="预览">-->
+                    <!--<img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">-->
+                    <!--<div slot='footer' style="text-align: center;">-->
+                        <!--<Button type="primary" @click="closePhoto">关闭</Button>-->
+                    <!--</div>-->
+                <!--</Modal>-->
                 <Row v-if="video.showModal && video.src == ''">
                     <div style="width:100%;height: 100%;text-align: center;">
                         <i-circle v-if="video.src == ''" :percent="video.percent">
                             <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
                         </i-circle>
+                        <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%" @click="window.open(staticPath+photo.src)">
                     </div>
                     <div style="text-align: center;">
                         <Button type="primary" @click="closeVideo">关闭</Button>
                     </div>
                 </Row>
-                <Modal v-model="video.src != ''" width="1000" height="800"
-                       :closable='false'
-                       :mask-closable="false" title="预览">
-                    <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
-                    <div slot='footer' style="text-align: center;">
-                        <Button type="primary" @click="closePhoto">关闭</Button>
-                    </div>
-                </Modal>
+                <!--<Modal v-model="video.src != ''" width="1000" height="800"-->
+                       <!--:closable='false'-->
+                       <!--:mask-closable="false" title="预览">-->
+                    <!--<div slot='footer' style="text-align: center;">-->
+                        <!--<Button type="primary" @click="closePhoto">关闭</Button>-->
+                    <!--</div>-->
+                <!--</Modal>-->
             </Row>
         </Card>
     </Col>
@@ -131,6 +132,9 @@
         mounted(){
         },
         methods:{
+            showImg(src){
+                window.open(src);
+            },
             closePhoto(){
                 this.photo.showModal = false
                 this.resetPhotoCount();
@@ -245,8 +249,6 @@
                 this.stopVideoCount();
             },
             init(item){
-                console.log("init");
-                console.log(item);
                 this.car = item;
                 // this.$refs.carInfo.init(item);
             },

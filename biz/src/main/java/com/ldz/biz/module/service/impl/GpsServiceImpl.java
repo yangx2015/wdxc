@@ -16,6 +16,8 @@ import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.*;
 import com.ldz.util.yingyan.GuiJIApi;
 import org.apache.commons.collections4.CollectionUtils;
@@ -171,9 +173,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
 			clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
 
-			String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
+			websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
+			String socket = JsonUtil.toJson(websocketInfo);
 			log.info("推送前端的数据为" + socket);
 			websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(), socket);
+			if (websocketInfo.getCx().equals("30")){
+				websocket.convertAndSend("/topic/sendgps", socket);
+			}
 			return ApiResponse.fail("job发送离线:两次离线时间一致");
 
 		}
@@ -190,9 +196,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
 		clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
 		// 推送坐标去前端
-		String socket = JsonUtil.toJson(changeSocket(gpsinfo, null, object2));
+		websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
+		String socket = JsonUtil.toJson(websocketInfo);
 		log.info("推送前端的数据为" + socket);
 		websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(), socket);
+		if (websocketInfo.getCx().equals("30")){
+			websocket.convertAndSend("/topic/sendgps", socket);
+		}
 		return ApiResponse.success();
 	}
 
@@ -205,8 +215,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		    	ClGps bean2 = JsonUtil.toBean(bean, ClGps.class);
 		    	// 判断该点位是否携带类型,或者是何种类型分类存储
 		      saveClSbyxsjjl(gpsinfo, bean2,clcl);
-		      String socket = JsonUtil.toJson(changeSocket(gpsinfo, bean2,null));
+				websocketInfo websocketInfo = changeSocket(gpsinfo, bean2,null);
+				String socket = JsonUtil.toJson(websocketInfo);
 		      websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(),socket);
+				if (websocketInfo.getCx().equals("30")){
+					websocket.convertAndSend("/topic/sendgps", socket);
+				}
 		      return ApiResponse.success("经纬度为-1的点位事件存储成功,并推送给前端"+JsonUtil.toJson(socket));
 			}
 		    if (StringUtils.isEmpty(bean)) {
@@ -219,9 +233,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         saveClSbyxsjjl(gpsinfo, entity,clcl);
 
 	// 推送坐标去前端
-	String socket = JsonUtil.toJson(changeSocket(gpsinfo, entity,null));
+		websocketInfo websocketInfo = changeSocket(gpsinfo, entity,null);
+		String socket = JsonUtil.toJson(websocketInfo);
 	log.info("推送前端的数据为"+socket);
 	websocket.convertAndSend("/topic/sendgps-"+gpsinfo.getDeviceId(),socket);
+		if (websocketInfo.getCx().equals("30")){
+			websocket.convertAndSend("/topic/sendgps", socket);
+		}
 
 	if(StringUtils.isEmpty(bean)){
 		redis.boundValueOps(ClGps.class.getSimpleName() +  gpsinfo.getDeviceId()).set(JsonUtil.toJson(entity));
@@ -475,6 +493,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			condition.like(ClCl.InnerColumn.cph,cphLike);
 		}
 
+		SysYh user = getCurrentUser();
+		condition.eq(ClCl.InnerColumn.jgdm,user.getJgdm());
 		// 将终端编号,车辆信息缓存
 		List<ClCl> selectAll = clclmapper.selectByExample(condition);
 		Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
@@ -484,7 +504,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		List<ClGps> gpsInit = entityMapper.selectAll();
 
 		// 获取终端状态
-		List<ClZdgl> zds = zdglservice.findAll();
+		condition = new LimitedCondition(ClZdgl.class);
+		condition.eq(ClZdgl.InnerColumn.jgdm,user.getJgdm());
+		List<ClZdgl> zds = zdglservice.findByCondition(condition);
 		// 将终端状态数据缓存
 		Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
 				.collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));

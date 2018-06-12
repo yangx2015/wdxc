@@ -271,8 +271,8 @@ export default {
 			allCarList:[],
 			allCarList:[],
 
-            // socket : new SockJS(this.$http.url+"/gps"),
-            socket : new SockJS("http://127.0.0.1/gps"),
+            socket : new SockJS(this.$http.url+"/gps"),
+            // socket : new SockJS("http://127.0.0.1/gps"),
 
             changeBtnIcon:'chevron-down',
             dhlabel: (h) => {
@@ -379,7 +379,7 @@ export default {
             stompClient.connect({}, function(frame) {
                 for (let r of v.allCarList){
                     stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
-                        v.onGpsInfo(data.body)
+                        v.onGpsInfo(JSON.parse(data.body))
                     });
 				}
             });
@@ -485,7 +485,6 @@ export default {
             this.$refs.map.init();
 		},
         filter(){
-            console.log('filter');
             this.classify();
             this.mapCarList = this.carArray[this.status];
             this.$refs.map.init();
@@ -497,9 +496,9 @@ export default {
 			for(let r of this.allCarList){
 			    let status = r.status;
                 if (this.searchKey === ''
-					|| r.cph.indexOf(this.searchKey) > 0
-					|| r.zdbh.indexOf(this.searchKey) > 0
-					|| r.sjxm.indexOf(this.searchKey) > 0
+					|| r.cph.indexOf(this.searchKey) >= 0
+					|| r.zdbh.indexOf(this.searchKey) >= 0
+					|| r.sjxm.indexOf(this.searchKey) >= 0
 				){
                     this.carArray[status].push(r);
 				}
