@@ -52,7 +52,7 @@
                     :closable='false'
                     :mask-closable="false" title="预览">
                     <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
-                    <div style="text-align: center;">
+                    <div slot='footer' style="text-align: center;">
                         <Button type="primary" @click="closePhoto">关闭</Button>
                     </div>
                 </Modal>
@@ -70,7 +70,7 @@
                        :closable='false'
                        :mask-closable="false" title="预览">
                     <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%">
-                    <div style="text-align: center;">
+                    <div slot='footer' style="text-align: center;">
                         <Button type="primary" @click="closePhoto">关闭</Button>
                     </div>
                 </Modal>

@@ -2,6 +2,7 @@ package com.ldz.biz.config;
 
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.RequestCommonParamsDto;
 import com.ldz.util.redis.RedisTemplateUtil;
@@ -20,6 +21,10 @@ public class MessageReceiver  implements MessageListener {
 
 	@Autowired
 	private SpkService spkService;
+
+    @Autowired
+    private GpsService gpsservice;
+
 	private RedisTemplateUtil redisTemplate;
 
 	public MessageReceiver(RedisTemplateUtil redisTemplate) {
@@ -32,14 +37,15 @@ public class MessageReceiver  implements MessageListener {
 		val eventMessage = redisTemplate.getValueSerializer().deserialize(message.getBody());
 		System.out.println(eventMessage);
 		String topic = Arrays.toString(pattern);
+        GpsInfo gpsInfo = new GpsInfo();
+        RequestCommonParamsDto dto = (RequestCommonParamsDto) eventMessage;
+        BeanUtils.copyProperties(dto,gpsInfo);
 		switch (topic){
 			case "spk":
-				GpsInfo gpsInfo = new GpsInfo();
-				RequestCommonParamsDto dto = (RequestCommonParamsDto) eventMessage;
-				BeanUtils.copyProperties(dto,gpsInfo);
 				spkService.saveSpk(gpsInfo);
 				break;
 			case "gps":
+                gpsservice.filterAndSave(gpsInfo);
 				break;
 		}
 		System.out.println("收到一条消息："+redisChannel);
