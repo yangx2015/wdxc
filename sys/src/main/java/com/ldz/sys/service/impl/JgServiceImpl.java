@@ -165,6 +165,11 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		return response;
 	}
 
+	/**
+	 * 根据机构代码获取当前机构的所有父机构
+	 * @param orgCode
+	 * @return
+	 */
 	@Override
 	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
 		SysJg function = findById(orgCode);

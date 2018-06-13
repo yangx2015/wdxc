@@ -87,7 +87,7 @@
 										<Icon type="soup-can-outline"></Icon>
 										{{item.zdbh}}
 									</p>
-									<p slot="extra" style="color:#19be6b">
+									<p slot="extra" style="color:#ed3f14">
 										{{formateLongDate(item.time)}}
 									</p>
 									<Row  type="flex" justify="start">
@@ -152,7 +152,7 @@
 										<Icon type="soup-can-outline"></Icon>
 										{{item.zdbh}}
 									</p>
-									<p slot="extra" style="color:#19be6b">
+									<p slot="extra">
 										{{formateLongDate(item.time)}}
 									</p>
 									<Row  type="flex" justify="start">
@@ -213,7 +213,7 @@
 				</Tabs>
 			</Col>
 		</div>
-		<div style="position:absolute;width:280px;top:0;right:0;z-index:9990;padding-top:30px;padding-right:30px;float: right" type="flex" justify="end">
+		<div style="position:absolute;width:300px;top:0;right:0;z-index:9990;padding-top:30px;padding-right:30px;float: right" type="flex" justify="end">
 			<car-info @close="closeItem" ref="carInfoRef"></car-info>
 		</div>
 		<div class="body-F" style="height:100%;">
