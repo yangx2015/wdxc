@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -167,35 +164,33 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	 * @param orgCode
 	 * @return
 	 */
-	//@Override
-	public ApiResponse<List<SysJg>> getOrgPath(String orgCode,JgServiceImpl jgService) {
-		SysJg function = jgService.findById(orgCode);
+	@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
+		SysJg function = findById(orgCode);
 		RuntimeCheck.ifNull(function,"未找到记录");
 		List<SysJg> list = new ArrayList<>();
 		list.add(function);
-		findParent(function,list,jgService);
-		// System.out.println("排序前： " + list);
-
-		List<SysJg> sysJgs = list.stream().sorted((o1, o2) -> o1.getJgdj().compareTo(o2.getJgdj())).collect(Collectors.toList());
-		// System.out.println("排序后： " + sysJgs);
-		return ApiResponse.success(sysJgs);
+		findParent(function,list);
+		list.sort(Comparator.comparingInt(SysJg::getJgdj));
+		return ApiResponse.success(list);
 	}
 
 
 
-	private void findParent(SysJg function,List<SysJg> result,JgServiceImpl jgService){
+
+	private void findParent(SysJg function,List<SysJg> result){
 		if (function == null){
 			return;
 		}
 		if (StringUtils.isEmpty(function.getFjgdm())){
 			return;
 		}
-		SysJg father = jgService.findById(function.getFjgdm());
+		SysJg father = findById(function.getFjgdm());
 		if (father == null){
 			return;
 		}
 		result.add(father);
-		findParent(father,result,jgService);
+		findParent(father,result);
 	}
 
 	@Override
@@ -245,8 +240,5 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		return node;
 	}
 
-	@Override
-	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
-		return null;
-	}
+
 }
