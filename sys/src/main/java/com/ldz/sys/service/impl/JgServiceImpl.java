@@ -1,29 +1,26 @@
 package com.ldz.sys.service.impl;
 
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.bean.TreeNode;
+import com.ldz.sys.constant.Dict;
+import com.ldz.sys.mapper.SysPtjgMapper;
+import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
+import com.ldz.sys.util.OrgUtil;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.exception.RuntimeCheck;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.common.Mapper;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import com.ldz.sys.bean.TreeNode;
-import com.ldz.sys.model.SysGn;
-import com.ldz.sys.model.SysYh;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.constant.Dict;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.sys.mapper.SysPtjgMapper;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.service.JgService;
-import com.ldz.sys.util.OrgUtil;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
-
-import tk.mybatis.mapper.common.Mapper;
 
 /**
  * auther chenwei create at 2018/2/26
@@ -170,24 +167,35 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	 * @param orgCode
 	 * @return
 	 */
-	@Override
-	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
-		SysJg function = findById(orgCode);
+	//@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode,JgServiceImpl jgService) {
+		SysJg function = jgService.findById(orgCode);
 		RuntimeCheck.ifNull(function,"未找到记录");
 		List<SysJg> list = new ArrayList<>();
 		list.add(function);
-		findParent(function,list);
-		return ApiResponse.success(list);
+		findParent(function,list,jgService);
+		// System.out.println("排序前： " + list);
+
+		List<SysJg> sysJgs = list.stream().sorted((o1, o2) -> o1.getJgdj().compareTo(o2.getJgdj())).collect(Collectors.toList());
+		// System.out.println("排序后： " + sysJgs);
+		return ApiResponse.success(sysJgs);
 	}
 
 
-	private void findParent(SysJg function,List<SysJg> result){
-		if (function == null)return;
-		if (StringUtils.isEmpty(function.getFjgdm()))return;
-		SysJg father = findById(function.getFjgdm());
-		if (father == null)return;
+
+	private void findParent(SysJg function,List<SysJg> result,JgServiceImpl jgService){
+		if (function == null){
+			return;
+		}
+		if (StringUtils.isEmpty(function.getFjgdm())){
+			return;
+		}
+		SysJg father = jgService.findById(function.getFjgdm());
+		if (father == null){
+			return;
+		}
 		result.add(father);
-		findParent(father,result);
+		findParent(father,result,jgService);
 	}
 
 	@Override
@@ -198,6 +206,8 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		treeNodes = buildTree(treeNodes);
 		return ApiResponse.success(treeNodes);
 	}
+
+
 
 	private List<TreeNode> buildTree(List<TreeNode> list){
 		Map<String,TreeNode> nodeMap = list.stream().collect(Collectors.toMap(TreeNode::getValue,p->p));
@@ -233,5 +243,10 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		node.setValue(org.getJgdm());
 		node.setFather(org.getFjgdm());
 		return node;
+	}
+
+	@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
+		return null;
 	}
 }
