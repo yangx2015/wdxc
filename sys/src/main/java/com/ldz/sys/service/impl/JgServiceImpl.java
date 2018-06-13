@@ -1,9 +1,6 @@
 package com.ldz.sys.service.impl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import com.ldz.sys.bean.TreeNode;
@@ -170,24 +167,34 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 	 * @param orgCode
 	 * @return
 	 */
-	@Override
-	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
-		SysJg function = findById(orgCode);
+	//@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode,JgServiceImpl jgService) {
+		SysJg function = jgService.findById(orgCode);
 		RuntimeCheck.ifNull(function,"未找到记录");
 		List<SysJg> list = new ArrayList<>();
 		list.add(function);
-		findParent(function,list);
-		return ApiResponse.success(list);
+		findParent(function,list,jgService);
+		// System.out.println("排序前： " + list);
+
+		List<SysJg> sysJgs = list.stream().sorted((o1, o2) -> o2.getJgdj().compareTo(o1.getJgdj())).collect(Collectors.toList());
+		// System.out.println("排序后： " + sysJgs);
+		return ApiResponse.success(sysJgs);
 	}
 
 
-	private void findParent(SysJg function,List<SysJg> result){
-		if (function == null)return;
-		if (StringUtils.isEmpty(function.getFjgdm()))return;
-		SysJg father = findById(function.getFjgdm());
-		if (father == null)return;
+	private void findParent(SysJg function,List<SysJg> result,JgServiceImpl jgService){
+		if (function == null){
+			return;
+		}
+		if (StringUtils.isEmpty(function.getFjgdm())){
+			return;
+		}
+		SysJg father = jgService.findById(function.getFjgdm());
+		if (father == null){
+			return;
+		}
 		result.add(father);
-		findParent(father,result);
+		findParent(father,result,jgService);
 	}
 
 	@Override
@@ -198,6 +205,8 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		treeNodes = buildTree(treeNodes);
 		return ApiResponse.success(treeNodes);
 	}
+
+
 
 	private List<TreeNode> buildTree(List<TreeNode> list){
 		Map<String,TreeNode> nodeMap = list.stream().collect(Collectors.toMap(TreeNode::getValue,p->p));
@@ -233,5 +242,10 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		node.setValue(org.getJgdm());
 		node.setFather(org.getFjgdm());
 		return node;
+	}
+
+	@Override
+	public ApiResponse<List<SysJg>> getOrgPath(String orgCode) {
+		return null;
 	}
 }
