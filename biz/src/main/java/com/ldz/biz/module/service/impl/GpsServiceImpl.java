@@ -484,16 +484,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         condition.eq(ClCl.InnerColumn.jgdm, user.getJgdm());
         // 将终端编号,车辆信息缓存
         List<ClCl> selectAll = clclmapper.selectByExample(condition);
-        Map<String, ClCl> clmap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
+        Map<String, ClCl> zdbhClMap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
                 .collect(Collectors.toMap(ClCl::getZdbh, ClCl -> ClCl));
 
-        // 获取实时点位gps信息
-        List<ClGps> gpsInit = entityMapper.selectAll();
 
         // 获取终端状态
         condition = new LimitedCondition(ClZdgl.class);
         condition.eq(ClZdgl.InnerColumn.jgdm, user.getJgdm());
         List<ClZdgl> zds = zdglservice.findByCondition(condition);
+
+
+        // 获取实时点位gps信息
+        List<String> deviceIds = zds.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
+        condition = new SimpleCondition(ClGps.class);
+        condition.in(ClGps.InnerColumn.zdbh,deviceIds);
+        List<ClGps> gpsInit = entityMapper.selectByExample(condition);
         // 将终端状态数据缓存
         Map<String, ClZdgl> zdglmap = zds.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
                 .collect(Collectors.toMap(ClZdgl::getZdbh, ClZdgl -> ClZdgl));
@@ -511,7 +516,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (CollectionUtils.isNotEmpty(gpsInit)) {
             for (ClGps clgps : gpsInit) {
                 if (StringUtils.isNotEmpty(clgps.getZdbh())) {
-                    ClCl clCl = clmap.get(clgps.getZdbh());
+                    ClCl clCl = zdbhClMap.get(clgps.getZdbh());
                     if (clCl != null) {
                         websocketInfo websocketInfo = new websocketInfo();
                         websocketInfo.setBdjd(clgps.getBdjd().toString());

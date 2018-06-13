@@ -6,6 +6,10 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.ldz.biz.module.mapper.ClZdglMapper;
+import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.sys.model.SysYh;
+import com.ldz.util.bean.*;
 import com.ldz.util.commonUtil.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -24,9 +28,6 @@ import com.ldz.biz.module.model.ClSbyxsjjl;
 import com.ldz.biz.module.service.SbyxsjjlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.TrackJiuPian;
-import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.yingyan.GuiJIApi;
@@ -43,6 +44,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClSbyxsjjlMapper entityMapper;
 	@Autowired
 	private ClGpsLsMapper clGpsLsMapper;
+	@Autowired
+	private ClZdglMapper zdglMapper;
 	@Value("${biz.scTime}")
 	private String scTime;
 
@@ -66,6 +69,12 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 				e.printStackTrace();
 			}
 		}
+		SysYh user = getCurrentUser();
+		SimpleCondition simpleCondition = new SimpleCondition(ClZdgl.class);
+		simpleCondition.eq(ClZdgl.InnerColumn.jgdm,user.getJgdm());
+		List<ClZdgl> devices = zdglMapper.selectByExample(simpleCondition);
+		List<String> deviceCodes = devices.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
+		condition.eq(ClSbyxsjjl.InnerColumn.zdbh,deviceCodes);
 		return true;
 	}
 

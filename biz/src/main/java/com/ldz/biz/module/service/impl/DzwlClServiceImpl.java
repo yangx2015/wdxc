@@ -1,24 +1,27 @@
 package com.ldz.biz.module.service.impl;
 
 import com.github.pagehelper.PageInfo;
-import com.ldz.biz.module.mapper.ClDzwlMapper;
-import com.ldz.biz.module.model.ClDzwl;
-import com.ldz.biz.module.service.DzwlService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClDzwlClMapper;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClDzwl;
 import com.ldz.biz.module.model.ClDzwlCl;
 import com.ldz.biz.module.service.DzwlClService;
+import com.ldz.biz.module.service.DzwlService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import sun.nio.ch.SelectorImpl;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +30,8 @@ public class DzwlClServiceImpl extends BaseServiceImpl<ClDzwlCl,String> implemen
     private ClDzwlClMapper entityMapper;
     @Autowired
     private DzwlService dzwlService;
+    @Autowired
+    private ClClMapper clClMapper;
 
     @Override
     protected Mapper<ClDzwlCl> getBaseMapper() {
@@ -36,6 +41,18 @@ public class DzwlClServiceImpl extends BaseServiceImpl<ClDzwlCl,String> implemen
     @Override
     protected Class<?> getEntityCls(){
         return ClDzwlCl.class;
+    }
+
+    @Override
+    public boolean fillPagerCondition(LimitedCondition condition){
+        SysYh user = getCurrentUser();
+        SimpleCondition carCondition = new SimpleCondition(ClCl.class);
+        carCondition.eq(ClCl.InnerColumn.jgdm,user.getJgdm());
+        List<ClCl> cars = clClMapper.selectByExample(carCondition);
+        if (cars.size() == 0)return false;
+        List<String> carIds = cars.stream().map(ClCl::getClId).collect(Collectors.toList());
+        condition.in(ClDzwlCl.InnerColumn.clId,carIds);
+        return true;
     }
 
     @Override

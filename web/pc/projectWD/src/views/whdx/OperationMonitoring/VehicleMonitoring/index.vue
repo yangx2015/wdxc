@@ -353,28 +353,9 @@ export default {
         sco(){
             //数据推送
             var v = this
-            /**
-             * 建立成功的回调函数
-             */
-            v.socket.onopen = function() {
-            };
-            /**
-             * 服务器有消息返回的回调函数
-             */
-            v.socket.onmessage = function(e) {
-                // log('message', e.data);
-            };
-
-            /**
-             * websocket链接关闭的回调函数
-             */
-            v.socket.onclose = function() {
-                // log('关闭');
-            };
-            /**
-             * /topic/sendzp  订阅拍视频   /topic/sendhbsp订阅跑照片
-             */
-
+            v.socket.onopen = function() { };
+            v.socket.onmessage = function(e) { };
+            v.socket.onclose = function() { };
             var stompClient = Stomp.over(v.socket);
             stompClient.connect({}, function(frame) {
                 for (let r of v.allCarList){
