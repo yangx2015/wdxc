@@ -80,7 +80,6 @@
 
 <script>
 import Cookies from 'js-cookie';
-import md5 from 'js-md5';
 import menuList from '../data/list'
 import {appRouter} from '../router/router';
 export default {

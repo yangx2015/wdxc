@@ -2,6 +2,9 @@
     .buttons .ivu-tooltip{
         padding:8px;
     }
+    .label{
+
+    }
 </style>
 <template>
     <Col span="24" v-if="car != null && car != ''">
@@ -15,29 +18,37 @@
             </a>
             <Row>
                 <div style="z-index: 1000000;" class="buttons" v-if="car != null">
-                    <Tooltip content="前摄像头拍照" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button>
+                    <Tooltip content="前摄像头拍照" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('12','1-10')" icon="camera"></Button><br>
+                        <span class="label">前摄像头拍照</span>
                     </Tooltip>
-                    <Tooltip content="后摄像头拍照" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button>
+                    <Tooltip content="后摄像头拍照" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('12','2-10')" icon="android-camera"></Button><br>
+                        <span class="label">后摄像头拍照</span>
                     </Tooltip>
-                    <Tooltip content="前后摄像头拍照" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button>
+                    <Tooltip content="前后摄像头拍照" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('12','0-10')" icon="social-instagram-outline"></Button><br>
+                        <span class="label">前后摄像拍照</span>
                     </Tooltip>
-                    <Tooltip content="前摄像头视频" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button>
+                    <Tooltip content="前摄像头视频" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('11','1-10')" icon="ios-videocam"></Button><br>
+                        <span class="label">前摄像头视频</span>
                     </Tooltip>
-                    <Tooltip content="后摄像头视频" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button>
+                    <Tooltip content="后摄像头视频" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('11','2-10')" icon="ios-videocam-outline"></Button><br>
+                        <span class="label">后摄像头视频</span>
                     </Tooltip>
-                    <Tooltip content="前后摄像头视频" placement="top">
-                        <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button>
+                    <Tooltip content="前后摄像头视频" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="setControl('11','0-10')" icon="videocamera"></Button><br>
+                        <span class="label">前后摄像视频</span>
                     </Tooltip>
-                    <Tooltip content="电子围栏" placement="top">
-                        <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button>
+                    <Tooltip content="电子围栏" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="showFance" icon="qr-scanner"></Button><br>
+                        <span class="label">电子围栏</span>
                     </Tooltip>
-                    <Tooltip content="历史轨迹" placement="top">
-                        <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button>
+                    <Tooltip content="历史轨迹" placement="top" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button><br>
+                        <span class="label">历史轨迹</span>
                     </Tooltip>
                 </div>
 
@@ -57,12 +68,12 @@
                         <!--<Button type="primary" @click="closePhoto">关闭</Button>-->
                     <!--</div>-->
                 <!--</Modal>-->
-                <Row v-if="video.showModal && video.src == ''">
+                <Row v-if="video.showModal">
                     <div style="width:100%;height: 100%;text-align: center;">
                         <i-circle v-if="video.src == ''" :percent="video.percent">
                             <span class="demo-Circle-inner" style="font-size:24px">{{video.sec}} 秒</span>
                         </i-circle>
-                        <img v-if="photo.src != ''" :src="staticPath+photo.src" style="width: 100%;height: 100%" @click="window.open(staticPath+photo.src)">
+                        <video v-if="video.src != ''" :src="staticPath+video.src" style="width: 100%;height: 100%" controls  @click="window.open(staticPath+video.src)"></video>
                     </div>
                     <div style="text-align: center;">
                         <Button type="primary" @click="closeVideo">关闭</Button>
@@ -283,6 +294,8 @@
                     cmdParams:param
                 }
                 this.SpinShow = true;
+                this.closePhoto();
+                this.closeVideo();
                 this.$http.post(this.apis.CLJK.SEND_CONTROLL,params).then((res) =>{
                     this.SpinShow = false;
                     if (res.code === 200){
