@@ -36,7 +36,6 @@
 
 <script>
     import SockJS from 'sockjs-client';
-    // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
     import Stomp from '@stomp/stompjs';
 
     export default {
@@ -49,7 +48,10 @@
 	    			lat: 30.551134
 				},
 				zoom:16,
-				zoomDot:[]
+				zoomDot:[],
+                scoketMess:[],
+                allDeviceList: [],
+                socket : new SockJS(this.$http.url+"/gps"),
 			}
 		},
 		computed: {
@@ -82,8 +84,40 @@
 			// 百度地图API功能
 			this.map = new BMap.Map("allmap");    // 创建Map实例
 		  	this.mapCenterF()
+            this.getAllDevice()
 		},
 		methods:{
+            getAllDevice() {
+                this.$http.get(this.apis.ZDGL.QUERY+'?pageSize=10000').then((res)=>{
+                    if (res.code == 200 && res.page.list){
+                        this.addDeviceList = res.page.list;
+                        this.sco();
+                    }
+                })
+            },
+            sco(){
+                var v = this
+                v.socket.onopen = function() { };
+                v.socket.onmessage = function(e) { };
+                v.socket.onclose = function() { };
+                let stompClient = Stomp.over(v.socket);
+                stompClient.connect({}, function(frame) {
+                    for (let r of v.addDeviceList){
+                        stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
+                            let jsonMess = JSON.parse(data.body)
+                            if(jsonMess.cx==="30"){//校巴
+                                v.scoketMess.forEach((item,index) => {
+                                    if(item.clid==jsonMess.clid){
+                                        v.scoketMess.splice(index,1)
+                                    }
+                                })
+                                v.scoketMess.push(jsonMess)
+                                v.$store.commit('socketMessAdd',v.scoketMess)
+                            }
+                        });
+                    }
+                });
+            },
 			//撒点
 			disDot(list){
 				this.clear()
@@ -153,7 +187,7 @@
 				this.map.addControl(new BMap.MapTypeControl({
 				mapTypes:[
 		            BMAP_NORMAL_MAP
-		        ]}));	  
+		        ]}));
 				//添加地图类型控件
 				this.map.enableScrollWheelZoom(true);     					     //开启鼠标滚轮缩放
 			    this.map.addControl(new BMap.ScaleControl()); 					 // 添加比例尺控件

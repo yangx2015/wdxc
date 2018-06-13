@@ -129,7 +129,7 @@
     // 'sockjs-client' 必须与package.json文件当中dependencies 当中的一模一样
     import Stomp from '@stomp/stompjs';
 
-	
+
     import pass from './passworld'
     import errmess from './components/mainAbnormess'
     export default {
@@ -172,7 +172,7 @@
 //				socket : '',
 				scoketMess:[],
 				scoketAllCar:[],
-				
+
 				shrink: false,
                 userName: '',
                 isFullScreen: false,
@@ -260,7 +260,7 @@
 			    v.socket.onmessage = function(e) {
                     // log('message', e.data);
 			    };
-		
+
 		    /**
 		     * websocket链接关闭的回调函数
 		     */
@@ -270,22 +270,22 @@
                 /**
                  * /topic/sendzp  订阅拍视频   /topic/sendhbsp订阅跑照片
                  */
-		
+
 			    var stompClient = Stomp.over(v.socket);
 			    stompClient.connect({}, function(frame) {
-			        stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-			            let jsonMess = JSON.parse(data.body)
-			            if(jsonMess.cx==="30"){//校巴
-				            v.scoketMess.forEach((item,index) => {
-								if(item.clid==jsonMess.clid){
-									v.scoketMess.splice(index,1)
-								}
-							})
-					        v.scoketMess.push(jsonMess)
-				            v.$store.commit('socketMessAdd',v.scoketMess)
-			            }
-			            // v.$store.commit('socketAllCarAdd',jsonMess)
-			        });
+			        // stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+			        //     let jsonMess = JSON.parse(data.body)
+			        //     if(jsonMess.cx==="30"){//校巴
+				     //        v.scoketMess.forEach((item,index) => {
+						// 		if(item.clid==jsonMess.clid){
+						// 			v.scoketMess.splice(index,1)
+						// 		}
+						// 	})
+					 //        v.scoketMess.push(jsonMess)
+				     //        v.$store.commit('socketMessAdd',v.scoketMess)
+			        //     }
+			        //     // v.$store.commit('socketAllCarAdd',jsonMess)
+			        // });
 			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
 			            v.$store.commit('addSendhbsp',data.body)
 			        });
