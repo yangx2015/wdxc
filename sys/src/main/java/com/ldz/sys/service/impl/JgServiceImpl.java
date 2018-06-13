@@ -1,26 +1,26 @@
 package com.ldz.sys.service.impl;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.ldz.sys.bean.TreeNode;
-import com.ldz.sys.model.SysGn;
-import com.ldz.sys.model.SysYh;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.bean.TreeNode;
 import com.ldz.sys.constant.Dict;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysPtjgMapper;
 import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.util.OrgUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-
+import com.ldz.util.exception.RuntimeCheck;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * auther chenwei create at 2018/2/26
@@ -176,10 +176,11 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		findParent(function,list,jgService);
 		// System.out.println("排序前： " + list);
 
-		List<SysJg> sysJgs = list.stream().sorted((o1, o2) -> o2.getJgdj().compareTo(o1.getJgdj())).collect(Collectors.toList());
+		List<SysJg> sysJgs = list.stream().sorted((o1, o2) -> o1.getJgdj().compareTo(o2.getJgdj())).collect(Collectors.toList());
 		// System.out.println("排序后： " + sysJgs);
 		return ApiResponse.success(sysJgs);
 	}
+
 
 
 	private void findParent(SysJg function,List<SysJg> result,JgServiceImpl jgService){
