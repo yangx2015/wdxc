@@ -137,9 +137,49 @@ public class ClJsy implements Serializable {
      */
     @Column(name = "PWD")
     private String pwd;
-    
-    
-    
+
+    /**
+     * 血型
+     */
+    @Column(name = "XX")
+    private String xx;
+
+    /**
+     * 健康状况
+     */
+    @Column(name = "JKZK")
+    private String jkzk;
+
+    /**
+     * 驾照有效期
+     */
+    @Column(name = "JZYXQ")
+    private String jzyxq;
+
+    public String getXx() {
+        return xx;
+    }
+
+    public void setXx(String xx) {
+        this.xx = xx;
+    }
+
+    public String getJkzk() {
+        return jkzk;
+    }
+
+    public void setJkzk(String jkzk) {
+        this.jkzk = jkzk;
+    }
+
+    public String getJzyxq() {
+        return jzyxq;
+    }
+
+    public void setJzyxq(String jzyxq) {
+        this.jzyxq = jzyxq;
+    }
+
     public String getPwd() {
 		return pwd;
 	}

@@ -13,7 +13,72 @@
 				<Input placeholder="查设备、找车辆、找司机" size="large" v-model="searchKey">
 				<Button slot="append" type="primary" icon="ios-search" @click="filter"></Button>
 				</Input>
-				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;">
+				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;"  size="small">
+					<TabPane :label="qblabel" name="name0" style="height:300px;overflow:auto;" v-show="tabShowFlag">
+						<Row v-for="(item,index) in allCarList" @click.native="rowClick(item)">
+							<Col span="24">
+								<Card style="margin:0 15px 5px 15px;" :class="{'choosed':choosedCar == item}">
+									<p slot="title">
+										<Icon type="soup-can-outline"></Icon>
+										{{item.zdbh}}
+									</p>
+									<p slot="extra" style="color:#19be6b">
+										{{formateLongDate(item.time)}}
+									</p>
+									<Row  type="flex" justify="start">
+										<Col span="8">
+											<Icon type="model-s"></Icon>
+											{{item.cph}}
+										</Col>
+										<Col span="8">
+											<Icon type="person"></Icon>
+											{{item.sjxm ? item.sjxm : '暂无绑定'}}
+										</Col>
+										<Col span="2" offset="6">
+											<Poptip v-if="item.obdId != ''" title="OBD信息"  placement="left" width="300"  style="float: right">
+												<Button size="small" @click="getObdInfo(item)" style="font-weight: 700;color: black">OBD</Button>
+												<div slot="content">
+													<h3 v-if="gpsObdMessage == null" >暂无数据</h3>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">更新日期</Col>
+														<Col span="16"><span>{{formatDate(gpsObdMessage.creatorDate)}} {{formatTime(gpsObdMessage.creatortime)}}</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">发动机转速</Col>
+														<Col span="16"><span>{{gpsObdMessage.engineSpeed}} r/min</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">车速</Col>
+														<Col span="16"><span>{{gpsObdMessage.obdSpeed}} KM/h</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">剩余油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.syyl}} L</span></Col>
+													</Row>
+													<Row v-if="gpsObdMessage != null">
+														<Col span="8">耗油量</Col>
+														<Col span="16"><span>{{gpsObdMessage.hyl}} L</span></Col>
+													</Row>
+													<Row v-if="obdFaultCode && obdFaultCode.length != 0">
+														<Col style="border-bottom: 1px solid #cccccc"></Col>
+														<Col span="8">故障报告</Col>
+														<Col span="16">
+															<div v-for="item in obdFaultCode" style="border-bottom: 1px solid #cccccc">
+																<span>{{item.faultCode}}</span>
+																<!--<span :class="{obdFaultStatus:item.faultType != null,obdFaultHandled:item.faultType == '10',obdFaultNotHandle:item.faultType != '10'}">{{item.faultType == '10' ? '已解决' : '未解决'}}</span>-->
+																<br>
+																<span>{{item.creationTime}}</span>
+															</div>
+														</Col>
+													</Row>
+												</div>
+											</Poptip>
+										</Col>
+									</Row>
+								</Card>
+							</Col>
+						</Row>
+					</TabPane>
 					<TabPane :label="dhlabel" name="name1" style="height:300px;overflow:auto;" v-show="tabShowFlag">
 						<Row v-for="(item,index) in carArray[0]" @click.native="rowClick(item)">
 							<Col span="24">
@@ -275,6 +340,19 @@ export default {
             // socket : new SockJS("http://127.0.0.1/gps"),
 
             changeBtnIcon:'chevron-down',
+            qblabel: (h) => {
+                return h('div', [
+                    h('span','全部 '),
+                    h('Button', {
+                        props: {
+                            shape:'circle',
+                            size:'small',
+                            disabled:true
+                        },
+                        style:'background-color:#19be6b;color:white'
+                    }, this.allCarList.length)
+                ])
+            },
             dhlabel: (h) => {
                 return h('div', [
                     h('span','点火 '),

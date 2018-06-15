@@ -85,28 +85,6 @@
   	                	type:'index',
                       fixed: 'left'
   	                },
-                    // {
-                    //     title: '头像',
-                    //     width:60,
-                    //     align:'center',
-                    //     key: 'tx',
-                    //     fixed: 'left',
-                    //     render: (h, params) => {
-                    //         return h('div', [
-                    //             h('icon', {
-                    //                 props: {
-                    //                     type: params.row.tx,
-                    //                     size: '22'
-                    //                 },
-                    //                 on: {
-                    //                     click: () => {
-						// 															log('数据调试',params)
-                    //                     }
-                    //                 }
-                    //             })
-                    //         ]);
-                    //     }
-                    // },
                     {
                         title: '姓名',
                         width:110,
@@ -133,6 +111,21 @@
                         title: '身份证号',
                         align:'center',
                         key: 'sfzhm'
+                    },
+                    {
+                        title: '血型',
+                        align:'center',
+                        key: 'xx'
+                    },
+                    {
+                        title: '健康状况',
+                        align:'center',
+                        key: 'jkzk'
+                    },
+                    {
+                        title: '驾照有效期',
+                        align:'center',
+                        key: 'jzyxq'
                     },
                     {
                         title: '状态',
@@ -177,11 +170,6 @@
                         width:120,
                         align:'center',
                         key:'zjcx'
-                    },
-                    {
-                        title:'车队编号',
-                        align:'center',
-                        key:'cdbh'
                     },
                     {
                         title:'初领日期',

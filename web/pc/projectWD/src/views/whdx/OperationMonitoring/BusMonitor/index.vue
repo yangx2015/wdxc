@@ -136,7 +136,7 @@
 						    <div class="carlines">
 						    	<div class="box-row-z">
 						    		<div v-for="(item,index) in XBline">
-						    			<carline
+						    			<carline :vehicleList="item.vehicleList"
 						    				:zd="item.entryCount!=0"
 						    				:linecar='item.exportCount!=0'
 						    				:siteName="item.zdName"

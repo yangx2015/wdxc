@@ -12,12 +12,11 @@
     			:rules="ruleInline"
     			:label-width="100"
     			:styles="{top: '20px'}">
-	    		<div style="overflow: auto;height: 300px;">
+	    		<div style="overflow: auto;height: 600px;">
 					<Row>
 						<Col span="12">
 							<FormItem prop="xm" label='姓名：'>
-								<Input type="text" v-model="addmess.xm" placeholder="请输入姓名">
-								</Input>
+								<Input type="text" v-model="addmess.xm" placeholder="请输入姓名"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -32,8 +31,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="nl" label='年龄：'>
-								<Input type="text" v-model="addmess.nl" placeholder="请输入年龄">
-								</Input>
+								<Input type="text" v-model="addmess.nl" placeholder="请输入年龄"></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -57,12 +55,6 @@
 								</Input>
 							</FormItem>
 						</Col>
-						<!--<Col span="12">
-							<FormItem prop="cdbh" label='车队编号：'>
-								<Input type="text" v-model="addmess.cdbh" placeholder="请输入车队编号">
-								</Input>
-							</FormItem>
-						</Col>-->
 						<Col span="12">
 							<FormItem prop="dabh" label='档案编号：'>
 								<Input type="text" v-model="addmess.dabh" placeholder="请输入档案编号">
@@ -82,6 +74,30 @@
 									<Option value="00">正常</Option>
 									<Option value="10">休息</Option>
 								</Select>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem label="血型： ">
+								<Select filterable clearable  v-model="addmess.xx">
+									<Option value="A">A</Option>
+									<Option value="B">B</Option>
+									<Option value="O">O</Option>
+									<Option value="AB">AB</Option>
+								</Select>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem prop="jkzk" label='健康状况：'>
+								<Input type="text" v-model="addmess.jkzk" placeholder="健康状况"></Input>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem prop="clrq" label='驾照有效期：'>
+								<DatePicker v-model="jzyxq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
 							</FormItem>
 						</Col>
 					</Row>
@@ -107,6 +123,7 @@
 				showModal:true,
 				//新增数据
                 clrq:'',
+                jzyxq:'',
                 addmess: {
                 	xm:'',
                 	xb:'1',
@@ -137,8 +154,10 @@
 
         watch:{
             clrq:function(n,o){
-            	log('事件日期',n)
             	this.addmess.clrq = this.getdateParaD(n)
+            },
+            jzyxq:function(n,o){
+            	this.addmess.jzyxq = this.getdateParaD(n)
             }
         },
 		props:{
