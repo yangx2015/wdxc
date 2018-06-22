@@ -78,7 +78,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	//默认设备的心跳
     	entity.setGpsxt("10");
 
-    	entity.setJgmc(user.getJgdm());
+    	entity.setJgdm(user.getJgdm());
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
