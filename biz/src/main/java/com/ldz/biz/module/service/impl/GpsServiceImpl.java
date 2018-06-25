@@ -480,8 +480,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             condition.like(ClCl.InnerColumn.cph, cphLike);
         }
 
-        SysYh user = getCurrentUser();
-        condition.eq(ClCl.InnerColumn.jgdm, user.getJgdm());
+//        SysYh user = getCurrentUser();
+//        condition.eq(ClCl.InnerColumn.jgdm, user.getJgdm());
         // 将终端编号,车辆信息缓存
         List<ClCl> selectAll = clclmapper.selectByExample(condition);
         Map<String, ClCl> zdbhClMap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))
@@ -490,7 +490,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         // 获取终端状态
         condition = new LimitedCondition(ClZdgl.class);
-        condition.eq(ClZdgl.InnerColumn.jgdm, user.getJgdm());
+//        condition.eq(ClZdgl.InnerColumn.jgdm, user.getJgdm());
         List<ClZdgl> zds = zdglservice.findByCondition(condition);
 
 

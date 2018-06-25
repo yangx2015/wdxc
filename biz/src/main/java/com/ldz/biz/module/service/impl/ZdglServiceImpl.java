@@ -237,8 +237,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
         List<ClCssd> cssdList = new ArrayList<>();
         List<String> errors = new ArrayList<>();
 
-//        filePath = staticPath + filePath;
-        filePath = "/Users/chenwei/Downloads/批量新增终端模板-2.xls";
+        filePath = staticPath + filePath;
+//        filePath = "/Users/chenwei/Downloads/批量新增终端模板-2.xls";
         Workbook workbook;
         try {
             if(filePath.indexOf(".xlsx")>-1){
