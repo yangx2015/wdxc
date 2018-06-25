@@ -74,7 +74,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		simpleCondition.eq(ClZdgl.InnerColumn.jgdm,user.getJgdm());
 		List<ClZdgl> devices = zdglMapper.selectByExample(simpleCondition);
 		List<String> deviceCodes = devices.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
-		condition.eq(ClSbyxsjjl.InnerColumn.zdbh,deviceCodes);
+		condition.in(ClSbyxsjjl.InnerColumn.zdbh,deviceCodes);
 		return true;
 	}
 
