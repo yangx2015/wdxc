@@ -22,7 +22,7 @@ import java.util.Map;
  * 车辆设定
  */
 @RestController
-@RequestMapping("pub/cl")
+@RequestMapping("api/cl")
 public class ClCtrl extends BaseController<ClCl, String> {
 	@Autowired
 	private ClService clservice;
