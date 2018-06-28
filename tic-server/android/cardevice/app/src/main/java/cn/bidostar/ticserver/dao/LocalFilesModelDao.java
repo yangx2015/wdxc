@@ -5,6 +5,7 @@ import org.xutils.ex.DbException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 import cn.bidostar.ticserver.base.AppBaseDao;
 import cn.bidostar.ticserver.model.LocalFilesModel;
@@ -47,12 +48,12 @@ public class LocalFilesModelDao extends AppBaseDao<LocalFilesModel> {
         List<LocalFilesModel> lists = new ArrayList<>();
         try{
             if(t.getJltype()==null || t.getJltype().trim().equals("")) {
-                I.d("datamessage find sql:",AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).toString());
+                //I.d("datamessage find sql:",AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).toString());
 
-                lists = AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).findAll();
+                lists = AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).limit(5).offset(1).findAll();
             }else{
-                I.d("datamessage find sql:",AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).and("jltype","=",t.getJltype()).toString());
-                lists = AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).and("jltype","=",t.getJltype()).findAll();
+                //I.d("datamessage find sql:",AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).and("jltype","=",t.getJltype()).toString());
+                lists = AppDBUtils.getDB().selector(LocalFilesModel.class).where("flagupload", "=", t.getFlagUpload()).and("jltype","=",t.getJltype()).limit(5).offset(1).findAll();
             }
         }catch (Exception e){
             lists = null;
@@ -60,14 +61,20 @@ public class LocalFilesModelDao extends AppBaseDao<LocalFilesModel> {
         return lists;
     }
 
-    public synchronized boolean insertModel(LocalFilesModel model){
+    public  boolean insertModel(LocalFilesModel model){
+        ReentrantLock lock = new ReentrantLock();
+        lock.lock();
         try{
-            LocalFilesModel lk = AppDBUtils.getDB().selector(LocalFilesModel.class).where("localPath","=",model.getLocalPath()).findFirst();
-            if(lk==null || lk.getId()==0){
-                this.insertObj(model);
+            if(model!=null && model.getLocalPath()!=null) {
+                LocalFilesModel lk = AppDBUtils.getDB().selector(LocalFilesModel.class).where("localPath", "=", model.getLocalPath()).findFirst();
+                if (lk == null || lk.getLocalPath() == null) {
+                    this.insertObj(model);
+                }
             }
         }catch (Exception e){
 
+        }finally {
+            lock.unlock();
         }
         return true;
     }

@@ -103,8 +103,9 @@ public class CarBindService extends Service {
 
     @Override
     public void onCreate() {
-        Toast.makeText(CarBindService.this, "CarBindService 正在启动...", Toast.LENGTH_SHORT)
-                .show();
+
+       /* Toast.makeText(CarBindService.this, "CarBindService 正在启动...", Toast.LENGTH_SHORT)
+                .show();*/
         startService2();
         /*
          * 此线程用监听SocketCarBindService的状态

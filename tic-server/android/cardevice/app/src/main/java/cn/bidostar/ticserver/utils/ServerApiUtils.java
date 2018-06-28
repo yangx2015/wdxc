@@ -20,6 +20,7 @@ import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.dao.LocalFilesModelDao;
 import cn.bidostar.ticserver.dao.RequestCommonParamsDtoDao;
 import cn.bidostar.ticserver.model.RequestCommonParamsDto;
+import cn.bidostar.ticserver.service.SocketCarBindService;
 
 /**
  * Created by admins on 2018/3/12.
@@ -49,7 +50,11 @@ public class ServerApiUtils {
             @Override
             public void onSuccess(File result) {
                 I.i(TAG,"download Apk 下载成功，开始执行安装操作");
-                AppApplication.getInstance().mApi.installApk(path,"cn.bidostar.ticserver","cn.bidostar.ticserver.TestActivity");
+                boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
+                        "cn.bidostar.ticserver.service.SocketCarBindService");
+                if(isRun) {
+                    SocketCarBindService.socketCarBindService.mApi.installApk(path, "cn.bidostar.ticserver", "cn.bidostar.ticserver.TestActivity");
+                }
             }
 
             @Override
@@ -76,6 +81,7 @@ public class ServerApiUtils {
      * @return
      */
     public static boolean uploadFile(String eventType,String filePath, Callback.CommonCallback<String> callback){
+        I.d(TAG,"开始上传文件taking："+filePath);
         return uploadFile(eventType,filePath,"",callback);
 
     }
@@ -92,6 +98,7 @@ public class ServerApiUtils {
      * @return
      */
     public static boolean uploadFile(String eventType,String filePath,String taskId, Callback.CommonCallback<String> callback){
+        I.d(TAG,"开始上传文件taking："+filePath);
         return uploadFilePrivate(eventType,filePath,taskId,callback);
     }
 
@@ -108,8 +115,8 @@ public class ServerApiUtils {
         fileFlag = uploadFilePrivate(eventType,filePath,taskId,callback);
         if(fileFlag==false){
            // AppApplication.getInstance().UPLOAD_QUEE = false;
-            AppApplication.getInstance().setUploadQuee(false);
-            AppApplication.getInstance().checkUpload();
+            SocketCarBindService.socketCarBindService.setUploadQuee(false);
+            SocketCarBindService.socketCarBindService.checkUpload();
           //  AppApplication.getInstance().uploadDatabase();
         }
         return fileFlag;
@@ -133,8 +140,9 @@ public class ServerApiUtils {
                 video = true;
             }
             RequestParams params = new RequestParams(AppApplication.getInstance().getServerUrlBase()+ (video == true? AppConsts.API_UPLOADS:AppConsts.API_UPLOAD));
-            RequestCommonParamsDto dto1 = AppApplication.getInstance().getPubDto();
-            params.addQueryStringParameter("deviceId", AppApplication.getInstance().getDeviceIMEI());
+            RequestCommonParamsDto dto1 = SocketCarBindService.socketCarBindService.getPubDto();
+            String deviceId  = AppApplication.getInstance().getDeviceIMEI();
+            params.addQueryStringParameter("deviceId", deviceId);
             params.addQueryStringParameter("channelId", PushManager.getInstance().getClientid(AppApplication.getInstance().getApplicationContext()));
             params.addQueryStringParameter("longitude",dto1.getLongitude());
             params.addQueryStringParameter("latitude",dto1.getLatitude());
@@ -179,7 +187,7 @@ public class ServerApiUtils {
     }
 
     public static boolean pushGpsInfoByLocalDb(List<RequestCommonParamsDto> lists,Callback.CommonCallback<String> callback){
-        RequestCommonParamsDto dto1 = AppApplication.getInstance().getPubDto();
+        RequestCommonParamsDto dto1 = SocketCarBindService.socketCarBindService.getPubDto();
         if(lists!=null && !lists.isEmpty()){
             for (int i = 0;i<lists.size();i++){
                 if(lists.get(i).getLatitude().equals("-1")){
@@ -213,7 +221,7 @@ public class ServerApiUtils {
      * @return
      */
     public static boolean pushGpsInfo(RequestCommonParamsDto dto, Callback.CommonCallback<String> callback){
-        RequestCommonParamsDto dto1 = AppApplication.getInstance().getPubDto();
+        RequestCommonParamsDto dto1 = SocketCarBindService.socketCarBindService.getPubDto();
         String APP_IMEI = AppApplication.getInstance().getDeviceIMEI();
         String APP_SIMCID = AppApplication.getInstance().getSimICCID();
         dto.setDeviceId(APP_IMEI);
@@ -229,28 +237,32 @@ public class ServerApiUtils {
         dto.setEndTime(TimeUtils.getNowDateTime());
         dto.setStartTime(TimeUtils.getNowDateTime());
         //dto.setEventType(getCarGPSFlag());//设置GPS 状态[车辆状态]
-        dto.setSczt(AppApplication.getInstance().getCarGPSFlag());
+        dto.setSczt(SocketCarBindService.socketCarBindService.getCarGPSFlag());
+
+        dto.setCmdParams(AppApplication.getInstance().getVersionStr());
         if(!NetworkUtil.isConnected(AppApplication.getInstance().getApplicationContext())){
-            AppApplication.getInstance().setGpsNoNetWorkFlag("10");//需要进行检测上传了
+            SocketCarBindService.socketCarBindService.setGpsNoNetWorkFlag("10");//需要进行检测上传了
             RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
             dao.insertObj(dto);
             I.e(TAG,">>>Netword is not connect");
             return false;
         }
-        if(dto.getLatitude().equals("-1")){
+        /*
+        if(dto.getLatitude().equals("-1") && (dto.getEventType()==null || dto.getEventType().equals(""))){
             //GPS 为-1 不进行上传直接记录在本地，等有记录的时候替换
             I.e(TAG,"local data is error:"+dto.toString());
             AppApplication.getInstance().setGpsNoNetWorkFlag("10");//需要进行检测上传了
             RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
             dao.insertObj(dto);
             return false;
-        }
-
-        RequestParams params = new RequestParams(AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFO);
+        }*/
+        String gpsurl = AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFO;
+        RequestParams params = new RequestParams(gpsurl);
         params.setAsJsonContent(true);
         params.setConnectTimeout(6*1000);//400秒超时
        // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(dto));
+        I.d(TAG,"POST URL --->"+gpsurl);
         I.d(TAG,"POST DATA--->"+JSON.toJSONString(dto));
         if(APP_IMEI==null || APP_IMEI.trim().equals("")){
             I.e(TAG,"APP_IMEI is null");
@@ -274,16 +286,16 @@ public class ServerApiUtils {
                     dao.deleteLikeFileName(dto.getFileRealName());
                 }
 
-                I.d(TAG, "updateFile success:" + result );
+                I.d(TAG, "文件updateFile success:" + result );
             }catch (Exception e){
-                I.e(TAG, "updateFile success:" + e );
+                I.e(TAG, "文件updateFile success:" + e );
             }
 
         }
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "updateFile error:" + ex.getLocalizedMessage() );
+            I.e(TAG, "文件updateFile error:" + ex.getLocalizedMessage() );
         }
 
         @Override
@@ -313,25 +325,25 @@ public class ServerApiUtils {
 
                 I.d(TAG, "updateFile success:" + result );
             }catch (Exception e){
-                I.e(TAG, "updateFile success:" + e );
+                I.e(TAG, "updateFile error:" + e );
             }
-            I.d(TAG,"网络请求完成,进行下一次上传");
+            I.e(TAG,"文件网络请求完成,进行下一次上传,结果："+result);
             AppApplication.getInstance().setUploadQuee(false);
-            AppApplication.getInstance().checkUpload();
+            //AppApplication.getInstance().checkUpload();
 
         }
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "updateFile error:" + ex);
+            I.e(TAG, "文件updateFile error:" + ex);
             I.e(TAG,"网络请求完成,进行下一次上传");
             AppApplication.getInstance().setUploadQuee(false);
-            AppApplication.getInstance().checkUpload();
+            //AppApplication.getInstance().checkUpload();
         }
 
         @Override
         public void onCancelled(CancelledException cex) {
-
+            AppApplication.getInstance().setUploadQuee(false);
         }
 
         @Override
@@ -394,7 +406,7 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            AppApplication.getInstance().setGpsNoNetWorkFlag("10");//需要进行检测上传了
+            SocketCarBindService.socketCarBindService.setGpsNoNetWorkFlag("10");//需要进行检测上传了
             I.e(TAG+"upload gps error:",ex);
         }
 

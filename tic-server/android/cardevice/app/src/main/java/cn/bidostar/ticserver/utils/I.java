@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.RandomAccessFile;
 import java.io.StringWriter;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
@@ -37,7 +38,9 @@ public class I {
         if(isDebugModel){
             Log.v(TAG, "log--> " + msg);
         }
-        taskAysnc("verbose",msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("verbose", msg);
+        }
     }
     public static void e( final String msg)
     {
@@ -49,8 +52,6 @@ public class I {
     }
 
     private static void taskAysnc(final String file,final String msg){
-        if (isSaveDebugInfo)
-        {
             new Thread()
             {
                 public void run()
@@ -58,7 +59,6 @@ public class I {
                     write(file,time() + TAG + " --> " + msg + "\n");
                 };
             }.start();
-        }
     }
 
 
@@ -68,7 +68,9 @@ public class I {
         {
             Log.d(TAG, "log--> " + msg);
         }
-        taskAysnc("debug",msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("debug", msg);
+        }
     }
 
     public static void i(final String msg)
@@ -77,7 +79,9 @@ public class I {
         {
             Log.i(TAG, "log--> " + msg);
         }
-        taskAysnc("info",msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("info", msg);
+        }
     }
 
     public static void w(final String msg)
@@ -86,7 +90,9 @@ public class I {
         {
             Log.w(TAG, "log--> " + msg);
         }
-        taskAysnc("warn",msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("warn", msg);
+        }
     }
 
 
@@ -96,7 +102,9 @@ public class I {
         {
             Log.v(tag, "--> " + msg);
         }
-        taskAysnc("verbose",tag+":>>"+msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("verbose", tag + ":>>" + msg);
+        }
     }
 
     public static void d(final String tag, final String msg)
@@ -105,7 +113,9 @@ public class I {
         {
             Log.d(tag, "--> " + msg);
         }
-        taskAysnc("debug",tag+":>>"+msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("debug", tag + ":>>" + msg);
+        }
     }
 
     public static void i(final String tag, final String msg)
@@ -114,7 +124,9 @@ public class I {
         {
             Log.i(tag, "--> " + msg);
         }
-        taskAysnc("info",tag+":>>"+msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("info", tag + ":>>" + msg);
+        }
     }
 
     public static void w(final String tag, final String msg)
@@ -123,7 +135,9 @@ public class I {
         {
             Log.w(tag, "--> " + msg);
         }
-        taskAysnc("warn",tag+":>>"+msg);
+        if(isSaveDebugInfo) {
+            taskAysnc("warn", tag + ":>>" + msg);
+        }
     }
 
     /**
@@ -236,9 +250,19 @@ public class I {
     {
         try
         {
+            /*
             FileWriter writer = new FileWriter(getFile(file), true);
             writer.write(content);
             writer.close();
+            */
+            // 打开一个随机访问文件流，按读写方式
+            RandomAccessFile randomFile = new RandomAccessFile(getFile(file), "rw");
+            // 文件长度，字节数
+            long fileLength = randomFile.length();
+            // 将写文件指针移到文件尾。
+            randomFile.seek(fileLength);
+            randomFile.writeBytes(content);
+            randomFile.close();
         }
         catch (IOException e)
         {
