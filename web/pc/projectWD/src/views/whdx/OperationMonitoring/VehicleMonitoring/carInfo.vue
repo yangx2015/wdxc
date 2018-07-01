@@ -52,6 +52,14 @@
                         <Button shape="circle"  type="success" @click="showPathHistory" icon="pull-request"></Button><br>
                         <span class="label">历史轨迹</span>
                     </Col>
+                    <Col span="12" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="gotoPhotoList" icon="camera"></Button><br>
+                        <span class="label">图片库</span>
+                    </Col>
+                    <Col span="12" style="text-align: center">
+                        <Button shape="circle"  type="success" @click="gotoVideoList" icon="ios-videocam"></Button><br>
+                        <span class="label">视频库</span>
+                    </Col>
                 </Row>
                 <Row  v-if="photo.showModal">
                     <div style="width:100%;height: 100%;text-align: center;">
@@ -144,6 +152,12 @@
         mounted(){
         },
         methods:{
+            gotoPhotoList(){
+              this.$router.push({name:'CloudPhoto'});
+            },
+            gotoVideoList(){
+              this.$router.push({name:'CloudVideo'});
+            },
             showImg(src){
                 window.open(src);
             },

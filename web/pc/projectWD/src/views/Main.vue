@@ -40,7 +40,7 @@
                                 最近5分钟之内：
                               <span v-if="ycMess.length==0">暂无异常数据</span>
                               <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
-                               [{{item.cph}}]{{item.sjxm}} {{getDictVal(item.sjjb)}} {{item.cjsj.substring(11)}}
+                               [{{item.cph}}]{{item.sjxm}} {{getDictVal(item.sjlx)}} {{item.cjsj.substring(11)}}
                               </span>
                       </marquee>
 
