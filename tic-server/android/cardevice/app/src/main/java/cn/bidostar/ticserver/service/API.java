@@ -14,6 +14,7 @@
 
 package cn.bidostar.ticserver.service;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -38,7 +39,11 @@ import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.miramems.carmotion.carMotion;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import java.io.File;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +70,7 @@ import cn.bidostar.ticserver.utils.TimeUtils;
  *
  */
 public final class API extends BroadcastReceiver implements carMotion.carMotionEventListener {
-    private final static ReentrantLock lock = new ReentrantLock();
+
     private static final String TAG = "API";
     private Context mAppContext;
     private long mTakeId;
@@ -162,7 +167,9 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.getAction().equals(CarIntents.ACTION_MONITOR_NOTIFY)) {
+
             long takeId = intent.getLongExtra("id", 0);
+            I.d(TAG,"taking pic:"+takeId);
             String op = intent.getStringExtra("operation");
             int percent = intent.getIntExtra("percent", 0);  //int, 当前操作的进度, 如: 10, 50, 100
             //当operation=capd时可以获取该值, 
@@ -176,20 +183,73 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 } else {
                     cb.onTakeProgress(percent);
                 }
+            }else{
+                if(cb!=null) {
+                    I.d(TAG, "taking capd:" + cb.toString());
+                }else{
+                    I.d(TAG, "taking capd is null"+mTakeCallback.size()+jsonstr);
+                    if(jsonstr!=null && jsonstr.length()>5) {
+                        try{
+                            JSONTokener tokener = new JSONTokener(jsonstr);
+                            JSONObject joResult = new JSONObject(tokener);
+                            if (joResult.has("imgurl")) {
+                                if (joResult.getString("imgurl").length() > 0) {
+                                    final String imgPath = joResult.getString("imgurl");
+                                    //ServerApiUtils.uploadFile("50", imgPath, ServerApiUtils.fileUploadImgCallback);
+                                    I.d(TAG,"上传后台指令图片："+imgPath);
+                                    ServerApiUtils.uploadFile("50", imgPath,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);
+                                }
+                            }
+
+                            if (joResult.has("imgurlrear")) {
+                                if (joResult.getString("imgurlrear").length() > 0) {
+                                    final String imgPath = joResult.getString("imgurlrear");
+                                    I.d(TAG,"上传后台指令图片："+imgPath);
+                                    ServerApiUtils.uploadFile("50", imgPath,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);
+                                }
+                            }
+                            if (joResult.has("videourl")) {
+                                if (joResult.getString("videourl").length() > 0) {
+                                    final String imgPath = joResult.getString("videourl");
+                                    I.d(TAG,"上传后台指令视频："+imgPath);
+                                    if(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID!=null && SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID.length()>2) {
+                                        ServerApiUtils.uploadFile("60", imgPath, SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);
+                                    }
+
+                                }
+                            }
+
+                            if (joResult.has("videourlrear")) {
+                                if (joResult.getString("videourlrear").length() > 0) {
+                                    final String imgPath = joResult.getString("videourlrear");
+                                    I.d(TAG,"上传后台指令视频："+imgPath);
+                                    if(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID!=null && SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID.length()>2) {
+                                        ServerApiUtils.uploadFile("60", imgPath, SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);
+                                    }
+                                }
+                            }
+                        }catch (Exception e){
+
+                        }
+
+                    }
+                }
             }
         } else if(intent.getAction().equals(CarIntents.ACTION_RECORD_FILE)) {
             String filename = intent.getStringExtra("filename");
             int duration = intent.getIntExtra("duration", 0);
             I.e(TAG, "Add Record filename:" + filename + " duration: " + duration + "ms");
             //FileUtils.TsConvertMp4(filename);
-            LocalFilesModel localFilesModel = new LocalFilesModel();
-            localFilesModel.setLocalPath(filename);
-            localFilesModel.setFlagUpload("0");
-            localFilesModel.setJltype("1");
-            localFilesModel.setFileType(2);
-            LocalFilesModelDao dao = new LocalFilesModelDao();
-            dao.insertModel(localFilesModel);
-            AppApplication.getInstance().checkUpload();
+            if(!filename.contains("S.ts")) {
+                LocalFilesModel localFilesModel = new LocalFilesModel();
+                localFilesModel.setLocalPath(filename);
+                localFilesModel.setFlagUpload("0");
+                localFilesModel.setJltype("1");
+                localFilesModel.setFileType(2);
+                LocalFilesModelDao dao = new LocalFilesModelDao();
+                dao.insertModel(localFilesModel);
+            }
+            //AppApplication.getInstance().checkUpload();
             //在wifi模式并且后台设定wifi模式上传普通视频使用
             /*
             if(AppApplication.getInstance().CAR_UPLOAD_MP4_MODEL&&NetworkUtil.isWifi(AppApplication.getInstance().getApplicationContext())){
@@ -234,10 +294,10 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             localFilesModel.setJltype("2");
             localFilesModel.setFileType(2);
             LocalFilesModelDao dao = new LocalFilesModelDao();
-            dao.insertObj(localFilesModel);
+            dao.insertModel(localFilesModel);
             if(path!=null&&path.trim().length()>1){
-                ServerApiUtils.uploadFile("100",path,AppApplication.getInstance().CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);//直接上传到服务器 出现这个表示是后台截图的视频，所以直接上传即可
-                AppApplication.getInstance().CAR_HB_MP4_TASKID = "";//上传完成之后任务编号设置为null
+                ServerApiUtils.uploadFile("100",path,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);//直接上传到服务器 出现这个表示是后台截图的视频，所以直接上传即可
+                SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID = "";//上传完成之后任务编号设置为null
             }
             I.e(TAG, "ACTION_CAMERA_SNAPSHOT_CALLBACK ret = " + ret + " error = " + (error != null ? error : "")
                                         + " path = " + (path != null ? path : ""));
@@ -260,7 +320,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 localFilesModel.setJltype("2");
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
-                dao.insertObj(localFilesModel);
+                dao.insertModel(localFilesModel);
                 ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);//这是碰撞索引，直接上传
             }else{
                 LocalFilesModel localFilesModel = new LocalFilesModel();
@@ -269,8 +329,9 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 localFilesModel.setJltype("2");
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
-                dao.insertObj(localFilesModel);
-                ServerApiUtils.uploadFile("102", filename, ServerApiUtils.fileUploadCallback);//截图视频，直接上传
+                dao.insertModel(localFilesModel);
+                ServerApiUtils.uploadFile("102", filename,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);//截图视频，直接上传
+                SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID = "";
             }
             I.e(TAG, "capture fileinfo cameraid = " + cameraid
                             + " filename = " + filename + " error = " + error+" takeId = "+takeId);
@@ -631,6 +692,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
      * @param
      * @return IMEI号码
      */
+    @SuppressLint("MissingPermission")
     public String getDeviceIMEI() {
         TelephonyManager tm = (TelephonyManager)mAppContext.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getDeviceId();
@@ -642,6 +704,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
      * @param
      * @return iccid号码
      */
+    @SuppressLint({"HardwareIds", "MissingPermission"})
     public String getSimICCID() {
         TelephonyManager tm = (TelephonyManager)mAppContext.getSystemService(Context.TELEPHONY_SERVICE);
         return tm.getSimSerialNumber();
@@ -876,6 +939,21 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
     }
 
     /**
+     * 新增的api 让app在休眠时可以不断网
+     */
+    public void setAppKeepAlive(String packageName){
+        if(packageName == null){
+            packageName = mAppContext.getPackageName();
+        }
+        Intent intent = new Intent();
+        intent.setAction(CarIntents.ACTION_SET_PROP);
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_KEY, "persist.sys.app.keepalive");
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_VAL, packageName);
+        mAppContext.sendBroadcast(intent);
+    }
+
+
+    /**
      * 通过广播设置系统属性
      * @param key 属性名字
      * @param value 属性值
@@ -1002,5 +1080,13 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         mAppContext.sendBroadcast(intent);
     }
 
+    /**
+     * 休眠状态下发起录像时，一定要先调用这个广播
+     */
+    public void startCar_WAKEUP(){
+        Intent intent = new Intent("com.car.syswakeup");
+        intent.putExtra("reason", "recordvideo");
+        mAppContext.sendBroadcast(intent);
+    }
 
 }

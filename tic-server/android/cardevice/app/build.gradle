@@ -77,21 +77,14 @@ dependencies {
     compile googleDependencies.cardview_v7
     testCompile otherDependencies.junit
     compile otherDependencies.fastjson
-    compile otherDependencies.eventbus
     compile otherDependencies.okhttp3
     compile otherDependencies.okhttp3_logging_interceptor
     compile otherDependencies.okio
-    compile otherDependencies.greendao
     compile otherDependencies.multidex
     compile otherDependencies.jsbridge
     compile otherDependencies.googleGson
     compile otherDependencies.jsoup
     compile otherDependencies.xutils
     compile otherDependencies.androidannotations
-    compile otherDependencies.WebSocket
-    compile otherDependencies.nettyIo
-    compile files('libs/isoviewer-1.0-RC-35.jar')
-    compile files('libs/java-1.0.2.jar')
-    compile files('libs/json_simple-1.1.jar')
 
 }

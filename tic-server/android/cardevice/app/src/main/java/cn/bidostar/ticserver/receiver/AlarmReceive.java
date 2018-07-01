@@ -8,9 +8,11 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cn.bidostar.ticserver.AppApplication;
+import cn.bidostar.ticserver.service.SocketCarBindService;
 import cn.bidostar.ticserver.utils.CarIntents;
 import cn.bidostar.ticserver.utils.I;
 
@@ -24,22 +26,10 @@ public class AlarmReceive extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         I.e(TAG,"网络有变化了"+intent.getAction());
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo gprs = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-        NetworkInfo wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        //循环启动Service
-        //Intent i = new Intent(context, AlarmService.class);
-        //context.startService(i);
-        if(intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")){
-//移动数据连接上时
-            if (gprs.isConnected()){
-            }
-            //wifi连接上时
-            if (wifi.isConnected()) {
-                // 直接检测文件上传
-                AppApplication.getInstance().checkUpload();
-            }
-        }
+        ConnectivityManager manager = null;
+        NetworkInfo gprs = null;
+        NetworkInfo wifi = null;
+
         if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())){
             manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             gprs = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -51,14 +41,18 @@ public class AlarmReceive extends BroadcastReceiver {
                     if(isRun(context)){
                         I.e(TAG,"开始发送GPS数据");
                         AppApplication.getInstance().uploadGps();
+                        if (wifi.isConnected()) {
+                            // 直接检测文件上传
+                            SocketCarBindService.socketCarBindService.checkUpload();
+                        }
                     }else{//网络链接之后，如果程序没有启动，直接启动
                         Intent intentMy=new Intent(Intent.ACTION_MAIN);
-                        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                        intentMy.addCategory(Intent.CATEGORY_LAUNCHER);
                         ComponentName cn=new ComponentName("cn.bidostar.ticserver",
                                 "cn.bidostar.ticserver.TestActivity");
-                        intent.setComponent(cn);
+                        intentMy.setComponent(cn);
                         //Intent intentMy = new Intent(context, getTopActivity(context));
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intentMy.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         context.startActivity(intentMy);
                     }
                 }else{
@@ -68,16 +62,16 @@ public class AlarmReceive extends BroadcastReceiver {
                 I.e(TAG, "当前没有网络连接，请确保你已经打开网络 22");
             }
         }
-        String filter = CarIntents.ACTION_RECORD_FILE+CarIntents.ACTION_WAKEUP+CarIntents.ACTION_GOTOSLEEP;
+        String filter = CarIntents.ACTION_WAKEUP+CarIntents.ACTION_GOTOSLEEP;
         if(filter.contains(intent.getAction())){
             if(!isRun(context)){//程序没有运行，直接启动应用程序
                 Intent intentMy=new Intent(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intentMy.addCategory(Intent.CATEGORY_LAUNCHER);
                 ComponentName cn=new ComponentName("cn.bidostar.ticserver",
                         "cn.bidostar.ticserver.TestActivity");
-                intent.setComponent(cn);
+                intentMy.setComponent(cn);
                 //Intent intentMy = new Intent(context, getTopActivity(context));
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                intentMy.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intentMy);
             }
         }
@@ -97,7 +91,28 @@ public class AlarmReceive extends BroadcastReceiver {
                 break;
             }
         }
-        I.i(TAG,"ActivityService isRun()"+"com.ad 程序  ...isAppRunning......"+isAppRunning);
+        I.i(TAG,"ActivityService isRun()"+"cn.bidostar.ticserver 程序  ...isAppRunning......"+isAppRunning);
         return isAppRunning;
+    }
+
+    /**
+     * 判断服务是否开启
+     *这里的serviceName是指服务的全名称，最好是全路径的。比如："com.example.demo.service.myservice".
+     * @return
+     */
+    public static boolean isServiceRunning(Context context, String ServiceName) {
+        if (("").equals(ServiceName) || ServiceName == null)
+            return false;
+        ActivityManager myManager = (ActivityManager) context
+                .getSystemService(Context.ACTIVITY_SERVICE);
+        ArrayList<ActivityManager.RunningServiceInfo> runningService = (ArrayList<ActivityManager.RunningServiceInfo>) myManager
+                .getRunningServices(30);
+        for (int i = 0; i < runningService.size(); i++) {
+            if (runningService.get(i).service.getClassName().toString()
+                    .equals(ServiceName)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

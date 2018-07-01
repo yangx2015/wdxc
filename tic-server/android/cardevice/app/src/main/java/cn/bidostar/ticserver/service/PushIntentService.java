@@ -26,6 +26,7 @@ import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 import cn.bidostar.ticserver.utils.TimeUtils;
+import cn.bidostar.ticserver.utils.Utils;
 
 /**
  * 继承 GTIntentService 接收来自个推的消息, 所有消息在线程中回调, 如果注册了该服务, 则务必要在 AndroidManifest中声明, 否则无法接受消息<br>
@@ -76,48 +77,52 @@ public class PushIntentService extends GTIntentService {
 
                 }else{
                     //这里处理具体的命令
+                    boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
+                            "cn.bidostar.ticserver.service.SocketCarBindService");
+                    I.e(TAG,"isRun SocketCarBindService:"+isRun);
                     switch (dto.getCmdType()){
                         case "01"://01：超速设定 02:灵敏度设定(急加速灵敏度)   11:拍视频 12:拍图片   20 碰撞灵敏度
-                            if(AppApplication.getInstance()!=null){
+                            if(isRun){
                                 double s = 10.00;
                                 try{
                                     s = Double.parseDouble(dto.getCmd());
                                 }catch (Exception e){
                                     s = 10.00;
                                 }
-                                AppApplication.getInstance().setCarSpeed(s);
+                                SocketCarBindService.socketCarBindService.setCarSpeed(s);
+
                                 //TestActivity.activity.takePicture(dto.getCmd());
                             }
                             break;
                         case "02"://灵敏度设定(急加速灵敏度)
-                            if(AppApplication.getInstance()!=null){
+                            if(AppApplication.getInstance()!=null&&isRun){
                                 if(dto.getCmd()!=null){
                                     try{
-                                        AppApplication.getInstance().mApi.setViolent_Set_Parma(Integer.parseInt(dto.getCmd()));//恢复默认2
+                                        SocketCarBindService.socketCarBindService.mApi.setViolent_Set_Parma(Integer.parseInt(dto.getCmd()));//恢复默认2
                                     }catch (Exception e){
-                                        AppApplication.getInstance().mApi.setViolent_Set_Parma(2);//恢复默认2
+                                        SocketCarBindService.socketCarBindService.mApi.setViolent_Set_Parma(2);//恢复默认2
                                     }
                                 }else{
-                                    AppApplication.getInstance().mApi.setViolent_Set_Parma(2);//恢复默认2
+                                    SocketCarBindService.socketCarBindService.mApi.setViolent_Set_Parma(2);//恢复默认2
                                 }
                             }
                             break;
                         case "20"://碰撞灵敏度
-                            if(TestActivity.activity!=null && TestActivity.mApi!=null){
+                            if(isRun){
                                 if(dto.getCmd()==null || dto.getCmd().equals("00")){
-                                    AppApplication.getInstance().mApi.setCollisionSensitivity(API.CollisionSensitivityLow);
+                                    SocketCarBindService.socketCarBindService.mApi.setCollisionSensitivity(API.CollisionSensitivityLow);
                                 }else if(dto.getCmd()!=null && dto.getCmd().equals("10")){
-                                    AppApplication.getInstance().mApi.setCollisionSensitivity(API.CollisionSensitivityNormal);
+                                    SocketCarBindService.socketCarBindService.mApi.setCollisionSensitivity(API.CollisionSensitivityNormal);
                                 }else if(dto.getCmd()!=null && dto.getCmd().equals("20")){
-                                    AppApplication.getInstance().mApi.setCollisionSensitivity(API.CollisionSensitivityHigh);
+                                    SocketCarBindService.socketCarBindService.mApi.setCollisionSensitivity(API.CollisionSensitivityHigh);
                                 }else{
-                                    AppApplication.getInstance().mApi.setCollisionSensitivity(API.CollisionSensitivityLow);
+                                    SocketCarBindService.socketCarBindService.mApi.setCollisionSensitivity(API.CollisionSensitivityLow);
                                 }
 
                             }
                             break;
                         case "11"://抓取视频（当前时间点前后十秒）
-                            if(AppApplication.getInstance()!=null && AppApplication.getInstance().mApi!=null){
+                            if(isRun){
                                 int carm =  0;
                                 int sec = 10;//默认前后10秒
                                 try{
@@ -130,12 +135,15 @@ public class PushIntentService extends GTIntentService {
                                     sec = Integer.valueOf(tmp[1]);
                                 }catch (Exception e){
                                     carm = 0;
+                                    I.e(TAG,"抓取视频（当前时间点前后十秒） error:"+e);
                                 }
-                                AppApplication.getInstance().takeVideo(dto.getCmd(),carm,sec);
+                                SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID  = dto.getCmd();
+                                SocketCarBindService.socketCarBindService.takeVideo(dto.getCmd(),carm,sec);
+
                             }
                             break;
                         case "12"://拍照（当前时间点的拍照）
-                            if(AppApplication.getInstance()!=null && AppApplication.getInstance().mApi!=null){
+                            if(isRun){
                                 int carm =  0;
                                 try{
                                     String cmdParams = dto.getCmdParams();
@@ -145,13 +153,15 @@ public class PushIntentService extends GTIntentService {
                                     carm = Integer.valueOf(cmdParams.split("-")[0]);
                                 }catch (Exception e){
                                     carm = 0;
+                                    I.e(TAG,"拍照（当前时间点的拍照） error:"+e);
                                 }
-                                AppApplication.getInstance().takePicture(dto.getCmd(),carm);
+                                SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID  = dto.getCmd();
+                                SocketCarBindService.socketCarBindService.takePicture(dto.getCmd(),carm);
                             }
                             break;
                         case "13"://抓拍指定时间的视频
-                            if(AppApplication.getInstance()!=null){
-                                AppApplication.getInstance().CAR_HB_MP4_TASKID  = dto.getTaskId();
+                            if(AppApplication.getInstance()!=null && isRun){
+                                SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID  = dto.getTaskId();
                                 try{
                                     int carm =  0;
                                     String cmdParams = dto.getCmdParams();
@@ -162,9 +172,10 @@ public class PushIntentService extends GTIntentService {
                                     if(carm>2){
                                         carm = 0;
                                     }
-                                    AppApplication.getInstance().mApi.takeVideo(carm,new Long(TimeUtils.stringtoDate(dto.getStartTime()).getTime()/1000).intValue() ,new Long(TimeUtils.stringtoDate(dto.getEndTime()).getTime()/1000).intValue(),true,false);
+                                    SocketCarBindService.socketCarBindService.mApi.startCar_WAKEUP();
+                                    SocketCarBindService.socketCarBindService.mApi.takeVideo(carm,new Long(TimeUtils.stringtoDate(dto.getStartTime()).getTime()/1000).intValue() ,new Long(TimeUtils.stringtoDate(dto.getEndTime()).getTime()/1000).intValue(),true,false);
                                 }catch (Exception e){
-                                    I.e("抓拍出错",e);
+                                    I.e(TAG,"抓拍出错 error:"+e);
                                 }
                             }
                             break;
@@ -177,18 +188,19 @@ public class PushIntentService extends GTIntentService {
 
                             break;
                         case "40"://GPS心跳间隔
-                            if(AppApplication.getInstance()!=null){
+                            if(AppApplication.getInstance()!=null && isRun){
                                 int s = 0;
                                 try{
                                     s = Integer.parseInt(dto.getCmd());
                                 }catch (Exception e){
                                     s = 2;
+                                    I.e(TAG,"GPS心跳间隔 error:"+e);
                                 }
-                                AppApplication.getInstance().setTimerRun(s);
+                                SocketCarBindService.socketCarBindService.setTimerRun(s);
                             }
                             break;
                         case "50"://设置上传模式
-                            if(AppApplication.getInstance()!=null){
+                            if(AppApplication.getInstance()!=null && isRun){
                                 if(dto.getCmd()!=null && dto.getCmd().equals("10")){
                                     AppApplication.getInstance().setCarUploadMp4Model(1);
                                 }else if(dto.getCmd()!=null && dto.getCmd().equals("20")){
@@ -213,9 +225,9 @@ public class PushIntentService extends GTIntentService {
                             }
                             break;
                         case "92"://服务器推送播报语音内容
-                            if(AppApplication.getInstance()!=null&&AppApplication.getInstance().mApi!=null){
+                            if(AppApplication.getInstance()!=null&&isRun){
                                 try{
-                                    AppApplication.getInstance().mApi.playTts(dto.getCmd());
+                                    SocketCarBindService.socketCarBindService.mApi.playTts(dto.getCmd());
                                 }catch (Exception e){
 
                                 }
