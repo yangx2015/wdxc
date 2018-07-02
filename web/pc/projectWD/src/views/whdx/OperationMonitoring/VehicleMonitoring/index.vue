@@ -8,14 +8,14 @@
 </style>
 <template>
     <div class="box-row">
-		<div style="position:absolute;width:400px;padding-top:30px;padding-left:30px;z-index:9999">
+		<div style="position:absolute;width:430px;padding-top:30px;padding-left:30px;z-index:9999">
 			<Col span="24">
 				<Input placeholder="查设备、找车辆、找司机" size="large" v-model="searchKey">
 				<Button slot="append" type="primary" icon="ios-search" @click="filter"></Button>
 				</Input>
 				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;"  size="small">
 					<TabPane :label="qblabel" name="name0" style="height:300px;overflow:auto;" v-show="tabShowFlag">
-						<Row v-for="(item,index) in allCarList" @click.native="rowClick(item)">
+						<Row v-for="(item,index) in allCarList" v-if="item.show" @click.native="rowClick(item)">
 							<Col span="24">
 								<Card style="margin:0 15px 5px 15px;" :class="{'choosed':choosedCar == item}">
 									<p slot="title">
@@ -334,7 +334,7 @@ export default {
             searchKey:'',
             showTabs:false,
 			allCarList:[],
-			allCarList:[],
+			allCarCount:0,
 
             socket : new SockJS(this.$http.url+"/gps"),
             // socket : new SockJS("http://127.0.0.1/gps"),
@@ -350,7 +350,7 @@ export default {
                             disabled:true
                         },
                         style:'background-color:#19be6b;color:white'
-                    }, this.allCarList.length)
+                    }, this.allCarCount)
                 ])
             },
             dhlabel: (h) => {
@@ -499,6 +499,7 @@ export default {
                 newCar = m;
                 this.allCarList.push(m);
 			}
+			this.allCarCount = this.allCarList.length;
             this.classify();
             if (this.choosedCar){
                 if (this.choosedCar.zdbh == newCar.zdbh){
@@ -526,7 +527,9 @@ export default {
                 if (res.code === 200){
                     this.initTime = new Date().getTime();
                     this.allCarList = res.result;
+                    this.allCarCount = this.allCarList.length;
                     for(let r of this.allCarList){
+                        r.show = true;
                         this.handleItem(r);
                     }
                     this.sco();
@@ -552,6 +555,7 @@ export default {
             this.carArray[0] = [];
             this.carArray[1] = [];
             this.carArray[2] = [];
+            let c = 0;
 			for(let r of this.allCarList){
 			    let status = r.status;
                 if (this.searchKey === ''
@@ -559,9 +563,14 @@ export default {
 					|| r.zdbh.indexOf(this.searchKey) >= 0
 					|| r.sjxm.indexOf(this.searchKey) >= 0
 				){
+                    c++;
+                    r.show = true;
                     this.carArray[status].push(r);
+				}else{
+                    r.show = false;
 				}
 			}
+			this.allCarCount = c;
             this.showTabs = false;
             this.showTabs = true;
 		},
