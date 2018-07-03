@@ -26,6 +26,7 @@ SELECT
  FROM
  	(
  		<![CDATA[ select
+
 to_char (to_date(#{cxsj},'yyyy-mm-dd')-to_char(sysdate,'d')+14 - LEVEL, 'yyyy-mm-dd') today  from dual   connect BY LEVEL <= 7 ]]>
 	) t1
  LEFT JOIN CL_DD ON t1.today = to_char(CL_DD.cjsj,'yyyy-mm-dd')
