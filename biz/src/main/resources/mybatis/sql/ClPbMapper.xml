@@ -41,7 +41,7 @@ SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  t.PBSJ=#{date}
 		t3.id,t3.xlmc,t3.yxkssj,t3.yxjssj
 	</select>
 	<!-- select t1.XLMC,t3.* from CL_XL t1 LEFT JOIN CL_PB T2 ON t1.id=t2.XL_ID
-		and to_char(t2.cjsj,'yyyy-mm-dd')='2018-03-26' LEFT JOIN CL_CL t3 on t2.CL_ID=t3.CL_ID -->
+		and (t2.cjsj,'yyyy-mm-dd')='2018-03-26' LEFT JOIN CL_CL t3 on t2.CL_ID=t3.CL_ID -->
 
 	<!-- select t3.BZ,t3.CD,t3.CJR,t3.CJSJ,t3.JGDM,t3.JGMC,t3.LX,t3.PJSJ,t3.XGR,t3.XGSJ,
 		t3.id, listagg(t3.cl_id, ',') within group( order by cl_id) as clidlist from

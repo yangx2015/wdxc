@@ -13,13 +13,13 @@ import java.util.List;
 public interface ClJsyMapper extends Mapper<ClJsy> {
     // 订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
     @Select("<script> SELECT J.ZT,J.SFZHM,J.XM,J.CDBH,J.SJH,L.CX,L.CPH,L.ZKL " +
-            ",(SELECT COUNT(1) FROM CL_DD D WHERE to_char(D.YYSJ,'yyyy-MM-dd')=to_char(SYSDATE,'yyyy-MM-dd') AND J.SFZHM=D.SJ AND D.DDZT='20') ENDORDERCOUNT " +
-            ",(SELECT COUNT(1) FROM CL_DD D WHERE to_char(D.YYSJ,'yyyy-MM-dd')=to_char(SYSDATE,'yyyy-MM-dd') AND J.SFZHM=D.SJ AND D.DDZT='13') STARTORDERCOUNT " +
+            ",(SELECT COUNT(1) FROM CL_DD D WHERE DATE_FORMAT(d.YYSJ,'yyyy-MM-dd')=DATE_FORMAT(CURDATE(),'yyyy-MM-dd') AND J.SFZHM=D.SJ AND D.DDZT='20') ENDORDERCOUNT " +
+            ",(SELECT COUNT(1) FROM CL_DD D WHERE DATE_FORMAT(d.YYSJ,'yyyy-MM-dd')=DATE_FORMAT(CURDATE(),'yyyy-MM-dd') AND J.SFZHM=D.SJ AND D.DDZT='13') STARTORDERCOUNT " +
             "   FROM CL_JSY J,CL_CL L WHERE J.SFZHM=L.SJ_ID AND L.ZT='00'" +
             " <if test='zkl != null'> " +
             "  AND L.ZKL >= #{zkl}" +
             " </if>  " +
-            " AND J.SFZHM NOT IN (SELECT SJ FROM CL_PB WHERE to_char(PBSJ,'yyyy-MM-dd')=to_char(SYSDATE,'yyyy-MM-dd')) " +
+            " AND J.SFZHM NOT IN (SELECT SJ FROM CL_PB WHERE DATE_FORMAT(PBSJ,'yyyy-MM-dd')=DATE_FORMAT(CURDATE(),'yyyy-MM-dd')) " +
             " <if test='list != null'> " +
             "  AND L.CX IN " +
             " <foreach collection='list' item='item' open='(' close=')' separator=','> " +

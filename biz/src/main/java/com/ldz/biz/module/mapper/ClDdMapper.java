@@ -1,16 +1,14 @@
 package com.ldz.biz.module.mapper;
 
-import java.util.List;
-import java.util.Map;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
 import com.ldz.biz.module.bean.DdTjTx;
 import com.ldz.biz.module.bean.DdTongjiTJ;
 import com.ldz.biz.module.model.ClDd;
-
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.List;
+import java.util.Map;
 
 public interface ClDdMapper extends Mapper<ClDd> {
 	List<ClDd> DdTongji(DdTongjiTJ dd);
@@ -25,7 +23,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
 
     @Select({
             "<script> " +
-                    " SELECT ZWS,COUNT(1) COU FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='11' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    " SELECT ZWS,COUNT(1) COU FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='11' AND DATE_FORMAT(d.YYSJ,'yyyy-MM-dd')>=DATE_FORMAT(CURDATE(),'yyyy-MM-dd')  " +
                     "  AND D.CLLX IN " +
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +
@@ -37,7 +35,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
 
     @Select({
             "<script> " +
-                    " SELECT COUNT(1) WCORDER  FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='13' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    " SELECT COUNT(1) WCORDER  FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='13' AND  DATE_FORMAT(d.YYSJ,'yyyy-MM-dd')>=DATE_FORMAT(CURDATE(),'yyyy-MM-dd')  " +
                     "  AND D.CLLX IN " +
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +

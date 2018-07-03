@@ -22,7 +22,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
 
     @Select({
             "<script> " +
-                    " SELECT ZWS,COUNT(1) COU FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='11' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    " SELECT ZWS,COUNT(1) COU FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='11' AND  DATE_FORMAT(D.YYSJ,'YYYY-MM-DD')>=DATE_FORMAT(CURDATE(),'YYYY-MM-DD')  " +
                     "  AND D.CLLX IN " +
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +
@@ -34,7 +34,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
 
     @Select({
             "<script> " +
-                    " SELECT COUNT(1) WCORDER  FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='13' AND  TO_CHAR(D.YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')  " +
+                    " SELECT COUNT(1) WCORDER  FROM (SELECT D.* FROM CL_DD D WHERE  DDZT ='13' AND  DATE_FORMAT(D.YYSJ,'YYYY-MM-DD')>=DATE_FORMAT(CURDATE(),'YYYY-MM-DD')  " +
                     "  AND D.CLLX IN " +
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +
