@@ -3,8 +3,8 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='900' 
-			:closable='false' :mask-closable="mesF" 
+		<Modal v-model="showModal" width='900'
+			:closable='false' :mask-closable="mesF"
 			title="在线升级">
 			<div style="overflow: auto;">
 				<Form
@@ -74,7 +74,11 @@
 		methods: {
 			seet(name){
 		    	var v = this
-            	v.$http.post(this.apis.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd}).then((res) =>{
+				let p = {'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd};
+		    	if (this.updateMode === 'batch'){
+		    	    p.pushAll = true
+				}
+            	v.$http.post(this.apis.SBZDDZ.ADD,p).then((res) =>{
             	    if(res.code == 200){
                         v.$Message.success(res.message);
                         v.$parent.getPageData()
