@@ -4,9 +4,9 @@
 
 <select id="DdTongji"  resultType="com.ldz.biz.module.model.ClDd" parameterType="com.ldz.biz.module.bean.DdTongjiTJ">
 select * from CL_DD t where t.CJSJ between
-		to_date(#{kssj},'yyyy-mm-dd hh24:mi:ss')
+		#{kssj}
 		and
-		to_date(#{jssj},'yyyy-mm-dd hh24:mi:ss')
+		#{jssj}
 		<if test="jgdm != null">
 			and t.JGDM = #{jgdm}
 		</if>
