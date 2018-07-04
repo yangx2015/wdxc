@@ -1,7 +1,7 @@
 module.exports = {
-    UPLOAD:'http://47.98.39.45:8080/upload',
-    STATIC_PATH:'http://47.98.39.45:9092/',
-    VIDEO_PATH:'http://47.98.39.45:9091/test/',
+    UPLOAD:'http://119.23.242.234:8080/upload',
+    STATIC_PATH:'http://119.23.242.234:9092/',
+    VIDEO_PATH:'http://119.23.242.234:9091/test/',
     TXT:'/api/clsbyxsjjl/pager',
     fileDR:'/api/zdgl/excel',
     USERROOT:{
