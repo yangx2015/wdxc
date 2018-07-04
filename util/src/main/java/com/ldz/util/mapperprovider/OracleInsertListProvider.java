@@ -1,23 +1,23 @@
 package com.ldz.util.mapperprovider;
-import java.util.Set;
-
-import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.mapping.MappedStatement;
 
 import com.ldz.util.commonUtil.JdbcType2JavaType;
-
+import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.mapping.MappedStatement;
 import tk.mybatis.mapper.entity.EntityColumn;
 import tk.mybatis.mapper.mapperhelper.EntityHelper;
 import tk.mybatis.mapper.mapperhelper.MapperHelper;
 import tk.mybatis.mapper.mapperhelper.MapperTemplate;
 import tk.mybatis.mapper.mapperhelper.SqlHelper;
 
+import java.util.Set;
+
 /**
  * 支持oralce批量新增功能
  * @author 李彬彬
  */
 public class OracleInsertListProvider extends MapperTemplate {
-	
+
+
 	public OracleInsertListProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
     }
