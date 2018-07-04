@@ -16,7 +16,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
 
     @Select({"<script> " +
         " INSERT INTO CL_DDLSB (ID, SJQRSJ, HCDZ, MDD, CPH, SJ, SJXM, ZJ, SC, DJ, LC, SCF, LCF, CK, CKZW, CKLXDH, ZWS, CKLX, YYSJ, DDZT, FKZT, FKFS, FKSJ, PJDJ, PJNR, CJSJ, CJR, XGSJ, XGR, JGDM, JGMC, CL_ID, GLF, SY, CLLX, WF, DZQRSJ, SHSJ, DZXM, FKBZ, DD_ID, XGCS, DDXGSJ, DDCJSJ, DDXGR)  " +
-        " SELECT sys_guid(),SJQRSJ, HCDZ, MDD, CPH, SJ, SJXM, ZJ, SC, DJ, LC, SCF, LCF, CK, CKZW, CKLXDH, ZWS, CKLX, YYSJ, DDZT, FKZT, FKFS, FKSJ, PJDJ, PJNR, CJSJ, CJR, XGSJ, XGR, JGDM, JGMC, CL_ID, GLF, SY, CLLX, WF, DZQRSJ, SHSJ, DZXM, FKBZ, ID, (SELECT NVL(MAX(XGCS),0)+1 FROM CL_DDLSB B WHERE B.DD_ID=#{orderid}) XGCS, sysdate DDXGSJ, sysdate DDCJSJ, #{userid} AS DDXGR " +
+        " SELECT UUID(),SJQRSJ, HCDZ, MDD, CPH, SJ, SJXM, ZJ, SC, DJ, LC, SCF, LCF, CK, CKZW, CKLXDH, ZWS, CKLX, YYSJ, DDZT, FKZT, FKFS, FKSJ, PJDJ, PJNR, CJSJ, CJR, XGSJ, XGR, JGDM, JGMC, CL_ID, GLF, SY, CLLX, WF, DZQRSJ, SHSJ, DZXM, FKBZ, ID, (SELECT IFNULL(MAX(XGCS),0)+1 FROM CL_DDLSB B WHERE B.DD_ID=#{orderid}) XGCS, sysdate() DDXGSJ, sysdate() DDCJSJ, #{userid} AS DDXGR " +
         " FROM CL_DD  WHERE ID=#{orderid} " +
         " </script>"})
     void insertCopyOrder(@Param("orderid") String id,@Param("userid") String userId);
@@ -28,7 +28,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +
                     " </foreach> " +
-                    "  ) " +
+                    "  ) A" +
                     " group by ZWS " +
             " </script>"})
     List<Map<String,Object>> selectVeryDayOrder(List<String> list);
@@ -40,7 +40,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
                     " <foreach collection='list' item='item' open='(' close=')' separator=','> " +
                     "  #{item} " +
                     " </foreach> " +
-                    "  ) " +
+                    "  ) A " +
                     " </script>"
     })
     Map<String,Object> selectVeryDayOrderCount(List<String> list);

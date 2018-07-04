@@ -1,15 +1,13 @@
 package com.ldz.biz.module.mapper;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.model.ClCl;
-
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.Date;
+import java.util.List;
 
 //@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClClMapper extends Mapper<ClCl> {
@@ -27,20 +25,20 @@ public interface ClClMapper extends Mapper<ClCl> {
 	ClCl seleClInfoByZdbh(String zdbh);
 
 	@Select("SELECT GPS.BDJD,GPS.BDWD,CL.*,CL.CL_ID AS CLID,CL.SJ_ID AS SJID ,CL.OBD_CODE AS OBDCODE " +
-			"  , NVL((SELECT XM.ZDMC FROM SYS_ZDXM XM WHERE XM.ZDLMDM='ZDCLK0019' AND  XM.ZDDM=CL.CX AND ROWNUM =1),'') AS CXZTMC " +
-			"FROM CL_CL CL,CL_GPS GPS " +
-			"WHERE CL.ZDBH=GPS.ZDBH(+) " +
-			" AND CL.JGDM LIKE #{jgdm}||'%' " +
+			"  , IFNULL((SELECT XM.ZDMC FROM SYS_ZDXM XM WHERE XM.ZDLMDM='ZDCLK0019' AND  XM.ZDDM=CL.CX limit 1),'') AS CXZTMC " +
+			"FROM CL_CL CL left join CL_GPS GPS " +
+			"on  CL.ZDBH=GPS.ZDBH " +
+			" where CL.JGDM LIKE CONCAT(#{jgdm},'%') " +
 			"ORDER BY CL.CX ASC,CL.CPH ASC ")
 	List<ClClModel> getVehicleTypeStatistics(String jgdm);
 
 	@Select("SELECT GPS.BDJD,GPS.BDWD,CL.*,CL.CL_ID AS CLID,CL.SJ_ID AS SJID ,CL.OBD_CODE AS OBDCODE " +
-			"  , NVL((SELECT XM.ZDMC FROM SYS_ZDXM XM WHERE XM.ZDLMDM='ZDCLK0019' AND  XM.ZDDM=CL.CX AND ROWNUM =1),'') AS CXZTMC " +
-			"FROM CL_CL CL,CL_GPS GPS,CL_ZDGL ZDGL " +
-			"WHERE CL.ZDBH=GPS.ZDBH(+) " +
-			"  AND CL.ZDBH=ZDGL.ZDBH" +
-			" AND CL.JGDM LIKE #{jgdm}||'%' " +
-			" AND ZDGL.ZXZT= #{zxzt} " +
+			"  , IFNULL((SELECT XM.ZDMC FROM SYS_ZDXM XM WHERE XM.ZDLMDM='ZDCLK0019' AND  XM.ZDDM=CL.CX LIMIT 1),'') AS CXZTMC " +
+			"FROM ( SELECT CL.* from CL_CL CL , CL_ZDGL ZDGL where CL.ZDBH=ZDGL.ZDBH and ZDGL.ZXZT= #{zxzt}) CL left join CL_GPS GPS  " +
+			"on CL.ZDBH=GPS.ZDBH " +
+			"   " +
+			" where CL.JGDM LIKE CONCAT(#{jgdm},'%') " +
+			"   " +
 			"ORDER BY CL.CX ASC,CL.CPH ASC ")
 	List<ClClModel> getVehicleTypeZxztStatistics(@Param("jgdm") String jgdm,@Param("zxzt") String zxzt);
 

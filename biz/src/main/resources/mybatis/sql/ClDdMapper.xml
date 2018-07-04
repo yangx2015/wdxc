@@ -44,7 +44,7 @@
         from
            cl_dd RIGHT JOIN
         ( SELECT
-             DATE_FORMAT( ADDDATE('2018-05-11',INTERVAL @d DAY),'%Y-%m-%d') date ,
+             DATE_FORMAT( ADDDATE(#{cxsj},INTERVAL @d DAY),'%Y-%m-%d') date ,
              @d :=@d + 1 day
           FROM cl_dd, (SELECT @d := 0) temp
           WHERE

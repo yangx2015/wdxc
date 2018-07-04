@@ -27,7 +27,7 @@ public interface ClJsyMapper extends Mapper<ClJsy> {
             "</foreach> " +
             " </if>  " +
             " <if test='xm != null'> " +
-            " and J.xm=like '%'#{xm}'%' " +
+            " and J.xm like concat('%',#{xm},'%') " +
             " </if>  " +
             "  " +
             " </script>  ")
