@@ -7,8 +7,9 @@
 	    	.loginImg{
 	    		width: 90%;
 	    		position: absolute;
-	    		bottom: 0;
-			    border-radius: 50px;
+				top:50px;
+	    		/*bottom: 0;*/
+			    /*border-radius: 50px;*/
 	    	}
 	    }
 	    .from{
