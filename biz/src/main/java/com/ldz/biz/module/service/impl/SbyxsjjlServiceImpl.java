@@ -322,6 +322,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		SimpleCondition condition  = new SimpleCondition(Clyy.class);
 		condition.and().andBetween(Clyy.InnerColumn.loc_time.name() , gpssjinfo.getStartTime() , gpssjinfo.getEndTime());
 		condition.eq(Clyy.InnerColumn.zdbh.name() , gpssjinfo.getZdbh());
+		condition.setOrderByClause(" LOCTIME ASC");
 		List<Clyy> clyys = clYyService.findByCondition(condition);
 		List<Point> points = new ArrayList<>();
 		clyys.stream().forEach(clyy -> {
