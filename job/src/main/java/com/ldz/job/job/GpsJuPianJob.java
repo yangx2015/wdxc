@@ -38,8 +38,8 @@ public class GpsJuPianJob implements Job {
 	    List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());
 
 	    long endTime = System.currentTimeMillis(); // 结束时间
-		//6小时前
-		long startTime = endTime - (21600000);  // 开始时间
+		//12小时前
+		long startTime = endTime - (43200000);  // 开始时间
 		try {
 			for (String zdbh : zdbhs) {
 				service.guiJiJiuPian(zdbh,startTime,endTime);

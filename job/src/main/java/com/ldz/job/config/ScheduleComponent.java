@@ -43,7 +43,7 @@ public class ScheduleComponent {
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
 		
 		// 鹰眼数据纠偏记录 每6小时执行一次
-		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 0/6 * * ? *");
+		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 6/6 * * ? *");
 		
 		
 		// gps同步创建一个trigger
