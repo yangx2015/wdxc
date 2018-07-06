@@ -1,12 +1,5 @@
 package com.ldz.biz.module.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.CsTxTj;
 import com.ldz.biz.module.bean.SafedrivingModel;
@@ -18,6 +11,12 @@ import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("api/clsbyxsjjl")
@@ -50,6 +49,7 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	public ApiResponse<List<ClGpsLs>>  getGuiJiGps(gpsSJInfo gpssjinfo) {
 
 		return service.getGuiJiGps(gpssjinfo);
+
 	}
 
 	@PostMapping("/baiduGuiJi")
@@ -59,10 +59,12 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 
 	}
 
+
 	@RequestMapping("/Safedriving")
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig(){
 
 		return service.getSafeDrivig();
+
 	}
 
 	/*
@@ -74,5 +76,20 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 		return service.getcs(cph,day);
 
 	}
+
+	/**
+	 * 查询本地库中的百度鹰眼历史数据
+	 * @param gpssjinfo
+	 * @return
+	 */
+	@PostMapping("/yyguiji")
+	public ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo){
+
+		return service.getYyGuiJi(gpssjinfo);
+
+	}
+
+
+
 
 }

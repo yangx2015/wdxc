@@ -1,21 +1,16 @@
 package com.ldz.job.job;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+import com.ldz.job.mapper.ClZdglMapper;
+import com.ldz.job.model.ClZdgl;
+import com.ldz.job.service.GpsService;
 import org.apache.commons.lang.StringUtils;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.PersistJobDataAfterExecution;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ldz.job.mapper.ClZdglMapper;
-import com.ldz.job.model.ClZdgl;
-import com.ldz.job.service.GpsService;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**  
  * 定时器说明:每隔6小时把上传百度鹰眼的点位导入数据库
@@ -37,12 +32,17 @@ public class GpsJuPianJob implements Job {
 
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
+
+		// 百度鹰眼纠偏接口只支持查询24小时内的， 且设置了3秒超时， 故将轨迹查询分段查询
 		List<ClZdgl> gpslist = clzdglmapper.selectAll();
 	    List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());
 
+	    long endTime = System.currentTimeMillis(); // 结束时间
+		//6小时前
+		long startTime = endTime - (21600000);  // 开始时间
 		try {
 			for (String zdbh : zdbhs) {
-				service.guiJiJiuPian(zdbh);
+				service.guiJiJiuPian(zdbh,startTime,endTime);
 			}
 		} catch (Exception e) {
 			errorLog.error("同步鹰眼纠偏数据异常", e);

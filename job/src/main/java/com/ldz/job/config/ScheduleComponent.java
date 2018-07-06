@@ -1,21 +1,15 @@
 package com.ldz.job.config;
 
-import org.quartz.CronScheduleBuilder;
-import org.quartz.CronTrigger;
-import org.quartz.JobBuilder;
-import org.quartz.JobDetail;
-import org.quartz.SchedulerException;
-import org.quartz.TriggerBuilder;
+import com.ldz.job.job.ClNianShenJob;
+import com.ldz.job.job.GpsJuPianJob;
+import com.ldz.job.job.GpsSaveJob;
+import com.ldz.job.job.GpsZtSyncJob;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
-
-import com.ldz.job.job.ClNianShenJob;
-import com.ldz.job.job.GpsJuPianJob;
-import com.ldz.job.job.GpsSaveJob;
-import com.ldz.job.job.GpsZtSyncJob;
 
 @Component
 public class ScheduleComponent {
@@ -48,8 +42,8 @@ public class ScheduleComponent {
 		// 车辆年审日期设置  每天中午12点执行一次
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
 		
-		// 鹰眼数据纠偏记录 每6分小时执行一次
-		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0/6 * * * ? *");
+		// 鹰眼数据纠偏记录 每6小时执行一次
+		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 0/6 * * ? *");
 		
 		
 		// gps同步创建一个trigger

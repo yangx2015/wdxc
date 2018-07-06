@@ -22,5 +22,5 @@ public interface GpsService extends BaseService<ClGps, String>{
      * 根据终端编号 将存入百度鹰眼的gps纠偏后的数据写入更新
      */
     
-    void guiJiJiuPian(String zdbh);
+    void guiJiJiuPian(String zdbh, long startTime, long endTime);
 }

@@ -1,19 +1,5 @@
 package com.ldz.job.service.impl;
 
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.BoundListOperations;
-import org.springframework.stereotype.Service;
-
 import com.ldz.job.mapper.ClGpsLsMapper;
 import com.ldz.job.mapper.ClGpsMapper;
 import com.ldz.job.mapper.ClyyMapper;
@@ -22,7 +8,6 @@ import com.ldz.job.model.ClGpsLs;
 import com.ldz.job.model.Clyy;
 import com.ldz.job.service.GpsService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.bean.AddPointResponse;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.TrackPointsForReturn;
@@ -30,8 +15,20 @@ import com.ldz.util.bean.TrackPointsForReturn.Point;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
-
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.BoundListOperations;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
@@ -67,7 +64,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public void InsetRedisToDb(String zdbh) {
+	public void InsetRedisToDb(String zdbh ) {
 
 		/*redis.keys(ClGps.class.getSimpleName()+"*");*/
 
@@ -140,31 +137,25 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 
 	@Override
-	public void guiJiJiuPian(String zdbh) {
-
-		long endTiem = System.currentTimeMillis();
-
-		//6小时前
-		long startTime = endTiem - (21600000);
+	public void guiJiJiuPian(String zdbh, long startTime, long endTime) {
 
 		TrackJiuPian guijis = new TrackJiuPian();
 		guijis.setAk(GuiJIApi.AK);
 		guijis.setService_id(GuiJIApi.SERVICE_ID);
 		guijis.setEntity_name(zdbh);
 		guijis.setIs_processed("1");
-		guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
+		// 查询 去燥 ，抽希 ， 绑路 的坐标点
+		guijis.setProcess_option("need_denoise=1,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
 		guijis.setSupplement_mode("driving");
 		guijis.setSort_type("asc");
 		guijis.setCoord_type_output("bd09ll");
-		guijis.setEnd_time(String.valueOf(endTiem / 1000));
+		guijis.setEnd_time(String.valueOf(endTime / 1000));
 		guijis.setStart_time(String.valueOf(startTime / 1000));
 		guijis.setPage_size("5000");
+		 // 查询 6小时内的轨迹坐标点
 		TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
 		List<Point> points2 = points.getPoints();
 		if (CollectionUtils.isNotEmpty(points2)) {
-
-			System.out.println(points2);
-
 			List<Clyy>  yyList= new ArrayList<>();
 
 			for (Point point : points2) {
@@ -178,7 +169,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				clyy.setZdbh(zdbh);
 				yyList.add(clyy);
 			}
-
 			clyymapper.insertList(yyList);
 
 		} else {

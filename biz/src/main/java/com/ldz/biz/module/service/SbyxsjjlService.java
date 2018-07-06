@@ -1,7 +1,5 @@
 package com.ldz.biz.module.service;
 
-import java.util.List;
-
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.CsTxTj;
 import com.ldz.biz.module.bean.SafedrivingModel;
@@ -11,6 +9,8 @@ import com.ldz.biz.module.model.ClSbyxsjjl;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
+
+import java.util.List;
 
 public interface SbyxsjjlService extends BaseService<ClSbyxsjjl,String>{
     ApiResponse<String> saveEntity(ClSbyxsjjl entity);
@@ -22,4 +22,6 @@ public interface SbyxsjjlService extends BaseService<ClSbyxsjjl,String>{
 	ApiResponse<CsTxTj> getcs(String cph, String day);
 	
 	 ApiResponse<List<Point>> baiduGuiJi(gpsSJInfo gpssjinfo);
+
+	ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo);
 }

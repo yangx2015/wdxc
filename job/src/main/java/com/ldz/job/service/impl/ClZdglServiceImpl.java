@@ -1,5 +1,25 @@
 package com.ldz.job.service.impl;
 
+import com.ldz.job.bean.GpsInfo;
+import com.ldz.job.mapper.ClZdglMapper;
+import com.ldz.job.model.ClGps;
+import com.ldz.job.model.ClZdgl;
+import com.ldz.job.service.ClZdglService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.HttpUtil;
+import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import tk.mybatis.mapper.common.Mapper;
+
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -8,26 +28,8 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-
-import com.ldz.job.bean.GpsInfo;
-import com.ldz.job.mapper.ClZdglMapper;
-import com.ldz.job.model.ClGps;
-import com.ldz.job.model.ClZdgl;
-import com.ldz.job.service.ClZdglService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.commonUtil.HttpUtil;
-import com.ldz.util.commonUtil.JsonUtil;
-import com.ldz.util.redis.RedisTemplateUtil;
-
 @Service
-public class ClZdglServiceImpl implements ClZdglService {
+public class ClZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements ClZdglService {
 
 	private static final Logger log = LoggerFactory.getLogger(ClZdglServiceImpl.class);
 	Logger errorLog = LoggerFactory.getLogger("error_info");
@@ -50,14 +52,26 @@ public class ClZdglServiceImpl implements ClZdglService {
 	@Autowired
 	private ClZdglMapper clZdglMapper;
 
+
+	@Override
+	protected Mapper<ClZdgl> getBaseMapper() {
+		return clZdglMapper;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> checkOnline() {
 
+		// 获取所有正常的在线设备
+		SimpleCondition condition = new SimpleCondition(ClZdgl.class);
+		condition.eq(ClZdgl.InnerColumn.zt.name(), "00");
+		condition.and().andCondition(" ( ZXZT = '10' or ZXZT = '00' )");
+		List<ClZdgl> gpslist = findByCondition(condition);
+
 		// 获取所有正常的设备
-		ClZdgl clZdgl = new ClZdgl();
+		/*ClZdgl clZdgl = new ClZdgl();
 		clZdgl.setZt("00");
-		List<ClZdgl> gpslist = clZdglMapper.select(clZdgl);
+		List<ClZdgl> gpslist = clZdglMapper.select(clZdgl);*/
 		/*
 		 * List<String> zubhList = gpslist.stream().filter(s ->
 		 * StringUtils.isNotEmpty(s.getZdbh()))

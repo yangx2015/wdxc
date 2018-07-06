@@ -1,42 +1,41 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import com.ldz.biz.module.mapper.ClZdglMapper;
-import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.sys.model.SysYh;
-import com.ldz.util.bean.*;
-import com.ldz.util.commonUtil.DateUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.ldz.biz.module.bean.ClLsGjInfo;
 import com.ldz.biz.module.bean.CsTxTj;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
+import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.model.ClSbyxsjjl;
+import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.biz.module.model.Clyy;
+import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.SbyxsjjlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.bean.TrackJiuPian;
+import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.yingyan.GuiJIApi;
-
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> implements SbyxsjjlService {
@@ -46,6 +45,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClGpsLsMapper clGpsLsMapper;
 	@Autowired
 	private ClZdglMapper zdglMapper;
+	@Autowired
+	private ClYyService clYyService;
 	@Value("${biz.scTime}")
 	private String scTime;
 
@@ -305,6 +306,42 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
 		List<Point> points2 = points.getPoints();
 		apiResponse.setResult(points2);
+
+		return apiResponse;
+	}
+
+
+	/**
+	 * 本地库中的历史Gps 轨迹
+	 * @param gpssjinfo
+	 * @return
+	 */
+	@Override
+	public ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo) {
+		ApiResponse<List<Point>> apiResponse = new ApiResponse<>();
+		SimpleCondition condition  = new SimpleCondition(Clyy.class);
+		condition.and().andBetween(Clyy.InnerColumn.loc_time.name() , gpssjinfo.getStartTime() , gpssjinfo.getEndTime());
+		condition.eq(Clyy.InnerColumn.zdbh.name() , gpssjinfo.getZdbh());
+		List<Clyy> clyys = clYyService.findByCondition(condition);
+		List<Point> points = new ArrayList<>();
+		clyys.stream().forEach(clyy -> {
+			Point p = new Point();
+			p.set_object_key(clyy.getObject_key());
+			p.setDirection(Integer.parseInt(clyy.getDirection()));
+			p.setLatitude(clyy.getLatitude().doubleValue());
+			p.setLongitude(clyy.getLongitude().doubleValue());
+			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			long locTime = 0;
+			try {
+				locTime = sdf.parse(clyy.getLoc_time()).getTime();
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			p.setLoc_time(locTime);
+			p.setSpeed(clyy.getSpeed().doubleValue());
+			points.add(p);
+		});
+		apiResponse.setResult(points);
 
 		return apiResponse;
 	}
