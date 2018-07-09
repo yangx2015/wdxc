@@ -11,4 +11,5 @@ public class BizApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BizApplication.class, args);
 	}
+
 }

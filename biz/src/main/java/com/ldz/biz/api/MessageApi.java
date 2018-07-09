@@ -1,16 +1,16 @@
 package com.ldz.biz.api;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.redis.RedisTemplateUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * 业务系统对外开放的接口
@@ -26,6 +26,8 @@ public class MessageApi {
 	private SpkService spkservice;
 	@Autowired
 	private InstructionService intstruction;
+	@Autowired
+	private RedisTemplateUtil redisTemplateUtil;
 
 	/*
 	 * 给tic-server提供gps存储接口
@@ -50,5 +52,23 @@ public class MessageApi {
 
        return  intstruction.sendinstruction(info);
 	}
+
+
+	/*@GetMapping("test")
+	public void s(){
+		System.out.println("------");
+		redisTemplateUtil.boundValueOps("1").set("123",10,TimeUnit.SECONDS);
+		System.out.println("++++++");
+		System.out.println(redisTemplateUtil.boundValueOps("1").get());
+	}
+
+	@GetMapping("tt")
+	public void a(){
+		System.out.println("========");
+		System.out.println(redisTemplateUtil.boundValueOps("1").get());
+		redisTemplateUtil.delete("1");
+		System.out.println("|||||||||||||||||||||");
+	}*/
+
 
 }

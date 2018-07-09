@@ -1,13 +1,12 @@
 package com.ldz.biz.config;
 
+import com.ldz.util.redis.RedisTemplateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-
-import com.ldz.util.redis.RedisTemplateUtil;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
@@ -26,6 +25,9 @@ public class RedisConfig {
 	
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
+	@Autowired
+	private TopicMessageListener messageListener;
+
 
 	/**
 	 * 本项目缓存Redis对象
@@ -50,12 +52,18 @@ public class RedisConfig {
 		container.setConnectionFactory(connectionFactory);
 
 		//订阅了一个叫chat 的通道
-
 		List<Topic> topics = new ArrayList<>();
 		topics.add(new PatternTopic("gps"));
 		topics.add(new PatternTopic("spk"));
+
+		// 订阅过期 topic
+		// 设置监听的Topic
+		PatternTopic channelTopic = new PatternTopic("__keyevent@*__:expired");
 		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
+		container.addMessageListener(messageListener , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}
+
+
 }
