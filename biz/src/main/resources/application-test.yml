@@ -1,29 +1,29 @@
 spring:
   #redis配置信息
   redis:
-    host: 127.0.0.1
+    host: 119.23.242.234
     port: 6379
     database: 10
   #数据库连接配置信息
   datasource:
-    url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
-    username: 'C##wdxc_admin'
-    password: 'wdxc123456'
+    url: jdbc:mysql://119.23.242.234:9306/wxdc?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+    username: root
+    password: 123456
 #  boot:
 #    admin:
 #      url: http://127.0.0.1:9078
-#      client: 
+#      client:
 #         name: WD-BIZ
 #management.security.enabled: false
-    
+
 server:
   port: 80
 
 ticserver:
-  url: http://47.98.39.45:9095/api/push/carcmd
+  url: http://127.0.0.1:9095/api/push/carcmd
 biz:
   scTime: 30000
 
 staticPath:  D:\static\common\
-updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
-deleteZnzpRedisKeyUrl: http://47.98.39.45:9888/api/deleteRedisKey
+updateMediaUrl:
+deleteZnzpRedisKeyUrl:

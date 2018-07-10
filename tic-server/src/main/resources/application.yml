@@ -36,11 +36,11 @@ interface:
   #设备状态更新接口，点火、熄火、离线
   status: http://127.0.0.1;http://127.0.0.1;
   #设备事件更新接口，急加速、急转弯、急刹车、碰撞、超速
-  event: http://47.98.39.45:8080/pub/gps/save;http://47.98.39.45:9888/api/reporting;
+  event: http://127.0.0.1:8080/pub/gps/save;
   #设备GPS上报处理接口
   gps: http://127.0.0.1;
   #文件上传的数据交互接口
-  fileapi: http://47.98.39.45:8080/pub/spk/save;
+  fileapi: http://127.0.0.1:8080/pub/spk/save;
   #终端请求加密key
   clientsecurity: ldzticclient
   #服务端请求验证key

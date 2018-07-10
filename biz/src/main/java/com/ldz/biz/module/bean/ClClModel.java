@@ -1,6 +1,8 @@
 package com.ldz.biz.module.bean;
 
 
+import lombok.ToString;
+
 import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
@@ -10,7 +12,7 @@ import java.util.Date;
  * @author Lee
  *
  */
-
+@ToString
 public class ClClModel implements Serializable {
     /**
      * 车辆id

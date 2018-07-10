@@ -1,12 +1,14 @@
 package com.ldz.biz.module.bean;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class DdTjTxReturn {
 
 	private List<String> date;
