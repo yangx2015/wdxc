@@ -1,15 +1,62 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.module.bean.*;
-import com.ldz.biz.module.mapper.*;
-import com.ldz.biz.module.model.*;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import com.ldz.sys.mapper.SysRlbMapper;
+import com.ldz.sys.model.*;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.ldz.biz.module.bean.CcTjTx;
+import com.ldz.biz.module.bean.ClJsyModel;
+import com.ldz.biz.module.bean.DdTjTx;
+import com.ldz.biz.module.bean.DdTjTxReturn;
+import com.ldz.biz.module.bean.DdTongjiTJ;
+import com.ldz.biz.module.bean.Ddtongji;
+import com.ldz.biz.module.mapper.ClCdMapper;
+import com.ldz.biz.module.mapper.ClClMapper;
+import com.ldz.biz.module.mapper.ClDdMapper;
+import com.ldz.biz.module.mapper.ClDdlsbMapper;
+import com.ldz.biz.module.mapper.ClDdrzMapper;
+import com.ldz.biz.module.mapper.ClGpsLsMapper;
+import com.ldz.biz.module.mapper.ClJsyMapper;
+import com.ldz.biz.module.mapper.ClLscMapper;
+import com.ldz.biz.module.model.ClCd;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClDd;
+import com.ldz.biz.module.model.ClDdlsb;
+import com.ldz.biz.module.model.ClDdrz;
+import com.ldz.biz.module.model.ClGps;
+import com.ldz.biz.module.model.ClGpsLs;
+import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.mapper.SysHsgsMapper;
-import com.ldz.sys.mapper.SysRlbMapper;
-import com.ldz.sys.model.*;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.bean.ApiResponse;
@@ -18,25 +65,8 @@ import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.MathUtil;
 import com.ldz.util.exception.RuntimeCheck;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-import tk.mybatis.mapper.common.Mapper;
 
-import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdService {
@@ -1458,12 +1488,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			dd.setJgdmlike(jgdm);
 		}
 
-
 		if (StringUtils.isEmpty(dd.getCxsj())) {
 			String monday = getMONDAY();
 			ddTjTxReturn.setStartTime(monday);
 			dd.setCxsj(monday);
-
 		}else {
 			String convertWeekDate = convertWeekDate(dd.getCxsj());
 			dd.setCxsj(convertWeekDate);
@@ -1477,13 +1505,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		List<DdTjTx> weekTj = entityMapper.weekTj(dd);
 
-			for (DdTjTx ddTjTx : weekTj) {
+		for (DdTjTx ddTjTx : weekTj) {
 
-				dateList.add(ddTjTx.getToday());
-				countList.add(ddTjTx.getVALUE());
-			}
-
-
+			dateList.add(ddTjTx.getToday());
+			countList.add(ddTjTx.getVALUE());
+		}
 
 		ddTjTxReturn.setDate(dateList);
 		ddTjTxReturn.setCount(countList);

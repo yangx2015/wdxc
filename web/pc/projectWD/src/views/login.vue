@@ -7,9 +7,8 @@
 	    	.loginImg{
 	    		width: 90%;
 	    		position: absolute;
-				top:50px;
-	    		/*bottom: 0;*/
-			    /*border-radius: 50px;*/
+	    		bottom: 0;
+			    border-radius: 50px;
 	    	}
 	    }
 	    .from{
@@ -46,7 +45,7 @@
                 	<div class="body-O from">
 	                	<div class="loginTiT">
 	                		<h1>
-	                			普联网络车辆管理
+								武汉大学车辆管理平台
 	                		</h1>
 	                	</div>
 	                    <Form ref="loginForm" :model="form" :rules="rules">

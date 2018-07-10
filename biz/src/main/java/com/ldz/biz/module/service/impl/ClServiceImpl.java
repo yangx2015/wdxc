@@ -216,7 +216,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		now.add(Calendar.DATE, days);
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // 设置时间格式
 		String weekStart = sdf.format(now.getTime());
-		String dateRange = " and cjsj> '"+weekStart+"' ";
+		String dateRange = " and cjsj> to_date('"+weekStart+"','yyyy-mm-dd') ";
 		String sql = "SELECT T1.sjxm,T1.cph,T2.speedupCount,t3.speedownCount,t4.wheelCount,t5.overspeedCount  FROM CL_CL t1 \n" +
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedupCount FROM CL_SBYXSJJL  t WHERE t.SJLX='10' "+dateRange+" GROUP BY zdbh) t2 on T1.ZDBH=T2.ZDBH\n" +
 				"  LEFT JOIN (select ZDBH ,count(SJLX) as speedownCount FROM CL_SBYXSJJL  t WHERE t.SJLX='20' "+dateRange+"  GROUP BY zdbh) t3 on T1.ZDBH=T3.ZDBH\n" +

@@ -18,12 +18,9 @@ spring:
     maxWait: 1000
   #数据库连接配置信息
   datasource:
-    url: jdbc:mysql://127.0.0.1:9306/wxdc?useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-    username: root
-    password: 123456
-#    url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
-#    username: 'C##wdxc_admin'
-#    password: 'wdxc123456'
+    url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
+    username: 'C##wdxc_admin'
+    password: 'wdxc123456'
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
     minIdle: 5
@@ -61,9 +58,9 @@ server:
   port: 81
 
 biz:
-  url: http://127.0.0.1:8080/pub/gps/save
+  url: http://47.98.39.45:8080/pub/gps/save
 
 ticserver:
-   url: http://127.0.0.1:9095/api/push/checkOnlin/
+   url: http://47.98.39.45:9095/api/push/checkOnlin/
 znzp:
-   url:
+   url: http://47.98.39.45:9888/api/reporting
