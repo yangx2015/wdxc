@@ -91,7 +91,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             eventBus.post(new SendGpsEvent(gpsinfo));
         }
 
-
+        // 车辆行程
+        clXc(gpsinfo);
 
 
         saveVersionInfoToRedis(gpsinfo);
