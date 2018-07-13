@@ -1,9 +1,12 @@
 package com.ldz.biz.config;
 
+import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.model.ClXc;
 import com.ldz.biz.module.model.Clyy;
 import com.ldz.biz.module.service.ClYyService;
+import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.XcService;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.redis.RedisTemplateUtil;
@@ -32,8 +35,13 @@ public class TopicMessageListener implements MessageListener {
     @Autowired
     private ClYyService clYyService;
     @Autowired
-    private RedisTemplateUtil redisTemplateUtil;
+    private GpsLsService gpsLsService;
 
+    private RedisTemplateUtil redisTemplate;
+
+    public TopicMessageListener(RedisTemplateUtil redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
     /**
      * 根据 redis 失效时间存储行程
@@ -43,14 +51,12 @@ public class TopicMessageListener implements MessageListener {
      */
     @Override
     public void onMessage(Message message, byte[] pattern) {
-
-        byte[] body = message.getBody();// 请使用valueSerializer
-        byte[] channel = message.getChannel();
-        String topic = new String(channel);
-        String itemValue = new String(body);
+        String itemValue = redisTemplate.getValueSerializer().deserialize(message.getBody()).toString();
+        String topic =  redisTemplate.getValueSerializer().deserialize(message.getChannel()).toString();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
             String[] vals = itemValue.split(",");
+            String type = vals[0];
             String zdbh = vals[1];
             String startTime = vals[2];
             String endTime = vals[3];
@@ -65,24 +71,34 @@ public class TopicMessageListener implements MessageListener {
                 // 轨迹点不存储
                 return;
             }
+
+            try {
+                guiJiJiuPian(zdbh, s, e);
+            }catch (Exception e2){
+                if(StringUtils.equals(type,"start_end")) {
+                    // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
+                    redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
+                }else if(StringUtils.equals(type,"compencate")){
+                    // 存储当前原始轨迹点
+                    saveGps(zdbh,startTime,endTime);
+                }
+            }
             ClXc clXc = new ClXc();
             clXc.setClZdbh(zdbh);
             clXc.setXcKssj(startTime);
             clXc.setXcJssj(endTime);
             xcService.saveEntity(clXc);
 
-            try {
-                guiJiJiuPian(zdbh, s, e);
-            }catch (Exception e2){
-                // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
-                redisTemplateUtil.boundValueOps("compencate,"+zdbh+","+startTime+","+endTime).set("1",1,TimeUnit.MINUTES);
-            }
-
         }
 
     }
 
-
+    /**
+     * 存储百度鹰眼GPS
+     * @param zdbh
+     * @param startTime
+     * @param endTime
+     */
     public void guiJiJiuPian(String zdbh, long startTime, long endTime) {
 
         TrackJiuPian guijis = new TrackJiuPian();
@@ -121,6 +137,34 @@ public class TopicMessageListener implements MessageListener {
         }
 
     }
+
+    /**
+     * 存储原始轨迹点
+     */
+    public void saveGps(String zdbh,String startTime, String endTime){
+
+        SimpleCondition simpleCondition = new SimpleCondition(ClGpsLs.class);
+        simpleCondition.and().andBetween(ClGpsLs.InnerColumn.cjsj.name(),startTime,endTime);
+        simpleCondition.eq(ClGpsLs.InnerColumn.zdbh.name(),zdbh);
+        List<Clyy> yyList = new ArrayList<>();
+        List<ClGpsLs> gpsLsList = gpsLsService.findByCondition(simpleCondition);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        gpsLsList.stream().forEach(clGpsLs -> {
+            Clyy clyy = new Clyy();
+            clyy.setDirection(clGpsLs.getFxj()+"");
+            clyy.setLatitude(clGpsLs.getBdwd());
+            clyy.setLoc_time(simpleDateFormat.format(clGpsLs.getCjsj()));
+            clyy.setLongitude(clGpsLs.getBdjd());
+            clyy.setSpeed(new BigDecimal(clGpsLs.getYxsd()));
+            clyy.setZdbh(zdbh);
+            yyList.add(clyy);
+        });
+        clYyService.saveBatch(yyList);
+
+
+    }
+
+
 
     public String parse(long time) {
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");

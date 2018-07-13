@@ -25,8 +25,7 @@ public class RedisConfig {
 	
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
-	@Autowired
-	private TopicMessageListener messageListener;
+
 
 
 	/**
@@ -60,7 +59,7 @@ public class RedisConfig {
 		// 设置监听的Topic
 		PatternTopic channelTopic = new PatternTopic("__keyevent@*__:expired");
 		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
-		container.addMessageListener(messageListener , channelTopic);
+		container.addMessageListener(new TopicMessageListener(redisTemplateDefault()) , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}

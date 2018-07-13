@@ -1,7 +1,6 @@
 package com.ldz.job.config;
 
 import com.ldz.job.job.ClNianShenJob;
-import com.ldz.job.job.GpsJuPianJob;
 import com.ldz.job.job.GpsSaveJob;
 import com.ldz.job.job.GpsZtSyncJob;
 import org.quartz.*;
@@ -30,8 +29,8 @@ public class ScheduleComponent {
 				JobDetail nianshenJob = JobBuilder.newJob(ClNianShenJob.class).withIdentity(ClNianShenJob.class.getName(), "clnssync")
 						.build();
 		// 纠偏gps轨迹job
-				JobDetail jiuPianJob = JobBuilder.newJob(GpsJuPianJob.class).withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
-						.build();
+				/*JobDetail jiuPianJob = JobBuilder.newJob(GpsJuPianJob.class).withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
+						.build();*/
 				
 				
 		// gps同步定执行周期，每1分钟执行一次
@@ -42,8 +41,8 @@ public class ScheduleComponent {
 		// 车辆年审日期设置  每天中午12点执行一次
 		CronScheduleBuilder scheduleBuilderns = CronScheduleBuilder.cronSchedule("0 0 12 * * ?");
 		
-		// 鹰眼数据纠偏记录 每6小时执行一次
-		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 6/6 * * ? *");
+		/*// 鹰眼数据纠偏记录 每6小时执行一次
+		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 6/6 * * ? *");*/
 		
 		
 		// gps同步创建一个trigger
@@ -56,8 +55,8 @@ public class ScheduleComponent {
 			CronTrigger cronTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClNianShenJob.class.getName(), "clnssync")
 					.withSchedule(scheduleBuilderns).build();
 		//创建gps点位纠偏trigger
-			CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
-					.withSchedule(scheduleBuilderJP).build();
+			/*CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
+					.withSchedule(scheduleBuilderJP).build();*/
 					
 			
 		
@@ -65,7 +64,7 @@ public class ScheduleComponent {
 			schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
 			schedulerFactory.getScheduler().scheduleJob(zdglJob, cronTriggerzdgl);
 			schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
-			schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);
+//			schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);
 		} catch (SchedulerException e) {
 			errorLog.error("任务创建失败", e);
 		}

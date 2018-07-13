@@ -91,7 +91,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (!gpsinfo.getLatitude().equals("-1") && !gpsinfo.getLongitude().equals("-1")) {
             eventBus.post(new SendGpsEvent(gpsinfo));
         }
-
+        clXc(gpsinfo);
         saveVersionInfoToRedis(gpsinfo);
 
         ClCl seleByZdbh = clclmapper.seleByZdbh(gpsinfo.getDeviceId());
