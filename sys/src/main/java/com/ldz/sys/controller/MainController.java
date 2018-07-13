@@ -15,6 +15,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.Des;
 import com.ldz.util.commonUtil.FileUtil;
 import com.ldz.util.commonUtil.JwtUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2017年8月12日
  */
 @RestController
+@Slf4j
 public class MainController {
 
 	@Value("${staticPath:/}")
@@ -88,7 +90,9 @@ public class MainController {
 		condition.and()
 				.andEqualTo(SysYh.InnerColumn.zh.name(), userCred.getUsername())
 				.andEqualTo(SysYh.InnerColumn.mm.name(), userCred.getPassword());
+		log.info(" b findByCondition");
 		List<SysYh> existUser = this.userService.findByCondition(condition);
+		log.info(" a findByCondition");
 		Map<String,Object> rMap = new HashMap<>(2);
 		ApiResponse<Map<String,Object>> result = new ApiResponse<>();
 		if (existUser != null && existUser.size() > 0){

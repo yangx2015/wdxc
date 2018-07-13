@@ -6,5 +6,5 @@ import com.ldz.util.mapperprovider.OracleInsertListMapper;
 import tk.mybatis.mapper.common.Mapper;
 
 public interface ClGpsLsMapper extends Mapper<ClGpsLs>,OracleInsertListMapper<ClGpsLs> {
-	
+
 }

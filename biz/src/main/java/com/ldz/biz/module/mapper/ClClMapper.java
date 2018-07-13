@@ -1,15 +1,13 @@
 package com.ldz.biz.module.mapper;
 
-import java.util.Date;
-import java.util.List;
-
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
-
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.model.ClCl;
-
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.Date;
+import java.util.List;
 
 //@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClClMapper extends Mapper<ClCl> {

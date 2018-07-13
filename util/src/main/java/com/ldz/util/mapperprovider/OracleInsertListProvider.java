@@ -17,14 +17,14 @@ import tk.mybatis.mapper.mapperhelper.SqlHelper;
  * @author 李彬彬
  */
 public class OracleInsertListProvider extends MapperTemplate {
-	
+
 	public OracleInsertListProvider(Class<?> mapperClass, MapperHelper mapperHelper) {
         super(mapperClass, mapperHelper);
     }
-	 
+
 	public String insertList(MappedStatement ms) {
 		final Class<?> entityClass = getEntityClass(ms);
-        
+
         StringBuilder sql = new StringBuilder();
         sql.append(SqlHelper.insertIntoTable(entityClass, tableName(entityClass)));
         sql.append(insertColumns(entityClass, true, false, false));
@@ -38,27 +38,27 @@ public class OracleInsertListProvider extends MapperTemplate {
             if ( column.isInsertable()) {
             	String jdbcType = JdbcType2JavaType.getJdbcType(column.getJavaType().getName());
             	if (StringUtils.isNotEmpty(jdbcType)){
-            		sql.append(column.getColumnHolder("record", ", jdbcType="+jdbcType, ","));	
+            		sql.append(column.getColumnHolder("record", ", jdbcType="+jdbcType, ","));
             	}else{
             		sql.append(column.getColumnHolder("record", null, ","));
             	}
-                
+
             }
         }
         sql.delete(sql.length() - 1, sql.length());
         sql.append(" from dual");
         sql.append("</foreach>");
         sql.append(" ) A ");
-        
+
         return sql.toString();
     }
-	
+
 	public static String insertColumns(Class<?> entityClass, boolean skipId, boolean notNull, boolean notEmpty) {
         StringBuilder sql = new StringBuilder();
         sql.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">");
-        
+
         Set<EntityColumn> columnSet = EntityHelper.getColumns(entityClass);
-       
+
         for (EntityColumn column : columnSet) {
             if (!column.isInsertable()) {
                 continue;

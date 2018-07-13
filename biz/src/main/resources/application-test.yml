@@ -12,10 +12,10 @@ spring:
 #  boot:
 #    admin:
 #      url: http://127.0.0.1:9078
-#      client: 
+#      client:
 #         name: WD-BIZ
 #management.security.enabled: false
-    
+
 server:
   port: 80
 

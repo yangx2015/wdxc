@@ -46,7 +46,7 @@ public interface ClDdMapper extends Mapper<ClDd> {
                     " </script>"
     })
     Map<String,Object> selectVeryDayOrderCount(List<String> list);
-    
-    
+
+
    List<DdTjTx>  weekTj(DdTongjiTJ dd);
 }

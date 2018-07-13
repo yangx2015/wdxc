@@ -45,7 +45,7 @@
                 	<div class="body-O from">
 	                	<div class="loginTiT">
 	                		<h1>
-	                			武汉大学车辆管理平台
+								武汉大学车辆管理平台
 	                		</h1>
 	                	</div>
 	                    <Form ref="loginForm" :model="form" :rules="rules">
