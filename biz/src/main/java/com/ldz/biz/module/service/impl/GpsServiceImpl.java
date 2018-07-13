@@ -26,7 +26,6 @@ import com.ldz.util.yingyan.GuiJIApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -36,6 +35,8 @@ import tk.mybatis.mapper.common.Mapper;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -659,38 +660,39 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     private void clXc(GpsInfo gpsInfo){
         // 获取 gps 存储事件的 终端号 和 时间
         String time = gpsInfo.getStartTime();
+        String startTime  = time;
         String zdbh = gpsInfo.getDeviceId();
         String s = (String) redis.boundValueOps("CX_" + zdbh).get();
-        String[] times = s.split(",");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         // 判断 redis中的实时点位是否存在
         if(StringUtils.isBlank(s)){ // 实时点位为空 存储当前点位第一开始的点位
-            redis.boundValueOps("CX_"+zdbh).set(time + "," + time);  // 结束时间 + 开始时间
             // 更新 开始时间和结束时间的 key 值 （redis 过期事件只能发送 key , 需要用 key 作为业务数据）
             redis.boundValueOps("start_end," + zdbh +","+ time + "," +time  ).set("1",5,TimeUnit.MINUTES);
         }else{
-            DateTime preTime = DateTime.parse(times[0]);
-            DateTime nowTime = DateTime.parse(time);
-            if(preTime.plusMinutes(5).compareTo(nowTime) > 0){ // 说明当前时间仍在行程中
 
+            String[] times = s.split(",");
+            LocalDateTime preTime = LocalDateTime.parse(times[0],formatter);
+            LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
+            if(preTime.plusMinutes(5).compareTo(nowTime) > 0){ // 说明当前时间仍在行程中
                 // 更新实时点位时间
-                redis.boundValueOps("CX_"+zdbh).set(time + "," + times[1]);
+               startTime = times[1];
                 //删除当前终端的开始结束
                 redis.delete("start_end," + zdbh +","+ times[1] + "," +times[0] );
                 // 更新一条 开始结束时间
                 redis.boundValueOps("start_end," + zdbh +","+ times[1] + "," +time).set("1",5,TimeUnit.MINUTES);
             }else{ // 开启一条新的行程
-                redis.boundValueOps("CX_" + zdbh ).set(time + "," + time);
+                startTime = time;
                 // 插入一条新的时间记录
                 redis.boundValueOps("start_end," + zdbh +","+ time +"," + time).set("1",5,TimeUnit.MINUTES);
             }
 
         }
+        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime);  // 结束时间 + 开始时间
 
 
 
 
     }
-
 
 
 
