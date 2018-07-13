@@ -1,6 +1,9 @@
 package com.ldz.biz.config;
 
+import com.ldz.biz.module.service.GpsService;
+import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.redis.RedisTemplateUtil;
+import com.ldz.util.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +14,7 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,8 +32,7 @@ public class RedisConfig {
 
 	@Autowired
 	private TopicMessageListener topicMessageListener;
-	@Autowired
-	private MessageReceiver messageReceiver;
+	private RedisTemplateUtil redisTemplateUtil;
 
 
 
@@ -40,8 +43,8 @@ public class RedisConfig {
 	@Bean
 	@Primary
 	public RedisTemplateUtil redisTemplateDefault(){
-		RedisTemplateUtil bean = new RedisTemplateUtil(redisConnectionFactory);
-		return bean;
+		redisTemplateUtil = new RedisTemplateUtil(redisConnectionFactory);
+		return redisTemplateUtil;
 	}
 	/**
 	 * redis消息监听器容器
@@ -52,6 +55,7 @@ public class RedisConfig {
 	 */
 	@Bean //相当于xml中的bean
 	public RedisMessageListenerContainer container(RedisConnectionFactory connectionFactory) {
+		System.out.println("container");
 		RedisMessageListenerContainer container = new RedisMessageListenerContainer();
 		container.setConnectionFactory(connectionFactory);
 
@@ -63,6 +67,10 @@ public class RedisConfig {
 		// 订阅过期 topic
 		// 设置监听的Topic
 		PatternTopic channelTopic = new PatternTopic("__keyevent@*__:expired");
+		SpkService spkService = SpringContextUtil.getBean(SpkService.class);
+		GpsService gpsservice = SpringContextUtil.getBean(GpsService.class);
+		MessageReceiver messageReceiver = new MessageReceiver(spkService,gpsservice,redisTemplateUtil);
+		topicMessageListener.setRedisTemplate(redisTemplateUtil);
 		container.addMessageListener(messageReceiver, topics);
 		container.addMessageListener(topicMessageListener , channelTopic);
 		//这个container 可以添加多个 messageListener
