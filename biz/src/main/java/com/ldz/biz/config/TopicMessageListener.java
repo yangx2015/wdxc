@@ -134,7 +134,7 @@ public class TopicMessageListener implements MessageListener {
                 yyList.add(clyy);
             }
             clYyService.saveBatch(yyList);
-
+            String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
         } else {
             return;
         }

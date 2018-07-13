@@ -680,7 +680,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                String endLatitude = times[3].split("-")[1];
                String endLongitude = times[3].split("-")[0];
                 //删除当前终端的开始结束
-                redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] + "," + startLongitude + "-" + startLatitude + "," + endLongitude + "-" + endLatitude );
+                redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
             }else{ // 开启一条新的行程
                 startTime = time;
             }
