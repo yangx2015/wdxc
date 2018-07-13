@@ -39,7 +39,7 @@ public class TopicMessageListener implements MessageListener {
 
     private RedisTemplateUtil redisTemplate;
 
-    public TopicMessageListener(RedisTemplateUtil redisTemplate) {
+    public void setRedisTemplate(RedisTemplateUtil redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
 

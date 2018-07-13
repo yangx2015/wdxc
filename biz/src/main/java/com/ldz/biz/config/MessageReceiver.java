@@ -16,21 +16,19 @@ import org.springframework.stereotype.Component;
 import java.util.Arrays;
 
 
-@Component
 public class MessageReceiver  implements MessageListener {
 
-	@Autowired
 	private SpkService spkService;
 
-    @Autowired
     private GpsService gpsservice;
 
-    @Autowired
 	private RedisTemplateUtil redisTemplate;
 
-//	public MessageReceiver(RedisTemplateUtil redisTemplate) {
-//		this.redisTemplate = redisTemplate;
-//	}
+	public MessageReceiver(SpkService spkService, GpsService gpsservice, RedisTemplateUtil redisTemplate) {
+		this.spkService = spkService;
+		this.gpsservice = gpsservice;
+		this.redisTemplate = redisTemplate;
+	}
 
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
