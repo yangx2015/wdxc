@@ -97,10 +97,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	@Override
 	public ApiResponse<List<ClLsGjInfo>> historyTrajectory(gpsSJInfo gpssjinfo) {
 		ApiResponse<List<ClLsGjInfo>> apiResponse = new ApiResponse<>();
-		String xcTime = "2018-07-10 00:00:00";
-		Date xcDate;
-		Date startDate;
-		Date endDate;
+		String xcTime = "2018-07-14 00:00:00"; // 轨迹段表开始记录时间（临界时间）
+		Date xcDate,startDate,endDate;
 		try {
 			xcDate = DateUtils.getDate(xcTime,"yyyy-MM-dd HH:mm:ss");
 			startDate = DateUtils.getDate(gpssjinfo.getStartTime(),"yyyy-MM-dd HH:mm:ss");
@@ -109,11 +107,11 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 			throw new RuntimeCheckException("日期转换异常");
 		}
 		List<ClLsGjInfo> cclLsGjInfos;
-		if (startDate.getTime() > xcDate.getTime()){
+		if (startDate.getTime() > xcDate.getTime()){ 		// 如果开始时间大于 临界时间，则从轨迹段表中读取数据
 			cclLsGjInfos = getTrackListNew(gpssjinfo);
-		}else if (endDate.getTime() < xcDate.getTime()){
+		}else if (endDate.getTime() < xcDate.getTime()){ 	// 如果结束时间小于临界时间，则从gps历史表中分析
 			cclLsGjInfos = getTrackListOld(gpssjinfo);
-		}else{
+		}else{ 												// 如果开始时间和结束时间跨越临界时间，则先从轨迹段表中读取，然后出去已读取的数据，再从gps历史表中分析
 			cclLsGjInfos = getTrackListNew(gpssjinfo);
 			gpssjinfo.setEndTime(xcTime);
 			List<ClLsGjInfo> cclLsGjInfos1 = getTrackListOld(gpssjinfo);
