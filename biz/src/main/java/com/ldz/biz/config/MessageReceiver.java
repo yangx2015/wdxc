@@ -25,11 +25,12 @@ public class MessageReceiver  implements MessageListener {
     @Autowired
     private GpsService gpsservice;
 
+    @Autowired
 	private RedisTemplateUtil redisTemplate;
 
-	public MessageReceiver(RedisTemplateUtil redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
+//	public MessageReceiver(RedisTemplateUtil redisTemplate) {
+//		this.redisTemplate = redisTemplate;
+//	}
 
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
