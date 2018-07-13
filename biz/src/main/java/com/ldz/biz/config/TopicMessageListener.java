@@ -51,8 +51,8 @@ public class TopicMessageListener implements MessageListener {
      */
     @Override
     public void onMessage(Message message, byte[] pattern) {
-        String itemValue = redisTemplate.getValueSerializer().deserialize(message.getBody()).toString();
-        String topic =  redisTemplate.getValueSerializer().deserialize(message.getChannel()).toString();
+        String itemValue = new String(message.getBody());
+        String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
             String[] vals = itemValue.split(",");
@@ -60,6 +60,8 @@ public class TopicMessageListener implements MessageListener {
             String zdbh = vals[1];
             String startTime = vals[2];
             String endTime = vals[3];
+            String startPoint = vals[4];
+            String endPoint = vals[5];
             long s = 0;
             long e = 0;
             try {
@@ -87,6 +89,7 @@ public class TopicMessageListener implements MessageListener {
             clXc.setClZdbh(zdbh);
             clXc.setXcKssj(startTime);
             clXc.setXcJssj(endTime);
+            clXc.setXcStartEnd(startPoint + "," + endPoint);
             xcService.saveEntity(clXc);
 
         }

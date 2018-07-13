@@ -656,35 +656,40 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     private void clXc(GpsInfo gpsInfo){
         // 获取 gps 存储事件的 终端号 和 时间
         String time = gpsInfo.getStartTime();
-        String startTime  = time;
+        String startTime  = time; // 开始时间
+
         String zdbh = gpsInfo.getDeviceId();
+        String latitude = gpsInfo.getLatitude();
+        String longitude = gpsInfo.getLongitude();
+        String startLatitude = latitude;
+        String startLongitude = longitude;
+
         String s = (String) redis.boundValueOps("CX_" + zdbh).get();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         // 判断 redis中的实时点位是否存在
-        if(StringUtils.isBlank(s)){ // 实时点位为空 存储当前点位第一开始的点位
+        if(StringUtils.isNotBlank(s)){ // 实时点位为空 存储当前点位第一开始的点位
             // 更新 开始时间和结束时间的 key 值 （redis 过期事件只能发送 key , 需要用 key 作为业务数据）
-            redis.boundValueOps("start_end," + zdbh +","+ time + "," +time  ).set("1",5,TimeUnit.MINUTES);
-        }else{
-
             String[] times = s.split(",");
             LocalDateTime preTime = LocalDateTime.parse(times[0],formatter);
             LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
             if(preTime.plusMinutes(5).compareTo(nowTime) > 0){ // 说明当前时间仍在行程中
                 // 更新实时点位时间
                startTime = times[1];
+               startLatitude = times[2].split("-")[1];
+               startLongitude = times[2].split("-")[0];
+               String endLatitude = times[3].split("-")[1];
+               String endLongitude = times[3].split("-")[0];
                 //删除当前终端的开始结束
-                redis.delete("start_end," + zdbh +","+ times[1] + "," +times[0] );
-                // 更新一条 开始结束时间
-                redis.boundValueOps("start_end," + zdbh +","+ times[1] + "," +time).set("1",5,TimeUnit.MINUTES);
+                redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] + "," + startLongitude + "-" + startLatitude + "," + endLongitude + "-" + endLatitude );
             }else{ // 开启一条新的行程
                 startTime = time;
-                // 插入一条新的时间记录
-                redis.boundValueOps("start_end," + zdbh +","+ time +"," + time).set("1",5,TimeUnit.MINUTES);
             }
 
         }
-        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime);  // 结束时间 + 开始时间
-
+        // 更新标记
+        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime + "," + startLongitude + "-" + startLatitude + "," + longitude + "-" + latitude );  // 结束时间 + 开始时间 + 开始坐标 + 结束坐标
+        // 添加一条新的记录
+        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time + "," + startLongitude + "-" + startLatitude + "," + longitude + "-" + latitude  ).set("1",5,TimeUnit.MINUTES);
 
 
 

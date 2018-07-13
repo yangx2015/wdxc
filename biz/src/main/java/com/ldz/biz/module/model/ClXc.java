@@ -29,6 +29,12 @@ public class ClXc implements Serializable {
     @Column(name = "CL_ZDBH")
     private String clZdbh;
 
+    /**
+     * 行程开始结束点
+     */
+    @Column(name = "XC_START_END")
+    private String xcStartEnd;
+
     private static final long serialVersionUID = 1L;
 
     /**
@@ -99,11 +105,20 @@ public class ClXc implements Serializable {
         this.clZdbh = clZdbh;
     }
 
+    public String getXcStartEnd() {
+        return xcStartEnd;
+    }
+
+    public void setXcStartEnd(String xcStartEnd) {
+        this.xcStartEnd = xcStartEnd;
+    }
+
     public enum InnerColumn {
         id("ID"),
         xcKssj("XC_KSSJ"),
         xcJssj("XC_JSSJ"),
-        clZdbh("CL_ZDBH");
+        clZdbh("CL_ZDBH"),
+        xcStartEnd("XC_START_END");
 
         private final String column;
 
