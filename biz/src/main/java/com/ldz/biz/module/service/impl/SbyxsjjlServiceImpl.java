@@ -6,11 +6,9 @@ import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
+import com.ldz.biz.module.mapper.ClXcMapper;
 import com.ldz.biz.module.mapper.ClZdglMapper;
-import com.ldz.biz.module.model.ClGpsLs;
-import com.ldz.biz.module.model.ClSbyxsjjl;
-import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.model.Clyy;
+import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.SbyxsjjlService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -23,8 +21,11 @@ import com.ldz.util.bean.TrackPointsForReturn;
 import com.ldz.util.bean.TrackPointsForReturn.Point;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.util.exception.RuntimeCheckException;
 import com.ldz.util.yingyan.GuiJIApi;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> implements SbyxsjjlService {
 	@Autowired
@@ -45,6 +47,8 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	private ClGpsLsMapper clGpsLsMapper;
 	@Autowired
 	private ClZdglMapper zdglMapper;
+	@Autowired
+	private ClXcMapper xcMapper;
 	@Autowired
 	private ClYyService clYyService;
 	@Value("${biz.scTime}")
@@ -92,9 +96,69 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 
 	@Override
 	public ApiResponse<List<ClLsGjInfo>> historyTrajectory(gpsSJInfo gpssjinfo) {
+		ApiResponse<List<ClLsGjInfo>> apiResponse = new ApiResponse<>();
+		String xcTime = "2018-07-10 00:00:00";
+		Date xcDate;
+		Date startDate;
+		Date endDate;
+		try {
+			xcDate = DateUtils.getDate(xcTime,"yyyy-MM-dd HH:mm:ss");
+			startDate = DateUtils.getDate(gpssjinfo.getStartTime(),"yyyy-MM-dd HH:mm:ss");
+			endDate = DateUtils.getDate(gpssjinfo.getEndTime(),"yyyy-MM-dd HH:mm:ss");
+		} catch (ParseException e) {
+			throw new RuntimeCheckException("日期转换异常");
+		}
+		List<ClLsGjInfo> cclLsGjInfos;
+		if (startDate.getTime() > xcDate.getTime()){
+			cclLsGjInfos = getTrackListNew(gpssjinfo);
+		}else if (endDate.getTime() < xcDate.getTime()){
+			cclLsGjInfos = getTrackListOld(gpssjinfo);
+		}else{
+			cclLsGjInfos = getTrackListNew(gpssjinfo);
+			gpssjinfo.setEndTime(xcTime);
+			List<ClLsGjInfo> cclLsGjInfos1 = getTrackListOld(gpssjinfo);
+			cclLsGjInfos.addAll(cclLsGjInfos1);
+		}
+		apiResponse.setResult(cclLsGjInfos);
+		return apiResponse;
+	}
 
-		ApiResponse<List<ClLsGjInfo>> apiResponse = new ApiResponse<List<ClLsGjInfo>>();
+	private List<ClLsGjInfo> getTrackListNew(gpsSJInfo gpssjinfo){
+		SimpleCondition condition = new SimpleCondition(ClXc.class);
+		condition.gte(ClXc.InnerColumn.xcKssj,gpssjinfo.getStartTime());
+		condition.lte(ClXc.InnerColumn.xcJssj,gpssjinfo.getEndTime());
+		condition.eq(ClXc.InnerColumn.clZdbh,gpssjinfo.getZdbh());
+		List<ClXc> xcList = xcMapper.selectByExample(condition);
+		if (xcList.size() == 0){
+			return new ArrayList<>();
+		}
 
+		List<ClLsGjInfo> cclLsGjInfos = new ArrayList<>();
+		for (ClXc xc : xcList) {
+			if (StringUtils.isEmpty(xc.getXcStartEnd()) || !xc.getXcStartEnd().contains(","))continue;
+			long duration;
+			try {
+				Date startDate = DateUtils.getDate(xc.getXcKssj(),"yyyy-MM-dd HH:mm:ss");
+				Date endDate = DateUtils.getDate(xc.getXcJssj(),"yyyy-MM-dd HH:mm:ss");
+				duration = endDate.getTime() - startDate.getTime();
+			} catch (ParseException e) {
+				throw new RuntimeCheckException("日期转换异常");
+			}
+
+			ClLsGjInfo clLsGjInfoIn = new ClLsGjInfo();
+			String[] points = xc.getXcStartEnd().split(",");
+			String startPoint = points[0];
+			String endPoint = points[1];
+			clLsGjInfoIn.setJsjps(startPoint.replaceAll("-",","));
+			clLsGjInfoIn.setKsgps(endPoint.replaceAll("-",","));
+			clLsGjInfoIn.setKssj(xc.getXcKssj());
+			clLsGjInfoIn.setJssj(xc.getXcJssj());
+			clLsGjInfoIn.setSc(duration);
+			cclLsGjInfos.add(clLsGjInfoIn);
+		}
+		return cclLsGjInfos;
+	}
+	private List<ClLsGjInfo> getTrackListOld(gpsSJInfo gpssjinfo){
 		List<ClSbyxsjjl> historyTrajectory = entityMapper.historyTrajectory(gpssjinfo);
 
 		List<List<ClSbyxsjjl>> clLsGjInfos = new ArrayList<>();
@@ -124,10 +188,7 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 				cclLsGjInfos.add(clLsGjInfoIn);
 			}
 		}
-
-		apiResponse.setResult(cclLsGjInfos);
-
-		return apiResponse;
+		return cclLsGjInfos;
 	}
 
 	public String simpledate(Date date) {
