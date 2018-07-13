@@ -22,9 +22,14 @@ import java.util.List;
 @Configuration
 @Order(1)
 public class RedisConfig {
-	
+
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
+
+	@Autowired
+	private TopicMessageListener topicMessageListener;
+	@Autowired
+	private MessageReceiver messageReceiver;
 
 
 
@@ -58,8 +63,8 @@ public class RedisConfig {
 		// 订阅过期 topic
 		// 设置监听的Topic
 		PatternTopic channelTopic = new PatternTopic("__keyevent@*__:expired");
-		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
-		container.addMessageListener(new TopicMessageListener(redisTemplateDefault()) , channelTopic);
+		container.addMessageListener(messageReceiver, topics);
+		container.addMessageListener(topicMessageListener , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}
