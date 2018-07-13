@@ -675,10 +675,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if(preTime.plusMinutes(5).compareTo(nowTime) > 0){ // 说明当前时间仍在行程中
                 // 更新实时点位时间
                startTime = times[1];
-               startLatitude = times[2].split("-")[1];
-               startLongitude = times[2].split("-")[0];
-               String endLatitude = times[3].split("-")[1];
-               String endLongitude = times[3].split("-")[0];
                 //删除当前终端的开始结束
                 redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
             }else{ // 开启一条新的行程
@@ -687,9 +683,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         }
         // 更新标记
-        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime + "," + startLongitude + "-" + startLatitude + "," + longitude + "-" + latitude );  // 结束时间 + 开始时间 + 开始坐标 + 结束坐标
+        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime );  // 结束时间 + 开始时间 + 开始坐标 + 结束坐标
         // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time + "," + startLongitude + "-" + startLatitude + "," + longitude + "-" + latitude  ).set("1",5,TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time   ).set("1",5,TimeUnit.MINUTES);
 
 
 

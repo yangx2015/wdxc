@@ -60,8 +60,6 @@ public class TopicMessageListener implements MessageListener {
             String zdbh = vals[1];
             String startTime = vals[2];
             String endTime = vals[3];
-            String startPoint = vals[4];
-            String endPoint = vals[5];
             long s = 0;
             long e = 0;
             try {
@@ -73,23 +71,23 @@ public class TopicMessageListener implements MessageListener {
                 // 轨迹点不存储
                 return;
             }
-
+            String start_end =null;
             try {
-                guiJiJiuPian(zdbh, s, e);
+                start_end =  guiJiJiuPian(zdbh, s, e);
             }catch (Exception e2){
                 if(StringUtils.equals(type,"start_end")) {
                     // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
                     redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
                 }else if(StringUtils.equals(type,"compencate")){
                     // 存储当前原始轨迹点
-                    saveGps(zdbh,startTime,endTime);
+                    start_end=  saveGps(zdbh,startTime,endTime);
                 }
             }
             ClXc clXc = new ClXc();
             clXc.setClZdbh(zdbh);
             clXc.setXcKssj(startTime);
             clXc.setXcJssj(endTime);
-            clXc.setXcStartEnd(startPoint + "," + endPoint);
+            clXc.setXcStartEnd(start_end);
             xcService.saveEntity(clXc);
 
         }
@@ -102,7 +100,7 @@ public class TopicMessageListener implements MessageListener {
      * @param startTime
      * @param endTime
      */
-    public void guiJiJiuPian(String zdbh, long startTime, long endTime) {
+    public String guiJiJiuPian(String zdbh, long startTime, long endTime) {
 
         TrackJiuPian guijis = new TrackJiuPian();
         guijis.setAk(GuiJIApi.AK);
@@ -135,8 +133,9 @@ public class TopicMessageListener implements MessageListener {
             }
             clYyService.saveBatch(yyList);
             String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+            return start_end;
         } else {
-            return;
+            return null;
         }
 
     }
@@ -144,7 +143,7 @@ public class TopicMessageListener implements MessageListener {
     /**
      * 存储原始轨迹点
      */
-    public void saveGps(String zdbh,String startTime, String endTime){
+    public String saveGps(String zdbh,String startTime, String endTime){
 
         SimpleCondition simpleCondition = new SimpleCondition(ClGpsLs.class);
         simpleCondition.and().andBetween(ClGpsLs.InnerColumn.cjsj.name(),startTime,endTime);
@@ -164,7 +163,8 @@ public class TopicMessageListener implements MessageListener {
         });
         clYyService.saveBatch(yyList);
 
-
+        String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+        return start_end;
     }
 
 
