@@ -18,7 +18,7 @@ import java.util.Map;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping("api/clzd")
+@RequestMapping("pub/clzd")
 public class ClZDCtrl extends BaseController<ClZd, String> {
 	@Autowired
 	private ZdService zdservice;

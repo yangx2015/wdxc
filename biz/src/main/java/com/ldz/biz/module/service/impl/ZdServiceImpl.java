@@ -20,6 +20,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.*;
@@ -196,7 +197,11 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         return getNearbyRoutes(stations);
     }
     public List<ClXl> getNearbyRoutes(List<ClZd> stations) {
-        Set<String> routeIds = stations.stream().map(ClZd::getXlId).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(stations))return new ArrayList<>();
+        List<String> stationIds = stations.stream().map(ClZd::getId).collect(Collectors.toList());
+        List<ClXlzd> xlzds = xlzdService.findIn(ClXlzd.InnerColumn.zdId,stationIds);
+        if (xlzds.size() == 0)return new ArrayList<>();
+        List<String> routeIds = xlzds.stream().map(ClXlzd::getXlId).collect(Collectors.toList());
         List<ClXl> routes = xlService.findIn(ClXl.InnerColumn.id,routeIds);
         return routes;
     }
