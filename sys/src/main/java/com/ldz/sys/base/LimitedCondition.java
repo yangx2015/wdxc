@@ -26,8 +26,8 @@ public class LimitedCondition extends SimpleCondition {
         super(entityClass);
         if (excludeEntityName.contains(entityClass.getSimpleName()))return;
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//        String orgCode = (String) request.getAttribute("orgCode");
-//        RuntimeCheck.ifBlank(orgCode,"未找到机构");
-//        this.and().andLike("jgdm",orgCode+"%");
+        String orgCode = (String) request.getAttribute("orgCode");
+        RuntimeCheck.ifBlank(orgCode,"未找到机构");
+        this.and().andLike("jgdm",orgCode+"%");
     }
 }
