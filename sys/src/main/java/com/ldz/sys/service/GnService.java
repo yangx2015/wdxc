@@ -62,5 +62,8 @@ public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> initMenu(List<Menu> menus);
 
     ApiResponse<String> setOrgFunctions(String jgdm, List<String> gndmList);
-
+    /**
+     * 加载所有角色的权限
+     */
+    void initPermission();
 }
