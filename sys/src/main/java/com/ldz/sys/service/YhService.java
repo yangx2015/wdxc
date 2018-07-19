@@ -14,7 +14,7 @@ public interface YhService extends BaseService<SysYh, String> {
 	 * @param user 用户
 	 * @return 执行结果
 	 */
-	ApiResponse<String> addUser(SysYh user);
+//	ApiResponse<String> addUser(SysYh user);
 
 	ApiResponse<String> saveEntity(SysYh entity);
 
@@ -26,8 +26,6 @@ public interface YhService extends BaseService<SysYh, String> {
 	 * @return 操作结果
 	 */
 	ApiResponse<String> mdfPwd(String userId, String oldPwd, String newPwd);
-
-	ApiResponse<List<SysFw>> getUserPermissions(SysYh user);
 
     ApiResponse<String> updateEntity(SysYh user);
 

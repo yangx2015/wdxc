@@ -16,6 +16,7 @@ import com.ldz.util.redis.RedisTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -45,7 +46,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     @Autowired
     private SysJgsqlbMapper jgsqlbMapper;
     @Autowired
-    private RedisTemplateUtil redisTemplateUtil;
+    private StringRedisTemplate redisTemplateUtil;
     @Autowired
     private FwService fwService;
     @Override
@@ -109,7 +110,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
      * 更新缓存中用户的权限
      * @param ids
      */
-    private void cachePermission(List<String> ids) {
+    @Override
+    public void cachePermission(List<String> ids) {
         SysJsGn jsGn = new SysJsGn();
         ids.forEach(s -> {
             jsGn.setJsdm(s);
@@ -124,7 +126,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
                 sb.append(s1).append(",");
             });
             //   存储 角色功能 api
-            redisTemplateUtil.boundValueOps("permission_" + s).set(sb);
+            redisTemplateUtil.boundValueOps("permission_" + s).set(sb.toString());
         });
     }
 
@@ -364,8 +366,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             return findAll();
         }
         List<String> functionCodes = getUserFunctionCodes(user);
-        List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
-        functionCodes.retainAll(orgFunctionCodes);
+        if (!"00".equals(user.getLx())){
+            List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
+            functionCodes.retainAll(orgFunctionCodes);
+        }
         if (functionCodes.size() == 0)return new ArrayList<>();
         SimpleCondition condition = new SimpleCondition(SysGn.class);
         condition.in(SysGn.InnerColumn.gndm,functionCodes);

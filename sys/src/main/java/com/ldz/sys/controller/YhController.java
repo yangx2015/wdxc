@@ -30,20 +30,20 @@ public class YhController extends BaseController<SysYh, String> {
 	protected BaseService<SysYh, String> getBaseService() {
 		return userService;
 	}
-	
+
 	@Override
 	public ApiResponse<String> save(SysYh entity) {
 //		entity.setLx(Dict.UserType.ADMIN.getCode());
-		return this.userService.saveEntity(entity);
+		return this.userService.validAndSave(entity);
 	}
 
 	@Override
 	public ApiResponse<String> update(SysYh entity) {
-		
+
 		return this.userService.updateEntity(entity);
 	}
-	
-	
+
+
 	@RequestMapping(value = "mdfPwd",method = RequestMethod.POST)
 	public ApiResponse<String> mdfPwd(@RequestParam(name = "oldPwd")String oldPwd,
 									  @RequestParam(name = "newPwd")String newPwd,
@@ -57,15 +57,6 @@ public class YhController extends BaseController<SysYh, String> {
 		RuntimeCheck.ifTrue(user == null,"请重启登录！");
 		return userService.mdfPwd(user.getYhid(),oldPwd,newPwd);
 	}
-
-
-
-	@RequestMapping(value = "getUserPermissions",method = RequestMethod.POST)
-	public ApiResponse<List<SysFw>> getUserPermissions(){
-		SysYh user = getCurrentUser();
-		return userService.getUserPermissions(user);
-	}
-
 	/**
 	 * 重置密码
 	 *

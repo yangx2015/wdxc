@@ -15,15 +15,15 @@
 							</FormItem>
 						</Col>
 					</Row>
-					<Row>
-						<Col>
-							<FormItem label='机构负责人' prop="">
-								<Select v-model="formItem.gly" placeholder="请填写机构负责人">
-									<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>
-								</Select>
-							</FormItem>
-						</Col>
-					</Row>
+					<!--<Row>-->
+						<!--<Col>-->
+							<!--<FormItem label='机构负责人' prop="">-->
+								<!--<Select v-model="formItem.gly" placeholder="请填写机构负责人">-->
+									<!--<Option v-for="item in userList" :key="item.yhid" :value="item.yhid">{{item.xm}}</Option>-->
+								<!--</Select>-->
+							<!--</FormItem>-->
+						<!--</Col>-->
+					<!--</Row>-->
 					<Row>
 						<Col>
 							<FormItem label='权限选择:'>

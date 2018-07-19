@@ -12,6 +12,8 @@ import java.util.List;
 public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> saveEntity(SysGn entity);
 
+    void cachePermission(List<String> ids);
+
     /**
      * 查找某个服务的所有功能
      * @param serviceCode 服务代码
