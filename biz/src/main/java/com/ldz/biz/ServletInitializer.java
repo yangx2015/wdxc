@@ -15,7 +15,6 @@ import javax.servlet.ServletException;
 public class ServletInitializer extends SpringBootServletInitializer {
 
 
-	@Autowired
 	private GnService gnService;
 
 	@Override
@@ -26,13 +25,13 @@ public class ServletInitializer extends SpringBootServletInitializer {
 	// 全局缓存角色权限
 	@Override
 	public void onStartup(ServletContext servletContext) throws ServletException {
-		gnService.initPermission();
 		this.logger = LogFactory.getLog(this.getClass());
 		final WebApplicationContext rootAppContext = this.createRootApplicationContext(servletContext);
 		if(rootAppContext != null) {
 			servletContext.addListener(new ContextLoaderListener(rootAppContext) {
-
 				public void contextInitialized(ServletContextEvent event) {
+					gnService = rootAppContext.getBean(GnService.class);
+					gnService.initPermission();
 				}
 			});
 		} else {
