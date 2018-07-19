@@ -72,4 +72,9 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 		return ApiResponse.success(zdservice.getNearbyRoutesAndStations(lng,lat));
 	}
 
+	@RequestMapping("getStationInfo")
+	public ApiResponse<Map<String,Object>> getStationInfo(String lng,String lat){
+		return zdservice.getStationInfo(lng,lat);
+	}
+
 }

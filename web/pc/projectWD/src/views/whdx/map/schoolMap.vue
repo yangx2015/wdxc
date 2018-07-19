@@ -26,7 +26,12 @@
 </style>
 
 <template>
-	<div style="height: 100%;background-color: #00FFFF;position: relative;">
+	<div style="height: 100%;position: relative;">
+                    <span>
+                        <CheckboxGroup v-model="choosedLineIds">
+                            <Checkbox v-for="(item,index) in lineList" :label="item.xlmc"></Checkbox>
+                        </CheckboxGroup>
+                    </span>
 		<div id="allmap"></div>
 		<!--<div class="claer">
 			 <Button type="success" size="small" @click="clear">清除</Button>
@@ -47,6 +52,8 @@
 					lng: 114.368383,
 	    			lat: 30.551134
 				},
+                lineList:[],
+                choosedLineIds:[],
 				zoom:16,
 				zoomDot:[],
                 scoketMess:[],
@@ -85,8 +92,32 @@
 			this.map = new BMap.Map("allmap");    // 创建Map实例
 		  	this.mapCenterF()
             this.getAllDevice()
+            this.getLineList()
 		},
 		methods:{
+            getLineList(){
+                var v = this
+                this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
+                    if (res.code == 200 && res.page.list){
+                        this.lineList = res.page.list;
+                        for (let i in this.lineList){
+                            this.getLineStations(i);
+						}
+                    }
+                })
+            },
+			getLineStations(i){
+                var v = this
+                this.$http.post(this.apis.ZD.GET_BY_ROUTE_ID, {'xlId': this.lineList[i].id}).then((res) => {
+                    if (res.code == 200 && res.result){
+                        this.lineList[i].stationList = res.result;
+                        // for (let i = 0;i<res.result.length - 1;i++){
+                        for (let i = 0;i<1;i++){
+                            this.drivingLine(new BMap.Point(res.result[i].jd,res.result[i].wd),new BMap.Point(res.result[i+1].jd,res.result[i+1].wd),i)
+						}
+                    }
+                })
+			},
             getAllDevice() {
                 this.$http.get(this.apis.ZDGL.QUERY+'?pageSize=10000').then((res)=>{
                     if (res.code == 200 && res.page.list){
@@ -194,7 +225,25 @@
 			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
 			},
-			//清除层
+            drivingLine(startPoint,endPoint,index){
+                let v = this;
+                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
+                    //offset: new BMap.Size(0, -5),    //相当于CSS精灵
+                    imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
+                });
+                var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
+                driving.search(startPoint, endPoint);
+                driving.setSearchCompleteCallback(function(){
+                    console.log("result:",driving.getResults());
+                    var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+                    var paths = pts.length;    //获得有几个点
+                    //
+                    // var carMk = new BMap.Marker(pts[0],{icon:myIcon});
+                    // v.map.addOverlay(carMk);
+                    // i=0;
+                });
+            },
+            //清除层
 			clear(){
 				this.map.clearOverlays()
 			},
