@@ -4,7 +4,7 @@
     }
 </style>
 <template>
-    <div id="abnormal" style="height: 100%;">
+    <div id="abnormal" style="height: 120px;">
         <Table
                 border
                 :height="tabHeight"
@@ -20,7 +20,7 @@
         mixins: [mixins],
         data () {
             return {
-                tabHeight:'220',
+                tabHeight:'180',
                 columns1: [
                     {
                         title: '序号',
@@ -86,10 +86,10 @@
                         })
                 },
                 getalert(){
-                    var windowHeight = window.innerHeight
-                    this.tabHeight = windowHeight/2 - 130
+                    // var windowHeight = window.innerHeight
+                    // this.tabHeight = windowHeight/2 - 130
     //				this.tabHeight = windowHeight - 200
-                    log('浏览器高',this.tabHeight)
+    //                 log('浏览器高',this.tabHeight)
                 }
         }
     }
