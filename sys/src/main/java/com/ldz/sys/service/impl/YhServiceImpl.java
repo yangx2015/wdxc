@@ -3,6 +3,8 @@ package com.ldz.sys.service.impl;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.constant.Dict;
+import com.ldz.sys.service.GnService;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.*;
 import com.ldz.sys.model.*;
@@ -25,10 +27,7 @@ import tk.mybatis.mapper.common.Mapper;
 import tk.mybatis.mapper.entity.Example;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,23 +38,21 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 	@Autowired
 	private SysClkPtyhMapper baseMapper;
 	@Autowired
-	private SysRsRoleBizMapper roleBizMapper;
-	@Autowired
-	private SysPtfwMapper bizMapper;
-	@Autowired
-	private SysRsRoleResourceMapper roleResourceMapper;
-	@Autowired
-	private SysResourceMapper resourceMapper;
-	@Autowired
-	private JsService roleService;
+	private GnService gnService;
 	@Autowired
 	private JgService jgService;
+	@Autowired
+	private JsService jsService;
+	@Autowired
+	private SysJsGnMapper jsGnMapper;
+	@Autowired
+	private SysYhJsMapper yhJsMapper;
 
 	@Override
 	protected Class<SysYh> getEntityCls(){
 		return SysYh.class;
 	}
-	
+
 	@Override
 	protected Mapper<SysYh> getBaseMapper() {
 		return baseMapper;
@@ -68,16 +65,15 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 	 * @return 执行结果
 	 */
 	@Override
-	public ApiResponse<String> addUser(SysYh user) {
+	public ApiResponse<String> validAndSave(SysYh user) {
 		RuntimeCheck.ifBlank(user.getZh(),"账号不能为空");
 		RuntimeCheck.ifBlank(user.getXm(),"姓名不能为空");
-		RuntimeCheck.ifBlank(user.getJgdm(),"请选择机构");
 		RuntimeCheck.ifBlank(user.getSjh(),"手机号不能为空");
 		RuntimeCheck.ifFalse(StringUtils.isAlphanumeric(user.getZh()),"登陆名只能是数字和字母组成！");
 		boolean exists = ifExists(SysYh.InnerColumn.zh.name(),user.getZh());
 		RuntimeCheck.ifTrue(exists,"登陆名已存在，请更换别的登陆名！");
-		SysJg org = jgService.findByOrgCode(user.getJgdm());
-		RuntimeCheck.ifNull(org,"机构不存在");
+//		SysJg org = jgService.findByOrgCode(user.getJgdm());
+//		RuntimeCheck.ifNull(org,"机构不存在");
 
 		SysYh currentUser = getCurrentUser();
 		user.setYhid(String.valueOf(idGenerator.nextId()));
@@ -85,8 +81,54 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		user.setCjr(currentUser.getYhid());
 		user.setCjsj(new Date());
 		user.setZt(Dict.UserStatus.VALID.getCode());
+		if (StringUtils.isEmpty(user.getJgdm())){
+			user.setJgdm(currentUser.getJgdm());
+		}
 		baseMapper.insertSelective(user);
+
+		// 如果用户类型为管理员，则默认拥有系统管理权限
+		if ("00".equals(user.getLx())){
+			addAdminPermission(user);
+		}
 		return ApiResponse.success();
+	}
+
+	private void addAdminPermission(SysYh user){
+		// 添加机构管理员角色
+		Date now = new Date();
+		SysJs adminRole = new SysJs();
+		SysYh currentUser = getCurrentUser();
+		adminRole.setCjr(currentUser.getZh());
+		adminRole.setJgdm(currentUser.getJgdm());
+		adminRole.setCjsj(now);
+		adminRole.setJsId(genId());
+		adminRole.setJslx("00");
+		adminRole.setJsmc("机构管理员");
+		adminRole.setZt("00");
+		jsService.saveEntity(adminRole);
+
+		SysYhJs yhJs = new SysYhJs();
+		yhJs.setCjr(currentUser.getZh());
+		yhJs.setCjsj(now);
+		yhJs.setJsId(adminRole.getJsId());
+		yhJs.setYhId(user.getYhid());
+		yhJs.setYhjsId(genId());
+		yhJsMapper.insertSelective(yhJs);
+
+		List<String> permissionList = Arrays.asList("system-user","system-role");
+		List<SysGn> functinos = gnService.findIn(SysGn.InnerColumn.gndm,permissionList);
+		for (SysGn functino : functinos) {
+			SysJsGn jsGn = new SysJsGn();
+			jsGn.setCjr(currentUser.getZh());
+			jsGn.setCjsj(now);
+			jsGn.setFwdm("1");
+			jsGn.setGndm(functino.getGndm());
+			jsGn.setFgndm(functino.getFjd());
+			jsGn.setJsdm(adminRole.getJsId());
+			jsGn.setId(genId());
+			jsGnMapper.insertSelective(jsGn);
+		}
+		gnService.cachePermission(Arrays.asList(adminRole.getJsId()));
 	}
 
 	@Override
@@ -142,48 +184,6 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 	}
 
 
-	@Override
-	public ApiResponse<List<SysFw>> getUserPermissions(SysYh user) {
-		ApiResponse<List<SysFw>> result = new ApiResponse<>();
-		// 获取角色
-		List<String> roleIds = roleService.getUserRoleIds(user.getYhid());
-
-		Example roleBizExample = new Example(SysRsRoleBiz.class);
-		roleBizExample.and().andIn(SysRsRoleBiz.InnerColumn.roleId.name(),roleIds);
-		List<SysRsRoleBiz> roleBizs = roleBizMapper.selectByExample(roleBizExample);
-		if (roleBizs.size() == 0) return result;
-
-		// 获取bizs
-		Set<Long> bizIds = roleBizs.stream().map(SysRsRoleBiz::getBizId).collect(Collectors.toSet());
-		Example bizExample = new Example(SysFw.class);
-		bizExample.and().andIn(SysFw.InnerColumn.fwId.name(),bizIds);
-		List<SysFw> bizs = bizMapper.selectByExample(bizExample);
-		result.setResult(bizs);
-		Map<String,SysFw> bizMap = bizs.stream().collect(Collectors.toMap(SysFw::getFwId, p->p));
-
-		// 获取resources
-		Example roleResourceExample = new Example(SysRsRoleResource.class);
-		roleResourceExample.and().andIn(SysRsRoleResource.InnerColumn.roleId.name(),roleIds);
-		List<SysRsRoleResource> roleResources = roleResourceMapper.selectByExample(roleResourceExample);
-		if (roleResources.size() != 0){
-			Set<Long> resourceIds = roleResources.stream().map(SysRsRoleResource::getResId).collect(Collectors.toSet());
-			Example resourceExample = new Example(SysResource.class);
-			resourceExample.and().andIn(SysResource.InnerColumn.resId.name(),resourceIds);
-			List<SysResource> resources = resourceMapper.selectByExample(resourceExample);
-			for (SysResource resource : resources) {
-				SysFw biz = bizMap.get(resource.getResPid());
-				if (biz == null) continue;
-//				if (biz.getResourceList() == null){
-//					List<SysResource> resourcesList = new ArrayList<>();
-//					resourcesList.add(resource);
-//					biz.setResourceList(resourcesList);
-//				}else{
-//					biz.getResourceList().add(resource);
-//				}
-			}
-		}
-		return result;
-	}
 
 	@Override
 	public ApiResponse<String> updateEntity(SysYh user) {
