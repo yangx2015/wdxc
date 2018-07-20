@@ -1,12 +1,14 @@
 package com.ldz.biz.module.service.impl;
 
 import com.github.pagehelper.PageInfo;
+import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClCssd;
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.CssdService;
+import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
@@ -46,6 +48,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     @Autowired
     private CssdService cssdService;
     @Autowired
+    private InstructionService instructionService;
+    @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
     @Override
@@ -77,11 +81,18 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	entity.setSpscms("20");
     	//默认设备的心跳
     	entity.setGpsxt("10");
-
+    	if(StringUtils.isBlank(entity.getCmd())){
+            entity.setCmd(apiurl);
+        }
     	entity.setJgdm(user.getJgdm());
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
+        GpsInfo gpsInfo = new GpsInfo();
+        gpsInfo.setCmd(entity.getCmd());
+        gpsInfo.setCmdType("91");
+        gpsInfo.setDeviceId(entity.getZdbh());
+        instructionService.sendinstruction(gpsInfo);
         return ApiResponse.saveSuccess();
     }
 
