@@ -116,9 +116,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         ids.forEach(s -> {
             jsGn.setJsdm(s);
             List<SysJsGn> jsGns = jsGnMapper.select(jsGn);
+            if(CollectionUtils.isNotEmpty(jsGns)) {
             // 根据功能代码查询所有的api前缀
             List<String> gndms = jsGns.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
-            if(CollectionUtils.isNotEmpty(gndms)) {
+
                 List<SysGn> gns = gnService.findIn(SysGn.InnerColumn.gndm, gndms);
                 List<String> apiQzs = gns.stream().map(SysGn::getApiQz).distinct().collect(Collectors.toList());
                 StringBuilder sb = new StringBuilder();
