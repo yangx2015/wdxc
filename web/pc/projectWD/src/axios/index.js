@@ -9,12 +9,13 @@ import env from '../../build/env';
 //订单分配权限
 
 // let url = 'http://47.98.39.45:8080'; // 生产环境(测试时不要改动这里)
-let url = 'http://47.98.39.45:8080'; //
-// let url = 'http://127.0.0.1:8080'; //
+//let url = 'http://47.98.39.45:8080'; //
+ //let url = 'http://127.0.0.1:80'; //
 // let url = 'http://localhost:8081'; // cw-mac
 // let url = 'http://192.168.31.181:80',//陈
 // let url = 'http://192.168.31.228:8088',//羊
 // let url = 'http://192.168.31.228:80';//羊
+let url = 'http://192.168.3.234:80'
 let httpInstance = axios.create({
 baseURL: url,
     timeout: 300000,

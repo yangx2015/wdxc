@@ -12,8 +12,8 @@ import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.util.redis.RedisTemplateUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -118,15 +118,17 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             List<SysJsGn> jsGns = jsGnMapper.select(jsGn);
             // 根据功能代码查询所有的api前缀
             List<String> gndms = jsGns.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
-            List<SysGn> gns = gnService.findIn(SysGn.InnerColumn.gndm, gndms);
-            List<String> apiQzs = gns.stream().map(SysGn::getApiQz).distinct().collect(Collectors.toList());
-            StringBuilder sb = new StringBuilder();
-            // 拼接api 前缀
-            apiQzs.stream().forEach(s1 -> {
-                sb.append(s1).append(",");
-            });
-            //   存储 角色功能 api
-            redisTemplateUtil.boundValueOps("permission_" + s).set(sb.toString());
+            if(CollectionUtils.isNotEmpty(gndms)) {
+                List<SysGn> gns = gnService.findIn(SysGn.InnerColumn.gndm, gndms);
+                List<String> apiQzs = gns.stream().map(SysGn::getApiQz).distinct().collect(Collectors.toList());
+                StringBuilder sb = new StringBuilder();
+                // 拼接api 前缀
+                apiQzs.stream().forEach(s1 -> {
+                    sb.append(s1).append(",");
+                });
+                //   存储 角色功能 api
+                redisTemplateUtil.boundValueOps("permission_" + s).set(sb.toString());
+            }
         });
     }
 
