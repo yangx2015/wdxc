@@ -50,7 +50,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='线路:' placeholder="请选择线路...">
-								<Select filterable clearable  v-model="xlIds" multiple>
+								<Select filterable clearable  v-model="choosedXlIds" multiple>
 									<Option v-for="item in xlList" :value="item.id" :key="item.id">{{item.xlmc}}</Option>
 								</Select>
 							</FormItem>
@@ -86,7 +86,7 @@
 					zdId:'',
 					xlIds:'',
 				},
-				xlIds:[],
+                choosedXlIds:[],
 				ruleInline: {
                   zdbh: [
                       { required: true, message: '请输入终端编号', trigger: 'blur' }
@@ -113,7 +113,9 @@
 				this.form = this.$parent.choosedRow;
 				this.operate = '编辑'
 				this.edit = true;
-                this.xlIds = this.form.xlIds.split(",");
+				if (this.form.xlIds != ''){
+                    this.choosedXlIds = this.form.xlIds.split(",");
+				}
             }
             this.getXlList();
             this.getHasXlIds();
@@ -123,15 +125,15 @@
 		methods: {
 		    getHasXlIds(){
                 this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
-                    if(res.code===200){
+                    if(res.code===200 && res.result){
                         var v = this
-						this.xlIds = res.result;
+						this.choosedXlIds = res.result;
                     }
                 })
 			},
 		    getChoosedXlIds(){
 		      this.form.xlIds = '';
-		      for(let r of this.xlIds){
+		      for(let r of this.choosedXlIds){
 		          this.form.xlIds += r+',';
 			  }
 			},
