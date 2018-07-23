@@ -7,10 +7,12 @@ import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.bean.ZnzpOnlineBean;
 import com.ldz.znzp.exception.IotException;
+import com.ldz.znzp.model.ClZnzp;
 import com.ldz.znzp.server.IotServer;
 import com.ldz.znzp.service.ClService;
 import com.ldz.znzp.service.HdService;
 import com.ldz.znzp.service.XlService;
+import com.ldz.znzp.service.ZnzpService;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -20,6 +22,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.ReferenceCountUtil;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,12 +30,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -63,7 +64,8 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 
 	@Autowired
 	private HdService hdService;
-	
+	@Autowired
+	private ZnzpService znzpService;
 	@Autowired
 	SnowflakeIdWorker idWorker;
 	@Autowired
@@ -90,6 +92,13 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		if (!(cause instanceof ReadTimeoutException)){
 			log.error("通道["+ctx.channel().id().asShortText()+"]数据处理异常", cause.fillInStackTrace());
+		}else{
+			// 推送站牌离线事件
+			Set<String> keys = redisDao.keys("*-" + ctx.channel().id()+"-*");
+			keys.stream().forEach(s -> {
+				List<String> list = Arrays.asList(s.split("-"));
+				redisDaoOtherDB.convertAndSend("offline",list.get(0));
+			});
 		}
 		
         //当连接关闭时，移除在线列表
@@ -163,13 +172,20 @@ public class ServerChannelHandler extends ChannelInboundHandlerAdapter{
 	/**
 	 * 刷新智能站牌在线列表
 	 */
-	private void online(ChannelHandlerContext ctx, String tid){
+	private void online(ChannelHandlerContext ctx, String tid) {
+		ClZnzp znzp = znzpService.findById(tid);
+		if( !ObjectUtils.isEmpty(znzp) && !StringUtils.equals(znzp.getZxZt(),"00")){
+			znzp.setZxZt("00");
+			znzpService.update(znzp);
+		}
 		String cid = ctx.channel().id().asShortText();
 		String time = DateTime.now().toString("yyyy-MM-dd HH:mm:ss");
 		redisDao.boundValueOps(tid+"-"+cid+"-"+ZnzpOnlineBean.class.getSimpleName()).set(time);
 		redisDao.boundValueOps(tid+"-"+cid+"-"+ZnzpOnlineBean.class.getSimpleName()).expire(ServerChannelInitializer.READER_IDLE_TIME_SECONDS, TimeUnit.MINUTES);
+
 	}
-	
+
+
 	/**
 	 * 智能站牌上线登录（login）成功后，向站牌返回线路详情
 	 * 异步处理，不阻塞主线程

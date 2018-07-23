@@ -1,9 +1,6 @@
 package com.ldz.ticserver.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.util.bean.RequestCommonParamsDto;
-import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -11,8 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.concurrent.Executor;
 
 @Service("bizApiService")

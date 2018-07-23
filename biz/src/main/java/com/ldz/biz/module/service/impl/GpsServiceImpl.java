@@ -76,6 +76,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
     @Override
     public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
+        // 只要上传点位信息 则为在线状态
+        redis.boundValueOps("offline-"+gpsinfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
         log.info("上传的gps信息:" + gpsinfo);
         if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
             if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
@@ -657,35 +659,36 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         // 获取 gps 存储事件的 终端号 和 时间
         String time = gpsInfo.getStartTime();
         String startTime  = time; // 开始时间
-
-        String zdbh = gpsInfo.getDeviceId();
-        String latitude = gpsInfo.getLatitude();
-        String longitude = gpsInfo.getLongitude();
-        String startLatitude = latitude;
-        String startLongitude = longitude;
-
+        String endTime = time;  // 结束时间
+        String zdbh = gpsInfo.getDeviceId();  // 终端编号
+        String routeType = "1"; //0: 行程开始  1： 行程中 2 ： 行程结束
+        if(StringUtils.equals(gpsInfo.getEventType(),"50")){
+            routeType = "0";
+        }else if(StringUtils.equals(gpsInfo.getEventType(),"60")) {
+            routeType = "2";
+        }
         String s = (String) redis.boundValueOps("CX_" + zdbh).get();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         // 判断 redis中的实时点位是否存在
         if(StringUtils.isNotBlank(s)){ // 实时点位为空 存储当前点位第一开始的点位
             // 更新 开始时间和结束时间的 key 值 （redis 过期事件只能发送 key , 需要用 key 作为业务数据）
             String[] times = s.split(",");
+            String type = times[2];
             LocalDateTime preTime = LocalDateTime.parse(times[0],formatter);
             LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
-            if(preTime.plusMinutes(5).compareTo(nowTime) > 0){ // 说明当前时间仍在行程中
-                // 更新实时点位时间
-               startTime = times[1];
-                //删除当前终端的开始结束
-                redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
-            }else{ // 开启一条新的行程
-                startTime = time;
+            if(preTime.plusMinutes(5).compareTo(nowTime) > 0 && !StringUtils.equals(type,"2")){ // 说明当前时间仍在行程中
+                if(StringUtils.equals(routeType,"2") || StringUtils.equals(routeType,"1")){
+                    // 更新实时点位时间
+                    startTime = times[1];
+                    //删除当前终端的开始结束
+                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
+                }
             }
-
         }
         // 更新标记
-        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime );  // 结束时间 + 开始时间 + 开始坐标 + 结束坐标
+        redis.boundValueOps("CX_"+zdbh).set(endTime + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
         // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time   ).set("1",5,TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +endTime ).set("1",5,TimeUnit.MINUTES);
 
 
 

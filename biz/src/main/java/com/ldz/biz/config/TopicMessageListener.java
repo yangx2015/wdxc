@@ -2,10 +2,12 @@ package com.ldz.biz.config;
 
 import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.model.ClXc;
+import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.model.Clyy;
 import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.XcService;
+import com.ldz.biz.module.service.ZdglService;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPointsForReturn;
@@ -13,15 +15,16 @@ import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -30,16 +33,22 @@ import java.util.concurrent.TimeUnit;
 public class TopicMessageListener implements MessageListener {
 
 
-    @Autowired
+
     private XcService xcService;
-    @Autowired
+
     private ClYyService clYyService;
-    @Autowired
+
     private GpsLsService gpsLsService;
+
+    private ZdglService zdglService;
 
     private RedisTemplateUtil redisTemplate;
 
-    public void setRedisTemplate(RedisTemplateUtil redisTemplate) {
+    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate) {
+        this.xcService = xcService;
+        this.clYyService = clYyService;
+        this.gpsLsService = gpsLsService;
+        this.zdglService = zdglService;
         this.redisTemplate = redisTemplate;
     }
 
@@ -55,43 +64,71 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            String[] vals = itemValue.split(",");
-            String type = vals[0];
-            String zdbh = vals[1];
-            String startTime = vals[2];
-            String endTime = vals[3];
-            long s = 0;
-            long e = 0;
-            try {
-                s = simpleDateFormat.parse(startTime).getTime();
-                e = simpleDateFormat.parse(endTime).getTime();
-            } catch (ParseException e1) {
+            if(StringUtils.contains(itemValue,"start_end")){
+                // 过期事件存储车辆行程
+                saveClXc(itemValue, simpleDateFormat);
+            }else if(StringUtils.contains(itemValue,"offline")){
+                // 车辆离线状态更新
+                updateClZt(itemValue);
             }
-            if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
-                // 轨迹点不存储
-                return;
-            }
-            String start_end =null;
-            try {
-                start_end =  guiJiJiuPian(zdbh, s, e);
-            }catch (Exception e2){
-                if(StringUtils.equals(type,"start_end")) {
-                    // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
-                    redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
-                }else if(StringUtils.equals(type,"compencate")){
-                    // 存储当前原始轨迹点
-                    start_end=  saveGps(zdbh,startTime,endTime);
-                }
-            }
-            ClXc clXc = new ClXc();
-            clXc.setClZdbh(zdbh);
-            clXc.setXcKssj(startTime);
-            clXc.setXcJssj(endTime);
-            clXc.setXcStartEnd(start_end);
-            xcService.saveEntity(clXc);
-
         }
 
+    }
+
+    /**
+     * 更新车辆离线状态
+     * @param itemValue
+     */
+    private void updateClZt(String itemValue) {
+        List<String> zdbhs = Arrays.asList(itemValue.split("-"));
+        String zdbh = zdbhs.get(1);
+        ClZdgl zdgl = zdglService.findById(zdbh);
+        if(!ObjectUtils.isEmpty(zdgl)){
+            zdgl.setZxzt("20");
+            zdglService.update(zdgl);
+        }
+    }
+
+    /**
+     * 存储过期车辆行程
+     * @param itemValue
+     * @param simpleDateFormat
+     */
+    private void saveClXc(String itemValue, SimpleDateFormat simpleDateFormat) {
+        String[] vals = itemValue.split(",");
+        String type = vals[0];
+        String zdbh = vals[1];
+        String startTime = vals[2];
+        String endTime = vals[3];
+        long s = 0;
+        long e = 0;
+        try {
+            s = simpleDateFormat.parse(startTime).getTime();
+            e = simpleDateFormat.parse(endTime).getTime();
+        } catch (ParseException e1) {
+        }
+        if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
+            // 轨迹点不存储
+            return;
+        }
+        String start_end =null;
+        try {
+            start_end =  guiJiJiuPian(zdbh, s, e);
+        }catch (Exception e2){
+            if(StringUtils.equals(type,"start_end")) {
+                // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
+                redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
+            }else if(StringUtils.equals(type,"compencate")){
+                // 存储当前原始轨迹点
+                start_end=  saveGps(zdbh,startTime,endTime);
+            }
+        }
+        ClXc clXc = new ClXc();
+        clXc.setClZdbh(zdbh);
+        clXc.setXcKssj(startTime);
+        clXc.setXcJssj(endTime);
+        clXc.setXcStartEnd(start_end);
+        xcService.saveEntity(clXc);
     }
 
     /**

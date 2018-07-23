@@ -1,5 +1,8 @@
 package com.ldz.znzp.redis;
 
+import com.ldz.util.redis.RedisTemplateUtil;
+import com.ldz.util.spring.SpringContextUtil;
+import com.ldz.znzp.service.ZnzpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -8,8 +11,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-
-import com.ldz.util.redis.RedisTemplateUtil;
 import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
@@ -79,6 +80,7 @@ public class RedisConfig {
 		topics.add(new PatternTopic("gps"));
 		topics.add(new PatternTopic("spk"));
 		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
+		container.addMessageListener(new OffLineMessageReceiver(redisTemplateDefault(),SpringContextUtil.getBean(ZnzpService.class)),new PatternTopic("offline"));
 		//这个container 可以添加多个 messageListener
 		return container;
 	}
