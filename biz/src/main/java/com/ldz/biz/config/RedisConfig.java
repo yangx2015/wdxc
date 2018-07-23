@@ -1,7 +1,6 @@
 package com.ldz.biz.config;
 
-import com.ldz.biz.module.service.GpsService;
-import com.ldz.biz.module.service.SpkService;
+import com.ldz.biz.module.service.*;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +13,6 @@ import org.springframework.data.redis.listener.PatternTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.Topic;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,8 +28,7 @@ public class RedisConfig {
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
-	@Autowired
-	private TopicMessageListener topicMessageListener;
+
 	private RedisTemplateUtil redisTemplateUtil;
 
 
@@ -70,9 +67,14 @@ public class RedisConfig {
 		SpkService spkService = SpringContextUtil.getBean(SpkService.class);
 		GpsService gpsservice = SpringContextUtil.getBean(GpsService.class);
 		MessageReceiver messageReceiver = new MessageReceiver(spkService,gpsservice,redisTemplateUtil);
-		topicMessageListener.setRedisTemplate(redisTemplateUtil);
+
+		XcService xcService = SpringContextUtil.getBean(XcService.class);
+		ClYyService clYyService = SpringContextUtil.getBean(ClYyService.class);
+		GpsLsService gpsLsService = SpringContextUtil.getBean(GpsLsService.class);
+		ZdglService zdglService = SpringContextUtil.getBean(ZdglService.class);
+		//topicMessageListener.setRedisTemplate(redisTemplateUtil);
 		container.addMessageListener(messageReceiver, topics);
-		container.addMessageListener(topicMessageListener , channelTopic);
+		container.addMessageListener(new TopicMessageListener(xcService,clYyService,gpsLsService,zdglService,redisTemplateUtil) , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}

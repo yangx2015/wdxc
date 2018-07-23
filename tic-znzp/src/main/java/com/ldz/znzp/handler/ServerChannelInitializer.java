@@ -1,20 +1,17 @@
 package com.ldz.znzp.handler;
 
-import java.util.concurrent.TimeUnit;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> {
 	
 	//读操作空闲5分钟
-	public final static int READER_IDLE_TIME_SECONDS = 5;
+	public final static int READER_IDLE_TIME_SECONDS = 300;
 	
 	@Autowired
 	private ServerChannelHandler serverHandler;
@@ -24,7 +21,7 @@ public class ServerChannelInitializer extends ChannelInitializer<SocketChannel> 
 		ChannelPipeline pipeline = socketChannel.pipeline();
 
         //设置心跳检测。单位为分钟
-		pipeline.addLast(new ReadTimeoutHandler(READER_IDLE_TIME_SECONDS, TimeUnit.MINUTES));
+		pipeline.addLast(new ReadTimeoutHandler(READER_IDLE_TIME_SECONDS));
 
         pipeline.addLast(serverHandler);
 	}

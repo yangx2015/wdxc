@@ -9,7 +9,9 @@ import com.ldz.znzp.model.ClCl;
 import com.ldz.znzp.model.ClClyxjl;
 import com.ldz.znzp.model.ClPb;
 import com.ldz.znzp.model.ClXl;
-import com.ldz.znzp.service.*;
+import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.ClyxjlService;
+import com.ldz.znzp.service.XlService;
 import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -18,7 +20,6 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -41,10 +42,10 @@ public class MessageReceiver implements MessageListener {
 
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
-		val redisChannel = redisTemplate.getStringSerializer().deserialize(message.getChannel());
+		val topic = redisTemplate.getStringSerializer().deserialize(message.getChannel());
 		val eventMessage = redisTemplate.getValueSerializer().deserialize(message.getBody());
 		System.out.println(eventMessage);
-		String topic = Arrays.toString(pattern);
+		// String topic = Arrays.toString(pattern);
         GpsInfo gpsInfo = new GpsInfo();
         RequestCommonParamsDto dto = (RequestCommonParamsDto) eventMessage;
         BeanUtils.copyProperties(dto,gpsInfo);
@@ -78,6 +79,6 @@ public class MessageReceiver implements MessageListener {
 				clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 				break;
 		}
-		System.out.println("收到一条消息："+redisChannel);
+		System.out.println("收到一条消息："+topic);
 	}
 }

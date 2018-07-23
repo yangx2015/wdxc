@@ -1,8 +1,10 @@
 package com.ldz.znzp.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "CL_ZNZP")
 public class ClZnzp implements Serializable {
@@ -66,6 +68,12 @@ public class ClZnzp implements Serializable {
      */
     @Column(name = "ZD_ID")
     private String zdId;
+    /**
+     * 在线状态
+     */
+    @Column(name = "ZXZT")
+    private String zxZt;
+
 
     private static final long serialVersionUID = 1L;
 
@@ -249,6 +257,22 @@ public class ClZnzp implements Serializable {
         this.zdId = zdId;
     }
 
+
+    /**
+     * 获取站牌在线状态
+     * @return
+     */
+    public String getZxZt() {
+        return zxZt;
+    }
+
+    /**
+     * 设置站牌在线状态
+     * @param zxZt
+     */
+    public void setZxZt(String zxZt) {
+        this.zxZt = zxZt;
+    }
     public enum InnerColumn {
         zdbh("ZDBH"),
         mc("MC"),
@@ -259,7 +283,8 @@ public class ClZnzp implements Serializable {
         cjr("CJR"),
         xgsj("XGSJ"),
         xgr("XGR"),
-        zdId("ZD_ID");
+        zdId("ZD_ID"),
+        zxZt("ZXZT");
 
         private final String column;
 
