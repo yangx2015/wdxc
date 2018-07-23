@@ -3,7 +3,6 @@ package com.ldz.sys.service.impl;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.bean.Menu;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.*;
 import com.ldz.sys.model.*;
 import com.ldz.sys.service.FwService;
@@ -12,10 +11,12 @@ import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import javafx.beans.property.SimpleListProperty;
+import com.ldz.util.exception.RuntimeCheck;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -44,6 +45,8 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     private SysFwgnMapper gnMapper;
     @Autowired
     private SysJgsqlbMapper jgsqlbMapper;
+    @Autowired
+    private StringRedisTemplate redisTemplateUtil;
     @Autowired
     private FwService fwService;
     @Override
@@ -94,7 +97,64 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
 		}else {
 			update(gn);
 		}
+
+        // 更新角色权限缓存
+        // 获取具有该权限的角色
+        List<String> ids = jsGnMapper.findJsIdsByGndm(gn.getGndm());
+        cachePermission(ids);
         return ApiResponse.success();
+    }
+
+
+    /**
+     * 更新缓存中用户的权限
+     * @param ids
+     */
+    @Override
+    public void cachePermission(List<String> ids) {
+        SysJsGn jsGn = new SysJsGn();
+        ids.forEach(s -> {
+            jsGn.setJsdm(s);
+            List<SysJsGn> jsGns = jsGnMapper.select(jsGn);
+            if(CollectionUtils.isNotEmpty(jsGns)) {
+            // 根据功能代码查询所有的api前缀
+            List<String> gndms = jsGns.stream().map(SysJsGn::getGndm).collect(Collectors.toList());
+
+                List<SysGn> gns = gnService.findIn(SysGn.InnerColumn.gndm, gndms);
+                List<String> apiQzs = gns.stream().map(SysGn::getApiQz).distinct().collect(Collectors.toList());
+                StringBuilder sb = new StringBuilder();
+                // 拼接api 前缀
+                apiQzs.stream().forEach(s1 -> {
+                    sb.append(s1).append(",");
+                });
+                //   存储 角色功能 api
+                redisTemplateUtil.boundValueOps("permission_" + s).set(sb.toString());
+            }
+        });
+    }
+
+    @Override
+    public List<SysGn> buildFunctionTree(List<SysGn> nodeList) {
+        List<SysGn> root = new ArrayList<>();
+        Map<String,SysGn> nodeMap = nodeList.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+
+        for (SysGn node : nodeList) {
+            String fatherCode = node.getFjd();
+            if (StringUtils.isEmpty(fatherCode)){
+                root.add(node);
+                continue;
+            }
+            SysGn father = nodeMap.get(fatherCode);
+            if (father == null)continue;
+            if (father.getChildren() == null){
+                List<SysGn> children = new ArrayList<>();
+                children.add(node);
+                father.setChildren(children);
+            }else{
+                father.getChildren().add(node);
+            }
+        }
+        return root;
     }
 
     @Override
@@ -125,6 +185,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             jsGns.add(jsGn);
         }
         jsGnMapper.insertList(jsGns);
+        cachePermission(Arrays.asList(jsdm));
         return ApiResponse.success();
     }
 
@@ -201,6 +262,19 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             jgsqlbMapper.insertSelective(jgsq);
         }
         return ApiResponse.success();
+    }
+
+    /**
+     * 加载所有角色权限
+     */
+    @Override
+    public void initPermission() {
+
+        // 获取所有角色的 id ， 查询对应角色的 功能
+        List<SysJs> sysJsList = jsService.findAll();
+        List<String> jsIds = sysJsList.stream().map(SysJs::getJsId).collect(Collectors.toList());
+        cachePermission(jsIds);
+
     }
 
     private void addToMenuList(List<Menu> menuList,List<SysGn> functionList){
@@ -319,8 +393,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
             return findAll();
         }
         List<String> functionCodes = getUserFunctionCodes(user);
-        List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
-        functionCodes.retainAll(orgFunctionCodes);
+        if (!"00".equals(user.getLx())){
+            List<String> orgFunctionCodes = getOrgFunctionCodes(user.getJgdm());
+            functionCodes.retainAll(orgFunctionCodes);
+        }
         if (functionCodes.size() == 0)return new ArrayList<>();
         SimpleCondition condition = new SimpleCondition(SysGn.class);
         condition.in(SysGn.InnerColumn.gndm,functionCodes);

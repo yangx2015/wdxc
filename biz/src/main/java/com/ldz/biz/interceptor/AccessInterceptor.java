@@ -2,6 +2,7 @@ package com.ldz.biz.interceptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.sys.constant.Dict;
+import com.ldz.sys.mapper.SysYhJsMapper;
 import com.ldz.sys.model.SysGn;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
@@ -9,13 +10,13 @@ import com.ldz.sys.service.YhService;
 import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,6 +33,8 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 
 	private YhService yhService;
 
+	private SysYhJsMapper sysYhJsMapper;
+
 	private StringRedisTemplate redisDao;
 
 	// 只要登录的用户都能访问
@@ -43,6 +46,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	public AccessInterceptor(StringRedisTemplate redisTemp) {
 		this.gnService = SpringContextUtil.getBean(GnService.class);
 		this.yhService = SpringContextUtil.getBean(YhService.class);
+		this.sysYhJsMapper = SpringContextUtil.getBean(SysYhJsMapper.class);
 		this.redisDao = redisTemp;
 	}
 
@@ -114,7 +118,45 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		return super.preHandle(request, response, handler);
 	}
 
-	private boolean checkPermission(SysYh user, HttpServletRequest request) throws IOException {
+	private boolean checkPermission(SysYh user, HttpServletRequest request) {
+		return checkPermissionByRedis(user,request);
+	}
+	private boolean checkPermissionNew(SysYh user, HttpServletRequest request) {
+		String redisVal = redisDao.boundValueOps(user.getYhid()+"-apiQz").get();
+		if (StringUtils.isEmpty(redisVal)) return false;
+
+		List<String> qzs = Arrays.asList(redisVal.split(","));
+		if (CollectionUtils.isEmpty(qzs)) return false;
+
+		String apiqz = getApiQz(request.getRequestURI());
+		if (StringUtils.isEmpty(apiqz)) return false;
+		return qzs.contains(apiqz);
+	}
+
+	private boolean checkPermissionByRedis(SysYh user, HttpServletRequest request){
+		boolean flag =false;
+		// 获取用户的所有角色 Id
+		List<String> sysYhJs = sysYhJsMapper.findJsIdByYhId(user.getYhid());
+		if(CollectionUtils.isEmpty(sysYhJs)){
+			return false;
+		}
+		String apiqz = getApiQz(request.getRequestURI());
+		if (StringUtils.isEmpty(apiqz)) {
+			return false;
+		}
+		for(String s : sysYhJs){
+			String s1 = redisDao.boundValueOps("permission_" + s).get();
+			List<String> list = Arrays.asList(s1.split(","));
+			if(CollectionUtils.isNotEmpty(list) && list.contains(apiqz)){
+				flag = true;
+				break;
+			}
+		}
+		return flag;
+	}
+
+
+	private boolean checkPermissionOld(SysYh user, HttpServletRequest request) {
 		List<SysGn> functions = gnService.getUserFunctions(user);
 		if (functions == null || functions.size() == 0)
 			return false;
@@ -128,5 +170,23 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 				return true;
 		}
 		return false;
+	}
+
+	private String getApiQz(String uri){
+		String apiPrefix = uri.substring(0, uri.indexOf("/", 5) + 1);
+		return apiPrefix;
+//
+//		Map<String,Object> requestMappings = SpringContextUtil.getByAnnotation(RequestMapping.class);
+//		for (Map.Entry<String, Object> entry : requestMappings.entrySet()) {
+//			if (excludeCtrls.contains(entry.getKey()))continue;
+//			RequestMapping requestMapping = entry.getValue().getClass().getDeclaredAnnotation(RequestMapping.class);
+//			if (requestMapping == null)continue;
+//			String name = requestMapping.name();
+//			if (StringUtils.isEmpty(name))continue;
+//			if (uri.contains(name)){
+//				return entry.getKey();
+//			}
+//		}
+//		return null;
 	}
 }

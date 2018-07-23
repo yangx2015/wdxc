@@ -108,6 +108,23 @@ public class GnController extends BaseController<SysGn, String> {
     }
 
 
+    @RequestMapping("getPermissionTreeWithChecked")
+    public ApiResponse<List<SysGn>> getPermissionTreeWithChecked(String parentCode,String sonCode){
+        List<SysGn> parentGnList = gnService.getOrgFunctions(parentCode);
+        if (StringUtils.isNotEmpty(sonCode)){
+            List<String> sonGndmList = gnService.getOrgFunctionCodes(sonCode);
+            if (sonGndmList.size() != 0){
+                for (SysGn gn : parentGnList) {
+                    if (sonGndmList.contains(gn.getGndm())){
+                        gn.setChecked("checked");
+                    }
+                }
+            }
+        }
+        List<SysGn> functionTree = gnService.buildFunctionTree(parentGnList);
+        return ApiResponse.success(functionTree);
+    }
+
     @RequestMapping("getOrgPermissionTree")
     public ApiResponse<List<SysFw>> getOrgPermissionTree(String jgdm){
         if (StringUtils.isEmpty(jgdm)){

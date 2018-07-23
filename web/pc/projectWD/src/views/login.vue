@@ -110,17 +110,13 @@ export default {
             this.$refs.loginForm.validate((valid) => {
                 if (valid) {
                 	v.SpinShow = true
-					// let params = {
-                     //    username:this.form.username,
-                     //    password:md5(this.form.password)
-					// }
                 	v.$http.post(this.apis.LOGIN.QUERY, this.form).then((res) =>{
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
                             Cookies.set('result', res.result);
                             sessionStorage.setItem("userInfo",JSON.stringify(res.result.userInfo));
-                            v.initDict();
-                            v.getMenuTree();
+                            v.initDict(res.result.dictList);
+                            v.getMenuTree(res.result.menuTree);
                             v.SpinShow = false
                         }else if(res.code===500){
                             this.$Message.error(res.message);
@@ -142,19 +138,11 @@ export default {
             	v.SpinShow = false
             },500)
         },
-        getMenuTree(){
-        	var v = this
-        	this.$http.get(this.apis.USERROOT.GET_MENU_TREE).then((res) =>{
-        		if(res.code===200){
-                    v.session.setItem('menuList',res.result)
+        getMenuTree(menuTree){
+            this.session.setItem('menuList',menuTree)
 //                  menuList.menuTree = res.result;
-                    this.addToMenuList(res.result);
-                    this.$router.push('home')
-
-                }
-        	}).catch((error) =>{
-        		log(error)
-        	})
+            this.addToMenuList(menuTree);
+            this.$router.push('home')
         },
         addToMenuList(list){
             for(let r of list){
@@ -185,23 +173,43 @@ export default {
                 }
             }
         },
-        initDict(){
-            this.$http.get(this.apis.DICTIONARY.QUERY,{params:{pageSize:10000}}).then((res) =>{
-                if(res.code===200){
-                    let dictMap = new Map();
-                    for (let r of res.page.list){
-                        let a = [];
-                        if (!r.zdxmList)continue
-                        for (let e of r.zdxmList){
-                            a.push({key:e.zddm,val:e.zdmc});
-                        }
-                        dictMap.set(r.lmdm,a)
+        buildRouter(menuTree){
+            for (let r of menuTree){
+                this.addRouterComponent(r);
+                this.router.push(r);
+            }
+        },
+        addRouterComponent(node){
+            console.log('addRouterComponent');
+            console.log(node);
+            if (node.pid){
+                console.log('f');
+                node.component = this.buildComponent();
+                console.log('children:'+node.children);
+                if (node.children && node.children.length != 0){
+                    for (let r of node.children){
+                        this.addRouterComponent(r);
                     }
-                    this.session.setItem('dictMap',dictMap)
                 }
-            }).catch((error) =>{
-                log(error)
-            })
+            }else{
+                console.log('t');
+                node.component = Main;
+            }
+        },
+        buildComponent(node){
+            return () => import('@/views/whdx/'+node.pid+"/"+node.name);
+        },
+        initDict(dictList){
+            let dictMap = new Map();
+            for (let r of dictList){
+                let a = [];
+                if (!r.zdxmList)continue
+                for (let e of r.zdxmList){
+                    a.push({key:e.zddm,val:e.zdmc});
+                }
+                dictMap.set(r.lmdm,a)
+            }
+            this.session.setItem('dictMap',dictMap)
         },
         initMenu(){
             this.addToList(appRouter,this.menus);

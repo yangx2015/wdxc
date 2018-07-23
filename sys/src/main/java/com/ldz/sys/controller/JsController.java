@@ -1,18 +1,17 @@
 package com.ldz.sys.controller;
 
-import java.util.List;
-
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysJs;
+import com.ldz.sys.service.JsService;
+import com.ldz.util.bean.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.model.SysJs;
-import com.ldz.sys.service.JsService;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
 
 /**
  * 平台角色
@@ -46,7 +45,7 @@ public class JsController extends BaseController<SysJs, String> {
      */
     @RequestMapping(value = "modifyUserRoles",method = RequestMethod.POST)
     public ApiResponse<String> modifyUserRoles(@RequestParam(name="userId" ) String userId,
-                                               @RequestParam(name="roleIds") List<String> roleIds){
+                                               @RequestParam(name="roleIds",required = false) List<String> roleIds){
         return roleService.modifyUserRoles(userId,roleIds);
     }
 

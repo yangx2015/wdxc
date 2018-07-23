@@ -12,6 +12,10 @@ import java.util.List;
 public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> saveEntity(SysGn entity);
 
+    void cachePermission(List<String> ids);
+
+    List<SysGn> buildFunctionTree(List<SysGn> functionList);
+
     /**
      * 查找某个服务的所有功能
      * @param serviceCode 服务代码
@@ -62,5 +66,8 @@ public interface GnService extends BaseService<SysGn, String> {
     ApiResponse<String> initMenu(List<Menu> menus);
 
     ApiResponse<String> setOrgFunctions(String jgdm, List<String> gndmList);
-
+    /**
+     * 加载所有角色的权限
+     */
+    void initPermission();
 }
