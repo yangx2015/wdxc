@@ -134,6 +134,30 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     }
 
     @Override
+    public List<SysGn> buildFunctionTree(List<SysGn> nodeList) {
+        List<SysGn> root = new ArrayList<>();
+        Map<String,SysGn> nodeMap = nodeList.stream().collect(Collectors.toMap(SysGn::getGndm, p->p));
+
+        for (SysGn node : nodeList) {
+            String fatherCode = node.getFjd();
+            if (StringUtils.isEmpty(fatherCode)){
+                root.add(node);
+                continue;
+            }
+            SysGn father = nodeMap.get(fatherCode);
+            if (father == null)continue;
+            if (father.getChildren() == null){
+                List<SysGn> children = new ArrayList<>();
+                children.add(node);
+                father.setChildren(children);
+            }else{
+                father.getChildren().add(node);
+            }
+        }
+        return root;
+    }
+
+    @Override
     public ApiResponse<String> setRoleFunctions(String jsdm, List<String> gndms) {
         RuntimeCheck.ifBlank(jsdm,"角色代码不能为空");
         List<SysJs> roles = jsService.findEq(SysJs.InnerColumn.jsId,jsdm);

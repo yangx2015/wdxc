@@ -14,6 +14,8 @@ public interface GnService extends BaseService<SysGn, String> {
 
     void cachePermission(List<String> ids);
 
+    List<SysGn> buildFunctionTree(List<SysGn> functionList);
+
     /**
      * 查找某个服务的所有功能
      * @param serviceCode 服务代码

@@ -105,7 +105,9 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 			entity.setJgdj(fatherLevel + 1);
 		}
 		ptjgMapper.insertSelective(entity);
-		return ApiResponse.success();
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setResult(orgCode);
+		return res;
 	}
 
 	private String genOrgCode(SysJg org) {

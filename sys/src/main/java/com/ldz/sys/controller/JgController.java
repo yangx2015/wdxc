@@ -27,6 +27,14 @@ public class JgController extends BaseController<SysJg, String> {
 		return jgService;
 	}
 
+	@RequestMapping("getCurrentUserOrgTree")
+	public ApiResponse<List<SysJg>> getCurrentUserOrgTree(){
+		SysYh currentUser = getCurrentUser();
+		List<SysJg> orgList =  jgService.findAllSubOrg(currentUser.getJgdm(),null);
+		List<SysJg> orgTree = jgService.getOrgTree(orgList);
+		return ApiResponse.success(orgTree);
+	}
+
 	@RequestMapping("add")
 	public ApiResponse<String> add(SysJg entity) {
 		return jgService.saveEntity(entity);

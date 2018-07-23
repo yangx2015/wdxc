@@ -173,6 +173,32 @@ export default {
                 }
             }
         },
+        buildRouter(menuTree){
+            for (let r of menuTree){
+                this.addRouterComponent(r);
+                this.router.push(r);
+            }
+        },
+        addRouterComponent(node){
+            console.log('addRouterComponent');
+            console.log(node);
+            if (node.pid){
+                console.log('f');
+                node.component = this.buildComponent();
+                console.log('children:'+node.children);
+                if (node.children && node.children.length != 0){
+                    for (let r of node.children){
+                        this.addRouterComponent(r);
+                    }
+                }
+            }else{
+                console.log('t');
+                node.component = Main;
+            }
+        },
+        buildComponent(node){
+            return () => import('@/views/whdx/'+node.pid+"/"+node.name);
+        },
         initDict(dictList){
             let dictMap = new Map();
             for (let r of dictList){

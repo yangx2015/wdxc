@@ -79,8 +79,8 @@
 								<b>
 									{{treeMess.title}}
 								</b>
-								<Button style="float: right;margin-right: 8px;" type="primary" shape="circle" icon="navicon-round" @click="edit(treeMess)"></Button>
-								<Button style="float: right;margin-right: 8px;" type="primary" shape="circle" icon="android-add" @click="rootAdd()"></Button>
+								<!--<Button style="float: right;margin-right: 8px;" type="primary" shape="circle" icon="navicon-round" @click="edit(treeMess)"></Button>-->
+								<Button style="float: right;margin-right: 8px;" type="primary" shape="circle" icon="android-add" @click="add()"></Button>
 							</div>
 							<div class="box-row-list" v-if="treeMess.children">
 								<Card class="bodyC" v-for="(item,index) in treeMess.children">
@@ -130,9 +130,10 @@
             	TreeListStyleC:"text-align: center",
             	TreeListStyleF:"text-align: left",
                 componentName:'',
-				choosedRow:null,
 				choosedItem:null,
-                jgdm:'',
+				mode:'add',
+				parentNode:'',
+				currentNode:'',
             	RootTree:{
             		title:'武汉大学',
             		children:[
@@ -195,40 +196,41 @@
         methods: {
     	    getTree(){
     	    	var v = this
-                this.$http.get(this.apis.FRAMEWORK.GET_TREE,{params:{'jgmc':this.jgmc}}).then((res) =>{
+                this.$http.get(this.apis.FRAMEWORK.getCurrentUserOrgTree).then((res) =>{
                     if(res.code===200){
                         v.RootTree.children = [res.result];
                         v.treeClick(v.RootTree.children[0])
-
                     }
                 })
 			},
-			add(item){
-    	        this.choosedRow = null;
-                this.jgdm = item.jgdm;
-                this.gly = item.gly;
+			add(){
+                this.parentNode = this.choosedItem;
+                if (this.parentNode == null){
+                    this.$Message.error('请选择福机构');
+                    return;
+				}
+    	        this.mode = 'add';
                 this.componentName = 'modelForm';
 			},
 			edit(item){
-    	        this.choosedRow = item;
+                this.mode = 'edit';
+                this.currentNode = item;
                 this.componentName = 'modelForm';
 			},
 			del(item){
-    	        this.util.del(this,this.apis.FRAMEWORK.DELE,[item.jgdm],()=>{
+    	        let ids =  [];
+    	        ids.push(item.jgdm);
+    	        this.util.del(this,this.apis.FRAMEWORK.DELE,ids,()=>{
                     this.getTree();
 				});
 			},
-        	rootAdd(){
-                this.choosedRow = null;
-                this.componentName = 'modelForm';
-        	},
         	treeClick(event){
                 if(event.length>0){
                     this.choosedItem = event[0];
 		      		this.treeMess = event[0]
-					this.jgdm = event[0].jgdm;
-					this.gly = event[0].gly;
-        		}
+        		}else{
+                    this.choosedItem = null;
+				}
         	},
         	treeToggleClick(event){
                 if(event.expand){
