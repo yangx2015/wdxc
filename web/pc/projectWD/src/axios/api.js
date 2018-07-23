@@ -92,6 +92,7 @@ module.exports = {
         GET_TREE:'/api/jg/getOrgTree',
         GET_TREE_Node:'/api/jg/getTree',
         getSubOrgList:'/api/jg/getSubOrgList',
+        getCurrentUserOrgTree:'/api/jg/getCurrentUserOrgTree',
         getOrgPath:'/api/jg/getOrgPath'
     },
     DICTIONARY:{
@@ -131,6 +132,8 @@ module.exports = {
         GET_ORG_PERMISSION_TREE:'/api/gn/getOrgPermissionTree',
         GET_ALL_PERMISSION_TREE:'/api/gn/getAllPermissionTree',
         GET_ROLE_PERMISSION_TREE:'/api/gn/getRolePermissionTree',
+        GET_USER_PERMISSION_TREE:'/api/gn/getUserPermissionTree',
+        getPermissionTreeWithChecked:'/api/gn/getPermissionTreeWithChecked',
         SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
         SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
         GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions',
