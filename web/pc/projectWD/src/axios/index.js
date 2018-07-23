@@ -53,7 +53,6 @@ httpInstance.interceptors.request.use((config) => {
     	let accessToken = JSON.parse(Cookies.get('accessToken'));
     	config.headers.token = accessToken.token;
     	config.headers.userid = accessToken.userId;
-        console.log(config.headers);
     }
     return config;
   }, function (error) {

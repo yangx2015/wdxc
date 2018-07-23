@@ -26,7 +26,7 @@ public class TreeNode {
         Map<String,TreeNode> nodeMap = list.stream().collect(Collectors.toMap(TreeNode::getValue, p->p));
         List<TreeNode> root = new ArrayList<>();
         for (TreeNode node : list) {
-            if (StringUtils.isEmpty(node.getFather())){
+            if (StringUtils.isEmpty(node.getFather()) || !nodeMap.containsKey(node.getFather())){
                 root.add(node);
                 continue;
             }
