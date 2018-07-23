@@ -99,7 +99,7 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		SysJs adminRole = new SysJs();
 		SysYh currentUser = getCurrentUser();
 		adminRole.setCjr(currentUser.getZh());
-		adminRole.setJgdm(currentUser.getJgdm());
+		adminRole.setJgdm(user.getJgdm());
 		adminRole.setCjsj(now);
 		adminRole.setJsId(genId());
 		adminRole.setJslx("00");

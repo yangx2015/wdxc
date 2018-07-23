@@ -57,10 +57,10 @@
 		},
 		methods: {
 		    getRoleList(){
-                this.$http.get(this.apis.ROLE.ALL).then((res) =>{
-                    if(res.code===200){
+                this.$http.get(this.apis.ROLE.QUERY,{params:{pageSize:1000}}).then((res) =>{
+                    if(res.code===200 && res.page.list){
                         this.roleList = [];
-                        let list = res.result;
+                        let list = res.page.list;
                         for(let r of list){
                             let t = {key:r.jsId,value:r.jsmc};
 							this.roleList.push(t);
@@ -68,7 +68,6 @@
 							    this.checkAllGroup.push(r.jsId)
 							}
                         }
-                        log(this.roleList);
                     }
                 })
 			},
