@@ -164,7 +164,7 @@
 				})
 			},
             getOrgTree(){
-                this.$http.get(this.apis.FRAMEWORK.GET_TREE_Node).then((res) =>{
+                this.$http.get(this.apis.FRAMEWORK.getCurrentOrgTree).then((res) =>{
                     this.orgTree = res.result
                 })
             },

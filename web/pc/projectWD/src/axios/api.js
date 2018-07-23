@@ -93,6 +93,7 @@ module.exports = {
         GET_TREE_Node:'/api/jg/getTree',
         getSubOrgList:'/api/jg/getSubOrgList',
         getCurrentUserOrgTree:'/api/jg/getCurrentUserOrgTree',
+        getCurrentOrgTree:'/api/jg/getCurrentOrgTree',
         getOrgPath:'/api/jg/getOrgPath'
     },
     DICTIONARY:{

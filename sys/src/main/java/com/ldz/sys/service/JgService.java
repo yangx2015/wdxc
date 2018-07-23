@@ -16,6 +16,7 @@ public interface JgService extends BaseService<SysJg,String>{
 
     List<SysJg> getOrgTree(List<SysJg> orgList);
     List<SysJg> getOrgTreeByOrgCodes(List<String> orgCodes);
+    List<TreeNode> convertToTreeNodeList(List<SysJg> orgList);
 
 
     /**

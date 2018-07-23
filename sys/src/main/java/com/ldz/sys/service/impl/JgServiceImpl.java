@@ -200,34 +200,14 @@ public class JgServiceImpl extends BaseServiceImpl<SysJg, String> implements JgS
 		SysYh user = getCurrentUser();
 		List<SysJg> orgs = jgService.findAllSubOrg(user.getJgdm(),null);
 		List<TreeNode> treeNodes = convertToTreeNodeList(orgs);
-		treeNodes = buildTree(treeNodes);
+		treeNodes = TreeNode.buildTree(treeNodes);
 		return ApiResponse.success(treeNodes);
 	}
 
 
 
-	private List<TreeNode> buildTree(List<TreeNode> list){
-		Map<String,TreeNode> nodeMap = list.stream().collect(Collectors.toMap(TreeNode::getValue,p->p));
-		List<TreeNode> root = new ArrayList<>();
-		for (TreeNode node : list) {
-			if (StringUtils.isEmpty(node.getFather())){
-				root.add(node);
-				continue;
-			}
-			TreeNode father = nodeMap.get(node.getFather());
-			if (father == null)continue;
-			if (father.getChildren() == null){
-				List<TreeNode> children = new ArrayList<>();
-				children.add(node);
-				father.setChildren(children);
-			}else{
-				father.getChildren().add(node);
-			}
-		}
-		return root;
-	}
-
-	private List<TreeNode> convertToTreeNodeList(List<SysJg> orgList){
+	@Override
+	public List<TreeNode> convertToTreeNodeList(List<SysJg> orgList){
 		List<TreeNode> treeNodes = new ArrayList<>(orgList.size());
 		for (SysJg jg : orgList) {
 			treeNodes.add(convertToTreeNode(jg));

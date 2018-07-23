@@ -34,6 +34,14 @@ public class JgController extends BaseController<SysJg, String> {
 		List<SysJg> orgTree = jgService.getOrgTree(orgList);
 		return ApiResponse.success(orgTree);
 	}
+	@RequestMapping("getCurrentOrgTree")
+	public ApiResponse<List<TreeNode>> getCurrentOrgTree(){
+		SysYh currentUser = getCurrentUser();
+		List<SysJg> orgList =  jgService.findAllSubOrg(currentUser.getJgdm(),null);
+		List<TreeNode> orgNode = jgService.convertToTreeNodeList(orgList);
+		List<TreeNode> orgTree = TreeNode.buildTree(orgNode);
+		return ApiResponse.success(orgTree);
+	}
 
 	@RequestMapping("add")
 	public ApiResponse<String> add(SysJg entity) {

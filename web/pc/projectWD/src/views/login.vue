@@ -113,7 +113,7 @@ export default {
                 	v.$http.post(this.apis.LOGIN.QUERY, this.form).then((res) =>{
                 		if(res.code===200) {
                             Cookies.set('usermess', this.form.username);
-                            Cookies.set('result', res.result);
+                            Cookies.set('accessToken', res.result.accessToken);
                             sessionStorage.setItem("userInfo",JSON.stringify(res.result.userInfo));
                             v.initDict(res.result.dictList);
                             v.getMenuTree(res.result.menuTree);
