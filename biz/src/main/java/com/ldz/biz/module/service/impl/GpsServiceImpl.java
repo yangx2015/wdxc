@@ -77,7 +77,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     @Override
     public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
         // 只要上传点位信息 则为在线状态
-        redis.boundValueOps("offline-"+gpsinfo.getDeviceId()).set(1,10,TimeUnit.SECONDS);
+        redis.boundValueOps("offline-"+gpsinfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
         log.info("上传的gps信息:" + gpsinfo);
         if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
             if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
