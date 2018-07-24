@@ -51,7 +51,7 @@
 						<Row>
 							<Col>
 								<FormItem label='权限选择:'>
-									<Tree :data="orgTree" show-checkbox multiple></Tree>
+									<Tree :data="permissionTree" show-checkbox multiple></Tree>
 								</FormItem>
 							</Col>
 						</Row>
@@ -91,7 +91,7 @@
                   		{ required: true, message: '请输角色代码', trigger: 'blur' }
                   	]
               	},
-				orgTree: [
+				permissionTree: [
                 ],
 				choosedIds :[],
                 Dictionary:[],
@@ -122,12 +122,17 @@
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
             getOrgPermissionTree(){
-                let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
-                let orgCode = userInfo.jgdm;
-                this.orgTree = [];
+                let orgCode = '';
+                if(!this.usermesType){
+                    orgCode = this.$parent.messdata.jgdm;
+                }else{
+                    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+                    orgCode = userInfo.jgdm;
+                }
+                this.permissionTree = [];
                 this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+orgCode).then((res) =>{
                     if(res.code===200){
-                        this.orgTree = res.result;
+                        this.permissionTree = res.result;
                         this.getRoleFunctions();
                     }
                 })
@@ -135,22 +140,26 @@
 		    getRoleFunctions(){
                 let url = this.apis.FUNCTION.GET_ROLE_FUNCTIONS+"?jsdm="+this.addmess.jsId;
                 this.$http.get(url).then((res) =>{
-                    if(res.code===200){
+                    if(res.code === 200){
                         for (let r of res.result){
                             this.roleFunctionCodes.push(r.gndm);
 						}
+                        this.setPermissionChecked(this.permissionTree);
                     }
                 })
 			},
 			setPermissionChecked(list){
                 for (let r of list){
-                    if (this.roleFunctionCodes.indexOf(r.gndm)){
-
+                    if (this.roleFunctionCodes.indexOf(r.gndm) >= 0){
+                        r.checked = true;
 					}
+					if (r.children && r.children.length > 0){
+                        this.setPermissionChecked(r.children);
+                    }
 				}
 			},
 		    setRolePermission(){
-                this.getChoosedIds(this.orgTree);
+                this.getChoosedIds(this.permissionTree);
                 let ids = '';
                 for (let r of this.choosedIds){
                     ids += r+',';
