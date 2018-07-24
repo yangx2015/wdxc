@@ -97,7 +97,7 @@
 		methods:{
             getLineList(){
                 var v = this
-                this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
+                this.$http.post(this.apis.XL.QUERY, {'lx': 40,pageSize:1000}).then((res) => {
                     if (res.code == 200 && res.page.list){
                         this.lineList = res.page.list;
                         for (let i in this.lineList){
@@ -110,11 +110,15 @@
                 var v = this
                 this.$http.post(this.apis.ZD.GET_BY_ROUTE_ID, {'xlId': this.lineList[i].id}).then((res) => {
                     if (res.code == 200 && res.result){
+
                         this.lineList[i].stationList = res.result;
-                        // for (let i = 0;i<res.result.length - 1;i++){
-                        for (let i = 0;i<1;i++){
-                            this.drivingLine(new BMap.Point(res.result[i].jd,res.result[i].wd),new BMap.Point(res.result[i+1].jd,res.result[i+1].wd),i)
-						}
+                        // for (let i = 0;i<= res.result.length - 1;i++){
+                        const middle = [];
+                        for(let i = 1; i <= res.result.length -2 ; i++){
+                            middle.push(new BMap.Point(res.result[i].jd,res.result[i].wd));
+                        }
+                        this.drivingLine(new BMap.Point(res.result[0].jd,res.result[0].wd),new BMap.Point(res.result[res.result.length -1].jd,res.result[res.result.length -1].wd),middle)
+
                     }
                 })
 			},
@@ -157,7 +161,7 @@
 				// 随机向地图添加25个标注
 				for (var i = 0; i < list.length; i ++) {
 					var point = new BMap.Point(list[i].bdjd, list[i].bdwd);
-					v.addMarker(list[i],point);
+                    v.addMarker(list[i],point);
                     v.addLabel(list[i], point);
 				}
 			},
@@ -226,17 +230,23 @@
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
 			},
             drivingLine(startPoint,endPoint,index){
+
                 let v = this;
                 var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
                     //offset: new BMap.Size(0, -5),    //相当于CSS精灵
                     imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
                 });
+
                 var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
-                driving.search(startPoint, endPoint);
+
+                driving.search(startPoint, endPoint, {waypoints: index});
+                console.log("index ------> " + index);
                 driving.setSearchCompleteCallback(function(){
                     console.log("result:",driving.getResults());
                     var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+                    //this.map.addOverlay(pts);
                     var paths = pts.length;    //获得有几个点
+
                     //
                     // var carMk = new BMap.Marker(pts[0],{icon:myIcon});
                     // v.map.addOverlay(carMk);
