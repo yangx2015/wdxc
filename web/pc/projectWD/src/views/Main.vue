@@ -301,8 +301,8 @@
         	},
             init () {
                 this.$store.commit('updateMenulist');
-                console.log(Cookies.get('result'));
-                this.userName = JSON.parse(Cookies.get('result')).userInfo.xm;
+                let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
+                this.userName = userInfo.xm;
                 let messageCount = 3;
                 this.messageCount = messageCount.toString();
                 this.checkTag(this.$route.name);

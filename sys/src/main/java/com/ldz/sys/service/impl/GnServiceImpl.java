@@ -193,7 +193,6 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     public ApiResponse<List<SysGn>> getRoleFunctions(String jsdm) {
         SimpleCondition condition = new SimpleCondition(SysJsGn.class);
         condition.eq(SysJsGn.InnerColumn.jsdm,jsdm);
-        condition.eq(SysJsGn.InnerColumn.zt,"00");
         List<SysJsGn> roleFunctions = jsGnMapper.selectByExample(condition);
         if (roleFunctions.size() == 0){
             List<SysGn> gnList = new ArrayList<>();

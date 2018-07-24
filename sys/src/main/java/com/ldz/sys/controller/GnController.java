@@ -134,6 +134,13 @@ public class GnController extends BaseController<SysGn, String> {
         return ApiResponse.success(gnService.getOrgPermissionTree(jgdm));
     }
 
+    @RequestMapping("getCurrentOrgPermissionTree")
+    public ApiResponse<List<SysFw>> getCurrentOrgPermissionTree(){
+        SysYh user = getCurrentUser();
+        String jgdm = user.getJgdm();
+        return ApiResponse.success(gnService.getOrgPermissionTree(jgdm));
+    }
+
 
     @RequestMapping("getUserPermissionTree")
     public ApiResponse<List<SysFw>> getUserPermissionTree(){

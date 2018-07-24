@@ -51,7 +51,7 @@
 						<Row>
 							<Col>
 								<FormItem label='权限选择:'>
-									<Tree :data="data4" show-checkbox multiple></Tree>
+									<Tree :data="permissionTree" show-checkbox multiple></Tree>
 								</FormItem>
 							</Col>
 						</Row>
@@ -91,12 +91,13 @@
                   		{ required: true, message: '请输角色代码', trigger: 'blur' }
                   	]
               	},
-				data4: [
+				permissionTree: [
                 ],
 				choosedIds :[],
                 Dictionary:[],
                 lmdmDictionary:'ZDCLK0004',
 				edit:false,
+				roleFunctionCodes:[]
 			}
 		},
 		props:{
@@ -110,29 +111,55 @@
                 this.addmess = this.$parent.messdata
                 this.operate = '编辑';
                 this.edit = true;
-            }
+			}
+            this.getOrgPermissionTree();
         },
 		mounted(){
-			this.getRolePermissionTree();
             this.getLXDic();
 		},
 		methods: {
             getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
-		    getRolePermissionTree(){
-                let url = this.apis.FUNCTION.GET_ROLE_PERMISSION_TREE;
-                if (this.addmess.jsId){
-                    url += "?jsdm="+this.addmess.jsId;
-				}
-                this.$http.get(url).then((res) =>{
+            getOrgPermissionTree(){
+                let orgCode = '';
+                if(!this.usermesType){
+                    orgCode = this.$parent.messdata.jgdm;
+                }else{
+                    let userInfo = JSON.parse(sessionStorage.getItem("userInfo"));
+                    orgCode = userInfo.jgdm;
+                }
+                this.permissionTree = [];
+                this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+orgCode).then((res) =>{
                     if(res.code===200){
-                        this.data4 = res.result[0].functions;
+                        this.permissionTree = res.result;
+                        this.getRoleFunctions();
+                    }
+                })
+            },
+		    getRoleFunctions(){
+                let url = this.apis.FUNCTION.GET_ROLE_FUNCTIONS+"?jsdm="+this.addmess.jsId;
+                this.$http.get(url).then((res) =>{
+                    if(res.code === 200){
+                        for (let r of res.result){
+                            this.roleFunctionCodes.push(r.gndm);
+						}
+                        this.setPermissionChecked(this.permissionTree);
                     }
                 })
 			},
+			setPermissionChecked(list){
+                for (let r of list){
+                    if (this.roleFunctionCodes.indexOf(r.gndm) >= 0){
+                        r.checked = true;
+					}
+					if (r.children && r.children.length > 0){
+                        this.setPermissionChecked(r.children);
+                    }
+				}
+			},
 		    setRolePermission(){
-                this.getChoosedIds(this.data4);
+                this.getChoosedIds(this.permissionTree);
                 let ids = '';
                 for (let r of this.choosedIds){
                     ids += r+',';
