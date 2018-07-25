@@ -8,13 +8,13 @@ import com.ldz.biz.module.model.ClCssd;
 import com.ldz.biz.module.service.CssdService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -158,11 +158,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 
 	@Override
 	public void saveBatch(List<ClCssd> clCssds) {
-		clCssds.stream().forEach(
-				clCssd -> {
-					save(clCssd);
-				}
-		);
+		entityMapper.insertList(clCssds);
 	}
 
 }

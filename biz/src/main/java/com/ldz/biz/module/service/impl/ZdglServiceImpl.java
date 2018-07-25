@@ -381,9 +381,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public void saveBatch(List<ClZdgl> clZdgls) {
-        for (ClZdgl clZdgl: clZdgls) {
-            save(clZdgl);
-        }
+        entityMapper.insertList(clZdgls);
     }
 
 
