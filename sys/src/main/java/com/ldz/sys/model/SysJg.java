@@ -59,10 +59,34 @@ public class SysJg implements Serializable {
     @Column(name = "BZ")
     private String bz;
 
+    @Column( name = "JGBM")
+    private String jgbm;
+
+    @Column(name = "JGSM")
+    private String jgsm;
+
+
+
     @Transient
     private List<SysJg> children;
     @Transient
     private String title;
+
+    public String getJgbm() {
+        return jgbm;
+    }
+
+    public void setJgbm(String jgbm) {
+        this.jgbm = jgbm;
+    }
+
+    public String getJgsm() {
+        return jgsm;
+    }
+
+    public void setJgsm(String jgsm) {
+        this.jgsm = jgsm;
+    }
 
     public String getTitle() {
         return jgmc;
@@ -271,7 +295,9 @@ public class SysJg implements Serializable {
         gly("GLY"),
         glyxm("GLYXM"),
         fjgdm("FJGDM"),
-        bz("BZ");
+        bz("BZ"),
+        jgbm("JGBM"),
+        jgsm("JGSM");
 
         private final String column;
 

@@ -53,6 +53,11 @@ public class MessageApi {
        return  intstruction.sendinstruction(info);
 	}
 
+	@PostMapping("/batchUpdate")
+	public ApiResponse<String> batchUpdate( GpsInfo info,String jgdm) {
+
+		return  intstruction.batchUpdate(info,jgdm);
+	}
 
 	/*@GetMapping("test")
 	public void s(){

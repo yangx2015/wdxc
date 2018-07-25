@@ -11,4 +11,6 @@ public interface InstructionService {
 	 */
 	
 	ApiResponse<String> sendinstruction(GpsInfo info);
+
+    ApiResponse<String> batchUpdate(GpsInfo info,String jgdm);
 }

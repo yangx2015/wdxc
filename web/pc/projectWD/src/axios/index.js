@@ -14,7 +14,7 @@ let url = 'http://47.98.39.45:8080'; //
 // let url = 'http://192.168.31.181:80',//陈
 // let url = 'http://192.168.31.228:8088',//羊
 // let url = 'http://192.168.31.228:80';//羊
-// let url = 'http://192.168.3.234:80'
+// let url = 'http://192.168.3.234:80' // 宋
 let httpInstance = axios.create({
 baseURL: url,
     timeout: 300000,

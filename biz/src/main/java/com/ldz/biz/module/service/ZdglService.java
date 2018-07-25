@@ -30,4 +30,6 @@ public interface ZdglService extends BaseService<ClZdgl,String>{
     ApiResponse<List<String>> saveBatch(String filePath) throws IOException;
 
     void saveBatch(List<ClZdgl> clZdgls);
+
+
 }

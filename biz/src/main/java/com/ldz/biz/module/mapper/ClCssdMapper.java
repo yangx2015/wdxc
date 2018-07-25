@@ -1,14 +1,10 @@
 package com.ldz.biz.module.mapper;
 
 import com.ldz.biz.module.model.ClCssd;
-import com.ldz.biz.module.model.ClZdgl;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Param;
+import com.ldz.util.mapperprovider.OracleInsertListMapper;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.List;
-
-public interface ClCssdMapper extends Mapper<ClCssd> {
+public interface ClCssdMapper extends Mapper<ClCssd>,OracleInsertListMapper<ClCssd> {
 
     /*@Insert("<script>" +
             "INSERT ALL INTO CL_CSSD(ID,SDSX,CJR,CJSJ) values"+
