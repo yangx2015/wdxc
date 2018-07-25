@@ -28,8 +28,9 @@
 						</Col>
 						<Col span="12">
 							<FormItem prop="zkl" label='载客量：'>
-								<!--<Input type="number" v-model="addmess.zkl" placeholder="请设置载客量"></Input>-->
-								<Input  :number="true"  v-model="addmess.zkl"  placeholder="请设置载客量"></Input>
+								<Select v-model="addmess.zkl" placeholder="请设置载客量">
+									<Option v-for="(item ,index) in zws" :value="item">{{item}}</Option>
+								</Select>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -94,6 +95,7 @@
                     sjxm:'',
                     zt:'00',
                     zdbh:'',
+                    zkl:5,
                     sjId:'',
                     obdCode:''
                 },
@@ -101,9 +103,9 @@
                   cph: [
                       { required: true, message: '请输入车牌号', trigger: 'blur' }
                   ],
-                  // zkl: [
-                  //     { required: true, message: '请输入载客量', trigger: 'blur' }
-                  // ],
+                  zkl: [
+                      { required: true, message: '请输入载客量', trigger: 'blur' }
+                  ],
               	},
 				deviceList:[],//终端设备
 				drivers:[],//驾驶员
@@ -112,6 +114,7 @@
                 clztDictCode:'ZDCLK0016',
                 cxDict:[],//车量型号
                 cxDictCode:'ZDCLK0019',
+				zws:[5,7,11,20,32,45,48],
 			}
 		},
 		props:{

@@ -6,19 +6,18 @@
 		<Modal v-model="showModal" width='900' :closable='mesF'
 			   :mask-closable="mesF"
 			   :title="operate+'机构'">
-			<div style="overflow: auto;">
+			<div style="height:600px;overflow: scroll;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
 					<Row>
-						<Col>
+						<Col span="12">
 							<FormItem label='机构名称' prop="jgmc">
 								<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称"></Input>
 							</FormItem>
 						</Col>
-					</Row>
-					<Row>
-						<Col>
+						<Col span="12" style="height: 600px;">
 							<FormItem label='权限选择:'>
 								<br>
+								<!--<menu-choose :data="orgTree" :choosedData="choosedData"></menu-choose>-->
 								<Tree :data="orgTree" show-checkbox multiple></Tree>
 							</FormItem>
 						</Col>
@@ -35,12 +34,15 @@
 
 <script>
 
+	import menuChoose from '../../../components/menuChoose'
 
     export default {
         name: '',
+		components:{menuChoose},
         data() {
             return {
                 showModal: true,
+                choosedData:[],
 				operate:'新建',
                 mesF: false,
 				edit:false,
@@ -133,6 +135,8 @@
                 })
 			},
             save(name){
+                console.log(this.choosedData);
+                return;
                 var v = this
                 v.SpinShow = true
                 this.$refs[name].validate((valid) => {

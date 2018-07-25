@@ -97,7 +97,7 @@
 		methods:{
             getLineList(){
                 var v = this
-                this.$http.post(this.apis.XL.QUERY, {'lx': 40,pageSize:1000}).then((res) => {
+                this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
                     if (res.code == 200 && res.page.list){
                         this.lineList = res.page.list;
                         for (let i in this.lineList){
