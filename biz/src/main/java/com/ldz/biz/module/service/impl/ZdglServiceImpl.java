@@ -49,6 +49,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     private CssdService cssdService;
     @Autowired
     private InstructionService instructionService;
+
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
@@ -243,6 +244,10 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
      */
     @Override
     public ApiResponse<List<String>> saveBatch(String filePath) throws IOException {
+        // 获取当前用户的机构代码
+        SysYh user = getCurrentUser();
+        String jgdm = user.getJgdm();
+
         ApiResponse<List<String>> result = new ApiResponse<>();
         List<ClZdgl> zdglList = new ArrayList<>();
         List<ClCssd> cssdList = new ArrayList<>();
@@ -292,7 +297,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     clZdgl.setGpsxt("10");
                     clZdgl.setCjr(getOperateUser());
                     clZdgl.setCjsj(new Date());
-
+                    clZdgl.setJgdm(jgdm);
                     // 超速设定
                     ClCssd clCssd = new ClCssd();
                     clCssd.setCjr(getOperateUser());
