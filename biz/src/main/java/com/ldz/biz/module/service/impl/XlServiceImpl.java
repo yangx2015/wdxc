@@ -1,18 +1,5 @@
 package com.ldz.biz.module.service.impl;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import com.ldz.sys.util.RedisUtil;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.ldz.biz.module.mapper.ClXlMapper;
 import com.ldz.biz.module.mapper.ClXlzdMapper;
 import com.ldz.biz.module.mapper.ClZdMapper;
@@ -22,17 +9,24 @@ import com.ldz.biz.module.model.ClZd;
 import com.ldz.biz.module.service.XlService;
 import com.ldz.biz.module.service.XlzdService;
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.BaiduWebApi;
 import com.ldz.util.gps.bean.RouteMatrixBean;
 import com.ldz.util.gps.bean.RouteMatrixResult;
-
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlService {
@@ -48,7 +42,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private ClXlzdMapper xlzdMapper;
 	@Autowired
 	private ClZdMapper clzdMapper;
-	@Value("${deleteZnzpRedisKeyUrl:http://47.98.39.45:9888/api/deleteRedisKey}")
+	@Value("${znzpurl}")
 	private String deleteZnzpRedisKeyUrl;
 	@Autowired
 	private RedisUtil redisUtil;
@@ -78,7 +72,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			List<String> stationIds = Arrays.asList(entity.getZdIds().split(","));
 			saveRouterStations(entity, stationIds);
 		}
-		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.saveSuccess();
 	}
 
@@ -145,7 +139,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			List<String> stationIds = Arrays.asList(entity.getZdIds().split(","));
 			saveRouterStations(entity, stationIds);
 		}
-		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClXlMapper");
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.success();
 	}
 

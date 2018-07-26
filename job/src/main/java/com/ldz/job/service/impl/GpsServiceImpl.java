@@ -79,7 +79,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 		String index = (String) boundListOps.index(0);
 		if (StringUtils.isNotEmpty(index)) {
-			Long length = boundListOps.size();
+				Long length = boundListOps.size();
 			List<ClGpsLs> list = new ArrayList<>();
 			for (int i = 0; i < length; i++) {
 				String clgpsls = (String) boundListOps.rightPop();
