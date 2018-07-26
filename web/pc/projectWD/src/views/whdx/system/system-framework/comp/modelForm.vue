@@ -9,16 +9,22 @@
 			<div style="height:600px;overflow: scroll;">
 				<Form :rules="ruleInline" ref="formItem" :model="formItem">
 					<Row>
-						<Col span="12">
+						<Col span="10">
+							<FormItem label='机构编码' prop="jgbm">
+								<Input type="text" v-model="formItem.jgbm" placeholder="请填写机构编码"></Input>
+							</FormItem>
 							<FormItem label='机构名称' prop="jgmc">
 								<Input type="text" v-model="formItem.jgmc" placeholder="请填写机构名称"></Input>
 							</FormItem>
+							<FormItem label='机构说明' prop="jgsm">
+								<Input type="text" v-model="formItem.jgsm" placeholder="请填写机构说明"></Input>
+							</FormItem>
 						</Col>
-						<Col span="12" style="height: 600px;">
+						<Col span="10" offset="4" style="height: 580px;overflow: scroll">
 							<FormItem label='权限选择:'>
 								<br>
-								<!--<menu-choose :data="orgTree" :choosedData="choosedData"></menu-choose>-->
-								<Tree :data="orgTree" show-checkbox multiple></Tree>
+								<menu-choose v-if="showTree" :data="orgTree" :choosedData="hasPermissionCodes" @treeChange="treeChange"></menu-choose>
+								<!--<Tree :data="orgTree" show-checkbox multiple></Tree>-->
 							</FormItem>
 						</Col>
 					</Row>
@@ -46,6 +52,7 @@
 				operate:'新建',
                 mesF: false,
 				edit:false,
+                showTree:false,
                 formItem: {
                     fjgdm:'',
 					gly:''
@@ -63,6 +70,7 @@
 				parentCode:'',
 				sonCode:'',
 				newOrgCode:'',
+				hasPermissionCodes:[],
             }
         },
         created(){
@@ -74,29 +82,48 @@
                 this.formItem = this.$parent.currentNode;
                 this.parentCode = this.$parent.currentNode.fjgdm;
                 this.sonCode = this.$parent.currentNode.jgdm;
+                this.getHasPermissionCodes();
+                this.getOrgPermissionTree();
 			}else{
                 this.operate = '新增'
                 this.formItem.fjgdm = this.$parent.parentNode.jgdm;
                 this.parentCode = this.$parent.parentNode.jgdm;
+                this.getOrgPermissionTree();
 			}
-            this.getOrgPermissionTree();
-            // this.getUserPermissionTree();
 			this.getUserList();
 		},
         methods: {
-            getChoosedIds(list){
-                for(let r of list){
-                    if (r.checked)this.choosedIds.push(r.gndm);
-                    if (r.children){
-                        this.getChoosedIds(r.children);
-                    }
-                }
+            treeChange(e){
+                this.choosedIds = e;
+                console.log(e);
             },
+            // getChoosedIds(list){
+            //     for(let r of list){
+            //         if (r.checked)this.choosedIds.push(r.gndm);
+            //         if (r.children){
+            //             this.getChoosedIds(r.children);
+            //         }
+            //     }
+            // },
             getOrgPermissionTree(){
                 this.orgTree = [];
                 this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+this.parentCode+'&sonCode='+this.sonCode).then((res) =>{
                     if(res.code===200){
                         this.orgTree = res.result;
+                        this.showTree = true;
+                    }
+                })
+            },
+            getHasPermissionCodes(){
+                this.hasPermissionCodes = [];
+                this.$http.get(this.apis.FUNCTION.GET_ORG_FUNCTIONS+"?jgdm="+this.formItem.jgdm).then((res) =>{
+                    if(res.code===200){
+                        if (res.result){
+                            for (let r of res.result){
+                                this.hasPermissionCodes.push(r.gndm);
+							}
+						}
+                        this.showTree = this.orgTree.length > 0;
                     }
                 })
             },
@@ -109,13 +136,17 @@
                 })
             },
             setOrgPermission(){
-                this.choosedIds = [];
-                this.getChoosedIds(this.orgTree);
+                // this.choosedIds = [];
+                // this.getChoosedIds(this.orgTree);
                 let ids = '';
                 for (let r of this.choosedIds){
                     ids += r+',';
                 }
-                this.$http.post(this.apis.FUNCTION.SET_ORG_FUNCTIONS,{'jgdm':this.newOrgCode,'gndms':ids}).then((res) =>{
+				let orgCode = this.formItem.jgdm;
+                if (this.mode == 'add'){
+                    orgCode = this.newOrgCode;
+                }
+                this.$http.post(this.apis.FUNCTION.SET_ORG_FUNCTIONS,{'jgdm':orgCode,'gndms':ids}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success(res.message);
                     }else{
@@ -135,8 +166,6 @@
                 })
 			},
             save(name){
-                console.log(this.choosedData);
-                return;
                 var v = this
                 v.SpinShow = true
                 this.$refs[name].validate((valid) => {

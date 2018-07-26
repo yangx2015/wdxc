@@ -137,6 +137,7 @@ module.exports = {
         getPermissionTreeWithChecked:'/api/gn/getPermissionTreeWithChecked',
         SET_ROLE_FUNCTIONS:'/api/gn/setRoleFunctions',
         SET_ORG_FUNCTIONS:'/api/gn/setOrgFunctions',
+        GET_ORG_FUNCTIONS:'/api/gn/getOrgFunctions',
         GET_ROLE_FUNCTIONS:'/api/gn/getRoleFunctions',
     },
     DAILY:{
