@@ -95,7 +95,6 @@
         methods: {
             treeChange(e){
                 this.choosedIds = e;
-                console.log(e);
             },
             // getChoosedIds(list){
             //     for(let r of list){

@@ -82,6 +82,11 @@ public class ClZnzp implements Serializable {
      */
     @Column(name = "TIPS")
     private String tips;
+    /**
+     * 在线状态
+     */
+    @Column(name = "ZXZT")
+    private String zxzt;
 
     @Transient
     private String xlIds;
@@ -100,6 +105,14 @@ public class ClZnzp implements Serializable {
 
     public void setTips(String tips) {
         this.tips = tips;
+    }
+
+    public String getZxzt() {
+        return zxzt;
+    }
+
+    public void setZxzt(String zxzt) {
+        this.zxzt = zxzt;
     }
 
     private static final long serialVersionUID = 1L;
@@ -294,6 +307,7 @@ public class ClZnzp implements Serializable {
         cjr("CJR"),
         xgsj("XGSJ"),
         xgr("XGR"),
+        zxzt("ZXZT"),
         zdId("ZD_ID");
 
         private final String column;

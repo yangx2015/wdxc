@@ -19,39 +19,30 @@
 	    			:styles="{top: '20px'}">
 		    		<div style="overflow: auto;height: 300px;">
 						<Row>
-							<Col span="12">
+							<Col span="10">
 								<FormItem prop="jsmc" label='角色名称：'>
 									<Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
 									</Input>
 								</FormItem>
-							</Col>
-							<Col span="12">
 								<FormItem prop="jsId" label='角色代码：'>
 									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码" :disabled="edit">
 									</Input>
 								</FormItem>
-							</Col>
-						</Row>
-						<Row>
-							<Col span="12">
 								<FormItem label='类型：' placeholder="请选择角色类型...">
 									<Select filterable clearable  v-model="addmess.jslx">
 										<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
 									</Select>
 								</FormItem>
-							</Col>
-							<Col span="12">
 								<FormItem label='备注：'>
 									<Input type="text" v-model="addmess.sm" placeholder="请填写备注信息...">
 									</Input>
 								</FormItem>
 							</Col>
-						</Row>
-
-						<Row>
-							<Col>
+							<Col span="10" offset="4">
 								<FormItem label='权限选择:'>
-									<Tree :data="permissionTree" show-checkbox multiple></Tree>
+									<br>
+									<menu-choose v-if="showTree" :data="permissionTree" :choosedData="roleFunctionCodes" @treeChange="treeChange"></menu-choose>
+									<!--<Tree :data="permissionTree" show-checkbox multiple></Tree>-->
 								</FormItem>
 							</Col>
 						</Row>
@@ -69,9 +60,11 @@
 <script>
 	import treelist from '@/data/list.js'
 
+    import menuChoose from '../../../components/menuChoose'
 
 	export default {
 		name: '',
+		components:{menuChoose},
 		data() {
 			return {
 				SpinShow:false,
@@ -97,6 +90,9 @@
                 Dictionary:[],
                 lmdmDictionary:'ZDCLK0004',
 				edit:false,
+                orgTree: [],
+                showTree:false,
+                hasPermissionCodes:[],
 				roleFunctionCodes:[]
 			}
 		},
@@ -118,6 +114,9 @@
             this.getLXDic();
 		},
 		methods: {
+            treeChange(e){
+                this.choosedIds = e;
+            },
             getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
             },
@@ -144,7 +143,8 @@
                         for (let r of res.result){
                             this.roleFunctionCodes.push(r.gndm);
 						}
-                        this.setPermissionChecked(this.permissionTree);
+						this.showTree = true;
+                        // this.setPermissionChecked(this.permissionTree);
                     }
                 })
 			},
