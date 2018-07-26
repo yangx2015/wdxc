@@ -41,7 +41,7 @@ public class InstructionServiceImpl  implements InstructionService {
     private String url;
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 	Logger accessLog = LoggerFactory.getLogger("access_info");
-
+	private ExecutorService pool = Executors.newSingleThreadExecutor();
 
 
 
@@ -149,7 +149,6 @@ public class InstructionServiceImpl  implements InstructionService {
 		Map<String, String> postHeaders = new HashMap<String, String>();
 		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 		accessLog.info("开启线程池，升级终端");
-		ExecutorService pool = Executors.newSingleThreadExecutor();
 		for(ClZdgl clZdgl : zdgls){
 			pool.submit(new Runnable() {
 				@Override
@@ -164,7 +163,6 @@ public class InstructionServiceImpl  implements InstructionService {
 				}
 			});
 		}
-		pool.shutdown();
 		return ApiResponse.success();
 
 	}
