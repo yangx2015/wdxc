@@ -28,8 +28,8 @@
 <template>
 	<div style="height: 100%;position: relative;">
                     <span>
-                        <CheckboxGroup v-model="choosedLineIds">
-                            <Checkbox v-for="(item,index) in lineList" :label="item.xlmc"></Checkbox>
+                        <CheckboxGroup v-model="choosedLineIndexs" @on-change="lineChange">
+                            <Checkbox v-for="(item,index) in lineList" :label="index">{{item.xlmc}}</Checkbox>
                         </CheckboxGroup>
                     </span>
 		<div id="allmap"></div>
@@ -53,7 +53,7 @@
 	    			lat: 30.551134
 				},
                 lineList:[],
-                choosedLineIds:[],
+                choosedLineIndexs:[],
 				zoom:16,
 				zoomDot:[],
                 scoketMess:[],
@@ -95,13 +95,27 @@
             this.getLineList()
 		},
 		methods:{
+		    lineChange(e){
+                this.map.clearOverlays()
+                if (e.length == 0){
+                    let c = 0
+                    for (let l in this.lineList){
+                        this.choosedLineIndexs.push(c++);
+                    }
+                }else{
+                    this.choosedLineIndexs = e;
+                }
+                for(let i of this.choosedLineIndexs){
+                    this.showLine(this.lineList[i]);
+                }
+            },
             getLineList(){
                 var v = this
                 this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
                     if (res.code == 200 && res.page.list){
                         this.lineList = res.page.list;
-                        for (let i in this.lineList){
-                            this.getLineStations(i);
+                        for (let l in this.lineList){
+                            this.getLineStations(l);
 						}
                     }
                 })
@@ -110,15 +124,10 @@
                 var v = this
                 this.$http.post(this.apis.ZD.GET_BY_ROUTE_ID, {'xlId': this.lineList[i].id}).then((res) => {
                     if (res.code == 200 && res.result){
-
                         this.lineList[i].stationList = res.result;
-                        // for (let i = 0;i<= res.result.length - 1;i++){
-                        const middle = [];
-                        for(let i = 1; i <= res.result.length -2 ; i++){
-                            middle.push(new BMap.Point(res.result[i].jd,res.result[i].wd));
+                        if (i == this.lineList.length - 1){
+                            this.lineChange([]);
                         }
-                        this.drivingLine(new BMap.Point(res.result[0].jd,res.result[0].wd),new BMap.Point(res.result[res.result.length -1].jd,res.result[res.result.length -1].wd),middle)
-
                     }
                 })
 			},
@@ -229,8 +238,15 @@
 			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
 			},
-            drivingLine(startPoint,endPoint,index){
-
+            showLine(line){
+                let stationList = line.stationList;
+                const middle = [];
+                for(let i = 1; i <= stationList.length -2 ; i++){
+                    middle.push(new BMap.Point(stationList[i].jd,stationList[i].wd));
+                }
+                this.drivingLine(new BMap.Point(stationList[0].jd,stationList[0].wd),new BMap.Point(stationList[stationList.length -1].jd,stationList[stationList.length -1].wd),middle)
+            },
+            drivingLine(startPoint,endPoint,points){
                 let v = this;
                 var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
                     //offset: new BMap.Size(0, -5),    //相当于CSS精灵
@@ -238,11 +254,8 @@
                 });
 
                 var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
-
-                driving.search(startPoint, endPoint, {waypoints: index});
-                console.log("index ------> " + index);
+                driving.search(startPoint, endPoint, {waypoints: points});
                 driving.setSearchCompleteCallback(function(){
-                    console.log("result:",driving.getResults());
                     var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
                     //this.map.addOverlay(pts);
                     var paths = pts.length;    //获得有几个点

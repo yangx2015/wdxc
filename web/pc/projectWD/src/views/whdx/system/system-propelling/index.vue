@@ -101,6 +101,15 @@
                         align:'center',
                         key: 'dz'
                     },
+                    {
+                        title: '在线状态',
+                        align:'center',
+                        key: 'zxzt',
+						render:(h,p)=>{
+                            let s = p.row.zxzt == '00' ? '在线' :'离线';
+                            return h('div',s);
+						}
+                    },
                     // {
                     //     title: '创建时间',
                     //     align:'center',
