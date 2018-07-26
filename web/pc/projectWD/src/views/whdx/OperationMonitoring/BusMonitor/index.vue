@@ -65,15 +65,15 @@
                     <div :style="mapheight">
                         <my-map></my-map>
                     </div>
-                    <!--<Card class="ycsjjlTable">-->
-                        <!--<p slot="title">-->
-                            <!--<Icon type="ios-film-outline"></Icon>-->
-                            <!--异常行驶记录-->
-                        <!--</p>-->
-                        <!--<div class="a" style=" ">-->
-                            <!--&lt;!&ndash;<abnor ></abnor>&ndash;&gt;-->
-                        <!--</div>-->
-                    <!--</Card>-->
+                    <Card class="ycsjjlTable">
+                        <p slot="title">
+                            <Icon type="ios-film-outline"></Icon>
+                            异常行驶记录
+                        </p>
+                        <div class="a" style=" ">
+                            <abnor ></abnor>
+                        </div>
+                    </Card>
                 </Card>
             </div>
         </div>
