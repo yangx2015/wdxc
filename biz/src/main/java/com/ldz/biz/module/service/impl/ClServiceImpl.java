@@ -1,21 +1,5 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
@@ -34,8 +18,16 @@ import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
-
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -50,7 +42,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private JsyService jsyService;
 	@Autowired
 	private ZdxmService zdxmService;
-	@Value("${deleteZnzpRedisKeyUrl:http://47.98.39.45:9888/api/deleteRedisKey}")
+	@Value("${znzpurl}")
 	private String deleteZnzpRedisKeyUrl;
 	@Autowired
 	private RedisUtil redisUtil;
@@ -110,7 +102,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		}
 
 		save(entity);
-		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClClMapper");
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.saveSuccess();
 	}
 
@@ -121,7 +113,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		entity.setXgr(getOperateUser());
 		entity.setXgsj(new Date());
 		update(entity);
-		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl,"com.ldz.znzp.mapper.ClClMapper");
+		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.success();
 	}
 

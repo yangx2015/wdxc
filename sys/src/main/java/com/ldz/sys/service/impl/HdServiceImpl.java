@@ -4,7 +4,6 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.constant.Dict;
-import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.sys.mapper.SysHdyxMapper;
 import com.ldz.sys.mapper.SysYxhdwjMapper;
 import com.ldz.sys.model.SysHdyx;
@@ -14,6 +13,7 @@ import com.ldz.sys.service.HdService;
 import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.exception.RuntimeCheck;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
     private SysYxhdwjMapper yxhdwjMapper;
     @Autowired
     private RestTemplateBuilder restTemplateBuilder;
-    @Value("${updateMediaUrl:http://127.0.0.1:9888/api/updateMedia}")
+    @Value("${znzpurl: http://47.98.39.45:9888/api}")
     private String updateMediaUrl;
     @Override
     protected Mapper<SysHdyx> getBaseMapper() {
@@ -114,7 +114,7 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
         Map<String,Object> params = new HashMap<>();
         params.put("jgdm",jgdm);
         try{
-            ResponseEntity<String> responseEntity = restTemplateBuilder.build().postForEntity(updateMediaUrl,params,String.class);
+            ResponseEntity<String> responseEntity = restTemplateBuilder.build().postForEntity(updateMediaUrl + "/updateMedia",params,String.class);
             log.info("updateMedita responst:",responseEntity.toString());
         }catch (Exception e){
             log.error("updateMedia请求异常",e);

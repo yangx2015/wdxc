@@ -19,11 +19,12 @@ spring:
 server:
   port: 80
 
-ticserver:
-  url: http://47.98.39.45:9095/api/push/carcmd
+#ticserver:
+#  url: http://47.98.39.45:9095/api
 biz:
   scTime: 30000
 
 staticPath:  D:\static\common\
-updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
-deleteZnzpRedisKeyUrl: http://47.98.39.45:9888/api/deleteRedisKey
+znzpurl: http://47.98.39.45:9888/api
+#updateMediaUrl: http://47.98.39.45:9888/api/updateMedia
+#deleteZnzpRedisKeyUrl: http://47.98.39.45:9888/api/deleteRedisKey

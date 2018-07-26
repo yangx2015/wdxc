@@ -34,7 +34,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 	private JgService jgService;
 	@Autowired
 	private ClClMapper clclmapper;
-	@Value("${carcmd-Url}")
+	@Value("${apiurl}")
 	private String carcmdUrl;
 	@Override
 	protected Mapper<ClCssd> getBaseMapper() {
@@ -138,7 +138,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ApiResponse<String> senZl(GpsInfo info) {
-		String url =carcmdUrl;
+		String url =carcmdUrl + "/push/carcmd";
 		String postEntity = JsonUtil.toJson(info);
 		String result = "";
 		ApiResponse<String> apiResponse = null;

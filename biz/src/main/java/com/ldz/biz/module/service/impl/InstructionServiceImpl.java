@@ -37,11 +37,11 @@ public class InstructionServiceImpl  implements InstructionService {
     @Autowired
     private RedisTemplateUtil redisTemplate;
 
-	@Value("${ticserver.url}")
+	@Value("${apiurl}")
     private String url;
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 	Logger accessLog = LoggerFactory.getLogger("access_info");
-
+	private ExecutorService pool = Executors.newSingleThreadExecutor();
 
 
 
@@ -73,7 +73,7 @@ public class InstructionServiceImpl  implements InstructionService {
 			Map<String, String> postHeaders = new HashMap<String, String>();
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 
-			result = HttpUtil.postJson(url, postHeaders, postEntity);
+			result = HttpUtil.postJson(url +"/push/carcmd", postHeaders, postEntity);
 			apiResponse=(ApiResponse<String>)JsonUtil.toBean(result, ApiResponse.class);
 
 			if (apiResponse.getCode()!=200) {
@@ -149,7 +149,6 @@ public class InstructionServiceImpl  implements InstructionService {
 		Map<String, String> postHeaders = new HashMap<String, String>();
 		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 		accessLog.info("开启线程池，升级终端");
-		ExecutorService pool = Executors.newSingleThreadExecutor();
 		for(ClZdgl clZdgl : zdgls){
 			pool.submit(new Runnable() {
 				@Override
@@ -157,14 +156,13 @@ public class InstructionServiceImpl  implements InstructionService {
 					try {
 						info.setDeviceId(clZdgl.getZdbh());
 						String finalPostEntity = JsonUtil.toJson(info);
-						HttpUtil.postJson(url, postHeaders, finalPostEntity);
+						HttpUtil.postJson(url + "/push/carcmd", postHeaders, finalPostEntity);
 					} catch (Exception e) {
 						errorLog.info("设备升级请求异常,设备编号：{}",clZdgl.getZdbh(),e );
 					}
 				}
 			});
 		}
-		pool.shutdown();
 		return ApiResponse.success();
 
 	}

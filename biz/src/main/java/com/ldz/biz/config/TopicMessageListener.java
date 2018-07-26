@@ -1,38 +1,48 @@
 package com.ldz.biz.config;
 
-import com.ldz.biz.module.model.ClGpsLs;
-import com.ldz.biz.module.model.ClXc;
-import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.model.Clyy;
+import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.XcService;
 import com.ldz.biz.module.service.ZdglService;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackJiuPian;
 import com.ldz.util.bean.TrackPointsForReturn;
+import com.ldz.util.commonUtil.HttpUtil;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 @Component
 public class TopicMessageListener implements MessageListener {
 
 
+    @Value("${apiurl}")
+    private String url;
+    @Value("${znzpurl}")
+    private String znzpurl;
+    @Value("${biz_url: http://47.98.39.45:8080}")
+    private String bizurl;
 
     private XcService xcService;
 
@@ -42,7 +52,11 @@ public class TopicMessageListener implements MessageListener {
 
     private ZdglService zdglService;
 
+    private ExecutorService pool = Executors.newSingleThreadExecutor();
+
     private RedisTemplateUtil redisTemplate;
+
+    Logger error = LoggerFactory.getLogger("error_info");
 
     public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate) {
         this.xcService = xcService;
@@ -82,11 +96,74 @@ public class TopicMessageListener implements MessageListener {
     private void updateClZt(String itemValue) {
         List<String> zdbhs = Arrays.asList(itemValue.split("-"));
         String zdbh = zdbhs.get(1);
-        ClZdgl zdgl = zdglService.findById(zdbh);
-        if(!ObjectUtils.isEmpty(zdgl)){
-            zdgl.setZxzt("20");
-            zdglService.update(zdgl);
+        ApiResponse<String> bean = null;
+        try {
+            String string = HttpUtil.get(url +"/push/checkOnlin/" + zdbh);
+            bean = JsonUtil.toBean(string, ApiResponse.class);
+        } catch (Exception e) {
+            error.error(e.getMessage());
         }
+
+
+       if(!ObjectUtils.isEmpty(bean)  ) {
+            if(bean.getCode() !=200) {
+                ClZdgl zdgl = zdglService.findById(zdbh);
+                if (!ObjectUtils.isEmpty(zdgl)) {
+                    zdgl.setZxzt("20");
+                    zdglService.update(zdgl);
+
+                    //独立线程通知其他服务器离线消息
+                    pool.submit(new Runnable() {
+
+                        @Override
+                        public void run() {
+
+                            // 并将离线消息通知到gps上传
+                            ApiResponse<String> senML = senML(zdbh, bizurl +"/pub/gps/save");
+                            //accessLog.debug(senML+"biz接口离线消息返回");
+
+                            ApiResponse<String> znzpsenML = senML(zdbh, znzpurl  + "/reporting");
+                            //accessLog.debug(znzpsenML+"znzp接口离线消息返回");
+
+
+                        }
+                    });
+
+                }
+            }else{
+                redisTemplate.boundValueOps("offline-" + zdbh).set(1,10,TimeUnit.MINUTES);
+            }
+       }
+    }
+
+
+    @SuppressWarnings("unchecked")
+    public ApiResponse<String> senML(String zdbh, String url) {
+        String bean2 = (String) redisTemplate.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
+        ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
+        GpsInfo gpsinfo = new GpsInfo();
+        gpsinfo.setDeviceId(zdbh);
+        gpsinfo.setEventType("80");
+        //百度经纬度
+        gpsinfo.setLatitude(object2.getBdjd().toString());
+        gpsinfo.setLongitude(object2.getBdwd().toString());
+        gpsinfo.setFxj(object2.getFxj().toString());
+        gpsinfo.setGpsjd(object2.getJd().toString());
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String starttime = simpleDateFormat.format(object2.getCjsj());
+        gpsinfo.setStartTime(starttime);
+        String postEntity = JsonUtil.toJson(gpsinfo);
+        ApiResponse<String> apiResponse = null;
+        Map<String, String> postHeaders = new HashMap<String, String>();
+        postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+        try {
+            String postJson = HttpUtil.postJson(url, postHeaders, postEntity);
+            apiResponse = (ApiResponse<String>) JsonUtil.toBean(postJson, ApiResponse.class);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return apiResponse;
     }
 
     /**
