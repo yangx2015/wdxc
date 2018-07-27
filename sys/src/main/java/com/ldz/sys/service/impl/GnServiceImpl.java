@@ -410,6 +410,10 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
     }
     @Override
     public List<String> getOrgFunctionCodes(String orgCode) {
+        String hideSystem = getRequestParamterAsString("hideSystem");
+        if (StringUtils.isNotEmpty(hideSystem)){
+
+        }
         SimpleCondition condition = new SimpleCondition(SysJgsq.class);
         condition.eq(SysJgsq.InnerColumn.jgdm,orgCode);
         List<SysJgsq> jgsqs = jgsqMapper.selectByExample(condition);
