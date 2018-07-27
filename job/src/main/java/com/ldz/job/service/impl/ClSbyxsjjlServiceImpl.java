@@ -7,6 +7,8 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundListOperations;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ public class ClSbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> i
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
+    Logger access_info = LoggerFactory.getLogger("access_info");
 
     @Override
     protected Mapper<ClSbyxsjjl> getBaseMapper() {
@@ -34,7 +37,7 @@ public class ClSbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> i
         // 获取所有的事件记录
         BoundListOperations<Object, Object> boundListOps = redisTemplateUtil.boundListOps(ClSbyxsjjl.class.getSimpleName());
         if(boundListOps == null || boundListOps.size() == 0 ){
-            System.out.println("没有事件");
+            access_info.info("没有事件");
             return;
         }
         List<ClSbyxsjjl> list = new ArrayList<>();

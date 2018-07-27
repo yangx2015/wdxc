@@ -184,10 +184,11 @@ public class TopicMessageListener implements MessageListener {
             e = simpleDateFormat.parse(endTime).getTime();
         } catch (ParseException e1) {
         }
+        /*
         if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
             // 轨迹点不存储
             return;
-        }
+        }*/
         String start_end =null;
         try {
             start_end =  guiJiJiuPian(zdbh, s, e);
