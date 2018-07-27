@@ -1,20 +1,17 @@
 package com.ldz.biz.module.controller;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 终端管理
@@ -70,6 +67,7 @@ public class ZdCtrl extends BaseController<ClZdgl,String> {
     public ApiResponse<List<String>> saveBatch(String filePath) throws IOException {
         return service.saveBatch(filePath);
     }
+
 
 
 }

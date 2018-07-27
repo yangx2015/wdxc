@@ -18,11 +18,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.http.MediaType;
-import org.springframework.stereotype.Component;
 import org.springframework.util.ObjectUtils;
 
 import java.math.BigDecimal;
@@ -33,15 +31,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Component
+//@Component
 public class TopicMessageListener implements MessageListener {
 
 
-    @Value("${apiurl}")
     private String url;
-    @Value("${znzpurl}")
     private String znzpurl;
-    @Value("${biz_url: http://47.98.39.45:8080}")
     private String bizurl;
 
     private XcService xcService;
@@ -58,12 +53,15 @@ public class TopicMessageListener implements MessageListener {
 
     Logger error = LoggerFactory.getLogger("error_info");
 
-    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate) {
+    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl) {
         this.xcService = xcService;
         this.clYyService = clYyService;
         this.gpsLsService = gpsLsService;
         this.zdglService = zdglService;
         this.redisTemplate = redisTemplate;
+        this.url = url;
+        this.znzpurl = znzpurl;
+        this.bizurl = bizurl;
     }
 
     /**
