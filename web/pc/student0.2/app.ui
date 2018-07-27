@@ -3,7 +3,9 @@ export default {
   config: {
     "pages": [
       "pages/index",
-      "pages/detail"
+      "pages/detail",
+      "pages/xlMess",
+      "pages/xlMap"
     ],
     "theme": {
       "theme-color": "#3399ff"
@@ -14,24 +16,24 @@ export default {
       "navigationBarTextStyle":"black",
       "navigationBarBorderColor":"rgba(231, 231, 231, 0.6)"
     },
-    "tabBar": {
-      "color": "#7a7e83",
-      "selectedColor": "#39f",
-      "borderColor": "rgba(231, 231, 231, 0.6)",
-      "backgroundColor": "#fff",
-      "list": [
-        {
-          "pagePath": "pages/index",
-          "iconName": "home",
-          "text": "首页"
-        },
-        {
-          "pagePath": "pages/user",
-          "iconName": "user",
-          "text": "我的"
-        }
-      ]
-    },
+    // "tabBar": {
+    //   "color": "#7a7e83",
+    //   "selectedColor": "#39f",
+    //   "borderColor": "rgba(231, 231, 231, 0.6)",
+    //   "backgroundColor": "#fff",
+    //   "list": [
+    //     {
+    //       "pagePath": "pages/index",
+    //       "iconName": "home",
+    //       "text": "首页"
+    //     },
+    //     {
+    //       "pagePath": "pages/user",
+    //       "iconName": "user",
+    //       "text": "我的"
+    //     }
+    //   ]
+    // },
     "networkBaseUrl":""
   },
   data () {
