@@ -42,7 +42,7 @@
 <script>
     import SockJS from 'sockjs-client';
     import Stomp from '@stomp/stompjs';
-
+    import $ from 'jquery'
     export default {
 		name:'',
 		data(){
@@ -95,6 +95,47 @@
             this.getLineList()
 		},
 		methods:{
+		    // 获取一条线路的途径点
+		    getLinePoints(index){
+                console.log(index);
+                console.log(this.lineList[index]);
+                let stationList = this.lineList[index].stationList;
+		        let startPoint = new BMap.Point(stationList[0].wd,stationList[0].jd);
+		        let endPoint = new BMap.Point(stationList[stationList.length -1].wd,stationList[stationList.length -1].jd);
+		        let waypoints = '';
+		        for (let i = 1;i<=stationList.length - 2;i++){
+		            let station = stationList[i];
+                    waypoints += station.wd+','+station.jd;
+                    if (i < stationList.length - 2){
+                        waypoints += '|';
+                    }
+                }
+		        let url = 'http://api.map.baidu.com/direction/v2/driving?origin='+stationList[0].wd+','+stationList[0].jd+'&destination='+stationList[stationList.length -1].wd+','+stationList[stationList.length -1].jd+'&ak=evDHwrRoILvlkrvaZEFiGp30';
+		        url += '&waypoints='+waypoints;
+		        let points = [];
+		        $.ajax({
+                    url:url,
+                    type:"get",
+                    dataType:'JSONP',
+                    success:function(res){
+                        if (res.status == 0){
+                            let route = res.result.routes[0];
+                            points.push({wd:route.origin.lat,jd:route.origin.lng});
+                            for (let r of route.steps){
+
+                            }
+                        }
+                        console.log(res);
+                    }
+                })
+            },
+            // 获取所有线路的途径点
+            getLinesPoints(){
+		        for (let i in this.lineList){
+		            // this.getLinePoints(i);
+                }
+            },
+            // 线路复选框选中值发生变化时触发此事件
 		    lineChange(e){
                 this.map.clearOverlays()
                 if (e.length == 0){
@@ -106,40 +147,46 @@
                     this.choosedLineIndexs = e;
                 }
                 for(let i of this.choosedLineIndexs){
-                    this.showLine(this.lineList[i]);
+                    // this.showLine(this.lineList[i]);
+                    // this.getLinePoints(i);
                 }
             },
+            // 获取线路列表
             getLineList(){
                 var v = this
                 this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
                     if (res.code == 200 && res.page.list){
                         this.lineList = res.page.list;
-                        for (let l in this.lineList){
-                            this.getLineStations(l);
+                        for (let i in this.lineList){
+                            this.getLineStations(i);
+                            this.getLinePoints(i);
 						}
                     }
                 })
             },
+            // 获取线路上的站点
 			getLineStations(i){
                 var v = this
                 this.$http.post(this.apis.ZD.GET_BY_ROUTE_ID, {'xlId': this.lineList[i].id}).then((res) => {
                     if (res.code == 200 && res.result){
                         this.lineList[i].stationList = res.result;
                         if (i == this.lineList.length - 1){
-                            this.lineChange([]);
+                            // this.lineChange([]);
                         }
                     }
                 })
 			},
+            // 获取设备信息
             getAllDevice() {
                 this.$http.get(this.apis.ZDGL.QUERY+'?pageSize=10000').then((res)=>{
                     if (res.code == 200 && res.page.list){
                         this.addDeviceList = res.page.list;
-                        this.sco();
+                        this.subscribe();
                     }
                 })
             },
-            sco(){
+            //订阅消息
+            subscribe(){
                 var v = this
                 v.socket.onopen = function() { };
                 v.socket.onmessage = function(e) { };

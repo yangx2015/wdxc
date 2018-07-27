@@ -146,29 +146,29 @@ export let appRouter = [
 			}
 		]
 	},
-    {
-        path: '/terminal',
-        icon: 'android-car',
-        name: 'terminal',
-        title: '终端管理',
-        component: Main,
-        children:[
-            {
-                path: 'terminal-car',
-                icon: 'android-clipboard',
-                name: 'terminal-car',
-                title: '设备终端',
-                component: () => import('@/views/whdx/terminal/terminal-car')
-            },
-            {
-                path: 'terminal-station',
-                icon: 'android-clipboard',
-                name: 'terminal-station',
-                title: '智能站牌',
-                component: () => import('@/views/whdx/terminal/terminal-station')
-            },
-        ]
-    },
+    // {
+    //     path: '/terminal',
+    //     icon: 'android-car',
+    //     name: 'terminal',
+    //     title: '终端管理',
+    //     component: Main,
+    //     children:[
+    //         {
+    //             path: 'terminal-car',
+    //             icon: 'android-clipboard',
+    //             name: 'terminal-car',
+    //             title: '设备终端',
+    //             component: () => import('@/views/whdx/terminal/terminal-car')
+    //         },
+    //         {
+    //             path: 'terminal-station',
+    //             icon: 'android-clipboard',
+    //             name: 'terminal-station',
+    //             title: '智能站牌',
+    //             component: () => import('@/views/whdx/terminal/terminal-station')
+    //         },
+    //     ]
+    // },
 	{
 		path: '/VehicleScheduling',
         icon: 'android-car',
