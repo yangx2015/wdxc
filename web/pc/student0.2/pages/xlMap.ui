@@ -1,3 +1,4 @@
+<!---->
 <template>
   <ui-page  style="overflow-y: hidden;">
     <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
@@ -5,7 +6,7 @@
           <ui-col vertical-align="middle" align="center" width="60">
           </ui-col>
           <ui-col vertical-align="middle" align="center">
-            <ui-view class="nav_title">首页</ui-view>
+            <ui-view class="nav_title">地图查看</ui-view>
           </ui-col>
           <ui-col vertical-align="middle" align="center" width="60">
           </ui-col>
@@ -14,9 +15,12 @@
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
 
           <ui-view class="box_col_auto">
-            <!-- 页面内容 start-->
+<!-- 页面内容 start-->
+
+
             <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
-            <!-- 页面内容 end-->
+<!-- 页面内容 end-->
+
           </ui-view>
 
       </ui-view>
@@ -29,16 +33,13 @@ export default {
     navigationStyle: 'custom',
     navigationBarBackgroundColor:"#26a2ff",
     navigationBarTextStyle:"white",
-    navigationBarTitleText:"首页",
-    title:'首页',
+    navigationBarTitleText:"地图查看",
+    title:'地图查看',
     backgroundColor:'#f2f2f2',
     delay:false,//延迟加载
   },
-  data () {
-    return {
-      buttonText: '界面跳转',
-      isShow:false
-    }
+  data() {
+    return {}
   },
   methods: {
     goXlMess () {
@@ -47,25 +48,10 @@ export default {
       })
     }
   },
-  mounted() {
-    //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
-    setTimeout(() => {
-      //关闭app启动图
-      ui.closeSplashscreen()
-    }, 1000);
-  }
+  mounted() {}
 }
-
 </script>
 
 <style lang="less">
-.content{
-  .mix-flex-center();
-}
-.sliderContent{
-  padding:50px 50px 0px 50px;
-}
-.buttonContent{
-  padding:50px;
-}
+
 </style>
