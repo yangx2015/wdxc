@@ -13,7 +13,7 @@
         <module>api</module>
         <module>job</module>
         <module>sys</module>
-        <!--<module>tic-server</module>-->
+        <module>tic-server</module>
         <module>tic-znzp</module>
         <module>wechat</module>
         <module>tic-obd</module>
