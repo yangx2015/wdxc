@@ -6,6 +6,7 @@ import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.model.SysHdyx;
 import com.ldz.wechat.module.service.HdService;
 import com.ldz.wechat.module.service.XlService;
+import com.ldz.wechat.module.service.ZdService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,7 +24,8 @@ public class ClXlCtrl {
 
     @Autowired
     private HdService wxHdService;
-
+    @Autowired
+	private ZdService zdservice;
     @RequestMapping("getStationList")
 	public ApiResponse<List<ClZd>> getStationList(String xlId){
     	return ApiResponse.success(wxXlService.getStationList(xlId));
@@ -65,5 +67,10 @@ public class ClXlCtrl {
 		return ApiResponse.success(wxHdService.getAdsenseList());
 	}
 
+
+	@RequestMapping("getStationInfo")
+	public ApiResponse<Map<String,Object>> getStationInfo(String lng,String lat){
+		return zdservice.getStationInfo(lng,lat);
+	}
 
 }

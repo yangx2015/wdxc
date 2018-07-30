@@ -257,31 +257,33 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         resultMap.put("otherRouters",otherRouters);
 
         // 查找附近站点
-        LimitedCondition condition = new LimitedCondition(ClZd.class);
-        List<ClZd> stationList = zdService.findByCondition(condition);
-        Map<String,Double> distanceMap = new HashMap<>(stationList.size());
-        double maxDistance = 100D;
-        for (ClZd zd : stationList) {
-            double distance = DistanceUtil.getShortDistance(zd.getJd(),zd.getWd(),new Double(lng),new Double(lat));
-            distanceMap.put(zd.getId(),distance);
-            if (distance < maxDistance){
-                Map<String,Object> station = stationToMap(zd, distance);
+        if (StringUtils.isNotEmpty(lng) && StringUtils.isNotEmpty(lat)){
+            LimitedCondition condition = new LimitedCondition(ClZd.class);
+            List<ClZd> stationList = zdService.findByCondition(condition);
+            Map<String,Double> distanceMap = new HashMap<>(stationList.size());
+            double maxDistance = 100D;
+            for (ClZd zd : stationList) {
+                double distance = DistanceUtil.getShortDistance(zd.getJd(),zd.getWd(),new Double(lng),new Double(lat));
+                distanceMap.put(zd.getId(),distance);
+                if (distance < maxDistance){
+                    Map<String,Object> station = stationToMap(zd, distance);
+                    nearbyStations.add(station);
+                }
+            }
+
+            // 如果没有附近站点，则选取最近的一个站点
+            if (nearbyStations.size() == 0){
+                Map<String,ClZd> stationMap = stationList.stream().collect(Collectors.toMap(ClZd::getId,p->p));
+                List<Map.Entry<String,Double>> entryList = new ArrayList<>(distanceMap.entrySet());
+                entryList.sort((o1, o2) -> {
+                    Double v1 = o1.getValue();
+                    Double v2 = o2.getValue();
+                    return new Double(v1 - v2).intValue();
+                });
+                String id = entryList.get(0).getKey();
+                Map<String,Object> station = stationToMap(stationMap.get(id),distanceMap.get(id));
                 nearbyStations.add(station);
             }
-        }
-
-        // 如果没有附近站点，则选取最近的一个站点
-        if (nearbyStations.size() == 0){
-            Map<String,ClZd> stationMap = stationList.stream().collect(Collectors.toMap(ClZd::getId,p->p));
-            List<Map.Entry<String,Double>> entryList = new ArrayList<>(distanceMap.entrySet());
-            entryList.sort((o1, o2) -> {
-                Double v1 = o1.getValue();
-                Double v2 = o2.getValue();
-                return new Double(v1 - v2).intValue();
-            });
-            String id = entryList.get(0).getKey();
-            Map<String,Object> station = stationToMap(stationMap.get(id),distanceMap.get(id));
-            nearbyStations.add(station);
         }
 
         List<String> nearbyStationIds = new ArrayList<>();
@@ -293,18 +295,25 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         // 获取线路信息
         LimitedCondition condition1 = new LimitedCondition(ClXl.class);
         List<ClXl> allOrgRouters = xlService.findByCondition(condition1);
-        List<ClXlzd> xlzds = xlzdService.findIn(ClXlzd.InnerColumn.zdId,nearbyStationIds);
-
+        List<ClXlzd> xlzds;
+        if (nearbyStationIds.size() == 0){
+            xlzds = new ArrayList<>();
+        }else{
+            xlzds = xlzdService.findIn(ClXlzd.InnerColumn.zdId,nearbyStationIds);
+        }
+        List<String> nearbyRouterIds;
         if (xlzds.size() != 0){
-            List<String> nearbyRouterIds = xlzds.stream().map(ClXlzd::getXlId).collect(Collectors.toList());
-            for (ClXl router : allOrgRouters) {
-                if (nearbyRouterIds.contains(router.getId())){
-                    Map<String,Object> map = routerToMap(router);
-                    nearbyRouters.add(map);
-                }else{
-                    Map<String,Object> map = routerToMap(router);
-                    otherRouters.add(map);
-                }
+            nearbyRouterIds = xlzds.stream().map(ClXlzd::getXlId).collect(Collectors.toList());
+        }else{
+            nearbyRouterIds = new ArrayList<>();
+        }
+        for (ClXl router : allOrgRouters) {
+            if (nearbyRouterIds.contains(router.getId())){
+                Map<String,Object> map = routerToMap(router);
+                nearbyRouters.add(map);
+            }else{
+                Map<String,Object> map = routerToMap(router);
+                otherRouters.add(map);
             }
         }
         return ApiResponse.success(resultMap);

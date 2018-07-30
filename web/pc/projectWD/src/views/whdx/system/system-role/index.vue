@@ -77,7 +77,7 @@
             return {
             	SpinShow:true,
             	messdata:'',
-            	userMesType:true,
+            	userMesType:'add',
             	tabHeight: 220,
             	compName:'',
             	PickerTime:2017,
@@ -146,7 +146,7 @@
 									},
 									on: {
 										click: () => {
-											this.userMesType = false
+											this.userMesType = 'edit'
 											this.messdata = params.row
 											this.compName = 'addrole'
 										}
@@ -246,7 +246,7 @@
         	AddDataList(){
         		var v = this
     			v.compName = 'addrole'
-    			this.userMesType = true
+    			this.userMesType = 'add'
     			this.messdata = null
             },
             listF(res){
