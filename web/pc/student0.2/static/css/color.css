@@ -4,3 +4,17 @@
 .Theme2 {
   color: #FF7F50;
 }
+.IconAnima {
+  animation: iconColor 5s linear infinite reverse;
+}
+@keyframes iconColor {
+  0% {
+    color: #ffd9cc;
+  }
+  50% {
+    color: #ff3c00;
+  }
+  100% {
+    color: #ffd9cc;
+  }
+}

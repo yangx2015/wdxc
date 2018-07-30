@@ -50,7 +50,11 @@
                                 </ui-view>
                                 <ui-view class="toCode">
                                   <ui-icon class="Theme2" type="jiantouarrow591" size="14"></ui-icon>
-                                  开往--{{xlitem.endStation.mc}}
+                                  开往 - {{xlitem.endStation.mc}}
+                                  <ui-view style="float:right">
+                                          <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                                          {{xlitem.nextBus[0]}}站
+                                  </ui-view>
                                 </ui-view>
                             </ui-view>
                         </ui-view>
@@ -68,7 +72,7 @@
                               </ui-view>
                               <ui-view class="toCode">
                                 <ui-icon class="Theme2" type="jiantouarrow591" size="14"></ui-icon>
-                                开往--{{item.endStation.mc}}
+                                开往 - {{item.endStation.mc}}
                               </ui-view>
                           </ui-view>
                       </ui-view>
@@ -97,7 +101,7 @@ export default {
   },
   data () {
     return {
-      tabCurrent:1,
+      tabCurrent:0,
       swiperShow:false,
       swiperImg: [],
       StationMess:{}

@@ -1,4 +1,3 @@
-
 @font-face {
   font-family: "ui-icon";
   src: url('iconfont.ttf?t=1502549776894') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
@@ -47,4 +46,8 @@
 .icon-location:before { content: "\e600"; }
 
 .icon-fangxiang1:before { content: "\e60b"; }
+
+.icon-xinhao1:before { content: "\e638"; }
+
+.icon-xinhao:before { content: "\e7ac"; }
 
