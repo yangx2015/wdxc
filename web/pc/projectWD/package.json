@@ -17,6 +17,7 @@
   "author": "Lison<zhigang.li@tendcloud.com>",
   "license": "MIT",
   "dependencies": {
+    "jquery": "^3.3.1",
     "@stomp/stompjs": "^4.0.0",
     "area-data": "^1.0.0",
     "axios": "^0.17.1",
