@@ -103,9 +103,9 @@
                   cph: [
                       { required: true, message: '请输入车牌号', trigger: 'blur' }
                   ],
-                  zkl: [
-                      { required: true, message: '请输入载客量', trigger: 'blur' }
-                  ],
+                  // zkl: [
+                  //     { required: true, message: '请输入载客量', trigger: 'blur' }
+                  // ],
               	},
 				deviceList:[],//终端设备
 				drivers:[],//驾驶员
@@ -185,9 +185,9 @@
                 v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
                         v.drivers = res.page.list;
-                        if(v.derMess.sjId!=null&&!v.messType){
-		                	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
-		                }
+                        // if(v.derMess.sjId!=null&&!v.messType){
+		                // 	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
+		                // }
                     }
                 })
 			},
