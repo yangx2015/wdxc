@@ -1,15 +1,15 @@
 <template>
   <ui-page  style="overflow-y: hidden;">
-    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
-        <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
-          </ui-col>
-          <ui-col vertical-align="middle" align="center">
-            <ui-view class="nav_title">首页</ui-view>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center" width="60">
-          </ui-col>
-        </ui-row>
+      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+          <ui-row height="46">
+            <ui-col vertical-align="middle" align="center" width="60">
+            </ui-col>
+            <ui-col vertical-align="middle" align="center">
+              <ui-view class="nav_title">首页</ui-view>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center" width="60">
+            </ui-col>
+          </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
 
@@ -17,9 +17,9 @@
             <!-- 页面内容 start-->
             <!-- 轮播图 -->
             <ui-view class="demo demo1">
-                <ui-ex-swiper pagination centered-slides loop space-between="10" slides-per-view="auto">
-                  <ui-ex-swiper-item ui:for="{{items}}" ui:for-item="item" ui:for-index="index">
-                    <ui-image src="{{ item.src }}" mode="simple"></ui-image>
+                <ui-ex-swiper pagination autoplay="{{ {delay:2*1000} }}" loop>
+                  <ui-ex-swiper-item ui:for="{{swiperImg}}" ui:for-item="item" ui:for-index="index">
+                    <ui-image width=100% height=100%  src="{{ item.img }}" mode="simple"></ui-image>
                   </ui-ex-swiper-item>
                 </ui-ex-swiper>
               </ui-view>
@@ -46,18 +46,8 @@ export default {
     return {
       buttonText: '界面跳转',
       isShow:false,
-      items: [{
-        src: 'http://images.uileader.com/20171103/5906a28c-0f12-4b71-8df2-98791d8716f6.jpg',
-        title: '放肆玩乐，轻巧办公'
-      },
-      {
-        src: 'http://images.uileader.com/20171103/34795a1c-1365-4256-b9c1-6fb4af1de3da.jpg',
-        title: '高温保护，一路驰骋'
-      },
-      {
-        src: 'http://images.uileader.com/20171103/926a6fdc-80f6-4244-8354-860627c88115.jpg',
-        title: '七夕好货，独家礼赠'
-      }],
+      swiperImg: [],
+      StationMess:[]
     }
   },
   methods: {
@@ -65,9 +55,38 @@ export default {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
+    },
+    getSwiperImg(){
+      var v = this
+      this.$http('POST',ui.getApp().apis.SWIPER,{},(res)=>{
+        console.log('轮播图片',res);
+        if(res.code == 200){
+            this.swiperImg = res.result
+        }
+        
+      })
+    },
+    getStationMess(){
+      var v = this
+      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36550475787,lat:30.54022397891},(res)=>{
+        console.log('站点信息',res);
+        if(res.code == 200){
+            this.swiperImg = res.result
+        }
+        
+      })
     }
   },
+  created () {
+    this.getSwiperImg()
+    this.getStationMess()
+  },
   mounted() {
+    
+    
+
+
+
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
       //关闭app启动图
@@ -79,43 +98,7 @@ export default {
 </script>
 
 <style lang="less">
-.content{
-  .mix-flex-center();
-}
-.sliderContent{
-  padding:50px 50px 0px 50px;
-}
-.buttonContent{
-  padding:50px;
-}
-.swiper-slide {
-  .ui-image{
-    width:100%
-  }
-}  
 .demo{
-  .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-    transition: transform .3s ease;
-    background-color: rgba(0, 0, 0, 0.15);
-    backface-visibility: hidden;
-
-    &-prev {
-      transform: scale(0.9) translate3d(5%, 0, 0);
-    }
-
-    &-next {
-      transform: scale(0.9) translate3d(-5%, 0, 0);
-    }
-
-    &-active {
-      transform: scale(1) translate3d(0, 0, 0);
-    }
-  }
+  height: 300rpx;
 }
 </style>
