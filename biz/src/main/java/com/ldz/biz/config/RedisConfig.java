@@ -4,9 +4,11 @@ import com.ldz.biz.module.service.*;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.listener.PatternTopic;
@@ -24,6 +26,13 @@ import java.util.List;
 @Configuration
 @Order(1)
 public class RedisConfig {
+
+	@Value("${apiurl}")
+	public  String url;
+	@Value("${znzpurl}")
+	public  String znzpurl;
+	@Value("${biz_url: }") // : http://47.98.39.45:8080
+	public  String bizurl;
 
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
@@ -74,10 +83,13 @@ public class RedisConfig {
 		ZdglService zdglService = SpringContextUtil.getBean(ZdglService.class);
 		//topicMessageListener.setRedisTemplate(redisTemplateUtil);
 		container.addMessageListener(messageReceiver, topics);
-		container.addMessageListener(new TopicMessageListener(xcService,clYyService,gpsLsService,zdglService,redisTemplateUtil) , channelTopic);
+		container.addMessageListener(new TopicMessageListener(xcService,clYyService,gpsLsService,zdglService,redisTemplateUtil,url,znzpurl,bizurl) , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}
 
-
+	@Bean
+	public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+		return new PropertySourcesPlaceholderConfigurer();
+	}
 }
