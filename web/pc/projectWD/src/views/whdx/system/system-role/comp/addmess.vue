@@ -10,7 +10,7 @@
 					<div style="font-size: 30px;">数据加载中请稍后</div>
 				</Spin>
 			</div>
-			<div style="overflow: auto;height: 300px;">
+			<div  style="height:600px;overflow: scroll;">
 				<Form
 	    			ref="addmess"
 	    			:model="addmess"

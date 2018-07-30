@@ -419,7 +419,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         }
         List<String> functionCodes;
         if (StringUtils.isNotEmpty(hideSystem)){
-            functionCodes = jgsqs.stream().filter(jgsq -> !StringUtils.contains(jgsq.getGndm(),"system")).map(SysJgsq::getGndm).collect(Collectors.toList());
+            functionCodes = jgsqs.stream().filter(jgsq -> !StringUtils.startsWith(jgsq.getGndm(),"system")).map(SysJgsq::getGndm).collect(Collectors.toList());
         }else{
             functionCodes  = jgsqs.stream().map(SysJgsq::getGndm).collect(Collectors.toList());
         }
