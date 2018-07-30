@@ -201,7 +201,7 @@ public class GuiJIApi {
     public static String trackPoint(List<PointListBean> pointList) {
 
         Map<String,String> map = new HashMap<>();
-        map.put("ak","Loegca5jzGqwaPWmaQEtTGooWAqexsGh");
+        map.put("ak",AK);
         map.put("rectify_option","need_mapmatch:1|transport_mode:driving|denoise_grade:1|vacuate_grade:0");
         map.put("point_list",JsonUtil.toJson(pointList));
 
