@@ -6,10 +6,7 @@ import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.XcService;
 import com.ldz.biz.module.service.ZdglService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.bean.TrackJiuPian;
-import com.ldz.util.bean.TrackPointsForReturn;
+import com.ldz.util.bean.*;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
@@ -22,6 +19,7 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
+import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -182,6 +180,9 @@ public class TopicMessageListener implements MessageListener {
             e = simpleDateFormat.parse(endTime).getTime();
         } catch (ParseException e1) {
         }
+        if((e - s) < 0 ){
+            return;
+        }
         /*
         if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
             // 轨迹点不存储
@@ -206,6 +207,55 @@ public class TopicMessageListener implements MessageListener {
         clXc.setXcStartEnd(start_end);
         xcService.saveEntity(clXc);
     }
+
+
+    /**
+     * 百度新的纠偏接口
+     */
+    public String newGuiJiJiuPian(String zdbh, String startTime, String endTime){
+
+        SimpleCondition s = new SimpleCondition(ClGpsLs.class);
+        Example.Criteria criteria = s.createCriteria();
+        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-MM-dd HH:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
+        s.and(criteria);
+
+        s.setOrderByClause(" CJSJ desc ");
+        List<ClGpsLs> gpsLs = gpsLsService.findByCondition(s);
+        List<PointListBean> listBeans = new ArrayList<>();
+        gpsLs.stream().forEach(clGpsLs -> {
+            PointListBean pointListBean = new PointListBean();
+            pointListBean.setCoord_type_input("bd09ll");
+            pointListBean.setDirection(clGpsLs.getFxj().doubleValue());
+            pointListBean.setLatitude(clGpsLs.getBdwd().doubleValue());
+            pointListBean.setLongitude(clGpsLs.getBdjd().doubleValue());
+            pointListBean.setLoc_time(clGpsLs.getCjsj().getTime() / 1000);
+            pointListBean.setSpeed(Double.parseDouble(clGpsLs.getYxsd()));
+            listBeans.add(pointListBean);
+        });
+        String point = GuiJIApi.trackPoint(listBeans);
+        NewTrackPointReturn newTrackPointReturn = JsonUtil.toBean(point, NewTrackPointReturn.class);
+        List<Clyy> yyList = new ArrayList<>();
+        newTrackPointReturn.getPoints().stream().forEach(point1 -> {
+            Clyy clyy = new Clyy();
+            clyy.setDirection(point1.getDirection() + "");
+            clyy.setZdbh(zdbh);
+            clyy.setLatitude(BigDecimal.valueOf(point1.getLatitude()));
+            clyy.setLongitude(BigDecimal.valueOf(point1.getLongitude()));
+            clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
+            clyy.setLoc_time(parse(point1.getLoc_time()) );
+            yyList.add(clyy);
+            clYyService.saveBatch(yyList);
+        });
+
+        String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+
+        return start_end;
+
+    }
+
+
+
+
 
     /**
      * 存储百度鹰眼GPS
