@@ -1,3 +1,4 @@
+
 @font-face {
   font-family: "ui-icon";
   src: url('iconfont.ttf?t=1502549776894') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
@@ -24,6 +25,8 @@
 .icon-bus:before { content: "\e658"; }
 
 .icon-ditu1:before { content: "\e62b"; }
+
+.icon-jiantouarrow591:before { content: "\e686"; }
 
 .icon-bus1:before { content: "\e604"; }
 
