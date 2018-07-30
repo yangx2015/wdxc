@@ -98,12 +98,12 @@
 		},
 		props:{
 			usermesType:{
-				type:Boolean,
-				default:true
+				type:String,
+				default:'add'
 			},
 		},
 		created(){
-            if(!this.usermesType){
+            if(this.usermesType == 'edit'){
                 this.addmess = this.$parent.messdata
                 this.operate = '编辑';
                 this.edit = true;
@@ -132,7 +132,11 @@
                 this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+orgCode).then((res) =>{
                     if(res.code===200){
                         this.permissionTree = res.result;
-                        this.getRoleFunctions();
+                        if (this.usermesType == 'edit'){
+                            this.getRoleFunctions();
+						}else{
+                            this.showTree = true;
+						}
                     }
                 })
             },
