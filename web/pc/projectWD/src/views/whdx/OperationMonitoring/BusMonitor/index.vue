@@ -46,7 +46,7 @@
     }
 
     .ycsjjlTable {
-        height: 266px;
+        /*height: 266px;*/
         width: 525px;
         position: absolute;
         right: 20px;
@@ -68,10 +68,11 @@
                     <Card class="ycsjjlTable">
                         <p slot="title">
                             <Icon type="ios-film-outline"></Icon>
-                            异常行驶记录
+                            最近5分钟异常行驶记录
                         </p>
-                        <div class="a" style=" ">
-                            <abnor ></abnor>
+                        <Button type="primary" size="small" :icon="changeBtnIcon" slot="extra" style="margin:5px" @click.native="changeBtn"></Button>
+                        <div class="a" style=" " v-show="!tabShowFlag">
+                            <abnor style="height: 256px"></abnor>
                         </div>
                     </Card>
                 </Card>
@@ -99,6 +100,8 @@
         data() {
             return {
                 mapheight:{ height:'' },
+                changeBtnIcon:'chevron-down',
+                tabShowFlag:false
             };
         },
         created() {
@@ -114,6 +117,15 @@
             this.autoHeight()
         },
         methods: {
+            changeBtn(){
+                if (this.changeBtnIcon == "chevron-down"){
+                    this.changeBtnIcon = "chevron-up";
+                    this.tabShowFlag = true;
+                }else{
+                    this.changeBtnIcon = "chevron-down";
+                    this.tabShowFlag = false;
+                }
+            },
             autoHeight() {
                 var windowHeight = window.innerHeight
                 // this.carheight.height = (windowHeight / 2 - 120) + 'px'
