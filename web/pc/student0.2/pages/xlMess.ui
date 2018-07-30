@@ -16,11 +16,12 @@
 
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
-            <ui-button type="primary" bindtap="goIndex">首页</ui-button>
-            <ui-button type="primary" bindtap="goXlMap">地图查看</ui-button>
+           
+
             <!-- 页面内容 end-->
           </ui-view>
-
+            <ui-button type="primary" bindtap="goIndex">首页</ui-button>
+            <ui-button type="primary" bindtap="goXlMap">地图查看</ui-button>
       </ui-view>
   </ui-page>
 </template>
