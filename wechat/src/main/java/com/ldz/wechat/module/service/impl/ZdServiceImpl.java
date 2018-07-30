@@ -65,7 +65,41 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         router.put("name",xl.getXlmc());
         router.put("startTime",xl.getYxkssj());
         router.put("endTime",xl.getYxjssj());
+        router.put("endStation",getEndStation(xl.getId()));
+        router.put("direct",xl.getYxfs());
         return router;
+    }
+
+    private void setStationOrder(ClZd station) {
+        if (StringUtils.isEmpty(station.getId()) || StringUtils.isEmpty(station.getXlId())){
+            return;
+        }
+        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+        condition.eq(ClXlzd.InnerColumn.zdId,station.getId());
+        condition.eq(ClXlzd.InnerColumn.xlId,station.getXlId());
+        List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
+        if (xlzds.size() == 0)return;
+        station.setRouteOrder(xlzds.get(0).getXh());
+    }
+    private ClZd getEndStation(String xlId){
+        List<ClXlzd> xlzds = xlzdService.findEq(ClXlzd.InnerColumn.xlId,xlId);
+        if (xlzds.size() == 0)return null;
+        List<String> zdIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
+        List<ClZd> zds = zdService.findIn(ClZd.InnerColumn.id,zdIds);
+        Map<String,ClZd> zdMap = zds.stream().collect(Collectors.toMap(ClZd::getId,p->p));
+        if (zds.size() == 0)return null;
+        for (ClXlzd xlzd : xlzds) {
+            String zdId = xlzd.getZdId();
+            if (StringUtils.isEmpty(zdId))continue;
+            ClZd zd = zdMap.get(zdId);
+            if (zd == null)continue;
+            zd.setXlId(xlzd.getXlId());
+        }
+        for (ClZd zd : zds) {
+            setStationOrder(zd);
+        }
+        zds.sort(Comparator.comparingInt(p-> (int)p.getRouteOrder()));
+        return zds.get(zds.size() - 1);
     }
 
     @Override
@@ -75,7 +109,6 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         List<Map<String,Object>> nearbyRouters = new ArrayList<>();
         List<Map<String,Object>> otherRouters = new ArrayList<>(); // 其他线路
         resultMap.put("nearbyStations",nearbyStations);
-        resultMap.put("nearbyRouters",nearbyRouters);
         resultMap.put("otherRouters",otherRouters);
 
         // 查找附近站点
@@ -126,18 +159,57 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         List<String> nearbyRouterIds;
         if (xlzds.size() != 0){
             nearbyRouterIds = xlzds.stream().map(ClXlzd::getXlId).collect(Collectors.toList());
+            setRouterIds(nearbyStations,xlzds);
         }else{
             nearbyRouterIds = new ArrayList<>();
         }
         for (ClXl router : allOrgRouters) {
+            Map<String,Object> map = routerToMap(router);
             if (nearbyRouterIds.contains(router.getId())){
-                Map<String,Object> map = routerToMap(router);
                 nearbyRouters.add(map);
             }else{
-                Map<String,Object> map = routerToMap(router);
                 otherRouters.add(map);
             }
         }
+        for (Map<String, Object> nearbyRouter : nearbyRouters) {
+            String routerId = (String) nearbyRouter.get("id");
+            if (StringUtils.isEmpty(routerId))continue;
+            Map<String,Object> station = getStationByXlId(routerId,nearbyStations);
+            if (station == null)continue;
+            List<Map<String,Object>> routerList = (List<Map<String, Object>>) station.get("routerList");
+            ApiResponse<List<Integer>> nsRes = xlService.getNextCars(routerId,station.get("id").toString());
+            if (nsRes.isSuccess() && nsRes.getResult() != null){
+                nearbyRouter.put("nextBus",nsRes.getResult());
+            }
+            routerList.add(nearbyRouter);
+        }
         return ApiResponse.success(resultMap);
     }
+    private Map<String,Object> getStationByXlId(String xlId,List<Map<String,Object>> nearbyStations){
+        for (Map<String, Object> station : nearbyStations) {
+            String xlid = (String) station.get("xlId");
+            if (xlId.equals(xlid)){
+                return station;
+            }
+        }
+        return null;
+    }
+
+    private void setRouterIds(List<Map<String,Object>> list,List<ClXlzd> xlzds){
+        for (Map<String, Object> map : list) {
+            String zdId = map.get("id").toString();
+            String xlId = getXlId(xlzds,zdId);
+            map.put("xlId",xlId);
+        }
+    }
+
+    private String getXlId(List<ClXlzd> xlzds,String zdId){
+        for (ClXlzd xlzd : xlzds) {
+            if (zdId.equals(xlzd.getZdId())){
+                return xlzd.getXlId();
+            }
+        }
+        return null;
+    }
 }
+
