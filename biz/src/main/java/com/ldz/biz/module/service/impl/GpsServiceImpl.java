@@ -165,9 +165,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             clSbyxsjjl.setSjlx("60");
             clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
             clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
-             clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
+            // clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
 
-            // redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clSbyxsjjl));
+             redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clSbyxsjjl));
 
             websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
             String socket = JsonUtil.toJson(websocketInfo);
@@ -187,8 +187,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         clSbyxsjjl.setSjlx("80");
         clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
         clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
-        clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
-        //redis.boundListOps(ClSbyxsjjl.class.getSimpleName() ).leftPush(JsonUtil.toJson(clSbyxsjjl));
+        // clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
+        redis.boundListOps(ClSbyxsjjl.class.getSimpleName() ).leftPush(JsonUtil.toJson(clSbyxsjjl));
         // 推送坐标去前端
         websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
         String socket = JsonUtil.toJson(websocketInfo);
@@ -379,8 +379,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             clsbyxsjjl.setId(genId());
             clsbyxsjjl.setSjlx("70");
             clsbyxsjjl.setBz(judgePoint.getId());
-            clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-           // redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+            // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+            redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
             log.info("该点位不在电子围栏里面,事件表存储成功");
         }
         // 没有携带事件类型
@@ -390,27 +390,27 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 
         // 事件类型为点火
-        if (StringUtils.equals(entity.getEventType(), "50")) {
-            clsbyxsjjl.setId(genId());
+        if (StringUtils.equals(entity.getEventType(), "50") || StringUtils.equals(entity.getEventType(), "60") ) {
+           // clsbyxsjjl.setId(genId());
             clsbyxsjjl.setSjjb("10");
-            clsbyxsjjl.setSjlx(entity.getEventType());
-            clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-            return clsbyxsjjl;
+           // clsbyxsjjl.setSjlx(entity.getEventType());
+            /*clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+            return clsbyxsjjl;*/
         }
 
-        // 事件类型为熄火
+      /*  // 事件类型为熄火
         if (StringUtils.equals(entity.getEventType(), "60")) {
-            clsbyxsjjl.setId(genId());
+            // clsbyxsjjl.setId(genId());
             clsbyxsjjl.setSjjb("10");
-            clsbyxsjjl.setSjlx(entity.getEventType());
-            clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-            return clsbyxsjjl;
-        }
+            // clsbyxsjjl.setSjlx(entity.getEventType());
+           *//* clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+            return clsbyxsjjl;*//*
+        }*/
         // 其余异常类型
         clsbyxsjjl.setSjlx(entity.getEventType());
         clsbyxsjjl.setId(genId());
-        //redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
-         clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+        redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+        // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
         return clsbyxsjjl;
     }
 
@@ -618,8 +618,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 clsbyxsjjl.setWd(clgps.getBdwd());
                 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
                 clsbyxsjjl.setZdbh(info.getDeviceId());
-                 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-                // redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+                // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+                 redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
                 return;
             } else {
                 return;
@@ -646,8 +646,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 clsbyxsjjl.setWd(clgps.getBdwd());
                 clsbyxsjjl.setYxfx(Double.valueOf(info.getFxj()));
                 clsbyxsjjl.setZdbh(info.getDeviceId());
-                 clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-                //redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+                // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
                 return;
             } else {
                 return;

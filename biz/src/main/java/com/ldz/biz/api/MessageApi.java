@@ -1,16 +1,22 @@
 package com.ldz.biz.api;
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.model.ClGpsLs;
+import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.PointListBean;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.redis.RedisTemplateUtil;
+import com.ldz.util.yingyan.GuiJIApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tk.mybatis.mapper.entity.Example;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /*
  * 业务系统对外开放的接口
@@ -28,6 +34,8 @@ public class MessageApi {
 	private InstructionService intstruction;
 	@Autowired
 	private RedisTemplateUtil redisTemplateUtil;
+	@Autowired
+	private GpsLsService gpsLsService;
 
 	/*
 	 * 给tic-server提供gps存储接口
@@ -57,6 +65,30 @@ public class MessageApi {
 	public ApiResponse<String> batchUpdate( GpsInfo info,String jgdm) {
 
 		return  intstruction.batchUpdate(info,jgdm);
+	}
+
+	@GetMapping("/test")
+	public String test(){
+		SimpleCondition s = new SimpleCondition(ClGpsLs.class);
+		Example.Criteria criteria = s.createCriteria();
+		criteria.andCondition("CJSJ >= to_date('2018-07-27 07:45:16','yyyy-MM-dd HH:mi:ss') and CJSJ <= to_date('2018-07-27 08:00:00','yyyy-MM-dd HH:mi:ss') and zdbh = '865923030038639' ");
+		s.and(criteria);
+
+		s.setOrderByClause(" CJSJ desc ");
+		List<ClGpsLs> gpsLs = gpsLsService.findByCondition(s);
+		List<PointListBean> listBeans = new ArrayList<>();
+		gpsLs.stream().forEach(clGpsLs -> {
+			PointListBean pointListBean = new PointListBean();
+			pointListBean.setCoord_type_input("bd09ll");
+			pointListBean.setDirection(clGpsLs.getFxj().doubleValue());
+			pointListBean.setLatitude(clGpsLs.getBdwd().doubleValue());
+			pointListBean.setLongitude(clGpsLs.getBdjd().doubleValue());
+			pointListBean.setLoc_time(clGpsLs.getCjsj().getTime() / 1000);
+			pointListBean.setSpeed(Double.parseDouble(clGpsLs.getYxsd()));
+			listBeans.add(pointListBean);
+		});
+
+		return GuiJIApi.trackPoint(listBeans);
 	}
 
 	/*@GetMapping("test")
