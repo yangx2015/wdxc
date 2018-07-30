@@ -1,4 +1,5 @@
 <script>
+import ajaxUrl from '#/static/ajax/url'
 export default {
   config: {
     "pages": [
@@ -34,11 +35,22 @@ export default {
     //     }
     //   ]
     // },
-    "networkBaseUrl":""
+    "networkBaseUrl":'http://47.98.39.45:9099',
+    "networkTimeout":"3000"
   },
   data () {
     return {
       //全局变量
+
+      // ajax数据请求参数配置
+      apis:ajaxUrl,
+
+      wxUtil:null,//微信 功能方法
+
+
+
+
+
       globalData: {
       },
       WIN_WIDTH:ui.WIN_WIDTH,
@@ -127,10 +139,23 @@ export default {
       this.handleIosGesture()
       this.initTab()
       this.initBodyStyle()
+    },
+    wxUtil(n,o){//微信方法监听
+      console.log('数据监听*-*-*-*-*-*-*-');
+      if(n==null){
+        this.getWxJs()
+      }
     }
   },
     // 初始化
   created () {
+    //微信js 初始化
+    this.getWxJs()
+    //微信js初始化END
+
+
+
+
     this.initTab()
     this.initPaths()
     this.$nextTick(() => {

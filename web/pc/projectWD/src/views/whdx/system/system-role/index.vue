@@ -40,7 +40,9 @@
 						:row-class-name="rowClassName"
 						:height="tabHeight"
 						:columns="tableTiT"
-						:data="tableData"></Table>
+						:data="tableData">
+
+				</Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
@@ -48,7 +50,8 @@
 					  :page-size=page.pageSize
 					  show-total
 					  show-elevator
-					  @on-change='pageChange'></Page>
+					  @on-change='pageChange'>
+				</Page>
 			</Row>
 		</Card>
     	<component
@@ -56,17 +59,19 @@
     		:messdata="messdata"
     		:usermesType="userMesType"
     		:Dictionary="Dictionary"
-    		@listF='listF'></component>
+    		@listF='listF'>
+		</component>
     </div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
+    import mixins from '@/mixins'
 
 
-	import addrole from './comp/addmess.vue'
-	import modifyRolePermission from './comp/modifyRolePermission.vue'
-	export default {
+    import addrole from './comp/addmess.vue'
+    import modifyRolePermission from './comp/modifyRolePermission.vue'
+
+    export default {
     	name:'char',
     	mixins:[mixins],
     	components: {
@@ -96,12 +101,6 @@
 	                	align:'center',
 	                	type:'index'
 	                },
-	                {
-                        title: '角色编码',
-                        width:120,
-                        align:'center',
-                        key: 'jsId'
-                    },
                     {
                         title: '角色名称',
                         align:'center',

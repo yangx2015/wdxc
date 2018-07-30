@@ -1,32 +1,85 @@
 <template>
   <ui-page  style="overflow-y: hidden;">
-    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
-        <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
-          </ui-col>
-          <ui-col vertical-align="middle" align="center">
-            <ui-view class="nav_title">首页</ui-view>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center" width="60">
-          </ui-col>
-        </ui-row>
+      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+          <ui-row height="46">
+            <ui-col vertical-align="middle" align="center" width="60">
+            </ui-col>
+            <ui-col vertical-align="middle" align="center">
+              <ui-view class="nav_title">首页</ui-view>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center" width="60">
+            </ui-col>
+          </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
-
-          <ui-view class="box_col_auto">
+          <!-- 轮播图 -->
+          <ui-view class="demo">
+            <ui-ex-swiper ui:if="swiperShow" pagination autoplay="{{ {delay:2*1000} }}" loop>
+              <ui-ex-swiper-item ui:for="{{swiperImg}}">
+                <ui-image width=100% height=100% src="{{item.url}}" mode="simple"></ui-image>
+              </ui-ex-swiper-item>
+            </ui-ex-swiper>
+          </ui-view>
+          <ui-tabs class="tabsSty" index="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
+              <ui-tab>附近站点</ui-tab>
+              <ui-tab>周边线路</ui-tab>
+          </ui-tabs>
+          <ui-view class="box_col_100">
             <!-- 页面内容 start-->
-            <!-- 轮播图 -->
-            <ui-view class="demo demo1">
-                <ui-ex-swiper pagination centered-slides loop space-between="10" slides-per-view="auto">
-                  <ui-ex-swiper-item ui:for="{{items}}" ui:for-item="item" ui:for-index="index">
-                    <ui-image src="{{ item.src }}" mode="simple"></ui-image>
-                  </ui-ex-swiper-item>
-                </ui-ex-swiper>
-              </ui-view>
 
+            <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
+                <ui-swiper-item class="box_col_auto boxLisSty">
+                    <ui-view class="ListItemSty" ui:for="{{StationMess.nearbyStations}}">
+                        
+                        <ui-view class="stationName box_row colCenter">
+                          <ui-view>
+                              <ui-icon class="Theme2" type="gongjiaozhanpai" size="30"></ui-icon>
+                          </ui-view>
+                          <ui-view class="box_row_100">
+                              {{item.name}}
+                          </ui-view>
+                          <ui-view class="distanceSty">
+                              {{item.distance}}米
+                          </ui-view>
+                        </ui-view>
+
+                        <ui-view class="stationRouterBox">
+                            <ui-view class="stationRouterItem" ui:for="{{item.routerList}}" ui:for-item="xlitem">
+                                <ui-view class="xlName">
+                                  {{xlitem.name}}
+                                </ui-view>
+                                <ui-view class="toCode">
+                                  <ui-icon class="Theme2" type="jiantouarrow591" size="14"></ui-icon>
+                                  开往--{{xlitem.endStation.mc}}
+                                </ui-view>
+                            </ui-view>
+                        </ui-view>
+
+                    </ui-view>
+
+                </ui-swiper-item>
+                <ui-swiper-item class="box_col_auto">
+                    <ui-view class="ListItemSty">
+                      <ui-view class="stationRouterBox">
+                          <ui-view class="stationRouterItem" ui:for="{{StationMess.otherRouters}}">
+                              <ui-view class="xlName">
+                                <ui-icon class="Theme2" type="bus2" size="18"></ui-icon>
+                                {{item.name}}
+                              </ui-view>
+                              <ui-view class="toCode">
+                                <ui-icon class="Theme2" type="jiantouarrow591" size="14"></ui-icon>
+                                开往--{{item.endStation.mc}}
+                              </ui-view>
+                          </ui-view>
+                      </ui-view>
+                    </ui-view>
+                </ui-swiper-item>
+            </ui-swiper>
             <!-- 页面内容 end-->
           </ui-view>
-         <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
+
+
+         <!-- <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button> -->
       </ui-view>
   </ui-page>
 </template>
@@ -39,35 +92,58 @@ export default {
     navigationBarTextStyle:"white",
     navigationBarTitleText:"首页",
     title:'首页',
-    backgroundColor:'#f2f2f2',
+    backgroundColor:'#fff',
     delay:false,//延迟加载
   },
   data () {
     return {
-      buttonText: '界面跳转',
-      isShow:false,
-      items: [{
-        src: 'http://images.uileader.com/20171103/5906a28c-0f12-4b71-8df2-98791d8716f6.jpg',
-        title: '放肆玩乐，轻巧办公'
-      },
-      {
-        src: 'http://images.uileader.com/20171103/34795a1c-1365-4256-b9c1-6fb4af1de3da.jpg',
-        title: '高温保护，一路驰骋'
-      },
-      {
-        src: 'http://images.uileader.com/20171103/926a6fdc-80f6-4244-8354-860627c88115.jpg',
-        title: '七夕好货，独家礼赠'
-      }],
+      tabCurrent:1,
+      swiperShow:false,
+      swiperImg: [],
+      StationMess:{}
     }
   },
   methods: {
+    handleChange (index, key) {
+      this[key] = index
+    },
     goXlMess () {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
+    },
+    getSwiperImg(){
+      var v = this
+      this.$http('POST',ui.getApp().apis.SWIPER,{},(res)=>{
+        console.log('轮播图片',res);
+        if(res.code == 200){
+            this.swiperImg = res.result
+            this.swiperShow = true
+        }
+        
+      })
+    },
+    getStationMess(){
+      var v = this
+      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36550475787,lat:30.54022397891},(res)=>{
+        console.log('站点信息',res);
+        if(res.code == 200){
+            this.StationMess = res.result
+        }
+        
+      })
     }
   },
+  created () {
+    this.getSwiperImg()
+    this.getStationMess()
+  },
   mounted() {
+    
+    
+
+
+
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
       //关闭app启动图
@@ -79,43 +155,41 @@ export default {
 </script>
 
 <style lang="less">
-.content{
-  .mix-flex-center();
-}
-.sliderContent{
-  padding:50px 50px 0px 50px;
-}
-.buttonContent{
-  padding:50px;
-}
-.swiper-slide {
-  .ui-image{
-    width:100%
-  }
-}  
 .demo{
-  .swiper-slide {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    font-size: 18px;
-    background: #fff;
-    transition: transform .3s ease;
-    background-color: rgba(0, 0, 0, 0.15);
-    backface-visibility: hidden;
-
-    &-prev {
-      transform: scale(0.9) translate3d(5%, 0, 0);
-    }
-
-    &-next {
-      transform: scale(0.9) translate3d(-5%, 0, 0);
-    }
-
-    &-active {
-      transform: scale(1) translate3d(0, 0, 0);
+  height: 300rpx;
+}
+.tabsSty{
+  border-top:#f2f2f2 4rpx solid;
+  border-bottom:#f2f2f2 4rpx solid;
+}
+.boxLisSty{
+}
+.ListItemSty{
+  padding: 15rpx 20rpx;
+  .stationName{
+    font-size: 32rpx;
+    font-weight: 700;
+    border-bottom:#f2f2f2 3rpx solid;
+    .distanceSty{
+      font-size: 26rpx;
+      color:#8a8a8a;
     }
   }
+  .stationRouterBox{
+    .stationRouterItem{
+      border-bottom:#f2f2f2 3rpx solid;
+      padding: 10rpx 0;
+      .xlName{
+        font-size: 28rpx;
+      }
+      .toCode{
+        color:#8a8a8a;
+        font-size: 24rpx;
+        padding-top: 15rpx;
+      }
+    }
+  }
+  // --------
+
 }
 </style>
