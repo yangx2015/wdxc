@@ -7,7 +7,7 @@
             <search-items :parent="v" :showCreateButton="true" :showSearchButton="true"></search-items>
         </Row>
         <Row style="position: relative;">
-        	<Table :height="tableHeight" :columns="tableColumns" :data="pageData"></Table>
+        	<Table :height="tableHeight" :columns="tableColumns" :data="pageData" @on-selection-change="selectionClick"></Table>
         </Row>
         <Row class="margin-top-10 pageSty">
             <Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator @on-change='pageChange'></Page>
@@ -18,9 +18,16 @@
 
 <script>
     import searchItems from '../../components/searchItems'
+
     export default {
         name: 'roleSelectTable',
         components: {searchItems},
+        props:{
+            hasIds:{
+                type:Array,
+                default:[]
+            }
+        },
         data() {
             return {
                 v:this,
@@ -44,12 +51,33 @@
             }
         },
         created() {
-            this.util.initTable(this)
+            this.util.initTable(this),
+            setTimeout(() => {
+                this.checkIds();
+            },100)
+
+            //alert(this.hasIds);
         },
         methods: {
             pageChange(event) {
                 this.util.pageChange(this, event);
             },
+            checkIds(){
+                for(let r of this.hasIds){
+                    for(let t of this.pageData){
+                        if(t.jsId === r){
+                            t._checked = true;
+                        }
+                    }
+                }
+            },
+            selectionClick(arr){
+                let jsIds = [];
+                for(let r of arr){
+                    jsIds.push(r.jsId);
+                }
+                this.$emit("arrIds",jsIds);
+            }
         }
     }
 </script>

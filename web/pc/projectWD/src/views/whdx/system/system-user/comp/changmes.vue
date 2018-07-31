@@ -9,7 +9,7 @@
 				</Spin>
 			</div>
 			<div style="overflow: auto;height: 600px;width: 500px">
-				<select-role></select-role>
+				<select-role v-if="showRoleTable" :hasIds="hasIds" @arrIds="arrIds"></select-role>
 			</div>
 			<div slot='footer'>
 				<Button type="primary" @click="save">确定</Button>
@@ -22,7 +22,8 @@
 <script>
 
     import selectRole from '../../system-role/selectTable'
-	export default {
+
+    export default {
 		name: '',
         components:{selectRole},
 		data() {
@@ -33,6 +34,9 @@
 				checkAll: false,
 				checkAllGroup: [],
 				userRoles:[],
+                checkGroup: [],
+                hasIds:[],
+				showRoleTable:false,
 				roleList: [
 				],
 			}
@@ -61,10 +65,14 @@
                     if(res.code===200){
                         if (res.result){
                             this.userRoles = res.result;
+                            this.hasIds = [];
+                            for (let r of this.userRoles){
+                                this.hasIds.push(r.jsId);
+							}
 						}else{
                             this.userRoles = [];
 						}
-                        this.getRoleList();
+						this.showRoleTable = true;
                     }
                 })
 			},
@@ -75,11 +83,12 @@
 			save(){
 		        let v = this;
 				v.SpinShow = true
-                let ids = new Array();
+                /*let ids = new Array();
                 for (let r of this.checkAllGroup){
                     ids.push(r);
-				}
-                this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:ids}).then((res) =>{
+				}*/
+
+                this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:this.checkGroup}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success('操作成功');
                         this.$emit('listF',res)
@@ -87,6 +96,13 @@
                     }
                 })
 			},
+            arrIds(jsIds){
+			    let ids = [];
+			    for(let r of jsIds){
+                    ids.push(r);
+                }
+                this.checkGroup = ids;
+            }
 		}
 	}
 </script>

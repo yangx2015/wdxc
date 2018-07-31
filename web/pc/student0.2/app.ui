@@ -7,8 +7,8 @@ export default {
       "pages/detail",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/common/busLinne"
-    ],
+      "pages/common/busLinne",
+      "pages/welcome"],
     "theme": {
       "theme-color": "#3399ff"
     },
