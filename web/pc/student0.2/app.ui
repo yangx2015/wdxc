@@ -6,7 +6,8 @@ export default {
       "pages/index",
       "pages/detail",
       "pages/xlMess",
-      "pages/xlMap"
+      "pages/xlMap",
+      "pages/common/busLinne"
     ],
     "theme": {
       "theme-color": "#3399ff"
