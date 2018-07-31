@@ -17,7 +17,7 @@
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
             <ui-view class="x_site"  style="background-color:#ffffff;border-bottom:#b5c0b4 2px solid">
-              <ui-row class="y_site">
+              <ui-row class="y_site" >
                 <ui-col align="right">
                   朝海村
                 </ui-col>
