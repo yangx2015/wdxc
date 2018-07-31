@@ -1,0 +1,52 @@
+<!--flash-->
+<template>
+  <ui-page top='0'>
+    <ui-view class="titSty">
+      
+    </ui-view>
+    <ui-view class="sample_block">
+
+  <ui-view class="sample_content">
+    <ui-progress percent="100" show-info active active-color="#FC8609, #f40" border-radius='4'></ui-progress>
+  </ui-view>
+</ui-view>
+  </ui-page>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationBarTitleText: "欢迎",
+     navigationStyle: 'custom',
+    
+  },
+  data() {
+    return {}
+  },
+  methods: {},
+  mounted() {}
+}
+</script>
+
+<style lang="less">
+
+.titSty{
+  width:350rpx;
+  height:350rpx;
+  border-radius:75rpx;
+  margin:210rpx ;
+  border: #f2f2f2 3rpx solid;
+  background-image: url('../static/img/logo.jpg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  
+}
+.sample_block {
+  font-size: 14px;
+}
+
+.ui-progress {
+  margin: 225px 0;
+}
+</style>
