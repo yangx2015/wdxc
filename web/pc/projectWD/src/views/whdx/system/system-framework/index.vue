@@ -98,6 +98,12 @@
 											负责人 ：{{item.glyxm}}
 										</div>
 										<div>
+											机构编码 ：{{item.jgbm}}
+										</div>
+										<div>
+											机构说明 ：{{item.jgsm}}
+										</div>
+										<div>
 											创建时间 ：{{item.cjsj}}
 										</div>
 									</div>
@@ -111,10 +117,11 @@
 	</div>
 </template>
 <script>
-	import mixins from '@/mixins'
+    import mixins from '@/mixins'
 
     import treeList from './comp/treelist.vue'
     import modelForm from './comp/modelForm.vue'
+
     export default {
     	name:'',
     	components:{

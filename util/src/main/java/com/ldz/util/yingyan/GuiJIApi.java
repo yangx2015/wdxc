@@ -202,7 +202,7 @@ public class GuiJIApi {
 
         Map<String,String> map = new HashMap<>();
         map.put("ak",AK);
-        map.put("rectify_option","need_mapmatch:1|transport_mode:driving|denoise_grade:1|vacuate_grade:0");
+        map.put("rectify_option","need_mapmatch:1|transport_mode:driving|denoise_grade:1|vacuate_grade:2");
         map.put("point_list",JsonUtil.toJson(pointList));
 
 
