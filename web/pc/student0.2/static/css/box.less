@@ -18,8 +18,16 @@ textshowLine{
 .backF2{
   background-color: #f2f2f2;
 }
-
-
+//垂直对齐方式 用于弹性布局的 容器
+.colTop{
+  align-items:flex-start;
+}
+.colBottom{
+  align-items:flex-end;
+}
+.colCenter{
+  align-items:center ;
+}
 .box_col{//纵向
   height: 100%;
   display: flex;
@@ -60,7 +68,7 @@ textshowLine{
     overflow: auto;
   }
 }
-.box_row_z{//横向布局禁止换行
+.box_row_z{//横向布局禁止换行 父级overflow: auto;
   display: flex;
   flex-direction: row ;
   flex-wrap:nowrap ;

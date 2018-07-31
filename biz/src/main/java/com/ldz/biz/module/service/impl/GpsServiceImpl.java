@@ -74,6 +74,33 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         return entityMapper;
     }
 
+    /**
+     *
+     * 如果eventType == null 是心跳包
+     * 有eventType 记录事件表（此类型数据不多，可直接插入数据库）
+     * 收到eventType == 80 表示离线
+     * 如果终端有电子围栏，则判断是否在电子围栏之内，如果不在电子围栏，则记录异常事件
+     * 判断与上一个点的距离，如果距离过近，则不记录gps
+     *
+     * websocket推送
+     * 写轨迹段
+     * @param gpsInfo
+     * @return
+     */
+    @Override
+    public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
+        if (StringUtils.isEmpty(gpsInfo.getEventType())){
+            // 没有eventType，则说明是心跳包
+            return ApiResponse.success("HeartBeat");
+        }
+        // eventType == 80 表示离线
+        if (StringUtils.equals(gpsInfo.getEventType(), "80")) {
+            return justDoThat(gpsInfo);
+        }
+
+        return null;
+    }
+
     @Override
     public ApiResponse<String> filterAndSave(GpsInfo gpsinfo) {
         // 只要上传点位信息 则为在线状态

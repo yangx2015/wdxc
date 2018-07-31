@@ -17,36 +17,34 @@
 	    			:rules="ruleInline"
 	    			:label-width="100"
 	    			:styles="{top: '20px'}">
-		    		<div style="overflow: auto;height: 300px;">
-						<Row>
-							<Col span="10">
-								<FormItem prop="jsmc" label='角色名称：'>
-									<Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
-									</Input>
-								</FormItem>
-								<FormItem prop="jsId" label='角色代码：'>
-									<Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码" :disabled="edit">
-									</Input>
-								</FormItem>
-								<FormItem label='类型：' placeholder="请选择角色类型...">
-									<Select filterable clearable  v-model="addmess.jslx">
-										<Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
-									</Select>
-								</FormItem>
-								<FormItem label='备注：'>
-									<Input type="text" v-model="addmess.sm" placeholder="请填写备注信息...">
-									</Input>
-								</FormItem>
-							</Col>
-							<Col span="10" offset="4">
-								<FormItem label='权限选择:'>
-									<br>
-									<menu-choose v-if="showTree" :data="permissionTree" :choosedData="roleFunctionCodes" @treeChange="treeChange"></menu-choose>
-									<!--<Tree :data="permissionTree" show-checkbox multiple></Tree>-->
-								</FormItem>
-							</Col>
-						</Row>
-		    		</div>
+                    <Row>
+                        <Col span="10">
+                            <FormItem prop="jsmc" label='角色名称：'>
+                                <Input type="text" v-model="addmess.jsmc" placeholder="请填写角色名称">
+                                </Input>
+                            </FormItem>
+                            <FormItem prop="jsId" label='角色代码：'>
+                                <Input type="text" v-model="addmess.jsId" placeholder="请填写角色代码" :disabled="edit">
+                                </Input>
+                            </FormItem>
+                            <FormItem label='类型：' placeholder="请选择角色类型...">
+                                <Select filterable clearable  v-model="addmess.jslx">
+                                    <Option v-for = '(item,index) in Dictionary' :value="item.key">{{item.val}}</Option>
+                                </Select>
+                            </FormItem>
+                            <FormItem label='备注：'>
+                                <Input type="text" v-model="addmess.sm" placeholder="请填写备注信息...">
+                                </Input>
+                            </FormItem>
+                        </Col>
+                        <Col span="10" offset="4"  style="height: 580px;overflow: scroll">
+                            <FormItem label='权限选择:'>
+                                <br>
+                                <menu-choose v-if="showTree" :data="permissionTree" :choosedData="roleFunctionCodes" @treeChange="treeChange"></menu-choose>
+                                <!--<Tree :data="permissionTree" show-checkbox multiple></Tree>-->
+                            </FormItem>
+                        </Col>
+                    </Row>
 	    		</Form>
 			</div>
 			<div slot='footer'>
@@ -129,7 +127,7 @@
                     orgCode = userInfo.jgdm;
                 }
                 this.permissionTree = [];
-                this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+orgCode).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?hideSystem=true&parentCode="+orgCode).then((res) =>{
                     if(res.code===200){
                         this.permissionTree = res.result;
                         if (this.usermesType == 'edit'){
@@ -143,13 +141,13 @@
 		    getRoleFunctions(){
                 let url = this.apis.FUNCTION.GET_ROLE_FUNCTIONS+"?jsdm="+this.addmess.jsId;
                 this.$http.get(url).then((res) =>{
-                    if(res.code === 200){
+                    if(res.code === 200 && res.result){
                         for (let r of res.result){
                             this.roleFunctionCodes.push(r.gndm);
 						}
-						this.showTree = true;
                         // this.setPermissionChecked(this.permissionTree);
                     }
+                    this.showTree = true;
                 })
 			},
 			setPermissionChecked(list){

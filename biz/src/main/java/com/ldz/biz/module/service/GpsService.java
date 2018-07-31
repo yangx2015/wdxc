@@ -12,6 +12,8 @@ import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
 
 public interface GpsService extends BaseService<ClGps,String>{
+
+    ApiResponse<String> onReceiveGps(GpsInfo gpsInfo);
 	
     
 	/*

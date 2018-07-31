@@ -57,7 +57,6 @@
         },
         created() {
             this.choosedIds = this.choosedData;
-            console.log(this.choosedIds);
         },
         methods: {
             change(e){
