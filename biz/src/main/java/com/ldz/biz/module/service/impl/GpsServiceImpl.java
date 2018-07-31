@@ -93,6 +93,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             // 没有eventType，则说明是心跳包
             return ApiResponse.success("HeartBeat");
         }
+        // eventType == 80 表示离线
         if (StringUtils.equals(gpsInfo.getEventType(), "80")) {
             return justDoThat(gpsInfo);
         }
