@@ -19,6 +19,19 @@ public enum EventType {
         this.desc = desc;
     }
 
+    public boolean equals(String code){
+        return this.code.equals(code);
+    }
+
+    public static EventType toEmun(String code){
+        for (EventType value : EventType.values()) {
+            if (value.getCode().equals(code)){
+                return value;
+            }
+        }
+        return null;
+    }
+
     public String getCode() {
         return code;
     }

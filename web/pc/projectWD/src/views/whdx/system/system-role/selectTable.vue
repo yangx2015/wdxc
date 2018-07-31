@@ -21,6 +21,12 @@
     export default {
         name: 'roleSelectTable',
         components: {searchItems},
+        props:{
+            hasIds:{
+                type:Array,
+                default:[]
+            }
+        },
         data() {
             return {
                 v:this,
@@ -45,6 +51,7 @@
         },
         created() {
             this.util.initTable(this)
+            console.log(this.hasIds);
         },
         methods: {
             pageChange(event) {

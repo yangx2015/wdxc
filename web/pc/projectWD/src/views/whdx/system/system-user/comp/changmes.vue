@@ -9,7 +9,7 @@
 				</Spin>
 			</div>
 			<div style="overflow: auto;height: 600px;width: 500px">
-				<select-role></select-role>
+				<select-role v-if="showRoleTable" :hasIds="hasIds"></select-role>
 			</div>
 			<div slot='footer'>
 				<Button type="primary" @click="save">确定</Button>
@@ -33,6 +33,8 @@
 				checkAll: false,
 				checkAllGroup: [],
 				userRoles:[],
+                hasIds:[],
+				showRoleTable:false,
 				roleList: [
 				],
 			}
@@ -61,10 +63,14 @@
                     if(res.code===200){
                         if (res.result){
                             this.userRoles = res.result;
+                            this.hasIds = [];
+                            for (let r of this.userRoles){
+                                this.hasIds.push(r.jsId);
+							}
 						}else{
                             this.userRoles = [];
 						}
-                        this.getRoleList();
+						this.showRoleTable = true;
                     }
                 })
 			},
