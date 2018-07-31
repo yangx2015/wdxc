@@ -1,6 +1,6 @@
 <template>
   <ui-page  style="overflow-y: hidden;">
-      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
           <ui-row height="46">
             <ui-col vertical-align="middle" align="center" width="60">
             </ui-col>
@@ -83,7 +83,7 @@
           </ui-view>
 
 
-         <!-- <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button> -->
+         <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
       </ui-view>
   </ui-page>
 </template>

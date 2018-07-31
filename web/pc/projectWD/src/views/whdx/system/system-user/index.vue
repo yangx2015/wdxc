@@ -58,9 +58,6 @@
 
 <script>
 	import mixins from '@/mixins'
-
-
-
 	import newmess from './comp/newmes.vue'
 	import changemes from './comp/changmes.vue'
 	export default {

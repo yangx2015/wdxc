@@ -5,7 +5,7 @@
   color: #FF7F50;
 }
 .IconAnima {
-  animation: iconColor 5s linear infinite reverse;
+  animation: iconColor 4s linear infinite reverse;
 }
 @keyframes iconColor {
   0% {
