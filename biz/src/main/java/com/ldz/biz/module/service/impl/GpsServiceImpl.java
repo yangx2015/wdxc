@@ -3,6 +3,7 @@ package com.ldz.biz.module.service.impl;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
+import com.ldz.biz.constant.EventType;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.websocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
@@ -89,16 +90,98 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      */
     @Override
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
+        // 没有eventType，则说明是心跳包
         if (StringUtils.isEmpty(gpsInfo.getEventType())){
-            // 没有eventType，则说明是心跳包
             return ApiResponse.success("HeartBeat");
         }
+        saveEvent(gpsInfo);
         // eventType == 80 表示离线
-        if (StringUtils.equals(gpsInfo.getEventType(), "80")) {
+        if (StringUtils.equals(gpsInfo.getEventType(), EventType.OFFLINE.getCode())) {
             return justDoThat(gpsInfo);
         }
 
         return null;
+    }
+
+    private void saveEvent(GpsInfo gpsInfo){
+        ClGps clgps = changeCoordinates(gpsInfo);
+        String eventType = gpsInfo.getEventType();
+        String deviceId = gpsInfo.getDeviceId();
+        if (StringUtils.isNotEmpty(eventType)) {
+            if (StringUtils.equals(eventType, EventType.IGNITION.getCode())) {
+                //熄火状态的redis 设置为空
+                redis.boundValueOps("flameout" + deviceId).set(null);
+                redis.boundValueOps("ignition" + deviceId).set(clgps);
+                return;
+            }
+            if (StringUtils.equals(eventType, EventType.FLAMEOUT.getCode())) {
+                //点火状态的redis 设置为空
+                redis.boundValueOps("flameout" + deviceId).set(clgps);
+                redis.boundValueOps("ignition" + deviceId).set(null);
+                return;
+            }
+        }
+
+        String sczt = gpsInfo.getSczt();
+
+        if (StringUtils.equals(sczt, "10")) {
+
+            //熄火状态的redis 设置为空
+            redis.boundValueOps("flameout" + deviceId).set(null);
+            ClGps object = (ClGps) redis.boundValueOps("ignition" + deviceId).get();
+
+            if (ObjectUtils.isEmpty(object)) {
+                //点火状态redis赋值
+                redis.boundValueOps("ignition" + deviceId).set(clgps);
+                ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
+                clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
+                clsbyxsjjl.setCph(clcl.getCph());
+                clsbyxsjjl.setCx(clcl.getCx());
+                clsbyxsjjl.setId(genId());
+                clsbyxsjjl.setJd(clgps.getBdjd());
+                clsbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
+                clsbyxsjjl.setSjjb("10");
+                clsbyxsjjl.setSjlx("50");
+                clsbyxsjjl.setSjxm(clcl.getSjxm());
+                clsbyxsjjl.setWd(clgps.getBdwd());
+                clsbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
+                clsbyxsjjl.setZdbh(info.getDeviceId());
+                // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+                return;
+            } else {
+                return;
+            }
+        }
+
+        if (StringUtils.equals(sczt, "20")) {
+            //将点火设置为空
+            redis.boundValueOps("ignition" + deviceId).set(null);
+            ClGps object = (ClGps) redis.boundValueOps("flameout" + deviceId).get();
+            if (ObjectUtils.isEmpty(object)) {
+                //熄火状态的redis赋值
+                redis.boundValueOps("flameout" + deviceId).set(clgps);
+                ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
+                clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
+                clsbyxsjjl.setCph(clcl.getCph());
+                clsbyxsjjl.setCx(clcl.getCx());
+                clsbyxsjjl.setId(genId());
+                clsbyxsjjl.setJd(clgps.getBdjd());
+                clsbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
+                clsbyxsjjl.setSjjb("10");
+                clsbyxsjjl.setSjlx("60");
+                clsbyxsjjl.setSjxm(clcl.getSjxm());
+                clsbyxsjjl.setWd(clgps.getBdwd());
+                clsbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
+                clsbyxsjjl.setZdbh(deviceId);
+                // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+                return;
+            } else {
+                return;
+            }
+        }
+
     }
 
     @Override
@@ -107,7 +190,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         redis.boundValueOps("offline-"+gpsinfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
         log.info("上传的gps信息:" + gpsinfo);
         if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
-            if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
+            if (StringUtils.equals(gpsinfo.getEventType(), EventType.OFFLINE.getCode())) {
                 return justDoThat(gpsinfo);
             }
         }
@@ -211,7 +294,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         clSbyxsjjl.setWd(new BigDecimal(gpsinfo.getLatitude()));
         clSbyxsjjl.setJid(new BigDecimal(gpsinfo.getGpsjd()));
         clSbyxsjjl.setSjjb("10");
-        clSbyxsjjl.setSjlx("80");
+        clSbyxsjjl.setSjlx(EventType.OFFLINE.getCode());
         clSbyxsjjl.setYxfx(Double.valueOf(gpsinfo.getFxj()));
         clSbyxsjjl.setZdbh(gpsinfo.getDeviceId());
         // clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
@@ -321,7 +404,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
     @Override
     public ClGps changeCoordinates(GpsInfo entity) {
-
         ClGps clGps = new ClGps();
         if (entity.getLatitude() != null) {
             if ("-1".equals(entity.getLatitude())) return clGps;
@@ -333,7 +415,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
         // 设备记录时间
         if (StringUtils.isNotEmpty(entity.getStartTime())) {
-
             clGps.setCjsj(simpledate(entity.getStartTime()));
         }
         if (entity.getGpsjd() != null && entity.getGpsjd().length() <= 3) {
@@ -348,6 +429,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
         // 将收到的gps转换成火星坐标系(谷歌)
         Gps gps84_To_Gcj02 = PositionUtil.gps84_To_Gcj02(clGps.getWd().doubleValue(), clGps.getJd().doubleValue());
+        if (gps84_To_Gcj02 == null){
+            log.error("outOfChina:",entity.toString());
+            return clGps;
+        }
         // 将火星系坐标转换成百度坐标
         Gps gcj02_To_Bd09 = PositionUtil.gcj02_To_Bd09(gps84_To_Gcj02.getWgLat(), gps84_To_Gcj02.getWgLon());
         // 保存gps对象
@@ -355,7 +440,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         clGps.setBdwd(new BigDecimal(gcj02_To_Bd09.getWgLat()));
         clGps.setGgjd(new BigDecimal(gps84_To_Gcj02.getWgLon()));
         clGps.setGgwd(new BigDecimal(gps84_To_Gcj02.getWgLat()));
-
         return clGps;
     }
 
@@ -474,7 +558,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
         if (gpsss != null) {
             if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
-                if (StringUtils.equals(gpsinfo.getEventType(), "80")) {
+                if (StringUtils.equals(gpsinfo.getEventType(), EventType.OFFLINE.getCode())) {
                     info.setZxzt("20");
                     info.setBdjd(gpsss.getBdjd().toString());
                     info.setBdwd(gpsss.getBdwd().toString());
