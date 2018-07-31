@@ -34,6 +34,7 @@
 				checkAll: false,
 				checkAllGroup: [],
 				userRoles:[],
+                checkGroup: [],
                 hasIds:[],
 				showRoleTable:false,
 				roleList: [
@@ -82,11 +83,12 @@
 			save(){
 		        let v = this;
 				v.SpinShow = true
-                let ids = new Array();
+                /*let ids = new Array();
                 for (let r of this.checkAllGroup){
                     ids.push(r);
-				}
-                this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:ids}).then((res) =>{
+				}*/
+
+                this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES,{userId:this.usermes.yhid,roleIds:this.checkGroup}).then((res) =>{
                     if(res.code===200){
                         this.$Message.success('操作成功');
                         this.$emit('listF',res)
@@ -99,7 +101,7 @@
 			    for(let r of jsIds){
                     ids.push(r);
                 }
-                this.checkAllGroup = ids;
+                this.checkGroup = ids;
             }
 		}
 	}
