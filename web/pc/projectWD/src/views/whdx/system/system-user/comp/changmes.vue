@@ -8,16 +8,8 @@
 					<div style="font-size: 30px;">数据加载中请稍后</div>
 				</Spin>
 			</div>
-			<div style="overflow: auto;height: 300px;">
-				<div style="border-bottom: 1px solid #e9e9e9;padding-bottom:6px;margin-bottom:6px;">
-					<Checkbox :indeterminate="indeterminate" :value="checkAll" @click.prevent.native="handleCheckAll">全选</Checkbox>
-				</div>
-				<CheckboxGroup v-model="checkAllGroup" @on-change="checkAllGroupChange">
-					<div class="CheckboxList" v-for="item in roleList" 
-						style="margin-bottom: 6px;margin-left:15px;">
-						<Checkbox :label="item.key">{{item.value}}</Checkbox>
-					</div>
-				</CheckboxGroup>
+			<div style="overflow: auto;height: 600px;width: 500px">
+				<select-role></select-role>
 			</div>
 			<div slot='footer'>
 				<Button type="primary" @click="save">确定</Button>
@@ -29,8 +21,10 @@
 
 <script>
 
+    import selectRole from '../../system-role/selectTable'
 	export default {
 		name: '',
+        components:{selectRole},
 		data() {
 			return {
 				SpinShow:false,
@@ -56,21 +50,6 @@
             this.getUserRoles();
 		},
 		methods: {
-		    getRoleList(){
-                this.$http.get(this.apis.ROLE.QUERY,{params:{pageSize:1000}}).then((res) =>{
-                    if(res.code===200 && res.page.list){
-                        this.roleList = [];
-                        let list = res.page.list;
-                        for(let r of list){
-                            let t = {key:r.jsId,value:r.jsmc};
-							this.roleList.push(t);
-							if (this.hasRole(r.jsId)){
-							    this.checkAllGroup.push(r.jsId)
-							}
-                        }
-                    }
-                })
-			},
 			hasRole(roleId){
 		        for(let r of this.userRoles){
 		            if (r.jsId == roleId)return true;
@@ -108,30 +87,6 @@
                     }
                 })
 			},
-			handleCheckAll() {
-				var v = this
-				if(v.indeterminate) {
-					v.checkAll = false;
-				} else {
-					v.checkAll = !this.checkAll;
-				}
-				v.indeterminate = false;
-				if(v.checkAll) {
-					v.roleList.forEach((item, index) => {
-						v.checkAllGroup.push(item.key)
-					})
-				} else {
-					v.checkAllGroup = [];
-				}
-			},
-			checkAllGroupChange(data) {
-                var v = this
-				if(data.length == v.roleList.length) {
-					v.checkAll = true;
-				} else {
-					v.checkAll = false;
-				}
-			}
 		}
 	}
 </script>

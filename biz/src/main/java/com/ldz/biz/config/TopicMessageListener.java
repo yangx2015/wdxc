@@ -190,11 +190,12 @@ public class TopicMessageListener implements MessageListener {
         }*/
         String start_end =null;
         try {
-            start_end =  guiJiJiuPian(zdbh, s, e);
+            start_end =  newGuiJiJiuPian(zdbh, startTime, endTime);
         }catch (Exception e2){
             if(StringUtils.equals(type,"start_end")) {
                 // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
                 redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
+                return;
             }else if(StringUtils.equals(type,"compencate")){
                 // 存储当前原始轨迹点
                 start_end=  saveGps(zdbh,startTime,endTime);
@@ -244,9 +245,8 @@ public class TopicMessageListener implements MessageListener {
             clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
             clyy.setLoc_time(parse(point1.getLoc_time()) );
             yyList.add(clyy);
-            clYyService.saveBatch(yyList);
         });
-
+        clYyService.saveBatch(yyList);
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
 
         return start_end;

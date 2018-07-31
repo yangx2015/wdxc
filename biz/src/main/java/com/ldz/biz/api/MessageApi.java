@@ -1,22 +1,17 @@
 package com.ldz.biz.api;
 
 import com.ldz.biz.module.bean.GpsInfo;
-import com.ldz.biz.module.model.ClGpsLs;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.PointListBean;
-import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.redis.RedisTemplateUtil;
-import com.ldz.util.yingyan.GuiJIApi;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import tk.mybatis.mapper.entity.Example;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /*
  * 业务系统对外开放的接口
@@ -67,7 +62,7 @@ public class MessageApi {
 		return  intstruction.batchUpdate(info,jgdm);
 	}
 
-	@GetMapping("/test")
+	/*@GetMapping("/test")
 	public String test(){
 		SimpleCondition s = new SimpleCondition(ClGpsLs.class);
 		Example.Criteria criteria = s.createCriteria();
@@ -89,7 +84,7 @@ public class MessageApi {
 		});
 
 		return GuiJIApi.trackPoint(listBeans);
-	}
+	}*/
 
 	/*@GetMapping("test")
 	public void s(){
