@@ -7,7 +7,7 @@ export default {
       "pages/detail",
       "pages/xlMess",
       "pages/xlMap"
-    ],
+    ,"pages/welcome"],
     "theme": {
       "theme-color": "#3399ff"
     },
