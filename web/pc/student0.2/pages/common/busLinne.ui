@@ -1,0 +1,81 @@
+<!---->
+<template>
+    <ui-view style="height: 100%">
+      <ui-view class="buslineSty">
+          <ui-view class="bus">
+              <ui-icon type="bus2" size="20"></ui-icon>
+          </ui-view>
+          <ui-view class="code">
+            <ui-icon type="yuan-copy-copy-copy-copy" size="16"></ui-icon>
+          </ui-view>
+          <ui-view class="line">
+            <ui-icon type="jianxianxing" size="50"></ui-icon>
+          </ui-view>
+          <ui-view class="nameList">
+            <ui-view class="nameItem" ui:for="{{name}}">
+                {{item}}
+            </ui-view>
+          </ui-view>
+
+      </ui-view>
+    </ui-view>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationStyle:'custom'
+  },
+  data() {
+    return {
+      name:[]
+    }
+  },
+  props:{
+    stationName:{
+      type:String,
+      default:'站点名称'
+    }
+  },
+  created () {
+    this.name = this.stationName.split('')
+  },
+  mounted() {
+  },
+  methods: {}
+}
+</script>
+
+<style lang="less">
+.buslineSty{
+  position: relative;
+  background: #f00;
+  width: 110rpx;
+  height: 100%;
+  .bus{
+    position: absolute;
+    top: 5rpx;
+    left: 0;
+  }
+  .code{
+    position: absolute;
+    top: 60rpx;
+    left: 0;
+  }
+  .line{
+    position: absolute;
+    top: 10rpx;
+    left: 20rpx;
+  }
+  .nameList{
+    position: absolute;
+    top: 100rpx;
+    left: 0;
+    .nameItem{
+      font-size: 26rpx;
+      line-height: 30rpx;
+    }
+  }
+
+}
+</style>
