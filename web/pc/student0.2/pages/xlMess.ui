@@ -3,7 +3,8 @@
   <ui-page  style="overflow-y: hidden;">
     <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
         <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+            <ui-icon type="left" size="16" color="#fff"></ui-icon>
           </ui-col>
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">208</ui-view>
@@ -16,66 +17,29 @@
 
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
-            <ui-view class="x_site"  style="background-color:#ffffff;border-bottom:#b5c0b4 2px solid">
-              <ui-row class="y_site">
-                <ui-col align="right">
-                  朝海村
-                </ui-col>
-                  <ui-icon type="arrow-left-e"></ui-icon>
-                <ui-col >
-                  建设大道维嘉桑园武汉大学
-                </ui-col>
-              </ui-row>
-              
-              <ui-row style="font-size=15rpx" class="z_site" height="50%">
-                <ui-col align="left" vertical-align="bottom">
-                运行时间 ：6-22  ， 票价 约1-2元
-                </ui-col>
-              </ui-row>
+            <ui-view class="lineMess">
+                <ui-view>
+                  开往：目的地
+                </ui-view>
+                <ui-view>
+                  首班：0：00 末班：24：00
+                </ui-view>
             </ui-view>
-            
-            <ui-view class="x_site" style="border-bottom:#b5c0b4 2px solid">
-              
-              <ui-row class="y_site" >
-              <ui-col align="center" border-right="true">x站后</ui-col>
-              <ui-col align="center" border-left="true">x站后</ui-col>
-              </ui-row>
-              <ui-row class="z_site">
-              <ui-col align="center" border-right="true">第一辆车到达</ui-col>
-              <ui-col align="center" border-left="true">第二辆车到达</ui-col>
-              </ui-row>
-            </ui-view>
-            <ui-view>
 
+            <ui-view class="busMess box_row">
+                <ui-view class="box_row_100 leftmess">
+                    <ui-view>
+                      <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                    </ui-view>
+                    <ui-view>
+                      
+                    </ui-view>
+
+                </ui-view>
+                <ui-view class="box_row_100 rightmess">
+                  
+                </ui-view>
             </ui-view>
-              <ui-scroll-view scroll-x height="400" scroll-into-view.sync="{{toView}}"
-                scroll-left="{{scrollLeft}}" 
-                >
-                  <ui-view class="content">
-                      <ui-view class="wrap">
-                        <ui-timeline style="width:100%;" mode="row" point-style="circle">
-                          <ui-timeline-item 
-                            ui:for="{{list}}"  
-                            ui:key="index" 
-                            point-color="{{index <= 2 ? '#FF7F50' : '#8a8a8a'}}"  
-                            line-color="{{index<=1?'#FF7F50':''}}"
-                            shadow-class="{{index === 2 ? 'shadow-class' : ''}}"
-                            show-line="{{index === (list.length - 1) ? false : true}}"
-                            >
-                          <ui-row class="zindex">
-                            <ui-col span=12 class="continer">
-                              <ui-row class="list">
-                              <ui-col span=6 class="item" style="color:#AAAAAA;" :style="{'color': index === 2 ? '#3399ff' : '#AAAAAA','font-weight':index === 2 ? 600 : ''}">{{item.time}}
-                                </ui-col>
-                              <ui-col span=6 class="item" style="text-align: left">{{item.content}} </ui-col>
-                              </ui-row>
-                            </ui-col>
-                          </ui-row>
-                          </ui-timeline-item>
-                        </ui-timeline>
-                      </ui-view>
-                  </ui-view>
-                </ui-scroll-view>
 
             <!-- 页面内容 end-->
           </ui-view>
@@ -93,21 +57,18 @@ export default {
     navigationBarTextStyle:"white",
     navigationBarTitleText:"线路详情",
     title:'线路详情',
-    backgroundColor:'#f2f2f2',
+    backgroundColor:'#fff',
     delay:false,
     disableScroll:true,//延迟加载
   },
   data() {
     return {
-      toView: 'a4',
-      scrollLeft: 100,
-      list: [],
-      left: (window.innerWidth - 280) / 2,
-      winWidth: window.innerWidth,
-      color: ''
     }
   },
   methods: {
+    Goback(){
+      ui.navigateBack()
+    },
     goIndex () {
       ui.navigateTo({
         url: '/pages/index'
@@ -118,88 +79,18 @@ export default {
         url: '/pages/xlMap'
       })
     },
-     tap () {
-      this.toView = 'a6'
-    },
-    tapMove () {
-      this.scrollLeft = this.scrollLeft + 20
-    },
-    backTop () {
-      this.scrollLeft = 0
-    }
   },
   mounted() {
-    this.list.splice(0,0,
-    {time: '今天 05-14', content: '0.28'},
-    {time: '周一 05-15', content: 'weiminghu'},
-    {time: '周二 05-16', content: 'weiminghu'},
-    {time: '周三 05-17', content: 'weiminghu'},
-    {time: '周四 05-18', content: 'weiminghu'},
-    {time: '周五 05-18', content: 'weiminghu'},
-    {time: '周五 05-18', content: 'weiminghu'}
-    )
   }
 }
 </script>
 
 <style lang="less">
-.x_site{
-  background-color:#ffffff;
-  height: 160rpx;
-  font-size: 30rpx;
-  font-weight: 200;
-
+.lineMess{
+  padding: 15rpx 25rpx;
 }
-.z_site{
-  font-size: 24rpx;
+.busMess{
+  border-top: #f2f2f2 3rpx solid;
+  border-bottom: #f2f2f2 5rpx solid;
 }
-.content{
-   flex-grow:1;
-  background-color: #FFFFFF;
-  width:1800px;
-  .mix-clearfix();
-}
-.item{
-  width: 300px;
-  height: 200px;
-  float: left;
-  color: #FFFFFF;
-  line-height: 200px;
-  text-align: center;
-}
-.wrap{
-  overflow: auto;
-  background: #ffffff;
-  border-radius: 4px;
-  width: 80%;
-  margin: 50px auto;
-  .continer{
-    padding: 42px;
-    position: relative;
-    .list{
-      position: absolute;
-      top: -5px;
-      width: 100%;
-      left: 40px;
-      .item{
-        font-size: 15px;
-      }
-    }
-  }
-}
-.shadow-class {
-  &:before {
-    content: '';
-    display: block;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: rgba(51, 153, 255,.3);
-    position: absolute;
-    left: -5px;
-    top: -5px;
-    z-index: 1;
-  }
-}
-
 </style>
