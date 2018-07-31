@@ -11,22 +11,9 @@
 				</Spin>
 			</div>
 			<div style="overflow: auto;height: 300px;">
-				<Form
-						ref="addmess"
-						:model="addmess"
-						:rules="ruleInline"
-						:label-width="100"
-						:styles="{top: '20px'}">
-					<div style="overflow: auto;height: 300px;">
-						<FormItem prop="jsmc" label='角色名称：'>
-							<Input type="text" v-model="addmess.jsmc" readonly>
-							</Input>
-						</FormItem>
-						<FormItem label='权限选择:'>
-							<Tree :data="data4" show-checkbox multiple></Tree>
-						</FormItem>
-					</div>
-				</Form>
+				
+
+
 			</div>
 			<div slot='footer'>
 				<Button type="ghost" @click="colse">取消</Button>
@@ -37,7 +24,6 @@
 </template>
 
 <script>
-    import treelist from '@/data/list.js'
 
 
     export default {

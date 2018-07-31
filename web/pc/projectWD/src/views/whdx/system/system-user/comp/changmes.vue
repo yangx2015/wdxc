@@ -9,7 +9,7 @@
 				</Spin>
 			</div>
 			<div style="overflow: auto;height: 600px;width: 500px">
-				<select-role v-if="showRoleTable" :hasIds="hasIds"></select-role>
+				<select-role v-if="showRoleTable" :hasIds="hasIds" @arrIds="arrIds"></select-role>
 			</div>
 			<div slot='footer'>
 				<Button type="primary" @click="save">确定</Button>
@@ -22,7 +22,8 @@
 <script>
 
     import selectRole from '../../system-role/selectTable'
-	export default {
+
+    export default {
 		name: '',
         components:{selectRole},
 		data() {
@@ -93,6 +94,13 @@
                     }
                 })
 			},
+            arrIds(jsIds){
+			    let ids = [];
+			    for(let r of jsIds){
+                    ids.push(r);
+                }
+                this.checkAllGroup = ids;
+            }
 		}
 	}
 </script>
