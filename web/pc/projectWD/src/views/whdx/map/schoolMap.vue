@@ -28,8 +28,8 @@
 <template>
 	<div style="height: 100%;position: relative;">
                     <span>
-                        <CheckboxGroup v-model="choosedLineIds">
-                            <Checkbox v-for="(item,index) in lineList" :label="item.xlmc"></Checkbox>
+                        <CheckboxGroup v-model="choosedLineIndexs" @on-change="lineChange">
+                            <Checkbox v-for="(item,index) in lineList" :label="index">{{item.xlmc}}</Checkbox>
                         </CheckboxGroup>
                     </span>
 		<div id="allmap"></div>
@@ -42,7 +42,7 @@
 <script>
     import SockJS from 'sockjs-client';
     import Stomp from '@stomp/stompjs';
-
+    import $ from 'jquery'
     export default {
 		name:'',
 		data(){
@@ -53,12 +53,13 @@
 	    			lat: 30.551134
 				},
                 lineList:[],
-                choosedLineIds:[],
+                choosedLineIndexs:[],
 				zoom:16,
 				zoomDot:[],
                 scoketMess:[],
                 allDeviceList: [],
                 socket : new SockJS(this.$http.url+"/gps"),
+                stationIconUrl:'http://47.98.39.45:9092/icon/running.png',
 			}
 		},
 		computed: {
@@ -95,6 +96,37 @@
             this.getLineList()
 		},
 		methods:{
+            showRoute(line){
+                // 显示线路
+                this.showLine(line);
+                // 显示站点
+                this.showStations(line);
+                // 显示车辆
+            },
+            showLine(line){
+                if (!line.points)return;
+                let ps = [];
+                for (let r of line.points){
+                    ps.push(new BMap.Point(r.lng, r.lat));
+                }
+                var polyline = new BMap.Polyline(ps,
+                    {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+                );
+                this.map.addOverlay(polyline);
+            },
+            showStations(line){
+                let stationList = line.stationList;
+                if (!stationList)return;
+                let c = 0;
+                for (let r of stationList){
+                    var myIcon = new BMap.Icon(this.stationIconUrl, new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+                    // var marker = new BMap.Marker(new BMap.Point(r.lng, r.lat), {icon: myIcon});
+                    var marker = new BMap.Marker(new BMap.Point(r.jd, r.wd));
+                    this.map.addOverlay(marker);
+                    this.addLabel(r,++c);
+                }
+            },
+            // 获取线路列表
             getLineList(){
                 var v = this
                 this.$http.post(this.apis.XL.QUERY, {'lx': 30,pageSize:1000}).then((res) => {
@@ -102,35 +134,85 @@
                         this.lineList = res.page.list;
                         for (let i in this.lineList){
                             this.getLineStations(i);
-						}
+                        }
                     }
                 })
             },
-			getLineStations(i){
+            // 获取线路上的站点
+            getLineStations(i){
                 var v = this
+                this.lineList[i].stationList = [];
                 this.$http.post(this.apis.ZD.GET_BY_ROUTE_ID, {'xlId': this.lineList[i].id}).then((res) => {
                     if (res.code == 200 && res.result){
-
                         this.lineList[i].stationList = res.result;
-                        // for (let i = 0;i<= res.result.length - 1;i++){
-                        const middle = [];
-                        for(let i = 1; i <= res.result.length -2 ; i++){
-                            middle.push(new BMap.Point(res.result[i].jd,res.result[i].wd));
-                        }
-                        this.drivingLine(new BMap.Point(res.result[0].jd,res.result[0].wd),new BMap.Point(res.result[res.result.length -1].jd,res.result[res.result.length -1].wd),middle)
-
+                        this.getLinePoints(i);
+                        // if (i == this.lineList.length - 1){
+                        //     let list = [];
+                        //     for(let index in this.lineList){
+                        //         list.push(index);
+                        //     }
+                        //     this.lineChange(list);
+                        // }
                     }
                 })
-			},
+            },
+		    // 获取一条线路的途径点
+		    getLinePoints(index){
+		        let line = this.lineList[index];
+		        if (!line || !line.stationList){
+		            return;
+                }
+                let stationList = line.stationList;
+                let startPoint = new BMap.Point(stationList[0].wd,stationList[0].jd);
+		        let endPoint = new BMap.Point(stationList[stationList.length -1].wd,stationList[stationList.length -1].jd);
+		        let waypoints = '';
+		        for (let i = 1;i<=stationList.length - 2;i++){
+		            let station = stationList[i];
+                    waypoints += station.wd+','+station.jd;
+                    if (i < stationList.length - 2){
+                        waypoints += '|';
+                    }
+                }
+		        let url = 'http://api.map.baidu.com/direction/v2/driving?origin='+stationList[0].wd+','+stationList[0].jd+'&destination='+stationList[stationList.length -1].wd+','+stationList[stationList.length -1].jd+'&ak=evDHwrRoILvlkrvaZEFiGp30';
+		        url += '&waypoints='+waypoints;
+		        let points = [];
+		        let v = this;
+		        $.ajax({
+                    url:url,
+                    type:"get",
+                    dataType:'JSONP',
+                    success:function(res){
+                        if (res.status == 0){
+                            let route = res.result.routes[0];
+                            points.push({lat:route.origin.lat,lng:route.origin.lng});
+                            for (let r of route.steps){
+                                points.push({lng:r.end_location.lng,lat:r.end_location.lat});
+                            }
+                            line.points = points;
+                            // v.showLine(line);
+                        }
+                    }
+                })
+            },
+            // 线路复选框选中值发生变化时触发此事件
+		    lineChange(e){
+                this.map.clearOverlays()
+                this.choosedLineIndexs = e;
+                for(let i of this.choosedLineIndexs){
+                    this.showRoute(this.lineList[i]);
+                }
+            },
+            // 获取设备信息
             getAllDevice() {
                 this.$http.get(this.apis.ZDGL.QUERY+'?pageSize=10000').then((res)=>{
                     if (res.code == 200 && res.page.list){
                         this.addDeviceList = res.page.list;
-                        this.sco();
+                        this.subscribe();
                     }
                 })
             },
-            sco(){
+            //订阅消息
+            subscribe(){
                 var v = this
                 v.socket.onopen = function() { };
                 v.socket.onmessage = function(e) { };
@@ -165,11 +247,12 @@
                     v.addLabel(list[i], point);
 				}
 			},
-            addLabel(item,point) {
-                let html = '<div style="width: 160px;height: 28px;padding:4px;">' +
-                    '<span>['+item.cph+']</span> ' +
-                    '<span style="float: right">'+item.speed+' km/h</span>' +
-                    '</div>'
+            // 站点详情
+            addLabel(item,i) {
+                let html = '<div style="width: 160px;height: 28px;padding:4px;text-align: center">' +
+                    '<span>'+item.mc+'['+i+']</span> ' +
+                    '</div>';
+                let point = new BMap.Point(item.jd, item.wd);
                 var myLabel = new BMap.Label(html,     //为lable填写内容
                     {
                         offset: new BMap.Size(-80, -70),                  //label的偏移量，为了让label的中心显示在点上
@@ -229,30 +312,26 @@
 			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
 			},
-            drivingLine(startPoint,endPoint,index){
-
-                let v = this;
-                var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
-                    //offset: new BMap.Size(0, -5),    //相当于CSS精灵
-                    imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
-                });
-
-                var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
-
-                driving.search(startPoint, endPoint, {waypoints: index});
-                console.log("index ------> " + index);
-                driving.setSearchCompleteCallback(function(){
-                    console.log("result:",driving.getResults());
-                    var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
-                    //this.map.addOverlay(pts);
-                    var paths = pts.length;    //获得有几个点
-
-                    //
-                    // var carMk = new BMap.Marker(pts[0],{icon:myIcon});
-                    // v.map.addOverlay(carMk);
-                    // i=0;
-                });
-            },
+            // drivingLine(startPoint,endPoint,points){
+            //     let v = this;
+            //     var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
+            //         //offset: new BMap.Size(0, -5),    //相当于CSS精灵
+            //         imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
+            //     });
+            //
+            //     var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
+            //     driving.search(startPoint, endPoint, {waypoints: points});
+            //     driving.setSearchCompleteCallback(function(){
+            //         var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
+            //         //this.map.addOverlay(pts);
+            //         var paths = pts.length;    //获得有几个点
+            //
+            //         //
+            //         // var carMk = new BMap.Marker(pts[0],{icon:myIcon});
+            //         // v.map.addOverlay(carMk);
+            //         // i=0;
+            //     });
+            // },
             //清除层
 			clear(){
 				this.map.clearOverlays()

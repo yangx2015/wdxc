@@ -59,7 +59,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     public static String APP_IMEI = "";
     public static String APP_SIMCID = "";
     public static API mApi;
-    private static double carSpeed = 40.00; //车辆速度
+    private static double carSpeed = 120.00; //车辆速度
     public static String CAR_HB_MP4_TASKID = "";//合并视频的任务id
     public static Integer CAR_UP_SPEED_COUNT = 15;//连续超速倒计时  超速之后触发判断是否等于0 等于0让其播报一次
     public static boolean CAR_ON_RUN = false;//车辆是否点火
@@ -84,7 +84,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         initApi();
         initLocal();//初始化定位
         timerRun = (Integer)AppSharedpreferencesUtils.get(AppConsts.UPLOAD_GPS_TIMER,10000);//默认20秒更新上传一次的心跳
-        carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,40.00).toString());//车辆超速设定，默认80
+        carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,120.00).toString());//车辆超速设定，默认80
 
         //5秒后执行 每5秒执行
         handler.postDelayed(timeRunExc, 5000);
@@ -439,7 +439,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     public double getCarSpeedSetting(){
         // carSpeed = AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,40.00)
-        carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,40.00).toString());
+        carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,120.00).toString());
         return carSpeed;
     }
 
