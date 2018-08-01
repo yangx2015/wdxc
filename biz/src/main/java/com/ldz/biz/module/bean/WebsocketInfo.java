@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class websocketInfo {
+public class WebsocketInfo {
 
 	private String clid;
 	
