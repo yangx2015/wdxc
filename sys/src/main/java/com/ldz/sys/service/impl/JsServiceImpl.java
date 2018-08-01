@@ -119,7 +119,7 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
 
 		if(CollectionUtils.isNotEmpty(jsIds)) {
 			// 插入新数据
-			jsIds.stream().forEach(jsId -> {
+			jsIds.forEach(jsId -> {
 				SysYhJs userRole = new SysYhJs();
 				userRole.setYhjsId(genId());
 				userRole.setJsId(jsId);
