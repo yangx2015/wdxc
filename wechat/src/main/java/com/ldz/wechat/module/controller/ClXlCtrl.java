@@ -1,6 +1,7 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.wechat.module.model.ClClyxjl;
 import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.model.SysHdyx;
@@ -36,6 +37,10 @@ public class ClXlCtrl {
     	return wxXlService.getStationGpsList(xlId);
 	}
 
+	@RequestMapping("getBusPositions")
+	public ApiResponse<List<ClClyxjl>> getBusPositions(String xlId){
+    	return wxXlService.getBusPositions(xlId);
+	}
 	/**
 	 * 查询所有线路
 	 * @return

@@ -3,6 +3,7 @@ package com.ldz.wechat.module.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.exception.RuntimeCheck;
 import com.ldz.wechat.module.bean.ClClyxjlModel;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
+import java.text.ParseException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,7 +34,6 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private ClXlzdMapper xlzdMapper;
 	@Autowired
 	private ClZdMapper zdMapper;
-
 	@Autowired
 	private ClyxjlService clyxjlService;
 
@@ -175,4 +176,22 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		return ApiResponse.success(list);
 	}
 
+	@Override
+	public ApiResponse<List<ClClyxjl>> getBusPositions(String xlId) {
+		RuntimeCheck.ifBlank(xlId,"请输入线路");
+		String today = DateUtils.getToday() + " 00:00:00";
+		Date todayDate = null;
+		try {
+			todayDate = DateUtils.getDate(today,"yyyy-MM-dd hh:mm:ss");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+		if (!StringUtils.isEmpty(xlId)){
+			condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+		}
+		condition.gte(ClClyxjl.InnerColumn.cjsj,todayDate);
+		List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
+		return ApiResponse.success(clClyxjls);
+	}
 }
