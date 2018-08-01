@@ -12,11 +12,28 @@ public class DdClModel {
     private String zdName;//站点名称
     private long vehicleCount;//该站点下车辆的数量
     private long vehicleScope;//站点范围
-
+    private String zdJd;//站点经度
+    private String zdWd;//站点纬度
     private long entryCount=0;//到站车辆
 
     private long exportCount=0;//出站车辆
     private List<ClClyxjlModel> vehicleList;//当前站点的车辆节点
+
+    public String getZdJd() {
+        return zdJd;
+    }
+
+    public void setZdJd(String zdJd) {
+        this.zdJd = zdJd;
+    }
+
+    public String getZdWd() {
+        return zdWd;
+    }
+
+    public void setZdWd(String zdWd) {
+        this.zdWd = zdWd;
+    }
 
     public long getEntryCount() {
         return entryCount;
