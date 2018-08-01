@@ -1,9 +1,10 @@
 <!---->
 <template>
   <ui-page  style="overflow-y: hidden;">
-    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FC8609'} }}">
         <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+            <ui-icon type="left" size="16" color="#fff"></ui-icon>
           </ui-col>
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">地图查看</ui-view>
@@ -26,7 +27,7 @@
 
                 <ui-view id="allmap" style="{{{height:height+'px'}}}"></ui-view>
 
-            <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
+            
 <!-- 页面内容 end-->
 
           </ui-view>
@@ -54,33 +55,53 @@ export default {
         {Icon:"../static/img/Bus.png",}
       ],
       carList:[
-          {
-            lng :"114.37267",
-            lat : "30.544949",
-          },
-          {
-            lng :"114.375509",
-            lat : "30.545229",
-          }
-      ]
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543083",
+          // },
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543073",
+          // },
+          // {
+          //   jd :"114.378917",
+          //   wd : "30.543183",
+          // },
+      ],
+      xlID:''
     }
   },
+  created(){
+    this.xlID= ui.getApp().station.xlID
+    this.getBusCode()
+  },
   methods: {
+    getBusCode(){
+      this.$http('POST',ui.getApp().apis.XLMAP,{xlId:this.xlID},(res)=>{
+          console.log('数据请求====',res);
+          this.carList = res.result
+      })
+    },
     goXlMess () {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
     },
+    Goback(){
+      ui.navigateBack()
+    },
     addMarker(item, point) {
+        var myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(50,50),{imageSize: new BMap.Size(50,50),anchor: new BMap.Size(25, 25)} );
+        
       // var myIcon = new BMap.Icon(v.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
-      var marker = new BMap.Marker(point);
+      var marker = new BMap.Marker(point,{icon:myIcon});
       this.map.addOverlay(marker);
       // this.addClickHandler(item, marker);
     },
     showCarPosition() {
       var v = this
       for (let r of this.carList) {
-          var point = new BMap.Point(r.lng, r.lat);
+          var point = new BMap.Point(r.jd, r.wd);
           this.addMarker(r, point);
         }
     },
@@ -98,13 +119,16 @@ export default {
       v.map.centerAndZoom(point, 15);    
       // var marker = new BMap.Marker(point);
       // v.map.addOverlay(marker);     
-      v.showCarPosition();  
-
+      for (let r of v.carList) {
+          var point = new BMap.Point(r.jd, r.wd);
+          v.addMarker(r, point);
+        };
+      
+      
       // 自定义icon,创建标注
-        var pt = new BMap.Point(114.368107 , 30.543083);
-        var myIcon = new BMap.Icon("/static/img/gjzp.png", new BMap.Size(50,50),{imageSize: new BMap.Size(50,50),anchor: new BMap.Size(25, 25)} );
-        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
-        v.map.addOverlay(marker2); 
+        
+// 创建标注
+        // v.map.addOverlay(marker2); 
       
       
       //添加地图类型控件
