@@ -187,27 +187,36 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         for (Map<String, Object> nearbyRouter : nearbyRouters) {
             String routerId = (String) nearbyRouter.get("id");
             if (StringUtils.isEmpty(routerId))continue;
-            Map<String,Object> station = getStationByXlId(routerId,nearbyStations);
-            if (station == null)continue;
-            Short order = getStationOrder(((String) nearbyRouter.get("id")),station.get("id").toString());
-            nearbyRouter.put("order",order);
-            List<Map<String,Object>> routerList = (List<Map<String, Object>>) station.get("routerList");
-            ApiResponse<List<Integer>> nsRes = xlService.getNextCars(routerId,station.get("id").toString());
-            if (nsRes.isSuccess() && nsRes.getResult() != null){
-                nearbyRouter.put("nextBus",nsRes.getResult());
+            List<Map<String,Object>> stationList = getStationsByXlId(routerId,nearbyStations);
+            if (stationList.size() == 0)continue;
+            for (Map<String, Object> station : stationList) {
+                Map<String, Object> router = new HashMap<>(nearbyRouter);
+                Short order = getStationOrder(((String) router.get("id")),station.get("id").toString());
+                router.put("order",order);
+                List<Map<String,Object>> routerList = (List<Map<String, Object>>) station.get("routerList");
+                ApiResponse<List<Integer>> nsRes = xlService.getNextCars(routerId,station.get("id").toString());
+                if (nsRes.isSuccess() && nsRes.getResult() != null){
+                    router.put("nextBus",nsRes.getResult());
+                }
+                routerList.add(router);
             }
-            routerList.add(nearbyRouter);
         }
+        nearbyStations.sort((o1, o2) -> {
+            int distance1 = (int) o1.get("distance");
+            int distance2 = (int) o2.get("distance");
+            return distance1 - distance2;
+        });
         return ApiResponse.success(resultMap);
     }
-    private Map<String,Object> getStationByXlId(String xlId,List<Map<String,Object>> nearbyStations){
+    private List<Map<String,Object>> getStationsByXlId(String xlId,List<Map<String,Object>> nearbyStations){
+        List<Map<String,Object>> stationList = new ArrayList<>();
         for (Map<String, Object> station : nearbyStations) {
             String xlid = (String) station.get("xlId");
             if (xlId.equals(xlid)){
-                return station;
+                stationList.add(station);
             }
         }
-        return null;
+        return stationList;
     }
 
     private void setRouterIds(List<Map<String,Object>> list,List<ClXlzd> xlzds){

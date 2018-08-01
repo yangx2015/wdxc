@@ -101,7 +101,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             return handleOffline(gpsInfo);
         }
 
-        return null;
+        return ApiResponse.success();
     }
 
     private void handleEvent(GpsInfo gpsInfo){
@@ -114,14 +114,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (type == null)return;
             switch (type){
                 case IGNITION:
-                    //熄火状态的redis 设置为空
-                    redis.boundValueOps("flameout" + deviceId).set(null);
-                    redis.boundValueOps("ignition" + deviceId).set(clgps);
                     return;
                 case FLAMEOUT:
-                    //点火状态的redis 设置为空
-                    redis.boundValueOps("flameout" + deviceId).set(clgps);
-                    redis.boundValueOps("ignition" + deviceId).set(null);
                     return;
                 case OFFLINE:
                     //移除掉存储的点火状态 熄火状态
@@ -173,11 +167,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         ClCl car = cars.get(0);
         if ("10".equals(sczt)) {
             //熄火状态的redis 设置为空
-            redis.boundValueOps("flameout" + deviceId).set(null);
             ClGps object = (ClGps) redis.boundValueOps("ignition" + deviceId).get();
             if (ObjectUtils.isEmpty(object)) {
                 //点火状态redis赋值
-                redis.boundValueOps("ignition" + deviceId).set(clgps);
                 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
                 clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
                 clsbyxsjjl.setCph(car.getCph());
@@ -198,11 +190,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         if ("20".equals(sczt)) {
             //将点火设置为空
-            redis.boundValueOps("ignition" + deviceId).set(null);
             ClGps currentGps = (ClGps) redis.boundValueOps("flameout" + deviceId).get();
             if (ObjectUtils.isEmpty(currentGps)) {
                 //熄火状态的redis赋值
-                redis.boundValueOps("flameout" + deviceId).set(clgps);
                 ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
                 clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
                 clsbyxsjjl.setCph(car.getCph());
