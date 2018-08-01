@@ -65,7 +65,7 @@
                 <ui-swiper-item class="box_col_auto">
                     <ui-view class="ListItemSty">
                       <ui-view class="stationRouterBox">
-                          <ui-view class="stationRouterItem" ui:for="{{StationMess.otherRouters}}">
+                          <ui-view class="stationRouterItem" ui:for="{{StationMess.otherRouters}}" bindtap="golineMessOther(item)">
                               <ui-view class="xlName">
                                 <ui-icon class="Theme2" type="bus2" size="18"></ui-icon>
                                 {{item.name}}
@@ -81,9 +81,6 @@
             </ui-swiper>
             <!-- 页面内容 end-->
           </ui-view>
-
-
-         <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
       </ui-view>
   </ui-page>
 </template>
@@ -120,6 +117,18 @@ export default {
       ui.getApp().station.stationID = code.id
       ui.getApp().station.xlID = line.id
       ui.getApp().lineMess = line
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    },
+    golineMessOther(item){
+      console.log('1234156',item);
+      
+      ui.getApp().station.stationID = item.endStation.id
+      ui.getApp().station.xlID = item.id
+      ui.getApp().lineMess = item
+      ui.getApp().lineMess.order = item.endStation.routeOrder
+
       ui.navigateTo({
         url: '/pages/xlMess'
       })
