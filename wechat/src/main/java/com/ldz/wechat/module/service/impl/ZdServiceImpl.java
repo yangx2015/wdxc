@@ -81,6 +81,18 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if (xlzds.size() == 0)return;
         station.setRouteOrder(xlzds.get(0).getXh());
     }
+
+    private Short getStationOrder(String xlId,String zdId){
+        if (StringUtils.isEmpty(xlId) || StringUtils.isEmpty(zdId)){
+            return null;
+        }
+        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+        condition.eq(ClXlzd.InnerColumn.zdId,zdId);
+        condition.eq(ClXlzd.InnerColumn.xlId,xlId);
+        List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
+        if (xlzds.size() == 0)return null;
+        return xlzds.get(0).getXh();
+    }
     private ClZd getEndStation(String xlId){
         List<ClXlzd> xlzds = xlzdService.findEq(ClXlzd.InnerColumn.xlId,xlId);
         if (xlzds.size() == 0)return null;
@@ -118,6 +130,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             Map<String,Double> distanceMap = new HashMap<>(stationList.size());
             double maxDistance = 100D;
             for (ClZd zd : stationList) {
+                setStationOrder(zd);
                 double distance = DistanceUtil.getShortDistance(zd.getJd(),zd.getWd(),new Double(lng),new Double(lat));
                 distanceMap.put(zd.getId(),distance);
                 if (distance < maxDistance){
@@ -176,6 +189,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             if (StringUtils.isEmpty(routerId))continue;
             Map<String,Object> station = getStationByXlId(routerId,nearbyStations);
             if (station == null)continue;
+            Short order = getStationOrder(((String) nearbyRouter.get("id")),station.get("id").toString());
+            nearbyRouter.put("order",order);
             List<Map<String,Object>> routerList = (List<Map<String, Object>>) station.get("routerList");
             ApiResponse<List<Integer>> nsRes = xlService.getNextCars(routerId,station.get("id").toString());
             if (nsRes.isSuccess() && nsRes.getResult() != null){
