@@ -97,11 +97,11 @@
 		props:{
 			usermesType:{
 				type:String,
-				default:'add'
+				default:'ADD'
 			},
 		},
 		created(){
-            if(this.usermesType == 'edit'){
+            if(this.usermesType == 'CHANGE'){
                 this.addmess = this.$parent.messdata
                 this.operate = '编辑';
                 this.edit = true;
@@ -130,7 +130,7 @@
                 this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?hideSystem=true&parentCode="+orgCode).then((res) =>{
                     if(res.code===200){
                         this.permissionTree = res.result;
-                        if (this.usermesType == 'edit'){
+                        if (this.usermesType == 'CHANGE'){
                             this.getRoleFunctions();
 						}else{
                             this.showTree = true;
@@ -185,33 +185,19 @@
                 v.SpinShow = true
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-						if(v.usermesType){
-	                		v.$http.post(this.apis.ROLE.ADD,v.addmess).then((res) =>{
-								if(res.code===200){
-                                    this.setRolePermission();
-									v.$emit('listF',res)
-                                }else{
-                                    v.$Message.error(res.message);
-								}
-                                v.SpinShow = false
-							}).catch((error) =>{
-								v.$Message.error('出错了！！！');
-								v.SpinShow = false
-							})
-						}else{
-							v.$http.post(this.apis.ROLE.CHANGE,v.addmess).then((res) =>{
-								if(res.code===200){
-                                    this.setRolePermission();
-									v.$emit('listF',res)
-								}else{
-                                    v.$Message.error(res.message);
-								}
-                                v.SpinShow = false
-							}).catch((error) =>{
-								v.$Message.error('出错了！！！');
-								v.SpinShow = false
-							})
-						}
+                        let url = this.apis.ROLE[v.usermesType]
+                        v.$http.post(url,v.addmess).then((res) =>{
+                            if(res.code===200){
+                                this.setRolePermission();
+                                v.$emit('listF',res)
+                            }else{
+                                v.$Message.error(res.message);
+                            }
+                            v.SpinShow = false
+                        }).catch((error) =>{
+                            v.$Message.error('出错了！！！');
+                            v.SpinShow = false
+                        })
                     } else {
                     	v.SpinShow = false
                         v.$Message.warning('请认真填写角色信息!');
