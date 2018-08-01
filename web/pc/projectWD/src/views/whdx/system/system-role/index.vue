@@ -145,7 +145,7 @@
 									},
 									on: {
 										click: () => {
-											this.userMesType = 'edit'
+											this.userMesType = 'CHANGE'
 											this.messdata = params.row
 											this.compName = 'addrole'
 										}
@@ -245,7 +245,7 @@
         	AddDataList(){
         		var v = this
     			v.compName = 'addrole'
-    			this.userMesType = 'add'
+    			this.userMesType = 'ADD'
     			this.messdata = null
             },
             listF(res){

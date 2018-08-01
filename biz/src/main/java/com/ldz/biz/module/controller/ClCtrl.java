@@ -1,6 +1,6 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.bean.websocketInfo;
+import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.GpsService;
@@ -61,7 +61,7 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	}
 
 	@GetMapping("/InitClGps")
-	public ApiResponse<List<websocketInfo>> inintGps() {
+	public ApiResponse<List<WebsocketInfo>> inintGps() {
 
 		return gpsservice.inintGps();
 

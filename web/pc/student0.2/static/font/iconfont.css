@@ -1,3 +1,4 @@
+
 @font-face {
   font-family: "ui-icon";
   src: url('iconfont.ttf?t=1502549776894') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
@@ -21,6 +22,8 @@
 
 .icon-dingwei1:before { content: "\e611"; }
 
+.icon-jianxianxing:before { content: "\e615"; }
+
 .icon-bus:before { content: "\e658"; }
 
 .icon-ditu1:before { content: "\e62b"; }
@@ -29,9 +32,13 @@
 
 .icon-bus1:before { content: "\e604"; }
 
+.icon-yuan-copy-copy-copy-copy:before { content: "\e637"; }
+
 .icon-right:before { content: "\e639"; }
 
 .icon-right1:before { content: "\e688"; }
+
+.icon-webicon318:before { content: "\e6a9"; }
 
 .icon-left:before { content: "\e62d"; }
 

@@ -24,7 +24,7 @@
               <ui-tab>附近站点</ui-tab>
               <ui-tab>周边线路</ui-tab>
           </ui-tabs>
-          <ui-view class="box_col_100">
+          <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
 
             <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
@@ -44,7 +44,7 @@
                         </ui-view>
 
                         <ui-view class="stationRouterBox">
-                            <ui-view class="stationRouterItem" ui:for="{{item.routerList}}" ui:for-item="xlitem">
+                            <ui-view class="stationRouterItem" ui:for="{{item.routerList}}" ui:for-item="xlitem"  bindtap="golineMess(item,xlitem)">
                                 <ui-view class="xlName">
                                   {{xlitem.name}}
                                 </ui-view>
@@ -116,6 +116,14 @@ export default {
         url: '/pages/xlMess'
       })
     },
+    golineMess(code,line){
+      ui.getApp().station.stationID = code.id
+      ui.getApp().station.xlID = line.id
+      ui.getApp().lineMess = line
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    },
     getSwiperImg(){
       var v = this
       this.$http('POST',ui.getApp().apis.SWIPER,{},(res)=>{
@@ -129,7 +137,7 @@ export default {
     },
     getStationMess(){
       var v = this
-      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36550475787,lat:30.54022397891},(res)=>{
+      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36996,lat:30.544539},(res)=>{
         console.log('站点信息',res);
         if(res.code == 200){
             this.StationMess = res.result

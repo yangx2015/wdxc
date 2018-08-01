@@ -1,11 +1,18 @@
 package com.ldz.sys.service.impl;
 
 import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.sys.mapper.*;
-import com.ldz.sys.model.*;
+import com.ldz.sys.mapper.SysClkPtjsMapper;
+import com.ldz.sys.mapper.SysClkPtyhMapper;
+import com.ldz.sys.mapper.SysJsGnMapper;
+import com.ldz.sys.mapper.SysYhJsMapper;
+import com.ldz.sys.model.SysJs;
+import com.ldz.sys.model.SysJsGn;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.model.SysYhJs;
 import com.ldz.sys.service.JsService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.exception.RuntimeCheck;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -110,8 +117,20 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
 		String createUser = getOperateUser();
 		Date now = new Date();
 
-		// 插入新数据
-		for (String jsId : jsIds) {
+		if(CollectionUtils.isNotEmpty(jsIds)) {
+			// 插入新数据
+			jsIds.forEach(jsId -> {
+				SysYhJs userRole = new SysYhJs();
+				userRole.setYhjsId(genId());
+				userRole.setJsId(jsId);
+				userRole.setYhId(yhid);
+				userRole.setCjr(createUser);
+				userRole.setCjsj(now);
+				userRoleMapper.insert(userRole);
+
+			});
+		}
+		/*for (String jsId : jsIds) {
 			SysYhJs userRole = new SysYhJs();
 			userRole.setYhjsId(genId());
 			userRole.setJsId(jsId);
@@ -119,7 +138,7 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
 			userRole.setCjr(createUser);
 			userRole.setCjsj(now);
 			userRoleMapper.insert(userRole);
-		}
+		}*/
 		return ApiResponse.success();
 	}
 

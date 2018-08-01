@@ -7,7 +7,7 @@
             <ui-icon type="left" size="16" color="#fff"></ui-icon>
           </ui-col>
           <ui-col vertical-align="middle" align="center">
-            <ui-view class="nav_title">208</ui-view>
+            <ui-view class="nav_title">{{line.name}}</ui-view>
           </ui-col>
           <ui-col vertical-align="middle" align="center" width="60">
           </ui-col>
@@ -19,26 +19,57 @@
             <!-- 页面内容 start-->
             <ui-view class="lineMess">
                 <ui-view>
-                  开往：目的地
+                  开往：
+                  
+                   <ui-text ui:if="{{lineMess.list && lineMess.list.length>0}}">
+                      {{lineMess.list[lineMess.list.length-1].zdName | zdName}}
+                   </ui-text> 
                 </ui-view>
                 <ui-view>
-                  首班：0：00 末班：24：00
+                  首班：{{lineMess.yxkssj}} 末班：{{lineMess.yxjssj}}
                 </ui-view>
             </ui-view>
 
             <ui-view class="busMess box_row">
                 <ui-view class="box_row_100 leftmess">
-                    <ui-view>
-                      <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
-                    </ui-view>
-                    <ui-view>
+                  <ui-view>
                       
-                    </ui-view>
+                      <ui-view ui:if="{{nextbusList.length>0}}">
+                        <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                        <ui-text>{{nextbusList[0]}}</ui-text> 
+                        站后
+                      </ui-view>
 
+                      <ui-view ui:else>
+                        <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                        <ui-text>暂无车辆信息</ui-text> 
+                      </ui-view>
+
+                      <ui-view>
+                        第一辆车抵达
+                      </ui-view>
+                  </ui-view>
                 </ui-view>
                 <ui-view class="box_row_100 rightmess">
-                  
+                    <ui-view>
+                      <ui-view ui:if="{{nextbusList.length>1}}">
+                        <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                        <ui-text>{{nextbusList[1]}}</ui-text> 
+                        站后
+                      </ui-view>
+                      <ui-view ui:else>
+                        <ui-icon class="IconAnima" type="xinhao1" size="18"></ui-icon>
+                        <ui-text>暂无车辆信息</ui-text> 
+                      </ui-view>
+                      
+                      <ui-view>
+                        第二辆车抵达
+                      </ui-view>
+                    </ui-view>
                 </ui-view>
+            </ui-view>
+            <ui-view class="boxRowAuto" ui:if="{{lineMess.list && lineMess.list.length>0}}">
+                    <busline lists="{{lineMess.list}}" num="{{Num}}"></busline>
             </ui-view>
 
             <!-- 页面内容 end-->
@@ -50,6 +81,7 @@
 </template>
 
 <script>
+import busline from "./common/busLinne";
 export default {
   config: {
     navigationStyle: 'custom',
@@ -61,8 +93,20 @@ export default {
     delay:false,
     disableScroll:true,//延迟加载
   },
+  components: {
+    busline
+  },
+  filters: {
+    zdName:(val)=>{
+      return val.join('')
+    }
+  },
   data() {
     return {
+      line:{},//线路基本信息
+      lineMess: {},//线路详情list
+      nextbusList:[],//下一辆车到站情况
+      Num:0,
     }
   },
   methods: {
@@ -79,6 +123,38 @@ export default {
         url: '/pages/xlMap'
       })
     },
+    getLineMess(){
+      if(this.line.id){
+        this.$http('POST',ui.getApp().apis.ZDMESS,{'xlid':this.line.id},(res)=>{
+          console.log(res);
+          if(res.code==200){
+            res.result.list.forEach((item,index) => {
+              item.zdName = item.zdName.split('')
+            });
+            this.lineMess = res.result
+          }
+          
+        })
+      }
+    },
+    getNextBus(){
+        this.$http('POST',ui.getApp().apis.NEXTBUS,{xlId:ui.getApp().station.xlID,zdId:ui.getApp().station.stationID},(res)=>{
+            console.log('********',res)
+            if(res.code==200 && res.result){
+              this.nextbusList = res.result
+            }
+        })
+    }
+  },
+  created () {
+    console.log('++++++', ui.getApp().lineMess);
+    console.log('------', ui.getApp().station);
+    this.line = ui.getApp().lineMess;
+    this.Num = ui.getApp().lineMess.order
+    this.getLineMess()
+    this.getNextBus()
+    
+    
   },
   mounted() {
   }
@@ -86,11 +162,31 @@ export default {
 </script>
 
 <style lang="less">
+.boxRowAuto{
+  height: 600rpx;
+  background: #fff;
+  overflow-x: auto;
+  padding: 0 30rpx;
+  .ui-timeline-row{
+    ul{
+      overflow-x: auto;
+    }
+  }
+}
+
 .lineMess{
   padding: 15rpx 25rpx;
 }
 .busMess{
+  padding: 50rpx 0;
   border-top: #f2f2f2 3rpx solid;
   border-bottom: #f2f2f2 5rpx solid;
+  text-align: center;
+  .leftmess{
+    border-right:#dedede 2rpx solid
+  }
+  .rightmess{
+    border-left:#dedede 2rpx solid
+  }
 }
 </style>
