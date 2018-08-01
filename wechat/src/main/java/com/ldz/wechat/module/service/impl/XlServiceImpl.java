@@ -32,7 +32,6 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private ClXlzdMapper xlzdMapper;
 	@Autowired
 	private ClZdMapper zdMapper;
-
 	@Autowired
 	private ClyxjlService clyxjlService;
 
@@ -173,6 +172,13 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			list.add(map);
 		}
 		return ApiResponse.success(list);
+	}
+
+	@Override
+	public ApiResponse<List<ClClyxjl>> getBusPositions(String xlId) {
+		RuntimeCheck.ifBlank(xlId,"请输入线路");
+		List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.xlId,xlId);
+		return ApiResponse.success(clClyxjls);
 	}
 
 }
