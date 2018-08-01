@@ -9,7 +9,9 @@
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">{{line.name}}</ui-view>
           </ui-col>
-          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="goXlMap">
+            <ui-icon type="ditu1" size="28"
+              color="#fff"></ui-icon>
           </ui-col>
         </ui-row>
       </ui-nav-bar>
@@ -74,8 +76,6 @@
 
             <!-- 页面内容 end-->
           </ui-view>
-            <ui-button type="primary" bindtap="goIndex">首页</ui-button>
-            <ui-button type="primary" bindtap="goXlMap">地图查看</ui-button>
       </ui-view>
   </ui-page>
 </template>
