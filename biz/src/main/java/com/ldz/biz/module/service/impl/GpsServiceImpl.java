@@ -3,12 +3,13 @@ package com.ldz.biz.module.service.impl;
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
+import com.ldz.biz.constant.DeviceStatus;
 import com.ldz.biz.constant.EventType;
+import com.ldz.biz.module.bean.DeviceInfo;
 import com.ldz.biz.module.bean.GpsInfo;
-import com.ldz.biz.module.bean.websocketInfo;
+import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
-import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.GpsService;
@@ -19,6 +20,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.YingyanResponse;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -96,120 +98,81 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             return ApiResponse.success("HeartBeat");
         }
         handleEvent(gpsInfo);
-        // eventType == 80 表示离线
-        if (StringUtils.equals(gpsInfo.getEventType(), EventType.OFFLINE.getCode())) {
-            return handleOffline(gpsInfo);
-        }
 
+        clXc(gpsInfo);
+        saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
     }
+
 
     private void handleEvent(GpsInfo gpsInfo){
         ClGps clgps = changeCoordinates(gpsInfo);
         String eventType = gpsInfo.getEventType();
         String deviceId = gpsInfo.getDeviceId();
 
+        String newStatus = "";
+
+        boolean statusChange = false;
+        boolean positionChange = false;
+
         if (StringUtils.isNotEmpty(eventType)) {
             EventType type = EventType.toEmun(eventType);
-            if (type == null)return;
+            if (type == null){
+                log.error("未知事件类型："+eventType);
+                return;
+            }
             switch (type){
                 case IGNITION:
-                    return;
+                    newStatus = DeviceStatus.IGNITION.getCode();
+                    break;
                 case FLAMEOUT:
-                    return;
+                    newStatus = DeviceStatus.FLAMEOUT.getCode();
+                    break;
                 case OFFLINE:
-                    //移除掉存储的点火状态 熄火状态
-                    redis.boundValueOps("ignition" + deviceId).set(null);
-                    redis.boundValueOps("flameout" + deviceId).set(null);
-
-                    //非job发送80事件
-                    if (StringUtils.isEmpty(gpsInfo.getStartTime())) return;
-                    //job发送80事件
-                    // 从redis(实时gps点位)里面取出历史数据
-                    String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).get();
-                    ClGps currentGps = JsonUtil.toBean(gpsJson, ClGps.class);
-                    if (currentGps == null)return;
-                    String createTime = formatdate(currentGps.getCjsj());
-                    String startTime = gpsInfo.getStartTime();
-                    if (StringUtils.equals(startTime, createTime)) {
-                        //补发一次60事件
-                        ClSbyxsjjl clSbyxsjjl = new ClSbyxsjjl();
-                        clSbyxsjjl.setCjsj(simpledate(startTime));
-                        clSbyxsjjl.setId(genId());
-                        clSbyxsjjl.setJd(new BigDecimal(gpsInfo.getLongitude()));
-                        clSbyxsjjl.setWd(new BigDecimal(gpsInfo.getLatitude()));
-                        clSbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
-                        clSbyxsjjl.setSjjb("10");
-                        clSbyxsjjl.setSjlx("60");
-                        clSbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
-                        clSbyxsjjl.setZdbh(deviceId);
-                        redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clSbyxsjjl));
-
-                        websocketInfo websocketInfo = changeSocket(gpsInfo, null, currentGps);
-                        String socket = JsonUtil.toJson(websocketInfo);
-                        log.info("推送前端的数据为" + socket);
-                        websocket.convertAndSend("/topic/sendgps-" + deviceId, socket);
-                        return ;
-                    }
+                    newStatus = DeviceStatus.OFFLINE.getCode();
+                    break;
                 default:
-
-
             }
         }
+
 
         String sczt = gpsInfo.getSczt();
-        SimpleCondition condition = new SimpleCondition(ClCl.class);
-        condition.eq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
-        List<ClCl> cars = clService.findByCondition(condition);
-        if (cars.size() == 0){
-            return;
-        }
-        ClCl car = cars.get(0);
-        if ("10".equals(sczt)) {
-            //熄火状态的redis 设置为空
-            ClGps object = (ClGps) redis.boundValueOps("ignition" + deviceId).get();
-            if (ObjectUtils.isEmpty(object)) {
-                //点火状态redis赋值
-                ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
-                clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
-                clsbyxsjjl.setCph(car.getCph());
-                clsbyxsjjl.setCx(car.getCx());
-                clsbyxsjjl.setId(genId());
-                clsbyxsjjl.setJd(clgps.getBdjd());
-                clsbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
-                clsbyxsjjl.setSjjb("10");
-                clsbyxsjjl.setSjlx("50");
-                clsbyxsjjl.setSjxm(car.getSjxm());
-                clsbyxsjjl.setWd(clgps.getBdwd());
-                clsbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
-                clsbyxsjjl.setZdbh(gpsInfo.getDeviceId());
-                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
-            }
-            return;
+        if ("20".equals(sczt)){
+            newStatus = DeviceStatus.OFFLINE.getCode();
         }
 
-        if ("20".equals(sczt)) {
-            //将点火设置为空
-            ClGps currentGps = (ClGps) redis.boundValueOps("flameout" + deviceId).get();
-            if (ObjectUtils.isEmpty(currentGps)) {
-                //熄火状态的redis赋值
-                ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
-                clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
-                clsbyxsjjl.setCph(car.getCph());
-                clsbyxsjjl.setCx(car.getCx());
-                clsbyxsjjl.setId(genId());
-                clsbyxsjjl.setJd(clgps.getBdjd());
-                clsbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
-                clsbyxsjjl.setSjjb("10");
-                clsbyxsjjl.setSjlx("60");
-                clsbyxsjjl.setSjxm(car.getSjxm());
-                clsbyxsjjl.setWd(clgps.getBdwd());
-                clsbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
-                clsbyxsjjl.setZdbh(deviceId);
-                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+        String deviceStatusJson = (String) redis.boundValueOps(DeviceInfo.class.getSimpleName() + deviceId).get();
+        DeviceInfo deviceInfo = JsonUtil.toBean(deviceStatusJson, DeviceInfo.class);
+        DeviceInfo newDeviceInfo = new DeviceInfo(gpsInfo);
+        newDeviceInfo.setStatus(newStatus);
+        newDeviceInfo.setUpdateTime(DateUtils.getNowTime());
+        if (deviceInfo == null){
+            statusChange = true;
+        }else{
+            if (!newStatus.equals(deviceInfo.getStatus())){
+                statusChange = true;
             }
+            // 比较redis(实时gps点位)历史数据和这次接收到的数据距离
+            double shortDistance = DistanceUtil.getShortDistance(deviceInfo.getLng(),deviceInfo.getLat(), newDeviceInfo.getLng(), newDeviceInfo.getLat());
+            positionChange = shortDistance > 10;
         }
 
+        if (statusChange || positionChange){
+            WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
+            sendWebsocket(websocketInfo);
+        }
+    }
+
+    /**
+     * 如果在线状态发生改变，
+     * 或者位置发生改变，
+     * 就发送websocket到前台
+     * @param websocketInfo
+     */
+    private void sendWebsocket(WebsocketInfo websocketInfo){
+        String socket = JsonUtil.toJson(websocketInfo);
+        log.info("推送前端的数据为" + socket);
+        websocket.convertAndSend("/topic/sendgps-" + websocketInfo.getZdbh(), socket);
     }
 
     private void saveEvent(ClGps gps,GpsInfo gpsInfo,ClCl car,EventType eventType){
@@ -302,8 +265,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         //非job发送80事件
         if (StringUtils.isEmpty(gpsinfo.getStartTime())) {
-
-
             return ApiResponse.fail("非job发送离线");
         }
         //job发送80事件
@@ -324,7 +285,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
              redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clSbyxsjjl));
 
-            websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
+            WebsocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
             String socket = JsonUtil.toJson(websocketInfo);
             log.info("推送前端的数据为" + socket);
             websocket.convertAndSend("/topic/sendgps-" + gpsinfo.getDeviceId(), socket);
@@ -345,7 +306,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         // clSbyxsjjlMapper.insertSelective(clSbyxsjjl);
         redis.boundListOps(ClSbyxsjjl.class.getSimpleName() ).leftPush(JsonUtil.toJson(clSbyxsjjl));
         // 推送坐标去前端
-        websocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
+        WebsocketInfo websocketInfo = changeSocket(gpsinfo, null, object2);
         String socket = JsonUtil.toJson(websocketInfo);
         log.info("推送前端的数据为" + socket);
         websocket.convertAndSend("/topic/sendgps-" + gpsinfo.getDeviceId(), socket);
@@ -361,7 +322,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 ClGps bean2 = JsonUtil.toBean(bean, ClGps.class);
                 // 判断该点位是否携带类型,或者是何种类型分类存储
                 saveClSbyxsjjl(gpsinfo, bean2, clcl);
-                websocketInfo websocketInfo = changeSocket(gpsinfo, bean2, null);
+                WebsocketInfo websocketInfo = changeSocket(gpsinfo, bean2, null);
                 String socket = JsonUtil.toJson(websocketInfo);
                 websocket.convertAndSend("/topic/sendgps-" + gpsinfo.getDeviceId(), socket);
                 return ApiResponse.success("经纬度为-1的点位事件存储成功,并推送给前端" + JsonUtil.toJson(socket));
@@ -376,7 +337,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         saveClSbyxsjjl(gpsinfo, entity, clcl);
 
         // 推送坐标去前端
-        websocketInfo websocketInfo = changeSocket(gpsinfo, entity, null);
+        WebsocketInfo websocketInfo = changeSocket(gpsinfo, entity, null);
         String socket = JsonUtil.toJson(websocketInfo);
         log.info("推送前端的数据为" + socket);
         websocket.convertAndSend("/topic/sendgps-" + gpsinfo.getDeviceId(), socket);
@@ -571,10 +532,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
     @Override
-    public websocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs, ClGps gpsss) {
+    public WebsocketInfo changeSocket(GpsInfo gpsinfo, ClGps clpgs, ClGps gpsss) {
         ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
         // 通过终端id获取车辆信息
-        websocketInfo info = new websocketInfo();
+        WebsocketInfo info = new WebsocketInfo();
 
         if (clpgs != null) {
             if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
@@ -610,7 +571,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setTime(gpsss.getCjsj());
                     info.setSpeed(gpsss.getYxsd());
                 }
-
             }
         }
         info.setClid(seleByZdbh.getClId());
@@ -626,9 +586,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
     @Override
-    public ApiResponse<List<websocketInfo>> inintGps() {
-        ApiResponse<List<websocketInfo>> apiResponse = new ApiResponse<>();
-        List<websocketInfo> list = new ArrayList<>();
+    public ApiResponse<List<WebsocketInfo>> inintGps() {
+        ApiResponse<List<WebsocketInfo>> apiResponse = new ApiResponse<>();
+        List<WebsocketInfo> list = new ArrayList<>();
 
         SimpleCondition condition = new SimpleCondition(ClCl.class);
         String cphLike = getRequestParamterAsString("cphLike");
@@ -674,7 +634,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 if (StringUtils.isNotEmpty(clgps.getZdbh())) {
                     ClCl clCl = zdbhClMap.get(clgps.getZdbh());
                     if (clCl != null) {
-                        websocketInfo websocketInfo = new websocketInfo();
+                        WebsocketInfo websocketInfo = new WebsocketInfo();
                         websocketInfo.setBdjd(clgps.getBdjd().toString());
                         websocketInfo.setBdwd(clgps.getBdwd().toString());
                         websocketInfo.setClid(clCl.getClId());
