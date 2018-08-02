@@ -149,8 +149,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             statusChange = true;
         }else{
             if (!newStatus.equals(deviceInfo.getStatus())){
-
-
                 statusChange = true;
             }
             // 比较redis(实时gps点位)历史数据和这次接收到的数据距离
@@ -169,6 +167,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
             sendWebsocket(websocketInfo);
         }
+
+        save
     }
 
     /**
