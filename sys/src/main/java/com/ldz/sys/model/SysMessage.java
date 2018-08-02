@@ -62,7 +62,7 @@ public class SysMessage implements Serializable {
     @Column(name = "SENDEE_CODE")
     private String sendeeCode;
     /**
-     * 业务编号(操作业务)
+     * 业务编号(操作业务) (短信保存模板ID)
      */
     @Column(name = "BIZ_ID")
     private String bizId;
