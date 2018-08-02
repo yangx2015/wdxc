@@ -25,7 +25,6 @@ import com.ldz.util.exception.RuntimeCheckException;
 import com.ldz.util.yingyan.GuiJIApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -365,13 +364,13 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 		condition.setOrderByClause(" LOCTIME ASC");
 		List<Clyy> clyys = clYyService.findByCondition(condition);
 		List<Point> points = new ArrayList<>();
-		clyys.stream().forEach(clyy -> {
+		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		clyys.forEach(clyy -> {
 			Point p = new Point();
 			p.set_object_key(clyy.getObject_key());
 			p.setDirection(Integer.parseInt(clyy.getDirection()));
 			p.setLatitude(clyy.getLatitude().doubleValue());
 			p.setLongitude(clyy.getLongitude().doubleValue());
-			SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 			long locTime = 0;
 			try {
 				locTime = sdf.parse(clyy.getLoc_time()).getTime();
