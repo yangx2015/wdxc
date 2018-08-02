@@ -97,6 +97,15 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (StringUtils.isEmpty(gpsInfo.getEventType())){
             return ApiResponse.success("HeartBeat");
         }
+
+        if (StringUtils.isEmpty(gpsInfo.getLatitude()) || StringUtils.isEmpty(gpsInfo.getLongitude())
+                || StringUtils.isEmpty(gpsInfo.getDeviceId())) {
+            return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
+        }
+
+        if (!gpsInfo.getLatitude().equals("-1") && !gpsInfo.getLongitude().equals("-1")) {
+            eventBus.post(new SendGpsEvent(gpsInfo));
+        }
         handleEvent(gpsInfo);
 
         clXc(gpsInfo);
@@ -158,16 +167,22 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         if (statusChange || positionChange){
             ClGps newGps = changeCoordinates(gpsInfo);
-            ClGpsLs gpsls = new ClGpsLs(genId(), deviceId, newGps.getCjsj(), newGps.getJd(), newGps.getWd(),
-                    newGps.getGgjd(), newGps.getGgwd(), newGps.getBdjd(), newGps.getBdwd(), newGps.getGdjd(), newGps.getGdwd(),
-                    newGps.getLx(), newGps.getDwjd(), newGps.getFxj(), newGps.getYxsd());
+            ClGpsLs gpsls = new ClGpsLs(newGps);
+            gpsls.setId(genId());
+            gpsls.setZdbh(deviceId);
             redis.boundListOps(ClGpsLs.class.getSimpleName() + deviceId).leftPush(JsonUtil.toJson(gpsls));
             // 更新存入redis(实时点位)
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
             WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
             sendWebsocket(websocketInfo);
+            ClCl car = null;
+            List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
+            if (carList.size() != 0){
+                car = carList.get(0);
+            }
+            saveEvent(newGps,gpsInfo,car,eventType);
+//            saveClSbyxsjjl(gpsinfo, bean2, clcl);
         }
-
     }
 
     /**
@@ -182,17 +197,19 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         websocket.convertAndSend("/topic/sendgps-" + websocketInfo.getZdbh(), socket);
     }
 
-    private void saveEvent(ClGps gps,GpsInfo gpsInfo,ClCl car,EventType eventType){
+    private void saveEvent(ClGps gps,GpsInfo gpsInfo,ClCl car,String eventType){
         ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
+        if (car != null){
+            clsbyxsjjl.setCph(car.getCph());
+            clsbyxsjjl.setCx(car.getCx());
+            clsbyxsjjl.setSjxm(car.getSjxm());
+        }
         clsbyxsjjl.setCjsj(simpledate(gpsInfo.getStartTime()));
-        clsbyxsjjl.setCph(car.getCph());
-        clsbyxsjjl.setCx(car.getCx());
         clsbyxsjjl.setId(genId());
         clsbyxsjjl.setJd(gps.getBdjd());
         clsbyxsjjl.setJid(new BigDecimal(gpsInfo.getGpsjd()));
         clsbyxsjjl.setSjjb("10");
-        clsbyxsjjl.setSjlx(eventType.getCode());
-        clsbyxsjjl.setSjxm(car.getSjxm());
+        clsbyxsjjl.setSjlx(eventType);
         clsbyxsjjl.setWd(gps.getBdwd());
         clsbyxsjjl.setYxfx(Double.valueOf(gpsInfo.getFxj()));
         clsbyxsjjl.setZdbh(gpsInfo.getDeviceId());

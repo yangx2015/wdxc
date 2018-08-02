@@ -11,7 +11,6 @@ import lombok.ToString;
 
 @Table(name = "CL_GPS_LS")
 @AllArgsConstructor
-@NoArgsConstructor(force=true)
 @ToString
 public class ClGpsLs implements Serializable {
     /**
@@ -106,6 +105,23 @@ public class ClGpsLs implements Serializable {
     private String yxsd;
 
     private static final long serialVersionUID = 1L;
+
+
+    public ClGpsLs(ClGps gps){
+        this.cjsj = gps.getCjsj();
+        this.jd = gps.getJd();
+        this.wd = gps.getWd();
+        this.ggjd = gps.getGgjd();
+        this.ggwd = gps.getGgwd();
+        this.bdjd = gps.getBdjd();
+        this.bdwd = gps.getBdwd();
+        this.gdjd = gps.getGdjd();
+        this.gdwd = gps.getGdwd();
+        this.lx = gps.getLx();
+        this.dwjd = gps.getDwjd();
+        this.fxj = gps.getFxj();
+        this.yxsd = gps.getYxsd();
+    }
 
     /**
      * 获取ID
