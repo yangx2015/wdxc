@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 
+/**
+ * 用户意见反馈表
+ */
 @Table(name = "SYS_YJFK")
 public class SysYjfk implements Serializable {
     @Id
