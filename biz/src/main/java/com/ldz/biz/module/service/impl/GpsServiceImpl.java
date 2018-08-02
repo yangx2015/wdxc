@@ -826,5 +826,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
 
+   /* public static void main(String[] args) {
+        RedisTemplateUtil redis = new RedisTemplateUtil();
+        System.out.println(redis.boundValueOps("CX_"+"865923030038977").get());
+    }*/
 
 }

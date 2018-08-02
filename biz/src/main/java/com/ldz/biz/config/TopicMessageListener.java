@@ -74,7 +74,7 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            if(StringUtils.contains(itemValue,"start_end")){
+            if(StringUtils.contains(itemValue,"start_end") || StringUtils.contains(itemValue,"compencate")){
                 // 过期事件存储车辆行程
                 saveClXc(itemValue, simpleDateFormat);
             }else if(StringUtils.contains(itemValue,"offline")){
@@ -236,16 +236,19 @@ public class TopicMessageListener implements MessageListener {
         String point = GuiJIApi.trackPoint(listBeans);
         NewTrackPointReturn newTrackPointReturn = JsonUtil.toBean(point, NewTrackPointReturn.class);
         List<Clyy> yyList = new ArrayList<>();
-        newTrackPointReturn.getPoints().stream().forEach(point1 -> {
-            Clyy clyy = new Clyy();
-            clyy.setDirection(point1.getDirection() + "");
-            clyy.setZdbh(zdbh);
-            clyy.setLatitude(BigDecimal.valueOf(point1.getLatitude()));
-            clyy.setLongitude(BigDecimal.valueOf(point1.getLongitude()));
-            clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
-            clyy.setLoc_time(parse(point1.getLoc_time()) );
-            yyList.add(clyy);
-        });
+        List<Point> points = newTrackPointReturn.getPoints() ;
+        if(CollectionUtils.isNotEmpty(points)) {
+            points.forEach(point1 -> {
+                Clyy clyy = new Clyy();
+                clyy.setDirection(point1.getDirection() + "");
+                clyy.setZdbh(zdbh);
+                clyy.setLatitude(BigDecimal.valueOf(point1.getLatitude()));
+                clyy.setLongitude(BigDecimal.valueOf(point1.getLongitude()));
+                clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
+                clyy.setLoc_time(parse(point1.getLoc_time()));
+                yyList.add(clyy);
+            });
+        }
         clYyService.saveBatch(yyList);
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
 

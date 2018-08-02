@@ -23,7 +23,7 @@ public class ClYyServiceImpl extends BaseServiceImpl<Clyy,String> implements ClY
 
     @Override
     public void saveBatch(List<Clyy> clyys) {
-        clyys.stream().forEach(clyy -> clyy.setId(genId()));
+        clyys.forEach(clyy -> clyy.setId(genId()));
         clyyMapper.insertList(clyys);
 
     }
