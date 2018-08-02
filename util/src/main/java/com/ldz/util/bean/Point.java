@@ -22,6 +22,16 @@ public class Point{
 
     private String coord_type;
 
+    private String _object_key;
+
+    public String get_object_key() {
+        return _object_key;
+    }
+
+    public void set_object_key(String _object_key) {
+        this._object_key = _object_key;
+    }
+
     public double getLongitude() {
         return longitude;
     }

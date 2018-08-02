@@ -23,6 +23,6 @@ public interface SbyxsjjlService extends BaseService<ClSbyxsjjl,String>{
 	
 	 ApiResponse<List<Point>> baiduGuiJi(gpsSJInfo gpssjinfo);
 
-	ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo);
+	ApiResponse<List<com.ldz.util.bean.Point>> getYyGuiJi(gpsSJInfo gpssjinfo);
 
 }

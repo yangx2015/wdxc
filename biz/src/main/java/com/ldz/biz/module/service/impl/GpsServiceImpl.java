@@ -168,7 +168,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             sendWebsocket(websocketInfo);
         }
 
-        save
     }
 
     /**

@@ -181,7 +181,7 @@ module.exports = {
         GET_ORG_CAR_LIST:'/api/cl/getOrgCarList',
         GPS_HITSOR:'/api/xc/history',
         GPS_HITSOR_GPS:'/api/clsbyxsjjl/historygps',
-        GPS_HITSOR_GPS_BD:'/api/clsbyxsjjl/baiduGuiJi',
+        GPS_HITSOR_GPS_BD:'/api/clsbyxsjjl/yyguiji',
         nianshen:'/api/cl/nianshen',
         unbindDevice:'/api/cl/unbindDevice',
         unbindDriver:'/api/cl/unbindDriver',

@@ -356,19 +356,19 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 	 * @return
 	 */
 	@Override
-	public ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo) {
-		ApiResponse<List<Point>> apiResponse = new ApiResponse<>();
+	public ApiResponse<List<com.ldz.util.bean.Point>> getYyGuiJi(gpsSJInfo gpssjinfo) {
+		ApiResponse<List<com.ldz.util.bean.Point>> apiResponse = new ApiResponse<>();
 		SimpleCondition condition  = new SimpleCondition(Clyy.class);
 		condition.and().andBetween(Clyy.InnerColumn.loc_time.name() , gpssjinfo.getStartTime() , gpssjinfo.getEndTime());
 		condition.eq(Clyy.InnerColumn.zdbh.name() , gpssjinfo.getZdbh());
 		condition.setOrderByClause(" LOCTIME ASC");
 		List<Clyy> clyys = clYyService.findByCondition(condition);
-		List<Point> points = new ArrayList<>();
+		List<com.ldz.util.bean.Point> points = new ArrayList<>();
 		SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		clyys.forEach(clyy -> {
-			Point p = new Point();
+			com.ldz.util.bean.Point p = new com.ldz.util.bean.Point();
 			p.set_object_key(clyy.getObject_key());
-			p.setDirection(Integer.parseInt(clyy.getDirection()));
+			p.setDirection(Double.parseDouble(clyy.getDirection()));
 			p.setLatitude(clyy.getLatitude().doubleValue());
 			p.setLongitude(clyy.getLongitude().doubleValue());
 			long locTime = 0;
