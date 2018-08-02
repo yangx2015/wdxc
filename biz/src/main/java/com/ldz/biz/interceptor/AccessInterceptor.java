@@ -61,7 +61,6 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		// todo 测试代码
-//		if (true)return true;
 		// 访问权限值
 		// String userid = "1";
 		// String token =
