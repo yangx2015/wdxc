@@ -8,6 +8,7 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
+import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +41,7 @@ public class XcServiceImpl extends BaseServiceImpl<ClXc,String> implements XcSer
 
     @Override
     public ApiResponse<List<Map<String, Object>>> history(String zdbh, String startTime, String endTime) {
+        RuntimeCheck.ifBlank(zdbh,"请选择车辆");
         SimpleCondition condition = new SimpleCondition(ClXc.class);
         condition.eq(ClXc.InnerColumn.clZdbh,zdbh);
         condition.lte(ClXc.InnerColumn.xcJssj,endTime);

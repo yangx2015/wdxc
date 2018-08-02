@@ -390,16 +390,18 @@
                     if (res.code === 200 && res.result){
                         var geoc = new BMap.Geocoder();
                         for (let r of res.result){
-                            let ksgps = r.ksgps.split(',');
+                            if (!r.ksjps || !r.jsjps)continue
+                            let ksgps = r.ksjps.split(',');
                             let jsgps = r.jsjps.split(',');
-                            r.ksjd = ksgps[1];
-                            r.kswd = ksgps[0];
-							r.jsjd = jsgps[1];
-							r.jswd = jsgps[0];
+                            r.kswd = ksgps[1];
+                            r.ksjd = ksgps[0];
+							r.jswd = jsgps[1];
+							r.jsjd = jsgps[0];
                             r.ksdz = '出发地';
                             r.jsdz = '目的地';
                             this.totalTime += r.sc;
 
+                            console.log(r);
                             //解析开始地址
                             geoc.getLocation(new BMap.Point(r.ksjd,r.kswd), (rs)=>{
                                 var addComp = rs.addressComponents;
