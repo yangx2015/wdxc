@@ -100,7 +100,19 @@ public class ClGps implements Serializable {
     @Column(name = "YXSD")
     private String yxsd;
 
+    @Transient
+    private String status;
+
     private static final long serialVersionUID = 1L;
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     /**
      * 获取终端编号

@@ -20,11 +20,15 @@
               </ui-ex-swiper-item>
             </ui-ex-swiper>
           </ui-view>
+
+          <ui-view >
+                {{GPSMESS}}
+          </ui-view>
           <ui-tabs class="tabsSty" index="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
               <ui-tab>附近站点</ui-tab>
               <ui-tab>周边线路</ui-tab>
           </ui-tabs>
-          <ui-view class="box_col_100">
+          <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
 
             <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
@@ -44,7 +48,7 @@
                         </ui-view>
 
                         <ui-view class="stationRouterBox">
-                            <ui-view class="stationRouterItem" ui:for="{{item.routerList}}" ui:for-item="xlitem">
+                            <ui-view class="stationRouterItem" ui:for="{{item.routerList}}" ui:for-item="xlitem"  bindtap="golineMess(item,xlitem)">
                                 <ui-view class="xlName">
                                   {{xlitem.name}}
                                 </ui-view>
@@ -65,7 +69,7 @@
                 <ui-swiper-item class="box_col_auto">
                     <ui-view class="ListItemSty">
                       <ui-view class="stationRouterBox">
-                          <ui-view class="stationRouterItem" ui:for="{{StationMess.otherRouters}}">
+                          <ui-view class="stationRouterItem" ui:for="{{StationMess.otherRouters}}" bindtap="golineMessOther(item)">
                               <ui-view class="xlName">
                                 <ui-icon class="Theme2" type="bus2" size="18"></ui-icon>
                                 {{item.name}}
@@ -81,9 +85,6 @@
             </ui-swiper>
             <!-- 页面内容 end-->
           </ui-view>
-
-
-         <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
       </ui-view>
   </ui-page>
 </template>
@@ -104,14 +105,48 @@ export default {
       tabCurrent:0,
       swiperShow:false,
       swiperImg: [],
-      StationMess:{}
+      StationMess:{},
+      GPSMESS:{}
     }
   },
   methods: {
+    getGPSmess(){
+        var v = this
+        ui.getLocation({
+        type: 'wgs84',
+        success: function (res) {
+          v.GPSMESS = res
+          // var latitude = res.latitude
+          // var longitude = res.longitude
+          // var speed = res.speed
+          // var accuracy = res.accuracy
+        }
+      })
+    },
     handleChange (index, key) {
       this[key] = index
     },
     goXlMess () {
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    },
+    golineMess(code,line){
+      ui.getApp().station.stationID = code.id
+      ui.getApp().station.xlID = line.id
+      ui.getApp().lineMess = line
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    },
+    golineMessOther(item){
+      console.log('1234156',item);
+      
+      ui.getApp().station.stationID = item.endStation.id
+      ui.getApp().station.xlID = item.id
+      ui.getApp().lineMess = item
+      ui.getApp().lineMess.order = item.endStation.routeOrder
+
       ui.navigateTo({
         url: '/pages/xlMess'
       })
@@ -129,7 +164,7 @@ export default {
     },
     getStationMess(){
       var v = this
-      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36550475787,lat:30.54022397891},(res)=>{
+      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36996,lat:30.544539},(res)=>{
         console.log('站点信息',res);
         if(res.code == 200){
             this.StationMess = res.result
@@ -139,6 +174,7 @@ export default {
     }
   },
   created () {
+    this.getGPSmess()
     this.getSwiperImg()
     this.getStationMess()
   },

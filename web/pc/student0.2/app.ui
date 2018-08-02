@@ -8,7 +8,7 @@ export default {
       "pages/xlMess",
       "pages/xlMap",
       "pages/common/busLinne",
-      "pages/welcome"],
+      "pages/welcome","pages/common/busline"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -47,7 +47,11 @@ export default {
       apis:ajaxUrl,
 
       wxUtil:null,//微信 功能方法
-
+      lineMess:{},//线路信息
+      station:{
+        stationID:'',
+        xlID:''
+      },//站点ID
 
 
 

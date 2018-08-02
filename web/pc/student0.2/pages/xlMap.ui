@@ -1,9 +1,10 @@
 <!---->
 <template>
   <ui-page  style="overflow-y: hidden;">
-    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FC8609'} }}">
         <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+            <ui-icon type="left" size="16" color="#fff"></ui-icon>
           </ui-col>
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">地图查看</ui-view>
@@ -26,7 +27,7 @@
 
                 <ui-view id="allmap" style="{{{height:height+'px'}}}"></ui-view>
 
-            <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
+            
 <!-- 页面内容 end-->
 
           </ui-view>
@@ -48,39 +49,99 @@ export default {
   data() {
     return {
       thisIndex:5,
-      height:ui.WIN_HEIGHT
+      height:ui.WIN_HEIGHT,
+      map:'',
+      item:[
+        {Icon:"../static/img/Bus.png",}
+      ],
+      carList:[
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543083",
+          // },
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543073",
+          // },
+          // {
+          //   jd :"114.378917",
+          //   wd : "30.543183",
+          // },
+      ],
+      xlID:''
     }
   },
+  created(){
+    this.xlID= ui.getApp().station.xlID
+    this.getBusCode()
+  },
   methods: {
+    getBusCode(){
+      this.$http('POST',ui.getApp().apis.XLMAP,{xlId:this.xlID},(res)=>{
+          console.log('数据请求====',res);
+          this.carList = res.result
+      })
+    },
     goXlMess () {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
-    }
+    },
+    Goback(){
+      ui.navigateBack()
+    },
+    addMarker(item, point) {
+        var myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(50,50),{imageSize: new BMap.Size(50,50),anchor: new BMap.Size(25, 25)} );
+        
+      // var myIcon = new BMap.Icon(v.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+      var marker = new BMap.Marker(point,{icon:myIcon});
+      this.map.addOverlay(marker);
+      // this.addClickHandler(item, marker);
+    },
+    showCarPosition() {
+      var v = this
+      for (let r of this.carList) {
+          var point = new BMap.Point(r.jd, r.wd);
+          this.addMarker(r, point);
+        }
+    },
   },
   mounted() {
     var script = document.createElement("script")
     script.type = "text/javascript"
     var callbackName = '_callback'+Date.now()
+    let v = this;
     window[callbackName]= function(){
      console.log(BMap)
-      var map = new BMap.Map("allmap");    // 创建Map实例
-      map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
-      var point = new BMap.Point(116.404, 39.915);
-      map.centerAndZoom(point, 15);    
-      var marker = new BMap.Marker(point,);
-      map.addOverlay(marker);     
+      v.map = new BMap.Map("allmap");    // 创建Map实例
+      v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
+      var point = new BMap.Point(114.368107, 30.543083);
+      v.map.centerAndZoom(point, 15);    
+      // var marker = new BMap.Marker(point);
+      // v.map.addOverlay(marker);     
+      for (let r of v.carList) {
+          var point = new BMap.Point(r.jd, r.wd);
+          v.addMarker(r, point);
+        };
+      
+      
+      // 自定义icon,创建标注
+        
+// 创建标注
+        // v.map.addOverlay(marker2); 
+      
+      
       //添加地图类型控件
-      map.addControl(new BMap.MapTypeControl({
+      v.map.addControl(new BMap.MapTypeControl({
         mapTypes:[
                 BMAP_NORMAL_MAP,
                 BMAP_HYBRID_MAP
             ]}));   
-      map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
-      map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-      delete window[callbackName]
+      v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
+      v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+      delete window[callbackName];
     }
-    script.src="https://api.map.baidu.com/api?v=2.0&ak=你的密钥&callback="+callbackName
+    script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
     document.body.appendChild(script)
 
   }
