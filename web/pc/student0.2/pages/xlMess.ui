@@ -137,8 +137,11 @@ export default {
         })
       }
     },
-    getNextBus(){
-        this.$http('POST',ui.getApp().apis.NEXTBUS,{xlId:ui.getApp().station.xlID,zdId:ui.getApp().station.stationID},(res)=>{
+    getNewCode(item,index){
+      // console.log('++++++',id);
+    },
+    getNextBus(stationID){
+        this.$http('POST',ui.getApp().apis.NEXTBUS,{xlId:ui.getApp().station.xlID,zdId:stationID},(res)=>{
             console.log('********',res)
             if(res.code==200 && res.result){
               this.nextbusList = res.result
@@ -152,7 +155,7 @@ export default {
     this.line = ui.getApp().lineMess;
     this.Num = ui.getApp().lineMess.order
     this.getLineMess()
-    this.getNextBus()
+    this.getNextBus(ui.getApp().station.stationID)
     
     
   },

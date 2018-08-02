@@ -18,6 +18,7 @@ import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,7 +92,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		condition.eq(SysZdxm.InnerColumn.zdlmdm, "ZDCLK0041");
 		condition.eq(SysZdxm.InnerColumn.zddm, entity.getZkl());
 		List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
-		if (zdxms.size() == 0) {
+		if (CollectionUtils.isEmpty(zdxms)) {
 			Short zkl = entity.getZkl();
 			String zdCode = "ZDCLK0041";// 默认为载客量
 			SysZdxm sysZdxm = new SysZdxm();
@@ -142,18 +143,18 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 						cxMap.put("children", childrenList);
 						retList.add(cxMap);
 					}
-					childrenList = new ArrayList<Map<String, Object>>();
-					cxMap = new HashMap<String, Object>();// 车型map
+					childrenList = new ArrayList<>();
+					cxMap = new HashMap<>();// 车型map
 					cx = l.getCx();
 					cxMap.put("expand", true);
 					cxMap.put("title", l.getCxZtMc());
 				}
 
-				Map<String, Object> mapCenMap = new HashMap<String, Object>();// 坐标map
+				Map<String, Object> mapCenMap = new HashMap<>();// 坐标map
 				mapCenMap.put("lng", l.getBdJd());
 				mapCenMap.put("lat", l.getBdWd());
 
-				Map<String, Object> childrenMap = new HashMap<String, Object>();// 车辆map
+				Map<String, Object> childrenMap = new HashMap<>();// 车辆map
 				childrenMap.put("mapCen", mapCenMap);
 				childrenMap.put("clid", l.getClId());
 				childrenMap.put("cx", l.getCx());
