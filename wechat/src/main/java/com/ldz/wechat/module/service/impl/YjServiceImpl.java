@@ -64,8 +64,8 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
 	@Override
 	public ApiResponse<String> updateEntity(SysYjfk entity) {
 		
-		entity.setXgsj(new Date());
-		update(entity);
+//		entity.setXgsj(new Date());
+//		update(entity);
 		return ApiResponse.updateSuccess();
 	}
 }
