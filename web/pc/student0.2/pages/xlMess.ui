@@ -71,7 +71,8 @@
                 </ui-view>
             </ui-view>
             <ui-view class="boxRowAuto" ui:if="{{lineMess.list && lineMess.list.length>0}}">
-                    <busline lists="{{lineMess.list}}" num="{{Num}}"></busline>
+                    <busline lists="{{lineMess.list}}" num="{{Num}}"
+                    @getnextbus='getnextbus'></busline>
             </ui-view>
 
             <!-- 页面内容 end-->
@@ -93,6 +94,7 @@ export default {
     delay:false,
     disableScroll:true,//延迟加载
   },
+  name:'xlMess',
   components: {
     busline
   },
@@ -140,11 +142,13 @@ export default {
     getNewCode(item,index){
       // console.log('++++++',id);
     },
-    getNextBus(stationID){
+    getnextbus(stationID){
         this.$http('POST',ui.getApp().apis.NEXTBUS,{xlId:ui.getApp().station.xlID,zdId:stationID},(res)=>{
             console.log('********',res)
             if(res.code==200 && res.result){
               this.nextbusList = res.result
+            }else{
+              this.nextbusList= []
             }
         })
     }
@@ -155,7 +159,7 @@ export default {
     this.line = ui.getApp().lineMess;
     this.Num = ui.getApp().lineMess.order
     this.getLineMess()
-    this.getNextBus(ui.getApp().station.stationID)
+    this.getnextbus(ui.getApp().station.stationID)
     
     
   },
