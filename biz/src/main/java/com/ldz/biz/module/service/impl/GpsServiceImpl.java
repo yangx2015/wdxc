@@ -8,7 +8,6 @@ import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.websocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
-import com.ldz.biz.module.mapper.ClSbyxsjjlMapper;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.GpsService;
@@ -858,5 +857,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
 
+   /* public static void main(String[] args) {
+        RedisTemplateUtil redis = new RedisTemplateUtil();
+        System.out.println(redis.boundValueOps("CX_"+"865923030038977").get());
+    }*/
 
 }
