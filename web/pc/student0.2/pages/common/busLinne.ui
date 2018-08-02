@@ -1,29 +1,29 @@
 <!---->
 <template>
 <ui-view class="box_row_z">
-    <ui-view style="height: 100%" ui:for="{{lists}}">
+    <ui-view style="height: 100%" ui:for="{{lists}}" bindtap="getStationCode(item,index)">
       <ui-view class="buslineSty">
           <ui-view class="bus" ui:if="{{item.entryCount!=0}}">
-              <ui-icon type="bus2" size="20" color="{{busColor | color}}"></ui-icon>
+              <ui-icon type="bus2" size="20" color="{{index==codeNum-1 | color}}"></ui-icon>
           </ui-view>
           <ui-view class="bus2" ui:if="{{item.exportCount!=0}}">
-              <ui-icon type="bus2" size="20" color="{{busColor | color}}"></ui-icon>
+              <ui-icon type="bus2" size="20" color="{{index==codeNum-2 | color}}"></ui-icon>
           </ui-view>
 
-          <ui-view class="code" ui:if="{{index==num-1}}">
+          <ui-view class="code" ui:if="{{index==codeNum-1}}">
             <ui-icon type="webicon318" size="28"
               color="#fba05e"></ui-icon>
           </ui-view>
           <ui-view class="code2" ui:else>
             <ui-icon type="yuan-copy-copy-copy-copy" size="14"
-              color="{{index<num | color}}"></ui-icon>
+              color="{{index<codeNum | color}}"></ui-icon>
           </ui-view>
 
           <ui-view class="line" ui:if="{{index!=lists.length-1}}">
             <ui-icon type="jianxianxing" size="70"
-              color="{{index<num-1 ? '#ffe7a1' :'#f2f2f2'}}"></ui-icon>
+              color="{{index<codeNum-1 ? '#ffe7a1' :'#f2f2f2'}}"></ui-icon>
           </ui-view>
-          <ui-view class="nameList" style="{{ {color:index==num-1 ? '#ff7f50' : index<num-1 ? '#000' : '#8c8c8c'} }}">
+          <ui-view class="nameList" style="{{ {color:index==codeNum-1 ? '#ff7f50' : index<num-1 ? '#000' : '#8c8c8c'} }}">
             <ui-view class="nameItem" ui:for="{{item.zdName}}" ui:for-item="itemName">
                 {{itemName}}
             </ui-view>
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       name:[],
+      codeNum:0
     }
   },
   props:{
@@ -93,15 +94,16 @@ export default {
     }
   },
   created () {
-    // this.name = this.stationName.split('')
+    this.codeNum = this.num
     console.log('//////',this.num);
     
   },
   mounted() {
   },
   methods: {
-    zdNameList(val){
-      return val.split('')
+    getStationCode(item,index){
+      this.codeNum = index+1
+      // this.$emit('getCode',item.zdId)
     }
   }
 }

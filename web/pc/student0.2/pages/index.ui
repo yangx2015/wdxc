@@ -20,6 +20,10 @@
               </ui-ex-swiper-item>
             </ui-ex-swiper>
           </ui-view>
+
+          <ui-view >
+                {{GPSMESS}}
+          </ui-view>
           <ui-tabs class="tabsSty" index="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
               <ui-tab>附近站点</ui-tab>
               <ui-tab>周边线路</ui-tab>
@@ -101,10 +105,24 @@ export default {
       tabCurrent:0,
       swiperShow:false,
       swiperImg: [],
-      StationMess:{}
+      StationMess:{},
+      GPSMESS:{}
     }
   },
   methods: {
+    getGPSmess(){
+        var v = this
+        ui.getLocation({
+        type: 'wgs84',
+        success: function (res) {
+          v.GPSMESS = res
+          // var latitude = res.latitude
+          // var longitude = res.longitude
+          // var speed = res.speed
+          // var accuracy = res.accuracy
+        }
+      })
+    },
     handleChange (index, key) {
       this[key] = index
     },
@@ -156,6 +174,7 @@ export default {
     }
   },
   created () {
+    this.getGPSmess()
     this.getSwiperImg()
     this.getStationMess()
   },
