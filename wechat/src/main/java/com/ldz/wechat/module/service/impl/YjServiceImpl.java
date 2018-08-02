@@ -35,6 +35,7 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
 	 *
 	 * @return
 	 */
+	@Override
 	public boolean fillCondition(LimitedCondition condition){
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String yjLx = request.getParameter("yjLx");
