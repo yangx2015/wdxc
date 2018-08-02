@@ -106,7 +106,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 
     private void handleEvent(GpsInfo gpsInfo){
-        ClGps clgps = changeCoordinates(gpsInfo);
         String eventType = gpsInfo.getEventType();
         String deviceId = gpsInfo.getDeviceId();
 
@@ -158,9 +157,17 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         if (statusChange || positionChange){
+            ClGps newGps = changeCoordinates(gpsInfo);
+            ClGpsLs gpsls = new ClGpsLs(genId(), deviceId, newGps.getCjsj(), newGps.getJd(), newGps.getWd(),
+                    newGps.getGgjd(), newGps.getGgwd(), newGps.getBdjd(), newGps.getBdwd(), newGps.getGdjd(), newGps.getGdwd(),
+                    newGps.getLx(), newGps.getDwjd(), newGps.getFxj(), newGps.getYxsd());
+            redis.boundListOps(ClGpsLs.class.getSimpleName() + deviceId).leftPush(JsonUtil.toJson(gpsls));
+            // 更新存入redis(实时点位)
+            redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
             WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
             sendWebsocket(websocketInfo);
         }
+
     }
 
     /**
@@ -818,5 +825,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
 
+   /* public static void main(String[] args) {
+        RedisTemplateUtil redis = new RedisTemplateUtil();
+        System.out.println(redis.boundValueOps("CX_"+"865923030038977").get());
+    }*/
 
 }
