@@ -217,10 +217,18 @@ public class TopicMessageListener implements MessageListener {
 
         SimpleCondition s = new SimpleCondition(ClGpsLs.class);
         Example.Criteria criteria = s.createCriteria();
-        criteria.andGreaterThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),startTime);
-        criteria.andLessThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),endTime);
-        criteria.andEqualTo(ClGpsLs.InnerColumn.zdbh.name(),zdbh);
-        // criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
+       /* Date start = null;
+        Date end = null;
+        try {
+          start =   DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss");
+            end =  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        criteria.andGreaterThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),start);
+        criteria.andLessThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),end);
+        criteria.andEqualTo(ClGpsLs.InnerColumn.zdbh.name(),zdbh);*/
+        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
         s.and(criteria);
 
         s.setOrderByClause(" CJSJ desc ");
