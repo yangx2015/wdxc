@@ -56,6 +56,9 @@
         created() {
             this.choosedIds = this.choosedData;
             console.log(this.$refs);
+            for (let r in this.$refs){
+                console.log(r);
+            }
         },
         methods: {
             change(e){
@@ -105,7 +108,9 @@
 
             },
             getChildren(ref){
-                console.log(this.$refs);
+                for (let r of this.$refs){
+                    console.log(r);
+                }
             }
         }
     }
