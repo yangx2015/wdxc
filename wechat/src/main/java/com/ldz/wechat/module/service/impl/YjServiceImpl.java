@@ -39,6 +39,9 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
 	public boolean fillCondition(LimitedCondition condition){
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String yjLx = request.getParameter("yjLx");
+		if(StringUtils.isEmpty(yjLx)){
+			yjLx = request.getParameter("yjlx");
+		}
 		if(StringUtils.isNotEmpty(yjLx)){
 			if(StringUtils.equals(yjLx,"00")||StringUtils.equals(yjLx,"10")||StringUtils.equals(yjLx,"20")){
 				condition.eq(SysYjfk.InnerColumn.yjlx.name(),yjLx);
