@@ -40,6 +40,7 @@ public class SysMessageServiceImpl extends BaseServiceImpl<SysMessage,String> im
             }
             int i=entityMapper.insert(entity);
             if(i>0){//向redis写入标记
+                //下发消息
 //                redisDao.
                 Set<String> keys =  redisDao.keys("*-");
 //                redisDao
