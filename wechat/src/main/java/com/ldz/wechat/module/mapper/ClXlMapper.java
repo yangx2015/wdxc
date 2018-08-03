@@ -17,8 +17,8 @@ public interface ClXlMapper extends Mapper<ClXl> {
             @Result(property = "zdId", column = "ID"),
             @Result(property = "zdName", column = "MC"),
             @Result(property = "vehicleCount", column = "CLSL"),
-            @Result(property = "zdJd", column = "ZD_JD"),
-            @Result(property = "zdWd", column = "ZD_WD"),
+            @Result(property = "jd", column = "ZD_JD"),
+            @Result(property = "wd", column = "ZD_WD"),
             @Result(property = "vehicleScope", column = "FW")
     })
     List<DdClModel> getBySiteVehicleList(@Param("id") String id);
