@@ -93,10 +93,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      */
     @Override
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
+        // 只要上传点位信息 则为在线状态
+        redis.boundValueOps("offline-"+gpsInfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
         // 没有eventType，则说明是心跳包
-        if (StringUtils.isEmpty(gpsInfo.getEventType())){
-            return ApiResponse.success("HeartBeat");
-        }
+//        if (StringUtils.isEmpty(gpsInfo.getEventType())){
+//            return ApiResponse.success("HeartBeat");
+//        }
 
         if (StringUtils.isEmpty(gpsInfo.getLatitude()) || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getDeviceId())) {
@@ -108,7 +110,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
         handleEvent(gpsInfo);
 
-        clXc(gpsInfo);
         saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
     }
@@ -173,6 +174,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundListOps(ClGpsLs.class.getSimpleName() + deviceId).leftPush(JsonUtil.toJson(gpsls));
             // 更新存入redis(实时点位)
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
+
+            clXc(gpsInfo);
             WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
             sendWebsocket(websocketInfo);
             ClCl car = null;
