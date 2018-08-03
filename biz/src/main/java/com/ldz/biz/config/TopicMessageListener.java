@@ -217,7 +217,10 @@ public class TopicMessageListener implements MessageListener {
 
         SimpleCondition s = new SimpleCondition(ClGpsLs.class);
         Example.Criteria criteria = s.createCriteria();
-        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-MM-dd HH:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
+        criteria.andGreaterThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),startTime);
+        criteria.andLessThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),endTime);
+        criteria.andEqualTo(ClGpsLs.InnerColumn.zdbh.name(),zdbh);
+        // criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
         s.and(criteria);
 
         s.setOrderByClause(" CJSJ desc ");
