@@ -242,16 +242,6 @@ export default {
       if(this.pageNum<this.pages){
         this.loadMore = true
       }
-    },
-    a(){
-      var iocnImg =''
-      if(type=='bus'){
-          iocnImg ='车'
-      }else if(type=='station'){
-        iocnImg ='牌'
-      }
-
-    
     }
   },
   mounted() {
