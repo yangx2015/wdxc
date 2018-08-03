@@ -93,8 +93,22 @@ public class ClClyxjl implements Serializable {
      */
     @Column(name = "JID")
     private Short jid;
+    /**
+     * 状态(inStation进站，runing正常  off离线)
+     */
+    @Column(name = "ZT")
+    private String zt;
+
 
     private static final long serialVersionUID = 1L;
+
+    public String getZt() {
+        return zt;
+    }
+
+    public void setZt(String zt) {
+        this.zt = zt;
+    }
 
     /**
      * 获取ID
@@ -362,6 +376,7 @@ public class ClClyxjl implements Serializable {
         xlId("XL_ID"),
         xlmc("XLMC"),
         yxfx("YXFX"),
+        zt("ZT"),
         jid("JID");
 
         private final String column;
