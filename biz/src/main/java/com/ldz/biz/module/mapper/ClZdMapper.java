@@ -11,8 +11,12 @@ import java.util.List;
 
 @CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClZdMapper extends Mapper<ClZd> {
-
-    @Select("SELECT Z.FW AS FW,Z.ID AS ID,Z.MC AS MC,(SELECT COUNT(1) FROM CL_CLYXJL JL WHERE JL.ZD_ID=Z.ID) AS CLSL FROM CL_XLZD T,CL_ZD Z WHERE T.ZD_ID=Z.ID AND T.ZT='00' AND Z.ZT ='00' AND  T.XL_ID= #{id} ORDER BY T.XH ASC")
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @Select("SELECT Z.FW AS FW,Z.ID AS ID,Z.MC AS MC,(SELECT COUNT(1) FROM CL_CLYXJL JL WHERE JL.ZT <> 'off' AND  JL.XL_ID = #{id} AND JL.ZD_ID=Z.ID AND TO_CHAR(JL.CJSJ,'yyyy-MM-dd') >= TO_CHAR(sysdate,'yyyy-MM-dd') ) AS CLSL  FROM CL_XLZD T,CL_ZD Z WHERE T.ZD_ID=Z.ID AND T.ZT='00' AND Z.ZT ='00' AND  T.XL_ID= #{id} ORDER BY T.XH ASC")
     @Results({
             @Result(property = "zdId", column = "ID"),
             @Result(property = "zdName", column = "MC"),

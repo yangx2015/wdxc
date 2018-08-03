@@ -1,0 +1,90 @@
+apply plugin: 'com.android.application'
+def getGitVersion() {
+    try {
+        return 'git rev-parse --short HEAD'.execute().text.trim()
+    } catch (Throwable th) {
+        return "";
+    }
+}
+android {
+    def globalConfiguration = rootProject.ext.android
+    compileSdkVersion globalConfiguration.AndroidCompileSdkVersion
+    buildToolsVersion globalConfiguration.AndroidBuildToolsVersion
+
+    useLibrary 'org.apache.http.legacy'
+
+    signingConfigs {
+        debug {
+            storeFile file('../cm7.keystore')
+
+        }
+        release {
+            storeFile file('../ticserver.jks')
+            storePassword "1245104255"
+            keyAlias "key0"
+            keyPassword "1245104255"
+        }
+    }
+
+    defaultConfig {
+        applicationId globalConfiguration.applicationId
+        minSdkVersion globalConfiguration.AndridMinSdkVersion
+        targetSdkVersion globalConfiguration.AndroidTargetSdkVersion
+        versionCode globalConfiguration.versionCode
+        versionName globalConfiguration.versionName
+        testInstrumentationRunner globalConfiguration.testInstrumentationRunner
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi","armeabi-v7a","x86_64"
+        }
+        buildConfigField "String", "GIT_REVISION", "\"${getGitVersion()}\""
+        buildConfigField "String", "BUILD_DATE", "\"${new Date().toLocaleString()}\"";
+        manifestPlaceholders = [
+                GETUI_APP_ID : "20P0M5r3FJ6DiUA5x2u3w6",
+                GETUI_APP_KEY : "9M7caq81LGAiCxFPkhdZW7",
+                GETUI_APP_SECRET : "avPK2zQTma6P1P5Nb3qB54"
+        ]
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            shrinkResources false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/aidl']
+            jniLibs.srcDirs = ['libs']
+        }
+
+    }
+}
+apply plugin: 'android-apt'
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    def googleDependencies = rootProject.ext.goodleDependencies
+    def otherDependencies = rootProject.ext.otherDependdencies
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile googleDependencies.support_v4
+    compile googleDependencies.appcompat_v7
+    compile googleDependencies.design
+    compile googleDependencies.recyclerview_v7
+    compile googleDependencies.cardview_v7
+    testCompile otherDependencies.junit
+    compile otherDependencies.fastjson
+    compile otherDependencies.okhttp3
+    compile otherDependencies.okhttp3_logging_interceptor
+    compile otherDependencies.okio
+    compile otherDependencies.multidex
+    compile otherDependencies.jsbridge
+    compile otherDependencies.googleGson
+    compile otherDependencies.jsoup
+    compile otherDependencies.xutils
+    compile otherDependencies.androidannotations
+
+}

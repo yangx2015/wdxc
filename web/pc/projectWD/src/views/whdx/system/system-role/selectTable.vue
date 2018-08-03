@@ -7,7 +7,7 @@
             <search-items :parent="v" :showCreateButton="true" :showSearchButton="true"></search-items>
         </Row>
         <Row style="position: relative;">
-        	<Table :height="tableHeight" :columns="tableColumns" :data="pageData" @on-selection-change="selectionClick"></Table>
+        	<Table highlight-row :height="tableHeight" :columns="tableColumns" :data="pageData" @on-selection-change="selectionClick"></Table>
         </Row>
         <Row class="margin-top-10 pageSty">
             <Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator @on-change='pageChange'></Page>
@@ -36,6 +36,7 @@
                 tableHeight: 220,
                 componentName: '',
                 choosedItem: null,
+                checkedIds: [],
                 tableColumns: [
                     {title: "#", width: 60, type: 'selection'},
                     {title:'角色名称',key:'jsmc',searchKey:'jsmcLike'},
@@ -50,33 +51,48 @@
                 },
             }
         },
-        created() {
-            this.util.initTable(this),
-            setTimeout(() => {
+        watch:{
+            pageData(){
                 this.checkIds();
+            }
+        },
+        created() {
+            this.util.initTable(this);
+            setTimeout(() => {
+                this.initJs();
             },100)
-
-            //alert(this.hasIds);
         },
         methods: {
             pageChange(event) {
                 this.util.pageChange(this, event);
             },
             checkIds(){
-                for(let r of this.hasIds){
-                    for(let t of this.pageData){
-                        if(t.jsId === r){
-                            t._checked = true;
-                        }
+
+                for(let r of this.pageData){
+                    if(this.checkedIds.indexOf(r.jsId) !== -1){
+                        r._checked = true;
                     }
                 }
             },
-            selectionClick(arr){
-                let jsIds = [];
-                for(let r of arr){
-                    jsIds.push(r.jsId);
+            selectionClick(selection){
+                for(let r of this.pageData){
+                    let index = this.checkedIds.indexOf(r.jsId);
+                    if(index !== -1){
+                        this.checkedIds.splice(index,1);
+                    }
                 }
-                this.$emit("arrIds",jsIds);
+
+                for(let k of selection){
+                    this.checkedIds.push(k.jsId);
+                }
+                this.$emit("arrIds",this.checkedIds);
+            },
+            initJs(){
+                for(let r of this.hasIds){
+                    if(this.checkedIds.indexOf(r) === -1) {
+                        this.checkedIds.push(r);
+                    }
+                }
             }
         }
     }

@@ -83,7 +83,7 @@ public class ClSbyxsjjlCtrl extends BaseController<ClSbyxsjjl, String> {
 	 * @return
 	 */
 	@PostMapping("/yyguiji")
-	public ApiResponse<List<Point>> getYyGuiJi(gpsSJInfo gpssjinfo){
+	public ApiResponse<List<com.ldz.util.bean.Point>> getYyGuiJi(gpsSJInfo gpssjinfo){
 
 		return service.getYyGuiJi(gpssjinfo);
 

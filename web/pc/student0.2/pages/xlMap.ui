@@ -1,9 +1,10 @@
 <!---->
 <template>
   <ui-page  style="overflow-y: hidden;">
-    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#3399FF'} }}">
+    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FC8609'} }}">
         <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+            <ui-icon type="left" size="16" color="#fff"></ui-icon>
           </ui-col>
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">地图查看</ui-view>
@@ -26,7 +27,7 @@
 
                 <ui-view id="allmap" style="{{{height:height+'px'}}}"></ui-view>
 
-            <ui-button type="primary" bindtap="goXlMess">线路详情</ui-button>
+            
 <!-- 页面内容 end-->
 
           </ui-view>
@@ -34,7 +35,10 @@
   </ui-page>
 </template>
 
+
 <script>
+import $ from 'jquery';
+
 export default {
   config: {
     navigationStyle: 'custom',
@@ -48,39 +52,168 @@ export default {
   data() {
     return {
       thisIndex:5,
-      height:ui.WIN_HEIGHT
+      height:ui.WIN_HEIGHT,
+      map:'',
+      item:[
+        {Icon:"../static/img/Bus.png",}
+      ],
+      carList:[
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543083",
+          // },
+          // {
+          //   jd :"114.378117",
+          //   wd : "30.543073",
+          // },
+          // {
+          //   jd :"114.378917",
+          //   wd : "30.543183",
+          // },
+      ],
+      xlID:'',
     }
   },
+  created(){
+    this.xlID= ui.getApp().station.xlID
+    // this.getBusCode()
+  },
   methods: {
+    getBusCode(callback){
+      var v = this
+      this.$http('POST',ui.getApp().apis.XLMAP,{xlId:this.xlID},(res)=>{
+          console.log('数据请求====',res);
+          if(res.code==200&&res.result){
+            v.carList = v.carList.concat(res.result)
+            
+          }
+                callback && callback(v.carList)
+          // this.carList = res.result
+          
+          console.log('======',v.carList)
+      })
+    },
+    getxlmess(callback,callback2){
+      var v = this
+      this.$http('POST',ui.getApp().apis.ZDMESS,{xlid:this.xlID},(res)=>{
+        console.log('shujuqingqiu====',res);
+         if(res.code==200&&res.result){
+            v.carList =  res.result.list
+
+            v.getBusCode((lis)=>{
+              callback && callback(lis)
+            })
+            callback2 && callback2(res.result.list)
+          }
+           console.log('======',v.carList)
+      })
+    },
     goXlMess () {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
+    },
+    Goback(){
+      ui.navigateBack()
+    },
+    addMarker(item, point) {
+      var myIcon = ''
+      if(item.cphm){
+         myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+      }else{
+        myIcon = new BMap.Icon("/static/img/gjzp.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+      }
+        
+      // var myIcon = new BMap.Icon(v.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+      var marker = new BMap.Marker(point,{icon:myIcon});
+      this.map.addOverlay(marker);
+      // this.addClickHandler(item, marker);
+    },
+    // 获取一条线路的途径点
+   
+showLine(points){
+    let ps = [];
+    for (let r of points){
+        ps.push(new BMap.Point(r.lng, r.lat));
     }
+    var polyline = new BMap.Polyline(ps,
+        {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+    );
+    this.map.addOverlay(polyline);
+},
+// 获取一条线路的途径点
+getLinePoints(stationList){
+    let startPoint = new BMap.Point(stationList[0].wd,stationList[0].jd);
+    let endPoint = new BMap.Point(stationList[stationList.length -1].wd,stationList[stationList.length -1].jd);
+    let waypoints = '';
+    for (let i = 1;i<=stationList.length - 2;i++){
+        let station = stationList[i];
+              waypoints += station.wd+','+station.jd;
+              if (i < stationList.length - 2){
+                  waypoints += '|';
+              }
+          }
+    let url = 'http://api.map.baidu.com/direction/v2/driving?origin='+stationList[0].wd+','+stationList[0].jd+'&destination='+stationList[stationList.length -1].wd+','+stationList[stationList.length -1].jd+'&ak=evDHwrRoILvlkrvaZEFiGp30';
+    url += '&waypoints='+waypoints;
+    let points = [];
+    let v = this;
+    $.ajax({
+              url:url,
+              type:"get",
+              dataType:'JSONP',
+              success:function(res){
+                  if (res.status == 0){
+                      let route = res.result.routes[0];
+                      points.push({lat:route.origin.lat,lng:route.origin.lng});
+                      for (let r of route.steps){
+                          points.push({lng:r.end_location.lng,lat:r.end_location.lat});
+                      }
+
+                      v.showLine(points);
+                  }
+              }
+          })
+      },
   },
   mounted() {
     var script = document.createElement("script")
     script.type = "text/javascript"
     var callbackName = '_callback'+Date.now()
+    let v = this;
     window[callbackName]= function(){
      console.log(BMap)
-      var map = new BMap.Map("allmap");    // 创建Map实例
-      map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  // 初始化地图,设置中心点坐标和地图级别
-      var point = new BMap.Point(116.404, 39.915);
-      map.centerAndZoom(point, 15);    
-      var marker = new BMap.Marker(point,);
-      map.addOverlay(marker);     
+      v.map = new BMap.Map("allmap");    // 创建Map实例
+      v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
+      var point = new BMap.Point(114.368107, 30.543083);
+      v.map.centerAndZoom(point, 16); 
+
+      v.getxlmess( (res)=>{
+        for (let r of res) {
+          var point = new BMap.Point(r.jd, r.wd);
+          v.addMarker(r, point);
+        };  
+      },(reslist)=>{
+        v.getLinePoints(reslist)
+      } )
+      
+      
+      
+      // 自定义icon,创建标注
+        
+// 创建标注
+        // v.map.addOverlay(marker2); 
+      
+      
       //添加地图类型控件
-      map.addControl(new BMap.MapTypeControl({
+      v.map.addControl(new BMap.MapTypeControl({
         mapTypes:[
-                BMAP_NORMAL_MAP,
-                BMAP_HYBRID_MAP
+                BMAP_NORMAL_MAP
             ]}));   
-      map.setCurrentCity("北京");          // 设置地图显示的城市 此项是必须设置的
-      map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
-      delete window[callbackName]
+      v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
+      v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+      delete window[callbackName];
     }
-    script.src="https://api.map.baidu.com/api?v=2.0&ak=你的密钥&callback="+callbackName
+    script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
     document.body.appendChild(script)
 
   }

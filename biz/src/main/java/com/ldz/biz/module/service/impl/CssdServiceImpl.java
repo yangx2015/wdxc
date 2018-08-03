@@ -143,7 +143,7 @@ public class CssdServiceImpl extends BaseServiceImpl<ClCssd, String> implements 
 		String result = "";
 		ApiResponse<String> apiResponse = null;
 		try {
-			Map<String, String> postHeaders = new HashMap<String, String>();
+			Map<String, String> postHeaders = new HashMap<>();
 			postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 			result = HttpUtil.postJson(url, postHeaders, postEntity);
 			apiResponse = (ApiResponse<String>) JsonUtil.toBean(result, ApiResponse.class);

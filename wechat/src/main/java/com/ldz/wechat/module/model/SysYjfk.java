@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.Date;
 import javax.persistence.*;
 
+/**
+ * 用户意见反馈表
+ */
 @Table(name = "SYS_YJFK")
 public class SysYjfk implements Serializable {
     @Id
@@ -24,7 +27,10 @@ public class SysYjfk implements Serializable {
 
     @Column(name = "ZT")
     private String zt;
-
+    /**
+     * yjLx 意见类型 ZDCLK0009
+        00意见 10反馈 20投诉
+     */
     @Column(name = "YJLX")
     private String yjlx;
 

@@ -74,7 +74,7 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            if(StringUtils.contains(itemValue,"start_end")){
+            if(StringUtils.contains(itemValue,"start_end") || StringUtils.contains(itemValue,"compencate")){
                 // 过期事件存储车辆行程
                 saveClXc(itemValue, simpleDateFormat);
             }else if(StringUtils.contains(itemValue,"offline")){
@@ -217,7 +217,18 @@ public class TopicMessageListener implements MessageListener {
 
         SimpleCondition s = new SimpleCondition(ClGpsLs.class);
         Example.Criteria criteria = s.createCriteria();
-        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-MM-dd HH:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
+       /* Date start = null;
+        Date end = null;
+        try {
+          start =   DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss");
+            end =  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        criteria.andGreaterThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),start);
+        criteria.andLessThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),end);
+        criteria.andEqualTo(ClGpsLs.InnerColumn.zdbh.name(),zdbh);*/
+        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
         s.and(criteria);
 
         s.setOrderByClause(" CJSJ desc ");
@@ -236,16 +247,19 @@ public class TopicMessageListener implements MessageListener {
         String point = GuiJIApi.trackPoint(listBeans);
         NewTrackPointReturn newTrackPointReturn = JsonUtil.toBean(point, NewTrackPointReturn.class);
         List<Clyy> yyList = new ArrayList<>();
-        newTrackPointReturn.getPoints().stream().forEach(point1 -> {
-            Clyy clyy = new Clyy();
-            clyy.setDirection(point1.getDirection() + "");
-            clyy.setZdbh(zdbh);
-            clyy.setLatitude(BigDecimal.valueOf(point1.getLatitude()));
-            clyy.setLongitude(BigDecimal.valueOf(point1.getLongitude()));
-            clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
-            clyy.setLoc_time(parse(point1.getLoc_time()) );
-            yyList.add(clyy);
-        });
+        List<Point> points = newTrackPointReturn.getPoints() ;
+        if(CollectionUtils.isNotEmpty(points)) {
+            points.forEach(point1 -> {
+                Clyy clyy = new Clyy();
+                clyy.setDirection(point1.getDirection() + "");
+                clyy.setZdbh(zdbh);
+                clyy.setLatitude(BigDecimal.valueOf(point1.getLatitude()));
+                clyy.setLongitude(BigDecimal.valueOf(point1.getLongitude()));
+                clyy.setSpeed(BigDecimal.valueOf(point1.getSpeed()));
+                clyy.setLoc_time(parse(point1.getLoc_time()));
+                yyList.add(clyy);
+            });
+        }
         clYyService.saveBatch(yyList);
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
 
