@@ -10,6 +10,6 @@ module.exports = {
     NEXTBUS:'/put/xl/getNextCars',//下一俩车到站 xlId zdId
     XLMAP:'/put/xl/getBusPositions',//地图展示点
 
-    PROPOSAL:'put/yj/save',//意见反馈 yjLx 00意见 10反馈 20投诉
-    PROPList:'put/yj/pager',//意见列表
+    PROPOSAL:'/put/yj/save',//意见反馈 yjLx 00意见 10反馈 20投诉
+    PROPList:'/put/yj/pager',//意见列表
 }
