@@ -47,7 +47,8 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
 				condition.eq(SysYjfk.InnerColumn.yjlx.name(),yjLx);
 			}
 		}
-		condition.eq(SysYjfk.InnerColumn.zt.name(),"10");
+//		//审核状态 00 是未审核  10 是已审核
+//		condition.eq(SysYjfk.InnerColumn.zt.name(),"10");
 		return true;
 	}
 	public boolean fillPagerCondition(LimitedCondition condition){

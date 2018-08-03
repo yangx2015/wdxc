@@ -113,6 +113,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             today.setMinutes(0);
             today.setSeconds(0);
             condition.gte(ClClyxjl.InnerColumn.cjsj,today);
+            condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+            condition.and().andNotEqualTo(ClClyxjl.InnerColumn.zt.name(),"off");
             condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
             List<ClClyxjl> xlzds = clyxjlService.findByCondition(condition);
             if(xlzds!=null&&xlzds.size()>0){

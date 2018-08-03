@@ -95,10 +95,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
         // 只要上传点位信息 则为在线状态
         redis.boundValueOps("offline-"+gpsInfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
-        // 没有eventType，则说明是心跳包
-//        if (StringUtils.isEmpty(gpsInfo.getEventType())){
-//            return ApiResponse.success("HeartBeat");
-//        }
 
         if (StringUtils.isEmpty(gpsInfo.getLatitude()) || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getDeviceId())) {
@@ -144,30 +140,31 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
         }
 
+        ClGps newGps = changeCoordinates(gpsInfo);
 
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
             newStatus = DeviceStatus.OFFLINE.getCode();
         }
-
-        String deviceStatusJson = (String) redis.boundValueOps(DeviceInfo.class.getSimpleName() + deviceId).get();
-        DeviceInfo deviceInfo = JsonUtil.toBean(deviceStatusJson, DeviceInfo.class);
-        DeviceInfo newDeviceInfo = new DeviceInfo(gpsInfo);
-        newDeviceInfo.setStatus(newStatus);
-        newDeviceInfo.setUpdateTime(DateUtils.getNowTime());
-        if (deviceInfo == null){
+        String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).get();
+        if (StringUtils.isEmpty(gpsJson)){
             statusChange = true;
         }else{
-            if (!newStatus.equals(deviceInfo.getStatus())){
+            ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
+            if (gps == null){
                 statusChange = true;
+            }else{
+                if (!newStatus.equals(gps.getStatus())){
+                    statusChange = true;
+                }
+                // 比较redis(实时gps点位)历史数据和这次接收到的数据距离
+                double shortDistance = DistanceUtil.getShortDistance(gps.getBdwd().doubleValue(),
+                        gps.getBdjd().doubleValue(), newGps.getBdwd().doubleValue(), newGps.getBdjd().doubleValue());
+                positionChange = shortDistance > 10;
             }
-            // 比较redis(实时gps点位)历史数据和这次接收到的数据距离
-            double shortDistance = DistanceUtil.getShortDistance(deviceInfo.getLng(),deviceInfo.getLat(), newDeviceInfo.getLng(), newDeviceInfo.getLat());
-            positionChange = shortDistance > 10;
         }
 
         if (statusChange || positionChange){
-            ClGps newGps = changeCoordinates(gpsInfo);
             ClGpsLs gpsls = new ClGpsLs(newGps);
             gpsls.setId(genId());
             gpsls.setZdbh(deviceId);
@@ -176,7 +173,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
             clXc(gpsInfo);
-            WebsocketInfo websocketInfo = changeSocket(gpsInfo, null, null);
+            WebsocketInfo websocketInfo = changeSocket(gpsInfo, newGps, null);
             sendWebsocket(websocketInfo);
             ClCl car = null;
             List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
@@ -184,7 +181,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 car = carList.get(0);
             }
             saveEvent(newGps,gpsInfo,car,eventType);
-//            saveClSbyxsjjl(gpsinfo, bean2, clcl);
+            saveClSbyxsjjl(gpsInfo, newGps, car);
         }
     }
 
