@@ -17,6 +17,7 @@
         <module>tic-znzp</module>
         <module>wechat</module>
         <module>tic-obd</module>
+        <module>geo</module>
     </modules>
     <packaging>pom</packaging>
     <parent>
