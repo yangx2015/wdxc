@@ -102,6 +102,7 @@
                 // 显示站点
                 this.showStations(line);
                 // 显示车辆
+                this.showCars(line);
             },
             showLine(line){
                 if (!line.points)return;
@@ -124,6 +125,17 @@
                     var marker = new BMap.Marker(new BMap.Point(r.jd, r.wd));
                     this.map.addOverlay(marker);
                     this.addLabel(r,++c);
+                }
+            },
+            showCars(line){
+                let carList = line.carList;
+                if (!carList)return;
+                let c = 0;
+                for (let r of carList){
+                    var myIcon = new BMap.Icon(this.stationIconUrl, new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+                    // var marker = new BMap.Marker(new BMap.Point(r.lng, r.lat), {icon: myIcon});
+                    var marker = new BMap.Marker(new BMap.Point(r.bdjd, r.bdwd));
+                    this.map.addOverlay(marker);
                 }
             },
             // 获取线路列表
@@ -221,15 +233,31 @@
                 stompClient.connect({}, function(frame) {
                     for (let r of v.addDeviceList){
                         stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
-                            let jsonMess = JSON.parse(data.body)
-                            if(jsonMess.cx==="30"){//校巴
-                                v.scoketMess.forEach((item,index) => {
-                                    if(item.clid==jsonMess.clid){
-                                        v.scoketMess.splice(index,1)
+                            let weksocketBody = JSON.parse(data.body)
+                            if(weksocketBody.cx==="30"){//校巴
+                                let xlId = weksocketBody.xlId;
+                                v.lineList.forEach((item,index)=>{
+                                    if (item.id === xlId){
+                                        if (!item.carList){
+                                            item.carList = [item];
+                                        }else{
+                                            let index = item.carList.indexOf(item);
+                                            if (index >=0){
+                                                item.carList.splice(index,1,item);
+                                            }else{
+                                                item.carList.push(item);
+                                            }
+                                        }
                                     }
                                 })
-                                v.scoketMess.push(jsonMess)
-                                v.$store.commit('socketMessAdd',v.scoketMess)
+                                v.lineChange();
+                                // v.scoketMess.forEach((item,index) => {
+                                //     if(item.clid==weksocketBody.clid){
+                                //         v.scoketMess.splice(index,1)
+                                //     }
+                                // })
+                                // v.scoketMess.push(weksocketBody)
+                                // v.$store.commit('socketMessAdd',v.scoketMess)
                             }
                         });
                     }
