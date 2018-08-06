@@ -10,30 +10,32 @@ import lombok.Setter;
 public class WebsocketInfo {
 
 	private String clid;
-	
+
 	private String cph;
-	
+
 	private String speed;
-	
+
 	private String eventType;
-	
+
 	private Date  time;
-	
+
 	private String bdjd;
-	
+
 	private String bdwd;
-	
+
 	private String zdbh;
-	
-	
+
+
 	private String cx;
-	
+
 	private String sjxm;
-	
+
 	private String obdId;
-	
+
 	private String zxzt;
-	
+
 	//离线时长
 	private Long lxsc;
+
+	private String xlId;
 }

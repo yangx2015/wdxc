@@ -1,6 +1,7 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.wechat.module.bean.NearbyStation;
 import com.ldz.wechat.module.model.ClClyxjl;
 import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.ClZd;
@@ -76,6 +77,11 @@ public class ClXlCtrl {
 	@RequestMapping("getStationInfo")
 	public ApiResponse<Map<String,Object>> getStationInfo(String lng,String lat){
 		return zdservice.getStationInfo(lng,lat);
+	}
+
+	@RequestMapping("getNearbyStations")
+	public ApiResponse<List<NearbyStation>> getNearbyStations(String lng, String lat){
+		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));
 	}
 
 }
