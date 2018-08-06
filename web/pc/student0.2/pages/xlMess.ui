@@ -77,12 +77,19 @@
 
             <!-- 页面内容 end-->
           </ui-view>
+          <ui-view class="f5 box_row" bindtap="getNewMess">
+              <ui-icon class="{{iconSty}}" type="f14" size="28"
+              color="#fff"></ui-icon>
+              <ui-text class="f5Tit">
+                刷新
+              </ui-text>
+          </ui-view>
       </ui-view>
   </ui-page>
 </template>
 
 <script>
-import busline from "./common/busLinne";
+import busline from "./common/busLine";
 export default {
   config: {
     navigationStyle: 'custom',
@@ -105,6 +112,7 @@ export default {
   },
   data() {
     return {
+      iconSty:'',
       line:{},//线路基本信息
       lineMess: {},//线路详情list
       nextbusList:[],//下一辆车到站情况
@@ -112,6 +120,15 @@ export default {
     }
   },
   methods: {
+    getNewMess(){
+      this.iconSty = 'rot2D'
+      setTimeout(() => {
+        this.iconSty = ''
+      }, 4*1000);
+      
+      this.getLineMess()
+      this.getnextbus(ui.getApp().station.stationID)
+    },
     Goback(){
       ui.navigateBack()
     },
@@ -158,8 +175,13 @@ export default {
     console.log('------', ui.getApp().station);
     this.line = ui.getApp().lineMess;
     this.Num = ui.getApp().lineMess.order
-    this.getLineMess()
-    this.getnextbus(ui.getApp().station.stationID)
+    if(this.line.id && this.Num){
+      this.getLineMess()
+      this.getnextbus(ui.getApp().station.stationID)
+    }else{
+      ui.showToast({ title: '位置信息丢失，请从新选取路线',duration: 2*1000})
+      this.Goback()
+    }
     
     
   },
@@ -169,6 +191,19 @@ export default {
 </script>
 
 <style lang="less">
+.f5{
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  background-color: #ff7f50;
+  color:#fff;
+  padding: 25rpx;
+  width: 240rpx;
+  .f5Tit{
+    font-size: 42rpx;
+    padding:10rpx 15rpx;
+  }
+}
 .boxRowAuto{
   height: 600rpx;
   background: #fff;
