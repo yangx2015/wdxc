@@ -1,6 +1,7 @@
 package com.ldz.biz.config;
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClYyService;
 import com.ldz.biz.module.service.GpsLsService;
@@ -19,7 +20,6 @@ import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 import org.springframework.http.MediaType;
 import org.springframework.util.ObjectUtils;
-import tk.mybatis.mapper.entity.Example;
 
 import java.math.BigDecimal;
 import java.text.ParseException;
@@ -44,6 +44,8 @@ public class TopicMessageListener implements MessageListener {
     private GpsLsService gpsLsService;
 
     private ZdglService zdglService;
+
+
 
     private ExecutorService pool = Executors.newSingleThreadExecutor();
 
@@ -215,24 +217,11 @@ public class TopicMessageListener implements MessageListener {
      */
     public String newGuiJiJiuPian(String zdbh, String startTime, String endTime){
 
-        SimpleCondition s = new SimpleCondition(ClGpsLs.class);
-        Example.Criteria criteria = s.createCriteria();
-       /* Date start = null;
-        Date end = null;
-        try {
-          start =   DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss");
-            end =  DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        criteria.andGreaterThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),start);
-        criteria.andLessThanOrEqualTo(ClGpsLs.InnerColumn.cjsj.name(),end);
-        criteria.andEqualTo(ClGpsLs.InnerColumn.zdbh.name(),zdbh);*/
-        criteria.andCondition("CJSJ >= to_date('"+startTime+"','yyyy-mm-dd hh24:mi:ss') and CJSJ <= to_date('"+endTime+"','yyyy-MM-dd HH:mi:ss') and zdbh = '"+zdbh +"'");
-        s.and(criteria);
-
-        s.setOrderByClause(" CJSJ desc ");
-        List<ClGpsLs> gpsLs = gpsLsService.findByCondition(s);
+        gpsSJInfo gpsSJInfo = new gpsSJInfo();
+        gpsSJInfo.setStartTime(startTime);
+        gpsSJInfo.setEndTime(endTime);
+        gpsSJInfo.setZdbh(zdbh);
+        List<ClGpsLs> gpsLs = gpsLsService.getGpsLs(gpsSJInfo);
         List<PointListBean> listBeans = new ArrayList<>();
         gpsLs.stream().forEach(clGpsLs -> {
             PointListBean pointListBean = new PointListBean();
@@ -347,7 +336,7 @@ public class TopicMessageListener implements MessageListener {
 
 
     public String parse(long time) {
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Long aLong = time * 1000;
         Date date = new Date(aLong);
         String format = simpleDateFormat.format(date);
