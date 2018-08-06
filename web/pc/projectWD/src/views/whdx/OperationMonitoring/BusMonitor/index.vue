@@ -71,7 +71,7 @@
                             最近5分钟异常行驶记录
                         </p>
                         <Button type="primary" size="small" :icon="changeBtnIcon" slot="extra" style="margin:5px" @click.native="changeBtn"></Button>
-                        <div class="a" style=" " v-show="!tabShowFlag">
+                        <div class="a" style=" " v-show="tabShowFlag">
                             <abnor style="height: 256px"></abnor>
                         </div>
                     </Card>
