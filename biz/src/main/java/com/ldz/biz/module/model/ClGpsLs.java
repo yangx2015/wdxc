@@ -1,13 +1,14 @@
 package com.ldz.biz.module.model;
 
+import lombok.AllArgsConstructor;
+import lombok.ToString;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.*;
-
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Table(name = "CL_GPS_LS")
 @AllArgsConstructor
@@ -106,6 +107,7 @@ public class ClGpsLs implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public ClGpsLs(){};
 
     public ClGpsLs(ClGps gps){
         this.cjsj = gps.getCjsj();
