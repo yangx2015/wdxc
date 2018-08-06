@@ -32,7 +32,7 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator
+				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator show-sizer
 					  @on-change='pageChange'></Page>
 			</Row>
 		</Card>

@@ -60,6 +60,8 @@
                 allDeviceList: [],
                 socket : new SockJS(this.$http.url+"/gps"),
                 stationIconUrl:'http://47.98.39.45:9092/icon/running.png',
+                colors:['#FFFF00','#FF0000','#5CACEE','#DA70D6','#CDAD00','#CD2626'],
+                colorIndex:0,
 			}
 		},
 		computed: {
@@ -111,9 +113,15 @@
                     ps.push(new BMap.Point(r.lng, r.lat));
                 }
                 var polyline = new BMap.Polyline(ps,
-                    {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+                    {strokeColor:line.color, strokeWeight:6, strokeOpacity:0.5}
                 );
                 this.map.addOverlay(polyline);
+            },
+            getColor(){
+                if (this.colorIndex >= this.colors.length){
+                    this.colorIndex = 0;
+                }
+                return this.colors[this.colorIndex ++];
             },
             showStations(line){
                 let stationList = line.stationList;
@@ -145,6 +153,7 @@
                     if (res.code == 200 && res.page.list){
                         this.lineList = res.page.list;
                         for (let i in this.lineList){
+                            this.lineList[i].color = this.getColor();
                             this.getLineStations(i);
                         }
                     }
@@ -158,17 +167,10 @@
                     if (res.code == 200 && res.result){
                         this.lineList[i].stationList = res.result;
                         this.getLinePoints(i);
-                        // if (i == this.lineList.length - 1){
-                        //     let list = [];
-                        //     for(let index in this.lineList){
-                        //         list.push(index);
-                        //     }
-                        //     this.lineChange(list);
-                        // }
                     }
                 })
             },
-		    // 获取一条线路的途径点
+    // 获取一条线路的途径点
 		    getLinePoints(index){
 		        let line = this.lineList[index];
 		        if (!line || !line.stationList){
@@ -197,19 +199,27 @@
                         if (res.status == 0){
                             let route = res.result.routes[0];
                             points.push({lat:route.origin.lat,lng:route.origin.lng});
-                            for (let r of route.steps){
-                                points.push({lng:r.end_location.lng,lat:r.end_location.lat});
+                            for (let step of route.steps){
+                                points.push({lng:step.start_location.lng,lat:step.start_location.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths){
+                                    if (path === '')continue
+                                    let point = path.split(",");
+                                    points.push({lng:point[0],lat:point[1]});
+                                }
+                                points.push({lng:step.end_location.lng,lat:step.end_location.lat});
                             }
                             line.points = points;
-                            // v.showLine(line);
                         }
                     }
                 })
             },
             // 线路复选框选中值发生变化时触发此事件
 		    lineChange(e){
-                this.map.clearOverlays()
-                this.choosedLineIndexs = e;
+                this.map.clearOverlays();
+                if (e){
+                    this.choosedLineIndexs = e;
+                }
                 for(let i of this.choosedLineIndexs){
                     this.showRoute(this.lineList[i]);
                 }
@@ -239,25 +249,24 @@
                                 v.lineList.forEach((item,index)=>{
                                     if (item.id === xlId){
                                         if (!item.carList){
-                                            item.carList = [item];
+                                            item.carList = [weksocketBody];
                                         }else{
-                                            let index = item.carList.indexOf(item);
+                                            let index = -1;
+                                            for (let i in item.carList){
+                                                if (item.carList[i].zdbh === weksocketBody.zdbh){
+                                                    index = i
+                                                    break;
+                                                }
+                                            }
                                             if (index >=0){
-                                                item.carList.splice(index,1,item);
+                                                item.carList.splice(index,1,weksocketBody);
                                             }else{
-                                                item.carList.push(item);
+                                                item.carList.push(weksocketBody);
                                             }
                                         }
                                     }
                                 })
                                 v.lineChange();
-                                // v.scoketMess.forEach((item,index) => {
-                                //     if(item.clid==weksocketBody.clid){
-                                //         v.scoketMess.splice(index,1)
-                                //     }
-                                // })
-                                // v.scoketMess.push(weksocketBody)
-                                // v.$store.commit('socketMessAdd',v.scoketMess)
                             }
                         });
                     }
@@ -340,26 +349,6 @@
 			    this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
 			    this.map.addControl(new BMap.NavigationControl()); 				// 添加平移缩放控件
 			},
-            // drivingLine(startPoint,endPoint,points){
-            //     let v = this;
-            //     var myIcon = new BMap.Icon("http://lbsyun.baidu.com/jsdemo/img/Mario.png", new BMap.Size(32, 70), {    //小车图片
-            //         //offset: new BMap.Size(0, -5),    //相当于CSS精灵
-            //         imageOffset: new BMap.Size(0, 0)    //图片的偏移量。为了是图片底部中心对准坐标点。
-            //     });
-            //
-            //     var driving = new BMap.DrivingRoute(this.map, {renderOptions:{map: this.map}});    //驾车实例
-            //     driving.search(startPoint, endPoint, {waypoints: points});
-            //     driving.setSearchCompleteCallback(function(){
-            //         var pts = driving.getResults().getPlan(0).getRoute(0).getPath();    //通过驾车实例，获得一系列点的数组
-            //         //this.map.addOverlay(pts);
-            //         var paths = pts.length;    //获得有几个点
-            //
-            //         //
-            //         // var carMk = new BMap.Marker(pts[0],{icon:myIcon});
-            //         // v.map.addOverlay(carMk);
-            //         // i=0;
-            //     });
-            // },
             //清除层
 			clear(){
 				this.map.clearOverlays()
