@@ -5,7 +5,6 @@ import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
 import com.ldz.biz.constant.DeviceStatus;
 import com.ldz.biz.constant.EventType;
-import com.ldz.biz.module.bean.DeviceInfo;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
@@ -21,7 +20,6 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.YingyanResponse;
-import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -182,7 +180,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 ClPb pbExample = new ClPb();
                 pbExample.setClId(car.getClId());
                 ClPb pb = pbService.findOneByEntity(pbExample);
-                xlId = pb.getXlId();
+                if(pb != null) {
+                    xlId = pb.getXlId();
+                }
             }
 
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);

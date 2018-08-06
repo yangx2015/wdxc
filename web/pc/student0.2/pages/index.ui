@@ -1,5 +1,5 @@
 <template>
-  <ui-page  style="overflow-y: hidden;">
+  <ui-page  pull-down="{{ pullDown }}"  style="overflow-y: hidden;">
       <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
           <ui-row height="46">
             <ui-col vertical-align="middle" align="center" width="60">
@@ -22,9 +22,9 @@
             </ui-ex-swiper>
           </ui-view>
 
-          <ui-view >
+          <!-- <ui-view >
                 {{GPSMESS}}
-          </ui-view>
+          </ui-view> -->
           <ui-tabs class="tabsSty" index="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
               <ui-tab>附近站点</ui-tab>
               <ui-tab>周边线路</ui-tab>
@@ -125,7 +125,11 @@ export default {
       swiperImg: [],
       StationMess:{},
       bcLine:[],//班车线路信息
-      GPSMESS:{}
+      GPSMESS:{},
+      pullDown: {
+        distance: 100,
+        onAfter: this.handleAfter
+      }
     }
   },
   methods: {
@@ -134,12 +138,42 @@ export default {
         url: '/pages/prop/add'
       })
     },
-    getGPSmess(){
+    handleAfter (flag) {
+      ui.showLoading({
+        text: '位置信息获取中'
+      })
+      let a = false
+      this.getGPSmess((res)=>{
+          if(res.longitude){
+            a = true
+          }else{
+            a = false
+          }
+      })
+      setTimeout(() => {
+        ui.hideLoading()
+        ui.showToast({ title: a ? '定位成功':'定位失败', icon: 'success', duration: 3000 })
+      }, 1.5*1000);
+    },
+    getGPSmess(callback){
         var v = this
         ui.getLocation({
         type: 'wgs84',
         success: function (res) {
-          v.GPSMESS = res
+          let mes = {}
+          if(res.longitude){
+            mes = res
+            v.GPSMESS = res
+          }else{
+            v.GPSMESS = {
+              longitude:'114.372681',
+              latitude:'30.544854'
+            }
+            mes = v.GPSMESS
+          }
+          v.getStationMess()
+          v.getbcLine()
+          callback && callback(mes)
         }
       })
     },
@@ -184,7 +218,7 @@ export default {
     },
     getStationMess(){
       var v = this
-      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:114.36996,lat:30.544539},(res)=>{
+      this.$http('POST',ui.getApp().apis.STATIONCODE,{lng:v.GPSMESS.longitude,lat:v.GPSMESS.latitude},(res)=>{
         console.log('站点信息',res);
         if(res.code == 200){
             this.StationMess = res.result
@@ -205,10 +239,9 @@ export default {
     }
   },
   created () {
-    this.getGPSmess()
+    var v = this
     this.getSwiperImg()
-    this.getStationMess()
-    this.getbcLine()
+    this.getGPSmess()
   },
   mounted() {
     

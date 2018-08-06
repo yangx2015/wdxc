@@ -1,37 +1,36 @@
 <!---->
 <template>
-
-    <ui-view style="height: 100%">
+<ui-view class="box_row_z">
+    <ui-view style="height: 100%" ui:for="{{lists}}" bindtap="getStationCode(item,index)">
       <ui-view class="buslineSty">
-          <ui-view class="bus">
-              <ui-icon type="bus2" size="20" color="{{busColor | color}}"></ui-icon>
+          <ui-view class="bus" ui:if="{{item.entryCount!=0}}">
+              <ui-icon type="bus2" size="20" color="{{index<codeNum-1 | color}}"></ui-icon>
           </ui-view>
-          <ui-view class="bus2">
-              <ui-icon type="bus2" size="20" color="{{busColor | color}}"></ui-icon>
+          <ui-view class="bus2" ui:if="{{item.exportCount!=0 && index!=lists.length-1}}">
+              <ui-icon type="bus2" size="20" color="{{index<codeNum-1 | color}}"></ui-icon>
           </ui-view>
 
-          <ui-view class="code" ui:if="{{false}}">
+          <ui-view class="code" ui:if="{{index==codeNum-1}}">
             <ui-icon type="webicon318" size="28"
               color="#fba05e"></ui-icon>
           </ui-view>
           <ui-view class="code2" ui:else>
             <ui-icon type="yuan-copy-copy-copy-copy" size="14"
-              color="{{busColor | color}}"></ui-icon>
+              color="{{index<codeNum | color}}"></ui-icon>
           </ui-view>
 
-          <ui-view class="line">
+          <ui-view class="line" ui:if="{{index!=lists.length-1}}">
             <ui-icon type="jianxianxing" size="70"
-              color="{{busColor ? '#ffe7a1' :'#f2f2f2'}}"></ui-icon>
+              color="{{index<codeNum-1 ? '#ffe7a1' :'#f2f2f2'}}"></ui-icon>
           </ui-view>
-          <ui-view class="nameList" style="{{ {color:busColor ? '#ff7f50' : index<num-1 ? '#000' : '#8c8c8c'} }}">
-            <!-- <ui-view class="nameItem" ui:for="{{item.zdName}}" ui:for-item="itemName">
+          <ui-view class="nameList" style="{{ {color:index==codeNum-1 ? '#ff7f50' : index<num-1 ? '#000' : '#8c8c8c'} }}">
+            <ui-view class="nameItem" ui:for="{{item.zdName}}" ui:for-item="itemName">
                 {{itemName}}
-            </ui-view> -->
-            {{stationName}}
+            </ui-view>
           </ui-view>
       </ui-view>
     </ui-view>
-
+</ui-view>
 </template>
 
 <script>
@@ -68,36 +67,11 @@ export default {
     num:{
       type:Number,
       default:0
-    },
-    stationName:{
-      type:String,
-      default:'站点名称'
-    },
-    busColor:{
-      type:Boolean ,
-      default:true
-    },
-    showBus:{
-      type:Boolean ,
-      default:true
-    },
-    codeColor:{
-      type:Boolean ,
-      default:true
-    },
-    lineColor:{
-      type:Boolean ,
-      default:true
-    },
-    showLine:{
-      type:Boolean,
-      default:true
     }
   },
   created () {
     this.codeNum = this.num
     console.log('//////',this.num);
-    console.log('//////',this.stationName);
     
   },
   mounted() {
@@ -105,8 +79,7 @@ export default {
   methods: {
     getStationCode(item,index){
       this.codeNum = index+1
-      // this.$emit('getCode',item.zdId)
-      // this.$panert.getNextBus(item.zdId)
+      this.$emit('getnextbus',item.zdId)
     }
   }
 }
