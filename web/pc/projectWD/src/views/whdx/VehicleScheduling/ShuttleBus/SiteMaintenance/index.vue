@@ -49,7 +49,7 @@
 						:current=findMess.pageNum
 						:page-size=findMess.pageSize
 						show-total
-						show-elevator
+						show-elevator show-sizer
 						@on-change='pageChange'></Page>
 			</Row>
 		</Card>

@@ -106,7 +106,7 @@
             // },
             getOrgPermissionTree(){
                 this.orgTree = [];
-                this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?parentCode="+this.parentCode+'&sonCode='+this.sonCode).then((res) =>{
+                this.$http.get(this.apis.FUNCTION.getPermissionTreeWithChecked+"?hideSystem=true&parentCode="+this.parentCode+'&sonCode='+this.sonCode).then((res) =>{
                     if(res.code===200){
                         this.orgTree = res.result;
                         this.showTree = true;
