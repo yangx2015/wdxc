@@ -270,7 +270,7 @@ util.delete = function(v,ids,callback){//数据删除方法封装
         confirmButtonText: '确认',
         cancelButtonText: '取消'
     }).then((isConfirm) => {
-        if (isConfirm.value) {
+        if (isConfirm) {
             let url = v.apiRoot['DELE'];
             v.$http.post(url,{'ids':ids}).then((res) =>{
                 if(res.code===200){
