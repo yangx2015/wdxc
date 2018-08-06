@@ -192,7 +192,8 @@ public class TopicMessageListener implements MessageListener {
         }*/
         String start_end =null;
         try {
-            start_end =  newGuiJiJiuPian(zdbh, startTime, endTime);
+            start_end =  newGuiJiJiuPian(zdbh, startTime, endTime);  // 新纠偏接口
+            // start_end = guiJiJiuPian(zdbh,s,e); // 鹰眼纠偏接口
         }catch (Exception e2){
             if(StringUtils.equals(type,"start_end")) {
                 // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
