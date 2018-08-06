@@ -14,24 +14,10 @@
         </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
-         
-         <!-- <ui-view style="height:200px;overflow: auto;">
-              <ui-view class="box_row_z">
-                  <ui-view style="padding:0 50px" ui:for="{{100}}">
-                    123
-                  </ui-view>
-              </ui-view>
-          </ui-view>
-          <ui-view class="box_col_auto"> -->
 <!-- 页面内容 start-->
-
                 <ui-view id="allmap" style="{{{height:height+'px'}}}"></ui-view>
-
-            
 <!-- 页面内容 end-->
-
           </ui-view>
-
   </ui-page>
 </template>
 
@@ -58,25 +44,15 @@ export default {
         {Icon:"../static/img/Bus.png",}
       ],
       carList:[
-          // {
-          //   jd :"114.378117",
-          //   wd : "30.543083",
-          // },
-          // {
-          //   jd :"114.378117",
-          //   wd : "30.543073",
-          // },
-          // {
-          //   jd :"114.378917",
-          //   wd : "30.543183",
-          // },
       ],
       xlID:'',
     }
   },
   created(){
     this.xlID= ui.getApp().station.xlID
-    // this.getBusCode()
+    if(!this.xlID){
+        this.Goback()
+    }
   },
   methods: {
     getBusCode(callback){
