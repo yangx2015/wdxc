@@ -13,6 +13,7 @@ import com.ldz.biz.module.mapper.ClGpsMapper;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.GpsService;
+import com.ldz.biz.module.service.PbService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
@@ -63,7 +64,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     private ClService clService;
     @Autowired
     private ZdglService zdglservice;
-
+    @Autowired
+    private PbService pbService;
     @Autowired
     private SimpMessagingTemplate websocket;
 
@@ -95,7 +97,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
         // 只要上传点位信息 则为在线状态
         redis.boundValueOps("offline-"+gpsInfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
-
         if (StringUtils.isEmpty(gpsInfo.getLatitude()) || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getDeviceId())) {
             return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
@@ -173,13 +174,19 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
             clXc(gpsInfo);
-            WebsocketInfo websocketInfo = changeSocket(gpsInfo, newGps, null);
-            sendWebsocket(websocketInfo);
             ClCl car = null;
+            String xlId = "";
             List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
             if (carList.size() != 0){
                 car = carList.get(0);
+                ClPb pbExample = new ClPb();
+                pbExample.setClId(car.getClId());
+                ClPb pb = pbService.findOneByEntity(pbExample);
+                xlId = pb.getXlId();
             }
+
+            WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
+            sendWebsocket(websocketInfo);
             saveEvent(newGps,gpsInfo,car,eventType);
             saveClSbyxsjjl(gpsInfo, newGps, car);
         }
@@ -583,7 +590,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setTime(simpledate(gpsinfo.getStartTime()));
                     info.setSpeed(clpgs.getYxsd());
                 }
-
             }
         }
         if (gpsss != null) {
@@ -594,6 +600,56 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setBdwd(gpsss.getBdwd().toString());
                     info.setTime(gpsss.getCjsj());
                     info.setSpeed(gpsss.getYxsd());
+                }
+            }
+        }
+        info.setClid(seleByZdbh.getClId());
+        info.setCph(seleByZdbh.getCph());
+        info.setZdbh(seleByZdbh.getZdbh());
+        info.setSjxm(seleByZdbh.getSjxm());
+        info.setCx(seleByZdbh.getCx());
+        info.setSjxm(seleByZdbh.getSjxm());
+        if (StringUtils.isNotEmpty(seleByZdbh.getObdCode())) {
+            info.setObdId(seleByZdbh.getObdCode());
+        }
+        return info;
+    }
+    @Override
+    public WebsocketInfo changeSocketNew(GpsInfo gpsinfo, ClGps clpgs, String xlId) {
+        ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
+        // 通过终端id获取车辆信息
+        WebsocketInfo info = new WebsocketInfo();
+
+        if (clpgs != null) {
+            if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
+                if (StringUtils.equals(gpsinfo.getSczt(), "10")) {
+                    if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+                        info.setEventType(gpsinfo.getEventType());
+                    }
+                    info.setZxzt("00");
+                    info.setBdjd(clpgs.getBdjd().toString());
+                    info.setBdwd(clpgs.getBdwd().toString());
+                    info.setTime(simpledate(gpsinfo.getStartTime()));
+                    info.setSpeed(clpgs.getYxsd());
+                }
+                if (StringUtils.equals(gpsinfo.getSczt(), "20")) {
+                    info.setZxzt("10");
+                    if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+                        info.setEventType(gpsinfo.getEventType());
+                    }
+                    info.setBdjd(clpgs.getBdjd().toString());
+                    info.setBdwd(clpgs.getBdwd().toString());
+                    info.setTime(simpledate(gpsinfo.getStartTime()));
+                    info.setSpeed(clpgs.getYxsd());
+                }
+            }
+            if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
+                if (StringUtils.equals(gpsinfo.getEventType(), EventType.OFFLINE.getCode())) {
+                    info.setZxzt("20");
+                    info.setBdjd(clpgs.getBdjd().toString());
+                    info.setBdwd(clpgs.getBdwd().toString());
+                    info.setTime(clpgs.getCjsj());
+                    info.setSpeed(clpgs.getYxsd());
                 }
             }
         }
