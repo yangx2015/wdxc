@@ -15,14 +15,102 @@
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
             <!-- 页面内容 start-->
-                <ui-button type="primary" bindtap="goStarPage">出发地</ui-button>
-                <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
+            <ui-view>
+
+            </ui-view>
+            <ui-view class="log_box">
+                <ui-view>
+                    <ui-row>
+                      <ui-icon type="webicon318"></ui-icon>
+                      <ui-input ui:model="{{form.starGPS.name}}" placeholder="你在哪儿" bindtap="getStarGps"></ui-input>
+                    </ui-row>
+                </ui-view>
+                <ui-view>
+                    <ui-row>
+                      <ui-icon type="webicon318"></ui-icon>
+                      <ui-input ui:model="{{form.endGPS.name}}" placeholder="要去哪儿" bindtap="getEndGps"></ui-input>
+                    </ui-row>
+                </ui-view>
+                <ui-view>
+                  <ui-row>
+                     <ui-col sapn=2>
+                        <ui-icon type="shijianshizhongdaojishi"></ui-icon>
+                      </ui-col>
+                      <ui-col span=4 bindtap="radioCalendaropen">
+                        <ui-text>乘车时间</ui-text>
+                      
+                     </ui-col>
+                     <ui-col span=2>
+                        <ui-icon type="yuan-copy-copy-copy-copy"></ui-icon>
+                      </ui-col>
+                      <ui-col span=4>
+                        <ui-text>换乘车人</ui-text>
+                     </ui-col>
+                  </ui-row>
+                </ui-view>
+                <ui-view>
+                   <ui-row>
+                     <ui-col>
+                       <!-- <ui-text>xiaoche </ui-text> -->
+                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
+                     </ui-col>
+                     <ui-col>
+                       <!-- <ui-text>xiaoche </ui-text> -->
+                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
+                     </ui-col>
+                     <ui-col>
+                       <!-- <ui-text>xiaoche </ui-text> -->
+                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
+                     </ui-col>
+                   </ui-row>
+                </ui-view>
+               
+                <ui-button class="login">提交订单</ui-button>
+                
+            </ui-view>
             <!-- 页面内容 end-->
+            <!-- <ui-button type="primary" bindtap="goStarPage">出发地</ui-button>
+            <ui-button type="primary" bindtap="goEndPage">目的地</ui-button> -->
+            <!-- 單選日期 -->
+            <ui-button type="primary" full-width="false" bindtab="radioCalendar = true">主要操作</ui-button>
+            <!-- <ui-mask ui:model="true">
+                <ui-view class="content">sdfs
+                </ui-view>
+            </ui-mask> -->
+            <ui-popup ui:model="{{ radioCalendar }}">32424234
+              <!-- <ui-view class="popup1">
+                <ui-row height="{{headerHeight}}">
+                  <ui-col align="left" vertical-align="middle" width="70" space-left="10" bindtap="handleSelect('radioCalendar')">
+                      <ui-icon type="close" color="#e60012"></ui-icon>
+                  </ui-col>
+                  <ui-col align="center" vertical-align="middle">
+                    <ui-text>选择日期</ui-text>
+                  </ui-col>
+                  <ui-col align="center" vertical-align="middle" width="70">
+                  </ui-col>
+
+                </ui-row>
+                <ui-v-calendar
+                ui:if="{{ radioCalendar }}"
+                select-range-mode="{{false}}"
+                header-height="30"
+                height="319"
+                show-today
+                bindchange="selectedChange"
+                value="{{radioDate}}"
+              ></ui-v-calendar>
+              </ui-view> -->
+            </ui-popup>
+
+            <!-- 单选结束 -->
       </ui-view>
+      
   </ui-page>
 </template>
 
 <script>
+// import util from "static/utils/util";
+// var formatLocation = util.formatLocation
 export default {
   config: {
     navigationStyle: 'custom',
@@ -35,9 +123,92 @@ export default {
   },
   data () {
     return {
+      radioCalendar:false,
+      form:{
+        name:'',
+        phone:'',
+        time:'',
+        num:'',
+        starGPS:{
+          name:''
+        },
+        endGPS:{
+          name:''
+        }
+      },
+      statusBarHeight: ui.STATUS_BAR_HEIGHT,
+        headerHeight: ui.DEFAULT_HEADER_HEIGHT,
+        // 单选日历，popup显隐控制
+        radioCalendar: false,
+        // 单选日历value
+        radioDate: '',
+        // 单选月
+        radioMonth: '',
+        // 单选天
+        radioDay: '',
+        // 存储临时变化的时间
+        dateobj: {},
+        // 双选，默认选中的时间
+        defaultMonthrange: [],
+        // 双选默认不选中日历，popup显隐控制
+        rangeCalendar: false,
+        // 双选默认选中日历，popup显隐控制
+        rangeCalendarDefault: false,
+        // 双选默认不选中 时间差
+        differ: '',
+        // 时间差显隐控制
+        differShow: false,
+        // 双选默认选中 时间差
+        differ2: '2',
+        // 双选默认不选中日历 value
+        rangeDate: '',
+        // 双选默认选中日历 value
+        rangeDate2: '',
+        // 双选默认不选中日历 开始日期
+        rangestart: '',
+        // 双选默认不选中日历 结束日期
+        rangeend: '',
+        // 双选默认选中日历 开始日期
+        rangestart2: '',
+        // 双选默认选中日历 结束日期
+        rangeend2: '',
+        height: ui.WIN_HEIGHT
+    
     }
   },
   methods: {
+    selectedChange(val){
+        console.log('s事件++++++++++++++',val)
+    },
+    radioCalendaropen(){
+
+    },
+    getStarGps(){
+      var that = this
+      ui.chooseLocation({
+        backgroundColor:'#3399ff',
+        success: function (res) {
+          console.log('success:', res)
+          that.form.starGPS = res
+        },
+        fail: function (res) {
+          console.log('fail:', res)
+        }
+      })
+    },
+    getEndGps(){
+      var that = this
+      ui.chooseLocation({
+        backgroundColor:'#3399ff',
+        success: function (res) {
+          console.log('success:', res)
+          that.form.endGPS = res
+        },
+        fail: function (res) {
+          console.log('fail:', res)
+        }
+      })
+    },
     goProp(){
       ui.navigateTo({
         url: '/pages/prop/add'
@@ -52,7 +223,17 @@ export default {
       ui.navigateTo({
         url: '/pages/xlMess'
       })
-    }
+    },
+    // 单选日历。获取月和天
+      radioinit (thisdate) {
+        this.dateobj.radioDate = thisdate
+        this.dateobj.radioDate = thisdate.split('/')
+        this.radioMonth = this.dateobj.radioDate[1]
+        this.radioDay = this.dateobj.radioDate[2]
+      },
+   
+  
+    
   },
   created () {
   },
@@ -80,8 +261,7 @@ export default {
   border-top:#f2f2f2 4rpx solid;
   border-bottom:#f2f2f2 4rpx solid;
 }
-.boxLisSty{
-}
+
 .ListItemSty{
   padding: 15rpx 20rpx;
   .stationName{
@@ -110,4 +290,68 @@ export default {
   // --------
 
 }
+.ui-row {
+  height: 50px;
+  line-height: 50px;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.ui-sms-input {
+  .ui-button {
+    width: 110px;
+  }
+}
+
+.log_box{
+  padding: 20px 50px;
+  .ui-view{
+    padding: 10px 0 5px 0;
+    .mix-1px(0, 0, 1, 0, #ccc);
+    .ui-input{
+      border: 0;
+    }
+    .ui-input-inner{
+      height: 30px;
+    }
+    .ui-button {
+      background-color: #F64E16;
+      border-color: #F64E16;
+      border-radius: 25px;
+    }
+  }
+  .login{
+    background-color: #F64E16;
+    border: 0;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 30px;
+  }
+  .swiper-slide {
+    .ui-image {
+        width: 100%;
+    }
+    }
+ 
+  .smalltitle{
+        font-size:12px;
+        color:#666
+    }
+  .smalltitle2{
+        background-color:#ebc7c8;
+        color: #C01920;
+        padding:0px 3px;
+        border-radius: 5px;
+        font-size:12px;
+    }
+
+  .btnyd {
+        background-color: #C01920;
+        border-radius: 20px;
+        border-color: #C01920;
+        box-shadow: 3px 3px 8px #E57A7E;
+        color: #fff;
+    }
+    }
 </style>
