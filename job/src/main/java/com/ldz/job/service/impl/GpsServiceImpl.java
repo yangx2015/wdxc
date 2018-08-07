@@ -73,23 +73,26 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		List<ClGpsLs> list = new ArrayList<>();
 		for(Object s : keys){
 			String key = (String)s;
-			String bean = (String) redis.boundValueOps(key).get();
-			if (bean != null) {
-				ClGps object = JsonUtil.toBean(bean, ClGps.class);
-				// 将该终端的实时点位插入数据库中
-				insetAndUpdate(object);
-			}
-			BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
-			String index = (String) boundListOps.index(0);
-			if (StringUtils.isNotEmpty(index)) {
-				Long length = boundListOps.size();
-				for (int i = 0; i < length; i++) {
-					String clgpsls = (String) boundListOps.rightPop();
-					ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
+			if(StringUtils.contains(key,"ClGpsLs")) {
 
-					list.add(gpssss);
+				BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
+				String index = (String) boundListOps.index(0);
+				if (StringUtils.isNotEmpty(index)) {
+					Long length = boundListOps.size();
+					for (int i = 0; i < length; i++) {
+						String clgpsls = (String) boundListOps.rightPop();
+						ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
+
+						list.add(gpssss);
+					}
 				}
-
+			}else {
+				String bean = (String) redis.boundValueOps(key).get();
+				if (bean != null) {
+					ClGps object = JsonUtil.toBean(bean, ClGps.class);
+					// 将该终端的实时点位插入数据库中
+					insetAndUpdate(object);
+				}
 			}
 		}
 

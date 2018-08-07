@@ -1,8 +1,10 @@
 package com.ldz.znzp.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "CL_ZDGL")
 public class ClZdgl implements Serializable {
@@ -85,8 +87,19 @@ public class ClZdgl implements Serializable {
     @Column(name = "JGMC")
     private String jgmc;
 
+    /**
+     * 设备版本
+     */
+    @Column(name = "VERSION")
+    private String version;
 
+    public String getVersion() {
+        return version;
+    }
 
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public void setJgdm(String jgdm) {
         this.jgdm = jgdm;
