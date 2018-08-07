@@ -1,0 +1,152 @@
+<template>
+  <ui-page  style="overflow-y: hidden;">
+      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
+          <ui-row height="46">
+            <ui-col vertical-align="middle" align="center" width="60">
+              <ui-icon type="wo" size="20" color="#e2e2e2"></ui-icon>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center">
+              <ui-view class="nav_title">约车</ui-view>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center" width="60" bindtap="goProp">
+              <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
+            </ui-col>
+          </ui-row>
+      </ui-nav-bar>
+      <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
+          <ui-view class="logoback">
+            <ui-view class="logTit">
+              张
+            </ui-view>
+            <ui-view class="name">
+              张三
+            </ui-view>
+            <ui-view class="fen">
+              5分
+            </ui-view>
+            
+          </ui-view>
+          <ui-tabs index="{{ tabCurrent }}" ink-bar
+            active-tab-style="{{activeTabStyle}}"
+            ink-bar-style="{{inkBarStyle}}"
+            bindchange="handleChange($event, 'tabCurrent')">
+              <ui-tab>待确认</ui-tab>
+              <ui-tab>历史订单</ui-tab>
+          </ui-tabs>
+          <ui-view class="box_col_auto">
+            <!-- 页面内容 start-->
+              <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
+                  <ui-swiper-item class="box_col_auto">
+                        <ui-button type= "primary" bindtap="goStarPage">出发地</ui-button>
+                  </ui-swiper-item>
+                  <ui-swiper-item class="box_col_auto">
+                        <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
+                  </ui-swiper-item>
+              </ui-swiper>
+            <!-- 页面内容 end-->
+          </ui-view>
+      </ui-view>
+  </ui-page>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationStyle: 'custom',
+    navigationBarBackgroundColor:"#26a2ff",
+    navigationBarTextStyle:"white",
+    navigationBarTitleText:"列表",
+    title:'列表',
+    backgroundColor:'#fff',
+    delay:false,//延迟加载
+  },
+  data () {
+    return {
+      tabCurrent:0,
+      activeTabStyle:{
+        'color': '#ff7f50',
+      },
+      inkBarStyle:{
+        'border-bottom': '#ff7f50 2px solid',
+        'width':'60%',
+        'color':'red'
+      }
+    }
+  },
+  methods: {
+    goProp(){
+      ui.navigateTo({
+        url: '/pages/prop/add'
+      })
+    },
+    goStarPage(){
+      ui.navigateTo({
+        url: '/pages/xlmap'
+      })
+    },
+    goEndPage(){
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    },
+    handleChange (index, key) {
+      this[key] = index
+    }
+  },
+  created () {
+  },
+  mounted() {
+    
+    
+
+
+
+    //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
+    setTimeout(() => {
+      //关闭app启动图
+      ui.closeSplashscreen()
+    }, 1000);
+  }
+}
+
+</script>
+
+<style lang="less">
+  .logoback{
+    height: 340rpx;
+    background-image: url('../static/img/drive/backTit.png');
+    background: 100% no-repeat top;
+    position: relative;
+    text-align: center;
+    .logTit{
+      background-color: #5e6dbd;
+      color: #fff;
+      width: 120rpx;
+      height: 120rpx;
+      border-radius: 60rpx;
+      line-height: 120rpx;
+      font-size: 50rpx;
+      font-weight: 700;
+      position: absolute;
+      top:10%;
+      left: 50%;
+      transform: translate(-50%,0);
+    }
+    .name{
+      position: absolute;
+      top: 170rpx;
+      width: 100%;
+      font-size: 40rpx;
+      font-weight: 700;
+      color: #616161;
+    }
+    .fen{
+      position: absolute;
+      top: 240rpx;
+      width: 100%;
+      font-size: 40rpx;
+      font-weight: 700;
+      color: #ffa700;
+    }
+  }
+</style>
