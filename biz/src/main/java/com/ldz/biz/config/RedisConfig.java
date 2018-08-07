@@ -34,7 +34,7 @@ public class RedisConfig {
 	@Value("${biz_url: }") // : http://47.98.39.45:8080
 	public  String bizurl;
 	@Value("${distance}")
-	public String distance;
+	public double distance;
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
