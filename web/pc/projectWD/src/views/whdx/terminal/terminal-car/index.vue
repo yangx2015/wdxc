@@ -1,5 +1,5 @@
 <style lang="less">
-    @import '../../../../styles/common.less';
+	@import '../../../../styles/common.less';
 
 </style>
 <!--查询统计-->
@@ -59,50 +59,50 @@
 			</Row>
 		</Card>
 		<component
-			:is="componentName"
-			:mess="choosedRow"></component>
+				:is="componentName"
+				:mess="choosedRow"></component>
 	</div>
 </template>
 
 <script>
-	import mixins from '@/mixins'
-	import formData from './formData'
-	import change from './change'
-	import jkdz from './jkdz'
-	import update from './update'
-	import setting from './setting'
-	import plmess from './plMess'
-	export default {
-    	name:'char',
-    	mixins:[mixins],
-		components:{
+    import mixins from '@/mixins'
+    import formData from './formData'
+    import change from './change'
+    import jkdz from './jkdz'
+    import update from './update'
+    import setting from './setting'
+    import plmess from './plMess'
+    export default {
+        name:'char',
+        mixins:[mixins],
+        components:{
             formData,change,jkdz,setting,update,plmess
-		},
+        },
         data () {
             return {
-            	PickerTime:2017,
-				updateMode:'single',
+                PickerTime:2017,
+                updateMode:'single',
                 SpinShow:false,
-            	//分页
+                //分页
                 loading:this.$store.state.app.loading,
-            	pageTotal:1,
+                pageTotal:1,
                 cjsjInRange:'',
                 tabHeight: 220,
                 componentName:'',
                 choosedRow:{},
-            	page:{
-            		pageNum:1,
-            		pageSize:8
-            	},
-            	//弹层
-            	showModal:false,
+                page:{
+                    pageNum:1,
+                    pageSize:8
+                },
+                //弹层
+                showModal:false,
                 columns: [
-                	{
-	                	title:"序号",
-	                	width:80,
-	                	align:'center',
-	                	type:'index'
-	                },
+                    {
+                        title:"序号",
+                        width:80,
+                        align:'center',
+                        type:'index'
+                    },
                     {
                         title: '名称',
                         align:'center',
@@ -117,10 +117,10 @@
                         title: '绑定车辆',
                         align:'center',
                         key: 'cph',
-						render:(h,p)=>{
+                        render:(h,p)=>{
                             let s = p.row.cph ? p.row.cph : '-';
                             return h('div',s);
-						}
+                        }
                     },
                     {
                         title: '超速设定',
@@ -151,16 +151,21 @@
                         key: 'cmd',
                     },
                     {
+                        title: '版本号',
+                        align:'center',
+                        key: 'version',
+                    },
+                    {
                         title: '在线状态',
                         align:'center',
                         key: 'zxzt',
                         render:(h,p)=>{
-	                     	let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
-	    					return h('div',{
-	    						style:{
-	    							color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
-	    						}
-	    					},val)
+                            let val = this.dictUtil.getValByCode(this,this.lmdmDictionary,p.row.zxzt)
+                            return h('div',{
+                                style:{
+                                    color:p.row.zxzt=="00" ? '#279a3b':'#ed3f14'
+                                }
+                            },val)
                         }
                     },
                     {
@@ -168,12 +173,12 @@
                         align:'center',
                         key: 'zt',
                         render:(h,p)=>{
-	                     	let val = this.dictUtil.getValByCode(this,this.ztlmdmDictionary,p.row.zt)
-	    					return h('div',{
-	    						style:{
-	    							color:p.row.zt=="00" ? '#279a3b':'#ed3f14'
-	    						}
-	    					},val)
+                            let val = this.dictUtil.getValByCode(this,this.ztlmdmDictionary,p.row.zt)
+                            return h('div',{
+                                style:{
+                                    color:p.row.zt=="00" ? '#279a3b':'#ed3f14'
+                                }
+                            },val)
                         }
                     },
                     {
@@ -331,38 +336,38 @@
                 //收索
                 form:{
                     mcLike:'',
-                	pageNum:1,
-            		pageSize:8
+                    pageNum:1,
+                    pageSize:8
                 },
                 Dictionary:[],
-				lmdmDictionary:'ZDCLK0032',//在线状态
-				ztDictionary:[],
-				ztlmdmDictionary:'ZDCLK0031'//设备状态
+                lmdmDictionary:'ZDCLK0032',//在线状态
+                ztDictionary:[],
+                ztlmdmDictionary:'ZDCLK0031'//设备状态
             }
         },
         created(){
-        	this.$store.commit('setCurrentPath', [{
+            this.$store.commit('setCurrentPath', [{
                 title: '首页',
             },{
                 title: '系统管理',
             },{
                 title: '设备终端',
             }]),
-            this.tabHeight = this.getWindowHeight() - 300
-			this.getPageData()
-			this.getLXDic()
+                this.tabHeight = this.getWindowHeight() - 300
+            this.getPageData()
+            this.getLXDic()
         },
         methods: {
             batchUpdate(){
                 this.choosedRow = null;
                 this.updateMode = 'batch'
                 this.componentName = 'update';
-			},
-        	getLXDic(){
+            },
+            getLXDic(){
                 this.Dictionary = this.dictUtil.getByCode(this,this.lmdmDictionary);
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
-        	},
-    	    getPageData(){
+            },
+            getPageData(){
                 this.$http.get(this.apis.ZDGL.QUERY,{params:this.form}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
@@ -371,37 +376,37 @@
                         log('数据结构',this.tableData)
                     }
                 })
-			},
-			pageChange(e){
-    	        this.form.pageNum = e;
-    	        this.getPageData();
-			},
-			//新增数据
-			AddMess(){
-				this.componentName = 'formData'
-				this.choosedRow = null;
-			},
+            },
+            pageChange(e){
+                this.form.pageNum = e;
+                this.getPageData();
+            },
+            //新增数据
+            AddMess(){
+                this.componentName = 'formData'
+                this.choosedRow = null;
+            },
             //删除数据
             listDele(r){
-            	var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}
-						v.getPageData()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
-				})
+                var v = this
+                swal({
+                    title: "是删除数据?",
+                    text: "",
+                    icon: "warning",
+                    buttons:['取消','确认'],
+                })
+                    .then((willDelete) => {
+                        if (willDelete) {
+                            v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
+                                if(res.code===200){
+                                    this.$Message.success('操作成功');
+                                }
+                                v.getPageData()
+                            })
+                        } else {
+                            this.$Message.error('操作失败');
+                        }
+                    })
             },
             pageChange(event){
                 this.form.pageNum = event;

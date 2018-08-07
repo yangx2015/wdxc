@@ -151,6 +151,11 @@
                         key: 'cmd',
                     },
                     {
+                        title: '版本号',
+                        align:'center',
+                        key: 'version',
+                    },
+                    {
                         title: '在线状态',
                         align:'center',
                         key: 'zxzt',

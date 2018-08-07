@@ -74,11 +74,19 @@
 		methods: {
 			seet(name){
 		    	var v = this
-				let p = {'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd};
+				let url = ''
+				let p = {};
 		    	if (this.updateMode === 'batch'){
-		    	    p.pushAll = true
+		    	    let userInfoJson = sessionStorage.getItem("userInfo");
+                    let userInfo = JSON.parse(userInfoJson);
+                    let jgdm = userInfo.jgdm;
+		    	    p = {jgdm:jgdm}
+		    	    url = this.apis.SBZDDZ.batchUpdate;
+				}else{
+                    url = this.apis.SBZDDZ.ADD
+                    p = {'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd};
 				}
-            	v.$http.post(this.apis.SBZDDZ.ADD,p).then((res) =>{
+            	v.$http.post(url,p).then((res) =>{
             	    if(res.code == 200){
                         v.$Message.success(res.message);
                         v.$parent.getPageData()
