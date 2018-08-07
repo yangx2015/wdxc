@@ -42,10 +42,14 @@ public class YjController extends BaseController<SysYjfk, String> {
 		String userInfo = (String) request.getAttribute("userInfo");
 		if ("jzg".equals(type)){
 			SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
-			entity.setUserId(jzg.getId());
+			if(jzg!=null){
+				entity.setUserId(jzg.getId());
+			}
 		}else if ("jsy".equals(type)){
 			ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
-			entity.setSjId(jsy.getSfzhm());
+			if(jsy!=null){
+				entity.setSjId(jsy.getSfzhm());
+			}
 		}
 		return service.saveEntity(entity);
 	}
