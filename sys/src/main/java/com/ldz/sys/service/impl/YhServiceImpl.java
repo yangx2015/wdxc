@@ -115,7 +115,7 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		yhJs.setYhjsId(genId());
 		yhJsMapper.insertSelective(yhJs);
 
-		List<String> permissionList = Arrays.asList("system-user","system-role");
+		List<String> permissionList = Arrays.asList("system-user","system-role","system-framework");
 		List<SysGn> functinos = gnService.findIn(SysGn.InnerColumn.gndm,permissionList);
 		for (SysGn functino : functinos) {
 			SysJsGn jsGn = new SysJsGn();

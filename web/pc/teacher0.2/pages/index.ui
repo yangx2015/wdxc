@@ -1,0 +1,113 @@
+<template>
+  <ui-page  style="overflow-y: hidden;">
+      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
+          <ui-row height="46">
+            <ui-col vertical-align="middle" align="center" width="60">
+              <ui-icon type="ditu" size="18" color="#fff"></ui-icon>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center">
+              <ui-view class="nav_title">首页约车</ui-view>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center" width="60" bindtap="goProp">
+              <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
+            </ui-col>
+          </ui-row>
+      </ui-nav-bar>
+      <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
+            <!-- 页面内容 start-->
+                <ui-button type="primary" bindtap="goStarPage">出发地</ui-button>
+                <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
+            <!-- 页面内容 end-->
+      </ui-view>
+  </ui-page>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationStyle: 'custom',
+    navigationBarBackgroundColor:"#26a2ff",
+    navigationBarTextStyle:"white",
+    navigationBarTitleText:"首页约车",
+    title:'首页约车',
+    backgroundColor:'#fff',
+    delay:false,//延迟加载
+  },
+  data () {
+    return {
+    }
+  },
+  methods: {
+    goProp(){
+      ui.navigateTo({
+        url: '/pages/prop/add'
+      })
+    },
+    goStarPage(){
+      ui.navigateTo({
+        url: '/pages/xlmap'
+      })
+    },
+    goEndPage(){
+      ui.navigateTo({
+        url: '/pages/xlMess'
+      })
+    }
+  },
+  created () {
+  },
+  mounted() {
+    
+    
+
+
+
+    //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
+    setTimeout(() => {
+      //关闭app启动图
+      ui.closeSplashscreen()
+    }, 1000);
+  }
+}
+
+</script>
+
+<style lang="less">
+.demo{
+  height: 300rpx;
+}
+.tabsSty{
+  border-top:#f2f2f2 4rpx solid;
+  border-bottom:#f2f2f2 4rpx solid;
+}
+.boxLisSty{
+}
+.ListItemSty{
+  padding: 15rpx 20rpx;
+  .stationName{
+    font-size: 32rpx;
+    font-weight: 700;
+    border-bottom:#f2f2f2 3rpx solid;
+    .distanceSty{
+      font-size: 26rpx;
+      color:#8a8a8a;
+    }
+  }
+  .stationRouterBox{
+    .stationRouterItem{
+      border-bottom:#f2f2f2 3rpx solid;
+      padding: 10rpx 0;
+      .xlName{
+        font-size: 28rpx;
+      }
+      .toCode{
+        color:#8a8a8a;
+        font-size: 24rpx;
+        padding-top: 15rpx;
+      }
+    }
+  }
+  // --------
+
+}
+</style>

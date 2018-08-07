@@ -1,0 +1,32 @@
+<!---->
+<template>
+  <ui-page>
+      登录
+      <ui-button type="primary" bindtap="goIndex">首页约车</ui-button>
+  </ui-page>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationBarTitleText: ""
+  },
+  data() {
+    return {}
+  },
+  methods: {
+    goIndex(){
+      console.log('hello');
+      
+      ui.navigateTo({
+        url: '/pages/index'
+      })
+    }
+  },
+  mounted() {}
+}
+</script>
+
+<style lang="less">
+
+</style>
