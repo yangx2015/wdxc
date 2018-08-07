@@ -53,10 +53,10 @@ public class GpsSaveJob implements Job {
 	
 	
 		try {
-			/*for (String zdbh : zdbhs) {*/
-				GpsService.InsetRedisToDb();
-			/*}*/
 
+			/*for (String zdbh : zdbhs) {*/
+			GpsService.InsetRedisToDb();
+			/*}*/
 		} catch (Exception e) {
 			errorLog.error("同步redis中gps数据异常", e);
 			JobExecutionException e2 = new JobExecutionException(e);
