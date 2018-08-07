@@ -55,7 +55,7 @@
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component
@@ -149,6 +149,11 @@
                         title: '接口地址',
                         align:'center',
                         key: 'cmd',
+                    },
+                    {
+                        title: '版本号',
+                        align:'center',
+                        key: 'version',
                     },
                     {
                         title: '在线状态',

@@ -601,7 +601,7 @@
                             // 使用函数模板，函数参数分别为刻度数值（类目），刻度的索引
                             formatter: function (value, index) {
                                 // 格式化成月/日，只在第一个刻度显示年份
-                                var date = new Date(value*1000);
+                                var date = new Date(value);
                                 let texts = date.format('MM-dd HH:mm');
                                 return texts;
                             }

@@ -14,28 +14,17 @@
         </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
-         
-         <!-- <ui-view style="height:200px;overflow: auto;">
-              <ui-view class="box_row_z">
-                  <ui-view style="padding:0 50px" ui:for="{{100}}">
-                    123
-                  </ui-view>
-              </ui-view>
-          </ui-view>
-          <ui-view class="box_col_auto"> -->
 <!-- 页面内容 start-->
-
                 <ui-view id="allmap" style="{{{height:height+'px'}}}"></ui-view>
-
-            
 <!-- 页面内容 end-->
-
           </ui-view>
-
   </ui-page>
 </template>
 
+
 <script>
+import $ from 'jquery';
+
 export default {
   config: {
     navigationStyle: 'custom',
@@ -55,31 +44,44 @@ export default {
         {Icon:"../static/img/Bus.png",}
       ],
       carList:[
-          // {
-          //   jd :"114.378117",
-          //   wd : "30.543083",
-          // },
-          // {
-          //   jd :"114.378117",
-          //   wd : "30.543073",
-          // },
-          // {
-          //   jd :"114.378917",
-          //   wd : "30.543183",
-          // },
       ],
-      xlID:''
+      xlID:'',
     }
   },
   created(){
     this.xlID= ui.getApp().station.xlID
-    this.getBusCode()
+    if(!this.xlID){
+        this.Goback()
+    }
   },
   methods: {
-    getBusCode(){
+    getBusCode(callback){
+      var v = this
       this.$http('POST',ui.getApp().apis.XLMAP,{xlId:this.xlID},(res)=>{
           console.log('数据请求====',res);
-          this.carList = res.result
+          if(res.code==200&&res.result){
+            v.carList = v.carList.concat(res.result)
+            
+          }
+                callback && callback(v.carList)
+          // this.carList = res.result
+          
+          console.log('======',v.carList)
+      })
+    },
+    getxlmess(callback,callback2){
+      var v = this
+      this.$http('POST',ui.getApp().apis.ZDMESS,{xlid:this.xlID},(res)=>{
+        console.log('shujuqingqiu====',res);
+         if(res.code==200&&res.result){
+            v.carList =  res.result.list
+
+            v.getBusCode((lis)=>{
+              callback && callback(lis)
+            })
+            callback2 && callback2(res.result.list)
+          }
+           console.log('======',v.carList)
       })
     },
     goXlMess () {
@@ -91,20 +93,63 @@ export default {
       ui.navigateBack()
     },
     addMarker(item, point) {
-        var myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(50,50),{imageSize: new BMap.Size(50,50),anchor: new BMap.Size(25, 25)} );
+      var myIcon = ''
+      if(item.cphm){
+         myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+      }else{
+        myIcon = new BMap.Icon("/static/img/gjzp.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+      }
         
       // var myIcon = new BMap.Icon(v.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
       var marker = new BMap.Marker(point,{icon:myIcon});
       this.map.addOverlay(marker);
       // this.addClickHandler(item, marker);
     },
-    showCarPosition() {
-      var v = this
-      for (let r of this.carList) {
-          var point = new BMap.Point(r.jd, r.wd);
-          this.addMarker(r, point);
-        }
-    },
+    // 获取一条线路的途径点
+   
+showLine(points){
+    let ps = [];
+    for (let r of points){
+        ps.push(new BMap.Point(r.lng, r.lat));
+    }
+    var polyline = new BMap.Polyline(ps,
+        {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+    );
+    this.map.addOverlay(polyline);
+},
+// 获取一条线路的途径点
+getLinePoints(stationList){
+    let startPoint = new BMap.Point(stationList[0].wd,stationList[0].jd);
+    let endPoint = new BMap.Point(stationList[stationList.length -1].wd,stationList[stationList.length -1].jd);
+    let waypoints = '';
+    for (let i = 1;i<=stationList.length - 2;i++){
+        let station = stationList[i];
+              waypoints += station.wd+','+station.jd;
+              if (i < stationList.length - 2){
+                  waypoints += '|';
+              }
+          }
+    let url = 'http://api.map.baidu.com/direction/v2/driving?origin='+stationList[0].wd+','+stationList[0].jd+'&destination='+stationList[stationList.length -1].wd+','+stationList[stationList.length -1].jd+'&ak=evDHwrRoILvlkrvaZEFiGp30';
+    url += '&waypoints='+waypoints;
+    let points = [];
+    let v = this;
+    $.ajax({
+              url:url,
+              type:"get",
+              dataType:'JSONP',
+              success:function(res){
+                  if (res.status == 0){
+                      let route = res.result.routes[0];
+                      points.push({lat:route.origin.lat,lng:route.origin.lng});
+                      for (let r of route.steps){
+                          points.push({lng:r.end_location.lng,lat:r.end_location.lat});
+                      }
+
+                      v.showLine(points);
+                  }
+              }
+          })
+      },
   },
   mounted() {
     var script = document.createElement("script")
@@ -116,13 +161,17 @@ export default {
       v.map = new BMap.Map("allmap");    // 创建Map实例
       v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
       var point = new BMap.Point(114.368107, 30.543083);
-      v.map.centerAndZoom(point, 15);    
-      // var marker = new BMap.Marker(point);
-      // v.map.addOverlay(marker);     
-      for (let r of v.carList) {
+      v.map.centerAndZoom(point, 16); 
+
+      v.getxlmess( (res)=>{
+        for (let r of res) {
           var point = new BMap.Point(r.jd, r.wd);
           v.addMarker(r, point);
-        };
+        };  
+      },(reslist)=>{
+        v.getLinePoints(reslist)
+      } )
+      
       
       
       // 自定义icon,创建标注
@@ -134,8 +183,7 @@ export default {
       //添加地图类型控件
       v.map.addControl(new BMap.MapTypeControl({
         mapTypes:[
-                BMAP_NORMAL_MAP,
-                BMAP_HYBRID_MAP
+                BMAP_NORMAL_MAP
             ]}));   
       v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
       v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放

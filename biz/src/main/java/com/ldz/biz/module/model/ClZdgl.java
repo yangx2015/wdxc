@@ -5,7 +5,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.Date;
 
@@ -156,6 +155,19 @@ public class ClZdgl implements Serializable {
     @Transient
     private short cssd;
 
+    /**
+     * 设备版本
+     */
+    @Column(name = "VERSION")
+    private String version;
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
 
     public void setJgdm(String jgdm) {
         this.jgdm = jgdm;

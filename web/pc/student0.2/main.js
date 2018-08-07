@@ -12,7 +12,7 @@ let options = {
 }
 
 ui.extend({
-  // 微信js方法
+  // 微信js---初始化
   getWxJs(){
     // 微信js初始化 
     var script = document.createElement("script")
@@ -44,6 +44,11 @@ ui.extend({
         }
     }
   },
+  //ajax数据请求 基于 ui.request()方法 二次封装
+  //参数传入 method    -->"请求方式：'POST','GET',……"
+  //        url       -->"网络数据请求地址"
+  //        data      -->"网络数据请求的参数传入 ：{key : val} *** 无参数传入时 {} "
+  //        callback  -->"回调函数 网络数据返回"
   $http(method,url,data,callback){//网路数据请求
 
     ui.request({
@@ -73,6 +78,7 @@ ui.extend({
       }
     })
   },
+
   pageHeight(val){
     return  ui.DEFAULT_CONTENT_HEIGHT + val
   },
