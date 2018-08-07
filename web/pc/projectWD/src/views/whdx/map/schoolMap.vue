@@ -135,6 +135,11 @@
                     this.addLabel(r,++c);
                 }
             },
+            showAllCars(){
+                for (let r of this.lineList){
+                    this.showCars(r);
+                }
+            },
             showCars(line){
                 let carList = line.carList;
                 if (!carList)return;
@@ -219,6 +224,10 @@
                 this.map.clearOverlays();
                 if (e){
                     this.choosedLineIndexs = e;
+                    if (e === []){
+                        this.showAllCars();
+                        return;
+                    }
                 }
                 for(let i of this.choosedLineIndexs){
                     this.showRoute(this.lineList[i]);
