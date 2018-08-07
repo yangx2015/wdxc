@@ -300,6 +300,7 @@ module.exports = {
     },
     SBZDDZ:{//设备终端接口地址
         ADD:'/pub/intstruction/send',
+        batchUpdate:'/pub/batchUpdate',
         getVersionInfo:'/api/zdgl/getVersionInfo'
     }
 }
