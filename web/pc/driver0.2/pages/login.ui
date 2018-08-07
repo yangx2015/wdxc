@@ -1,0 +1,38 @@
+<!---->
+<template>
+  <ui-page top='0'>
+      登录
+      <ui-button type="primary" bindtap="goIndex">首页约车</ui-button>
+  </ui-page>
+</template>
+
+<script>
+export default {
+  config: {
+    navigationStyle: 'custom',
+    navigationBarBackgroundColor:"#26a2ff",
+    navigationBarTextStyle:"white",
+    navigationBarTitleText:"登录",
+    title:'登录',
+    backgroundColor:'#fff',
+    delay:false,//延迟加载
+  },
+  data() {
+    return {}
+  },
+  methods: {
+    goIndex(){
+      console.log('hello');
+      
+      ui.navigateTo({
+        url: '/pages/index'
+      })
+    }
+  },
+  mounted() {}
+}
+</script>
+
+<style lang="less">
+
+</style>

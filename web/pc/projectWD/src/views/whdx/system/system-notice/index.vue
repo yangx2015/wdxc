@@ -19,6 +19,17 @@
 							<Input v-model="form.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 							<Input v-model="form.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="form.versionLike" placeholder="请输入版本号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Select v-model="form.sjlx"
+									@on-change = 'getPageData'
+									clearable
+									placeholder="请选择在线状态"
+									filterable style="width: 160px;">
+								<Option v-for="(item,index) in Dictionary"
+										:value="item.key"
+										style="text-align: left;"
+										:key="index">{{item.val}}</Option>
+							</Select>
 						</div>
 						<div class="butevent">
 							<Tooltip content="查询" placement="top">
@@ -149,6 +160,11 @@
                         title: '接口地址',
                         align:'center',
                         key: 'cmd',
+                    },
+                    {
+                        title: '版本号',
+                        align:'center',
+                        key: 'version',
                     },
                     {
                         title: '在线状态',

@@ -60,7 +60,7 @@
                 allDeviceList: [],
                 socket : new SockJS(this.$http.url+"/gps"),
                 stationIconUrl:'http://47.98.39.45:9092/icon/running.png',
-                colors:['#FFFF00','#FF0000','#5CACEE','#DA70D6','#CDAD00','#CD2626'],
+                colors:['#FF00FF','#FF0000','#5CACEE','#7CFC00','#98FB98','#BF3EFF'],
                 colorIndex:0,
 			}
 		},
@@ -113,7 +113,7 @@
                     ps.push(new BMap.Point(r.lng, r.lat));
                 }
                 var polyline = new BMap.Polyline(ps,
-                    {strokeColor:line.color, strokeWeight:6, strokeOpacity:0.5}
+                    {strokeColor:line.color, strokeWeight:6, strokeOpacity:0.9}
                 );
                 this.map.addOverlay(polyline);
             },
@@ -133,6 +133,11 @@
                     var marker = new BMap.Marker(new BMap.Point(r.jd, r.wd));
                     this.map.addOverlay(marker);
                     this.addLabel(r,++c);
+                }
+            },
+            showAllCars(){
+                for (let r of this.lineList){
+                    this.showCars(r);
                 }
             },
             showCars(line){
@@ -220,6 +225,10 @@
                 if (e){
                     this.choosedLineIndexs = e;
                 }
+                if (!e || e.length == 0){
+                    this.showAllCars();
+                    return;
+                }
                 for(let i of this.choosedLineIndexs){
                     this.showRoute(this.lineList[i]);
                 }
@@ -246,6 +255,7 @@
                             let weksocketBody = JSON.parse(data.body)
                             if(weksocketBody.cx==="30"){//校巴
                                 let xlId = weksocketBody.xlId;
+                                // let xlId = '435390474602151936';
                                 v.lineList.forEach((item,index)=>{
                                     if (item.id === xlId){
                                         if (!item.carList){
@@ -266,7 +276,7 @@
                                         }
                                     }
                                 })
-                                v.lineChange();
+                                v.lineChange(v.choosedLineIndexs);
                             }
                         });
                     }

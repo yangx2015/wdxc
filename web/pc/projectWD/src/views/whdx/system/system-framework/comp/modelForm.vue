@@ -121,6 +121,7 @@
                             for (let r of res.result){
                                 this.hasPermissionCodes.push(r.gndm);
 							}
+                            this.choosedIds = this.hasPermissionCodes;
 						}
                         this.showTree = this.orgTree.length > 0;
                     }

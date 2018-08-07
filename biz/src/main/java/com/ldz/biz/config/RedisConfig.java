@@ -33,7 +33,8 @@ public class RedisConfig {
 	public  String znzpurl;
 	@Value("${biz_url: }") // : http://47.98.39.45:8080
 	public  String bizurl;
-
+	@Value("${distance}")
+	public double distance;
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
@@ -83,7 +84,7 @@ public class RedisConfig {
 		ZdglService zdglService = SpringContextUtil.getBean(ZdglService.class);
 		//topicMessageListener.setRedisTemplate(redisTemplateUtil);
 		container.addMessageListener(messageReceiver, topics);
-		container.addMessageListener(new TopicMessageListener(xcService,clYyService,gpsLsService,zdglService,redisTemplateUtil,url,znzpurl,bizurl) , channelTopic);
+		container.addMessageListener(new TopicMessageListener(xcService,clYyService,gpsLsService,zdglService,redisTemplateUtil,url,znzpurl,bizurl,distance) , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}

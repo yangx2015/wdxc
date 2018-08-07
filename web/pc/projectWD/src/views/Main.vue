@@ -342,7 +342,7 @@
             },
             gdTxt(){
                 this.ycMess = [];
-                this.$http.post(this.apis.TXT,{minutes:'5'}).then((res)=>{
+                this.$http.post(this.apis.TXT,{minutes:'5',sjlxIn:'10,20,30,40,70'}).then((res)=>{
                     if (res.code === 200){
                         this.showTip = true;
                         this.ycMess = res.page.list

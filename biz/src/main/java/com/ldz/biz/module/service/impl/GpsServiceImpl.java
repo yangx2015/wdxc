@@ -251,12 +251,24 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
     private void saveVersionInfoToRedis(GpsInfo gpsInfo) {
-        if (StringUtils.isEmpty(gpsInfo.getCmdParams()) || !gpsInfo.getCmdParams().contains("versionCode")) return;
+        if (StringUtils.isEmpty(gpsInfo.getCmdParams()) || !gpsInfo.getCmdParams().contains("versionCode")) {
+            return;
+        }
         Map<String, Object> map = JsonUtil.toMap(gpsInfo.getCmdParams());
-        if (map == null) return;
-        if (!map.containsKey("versionCode") || !map.containsKey("versionName")) return;
+        if (map == null) {
+            return;
+        }
+        if (!map.containsKey("versionCode") || !map.containsKey("versionName")) {
+            return;
+        }
+        // 根据设备号查找
+        ClZdgl clZdgl = zdglservice.findById(gpsInfo.getDeviceId());
         String versionCode = map.get("versionCode").toString();
         String versionName = map.get("versionName").toString();
+        if(StringUtils.isBlank(clZdgl.getVersion()) || !StringUtils.equals(versionCode + "-" + versionName,clZdgl.getVersion())){
+            clZdgl.setVersion(versionCode + "-" + versionName);
+            zdglservice.updateEntity(clZdgl);
+        }
         redis.boundValueOps("versionInfo-" + gpsInfo.getDeviceId()).set(versionCode + "-" + versionName);
     }
 
@@ -862,7 +874,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         // 获取 gps 存储事件的 终端号 和 时间
         String time = gpsInfo.getStartTime();
         String startTime  = time; // 开始时间
-        String endTime = time;  // 结束时间
         String zdbh = gpsInfo.getDeviceId();  // 终端编号
         String routeType = "1"; //0: 行程开始  1： 行程中 2 ： 行程结束
         if(StringUtils.equals(gpsInfo.getEventType(),"50")){
@@ -881,26 +892,32 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
             if(preTime.plusMinutes(5).compareTo(nowTime) > 0 && !StringUtils.equals(type,"2")){ // 说明当前时间仍在行程中
                 if(StringUtils.equals(routeType,"2") || StringUtils.equals(routeType,"1")){
+
                     // 更新实时点位时间
                     startTime = times[1];
-                    //删除当前终端的开始结束
-                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
+                   /* //删除当前终端的开始结束
+                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );*/
+
                 }
             }
         }
         // 更新标记
-        redis.boundValueOps("CX_"+zdbh).set(endTime + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
+        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
         // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +endTime ).set("1",5,TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh +","+ startTime ).set("1",5,TimeUnit.MINUTES);
+
+        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time);
 
 
 
     }
 
 
-   /* public static void main(String[] args) {
-        RedisTemplateUtil redis = new RedisTemplateUtil();
-        System.out.println(redis.boundValueOps("CX_"+"865923030038977").get());
-    }*/
+    public static void main(String[] args) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime preTime = LocalDateTime.parse("2018-08-07 11:31:12",formatter);
+        LocalDateTime nowTime = LocalDateTime.parse("2018-08-07 11:31:08",formatter);
+        System.out.println(nowTime.plusMinutes(5).compareTo(preTime ));
+    }
 
 }

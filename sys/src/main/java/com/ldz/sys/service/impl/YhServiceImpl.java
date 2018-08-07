@@ -98,12 +98,13 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		Date now = new Date();
 		SysJs adminRole = new SysJs();
 		SysYh currentUser = getCurrentUser();
+		SysJg jg = jgService.findByOrgCode(currentUser.getJgdm());
 		adminRole.setCjr(currentUser.getZh());
 		adminRole.setJgdm(user.getJgdm());
 		adminRole.setCjsj(now);
 		adminRole.setJsId(genId());
 		adminRole.setJslx("00");
-		adminRole.setJsmc("机构管理员");
+		adminRole.setJsmc(jg.getJgmc()+"-机构管理员");
 		adminRole.setZt("00");
 		jsService.saveEntity(adminRole);
 
@@ -115,7 +116,7 @@ public class YhServiceImpl extends BaseServiceImpl<SysYh, String> implements YhS
 		yhJs.setYhjsId(genId());
 		yhJsMapper.insertSelective(yhJs);
 
-		List<String> permissionList = Arrays.asList("system-user","system-role");
+		List<String> permissionList = Arrays.asList("system-user","system-role","system-framework");
 		List<SysGn> functinos = gnService.findIn(SysGn.InnerColumn.gndm,permissionList);
 		for (SysGn functino : functinos) {
 			SysJsGn jsGn = new SysJsGn();

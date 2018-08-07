@@ -145,7 +145,7 @@
                         for (let r of res.result){
                             this.roleFunctionCodes.push(r.gndm);
 						}
-                        // this.setPermissionChecked(this.permissionTree);
+						this.choosedIds = this.roleFunctionCodes;
                     }
                     this.showTree = true;
                 })
