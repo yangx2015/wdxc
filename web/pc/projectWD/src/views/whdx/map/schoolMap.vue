@@ -135,6 +135,11 @@
                     this.addLabel(r,++c);
                 }
             },
+            showAllCars(){
+                for (let r of this.lineList){
+                    this.showCars(r);
+                }
+            },
             showCars(line){
                 let carList = line.carList;
                 if (!carList)return;
@@ -220,6 +225,10 @@
                 if (e){
                     this.choosedLineIndexs = e;
                 }
+                if (!e || e.length == 0){
+                    this.showAllCars();
+                    return;
+                }
                 for(let i of this.choosedLineIndexs){
                     this.showRoute(this.lineList[i]);
                 }
@@ -244,8 +253,9 @@
                     for (let r of v.addDeviceList){
                         stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
                             let weksocketBody = JSON.parse(data.body)
-                            if(weksocketBody.cx==="30"){//校巴
-                                let xlId = weksocketBody.xlId;
+                            if(weksocketBody.cx==="10"){//校巴
+                                // let xlId = weksocketBody.xlId;
+                                let xlId = '435390474602151936';
                                 v.lineList.forEach((item,index)=>{
                                     if (item.id === xlId){
                                         if (!item.carList){
@@ -266,7 +276,7 @@
                                         }
                                     }
                                 })
-                                v.lineChange();
+                                v.lineChange(v.choosedLineIndexs);
                             }
                         });
                     }

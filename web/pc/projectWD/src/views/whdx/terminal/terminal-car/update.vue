@@ -4,15 +4,15 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='900'
-			:closable='false' :mask-closable="mesF"
-			title="在线升级">
+			   :closable='false' :mask-closable="mesF"
+			   title="在线升级">
 			<div style="overflow: auto;">
 				<Form
-					:model="form"
-					:rules="ruleInline"
-					ref="addmess"
-					:label-width="100"
-					:styles="{top: '20px'}">
+						:model="form"
+						:rules="ruleInline"
+						ref="addmess"
+						:label-width="100"
+						:styles="{top: '20px'}">
 					<Row>
 						<Col v-if="form.zdbh != ''" span="12">
 							<FormItem label='终端编号'>
@@ -41,67 +41,75 @@
 </template>
 
 <script>
-	import treelist from '@/data/list.js'
+    import treelist from '@/data/list.js'
 
-	export default {
-		name: '',
-		data() {
-			return {
-				dataRead:true,
-				showModal: true,
+    export default {
+        name: '',
+        data() {
+            return {
+                dataRead:true,
+                showModal: true,
                 mesF:false,
-				versionInfo:'',
-				updateMode:'single',
-				form: {
+                versionInfo:'',
+                updateMode:'single',
+                form: {
                     zdbh:'',//终端编号
-				},
-				ruleInline: {
-              	},
-			}
-		},
-		props:{
-			mess:{}
-		},
-		created(){
-		    if (this.$parent.choosedRow){
+                },
+                ruleInline: {
+                },
+            }
+        },
+        props:{
+            mess:{}
+        },
+        created(){
+            if (this.$parent.choosedRow){
                 this.form.zdbh = this.$parent.choosedRow.zdbh;
                 this.getVersionInfo();
-			}
-		    this.updateMode = this.$parent.updateMode;
-		},
+            }
+            this.updateMode = this.$parent.updateMode;
+        },
         mounted(){
         },
-		methods: {
-			seet(name){
-		    	var v = this
-				let p = {'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd};
-		    	if (this.updateMode === 'batch'){
-		    	    p.pushAll = true
-				}
-            	v.$http.post(this.apis.SBZDDZ.ADD,p).then((res) =>{
-            	    if(res.code == 200){
+        methods: {
+            seet(name){
+                var v = this
+                let url = ''
+                let p = {};
+                if (this.updateMode === 'batch'){
+                    let userInfoJson = sessionStorage.getItem("userInfo");
+                    let userInfo = JSON.parse(userInfoJson);
+                    let jgdm = userInfo.jgdm;
+                    p = {jgdm:jgdm}
+                    url = this.apis.SBZDDZ.batchUpdate;
+                }else{
+                    url = this.apis.SBZDDZ.ADD
+                    p = {'deviceId':this.form.zdbh,'cmdType':90,'cmd':this.form.cmd};
+                }
+                v.$http.post(url,p).then((res) =>{
+                    if(res.code == 200){
                         v.$Message.success(res.message);
                         v.$parent.getPageData()
                         v.close()
-					}else{
+                    }else{
                         v.$Message.error(res.message);
-					}
+                    }
                 }).catch((error) =>{
-				})
-			},
-			close(){
-		        this.$parent.componentName = '';
-			},
-			getVersionInfo(deviceId){
-			    let v = this;
+                })
+            },
+            close(){
+                this.$parent.componentName = '';
+            },
+            getVersionInfo(deviceId){
+                let v = this;
                 v.$http.get(this.apis.SBZDDZ.getVersionInfo,{params:{deviceId:this.form.zdbh}}).then((res) =>{
                     this.versionInfo = res.message;
                 }).catch((error) =>{
                 })
-			}
+            }
 
-		}
-	}
+        }
+    }
 </script>
 
 <style>
