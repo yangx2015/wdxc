@@ -72,8 +72,8 @@ export default {
     data () {
         return {
             form: {
-                xm: '小车7坐',
-                sjh: '320333333333333333'
+                xm: '',//小车7坐
+                sjh: '',//320333333333333333
             },
             rules: {
                 xm: [

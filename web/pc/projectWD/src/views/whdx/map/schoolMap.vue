@@ -245,7 +245,7 @@
                         stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
                             let weksocketBody = JSON.parse(data.body)
                             if(weksocketBody.cx==="30"){//校巴
-                                let xlId = '435390474602151936';
+                                let xlId = weksocketBody.xlId;
                                 v.lineList.forEach((item,index)=>{
                                     if (item.id === xlId){
                                         if (!item.carList){

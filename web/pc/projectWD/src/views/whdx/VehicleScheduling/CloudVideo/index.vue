@@ -126,7 +126,7 @@
 						:current=page.pageNum
 						:page-size=page.pageSize
 						show-total
-						show-elevator
+						show-elevator show-sizer
 						@on-change='pageChange'></Page>
 			</div>
 	</div>
