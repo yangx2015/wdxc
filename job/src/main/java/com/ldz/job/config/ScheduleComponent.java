@@ -3,6 +3,7 @@ package com.ldz.job.config;
 import com.ldz.job.job.ClNianShenJob;
 import com.ldz.job.job.GpsSaveJob;
 import com.ldz.job.job.SbYxSjJlJob;
+import com.ldz.job.job.ZdToYyJob;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,6 +66,14 @@ public class ScheduleComponent {
         /*CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
 					.withSchedule(scheduleBuilderJP).build();*/
 
+        // 上传鹰眼定时任务
+        JobDetail zdToYyJob = JobBuilder.newJob(ZdToYyJob.class).withIdentity(ZdToYyJob.class.getName(), "zdToYy")
+                .build();
+        // 上传鹰眼定时任务，每1天执行一次
+        CronScheduleBuilder zdToYyCron = CronScheduleBuilder.cronSchedule("0 0 0 1/1 * ? ");
+
+        CronTrigger zdToYyTrigger = TriggerBuilder.newTrigger().withIdentity(ZdToYyJob.class.getName(), "zdToYy")
+                .withSchedule(zdToYyCron).build();
 
 
         try {
@@ -73,6 +82,7 @@ public class ScheduleComponent {
             schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
 //			schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);
             schedulerFactory.getScheduler().scheduleJob(sbyxsjjlJob,sbyxsjjlTrigger);
+            schedulerFactory.getScheduler().scheduleJob(zdToYyJob,zdToYyTrigger);
         } catch (SchedulerException e) {
             errorLog.error("任务创建失败", e);
         }

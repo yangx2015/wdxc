@@ -1,24 +1,11 @@
 package com.ldz.job.job;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import org.apache.commons.lang.StringUtils;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.Job;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.PersistJobDataAfterExecution;
+import com.ldz.job.mapper.ClZdglMapper;
+import com.ldz.job.service.GpsService;
+import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import com.ldz.job.mapper.ClZdglMapper;
-import com.ldz.job.model.ClZdgl;
-import com.ldz.job.service.GpsService;
-import com.ldz.util.bean.YingyanResponse;
-import com.ldz.util.bean.YyEntity;
-import com.ldz.util.yingyan.GuiJIApi;
 
 /**
  * 定时器说明:每隔1分钟定时从redis里面获取数据写入CLgps,CLgpsLs表中
@@ -38,15 +25,16 @@ public class GpsSaveJob implements Job {
 	private ClZdglMapper clzdglmapper;
 	@Autowired
 	private GpsService GpsService;
-	
+
+
 	
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
 		
 		
-		List<ClZdgl> gpslist = clzdglmapper.selectAll();
+	/*	List<ClZdgl> gpslist = clzdglmapper.getZDNotYy();
 	     for (ClZdgl clZdgl : gpslist) {
-			if (StringUtils.isEmpty(clZdgl.getSfyy())) {
+//			if (StringUtils.isEmpty(clZdgl.getSfyy())) {
 				YyEntity yyEntity = new YyEntity();
 				yyEntity.setAk(GuiJIApi.AK);
 				yyEntity.setEntity_name(clZdgl.getZdbh());
@@ -57,18 +45,17 @@ public class GpsSaveJob implements Job {
 					clZdgl.setSfyy("已上传鹰眼服务器");
 					clzdglmapper.updateByPrimaryKeySelective(clZdgl);
 				}
-			}
+//			}
 	    	 
 		}
-	     List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());
+	     List<String> zdbhs =gpslist.stream().filter(s->StringUtils.isNotEmpty(s.getZdbh())).map(ClZdgl::getZdbh).collect(Collectors.toList());*/
 	
 	
 	
 		try {
-			for (String zdbh : zdbhs) {
-
-				GpsService.InsetRedisToDb(zdbh);
-			}
+			/*for (String zdbh : zdbhs) {*/
+				GpsService.InsetRedisToDb();
+			/*}*/
 
 		} catch (Exception e) {
 			errorLog.error("同步redis中gps数据异常", e);

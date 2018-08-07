@@ -14,8 +14,11 @@ import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.YingyanResponse;
+import com.ldz.util.bean.YyEntity;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
+import com.ldz.util.yingyan.GuiJIApi;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,6 +35,8 @@ import tk.mybatis.mapper.common.Mapper;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Service
@@ -52,6 +57,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
+
+    private ExecutorService pool = Executors.newSingleThreadExecutor();
 
     @Override
     protected Mapper<ClZdgl> getBaseMapper() {
@@ -88,12 +95,22 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     	entity.setJgdm(user.getJgdm());
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
+        // 上传至百度鹰眼
+        YyEntity yyEntity = new YyEntity();
+        yyEntity.setAk(GuiJIApi.AK);
+        yyEntity.setEntity_name(entity.getZdbh());
+        yyEntity.setService_id(GuiJIApi.SERVICE_ID);
+        YingyanResponse yingyanResponse = GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
+        if (StringUtils.equals(yingyanResponse.getStatus(), "0")) {
+            entity.setSfyy("已上传鹰眼服务器");
+        }
         save(entity);
         GpsInfo gpsInfo = new GpsInfo();
         gpsInfo.setCmd(entity.getCmd());
         gpsInfo.setCmdType("91");
         gpsInfo.setDeviceId(entity.getZdbh());
         instructionService.sendinstruction(gpsInfo);
+
         return ApiResponse.saveSuccess();
     }
 

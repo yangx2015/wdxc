@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
@@ -64,18 +65,43 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 	}
 
 	@Override
-	public void InsetRedisToDb(String zdbh ) {
+	public void InsetRedisToDb() {
 
 		/*redis.keys(ClGps.class.getSimpleName()+"*");*/
 
-		String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
+		Set<Object> keys = redis.keys(ClGps.class.getSimpleName() + "*");
+		List<ClGpsLs> list = new ArrayList<>();
+		for(Object s : keys){
+			String key = (String)s;
+			String bean = (String) redis.boundValueOps(key).get();
+			if (bean != null) {
+				ClGps object = JsonUtil.toBean(bean, ClGps.class);
+				// 将该终端的实时点位插入数据库中
+				insetAndUpdate(object);
+			}
+			BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
+			String index = (String) boundListOps.index(0);
+			if (StringUtils.isNotEmpty(index)) {
+				Long length = boundListOps.size();
+				for (int i = 0; i < length; i++) {
+					String clgpsls = (String) boundListOps.rightPop();
+					ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
+
+					list.add(gpssss);
+				}
+
+			}
+		}
+
+		clgpslsMapper.insertList(list);
+		/*String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName()).get();
 		if (bean != null) {
 			ClGps object = JsonUtil.toBean(bean, ClGps.class);
 			// 将该终端的实时点位插入数据库中
 			insetAndUpdate(object);
 		}
 
-		BoundListOperations<Object, Object> boundListOps = redis.boundListOps(ClGpsLs.class.getSimpleName() + zdbh);
+		BoundListOperations<Object, Object> boundListOps = redis.boundListOps(ClGpsLs.class.getSimpleName() );
 
 		String index = (String) boundListOps.index(0);
 		if (StringUtils.isNotEmpty(index)) {
@@ -112,7 +138,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 
 
-		}
+		}*/
 	}
 
 	public List<TrackPoint> changeModel(List<ClGpsLs> list) {
