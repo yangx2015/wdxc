@@ -16,7 +16,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.lxrxmLike" placeholder="请输入反馈人姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.lxrxmLike" placeholder="请输入反馈人姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findData()">
@@ -31,7 +31,7 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component :is="compName" :pams = 'pams'></component>
@@ -157,7 +157,7 @@
 				cityList: [],
 				//收索
 				cjsjInRange:[],
-				findMess: {
+				param: {
 					cjsjInRange:'',
 					lxrxmLike: '',
 					zt:'',
@@ -172,7 +172,7 @@
 		},
 		watch: {
 			cjsjInRange:function(newQuestion, oldQuestion){
-				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+				this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 			},
 		},
 		created() {
@@ -194,7 +194,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(this.apis.SUGGES.QUERY,{params:this.findMess}).then((res) =>{
+				this.$http.get(this.apis.SUGGES.QUERY,{params:this.param}).then((res) =>{
 					v.tableData = res.page.list
 					v.SpinShow = false;
 				})
@@ -208,7 +208,7 @@
 			},
 			pageChange(event) {
 				var v = this
-				v.findMess.pageNum = event
+				v.param.pageNum = event
 				v.findData(v.page)
 			},
 

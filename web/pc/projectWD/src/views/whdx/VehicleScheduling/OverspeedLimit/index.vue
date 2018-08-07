@@ -20,7 +20,7 @@
 							<span>超速限定</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getmess()"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getmess()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getmess()">
@@ -44,8 +44,8 @@
 			<Row class="margin-top-10 pageSty">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -149,7 +149,7 @@
 				],
 				tableData: [],
 				//收索
-				findMess: {
+				param: {
                     cphLike: '',
 					pageNum: 1,
 					pageSize:8
@@ -171,7 +171,7 @@
 		methods: {
 			getmess(){
 				var v = this
-				this.$http.get(this.apis.CS.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CS.QUERY,{params:v.param}).then((res) =>{
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -196,7 +196,7 @@
         	},
             pageChange(event){
         		var v = this
-        		v.findMess.pageNum = event
+        		v.param.pageNum = event
                 this.getmess()
         	}
 		}

@@ -15,7 +15,7 @@
 							<span>报销记账</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.bxrLike" placeholder="请输入报销人姓名" style="width: 200px"
+							<Input v-model="param.bxrLike" placeholder="请输入报销人姓名" style="width: 200px"
 								   @on-change="getPageData()"></Input>
 						</div>
 						<div class="butevent">
@@ -30,7 +30,7 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator show-sizer
+				<Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer
 					  @on-change='pageChange'></Page>
 			</Row>
 		</Card>
@@ -63,7 +63,7 @@
                     {title: '发票数量', align: 'center', key: 'fpsl'}
                 ],
                 pageData: [],
-                form: {
+                param: {
                     bxrLike: '',
                     total: 0,
                     pageNum: 1,

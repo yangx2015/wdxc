@@ -20,12 +20,12 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='围栏名称'>
-								<Input type="text" v-model="form.wlmc" placeholder="请填写围栏名称..."></Input>
+								<Input type="text" v-model="param.wlmc" placeholder="请填写围栏名称..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem label='状态'>
-								<Select v-model="form.zt">
+								<Select v-model="param.zt">
 									<Option value="00">正常</Option>
 									<Option value="10">停用</Option>
 								</Select>
@@ -53,7 +53,7 @@
 			    operate:'新建',
 				showModal: true,
                 mesF:false,
-				form: {
+				param: {
                     zdbh:'',
 					mc: '',
 					xh: '',
@@ -71,7 +71,7 @@
 		},
 		created(){
 			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
+				this.param = this.$parent.choosedRow;
 				this.operate = '编辑'
 			}
 		},
@@ -85,8 +85,8 @@
 				if (this.$parent.choosedRow){
                     url = this.apis.DZWL.CHANGE;
 				}
-                this.form.wlmj = 1000;
-                this.$http.post(url,this.form).then((res) =>{
+                this.param.wlmj = 1000;
+                this.$http.post(url,this.param).then((res) =>{
                     if(res.code===200){
                         var v = this
                         v.$parent.findMessList()

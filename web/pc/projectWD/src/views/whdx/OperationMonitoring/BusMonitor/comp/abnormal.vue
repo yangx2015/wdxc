@@ -56,7 +56,7 @@
                 tabmess:[],
                 sjBM:'ZDCLK0038',
                 sjDIC:[],
-                findMess:{
+                param:{
                     sjlxIn:'10,20,30,40,70',
                     minutes:5,
                     // cjsjGte:new Date().format("yyyy-MM-dd"),
@@ -81,7 +81,7 @@
 			},
                 getmess(){
                         var v = this
-                        this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+                        this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.param}).then((res) =>{
                                 console.log('异常数据',res)
                                 v.tabmess = res.page.list
                         })

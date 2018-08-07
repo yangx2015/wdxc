@@ -15,11 +15,11 @@
 							<span>用户管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.xmLike"
+							<Input v-model="param.xmLike"
 								placeholder="请输入用户姓名" style="width: 200px"
 								@on-keyup.enter="findMessList()"
 								@on-change="findMessList"></Input>
-							<Input v-model="findMess.sjhLike"
+							<Input v-model="param.sjhLike"
 								placeholder="请输入手机号码" style="width: 200px"
 								@on-keyup.enter="findMessList()"
 								@on-change="findMessList"></Input>
@@ -45,7 +45,7 @@
 						:data="tableData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		<!--</Card>-->
 		<component
@@ -79,12 +79,6 @@
 				//分页
 				//---数据总数
 				pageTotal: 2,
-				page: {
-					//---当前页码
-					pageNum: 1,
-					//---每页显示条数
-					pageSize:8
-				},
 				tableTiT: [{
 						title: "序号",
 						width: 80,
@@ -205,7 +199,7 @@
 				tableData: [],
 				//收索
 //				cjsjInRange:[],
-				findMess: {
+				param: {
 					sjhLike:'',
 					xmLike: '',
 					pageNum: 1,
@@ -217,7 +211,7 @@
 		},
 		watch: {
 //			cjsjInRange:function(newQuestion, oldQuestion){
-//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//				this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 //			},
 		},
 		created() {
@@ -244,7 +238,7 @@
 			},
 			getmess(){
 				var v = this
-				this.$http.get(this.apis.USER.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.USER.QUERY,{params:v.param}).then((res) =>{
 //					log(res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
@@ -261,7 +255,7 @@
 			//收索事件
 			findMessList() {
 				var v = this
-				this.$http.get(this.apis.USER.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.USER.QUERY,{params:v.param}).then((res) =>{
 //					log(res)
 					v.tableData = res.page.list
 				})
@@ -286,7 +280,7 @@
 			//分页点击事件按
 			pageChange(event) {
 				var v = this
-				v.findMess.pageNum = event
+				v.param.pageNum = event
 				v.getmess()
 			}
 		}

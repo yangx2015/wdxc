@@ -18,9 +18,9 @@
 							<span>车辆管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
-							<Input v-model="findMess.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
-							<Input v-model="findMess.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -43,8 +43,8 @@
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
+					  :current=param.pageNum
+					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
 					  show-elevator show-sizer
 					  @on-change='pageChange'></Page>
@@ -368,7 +368,7 @@
                 ],
                 tableData: [],
                 //收索
-				findMess: {
+				param: {
                     cphLike: '',
 					pageNum: 1,
 					pageSize:8
@@ -399,7 +399,7 @@
             },
         	getmess(){
 				var v = this
-				this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.CLGL.QUERY,{params:v.param}).then((res) =>{
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total
 					v.SpinShow = false;
@@ -458,7 +458,7 @@
 				})
 			},
             pageChange(event){
-                this.findMess.pageNum = event
+                this.param.pageNum = event
                 this.getmess()
         	},
         }

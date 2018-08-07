@@ -33,7 +33,7 @@
 			    		</div>
 				        <div class="body-r-1 inputSty">
 				        	<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 				        <div class="butevent">
 				        	<Button type="success" @click="findList">
@@ -63,8 +63,8 @@
 			<Row class="margin-top-10 pageSty">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -76,14 +76,14 @@
 					<h1 style="float: left;">新增电子围栏</h1>
 					<div id="input" style="float: right;padding: 5px;">
 						<Form
-								ref="findMess"
-								:model="findMess"
+								ref="param"
+								:model="param"
 								:rules="ruleInline"
 								:label-width="100"
 								:styles="{top: '20px'}">
 							<FormItem label='围栏名称' prop="wlmc">
 						<Input type="text"
-							v-model="findMess.wlmc"
+							v-model="param.wlmc"
 							size="large"
 							placeholder='请输入电子围栏名称'
 							style="width: 200px"></Input>
@@ -151,7 +151,7 @@ export default {
             componentName:'',
 			//收索
 			cjsjInRange:[],
-			findMess: {
+			param: {
 				cjsjInRange:'',
 				cphLike: '',
 				pageNum: 1,
@@ -295,7 +295,7 @@ export default {
     },
     watch: {
 		cjsjInRange:function(newQuestion, oldQuestion){
-			this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+			this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 		},
 	},
     created(){
@@ -328,11 +328,11 @@ export default {
         	})
     	},
         choosePoint(points){
-            this.findMess.dlxxzb = '';
+            this.param.dlxxzb = '';
             for(let r of points){
-    	        this.findMess.dlxxzb += r.lng+","+r.lat+";";
+    	        this.param.dlxxzb += r.lng+","+r.lat+";";
             }
-            log(this.findMess.dlxxzb);
+            log(this.param.dlxxzb);
         },
     	//电子围栏
     	AddRali(){
@@ -371,7 +371,7 @@ export default {
         },
         save(){
             var v = this
-            this.$refs['findMess'].validate((valid) => {
+            this.$refs['param'].validate((valid) => {
                 if (valid) {
                     this.getChoosedIds();
                     this.$http.post(this.apis.DZWL.setCarsDzwl,{wlid:this.fanceId,carIds:this.carIds}).then((res) =>{
@@ -390,11 +390,11 @@ export default {
         },
         saveDzwl(){
             var v = this
-            if (!v.findMess.wlmc || v.findMess.wlmc == ''){
+            if (!v.param.wlmc || v.param.wlmc == ''){
                 v.$Message.error('请输入围栏名称');
                 return;
 			}
-            this.$http.post(this.apis.DZWL.ADD,v.findMess).then((res) =>{
+            this.$http.post(this.apis.DZWL.ADD,v.param).then((res) =>{
                 if (res.code === 200){
                     this.fanceId = res.message;
                     this.save();
@@ -415,9 +415,9 @@ export default {
         },
     	findMessList(){
             var v = this
-			delete this.findMess.dlxxzb;
-			delete this.findMess.wlmc;
-            this.$http.get(this.apis.DZWL_CL.QUERY,{params:v.findMess}).then((res) =>{
+			delete this.param.dlxxzb;
+			delete this.param.wlmc;
+            this.$http.get(this.apis.DZWL_CL.QUERY,{params:v.param}).then((res) =>{
                 v.data9 = res.page.list
                 v.pageTotal = res.page.total
                 v.SpinShow = false;
@@ -425,7 +425,7 @@ export default {
     	},
         pageChange(event){
             var v = this
-            v.findMess.pageNum = event
+            v.param.pageNum = event
             v.findMessList()
         },
     }

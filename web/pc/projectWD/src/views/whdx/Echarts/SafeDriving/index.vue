@@ -15,7 +15,7 @@
 							<span>安全驾驶</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -54,7 +54,7 @@
                     {title: '超速行驶', align: 'center',  key: 'overspeedCount'},
                 ],
                 pageData: [],
-                form: {
+                param: {
                     type:'aqjs',
                     sjxmLike: '',
                     total: 0,
@@ -68,7 +68,7 @@
         },
         methods: {
             getData(){
-                this.$http.get(this.apis.AQJS.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.AQJS.QUERY,{params:this.param}).then((res) =>{
                     if (res.code == 200){
                         this.pageData = res.result;
                     }

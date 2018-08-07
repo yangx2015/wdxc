@@ -75,7 +75,7 @@
 						<!--:data="tableData"></Table>-->
 			<!--</Row>-->
 			<!--<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>-->
 		<!--</Card>-->
 		<component
@@ -240,7 +240,7 @@
 			//分页点击事件按
 			pageChange(event) {
 				var v = this
-				v.findMess.pageNum = event
+				v.param.pageNum = event
 				v.getmess()
 			}
 		}

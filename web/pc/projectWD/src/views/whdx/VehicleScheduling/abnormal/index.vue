@@ -1,6 +1,6 @@
 <style lang="less">
     @import '../../../../styles/common.less';
-    
+
 </style>
 <!--异常记录-->
 <template>
@@ -16,32 +16,32 @@
 							<span>事件记录</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Select v-model="findMess.cx" 
+							<Select v-model="param.cx"
 								@on-change = 'findMessList'
-								clearable 
+								clearable
 								placeholder="请选择车辆类型"
 								filterable style="width: 160px;">
-				                <Option v-for="(item,index) in carType" 
-				                	:value="item.key" 
+				                <Option v-for="(item,index) in carType"
+				                	:value="item.key"
 				                	style="text-align: left;"
 				                	:key="index">{{item.val}}</Option>
 				            </Select>
-							<Input v-model="findMess.cphLike" placeholder="请输入车牌号...." style="width: 160px;"></Input>
-							<Input v-model="findMess.zdbhLike" placeholder="请输入终端编号...." style="width: 160px;"></Input>
-				            <Select v-model="findMess.sjlx"
+							<Input v-model="param.cphLike" placeholder="请输入车牌号...." style="width: 160px;"></Input>
+							<Input v-model="param.zdbhLike" placeholder="请输入终端编号...." style="width: 160px;"></Input>
+				            <Select v-model="param.sjlx"
 				            	@on-change = 'findMessList'
-				            	clearable 
+				            	clearable
 				            	placeholder="请选择事件类型"
 				            	filterable style="width: 160px;">
-				                <Option v-for="(item,index) in thingType" 
-				                	:value="item.key" 
+				                <Option v-for="(item,index) in thingType"
+				                	:value="item.key"
 				                	style="text-align: left;"
 				                	:key="index">{{item.val}}</Option>
 				            </Select>
-							<DatePicker v-model="cjsjInRange" 
+							<DatePicker v-model="cjsjInRange"
 								@on-change = 'findMessList'
-								format="yyyy-MM-dd" type="daterange" 
-								placement="bottom-end" placeholder="请输时间" 
+								format="yyyy-MM-dd" type="daterange"
+								placement="bottom-end" placeholder="请输时间"
 								@on-keyup.enter="findMessList()" style="width: 180px"></DatePicker>
 						</div>
 						<div class="butevent">
@@ -62,8 +62,8 @@
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
+					  :current=param.pageNum
+					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
 					  show-elevator show-sizer
 					  @on-change='pageChange'></Page>
@@ -75,7 +75,7 @@
 <script>
 	import mixins from '@/mixins'
 
-	
+
 	export default {
     	name:'char',
     	mixins:[mixins],
@@ -145,7 +145,7 @@
                 thingType:[],
                 //收索时间
                 cjsjInRange:[],
-                findMess:{
+                param:{
                 	cx:'',
                 	cph:'',
                 	sjlx:'',
@@ -162,9 +162,9 @@
         watch: {
 			cjsjInRange:function(newQuestion, oldQuestion){
 				if (newQuestion.length > 0 && newQuestion[0] != ''){
-					this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+					this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 				}else{
-					this.findMess.cjsjInRange  = ''
+					this.param.cjsjInRange  = ''
 				}
 				log('newQuestion',newQuestion)
 			},
@@ -202,19 +202,19 @@
 			},
             pageChange(event){
         		var v = this
-        		v.findMess.pageNum = event
+        		v.param.pageNum = event
         		v.findMessList()
 //      		log(v.page)
         	},
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-                // if (v.findMess.sjlx == ''){
-                 //    v.findMess.sjlxIn = '10,20,30,40,50,60';
+                // if (v.param.sjlx == ''){
+                 //    v.param.sjlxIn = '10,20,30,40,50,60';
 				// }else{
-                 //    delete v.findMess.sjlxIn
+                 //    delete v.param.sjlxIn
 				// }
-        		this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.findMess}).then((res) =>{
+        		this.$http.get(this.apis.CLSBYXJL.QUERY,{params:v.param}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;

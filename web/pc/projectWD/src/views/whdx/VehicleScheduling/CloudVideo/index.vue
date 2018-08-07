@@ -66,10 +66,10 @@
 											style="width: 220px"></DatePicker>
 							</div>
 							<div class="body-r-1 inputSty">
-								<Input type="text" v-model="findMess.cphLike" placeholder="请输入车牌号"></Input>
+								<Input type="text" v-model="param.cphLike" placeholder="请输入车牌号"></Input>
 							</div>
 							<div class="body-r-1 inputSty">
-								<Input type="text" v-model="findMess.zdbhLike" placeholder="请输入终端编号"></Input>
+								<Input type="text" v-model="param.zdbhLike" placeholder="请输入终端编号"></Input>
 							</div>
 							<div class="butevent">
 								<Button type="primary" @click="findMessList()">
@@ -117,14 +117,14 @@
 			</div>
 			<div  v-show="!vadeoShow" class="body" style="border: 1px solid #dddee1;position: relative">
 				<h1 style="color: #bdbdbd;position: absolute;top:40%;left: 50%;transform: translate(-50%,-50%)">
-					{{findMess.cphLike}}暂无视频数据
+					{{param.cphLike}}暂无视频数据
 				</h1>
 			</div>
 			<div class="margin-top-10 pageSty" style="height: 60px;">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -154,7 +154,7 @@
                     pageSize:12
                 },
 				videoList:[],
-                findMess:{
+                param:{
                     cjsjInRange:'',
                     cphLike:'',
                     pageNum: 1,
@@ -198,13 +198,13 @@
 			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                    this.param.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
                 }else{
-                    this.findMess.cjsjInRange = '';
+                    this.param.cjsjInRange = '';
                 }
 				var v = this
-                v.findMess.wjmEndwith = '.mp4';
-				this.$http.get(this.apis.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
+                v.param.wjmEndwith = '.mp4';
+				this.$http.get(this.apis.CLOUD.QUERY,{params:v.param}).then((res) =>{
 				    if(res.code==200){
 						v.pageTotal = res.page.total
 				        if(res.page.list.length>0){
@@ -236,7 +236,7 @@
 			},
             pageChange(event){
                 var v = this
-                v.findMess.pageNum = event
+                v.param.pageNum = event
                 this.getmess()
             },
 		}

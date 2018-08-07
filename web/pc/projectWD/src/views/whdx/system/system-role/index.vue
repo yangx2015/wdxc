@@ -17,7 +17,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.jsmcLike"
+							<Input v-model="param.jsmcLike"
 								placeholder="请输入角色"
 								style="width: 200px"
 								@on-keyup.enter="findMessList()"
@@ -46,8 +46,8 @@
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
+					  :current=param.pageNum
+					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
 					  show-elevator show-sizer
 					  @on-change='pageChange'>
@@ -182,7 +182,7 @@
                 ],
                 //收索
 //              cjsjInRange:[],
-                findMess:{
+                param:{
 //              	cjsjInRange:'',
                 	jsmcLike:'',
                 	pageNum:1,
@@ -194,7 +194,7 @@
         },
         watch: {
 //			cjsjInRange:function(newQuestion, oldQuestion){
-//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//				this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 //			},
 		},
         created(){
@@ -229,7 +229,7 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(this.apis.ROLE.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.ROLE.QUERY,{params:v.param}).then((res) =>{
 					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;

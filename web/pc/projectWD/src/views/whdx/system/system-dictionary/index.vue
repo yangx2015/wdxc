@@ -17,7 +17,7 @@
 						<span>字典管理</span>
 					</div>
 					<div class="body-r-1 inputSty">
-						<Input v-model="findMess.lmmcLike" placeholder="请输入字典名称..."
+						<Input v-model="param.lmmcLike" placeholder="请输入字典名称..."
 							style="width: 200px"
 							@on-keyup.enter="findMessList()"
 							@on-change="findMessList"></Input>
@@ -93,7 +93,7 @@
 				</div>
 			</div>
 			<Row class="margin-top-10 pageSty">
-				<!--<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>-->
+				<!--<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>-->
 			</Row>
 		</div>
 		<component :is="compName" :dicListMess='dicListMess'></component>
@@ -129,7 +129,7 @@
 				},
 				dictionary: [],
 				//收索
-				findMess: {
+				param: {
 					gte_StartTime: '',
 					lte_StartTime: '',
 					lmmcLike: '',
@@ -153,7 +153,7 @@
 		methods: {
 			getmess() {
 				var v = this
-				this.$http.post(this.apis.DICTIONARY.QUERY , this.findMess).then((res) => {
+				this.$http.post(this.apis.DICTIONARY.QUERY , this.param).then((res) => {
 					log('字典数据', res)
 					v.dictionary = res.page.list
 					this.SpinShow = false;
@@ -168,7 +168,7 @@
 			},
 			findMessList(mess) {
 				var v = this
-				this.$http.post(this.apis.DICTIONARY.QUERY, this.findMess).then((res) => {
+				this.$http.post(this.apis.DICTIONARY.QUERY, this.param).then((res) => {
 					log('字典数据', res)
 					v.dictionary = res.page.list
 				})

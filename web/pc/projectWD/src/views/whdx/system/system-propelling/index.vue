@@ -16,7 +16,7 @@
 							<span>智能站牌</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.mcLike" placeholder="请输入站牌名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.mcLike" placeholder="请输入站牌名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getPageData()">
@@ -40,7 +40,7 @@
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component :is="componentName"></component>
@@ -171,7 +171,7 @@
                 ],
                 //收索
                 datetime:[],
-                form:{
+                param:{
                     mcLike:'',
                 	pageNum:1,
             		pageSize:8
@@ -192,11 +192,11 @@
         methods: {
     	    getPageData(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.form.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                    this.param.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
                 }else{
-                    this.form.cjsjInRange = '';
+                    this.param.cjsjInRange = '';
                 }
-                this.$http.get(this.apis.ZNZP.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.ZNZP.QUERY,{params:this.param}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
                         this.tableData = res.page.list;
@@ -205,7 +205,7 @@
                 })
 			},
 			pageChange(e){
-    	        this.form.pageNum = e;
+    	        this.param.pageNum = e;
     	        this.getPageData();
 			},
             //删除数据
@@ -231,7 +231,7 @@
 				})
             },
             pageChange(event){
-                this.form.pageNum = event;
+                this.param.pageNum = event;
                 this.getPageData();
             }
         }

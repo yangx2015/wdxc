@@ -5,7 +5,7 @@ import packjson from '../../package.json';
 import dictUtil from './dictUtil'
 
 import Cookies from 'js-cookie'
-import swal from 'sweetalert'
+import swal from 'sweetalert2'
 let util = {
 };
 

@@ -36,8 +36,8 @@
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
+					  :current=param.pageNum
+					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
 					  show-elevator show-sizer
 					  @on-change='pageChange'></Page>
@@ -155,7 +155,7 @@
                 //收索
                 datetime:[],
                 czsjInRange:[],
-                findMess:{
+                param:{
                 	czsjInRange:[],
                 	pageNum:1,
             		pageSize:8
@@ -164,7 +164,7 @@
         },
         watch: {
 			czsjInRange:function(newQuestion, oldQuestion){
-				this.findMess.czsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+				this.param.czsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 			},
 		},
         created(){
@@ -182,7 +182,7 @@
         	getmess(){
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(this.apis.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.DAILY.QUERY,{params:v.param}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
 					v.pageTotal = res.page.total;
@@ -191,14 +191,14 @@
 			},
             pageChange(event){
         		var v = this
-        		v.findMess.pageNum = event
+        		v.param.pageNum = event
         		v.findMessList()
 //      		log(v.page)
         	},
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-        		this.$http.get(this.apis.DAILY.QUERY,{params:v.findMess}).then((res) =>{
+        		this.$http.get(this.apis.DAILY.QUERY,{params:v.param}).then((res) =>{
 					log('数据',res)
 					v.tableData = res.page.list
                     v.pageTotal = res.page.total;

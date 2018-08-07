@@ -163,6 +163,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
         }
 
+        ClCl car = null;
         if (statusChange || positionChange){
             ClGpsLs gpsls = new ClGpsLs(newGps);
             gpsls.setId(genId());
@@ -172,7 +173,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
             clXc(gpsInfo);
-            ClCl car = null;
             String xlId = "";
             List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
             if (carList.size() != 0){
@@ -188,6 +188,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
             sendWebsocket(websocketInfo);
             saveEvent(newGps,gpsInfo,car,eventType);
+        }
+        if (statusChange){
             saveClSbyxsjjl(gpsInfo, newGps, car);
         }
     }
