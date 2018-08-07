@@ -74,6 +74,7 @@ public class GnServiceImpl extends BaseServiceImpl<SysGn, String> implements GnS
         jgsq.setCjsj(now);
         jgsq.setCjr(getOperateUser());
         jgsqlbMapper.insertSelective(jgsq);
+        initPermission();
         return ApiResponse.success();
     }
 

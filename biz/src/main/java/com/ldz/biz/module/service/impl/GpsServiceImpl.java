@@ -267,7 +267,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String versionName = map.get("versionName").toString();
         if(StringUtils.isBlank(clZdgl.getVersion()) || !StringUtils.equals(versionCode + "-" + versionName,clZdgl.getVersion())){
             clZdgl.setVersion(versionCode + "-" + versionName);
-            zdglservice.save(clZdgl);
+            zdglservice.updateEntity(clZdgl);
         }
         redis.boundValueOps("versionInfo-" + gpsInfo.getDeviceId()).set(versionCode + "-" + versionName);
     }
