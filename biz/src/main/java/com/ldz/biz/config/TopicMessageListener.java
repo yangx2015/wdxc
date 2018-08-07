@@ -36,7 +36,7 @@ public class TopicMessageListener implements MessageListener {
     private String url;
     private String znzpurl;
     private String bizurl;
-
+    public double distance;
     private XcService xcService;
 
     private ClYyService clYyService;
@@ -53,7 +53,7 @@ public class TopicMessageListener implements MessageListener {
 
     Logger error = LoggerFactory.getLogger("error_info");
 
-    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl) {
+    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl,String distance) {
         this.xcService = xcService;
         this.clYyService = clYyService;
         this.gpsLsService = gpsLsService;
@@ -62,6 +62,7 @@ public class TopicMessageListener implements MessageListener {
         this.url = url;
         this.znzpurl = znzpurl;
         this.bizurl = bizurl;
+        this.distance = Double.parseDouble(distance);
     }
 
     /**
@@ -251,7 +252,7 @@ public class TopicMessageListener implements MessageListener {
         });
         String point = GuiJIApi.trackPoint(listBeans);
         NewTrackPointReturn newTrackPointReturn = JsonUtil.toBean(point, NewTrackPointReturn.class);
-        if(newTrackPointReturn.getDistance() <= 100){ // 里程小于100 m 过滤
+        if(newTrackPointReturn.getDistance() <= distance){ // 里程小于100 m 过滤
             return null;
         }
         List<Clyy> yyList = new ArrayList<>();
@@ -306,7 +307,7 @@ public class TopicMessageListener implements MessageListener {
         guijis.setPage_size("5000");
         // 查询 小时内的轨迹坐标点
         TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
-        if(points.getDistance() <= 100){ // 里程小于100 m 过滤
+        if(points.getDistance() <= distance){ // 里程小于100 m 过滤
             return null;
         }
         List<TrackPointsForReturn.Point> points2 = points.getPoints();
