@@ -39,12 +39,23 @@ export default {
   created(){
   },
   methods: {
-    Goback(){
-      ui.navigateBack()
-    }
   }
+  
 }
 </script>
 
 <style lang="less">
+.lineMess{
+  .ui-timeline-wrapper{
+    .ui-timeline-row{
+      overflow: auto;
+      ul{
+        display: flex;
+        flex-direction: row ;
+        flex-wrap:nowrap ;
+        height: 100%;
+      }
+    }
+  }
+}
 </style>
