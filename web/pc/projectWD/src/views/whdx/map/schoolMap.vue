@@ -60,7 +60,7 @@
                 allDeviceList: [],
                 socket : new SockJS(this.$http.url+"/gps"),
                 stationIconUrl:'http://47.98.39.45:9092/icon/running.png',
-                colors:['#FFFF00','#FF0000','#5CACEE','#DA70D6','#CDAD00','#CD2626'],
+                colors:['#FF00FF','#FF0000','#5CACEE','#7CFC00','#98FB98','#BF3EFF'],
                 colorIndex:0,
 			}
 		},
@@ -113,7 +113,7 @@
                     ps.push(new BMap.Point(r.lng, r.lat));
                 }
                 var polyline = new BMap.Polyline(ps,
-                    {strokeColor:line.color, strokeWeight:6, strokeOpacity:0.5}
+                    {strokeColor:line.color, strokeWeight:6, strokeOpacity:0.9}
                 );
                 this.map.addOverlay(polyline);
             },
