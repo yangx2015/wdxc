@@ -48,8 +48,35 @@ public class SysYjfk implements Serializable {
 
     @Column(name = "XGSJ")
     private Date xgsj;
+    /**
+     * 司机ID
+     */
+    @Column(name = "SJ_ID")
+    private String sjId;
+    /**
+     * 教职工ID
+     */
+    @Column(name = "USER_ID")
+    private String userId;
+
 
     private static final long serialVersionUID = 1L;
+
+    public String getSjId() {
+        return sjId;
+    }
+
+    public void setSjId(String sjId) {
+        this.sjId = sjId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
     /**
      * @return YJ_ID

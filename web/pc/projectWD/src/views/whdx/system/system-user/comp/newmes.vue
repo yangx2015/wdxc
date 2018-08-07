@@ -114,9 +114,6 @@
                   sjh:[
                       { required: true,message: '请输入手机号码', trigger: 'blur' }
                   ],
-                  zjhm:[
-                  	{ required: true,message: '请输入证件号码', trigger: 'blur' }
-                  ]
               	},
                 yhlxDict:[],
                 yhlxDictCode:'ZDCLK0003',

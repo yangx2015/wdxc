@@ -1,10 +1,14 @@
 package com.ldz.job.model;
 
+import lombok.ToString;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
-import javax.persistence.*;
-
+@ToString
 @Table(name = "CL_SBYXSJJL")
 public class ClSbyxsjjl implements Serializable {
     /**
@@ -51,7 +55,7 @@ public class ClSbyxsjjl implements Serializable {
     private BigDecimal jid;
 
     /**
-     * 事件类型
+     * 事件类型   //事件 10急加速，20急刹车，30急转弯 ，40超速，50点火，60熄火,70不在电子围栏范围,80离线
      */
     @Column(name = "SJLX")
     private String sjlx;
@@ -67,6 +71,19 @@ public class ClSbyxsjjl implements Serializable {
      */
     @Column(name = "BZ")
     private String bz;
+    /**
+     * 车型
+     */
+    @Column(name = "CX")
+    private String cx;
+    /**
+     * 车牌号
+     */
+    @Column(name = "cph")
+    private String cph;
+
+    @Column(name = "SJXM")
+    private String sjxm;
 
     private static final long serialVersionUID = 1L;
 
@@ -250,6 +267,30 @@ public class ClSbyxsjjl implements Serializable {
         this.bz = bz;
     }
 
+    public String getCx() {
+        return cx;
+    }
+
+    public void setCx(String cx) {
+        this.cx = cx;
+    }
+
+    public String getCph() {
+        return cph;
+    }
+
+    public void setCph(String cph) {
+        this.cph = cph;
+    }
+
+    public String getSjxm() {
+        return sjxm;
+    }
+
+    public void setSjxm(String sjxm) {
+        this.sjxm = sjxm;
+    }
+
     public enum InnerColumn {
         id("ID"),
         zdbh("ZDBH"),
@@ -260,7 +301,10 @@ public class ClSbyxsjjl implements Serializable {
         jid("JID"),
         sjlx("SJLX"),
         yxfx("YXFX"),
-        bz("BZ");
+        bz("BZ"),
+        cx("cx"),
+        cph("CPH"),
+        sjxm("SJXM");
 
         private final String column;
 
