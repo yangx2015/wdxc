@@ -47,8 +47,6 @@ public class YjController extends BaseController<SysYjfk, String> {
 			ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
 			entity.setSjId(jsy.getSfzhm());
 		}
-
-		entity.setYhId(getCurrentUser(true));
 		return service.saveEntity(entity);
 	}
 
