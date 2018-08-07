@@ -251,12 +251,24 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
     private void saveVersionInfoToRedis(GpsInfo gpsInfo) {
-        if (StringUtils.isEmpty(gpsInfo.getCmdParams()) || !gpsInfo.getCmdParams().contains("versionCode")) return;
+        if (StringUtils.isEmpty(gpsInfo.getCmdParams()) || !gpsInfo.getCmdParams().contains("versionCode")) {
+            return;
+        }
         Map<String, Object> map = JsonUtil.toMap(gpsInfo.getCmdParams());
-        if (map == null) return;
-        if (!map.containsKey("versionCode") || !map.containsKey("versionName")) return;
+        if (map == null) {
+            return;
+        }
+        if (!map.containsKey("versionCode") || !map.containsKey("versionName")) {
+            return;
+        }
+        // 根据设备号查找
+        ClZdgl clZdgl = zdglservice.findById(gpsInfo.getDeviceId());
         String versionCode = map.get("versionCode").toString();
         String versionName = map.get("versionName").toString();
+        if(StringUtils.isBlank(clZdgl.getVersion()) || !StringUtils.equals(versionCode + "-" + versionName,clZdgl.getVersion())){
+            clZdgl.setVersion(versionCode + "-" + versionName);
+            zdglservice.save(clZdgl);
+        }
         redis.boundValueOps("versionInfo-" + gpsInfo.getDeviceId()).set(versionCode + "-" + versionName);
     }
 

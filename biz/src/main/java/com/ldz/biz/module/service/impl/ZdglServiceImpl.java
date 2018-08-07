@@ -12,7 +12,9 @@ import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
@@ -54,6 +56,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     private CssdService cssdService;
     @Autowired
     private InstructionService instructionService;
+    @Autowired
+    private JgService jgService;
 
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
@@ -315,6 +319,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                     clZdgl.setCjr(getOperateUser());
                     clZdgl.setCjsj(new Date());
                     clZdgl.setJgdm(jgdm);
+                    SysJg jg = jgService.findById(jgdm);
+                    clZdgl.setJgmc(jg.getJgmc());
                     // 超速设定
                     ClCssd clCssd = new ClCssd();
                     clCssd.setCjr(getOperateUser());
@@ -364,7 +370,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
                                 break;
                             case 5: // 超速设定
                                 if(StringUtils.isEmpty(v)){
-                                    clCssd.setSdsx((short)60);
+                                    clCssd.setSdsx((short)120);
                                 }else{
                                     if(Integer.parseInt(v)>128 || Integer.parseInt(v)<-127){
                                         errors.add("第" + (r+1) + "行 , " + "第" + (c+1) + "列的超速限定异常" );
