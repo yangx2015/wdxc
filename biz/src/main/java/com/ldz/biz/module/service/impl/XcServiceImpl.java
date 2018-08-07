@@ -46,6 +46,7 @@ public class XcServiceImpl extends BaseServiceImpl<ClXc,String> implements XcSer
         condition.eq(ClXc.InnerColumn.clZdbh,zdbh);
         condition.lte(ClXc.InnerColumn.xcJssj,endTime);
         condition.gte(ClXc.InnerColumn.xcKssj,startTime);
+        condition.setOrderByClause( " XC_KSSJ ASC");
         List<ClXc> xcList = findByCondition(condition);
         List<Map<String,Object>> list = new ArrayList<>(xcList.size());
         if (xcList.size() == 0){

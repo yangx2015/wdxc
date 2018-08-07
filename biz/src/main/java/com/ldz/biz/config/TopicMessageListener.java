@@ -185,8 +185,7 @@ public class TopicMessageListener implements MessageListener {
         if((e - s) < 0 ){
             return;
         }
-        /*
-        if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
+        /*if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
             // 轨迹点不存储
             return;
         }*/
@@ -204,12 +203,15 @@ public class TopicMessageListener implements MessageListener {
                 start_end=  saveGps(zdbh,startTime,endTime);
             }
         }
-        ClXc clXc = new ClXc();
-        clXc.setClZdbh(zdbh);
-        clXc.setXcKssj(startTime);
-        clXc.setXcJssj(endTime);
-        clXc.setXcStartEnd(start_end);
-        xcService.saveEntity(clXc);
+
+        if(StringUtils.isNotBlank(start_end)) {
+            ClXc clXc = new ClXc();
+            clXc.setClZdbh(zdbh);
+            clXc.setXcKssj(startTime);
+            clXc.setXcJssj(endTime);
+            clXc.setXcStartEnd(start_end);
+            xcService.saveEntity(clXc);
+        }
     }
 
 
@@ -250,8 +252,12 @@ public class TopicMessageListener implements MessageListener {
                 yyList.add(clyy);
             });
         }
-        clYyService.saveBatch(yyList);
+
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+       /* if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
+            return null;
+        }*/
+        clYyService.saveBatch(yyList);
 
         return start_end;
 
@@ -298,8 +304,12 @@ public class TopicMessageListener implements MessageListener {
                 clyy.setZdbh(zdbh);
                 yyList.add(clyy);
             }
-            clYyService.saveBatch(yyList);
             String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+            /*if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
+                return null;
+            }*/
+            clYyService.saveBatch(yyList);
+
             return start_end;
         } else {
             return null;
@@ -328,9 +338,11 @@ public class TopicMessageListener implements MessageListener {
             clyy.setZdbh(zdbh);
             yyList.add(clyy);
         });
-        clYyService.saveBatch(yyList);
-
+        /*if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
+            return null;
+        }*/
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
+        clYyService.saveBatch(yyList);
         return start_end;
     }
 
