@@ -892,17 +892,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
             if(preTime.plusMinutes(5).compareTo(nowTime) > 0 && !StringUtils.equals(type,"2")){ // 说明当前时间仍在行程中
                 if(StringUtils.equals(routeType,"2") || StringUtils.equals(routeType,"1")){
+
                     // 更新实时点位时间
                     startTime = times[1];
-                    //删除当前终端的开始结束
-                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
+                   /* //删除当前终端的开始结束
+                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );*/
+
                 }
             }
         }
         // 更新标记
         redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
         // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time ).set("1",5,TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh +","+ startTime ).set("1",5,TimeUnit.MINUTES);
+
+        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time);
 
 
 

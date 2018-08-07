@@ -95,8 +95,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 				}
 			}
 		}
-
-		clgpslsMapper.insertList(list);
+		if(CollectionUtils.isNotEmpty(list)) {
+			clgpslsMapper.insertList(list);
+		}
 		/*String bean = (String) redis.boundValueOps(ClGps.class.getSimpleName()).get();
 		if (bean != null) {
 			ClGps object = JsonUtil.toBean(bean, ClGps.class);

@@ -174,7 +174,19 @@ public class TopicMessageListener implements MessageListener {
         String type = vals[0];
         String zdbh = vals[1];
         String startTime = vals[2];
-        String endTime = vals[3];
+        String endTime = (String)redisTemplate.boundValueOps("start_end," + zdbh + "xc" + startTime).get();
+
+        // String endTime = vals[3];
+       /* SimpleCondition condition = new SimpleCondition(ClXc.class);
+        condition.eq(ClXc.InnerColumn.xcKssj,startTime);
+        condition.eq(ClXc.InnerColumn.clZdbh,zdbh);
+        List<ClXc> clXcs = xcService.findByCondition(condition);
+        if(CollectionUtils.isNotEmpty(clXcs)){
+            ClXc clXc = clXcs.get(0);
+            clXc.setXcJssj(endTime);
+            xcService.update(clXc);
+        }*/
+
         long s = 0;
         long e = 0;
         try {
@@ -182,7 +194,7 @@ public class TopicMessageListener implements MessageListener {
             e = simpleDateFormat.parse(endTime).getTime();
         } catch (ParseException e1) {
         }
-        if((e - s) < 0 ){
+        if((e - s) < 60000 ){
             return;
         }
         /*if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
@@ -196,7 +208,7 @@ public class TopicMessageListener implements MessageListener {
         }catch (Exception e2){
             if(StringUtils.equals(type,"start_end")) {
                 // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
-                redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime + "," + endTime).set("1", 1, TimeUnit.MINUTES);
+                redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime).set("1", 1, TimeUnit.MINUTES);
                 return;
             }else if(StringUtils.equals(type,"compencate")){
                 // 存储当前原始轨迹点
@@ -211,6 +223,7 @@ public class TopicMessageListener implements MessageListener {
             clXc.setXcJssj(endTime);
             clXc.setXcStartEnd(start_end);
             xcService.saveEntity(clXc);
+            redisTemplate.delete("start_end," + zdbh + "xc" + startTime);
         }
     }
 
@@ -238,6 +251,9 @@ public class TopicMessageListener implements MessageListener {
         });
         String point = GuiJIApi.trackPoint(listBeans);
         NewTrackPointReturn newTrackPointReturn = JsonUtil.toBean(point, NewTrackPointReturn.class);
+        if(newTrackPointReturn.getDistance() <= 100){ // 里程小于100 m 过滤
+            return null;
+        }
         List<Clyy> yyList = new ArrayList<>();
         List<Point> points = newTrackPointReturn.getPoints() ;
         if(CollectionUtils.isNotEmpty(points)) {
@@ -254,9 +270,9 @@ public class TopicMessageListener implements MessageListener {
         }
 
         String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
-       /* if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
+        if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
             return null;
-        }*/
+        }
         clYyService.saveBatch(yyList);
 
         return start_end;
@@ -290,6 +306,9 @@ public class TopicMessageListener implements MessageListener {
         guijis.setPage_size("5000");
         // 查询 小时内的轨迹坐标点
         TrackPointsForReturn points = GuiJIApi.getPoints(guijis, GuiJIApi.getPointsURL);
+        if(points.getDistance() <= 100){ // 里程小于100 m 过滤
+            return null;
+        }
         List<TrackPointsForReturn.Point> points2 = points.getPoints();
         if (CollectionUtils.isNotEmpty(points2)) {
             List<Clyy> yyList = new ArrayList<>();
@@ -305,9 +324,9 @@ public class TopicMessageListener implements MessageListener {
                 yyList.add(clyy);
             }
             String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
-            /*if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
+            if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
                 return null;
-            }*/
+            }
             clYyService.saveBatch(yyList);
 
             return start_end;
