@@ -416,6 +416,29 @@ export default {
         this.initGps()
     },
     methods: {
+        showFance(carId) {
+            this.fancePoints = [];
+            var v = this
+            this.$http.get(this.apis.DZWL.GET_BY_CAR_ID + "?clId=" + carId).then((res) => {
+                if (res.code === 200) {
+                    let s = res.result.dlxxzb;
+                    let ps = s.split(";");
+                    for (let r of ps) {
+                        let point = r.split(",");
+                        this.fancePoints.push({lng: point[1], lat: point[0]})
+                    }
+                    this.addArea(this.fancePoints);
+                }
+            })
+        },
+        addArea(points) {
+            let ps = [];
+            for (let r of points) {
+                ps.push(new BMap.Point(r.lng, r.lat))
+            }
+            var polygon = new BMap.Polygon(ps, {strokeColor: "red", strokeWeight: 2, strokeOpacity: 0.5});  //创建多边形
+            this.map.addOverlay(polygon);
+        },
         changeBtn(){
             if (this.changeBtnIcon == "chevron-down"){
                 this.changeBtnIcon = "chevron-up";
