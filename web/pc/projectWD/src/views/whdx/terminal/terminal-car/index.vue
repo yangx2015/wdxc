@@ -19,6 +19,17 @@
 							<Input v-model="param.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
 							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.versionLike" placeholder="请输入版本号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Select v-model="param.zxzt"
+									@on-change = 'getPageData'
+									clearable
+									placeholder="请选择在线状态"
+									filterable style="width: 160px;">
+								<Option v-for="(item,index) in Dictionary"
+										:value="item.key"
+										style="text-align: left;"
+										:key="index">{{item.val}}</Option>
+							</Select>
 						</div>
 						<div class="butevent">
 							<Tooltip content="查询" placement="top">

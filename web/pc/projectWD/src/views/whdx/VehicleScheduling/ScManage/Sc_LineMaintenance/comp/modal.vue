@@ -143,15 +143,16 @@
 		    getStations(){
                 this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID+'?xlId='+this.param.id).then((res) =>{
                     if(res.code === 200){
+                        let i = 0;
                         for (let r of res.result){
-                            this.addByStationId(r.id);
+                            this.addByStationId(r.id,i++);
 						}
                     }
                 })
 			},
-			addByStationId(stationId){
+			addByStationId(stationId,i){
 				var v = this
-                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
+                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId),index:i});
                 for(var i = 0 ; i<this.stationList.length ; i++){
                 	if(v.stationList[i].id == stationId){
                 		v.stationList[i].disabled = true

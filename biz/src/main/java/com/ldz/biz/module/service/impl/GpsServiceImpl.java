@@ -189,9 +189,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             sendWebsocket(websocketInfo);
             saveEvent(newGps,gpsInfo,car,eventType);
         }
-        if (statusChange){
-            saveClSbyxsjjl(gpsInfo, newGps, car);
-        }
+        saveClSbyxsjjl(gpsInfo, newGps, car);
     }
 
     /**
