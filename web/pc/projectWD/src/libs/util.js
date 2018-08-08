@@ -161,14 +161,14 @@ util.initSimpleTable = (v)=>{
     util.getPageData(v)
 }
 util.initPageSize = (v)=>{
-    if (!v.form || !v.form.pageSize)return;
+    if (!v.param || !v.param.pageSize)return;
     let pageSize = Cookies.get("pageSize");
     if (!pageSize){
         Cookies.set("pageSize",8);
         pageSize = 8;
     }
     pageSize = parseInt(pageSize);
-    v.form.pageSize = pageSize;
+    v.param.pageSize = pageSize;
 }
 /**
  * 初始化表单（包括新增和修改）页面
@@ -334,14 +334,14 @@ util.closeDialog = function(v){
  */
 util.getPageData = function(v) {
     let url = v.pagerUrl ? v.pagerUrl : v.apiRoot['QUERY'];
-    v.$http.post(url, v.form).then((response) => {
+    v.$http.post(url, v.param).then((response) => {
             let code = response.code;
             let msg = response.message;
             v.SpinShow = false
             if (code === 200) {
                 let page = response.page;
                 v.pageData = page.list;
-                v.form.total = page.total;
+                v.param.total = page.total;
             }
         }, (error) => {
         }
@@ -352,12 +352,12 @@ util.getPageData = function(v) {
  * table分页切换事件
  */
 util.pageChange = function(v,e) {
-    v.form.pageNum = e
+    v.param.pageNum = e
     util.getPageData(v)
 }
 util.pageSizeChange = function(v,n) {
     Cookies.set("pageSize",n);
-    v.form.pageSize = n;
+    v.param.pageSize = n;
     util.getPageData(v);
 }
 /**
