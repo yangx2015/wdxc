@@ -8,10 +8,10 @@ ext {
             AndroidCompileSdkVersion : 25,
             applicationId : "cn.bidostar.ticserver",
             versionCode:14,
-            versionName:"0.1.9",
+            versionName:"0.2.0",
             testInstrumentationRunner:"android.support.test.runner.AndroidJUnitRunner",
             corLibVCode:14,
-            corLibVName:"0.1.9"
+            corLibVName:"0.2.0"
     ]
 
 
