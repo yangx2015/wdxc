@@ -41,7 +41,7 @@ public class MessageReceiver  implements MessageListener {
 				spkService.saveSpk(gpsInfo);
 				break;
 			case "gps":
-                gpsservice.filterAndSave(gpsInfo);
+                gpsservice.onReceiveGps(gpsInfo);
 				break;
 		}
 		System.out.println("收到一条消息："+redisChannel);
