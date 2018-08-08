@@ -78,10 +78,10 @@ public class ClXlCtrl {
 	public ApiResponse<Map<String,Object>> getStationInfo(String lng,String lat){
 		return zdservice.getStationInfo(lng,lat);
 	}
-
-	@RequestMapping("getNearbyStations")
-	public ApiResponse<List<NearbyStation>> getNearbyStations(String lng, String lat){
-		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));
-	}
+//
+//	@RequestMapping("getNearbyStations")
+//	public ApiResponse<List<NearbyStation>> getNearbyStations(String lng, String lat){
+//		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));
+//	}
 
 }

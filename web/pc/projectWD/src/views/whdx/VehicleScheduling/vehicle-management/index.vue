@@ -196,6 +196,8 @@
 					pageNum: 1,
 					pageSize:8
 				},
+                drivers:[],
+                deviceList:[],
             }
         },
         created(){
@@ -214,6 +216,30 @@
 			this.getClztDict();
         },
         methods: {
+            getDeviceList(){//获取终端编号
+                let v = this;
+                v.$http.post(this.apis.ZDGL.SXQUERY).then((res) =>{
+                    if(res.code===200){
+                        if(res.result==undefined){
+                            res.result = []
+                        }
+                        log('终端数据',res)
+                        this.deviceList = res.result;
+                        this.deviceList.push({'zdbh':v.mess.zdbh})
+                    }
+                })
+            },
+            getDrivers(){
+                let v = this;
+                v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
+                    if(res.code===200){
+                        v.drivers = res.page.list;
+                        // if(v.derMess.sjId!=null&&!v.messType){
+                        // 	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
+                        // }
+                    }
+                })
+            },
 	      ok(item){
 
 		  },

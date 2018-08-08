@@ -166,6 +166,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         ClCl car = null;
+        List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
+        if (carList.size() != 0) {
+            car = carList.get(0);
+        }
         if (statusChange || positionChange){
             ClGpsLs gpsls = new ClGpsLs(newGps);
             gpsls.setId(genId());
@@ -175,17 +179,17 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
             String xlId = "";
-            List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
-            if (carList.size() != 0){
-                car = carList.get(0);
-                ClPb pbExample = new ClPb();
-                pbExample.setClId(car.getClId());
-                ClPb pb = pbService.findOneByEntity(pbExample);
-                if(pb != null) {
-                    xlId = pb.getXlId();
+            if (car != null){
+                SimpleCondition condition = new SimpleCondition(ClPb.class);
+                condition.eq(ClPb.InnerColumn.clId,car.getClId());
+                List<ClPb> pbList = pbService.findByCondition(condition);
+                if (pbList.size() != 0){
+                    ClPb pb = pbList.get(0);
+                    if(pb != null) {
+                        xlId = pb.getXlId();
+                    }
                 }
             }
-
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
             sendWebsocket(websocketInfo);
 //            saveEvent(newGps,gpsInfo,car,eventType);
@@ -500,10 +504,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         ClSbyxsjjl clsbyxsjjl = new ClSbyxsjjl();
         clsbyxsjjl.setJd(clgps.getBdjd());
         clsbyxsjjl.setWd(clgps.getBdwd());
-        clsbyxsjjl.setCph(clcl.getCph());
-        clsbyxsjjl.setCx(clcl.getCx());
-        if (StringUtils.isNotEmpty(clcl.getSjxm())) {
-            clsbyxsjjl.setSjxm(clcl.getSjxm());
+        if (clcl != null){
+            clsbyxsjjl.setCph(clcl.getCph());
+            clsbyxsjjl.setCx(clcl.getCx());
+            if (StringUtils.isNotEmpty(clcl.getSjxm())) {
+                clsbyxsjjl.setSjxm(clcl.getSjxm());
+            }
         }
         // 获取设备的记录时间
         if (StringUtils.isNotEmpty(entity.getStartTime())) {
@@ -536,15 +542,18 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         // 判断该点位是否在电子围栏里面
-        ClDzwl judgePoint = JudgePoint(clgps, clcl);
-        if (judgePoint != null) {
-            clsbyxsjjl.setId(genId());
-            clsbyxsjjl.setSjlx("70");
-            clsbyxsjjl.setBz(judgePoint.getId());
-            // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
-            redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
-            log.info("该点位不在电子围栏里面,事件表存储成功");
+        if (clcl != null){
+            ClDzwl judgePoint = JudgePoint(clgps, clcl);
+            if (judgePoint != null) {
+                clsbyxsjjl.setId(genId());
+                clsbyxsjjl.setSjlx("70");
+                clsbyxsjjl.setBz(judgePoint.getId());
+                // clSbyxsjjlMapper.insertSelective(clsbyxsjjl);
+                redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+                log.info("该点位不在电子围栏里面,事件表存储成功");
+            }
         }
+
         // 没有携带事件类型
         if (StringUtils.isEmpty(entity.getEventType())) {
             return null;
