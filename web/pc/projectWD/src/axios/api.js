@@ -288,6 +288,12 @@ module.exports = {
         CHANGE: '/api/dzwlCl/update',
         DELE:   '/api/dzwlCl/removeIds',
     },
+    clyxjl:{//车辆运行记录
+        QUERY:  '/api/clyxjl/pager',
+        ADD:    '/api/clyxjl/save',
+        CHANGE: '/api/clyxjl/update',
+        DELE:   '/api/clyxjl/removeIds',
+    },
     CLJK:{
         QUERY:'/api/cl/InitClGps',
         GET_CAR_INFO:'/api/cl/getCarInfo',

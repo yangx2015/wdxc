@@ -13,6 +13,4 @@ import java.util.Map;
 public interface ZdService extends BaseService<ClZd,String> {
 
     ApiResponse<Map<String,Object>> getStationInfo(String lng, String lat);
-
-    List<NearbyStation> getNearbyStations(String lng, String lat);
 }

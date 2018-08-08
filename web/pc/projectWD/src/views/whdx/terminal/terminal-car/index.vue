@@ -399,25 +399,7 @@
             },
             //删除数据
             listDele(r){
-                var v = this
-                swal({
-                    title: "是删除数据?",
-                    text: "",
-                    icon: "warning",
-                    buttons:['取消','确认'],
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
-                                if(res.code===200){
-                                    this.$Message.success('操作成功');
-                                }
-                                v.getPageData()
-                            })
-                        } else {
-                            this.$Message.error('操作失败');
-                        }
-                    })
+                this.util.del(this,this.apis.ZDGL.DELE,[r.zdbh])
             },
             pageChange(event){
                 this.param.pageNum = event;
