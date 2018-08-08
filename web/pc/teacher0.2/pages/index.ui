@@ -2,15 +2,15 @@
   <ui-page  style="overflow-y: hidden;">
       <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
           <ui-row height="46">
-            <ui-col vertical-align="middle" align="center" width="60">
-              <ui-icon type="ditu" size="18" color="#fff"></ui-icon>
-            </ui-col>
-            <ui-col vertical-align="middle" align="center">
-              <ui-view class="nav_title">首页约车</ui-view>
-            </ui-col>
-            <ui-col vertical-align="middle" align="center" width="60" bindtap="goProp">
-              <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
-            </ui-col>
+          <ui-col vertical-align="middle" align="center" width="60">
+          <ui-icon type="wo" size="20" color="#e2e2e2"></ui-icon>
+          </ui-col>
+          <ui-col vertical-align="middle" align="center">
+          <ui-view class="nav_title">约车</ui-view>
+          </ui-col>
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="goProp">
+          <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
+          </ui-col>
           </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
@@ -34,33 +34,44 @@
                 <ui-view>
                   <ui-row>
                      <ui-col sapn=2>
-                        <ui-icon type="shijianshizhongdaojishi"></ui-icon>
-                      </ui-col>
-                      <ui-col span=4 bindtap="radioCalendaropen">
-                        <ui-text>乘车时间</ui-text>
+                        <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
+                      </ui-col >
+                      <ui-col span=4 bindtap="radioCalendaropen" align="left" >
+                        <ui-text   bindtap="openPopup2">{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
                       
                      </ui-col>
                      <ui-col span=2>
-                        <ui-icon type="yuan-copy-copy-copy-copy"></ui-icon>
+                        <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
                       </ui-col>
-                      <ui-col span=4>
-                        <ui-text>换乘车人</ui-text>
+                      <ui-col span=4 align="left" bindtap="getmyself()">
+                        <ui-text>{{people}}</ui-text>
+                     </ui-col>
+                  </ui-row>
+                </ui-view>
+
+                <ui-view ui:if="{{people === '他人乘坐'}}">
+                  <ui-row>
+                     <ui-col sapn=2>
+                        <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
+                      </ui-col >
+                      <ui-col span=4 bindtap="radioCalendaropen" align="left" >
+                        <ui-text   bindtap="openPopup2">{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
+                      
+                     </ui-col>
+                     <ui-col span=2>
+                        <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
+                      </ui-col>
+                      <ui-col span=4 align="left" bindtap="getmyself()">
+                        <ui-text>{{people}}</ui-text>
                      </ui-col>
                   </ui-row>
                 </ui-view>
                 <ui-view>
-                   <ui-row>
-                     <ui-col>
+                   <ui-row height="100">
+                     <ui-col ui:for="{{carlist}}" bindtap="getcarnum(item,index)">
                        <!-- <ui-text>xiaoche </ui-text> -->
-                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
-                     </ui-col>
-                     <ui-col>
-                       <!-- <ui-text>xiaoche </ui-text> -->
-                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
-                     </ui-col>
-                     <ui-col>
-                       <!-- <ui-text>xiaoche </ui-text> -->
-                       <ui-image src="../static/img/teacher/car.jpg" mode="widthFix" width="100"></ui-image>
+                       <ui-image src="static/img/teacher/car.jpg" mode="widthFix" width="90%" align="center"></ui-image>
+                       <ui-text align="center" style="{{ {fontSize:'20px',color:item.color} }}">{{item.val}}座</ui-text>
                      </ui-col>
                    </ui-row>
                 </ui-view>
@@ -72,13 +83,13 @@
             <!-- <ui-button type="primary" bindtap="goStarPage">出发地</ui-button>
             <ui-button type="primary" bindtap="goEndPage">目的地</ui-button> -->
             <!-- 單選日期 -->
-            <ui-button type="primary" full-width="false" bindtab="radioCalendar = true">主要操作</ui-button>
+            <!-- <ui-button type="primary" full-width="false" bindtab="radioCalendar = true">主要操作</ui-button> -->
             <!-- <ui-mask ui:model="true">
                 <ui-view class="content">sdfs
                 </ui-view>
             </ui-mask> -->
-            <ui-popup ui:model="{{ radioCalendar }}">32424234
-              <!-- <ui-view class="popup1">
+            <ui-popup ui:model="{{ show  }}">
+              <ui-view class="popup1">
                 <ui-row height="{{headerHeight}}">
                   <ui-col align="left" vertical-align="middle" width="70" space-left="10" bindtap="handleSelect('radioCalendar')">
                       <ui-icon type="close" color="#e60012"></ui-icon>
@@ -91,7 +102,8 @@
 
                 </ui-row>
                 <ui-v-calendar
-                ui:if="{{ radioCalendar }}"
+                ui:if="{{ show }}"
+                disable-past-days
                 select-range-mode="{{false}}"
                 header-height="30"
                 height="319"
@@ -99,18 +111,27 @@
                 bindchange="selectedChange"
                 value="{{radioDate}}"
               ></ui-v-calendar>
-              </ui-view> -->
+              <ui-picker-view mode="time" value="{{ timeValue }}" bindchange="handleChange4"></ui-picker-view>
+              <ui-button  bindtap="resetPicker2">确定</ui-button>
+              </ui-view>
             </ui-popup>
-
             <!-- 单选结束 -->
+            <!-- <ui-view class="win">
+              <ui-row space-top="15">
+                <ui-button class="btnyd">立即预订</ui-button>
+              </ui-row>
+          </ui-view> -->
+          
+          
+
       </ui-view>
       
   </ui-page>
 </template>
 
 <script>
-// import util from "static/utils/util";
-// var formatLocation = util.formatLocation
+import util from "static/utils/util";
+var formatLocation = util.formatLocation
 export default {
   config: {
     navigationStyle: 'custom',
@@ -123,6 +144,10 @@ export default {
   },
   data () {
     return {
+      newnum:'',
+      timeValue: '',
+      show:false,
+      time:'',
       radioCalendar:false,
       form:{
         name:'',
@@ -136,6 +161,21 @@ export default {
           name:''
         }
       },
+      carlist:[
+        {
+          val:5,
+          color:"#000"
+        },
+        {
+          val:7,
+          color:"#000"
+        },
+        {
+          val:11,
+          color:"#000"
+        }
+      ],
+      people:'本人乘坐',
       statusBarHeight: ui.STATUS_BAR_HEIGHT,
         headerHeight: ui.DEFAULT_HEADER_HEIGHT,
         // 单选日历，popup显隐控制
@@ -177,11 +217,57 @@ export default {
     }
   },
   methods: {
+    getmyself(){
+      var v = this
+      const itemLists = [
+          '本人乘坐',
+          '他人乘坐'
+        ]
+      ui.showActionSheet({
+        itemList:itemLists ,
+        success: (index) => {
+          console.log(index)
+          v.people = itemLists[index]
+          // ui.showToast({
+          //   title: itemLists[index]
+          // })
+        }
+      })
+    },
+    getcarnum(val,num){
+      console.log(val)
+       var v = this
+       v.carlist.forEach((item,index) => {
+         if(index==num){
+           item.color="#f00"
+         }else{
+           item.color="#000"
+         }
+       });
+    },
+    getInput(){
+       var v =  this
+      ui.showPrompt({
+        
+        title: '新的乘车人号码',
+        placeholder: '电话号码',
+        value:'',
+        success: (result) => {
+         console.log(result)
+         v.newnum = result.value
+        },
+      })
+    },
+    handleChange4 (val) {
+      this.timeValue = val
+    },
+    resetPicker2 () {
+     
+      this.show=false
+
+    },
     selectedChange(val){
         console.log('s事件++++++++++++++',val)
-    },
-    radioCalendaropen(){
-
     },
     getStarGps(){
       var that = this
@@ -231,6 +317,106 @@ export default {
         this.radioMonth = this.dateobj.radioDate[1]
         this.radioDay = this.dateobj.radioDate[2]
       },
+       rangeinit (thisdate) {
+        let start, end
+        this.dateobj.rangestart = thisdate.rangedate[0]
+        this.dateobj.rangeend = thisdate.rangedate[1]
+        start = this.dateobj.rangestart.split('/')
+        end = this.dateobj.rangeend.split('/')
+        this.rangestart = `${start[1]}月${start[2]}日`
+        this.rangeend = `${end[1]}月${end[2]}日`
+      },
+      // 双选默认选中日历。格式化日期格式，将开始和结束的日期格式化为‘年-月’
+      rangeinit2 (thisdate) {
+        let start, end
+        this.dateobj.rangestart2 = thisdate.rangedate2[0]
+        this.dateobj.rangeend2 = thisdate.rangedate2[1]
+        start = this.dateobj.rangestart2.split('/')
+        end = this.dateobj.rangeend2.split('/')
+        this.rangestart2 = `${start[1]}-${start[2]}`
+        this.rangeend2 = `${end[1]}-${end[2]}`
+      },
+      // 单选change事件，选择日期后触发。改变绑定的val值，关闭相应popup
+      selectedChange (e) {
+        this.radioDate = e
+        this.radioinit(e)
+        setTimeout(() => {
+          this.radioCalendar = false
+        }, 100)
+      },
+      // 双选默认不选日历。结束事件。改变绑定的val值，关闭相应popup
+      selectedEndHandler (e) {
+        this.rangeDate = e
+        this.dateobj.rangedate = e
+        setTimeout(() => {
+          this.rangeCalendar = false
+        }, 200)
+        this.calculationDays()
+        this.rangeinit(this.dateobj)
+      },
+    // 双选默认不选。选择范围错误
+      failedHandler (err) {
+        if (err === 1) {
+          ui.showToast({ title: '您选择的时间超过30天,请重新选择' })
+        }
+      },
+      // 双选默认选中日历。结束事件。改变绑定的val值，关闭相应popup
+      selectedEndHandler2 (e) {
+        this.rangeDate2 = e
+        this.defaultMonthrange = e
+        this.dateobj.rangedate2 = e
+        setTimeout(() => {
+          this.rangeCalendarDefault = false
+        }, 200)
+        this.calculationDays2()
+        this.rangeinit2(this.dateobj)
+      },
+      // 双选默认选中。选择范围错误
+      failedHandler2 (err) {
+        if (err === 1) {
+          ui.showToast({ title: '您选择的时间超过30天,请重新选择' })
+        }
+      },
+      // 将日期格式化成 "年/月/日" 格式
+      format (obj) {
+        var date = new Date(obj)
+        var y = 1900 + date.getYear()
+        var m = '0' + (date.getMonth() + 1)
+        var d = '0' + date.getDate()
+        return y + '/' + m.substring(m.length - 2, m.length) + '/' + d.substring(d.length - 2, d.length)
+      },
+      // 单选日历 打开事件
+      radioCalendaropen () {
+        this.show = true
+      },
+      // 双选默认不选中 日历打开事件
+      rangeCalendaropen (state) {
+        this.rangeCalendar = true
+      },
+
+      //双选默认选中 日历打开事件
+      rangeCalendarDefaultOpen () {
+        this.rangeCalendarDefault = true
+      },
+      // 关闭popup
+      handleSelect (key) {
+        this[key] = false
+      },
+      // 双选默认不选中，根据选择日期，计算几晚
+      calculationDays () {
+        let start, end
+        start = Date.parse(this.dateobj.rangedate[0])
+        end = Date.parse(this.dateobj.rangedate[1])
+        this.differ = Math.floor((end - start) / (24 * 3600 * 1000))
+        this.differShow = true
+      },
+      //双选默认选中。根据选择日期，计算几晚
+      calculationDays2 () {
+        let start, end
+        start = Date.parse(this.dateobj.rangedate2[0])
+        end = Date.parse(this.dateobj.rangedate2[1])
+        this.differ2 = Math.floor((end - start) / (24 * 3600 * 1000))
+      }
    
   
     
@@ -239,8 +425,16 @@ export default {
   },
   mounted() {
     
-    
+    //单选日期 获取当前日期，并格式化赋值给日历
+      let radiodate = new Date()
+      this.radioDate = this.format(Date.parse(radiodate))
 
+      //获取单选日历 获取月和天。
+      let date = new Date()
+      this.radioinit(this.format(date))
+
+      // 双选默认选中日历，获取默认选中时间范围【开始：当前日期。结束：当前日期推后2天】
+     
 
 
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
@@ -293,7 +487,7 @@ export default {
 .ui-row {
   height: 50px;
   line-height: 50px;
-  background-color: #fff;
+  // background-color: #fff;
   font-size: 14px;
 }
 
