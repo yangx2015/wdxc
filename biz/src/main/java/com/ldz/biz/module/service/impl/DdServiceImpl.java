@@ -129,6 +129,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	@Override
 	public ApiResponse<String> saveEntity(ClDd entity, SysYh user) {
 		String userId = user.getYhid();
+
+		RuntimeCheck.ifBlank(entity.getJgdm(), "请选择用车单位");
 		RuntimeCheck.ifFalse(entity.getJgdm().indexOf(user.getJgdm()) == 0, "您不能为非本机构员工创建订单");
 		SysJg org = jgService.findByOrgCode(entity.getJgdm());
 		RuntimeCheck.ifNull(org, "当前选择的用车单位有误，请核实！");
@@ -139,6 +141,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifNull(entity.getYysj(), "乘客预车时间不能为空");
 		RuntimeCheck.ifBlank(entity.getCk(), "乘客姓名不能为空");
 		RuntimeCheck.ifBlank(entity.getCklxdh(), "乘客联系电话不能为空");
+
+		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
+		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
+		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
+		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
+
+
 		String orderId = genId();
 		entity.setId(orderId);
 		entity.setCjr(userId);
