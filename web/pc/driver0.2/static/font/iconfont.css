@@ -26,11 +26,15 @@
 
 .icon-jianxianxing:before { content: "\e615"; }
 
+.icon-shouji:before { content: "\e64d"; }
+
 .icon-bus:before { content: "\e658"; }
 
 .icon-ditu1:before { content: "\e62b"; }
 
 .icon-jiantouarrow591:before { content: "\e686"; }
+
+.icon-yuandianzhong:before { content: "\e758"; }
 
 .icon-bus1:before { content: "\e604"; }
 
@@ -45,6 +49,8 @@
 .icon-left:before { content: "\e62d"; }
 
 .icon-gongjiaozhanpai:before { content: "\e602"; }
+
+.icon-head-g:before { content: "\e603"; }
 
 .icon-shijianshizhongdaojishi:before { content: "\e606"; }
 
