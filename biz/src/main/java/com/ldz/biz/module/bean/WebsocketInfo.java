@@ -38,4 +38,5 @@ public class WebsocketInfo {
 	private Long lxsc;
 
 	private String xlId;
+	private String stationNumber;
 }

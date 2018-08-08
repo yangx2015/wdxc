@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -307,8 +308,63 @@ public class ClDd implements Serializable {
      */
     @Column(name = "GQF")
     private Double gqf;
+//    lat<纬度>,lng<经度>
+//    origin
+//    destination
+    /**
+     * 起始纬度
+     */
+    @Column(name = "ORIGIN_LAT")
+    private BigDecimal originLat;
+    /**
+     * 起始经度
+     */
+    @Column(name = "ORIGIN_LNG")
+    private BigDecimal originLng;
+    /**
+     * 结束点经度
+     */
+    @Column(name = "DESTINATION_LAT")
+    private BigDecimal destinationLat;
+    /**
+     * 结束点纬度
+     */
+    @Column(name = "DESTINATION_LNG")
+    private BigDecimal destinationLng;
 
     private static final long serialVersionUID = 1L;
+
+    public BigDecimal getDestinationLat() {
+        return destinationLat;
+    }
+
+    public void setDestinationLat(BigDecimal destinationLat) {
+        this.destinationLat = destinationLat;
+    }
+
+    public BigDecimal getOriginLat() {
+        return originLat;
+    }
+
+    public void setOriginLat(BigDecimal originLat) {
+        this.originLat = originLat;
+    }
+
+    public BigDecimal getOriginLng() {
+        return originLng;
+    }
+
+    public void setOriginLng(BigDecimal originLng) {
+        this.originLng = originLng;
+    }
+
+    public BigDecimal getDestinationLng() {
+        return destinationLng;
+    }
+
+    public void setDestinationLng(BigDecimal destinationLng) {
+        this.destinationLng = destinationLng;
+    }
 
     public Double getGqf() {
         return gqf;

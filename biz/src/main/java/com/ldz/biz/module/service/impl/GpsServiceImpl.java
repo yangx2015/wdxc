@@ -10,16 +10,14 @@ import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
 import com.ldz.biz.module.model.*;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.GpsService;
-import com.ldz.biz.module.service.PbService;
-import com.ldz.biz.module.service.ZdglService;
+import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.YingyanResponse;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
@@ -64,6 +62,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     private ZdglService zdglservice;
     @Autowired
     private PbService pbService;
+    @Autowired
+    private ClyxjlService clyxjlService;
     @Autowired
     private SimpMessagingTemplate websocket;
 
@@ -144,6 +144,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
             newStatus = DeviceStatus.OFFLINE.getCode();
+        }else if ("10".equals(sczt)){
+            newStatus = DeviceStatus.IGNITION.getCode();
         }
         String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).get();
         if (StringUtils.isEmpty(gpsJson)){
@@ -163,6 +165,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
         }
 
+        ClCl car = null;
         if (statusChange || positionChange){
             ClGpsLs gpsls = new ClGpsLs(newGps);
             gpsls.setId(genId());
@@ -171,8 +174,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             // 更新存入redis(实时点位)
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
-            clXc(gpsInfo);
-            ClCl car = null;
             String xlId = "";
             List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
             if (carList.size() != 0){
@@ -187,9 +188,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
             sendWebsocket(websocketInfo);
-            saveEvent(newGps,gpsInfo,car,eventType);
-            saveClSbyxsjjl(gpsInfo, newGps, car);
+//            saveEvent(newGps,gpsInfo,car,eventType);
         }
+        clXc(gpsInfo);
+        saveClSbyxsjjl(gpsInfo, newGps, car);
     }
 
     /**
@@ -671,6 +673,18 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         info.setSjxm(seleByZdbh.getSjxm());
         info.setCx(seleByZdbh.getCx());
         info.setSjxm(seleByZdbh.getSjxm());
+        Date today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        SimpleCondition simpleCondition = new SimpleCondition(ClClyxjl.class);
+        simpleCondition.eq(ClClyxjl.InnerColumn.zdbh,gpsinfo.getDeviceId());
+        simpleCondition.gte(ClClyxjl.InnerColumn.cjsj,today);
+        List<ClClyxjl> clyxjls = clyxjlService.findByCondition(simpleCondition);
+        if (clyxjls.size() != 0){
+            ClClyxjl clyxjl = clyxjls.get(0);
+            info.setStationNumber(clyxjl.getZdbh());
+        }
         if (StringUtils.isNotEmpty(seleByZdbh.getObdCode())) {
             info.setObdId(seleByZdbh.getObdCode());
         }
@@ -892,17 +906,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
             if(preTime.plusMinutes(5).compareTo(nowTime) > 0 && !StringUtils.equals(type,"2")){ // 说明当前时间仍在行程中
                 if(StringUtils.equals(routeType,"2") || StringUtils.equals(routeType,"1")){
+
                     // 更新实时点位时间
                     startTime = times[1];
-                    //删除当前终端的开始结束
-                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );
+                   /* //删除当前终端的开始结束
+                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );*/
+
                 }
             }
         }
         // 更新标记
         redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
         // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime + "," +time ).set("1",5,TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh +","+ startTime ).set("1",5,TimeUnit.MINUTES);
+
+        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time);
 
 
 

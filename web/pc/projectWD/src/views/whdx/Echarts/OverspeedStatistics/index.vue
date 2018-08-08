@@ -15,9 +15,9 @@
 							<span>超速统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<!--<DatePicker v-model="form.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>-->
-							<!--<DatePicker v-model="form.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>-->
-							<Input v-model="form.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
+							<!--<DatePicker v-model="param.kssj" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>-->
+							<!--<DatePicker v-model="param.jssj" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>-->
+							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -113,7 +113,7 @@
 					}},
                 ],
                 pageData: [],
-                form: {
+                param: {
                     type:'cstj',
                     sjxmLike: '',
                     total: 0,
@@ -137,15 +137,15 @@
         },
         methods: {
             getData(){
-                let startTime = this.form.kssj;
-                let endTime = this.form.jssj;
+                let startTime = this.param.kssj;
+                let endTime = this.param.jssj;
                 if (typeof startTime === 'object'){
-                    this.form.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.kssj = startTime.format('yyyy-MM-dd hh:mm:ss');
                 }
                 if (typeof endTime === 'object'){
-                    this.form.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.jssj = endTime.format('yyyy-MM-dd hh:mm:ss');
                 }
-                this.$http.get(this.apis.AQJS.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.AQJS.QUERY,{params:this.param}).then((res) =>{
                     if (res.code == 200){
                         this.pageData = res.result;
                     }

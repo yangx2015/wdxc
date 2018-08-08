@@ -31,7 +31,7 @@
 				background: rgba(0,0,0,0.5);
 				padding: 3px 5px;
 				width: 100%;
-				
+
 			}
 		}
 		.inputTit{
@@ -66,10 +66,10 @@
 											style="width: 220px"></DatePicker>
 							</div>
 							<div class="body-r-1 inputSty">
-								<Input type="text" v-model="findMess.cphLike" placeholder="请输入车牌号"></Input>
+								<Input type="text" v-model="param.cphLike" placeholder="请输入车牌号"></Input>
 							</div>
 							<div class="body-r-1 inputSty">
-								<Input type="text" v-model="findMess.zdbhLike" placeholder="请输入终端编号"></Input>
+								<Input type="text" v-model="param.zdbhLike" placeholder="请输入终端编号"></Input>
 							</div>
 							<div class="butevent">
 								<Button type="primary" @click="findMessList()">
@@ -83,7 +83,7 @@
 			</div>
 			<div  v-show="videoList.length == 0" class="body" style="border: 1px solid #dddee1;position: relative">
 				<h1 style="color: #bdbdbd;position: absolute;top:40%;left: 50%;transform: translate(-50%,-50%)">
-					{{findMess.cphLike}}暂无图片
+					{{param.cphLike}}暂无图片
 				</h1>
 			</div>
 			<div v-if="videoList.length != 0" class="body" style="border: 1px solid #dddee1">
@@ -113,8 +113,8 @@
 			<div class="margin-top-10 pageSty" style="height: 60px;">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -145,7 +145,7 @@
 <script>
 
     import mixins from '@/mixins'
-    
+
 	export default{
 		name:'',
         mixins: [mixins],
@@ -167,7 +167,7 @@
                     pageSize:12
                 },
 				videoList:[],
-                findMess:{
+                param:{
                     cjsjInRange:'',
                     cphLike:'',
                     pageNum: 1,
@@ -214,13 +214,13 @@
 			},
 			getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                    this.param.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
                 }else{
-                    this.findMess.cjsjInRange = '';
+                    this.param.cjsjInRange = '';
                 }
 				var v = this
-                v.findMess.wjmEndwith = '.jpg';
-				this.$http.get(this.apis.CLOUD.QUERY,{params:v.findMess}).then((res) =>{
+                v.param.wjmEndwith = '.jpg';
+				this.$http.get(this.apis.CLOUD.QUERY,{params:v.param}).then((res) =>{
             	    v.pageTotal = res.page.total
 					for (let r of res.page.list){
 					    if (r.url){
@@ -245,7 +245,7 @@
 			},
             pageChange(event){
                 var v = this
-                v.findMess.pageNum = event
+                v.param.pageNum = event
                 this.getmess()
             },
 		}

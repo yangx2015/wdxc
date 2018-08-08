@@ -26,10 +26,10 @@
 			</Col>
 			<Col span="3">
 				<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-					<div v-show="form.ddzt === '30'">
+					<div v-show="param.ddzt === '30'">
 						应收单据：{{list.length}}单
 					</div>
-					<div v-show="form.ddzt === '40'">
+					<div v-show="param.ddzt === '40'">
 						已收单据：{{list.length}}单
 					</div>
 				</div>
@@ -37,8 +37,8 @@
 		    <Col span="24">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
 					<Cascader style="width:300px;float: left;margin-top: 16px;margin-left: 4px;padding-right: 10px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
-					<DatePicker v-model="form.startTime" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
-					<DatePicker v-model="form.endTime" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
+					<DatePicker v-model="param.startTime" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
+					<DatePicker v-model="param.endTime" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
 					<Button type="primary" @click="getData()">
 						<Icon type="search"></Icon>
 					</Button>
@@ -56,7 +56,7 @@
 			        	<span>
 			        		收款金额：{{item.amount}}元
 			        		<Button type="success" size="small" @click="print(item,index)">打印</Button>
-			        		<Button v-if="form.ddzt === '30'" type="primary" size="small" @click="confirm(index)">确认</Button>
+			        		<Button v-if="param.ddzt === '30'" type="primary" size="small" @click="confirm(index)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
@@ -64,7 +64,7 @@
 			        	<Table
 			        		border
 			        		ref="selection"
-			        		:columns="form.ddzt === '30' ? columns3 : columns4"
+			        		:columns="param.ddzt === '30' ? columns3 : columns4"
 			        		height="220"
 							@on-selection-change="(e)=>{tableSelectionChange(e,index)}"
 			        		:data="item.orderList"></Table>
@@ -214,7 +214,7 @@
                     },
                 ],
 				munName:'1',
-				form:{
+				param:{
 				    ddzt:'30',
 					ck:'',
                     jgmc:'',
@@ -248,7 +248,7 @@
                 })
             },
             change(vaule,selectedData){
-                this.form.jgdm=selectedData[selectedData.length-1].value
+                this.param.jgdm=selectedData[selectedData.length-1].value
                 this.treeValue = vaule;
             },
             tableSelectionChange(e,i){
@@ -256,15 +256,15 @@
             },
 		    getData(){
                 this.list = [];
-                let startTime = this.form.startTime;
-                let endTime = this.form.endTime;
+                let startTime = this.param.startTime;
+                let endTime = this.param.endTime;
                 if (typeof startTime === 'object'){
-                    this.form.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
                 }
                 if (typeof endTime === 'object'){
-                    this.form.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
                 }
-		      	this.$http.get(this.apis.ORDER.collectingList,{params:this.form}).then((res)=>{
+		      	this.$http.get(this.apis.ORDER.collectingList,{params:this.param}).then((res)=>{
 		      	    if (res.code === 200 && res.result){
 						this.list = res.result;
                         for (let r of this.list){
@@ -304,7 +304,7 @@
 			},
 			//选项卡的切换
 			MenuClick(event){
-                this.form.ddzt = (event === '1' ? '30' : '40');
+                this.param.ddzt = (event === '1' ? '30' : '40');
                 this.getData();
 			},
 			//卡片事件

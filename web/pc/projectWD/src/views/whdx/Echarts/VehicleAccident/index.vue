@@ -58,10 +58,10 @@
 							<span>事故管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.hdbtLike" placeholder="请输入事故名称" style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="param.hdbtLike" placeholder="请输入事故名称" style="width: 200px" @on-change="formList"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="findMessList()">
+							<Button type="primary" @click="formList()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
@@ -82,8 +82,8 @@
 			<Row class="margin-top-10 pageSty">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -117,17 +117,13 @@
             	//收索
                 datetime:[],
                 choosedRow:{},
-                findMess:{
+                param:{
                 	hdbtLike:'',
                 	pageNum:1,
             		pageSize:8
                 },
             	//弹层
             	pageTotal:1,
-            	page:{
-            		pageNum:1,
-            		pageSize:8
-            	},
             	showModal:false,
                 columns10: [
                 	{
@@ -280,17 +276,17 @@
         },
         methods:{
         	getmess(){
-        	    this.findMessList();
+        	    this.formList();
 			},
         	changeTime(val){
         	},
         	pageChange(event){
         		var v = this
         	},
-        	findMessList(){
+        	formList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(this.apis.ACCIDENT.QUERY,{params:this.findMess}).then((res) => {
+				this.$http.get(this.apis.ACCIDENT.QUERY,{params:this.param}).then((res) => {
 					 v.data9 = res.page.list
 					 v.pageTotal = res.page.total
 					 v.SpinShow = false;

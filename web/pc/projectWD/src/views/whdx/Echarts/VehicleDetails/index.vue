@@ -20,7 +20,7 @@
 							<span>年审提醒</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.cph" placeholder="请输入车牌号" style="width: 200px"></Input>
+							<Input v-model="param.cph" placeholder="请输入车牌号" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -56,7 +56,7 @@
                     {title: '年审时间', align: 'center',  key: 'nssj'},
                 ],
                 pageData: [],
-                form: {
+                param: {
                     cph: '',
                     total: 0,
                 },
@@ -70,7 +70,7 @@
         methods: {
             getData(){
                 this.pageData = [];
-                this.$http.get(this.apis.CLGL.nianshen,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.CLGL.nianshen,{params:this.param}).then((res) =>{
                     if (res.code == 200 && res.result){
                         this.pageData = res.result;
                     }

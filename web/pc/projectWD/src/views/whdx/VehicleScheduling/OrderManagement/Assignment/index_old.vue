@@ -30,7 +30,7 @@
                 </h2>
             </div>
             <div v-else class="tit" style="height: 55px">
-                <Input v-model="findmess" size="large" @on-change='findlistMess(findmess)'>
+                <Input v-model="param" size="large" @on-change='findlistMess(param)'>
                 <Button slot="prepend" type="warning" @click="titFindMesslist=!titFindMesslist">6单</Button>
                 <Button slot="append" type="primary" icon="ios-search"></Button>
                 </Input>
@@ -214,7 +214,7 @@
                         end:'汉口火车站'
                     }
                 ],
-                findmess:'',
+                param:'',
                 list:[
                     {
                         name:'张师傅',

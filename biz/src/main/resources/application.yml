@@ -60,3 +60,4 @@ resePwd: 111111
 
 apiurl: http://47.98.39.45:9095/api
 biz_url: http://47.98.39.45:8080
+distance: 100

@@ -17,8 +17,8 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 16px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
-							<Input v-model="findMess.ckLike" type="text" placeholder="输入乘客姓名查询" style="width: 220px"></Input>
-							<Input v-model="findMess.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>						</div>
+							<Input v-model="param.ckLike" type="text" placeholder="输入乘客姓名查询" style="width: 220px"></Input>
+							<Input v-model="param.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
 								<Icon type="search"></Icon>
@@ -38,8 +38,8 @@
 				<Row class="margin-top-10" style="text-align: right;">
 					<Page
 							:total=pageTotal
-							:current=page.pageNum
-							:page-size=page.pageSize
+							:current=param.pageNum
+							:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 							show-total
 							show-elevator show-sizer
 							@on-change='pageChange'></Page>
@@ -70,7 +70,7 @@
                 //收索
                 componentName:'',
                 datetime:[],
-                findMess:{
+                param:{
                     ckLike:'',
                     ddzt:'20',
                     pageNum:1,
@@ -189,7 +189,7 @@
                 })
             },
             change(vaule,selectedData){
-                this.findMess.jgdm=selectedData[selectedData.length-1].value
+                this.param.jgdm=selectedData[selectedData.length-1].value
                 this.treeValue = vaule;
             },
             changeTime(val){
@@ -197,7 +197,7 @@
             pageChange(event){
                 var v = this
                 v.page.pageNum = event
-                this.findMess.pageNum = event;
+                this.param.pageNum = event;
                 v.findMessList()
             },
 			confirm(id){
@@ -222,7 +222,7 @@
                 })
 			},
             findMessList(){
-                this.$http.get(this.apis.ORDER.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.ORDER.QUERY,{params:this.param}).then((res) =>{
                     if (res.code === 200 && res.page.list){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;

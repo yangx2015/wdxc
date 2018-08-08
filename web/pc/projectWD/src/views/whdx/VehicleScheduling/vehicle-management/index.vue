@@ -18,9 +18,9 @@
 							<span>车辆管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
-							<Input v-model="findMess.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
-							<Input v-model="findMess.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -34,17 +34,110 @@
 					</div>
 				</div>
 			</Row>
-			<Row>
-				<Table
-						:height="tabHeight"
-						:columns="tableTiT"
-						:data="tableData"
-				></Table>
+			<Row :gutter="20">
+				<Col span="6" v-for="(item,index) in tableData" :key="index" style="margin-top: 16px;">
+					<Card>
+						<p slot="title" style="font-size: 18px">
+							<Icon type="ios-car" size="24"/>
+							{{item.cph}}
+						</p>
+						<a href="#" slot="extra" @click.prevent="changeLimit">
+							<Tag color="cyan">{{getCx(item.cx)+item.zkl+'座'}}</Tag>
+						</a>
+						<Row>
+							<Col span="24">
+								<Row v-if="item.sjxm">
+									<Col span="2" style="padding-right: 45px;margin-top: -5px;">
+										<Icon type="md-person" size="28" color="#2d8cf0"/>
+									</Col>
+									<Col span="10">
+										<span>{{item.sjxm}}</span>
+									</Col>
+									<Col span="4" offset="6">
+										<Poptip
+												confirm
+												title="确认解除绑定?"
+												@on-ok="ok"
+												@on-cancel="cancel">
+											<Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
+										</Poptip>
+									</Col>
+								</Row>
+								<Row v-else-if="!item.sjxm">
+									<Col span="2" style="padding-right: 45px;margin-top: -5px;">
+										<Icon type="md-person" size="28" color="#2d8cf0"/>
+									</Col>
+									<Col span="10">
+										<span  v-if="!item.bindDrvFlag">暂未绑定</span>
+										<Select v-else-if="item.bindDrvFlag" style="width:150px" clearable @on-clear="()=>{item.bindDrvFlag=false}">
+											<Option value="10">11</Option>
+										</Select>
+									</Col>
+									<Col span="4" offset="6">
+										<Tooltip content="绑定司机" v-if="!item.bindDrvFlag">
+											<Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="()=>{item.bindDrvFlag=true}">绑定1</Button>
+										</Tooltip>
+										<Button v-else-if="item.bindDrvFlag" type="info" ghost >绑定2</Button>
+									</Col>
+								</Row>
+							</Col>
+						</Row>
+						<Row>
+							<Col span="24">
+								<Row>
+									<Col span="2" style="padding-right: 45px;margin-top: -5px;">
+										<Icon type="md-videocam" size="28" color="#2d8cf0"/>
+									</Col>
+									<Col span="10" ref="termRef">
+										<span v-if="!item.bindTremFlag">暂未绑定</span>
+										<Select v-else-if="item.bindTremFlag" style="width:150px" clearable @on-clear="()=>{item.bindTremFlag=false}">
+											<Option value="10">{{item.zdbh}}</Option>
+										</Select>
+									</Col>
+									<Col span="4" offset="6">
+										<Tooltip content="绑定设备" v-if="!item.bindTremFlag">
+											<Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost  @click="()=>{cellData.bindTremFlag=true}"></Button>
+										</Tooltip>
+										<Button v-else-if="item.bindTremFlag" type="info" ghost >绑定</Button>
+									</Col>
+								</Row>
+							</Col>
+						</Row>
+						<Row type="flex" justify="end" style="padding-top: 20px">
+							<Col span="22">
+								<ButtonGroup size="large">
+									<Tooltip content="编辑">
+										<Button  icon="ios-clipboard"></Button>
+									</Tooltip>
+									<Tooltip content="车辆档案">
+										<Button  icon="ios-bookmarks"></Button>
+									</Tooltip>
+									<Tooltip content="历史轨迹">
+										<Button  icon="md-map"></Button>
+									</Tooltip>
+									<Tooltip content="电子围栏">
+										<Button icon="ios-globe"></Button>
+									</Tooltip>
+									<Tooltip content="删除">
+										<Button icon="md-trash"></Button>
+									</Tooltip>
+								</ButtonGroup>
+							</Col>
+						</Row>
+					</Card>
+				</Col>
 			</Row>
+			<!--<Row>-->
+				<!--<Table-->
+						<!--:height="tabHeight"-->
+						<!--:columns="tableTiT"-->
+						<!--:data="tableData"-->
+				<!--&gt;</Table>-->
+			<!--</Row>-->
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
-					  :current=page.pageNum
-					  :page-size=page.pageSize
+					  :current=param.pageNum
+					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
 					  show-elevator show-sizer
 					  @on-change='pageChange'></Page>
@@ -93,282 +186,9 @@
             		pageNum:1,
             		pageSize:8
             	},
-                tableTiT: [
-					 // {
-                    //     title:'#',
-                    //     type: 'expand',
-                    //     width: 50,
-                    //     render: (h, params) => {
-                    //         return h(expandRow, {
-                    //             props: {
-                    //                 row: params.row
-                    //             }
-                    //         })
-                    //     }
-                    // },
-					{
-						title: "序号",
-						width: 80,
-						align: 'center',
-						type: 'index'
-					},
-                    {
-                        title: '车牌号',
-                        width:'100',
-                        align:'center',
-                        key: 'cph'
-                    },
-                    {
-                        title: '车型',
-                        align:'center',
-                        key: 'cx',
-                        render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this,this.cxDictCode,p.row.cx)
-                            return h('div',val)
-                        }
-                    },
-                    {
-                        title: '载客量',
-                        align:'center',
-                        width:80,
-                        key: 'zkl'
-                    },
-                    // {
-                    //     title: '创建人',
-                    //     width:160,
-                    //     align:'center',
-                    //     key: 'cjr'
-                    // },
-                    // {
-                    //     title: '创建时间',
-                    //     width:150,
-                    //     align:'center',
-                    //     key: 'cjsj'
-                    // },
-                    {
-                        title: '司机',
-                        align:'center',
-                        key: 'sjxm',
-                        render:(h,p)=>{
-                            if (!p.row.sjxm)return h('div','-');
-                            return h('div', [
-                                h('span',p.row.sjxm+"  "),
-                                h('Tooltip',
-                                    {props: {placement: 'top', content: '解绑',},style:{float:'right'}},
-                                    [
-                                        h('Button', {
-                                            props: {type: 'success', icon: 'code-working', shape: 'circle', size: 'small'},
-                                            style: {marginRight: '5px'},
-                                            on: {
-                                                click: () => {
-                                                    this.unbindDriver(p.row.clId);
-                                                }
-                                            }
-                                        }),
-                                    ]
-                                ),
-                            ]);
-                        }
-                    },
-                    {
-                        title: '车辆状态',
-                        width:90,
-                        align:'center',
-                        key: 'zt',
-                        render:(h,p)=>{
-                            let val = this.dictUtil.getValByCode(this,this.clztDictCode,p.row.zt)
-                            return h('div',{
-                                style: {
-                                    color: val=='正常' ?'#279a3b':'#ed3f14'
-                                }
-                            },val)
-                        }
-                    },
-                    {
-                        title: 'OBD编码',
-                        align:'center',
-                        key: 'obdCode'
-                    },
-                    {
-                        title: '终端编号',
-                        align:'center',
-                        key: 'zdbh',
-						render:(h,p)=>{
-                            if (!p.row.zdbh)return h('div','-');
-                            return h('div', [
-                                h('span',p.row.zdbh+"  "),
-                                h('Tooltip',
-                                    {props: {placement: 'top', content: '解绑',},style:{float:'right'}},
-                                    [
-                                        h('Button', {
-                                            props: {type: 'success', icon: 'code-working', shape: 'circle', size: 'small'},
-                                            style: {marginRight: '5px'},
-                                            on: {
-                                                click: () => {
-                                                    this.unbindDevice(p.row.clId);
-                                                }
-                                            }
-                                        }),
-                                    ]
-                                ),
-                            ]);
-						}
-                    },
-                    {
-                        title: '操作',
-                        key: 'action',
-                        width: 180,
-                        align: 'center',
-                        render: (h, params) => {
-                            return h('div', [
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '编辑车辆',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {
-                                            props: {
-                                                type: 'success',
-                                                icon: 'edit',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.messType = false
-                                                    this.mess = params.row
-                                                    //由于数据传递丢失 司机ID 司机 姓名 单独传递
-                                                    this.derMes.sjId = params.row.sjId
-                                                    this.derMes.sjxm = params.row.sjxm
-                                                    this.compName = newmes
-                                                }
-                                            }
-                                        }),
-                                    ]
-                                ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '车辆档案信息',
-                                        },
-                                    },
-									[
-                                        h('Button', {
-                                            props: {
-                                                type: 'primary',
-                                                icon: 'clipboard',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    // log('数据信息获取',params.row)
-                                                    this.mess = params.row
-                                                    // debugger
-                                                    this.compName = allmes
-                                                }
-                                            }
-                                        })
-									]
-                                ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '历史轨迹',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {//历史轨迹
-                                            props: {
-                                                type: 'warning',
-                                                icon: 'map',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.$router.push(
-                                                        {
-                                                            name: 'historyTarck_new',
-                                                            params:{zdbh:params.row.zdbh}
-                                                        }
-                                                    );
-                                                },
-                                            }
-                                        }),
-                                    ]
-                                ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '电子围栏',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {//电子围栏展示
-                                            props: {
-                                                type: 'primary',
-                                                icon: 'ios-world-outline',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            style: {
-                                                marginRight: '5px'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.compName = bkShow
-                                                    this.mess = params.row
-                                                }
-                                            }
-                                        }),
-                                    ]
-                                ),
-                                h('Tooltip',
-                                    {
-                                        props: {
-                                            placement: 'top',
-                                            content: '删除车辆',
-                                        },
-                                    },
-                                    [
-                                        h('Button', {// 删除
-                                            props: {
-                                                type: 'error',
-                                                icon: 'close',
-                                                shape: 'circle',
-                                                size: 'small'
-                                            },
-                                            on: {
-                                                click: () => {
-                                                    this.listDele(params.row)
-                                                }
-                                            }
-                                        })
-                                    ]
-                                ),
-                            ]);
-                        }
-                    }
-                ],
                 tableData: [],
                 //收索
-				findMess: {
+				param: {
                     cphLike: '',
 					pageNum: 1,
 					pageSize:8
@@ -386,22 +206,38 @@
             }]),
 			this.tabHeight = this.getWindowHeight() - 290
             this.SpinShow = false;
-            this.getmess()
+            this.getPageData()
 			this.getCxDict();
 			this.getClztDict();
         },
         methods: {
+	      ok(item){
+
+		  },
+	      cancel(item){
+
+		  },
+	      getCx(code){
+              let val = this.dictUtil.getValByCode(this,this.cxDictCode,code)
+			  return val;
+		  },
             getClztDict(){
                 this.clztDict = this.dictUtil.getByCode(this,this.clztDictCode);
             },
             getCxDict(){
                 this.cxDict = this.dictUtil.getByCode(this,this.cxDictCode);
             },
-        	getmess(){
+        	getPageData(){
 				var v = this
-				this.$http.get(this.apis.CLGL.QUERY,{params:v.findMess}).then((res) =>{
-					v.tableData = res.page.list
-					v.pageTotal = res.page.total
+				this.$http.get(this.apis.CLGL.QUERY,{params:v.param}).then((res) =>{
+				    if (res.code == 200 && res.page.list){
+                        v.tableData = res.page.list
+                        v.pageTotal = res.page.total
+						for (let r of v.tableData){
+						    r.bindDrvFlag = !!r.sjxm;
+						}
+					}
+
 					v.SpinShow = false;
 				})
 			},
@@ -415,7 +251,7 @@
                     if (willDelete) {
                         this.$http.post(this.apis.CLGL.unbindDevice,{carId:carId}).then((res)=>{
                             if (res.code === 200){
-                                this.getmess();
+                                this.getPageData();
                                 this.$Message.success("解绑成功");
                             }else{
                                 this.$Message.error(res.message);
@@ -434,7 +270,7 @@
                     if (willDelete) {
                         this.$http.post(this.apis.CLGL.unbindDriver,{carId:carId}).then((res)=>{
                             if (res.code === 200){
-                                this.getmess();
+                                this.getPageData();
                                 this.$Message.success("解绑成功");
                             }else{
                                 this.$Message.error(res.message);
@@ -450,16 +286,16 @@
 				v.compName = 'newmes'
 			},
         	findMessList(){
-                this.getmess()
+                this.getPageData()
         	},
         	listDele(id){
                 this.util.del(this,this.apis.CLGL.DELE,[id.clId],()=>{
-                    this.getmess()
+                    this.getPageData()
 				})
 			},
             pageChange(event){
-                this.findMess.pageNum = event
-                this.getmess()
+                this.param.pageNum = event
+                this.getPageData()
         	},
         }
     }
