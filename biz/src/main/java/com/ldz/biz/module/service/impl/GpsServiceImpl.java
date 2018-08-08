@@ -144,6 +144,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
             newStatus = DeviceStatus.OFFLINE.getCode();
+        }else if ("10".equals(sczt)){
+            newStatus = DeviceStatus.IGNITION.getCode();
         }
         String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).get();
         if (StringUtils.isEmpty(gpsJson)){
@@ -172,7 +174,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             // 更新存入redis(实时点位)
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
-            clXc(gpsInfo);
             String xlId = "";
             List<ClCl> carList = clService.findEq(ClCl.InnerColumn.zdbh,gpsInfo.getDeviceId());
             if (carList.size() != 0){
@@ -189,6 +190,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             sendWebsocket(websocketInfo);
 //            saveEvent(newGps,gpsInfo,car,eventType);
         }
+        clXc(gpsInfo);
         saveClSbyxsjjl(gpsInfo, newGps, car);
     }
 

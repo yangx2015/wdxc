@@ -171,7 +171,9 @@
 		},
         created(){
     	    var dae = new Date()
-            this.cjsjInRange = [dae,dae]
+			var date1 = new Date();
+    	    date1.setDate(date1.getDate() + 1);
+            this.cjsjInRange = [dae,date1]
 
         	this.$store.commit('setCurrentPath', [{
                 title: '首页',
