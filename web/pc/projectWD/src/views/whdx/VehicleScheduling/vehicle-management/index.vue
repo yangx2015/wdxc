@@ -68,16 +68,16 @@
 										<Icon type="md-person" size="28" color="#2d8cf0"/>
 									</Col>
 									<Col span="10">
-										<span  v-if="!item.bindDrvFlag">暂未绑定</span>
-										<Select v-else-if="item.bindDrvFlag" style="width:150px" clearable @on-clear="()=>{item.bindDrvFlag=false}">
+										<span  v-if="!cell.bindDrvFlag">暂未绑定</span>
+										<Select v-else-if="cell.bindDrvFlag" :ref="'driverSelect_'" style="width:150px" clearable @on-clear="()=>{cell.bindDrvFlag=false}">
 											<Option value="10">11</Option>
 										</Select>
 									</Col>
 									<Col span="4" offset="6">
-										<Tooltip content="绑定司机" v-if="!item.bindDrvFlag">
-											<Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="()=>{item.bindDrvFlag=true}">绑定1</Button>
+										<Tooltip content="绑定司机" v-if="!cell.bindDrvFlag">
+											<Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="()=>{cell.bindDrvFlag=true}">绑定1</Button>
 										</Tooltip>
-										<Button v-else-if="item.bindDrvFlag" type="info" ghost >绑定2</Button>
+										<Button v-else-if="cell.bindDrvFlag" type="info" ghost >绑定2</Button>
 									</Col>
 								</Row>
 							</Col>
@@ -171,6 +171,9 @@
             		sjId:'',
             		sjxm:''
             	},
+				cell:{
+                    bindDrvFlag:false
+				},
             	messType:true,
             	compName:'',
                 clztDict:[],
