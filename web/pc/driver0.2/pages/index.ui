@@ -26,20 +26,51 @@
             </ui-view>
             
           </ui-view>
-          <ui-tabs index="{{ tabCurrent }}" ink-bar
-            active-tab-style="{{activeTabStyle}}"
-            ink-bar-style="{{inkBarStyle}}"
-            bindchange="handleChange($event, 'tabCurrent')">
-              <ui-tab>待确认</ui-tab>
-              <ui-tab>历史订单</ui-tab>
-          </ui-tabs>
+          <ui-view class="tabsSty">
+            <ui-tabs index="{{ tabCurrent }}" ink-bar
+              active-tab-style="{{activeTabStyle}}"
+              ink-bar-style="{{inkBarStyle}}"
+              bindchange="handleChange($event, 'tabCurrent')">
+                <ui-tab>待确认</ui-tab>
+                <ui-tab>历史订单</ui-tab>
+            </ui-tabs>
+          </ui-view>
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
               <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
-                  <ui-swiper-item class="box_col_auto">
+                  <ui-swiper-item class="box_col_auto boxSty">
+                      <ui-view class="pagerList box_row">
+                          <ui-view class="titLog">
+                              <ui-view class="log">
+                                  tit
+                              </ui-view>
+                          </ui-view>
+                          <ui-view class="box_row_100 mess">
+                              <ui-view class="time">
+                                8月8日 12:00:00
+                                <ui-view style="float:right">
+                                  待出发
+                                </ui-view>
+                              </ui-view>
+                              <ui-view>
+                                <ui-icon type="webicon318" size="20" color="#40a02f"></ui-icon>
+                                出发地
+                              </ui-view>
+                              <ui-view>
+                                <ui-icon type="webicon318" size="20" color="#ff9b00"></ui-icon>
+                                目的地
+                              </ui-view>
+                          </ui-view>
+                          <ui-view class="rightIcon">
+                            <ui-icon type="right1" size="#f2f2f2" color="#adadad"></ui-icon>
+                          </ui-view>
+                      </ui-view>
+
+
+
                         <ui-button type= "primary" bindtap="goStarPage">出发地</ui-button>
                   </ui-swiper-item>
-                  <ui-swiper-item class="box_col_auto">
+                  <ui-swiper-item class="box_col_auto boxSty">
                         <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
                   </ui-swiper-item>
               </ui-swiper>
@@ -57,7 +88,7 @@ export default {
     navigationBarTextStyle:"white",
     navigationBarTitleText:"列表",
     title:'列表',
-    backgroundColor:'#fff',
+    backgroundColor:'#f2f2f2',
     delay:false,//延迟加载
   },
   data () {
@@ -147,6 +178,40 @@ export default {
       font-size: 40rpx;
       font-weight: 700;
       color: #ffa700;
+    }
+  }
+  .tabsSty{
+    background-color: #fff;
+  }
+  .boxSty{
+    padding: 20rpx 25rpx;
+    .pagerList{
+      background-color: #fff;
+      .titLog{
+        width: 180rpx;
+        height: 180rpx;
+        padding: 20rpx;
+        .log{
+          margin: auto;
+          width: 140rpx;
+          height: 140rpx;
+          background-color: #5e6dbd;
+          border-radius: 70rpx;
+          text-align: center;
+          line-height: 140rpx;
+        }
+      }
+      .mess{
+        padding: 20rpx 12rpx 0 12rpx;
+        .time{
+
+        }
+      }
+      .rightIcon{
+        line-height:180rpx;
+        text-align: center;
+        width: 60rpx;
+      }
     }
   }
 </style>

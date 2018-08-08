@@ -58,7 +58,7 @@
 							<span>活动管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.hdbtLike" placeholder="请输入活动名称" style="width: 200px" @on-change="findMessList"></Input>
+							<Input v-model="param.hdbtLike" placeholder="请输入活动名称" style="width: 200px" @on-change="findMessList"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -82,8 +82,8 @@
 			<Row class="margin-top-10 pageSty">
 				<Page
 						:total=pageTotal
-						:current=page.pageNum
-						:page-size=page.pageSize
+						:current=param.pageNum
+						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
 						show-elevator show-sizer
 						@on-change='pageChange'></Page>
@@ -117,7 +117,7 @@
             	//收索
                 datetime:[],
                 choosedRow:{},
-                findMess:{
+                param:{
                 	hdbtLike:'',
                 	pageNum:1,
             		pageSize:8
@@ -296,7 +296,7 @@
         	findMessList(){
         		var v = this
         		v.SpinShow = true;
-				this.$http.get(this.apis.ADVERTISING.QUERY,{params:this.findMess}).then((res) => {
+				this.$http.get(this.apis.ADVERTISING.QUERY,{params:this.param}).then((res) => {
 					 v.data9 = res.page.list
 					 v.pageTotal = res.page.total
 					 v.SpinShow = false;

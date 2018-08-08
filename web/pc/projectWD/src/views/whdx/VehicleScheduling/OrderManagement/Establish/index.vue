@@ -156,7 +156,7 @@
 </template>
 
 <script>
-	import swal from 'sweetalert'
+	import swal from 'sweetalert2'
 
     import addmessList from './comp/addmessList.vue'
     export default {

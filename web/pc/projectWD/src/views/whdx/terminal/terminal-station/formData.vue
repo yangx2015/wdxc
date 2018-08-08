@@ -7,20 +7,20 @@
 			<div style="overflow: auto;height:500px;">
 				<Form
 						ref="addmess"
-						:model="form"
+						:model="param"
 						:rules="ruleInline"
 						:label-width="100"
 						:styles="{top: '20px'}">
 					<Row>
 						<Col span="12">
 							<FormItem prop='zdbh' label='终端编号'>
-								<Input type="text" v-model="form.zdbh" placeholder="请填写终端编号..." :disabled="edit">
+								<Input type="text" v-model="param.zdbh" placeholder="请填写终端编号..." :disabled="edit">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop='mc' label='站牌名称'>
-								<Input type="text" v-model="form.mc" placeholder="请填写站牌名称...">
+								<Input type="text" v-model="param.mc" placeholder="请填写站牌名称...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -28,7 +28,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='型号:' placeholder="请选择站牌型号...">
-								<Select filterable clearable  v-model="form.xh">
+								<Select filterable clearable  v-model="param.xh">
 									<Option value="10">型号1</Option>
 									<Option value="20">型号2</Option>
 								</Select>
@@ -36,7 +36,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='厂商：'>
-								<Input type="text" v-model="form.cs" placeholder="请填写厂商信息...">
+								<Input type="text" v-model="param.cs" placeholder="请填写厂商信息...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -45,7 +45,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='地址:'>
-								<Input type="text" v-model="form.dz" placeholder="请填写地址..."></Input>
+								<Input type="text" v-model="param.dz" placeholder="请填写地址..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
@@ -77,7 +77,7 @@
 				showModal: true,
                 mesF:false,
 				edit:false,
-				form: {
+				param: {
                     zdbh:'',
 					mc: '',
 					xh: '',
@@ -110,11 +110,11 @@
             let userInfo = JSON.parse(userInfoJson);
             this.jgdm = userInfo.jgdm;
 			if (this.$parent.choosedRow){
-				this.form = this.$parent.choosedRow;
+				this.param = this.$parent.choosedRow;
 				this.operate = '编辑'
 				this.edit = true;
-				if (this.form.xlIds != ''){
-                    this.choosedXlIds = this.form.xlIds.split(",");
+				if (this.param.xlIds != ''){
+                    this.choosedXlIds = this.param.xlIds.split(",");
 				}
             }
             this.getXlList();
@@ -124,7 +124,7 @@
         },
 		methods: {
 		    getHasXlIds(){
-                this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.form.zdbh}}).then((res) =>{
+                this.$http.get(this.apis.ZNZP.getXlIds,{params:{zpId:this.param.zdbh}}).then((res) =>{
                     if(res.code===200 && res.result){
                         var v = this
 						this.choosedXlIds = res.result;
@@ -132,9 +132,9 @@
                 })
 			},
 		    getChoosedXlIds(){
-		      this.form.xlIds = '';
+		      this.param.xlIds = '';
 		      for(let r of this.choosedXlIds){
-		          this.form.xlIds += r+',';
+		          this.param.xlIds += r+',';
 			  }
 			},
 		    save(){
@@ -146,7 +146,7 @@
 						if (this.$parent.choosedRow){
 		                    url = this.apis.ZNZP.CHANGE;
 						}
-		                this.$http.post(url,this.form).then((res) =>{
+		                this.$http.post(url,this.param).then((res) =>{
 		                    if(res.code===200){
 		                        var v = this
 		                        v.$parent.componentName = ''

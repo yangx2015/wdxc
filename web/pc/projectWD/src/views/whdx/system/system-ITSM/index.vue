@@ -15,10 +15,10 @@
 							<span>服务管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="findMess.fwmcLike" placeholder="请输服务名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.fwmcLike" placeholder="请输服务名称" style="width: 200px" @on-keyup.enter="formList()"></Input>
 						</div>
 						<div class="butevent">
-							<Button type="primary" @click="findMessList()">
+							<Button type="primary" @click="formList()">
 								<Icon type="search"></Icon>
 								<!--查询-->
 							</Button>
@@ -33,7 +33,7 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="tableData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component
@@ -65,10 +65,6 @@
 				userMesType:true,
 				//分页
 				pageTotal: 1,
-				page: {
-					pageNum: 1,
-					pageSize:8
-				},
 				//弹层
 				showModal: false,
 				chmess:{},
@@ -185,7 +181,7 @@
 				tableData: [],
 				//收索
 //				cjsjInRange: [],
-				findMess: {
+				param: {
 //					cjsjInRange:[],
 					fwmcLike:'',
 					pageNum: 1,
@@ -197,7 +193,7 @@
 		},
 //		watch: {
 //			cjsjInRange:function(newQuestion, oldQuestion){
-//				this.findMess.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+//				this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 //			},
 //		},
 		created() {
@@ -239,10 +235,10 @@
 				var v = this
 				v.page.pageNum = event
 			},
-			findMessList() {
+			formList() {
 				var v = this
 				v.SpinShow = true;
-				this.$http.get(this.apis.ITMS.QUERY,{params:v.findMess}).then((res) =>{
+				this.$http.get(this.apis.ITMS.QUERY,{params:v.param}).then((res) =>{
 					//log(res)
 					v.tableData = res.page.list
 					v.SpinShow = false;

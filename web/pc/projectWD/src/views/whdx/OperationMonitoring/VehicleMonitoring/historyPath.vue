@@ -11,13 +11,13 @@
 					<h2>{{car.cph}}</h2>
 				</Col>
 				<Col span="3">
-					<DatePicker v-model="formItem.startTime" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
+					<DatePicker v-model="param.startTime" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
 				</Col>
 				<Col span="3">
-					<DatePicker v-model="formItem.endTime" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
+					<DatePicker v-model="param.endTime" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
 				</Col>
 				<Col span="3">
-					<Button type="primary" @click="formItemList()">
+					<Button type="primary" @click="formList()">
 						<Icon type="search"></Icon>
 					</Button>
 				</Col>
@@ -38,7 +38,7 @@
 				</Col>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 	</div>
@@ -156,7 +156,7 @@
 				],
 				//收索
 				cjsjInRange:[],
-				formItem: {
+				param: {
                     startTime:'',
                     endTime: '',
                     zdbh: 1,
@@ -169,7 +169,7 @@
 		},
 		// watch: {
 		// 	cjsjInRange:function(newQuestion, oldQuestion){
-		// 		this.formItem.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
+		// 		this.param.cjsjInRange = this.getdateParaD(newQuestion[0]) + ',' + this.getdateParaD(newQuestion[1])
 		// 	},
 		// },
 		created() {
@@ -178,12 +178,12 @@
 			}, {
 				title: '车辆历史轨迹',
 			}])
-			this.formItem.zdbh = this.$route.params.zdbh;
+			this.param.zdbh = this.$route.params.zdbh;
             //
-            this.formItem.startTime = this.getTodayDate() + " 00:00:00";
-            this.formItem.endTime = this.getTodayDate() + " 23:59:59";
+            this.param.startTime = this.getTodayDate() + " 00:00:00";
+            this.param.endTime = this.getTodayDate() + " 23:59:59";
             this.getCarInfo();
-			this.formItemList();
+			this.formList();
 		},
 		methods: {
             dateFormat(longTypeDate){
@@ -220,17 +220,17 @@
 			},
 			getCarInfo(){
                 var v = this
-                this.$http.get(this.apis.CLGL.QUERY+'?zdbh='+this.formItem.zdbh).then((res) =>{
+                this.$http.get(this.apis.CLGL.QUERY+'?zdbh='+this.param.zdbh).then((res) =>{
                     if (res.code === 200 && res.page.list.length > 0){
                         this.car = res.page.list[0];
                         log(res);
                     }
                 })
 			},
-            formItemList(){
+            formList(){
                 var v = this
-				let startTime = this.formItem.startTime;
-				let endTime = this.formItem.endTime;
+				let startTime = this.param.startTime;
+				let endTime = this.param.endTime;
                 if (typeof startTime === 'object'){
                     startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
                 }
@@ -240,9 +240,9 @@
                 let p = {
                     startTime:startTime,
                     endTime : endTime,
-                    zdbh: this.formItem.zdbh,
-                    ignition: this.formItem.ignition,
-                    brennschluss:this.formItem.brennschluss
+                    zdbh: this.param.zdbh,
+                    ignition: this.param.ignition,
+                    brennschluss:this.param.brennschluss
 				}
                 this.$http.post(this.apis.CLGL.GPS_HITSOR,p).then((res) =>{
                     if (res.code === 200 && res.result){
@@ -276,7 +276,7 @@
 			//分页点击事件按
 			pageChange(event) {
 				var v = this
-				v.formItem.pageNum = event
+				v.param.pageNum = event
 			}
 		}
 	}

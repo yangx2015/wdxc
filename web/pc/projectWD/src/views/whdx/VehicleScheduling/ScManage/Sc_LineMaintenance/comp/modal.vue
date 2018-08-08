@@ -16,20 +16,20 @@
 		    <div>
 		    	<Form
     			ref="addmess"
-    			:model="form"
+    			:model="param"
     			:rules="ruleInline"
     			:label-width="0"
     			:styles="{top: '20px'}">
 			    	<Row :gutter='30' style="margin-bottom: 15px;">
 			    		<Col span="6">
 			    			<FormItem prop="xlmc">
-				    			<Input v-model="form.xlmc" placeholder="请输入线路名称...">
+				    			<Input v-model="param.xlmc" placeholder="请输入线路名称...">
 				    			</Input>
 			    			</FormItem>
 			    		</Col>
 			    		<Col span="3">
 			    			<FormItem prop="zt">
-				    			<Select filterable clearable  v-model="form.zt">
+				    			<Select filterable clearable  v-model="param.zt">
 							        <Option value="00">正常</Option>
 							        <Option value="10">停用</Option>
 							    </Select>
@@ -37,7 +37,7 @@
 			    		</Col>
 			    		<Col span="3">
 			    			<FormItem prop="yxfs">
-				    			<Select filterable clearable  v-model="form.yxfs">
+				    			<Select filterable clearable  v-model="param.yxfs">
 							        <Option value="10">上行</Option>
 							        <Option value="20">下行</Option>
 							    </Select>
@@ -45,12 +45,12 @@
 			    		</Col>
 						<Col span="5">
 							<FormItem>
-								<Input type="text" v-model="form.yxkssj" placeholder="开始时间..."></Input>
+								<Input type="text" v-model="param.yxkssj" placeholder="开始时间..."></Input>
 							</FormItem>
 						</COl>
 						<Col span="5">
 							<FormItem>
-								<Input type="text" v-model="form.yxjssj" placeholder="结束时间..."></Input>
+								<Input type="text" v-model="param.yxjssj" placeholder="结束时间..."></Input>
 							</FormItem>
 						</COl>
 					</Row>
@@ -98,7 +98,7 @@
 				tit:'新增',
                 stationId:0,
 				choosedStations:[],
-				form:{
+				param:{
 				    id:'',
                     xlmc:'',
                     zt:'00',
@@ -135,23 +135,24 @@
 				this.tit = '新增'
 			}else{
 				this.tit = '编辑'
-				this.form = this.$parent.currentRow;
+				this.param = this.$parent.currentRow;
 			}
 			this.getAllStation();
 		},
 		methods:{
 		    getStations(){
-                this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID+'?xlId='+this.form.id).then((res) =>{
+                this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID+'?xlId='+this.param.id).then((res) =>{
                     if(res.code === 200){
+                        let i = 0;
                         for (let r of res.result){
-                            this.addByStationId(r.id);
+                            this.addByStationId(r.id,i++);
 						}
                     }
                 })
 			},
-			addByStationId(stationId){
+			addByStationId(stationId,i){
 				var v = this
-                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId)});
+                this.choosedStations.push({id:stationId,name:this.getStationNameById(stationId),index:i});
                 for(var i = 0 ; i<this.stationList.length ; i++){
                 	if(v.stationList[i].id == stationId){
                 		v.stationList[i].disabled = true
@@ -189,14 +190,14 @@
 		                for(let r of this.choosedStations){
 		                    zdIds += r.id+",";
 						}
-		                this.form.zdIds = zdIds;
-                        delete this.form.startStation
-                        delete this.form.endStation
+		                this.param.zdIds = zdIds;
+                        delete this.param.startStation
+                        delete this.param.endStation
 		                let url = this.apis.XL.ADD;
 		                if (this.$parent.currentRow){
 		                    url = this.apis.XL.CHANGE;
 		                }
-                        this.$http.post(url,this.form).then((res) =>{
+                        this.$http.post(url,this.param).then((res) =>{
 		                    if(res.code===200){
 		                        var v = this
 		                        v.$parent.compName = ''

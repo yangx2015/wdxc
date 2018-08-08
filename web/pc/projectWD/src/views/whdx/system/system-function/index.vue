@@ -15,7 +15,7 @@
                             <span>功能管理</span>
                         </div>
                         <div class="body-r-1 inputSty">
-                            <Input v-model="form.gnmcLike" placeholder="请输入功能名称" style="width: 200px"></Input>
+                            <Input v-model="param.gnmcLike" placeholder="请输入功能名称" style="width: 200px"></Input>
                         </div>
                         <div class="butevent">
                             <Button type="primary" @click="v.util.getPageData(v)">
@@ -32,7 +32,7 @@
                 <Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="pageData"></Table>
             </Row>
             <Row class="margin-top-10 pageSty">
-                <Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator show-sizer
+                <Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer
                       @on-change='pageChange'></Page>
             </Row>
         </Card>
@@ -173,7 +173,7 @@
                     }
                 ],
                 pageData: [],
-                form: {
+                param: {
                     gnmcLike: '',
                     total: 0,
                     pageNum: 1,

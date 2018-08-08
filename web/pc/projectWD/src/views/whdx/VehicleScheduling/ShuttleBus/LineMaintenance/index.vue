@@ -16,7 +16,7 @@
 						</div>
 						<div class="body-r-1 inputSty">
 							<!--<DatePicker v-model="cjsjInRange" format="yyyy-MM-dd" type="daterange" placement="bottom-end" placeholder="请输时间" @on-keyup.enter="findMessList()" style="width: 220px"></DatePicker>-->
-							<Input v-model="findMess.xlmcLike" placeholder="请输入线路名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
+							<Input v-model="param.xlmcLike" placeholder="请输入线路名称" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
@@ -34,7 +34,7 @@
 				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns10" :data="data9"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component :is="compName"></component>
@@ -192,7 +192,7 @@
 				}],
 				//收索
 				cjsjInRange:[],
-				findMess: {
+				param: {
 					cjsjInRange:'',
                     xlmcLike: '',
 					pageNum: 1,
@@ -219,11 +219,11 @@
 		methods: {
             getmess(){
                 if (this.cjsjInRange.length != 0 && this.cjsjInRange[0] != '' && this.cjsjInRange[1] != ''){
-                    this.findMess.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
+                    this.param.cjsjInRange = this.getdateParaD(this.cjsjInRange[0])+","+this.getdateParaD(this.cjsjInRange[1]);
                 }else{
-                    this.findMess.cjsjInRange = '';
+                    this.param.cjsjInRange = '';
                 }
-                this.$http.get(this.apis.XL.QUERY,{params:this.findMess}).then((res) =>{
+                this.$http.get(this.apis.XL.QUERY,{params:this.param}).then((res) =>{
                     if(res.code===200){
                         this.data9 = res.page.list;
                         this.pageTotal = res.page.total;
@@ -247,7 +247,7 @@
 			},
 			pageChange(event) {
 				var v = this
-				this.findMess.pageNum = event;
+				this.param.pageNum = event;
 				this.getmess();
 			}
 		}

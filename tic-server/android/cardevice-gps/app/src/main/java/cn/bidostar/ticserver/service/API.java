@@ -314,14 +314,15 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             String error = intent.getStringExtra("error");
             long takeId = intent.getLongExtra("id", 0);
             if(filename!=null && filename.contains("lock")) {//如果再lock目录，则是碰撞的直接上传
-                LocalFilesModel localFilesModel = new LocalFilesModel();
+              /*  LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);
                 localFilesModel.setFlagUpload("0");
                 localFilesModel.setJltype("2");
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
                 dao.insertModel(localFilesModel);
-                ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);//这是碰撞索引，直接上传
+                ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);*/
+            	//这是碰撞索引，直接上传
             }else{
                 LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);

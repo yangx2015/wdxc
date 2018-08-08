@@ -15,8 +15,8 @@
 							<span>订单统计</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<DatePicker v-model="form.kssj" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
-							<DatePicker v-model="form.jssj" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
+							<DatePicker v-model="param.kssj" :options="dateOpts" type="date" placeholder="请输入开始时间" ></DatePicker>
+							<DatePicker v-model="param.jssj" :options="dateOpts" type="date"  placeholder="请输入结束时间"  ></DatePicker>
 							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 10px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 						</div>
 						<div class="butevent">
@@ -136,7 +136,7 @@
                     }
                 ],
                 pageData: [],
-                form: {
+                param: {
                     sjxmLike: '',
                     total: 0,
                     jgdm:'',
@@ -146,8 +146,8 @@
             }
         },
         created() {
-            this.form.kssj  = this.getTodayDate();
-            this.form.jssj  = this.getTodayDate();
+            this.param.kssj  = this.getTodayDate();
+            this.param.jssj  = this.getTodayDate();
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '数据报表',}, {title: '安全驾驶',}])
             this.tabHeight = this.getWindowHeight() - 295
             this.getData()
@@ -160,7 +160,7 @@
                 })
             },
             change(vaule,selectedData){
-                this.form.jgdm=selectedData[selectedData.length-1].value
+                this.param.jgdm=selectedData[selectedData.length-1].value
                 this.treeValue = vaule;
             },
             getTodayDate(){
@@ -168,15 +168,15 @@
                 return now.format("yyyy-MM-dd");
             },
             getData(){
-                let startTime = this.form.kssj;
-                let endTime = this.form.jssj;
+                let startTime = this.param.kssj;
+                let endTime = this.param.jssj;
                 if (typeof startTime === 'object'){
-                    this.form.kssj = startTime.format('yyyy-MM-dd');
+                    this.param.kssj = startTime.format('yyyy-MM-dd');
                 }
                 if (typeof endTime === 'object'){
-                    this.form.jssj = endTime.format('yyyy-MM-dd');
+                    this.param.jssj = endTime.format('yyyy-MM-dd');
                 }
-                this.$http.post(this.apis.ORDER.TJ,this.form).then((res) =>{
+                this.$http.post(this.apis.ORDER.TJ,this.param).then((res) =>{
                     if (res.code == 200){
                         this.pageData = res.result;
                     }

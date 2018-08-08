@@ -61,24 +61,5 @@ public class HdServiceImpl extends BaseServiceImpl<SysHdyx,String> implements Hd
             }
         }
         return list;
-//        if (list.size() == 0)return list;
-//        List<String> hdIds = list.stream().map(SysHdyx::getHdId).collect(Collectors.toList());
-//        SimpleCondition condition = new SimpleCondition(SysYxhdwj.class);
-//        condition.in(SysYxhdwj.InnerColumn.hdId,hdIds);
-//        List<SysYxhdwj> files = yxhdwjMapper.selectByExample(condition);
-//        if (files.size() == 0)return list;
-//        Map<String,SysHdyx> hdMap = list.stream().collect(Collectors.toMap(SysHdyx::getHdId,p->p));
-//        for (SysYxhdwj file : files) {
-//            String hdId = file.getHdId();
-//            if (StringUtils.isEmpty(hdId))continue;
-//            SysHdyx hd = hdMap.get(hdId);
-//            if (hd == null)continue;
-//            if (StringUtils.isEmpty(hd.getFilePaths())){
-//                hd.setFilePaths(file.getWjlj()+",");
-//            }else{
-//                hd.setFilePaths(hd.getFilePaths() + file.getWjlj()+",");
-//            }
-//        }
-//        return
     }
 }

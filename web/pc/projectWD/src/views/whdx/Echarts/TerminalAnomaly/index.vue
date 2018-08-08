@@ -15,7 +15,7 @@
 							<span>终端异常</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px"></Input>
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
@@ -82,7 +82,7 @@
                     },
                 ],
                 pageData: [],
-                form: {
+                param: {
                     cphLike: '',
                     total: 0,
                     pageNum: 1,
@@ -115,7 +115,7 @@
             },
             getData(){
                 this.pageData = [];
-                this.$http.get(this.apis.CLJK.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.CLJK.QUERY,{params:this.param}).then((res) =>{
                     if (res.code == 200){
                         for (let r of res.result){
                             if (r.zxzt == '20'){

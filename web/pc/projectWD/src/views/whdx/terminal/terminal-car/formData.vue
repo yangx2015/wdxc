@@ -8,7 +8,7 @@
 			title="新建终端设备">
 			<div style="overflow: auto;height: 300px;">
 				<Form
-					:model="form"
+					:model="param"
 					:rules="ruleInline"
 					ref="addmess"
 					:label-width="100"
@@ -16,13 +16,13 @@
 					<Row>
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号'>
-								<Input :readonly="dataRead" type="text" v-model="form.zdbh" placeholder="请填写终端编号...">
+								<Input :readonly="dataRead" type="text" v-model="param.zdbh" placeholder="请填写终端编号...">
 								</Input>
 							</FormItem>
 						</Col>
 						<Col span="12">
 							<FormItem prop="mc"  label='设备名称:'>
-								<Input :readonly="dataRead" type="text" v-model="form.mc" placeholder="请填终端名称...">
+								<Input :readonly="dataRead" type="text" v-model="param.mc" placeholder="请填终端名称...">
 								</Input>
 							</FormItem>
 						</Col>
@@ -30,7 +30,7 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='设备状态:' >
-								<Select filterable :readonly="dataRead" filterable clearable  v-model="form.zt">
+								<Select filterable :readonly="dataRead" filterable clearable  v-model="param.zt">
 									<Option v-for="item in ztDictionary" :value="item.key">{{item.val}}</Option>
 								</Select>
 							</FormItem>
@@ -39,12 +39,12 @@
 					<Row>
 						<Col span="12">
 							<FormItem label='型号:'>
-								<Input :readonly="dataRead" type="text" v-model="form.xh" placeholder="请输入设备型号..."></Input>
+								<Input :readonly="dataRead" type="text" v-model="param.xh" placeholder="请输入设备型号..."></Input>
 							</FormItem>
 						</Col>
 						<Col span="12" v-show="dataRead">
 							<FormItem label='接口地址:'>
-								<Input type="text" v-model="form.cmd" placeholder="设备终端接口地址..."></Input>
+								<Input type="text" v-model="param.cmd" placeholder="设备终端接口地址..."></Input>
 							</FormItem>
 						</Col>
 					</Row>
@@ -73,7 +73,7 @@
 				dataRead:false,
 				showModal: true,
                 mesF:false,
-				form: {
+				param: {
                     zdbh:'',//终端编号
 					mc: '',//名称
                     cs: '',//厂商
@@ -110,9 +110,9 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
                     	let url = this.apis.ZDGL.ADD;
-						delete this.form.cl;
-						delete this.form.cph;
-		                this.$http.post(url,this.form).then((res) =>{
+						delete this.param.cl;
+						delete this.param.cph;
+		                this.$http.post(url,this.param).then((res) =>{
 		                	if(res.code==200){
 		                		v.$Message.success(res.message);
 								v.close()
@@ -147,7 +147,7 @@
 		    	var v = this
                 this.$refs[name].validate((valid) => {
                     if (valid) {
-                    	v.$http.post(this.apis.SBZDDZ.ADD,{'deviceId':this.form.zdbh,'cmdType':91,'cmd':this.form.cmd}).then((res) =>{
+                    	v.$http.post(this.apis.SBZDDZ.ADD,{'deviceId':this.param.zdbh,'cmdType':91,'cmd':this.param.cmd}).then((res) =>{
                     		v.$Message.success(res.message);
 		                    v.$parent.getPageData()
 		                    v.close()

@@ -10,7 +10,7 @@
         	<Table highlight-row :height="tableHeight" :columns="tableColumns" :data="pageData" @on-selection-change="selectionClick"></Table>
         </Row>
         <Row class="margin-top-10 pageSty">
-            <Page :total=form.total :current=form.pageNum :page-size=form.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+            <Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
         </Row>
         <component :is="componentName"></component>
 	</div>
@@ -44,7 +44,7 @@
                     {title:'备注',key:'bz'},
                 ],
                 pageData: [],
-                form: {
+                param: {
                     total: 0,
                     pageNum: 1,
                     pageSize: 8,

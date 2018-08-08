@@ -21,7 +21,7 @@
 		    </Col>
 		    <Col span="6">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<Input  v-model="form.sjxm" placeholder="请输入司机姓名搜索" style="width: 100%;" @input="getData"></Input>
+		    		<Input  v-model="param.sjxm" placeholder="请输入司机姓名搜索" style="width: 100%;" @input="getData"></Input>
 		    	</div>
 		    </Col>
 		    <Col span="9">
@@ -31,10 +31,10 @@
 		    </Col>
 		    <Col span="3">
 		    	<div style="height: 60px;line-height: 60px;background-color: #fff;border-bottom: 1px solid #dddee1;padding: 0 15px;">
-		    		<div v-show="form.fkzt === '00'">
+		    		<div v-show="param.fkzt === '00'">
 						应付单据：{{list.length}}单
 		    		</div>
-		    		<div v-show="form.fkzt === '10'">
+		    		<div v-show="param.fkzt === '10'">
 						已付单据：{{list.length}}单
 		    		</div>
 		    	</div>
@@ -51,7 +51,7 @@
 			        	<span>
 			        		收款金额：{{item.amount}}元
 			        		<Button type="success" size="small" @click="print(item,index)">打印</Button>
-			        		<Button v-if="form.fkzt === '00'" type="primary" size="small" @click="confirm(index)">确认</Button>
+			        		<Button v-if="param.fkzt === '00'" type="primary" size="small" @click="confirm(index)">确认</Button>
 			        	</span>
 			        </span>
 			        <!--信息-->
@@ -59,7 +59,7 @@
 			        	<Table
 			        		border
 			        		ref="selection"
-			        		:columns="form.fkzt === '00' ? columns3 : columns4"
+			        		:columns="param.fkzt === '00' ? columns3 : columns4"
 			        		height="220"
 			        		:data="item.orderList"
 							@on-selection-change="(e)=>{tableSelectionChange(e,index)}"
@@ -193,7 +193,7 @@
                     },
                 ],
 				munName:'1',
-				form:{
+				param:{
 				    fkzt:'00',
 					ck:'',
 					sjxm:'',
@@ -221,15 +221,15 @@
             },
 		    getData(){
                 this.list = [];
-                let startTime = this.form.startTime;
-                let endTime = this.form.endTime;
+                let startTime = this.param.startTime;
+                let endTime = this.param.endTime;
                 if (typeof startTime === 'object'){
-                    this.form.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.startTime = startTime.format('yyyy-MM-dd hh:mm:ss');
                 }
                 if (typeof endTime === 'object'){
-                    this.form.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
+                    this.param.endTime = endTime.format('yyyy-MM-dd hh:mm:ss');
                 }
-		      	this.$http.get(this.apis.ORDER.paymentList,{params:this.form}).then((res)=>{
+		      	this.$http.get(this.apis.ORDER.paymentList,{params:this.param}).then((res)=>{
 		      	    if (res.code === 200 && res.result){
 						this.list = res.result;
 						for (let r of this.list){
@@ -269,7 +269,7 @@
 			},
 			//选项卡的切换
 			MenuClick(event){
-                this.form.fkzt = (event === '1' ? '00' : '10');
+                this.param.fkzt = (event === '1' ? '00' : '10');
                 this.getData();
 			},
 			//卡片事件

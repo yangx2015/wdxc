@@ -16,9 +16,20 @@
 							<span>设备终端</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Input v-model="form.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
-							<Input v-model="form.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
-							<Input v-model="form.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.mcLike" placeholder="请输入终端名称" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Input v-model="param.versionLike" placeholder="请输入版本号" style="width: 200px" @on-keyup.enter="getPageData()"></Input>
+							<Select v-model="param.zxzt"
+									@on-change = 'getPageData'
+									clearable
+									placeholder="请选择在线状态"
+									filterable style="width: 160px;">
+								<Option v-for="(item,index) in Dictionary"
+										:value="item.key"
+										style="text-align: left;"
+										:key="index">{{item.val}}</Option>
+							</Select>
 						</div>
 						<div class="butevent">
 							<Tooltip content="查询" placement="top">
@@ -55,7 +66,7 @@
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=page.pageNum :page-size=page.pageSize show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component
@@ -334,7 +345,7 @@
                 cityList: [
                 ],
                 //收索
-                form:{
+                param:{
                     mcLike:'',
                     pageNum:1,
                     pageSize:8
@@ -368,7 +379,7 @@
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
             },
             getPageData(){
-                this.$http.get(this.apis.ZDGL.QUERY,{params:this.form}).then((res) =>{
+                this.$http.get(this.apis.ZDGL.QUERY,{params:this.param}).then((res) =>{
                     this.SpinShow = false;
                     if(res.code===200){
                         this.tableData = res.page.list;
@@ -378,7 +389,7 @@
                 })
             },
             pageChange(e){
-                this.form.pageNum = e;
+                this.param.pageNum = e;
                 this.getPageData();
             },
             //新增数据
@@ -388,28 +399,10 @@
             },
             //删除数据
             listDele(r){
-                var v = this
-                swal({
-                    title: "是删除数据?",
-                    text: "",
-                    icon: "warning",
-                    buttons:['取消','确认'],
-                })
-                    .then((willDelete) => {
-                        if (willDelete) {
-                            v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
-                                if(res.code===200){
-                                    this.$Message.success('操作成功');
-                                }
-                                v.getPageData()
-                            })
-                        } else {
-                            this.$Message.error('操作失败');
-                        }
-                    })
+                this.util.del(this,this.apis.ZDGL.DELE,[r.zdbh])
             },
             pageChange(event){
-                this.form.pageNum = event;
+                this.param.pageNum = event;
                 this.getPageData();
             }
         }
