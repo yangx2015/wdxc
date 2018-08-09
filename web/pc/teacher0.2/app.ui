@@ -247,9 +247,18 @@ export default {
     <ui-slide-menu width="280" threshold="30" touch="{{ pageConfig.touchSlideMenu }}" ui:model="showSlideMenu">
 
     <ui-view slot="menu" class="menu">
-      <ui-text block style="margin:10px">
-        侧滑菜单
-      </ui-text>
+       <!-- 侧滑菜单 -->
+      <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
+        <ui-view class="box_col_auto">
+          <ui-row style="margin:30px 0 30px 0">
+          <ui-image src="static/img/teacher/logo.png" ></ui-image>
+          </ui-row>
+        </ui-view>
+        <ui-view>
+          <ui-button class="login">退出登录</ui-button>
+        </ui-view>
+      </ui-view>
+       
     </ui-view>
 
     <ui-view slot="panel">
@@ -261,7 +270,7 @@ export default {
         <ui-row>
           <ui-col width="60">
             <span class="back" bindtap="handleNavIconTap">
-              <ui-icon type="yijianfankui" color="#2B333B" size="16"></ui-icon>
+              <ui-icon type="wo" color="#fff" size="16"></ui-icon>
             </span>
           </ui-col>
           <ui-col align="center" content-direction="row" class="nav-bar-center">
@@ -378,7 +387,23 @@ body {
 #ui-app{
   .ui-slideout-menu{
     background-color: #fff!important;
+    .login{
+    background-color: #F64E16;
+    border: 0;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 30px;
+  }
   }  
 }
+.login{
+    background-color: #F64E16;
+    border: 0;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 30px;
+  }
 
 </style>
