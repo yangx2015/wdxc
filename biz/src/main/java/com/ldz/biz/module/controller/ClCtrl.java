@@ -36,6 +36,15 @@ public class ClCtrl extends BaseController<ClCl, String> {
 		return ApiResponse.success(carList);
 	}
 
+	@RequestMapping("bindDriver")
+	public ApiResponse<String> bindDriver(String carId,String driverId){
+		return clservice.bindDriver(carId,driverId);
+	}
+	@RequestMapping("bindDevice")
+	public ApiResponse<String> bindDevice(String carId,String devcieId){
+		return clservice.bindDevice(carId,devcieId);
+	}
+
 
 	@RequestMapping("unbindDevice")
 	public ApiResponse<String> unbindDevice(String carId){

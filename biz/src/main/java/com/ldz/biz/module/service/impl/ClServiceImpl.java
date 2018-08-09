@@ -5,8 +5,11 @@ import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.model.ClZd;
+import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.JsyService;
+import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
@@ -45,6 +48,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private ZdxmService zdxmService;
 	@Value("${znzpurl}")
 	private String deleteZnzpRedisKeyUrl;
+	@Autowired
+	private ZdglService zdglService;
 	@Autowired
 	private RedisUtil redisUtil;
 	@Autowired
@@ -385,6 +390,35 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		car.setSjxm(null);
 		car.setSjId(null);
 		entityMapper.updateByPrimaryKey(car);
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<String> bindDriver(String carId, String driverId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		RuntimeCheck.ifBlank(driverId,"请选择驾驶员");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		ClJsy driver = jsyService.findById(driverId);
+		RuntimeCheck.ifNull(driver,"未找到驾驶员");
+
+		car.setSjxm(driver.getXm());
+		car.setSjId(driverId);
+		entityMapper.updateByPrimaryKeySelective(car);
+		return ApiResponse.success();
+	}
+
+	@Override
+	public ApiResponse<String> bindDevice(String carId, String devcieId) {
+		RuntimeCheck.ifBlank(carId,"请选择车辆");
+		RuntimeCheck.ifBlank(devcieId,"请选择终端");
+		ClCl car = entityMapper.selectByPrimaryKey(carId);
+		RuntimeCheck.ifNull(car,"未找到车辆");
+		ClZdgl device = zdglService.findById(devcieId);
+		RuntimeCheck.ifNull(device,"未找到终端");
+
+		car.setZdbh(devcieId);
+		entityMapper.updateByPrimaryKeySelective(car);
 		return ApiResponse.success();
 	}
 
