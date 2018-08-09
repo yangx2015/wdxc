@@ -1,9 +1,6 @@
 package com.ldz.znzp.api;
 
-import javax.servlet.http.HttpServletRequest;
-
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.model.ClCl;
@@ -18,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -64,20 +62,28 @@ public class MessageApi {
 		}
 
 		ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
-		if (car == null)return ApiResponse.notFound("未找到车辆");
+		if (car == null){
+			return ApiResponse.notFound("未找到车辆");
+		}
 
 		List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
 
 		ClPb pb = clService.getCarPb(car.getClId());
-		if (pb == null)return ApiResponse.notFound("未找到车辆排班");
+		if (pb == null){
+			return ApiResponse.notFound("未找到车辆排班");
+		}
 
 		ClXl route = xlService.findById(pb.getXlId());
-		if (route == null)return ApiResponse.notFound("未找到车辆线路");
+		if (route == null){
+			return ApiResponse.notFound("未找到车辆线路");
+		}
 
 		ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
 
-		ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route,clClyxjl);
-		if (!res.isSuccess())return res;
+		ApiResponse<String> res = clService.updateGpsNew(gpsInfo,pb,car,route,clClyxjl);
+		if (!res.isSuccess()){
+			return res;
+		}
 		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 	}
 

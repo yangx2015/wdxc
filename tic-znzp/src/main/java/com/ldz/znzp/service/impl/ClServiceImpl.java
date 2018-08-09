@@ -1,5 +1,7 @@
 package com.ldz.znzp.service.impl;
 
+import com.ldz.geo.bean.GeoModel;
+import com.ldz.geo.util.GeoUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
@@ -7,6 +9,7 @@ import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
+import com.ldz.util.gps.PositionUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.bean.ReportData;
@@ -16,14 +19,19 @@ import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.geo.GeoResult;
+import org.springframework.data.geo.GeoResults;
+import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,6 +61,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     private ClyxjlService clyxjlService;
     @Autowired
     public SnowflakeIdWorker idGenerator;
+    @Autowired
+    private XlzdService xlzdService;
+    @Autowired
+    private GeoUtil geoUtil;
     @Override
     protected Mapper<ClCl> getBaseMapper() {
         return entityMapper;
@@ -93,6 +105,154 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
         return ApiResponse.success();
     }
+
+
+    public ApiResponse<String> updateGpsNew(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route, ClClyxjl record){
+
+        if(ObjectUtils.isEmpty(route)){
+            return ApiResponse.notFound("未找到车辆线路");
+        }
+        // 判断当前线路站点是否缓存至redis
+        if(!geoUtil.hasKey(route.getId()+"_stations")){
+            initXlZd(route.getId());
+        }
+        // 判断设备在线状态
+        String zt = "running";
+        Date now = new Date();
+        if ("80".equals(gpsInfo.getEventType())
+                || "20".equals(gpsInfo.getSczt())
+                || gpsInfo.getLatitude().equals("-1")
+                || gpsInfo.getLongitude().equals("-1")
+                || StringUtils.isEmpty(gpsInfo.getLongitude())
+                || StringUtils.isEmpty(gpsInfo.getLatitude())
+                ){
+            zt = "off";
+            if (record == null){
+                log.info("gps为 -1");
+                record = new ClClyxjl();
+                record.setCjsj(now);
+                record.setClId(car.getClId());
+                record.setCphm(car.getCph());
+                record.setId(""+idGenerator.nextId());
+                record.setZt(zt);
+                if(route != null){
+                    record.setXlId(route.getId());
+                    record.setXlmc(route.getXlmc());
+                }
+                clyxjlMapper.insertSelective(record);
+            }else{
+                record.setZt(zt);
+                clyxjlMapper.updateByPrimaryKeySelective(record);
+            }
+            return ApiResponse.success("设备已离线");
+        }
+
+        // 经纬度转换
+
+        Gps gps = new Gps(Double.parseDouble(gpsInfo.getLatitude()),Double.parseDouble(gpsInfo.getLongitude()));
+        boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
+        // 根据传入进来的线路id ,经纬度 找到最近的两个站点 （或者找到当前线路的所有站点距离排序 取最近两个站点），
+        GeoResults<RedisGeoCommands.GeoLocation<String>> geoLocationGeoResults = geoUtil.getRadius(route.getId() + "_stations", gps.getWgLon(), gps.getWgLat(), 20000000, true, "ASC", 2);
+        List<String> stationIds = new ArrayList<>();
+        Map<String,Double> stationDistanceMap = new HashMap<>();
+        for (GeoResult<RedisGeoCommands.GeoLocation<String>> geoLocationGeoResult : geoLocationGeoResults.getContent()) {
+            String stationId = geoLocationGeoResult.getContent().getName();
+            stationIds.add(stationId);
+            stationDistanceMap.put(stationId,geoLocationGeoResult.getDistance().getValue());
+        }
+        List<ClZd> clZds = zdService.findIn(ClZd.InnerColumn.id, stationIds);
+
+        List<ClZd> currentStations = new ArrayList<>();
+        ClZd  currentStation = null;
+        // 对当前最近的两个点进行比较
+        for (ClZd clZd : clZds) {
+            Short fw = clZd.getFw();
+            Double distance = stationDistanceMap.get(clZd.getId());
+            if(distance < fw){ // 所在距离在该站点的范围内
+                zt = "inStation";
+                currentStations.add(clZd);
+            }
+        }
+
+        if(CollectionUtils.isEmpty(currentStations)) {// 当前站点空 说明车辆正在行驶的路上 取相近站点中序号较小的一个站
+            SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+            condition.eq(ClXlzd.InnerColumn.zdId,clZds.get(0).getId());
+            condition.eq(ClXlzd.InnerColumn.xlId,route.getId());
+            List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
+            short i = xlzds.get(0).getXh();
+
+            SimpleCondition condition1 = new SimpleCondition(ClXlzd.class);
+            condition1.eq(ClXlzd.InnerColumn.zdId,clZds.get(1).getId());
+            condition1.eq(ClXlzd.InnerColumn.xlId,route.getId());
+            List<ClXlzd> xlzds1 = xlzdService.findByCondition(condition1);
+            short k = xlzds1.get(0).getXh();
+
+            if (i < k) {
+                currentStation = clZds.get(0);
+            } else {
+                currentStation = clZds.get(1);
+            }
+
+        }else if(CollectionUtils.size(currentStations) == 2){
+            // 取距离近的
+            Double distan1 = stationDistanceMap.get(currentStations.get(0).getId());
+            Double distan2 = stationDistanceMap.get(currentStations.get(1).getId());
+            if(distan1 <= distan2){
+                currentStation = currentStations.get(0);
+            }else{
+                currentStation = currentStations.get(1);
+            }
+        }else{
+            currentStation = currentStations.get(0);
+        }
+
+        currentStation.setXlId(route.getId());
+        zdService.setStationOrder(currentStation);
+        record.setZdbh(currentStation.getRouteOrder());
+        record.setZdmc(currentStation.getMc());
+        record.setZdId(currentStation.getId());
+        record.setCjsj(now);
+        record.setJd(new BigDecimal(gps.getWgLon()));
+        record.setWd(new BigDecimal(gps.getWgLat()));
+        record.setZt(zt);
+
+        if (hasRecord){
+            clyxjlMapper.updateByPrimaryKeySelective(record);
+        }else{
+            clyxjlMapper.insertSelective(record);
+        }
+        if ("80".equals(gpsInfo.getSczt()) || "20".equals(gpsInfo.getSczt())){
+            return ApiResponse.success("设备已离线");
+        }
+
+        return ApiResponse.success();
+    }
+
+
+    /**
+     * 初始化每条线路的站点
+     */
+    public void initXlZd(String xlId){
+        List<ClZd> clZds = zdService.getByXlId(xlId); // 根据线路id 获取到当前线路的线路站点
+        List<GeoModel> geoModels = new ArrayList<>(clZds.size());
+        // 缓存至redis
+        for (ClZd zd : clZds) {
+            GeoModel geoModel = zdToGeoModel(zd);
+            geoModels.add(geoModel);
+        }
+        geoUtil.add(xlId + "_stations", geoModels, 1, TimeUnit.DAYS);
+    }
+
+    private GeoModel zdToGeoModel(ClZd zd){
+        GeoModel model = new GeoModel();
+        model.setName(zd.getId());
+        // 将站点的百度坐标转换为 wgs84
+        Gps gps = PositionUtil.bd09_To_Gcj02(zd.getWd(), zd.getJd());
+        model.setLng(gps.getWgLon());
+        model.setLat(gps.getWgLat());
+        return model;
+    }
+
 
     @Override
     public ApiResponse<String> updateGps(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route, ClClyxjl record) {// 站点存储百度位置
