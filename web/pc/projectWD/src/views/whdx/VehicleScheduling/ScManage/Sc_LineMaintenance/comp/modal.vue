@@ -59,10 +59,12 @@
                   </div>
                   <div class="box-row">
                         <div class="body-F stepsList">
-                              <Steps :current="choosedStations.length" size="small">
-                                    <Step icon="disc" :content="item.name"
-                                          v-for="(item,index) in choosedStations"></Step>
-                              </Steps>
+                              <!--<Steps :current="choosedStations.length" size="small">-->
+                                    <!--<Step icon="disc" :content="item.name"-->
+                                          <!--v-for="(item,index) in choosedStations"></Step>-->
+                              <!--</Steps>-->
+                              <!---->
+                              <linemess :mess="choosedStations"></linemess>
                         </div>
                         <div style="width: 100px;">
                               <div>
@@ -84,7 +86,7 @@
                         </div>
                   </div>
                   <div slot='footer'>
-                        <Button type="ghost" @click="colse">取消</Button>
+                        <Button type="success" @click="colse">取消</Button>
                         <Button type="primary" @click="save('addmess')">确定</Button>
                   </div>
             </Modal>
@@ -92,9 +94,12 @@
 </template>
 
 <script>
-
+      import linemess from './comp/line'
     export default {
         name: '',
+        components:{
+            linemess
+        },
         data() {
             return {
                 showModal: true,
@@ -143,6 +148,10 @@
             this.getAllStation();
         },
         methods: {
+            getStepitem(item,index){
+                console.log(item);
+                console.log(index);
+            },
             getStations() {
                 this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID + '?xlId=' + this.param.id).then((res) => {
                     if (res.code === 200) {
@@ -214,7 +223,6 @@
                 })
             },
             addStation(index) {
-				debugger
                 this.choosedStations.push({
                     id: this.stationList[index].id,
                     name: this.stationList[index].mc,
