@@ -86,7 +86,7 @@
                         for(let r of this.yxjlList){
                             for (let l of this.lineList){
                                 if (l.id == r.xlId){
-                                    let item = {cph:r.cphm,bdjd:r.jd,bdwd:r.wd,stationNumber:r.zdbh,zxzt:20};
+                                    let item = {cph:r.cphm,bdjd:r.jd,bdwd:r.wd,stationNumber:r.zdbh,zxzt:'00'};
                                     if (l.carList){
                                         l.carList.push(item)
                                     }else{
@@ -308,11 +308,6 @@
                 var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
                 var marker = new BMap.Marker(new BMap.Point(item.bdjd, item.bdwd), {icon: myIcon});
                 this.map.addOverlay(marker);
-
-                let station = '';
-                if (item.stationNumber) {
-                    station = '[' + item.stationNumber + ']';
-                }
                 let html = '<div style="width: 120px;height: 28px;padding:4px;text-align: center">' +
                     '<span>' + item.cph + station + '</span> ' +
                     '</div>';
