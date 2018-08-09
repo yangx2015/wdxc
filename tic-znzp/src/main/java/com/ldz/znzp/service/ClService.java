@@ -26,4 +26,7 @@ public interface ClService extends BaseService<ClCl,String>{
     ClZd getCurrentZd(BigDecimal jd, BigDecimal wd, ClCl car, String currentZdId,ClPb pb);
 
     ApiResponse<String> report(String tid);
+
+    ApiResponse<String> updateGpsNew(GpsInfo gpsInfo, ClPb pb,ClCl car,ClXl route, ClClyxjl record);
+    void initXlZd(String xlId);
 }
