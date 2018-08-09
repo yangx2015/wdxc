@@ -148,7 +148,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
 
         // 经纬度转换
-
+        ClGps clGps = gpsService.changeCoordinates(gpsInfo);
         Gps gps = new Gps(Double.parseDouble(gpsInfo.getLatitude()),Double.parseDouble(gpsInfo.getLongitude()));
         boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
         // 根据传入进来的线路id ,经纬度 找到最近的两个站点 （或者找到当前线路的所有站点距离排序 取最近两个站点），
@@ -212,8 +212,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         record.setZdmc(currentStation.getMc());
         record.setZdId(currentStation.getId());
         record.setCjsj(now);
-        record.setJd(new BigDecimal(gps.getWgLon()));
-        record.setWd(new BigDecimal(gps.getWgLat()));
+        record.setJd(clGps.getJd());
+        record.setWd(clGps.getWd());
         record.setZt(zt);
 
         if (hasRecord){
