@@ -1,0 +1,239 @@
+<template>
+  <ui-page>
+ <ui-row style="margin:15px;color:#888888">
+   <ui-col>
+     已完成订单
+   </ui-col>
+ </ui-row>
+  
+  
+<ui-view class="lmw">
+
+
+<ui-row vertical-align="middle">
+<ui-col span="8"   style="padding:15px 15px 0 15px">
+    <ui-view class="pageHeght">
+        十二座车
+    </ui-view>
+</ui-col>
+<ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+  已完成
+</ui-col>
+<ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+  <ui-view class="pingyi">
+    <ui-icon type="right1" size=5></ui-icon>
+  </ui-view>
+  
+</ui-col>
+</ui-row>
+
+
+
+<ui-row>
+<ui-col style="padding:0px 10px 0 15px" span="1">
+ <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="color:#A0A0A0">
+  今天 15:10
+</ui-col>
+</ui-row>
+
+
+<ui-row >
+<ui-col style="padding:5px 15px 0 15px" span="1">
+ <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+  武汉大学中国边界和海洋研究院
+</ui-col>
+</ui-row>
+
+<ui-row >
+<ui-col style="padding:0px 15px 0 15px" span="1">
+ <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+   武汉大学二食堂
+</ui-col>
+</ui-row>
+
+
+
+
+
+
+
+
+</ui-view>
+
+
+
+  
+  
+<ui-view class="lmw">
+
+
+<ui-row vertical-align="middle">
+<ui-col span="8"   style="padding:15px 15px 0 15px">
+    <ui-view class="pageHeght">
+        十二座车
+    </ui-view>
+</ui-col>
+<ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+  已取消
+</ui-col>
+<ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+  <ui-view class="pingyi">
+    <ui-icon type="right1" size=5></ui-icon>
+  </ui-view>
+  
+</ui-col>
+</ui-row>
+
+
+
+<ui-row>
+<ui-col style="padding:0px 10px 0 15px" span="1">
+ <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="color:#A0A0A0">
+  今天 15:10
+</ui-col>
+</ui-row>
+
+
+<ui-row >
+<ui-col style="padding:5px 15px 0 15px" span="1">
+ <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+  武汉大学中国边界和海洋研究院
+</ui-col>
+</ui-row>
+
+<ui-row >
+<ui-col style="padding:0px 15px 0 15px" span="1">
+ <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+</ui-col>
+<ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+   武汉大学二食堂
+</ui-col>
+</ui-row>
+
+
+
+
+
+
+
+
+</ui-view>
+
+
+
+
+
+
+
+
+    
+
+    
+   
+    
+
+
+
+
+
+
+  </ui-page>
+  
+</template>
+
+<script>
+export default {
+  config: {
+    navigationBarTitleText: '我的行程',
+    navigationStyle:'default',
+    backgroundColor: '#F4F4F4',
+    navigationBarTextStyle: '#black',
+    navigationBarBackgroundColor:'#FFf'
+  },
+  data () {
+    return {
+      current9:0,
+      activeTabStyle2:{
+       'color':'#FF9966',
+       'border-bottom':'1px solid #FF9966',
+      },
+    }
+         
+  },
+      
+
+  methods: {
+    handleChange(index,key){
+      this[key]=index
+    },
+    handleContentChange(index,key){
+      this[key]=index
+    },
+    
+    
+    
+   
+    
+    
+    
+
+    
+    navHandle () {
+      ui.navigateTo({
+        url: '/pages/detail'
+      })
+    }
+  },
+  mounted() {
+    //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
+    setTimeout(() => {
+      //关闭app启动图
+      ui.closeSplashscreen()
+    }, 1000);
+  }
+}
+
+</script>
+
+// <style lang="less">
+// .lmw{
+//   background: #fff;
+//   border-radius 5rpx;
+//   borde: solid black;
+//   margin:0 15px 0 15px
+// }
+.lmw{
+  background: #fff;
+  border-radius: 5rpx;
+  border:	#D8D8D8	 ;
+  margin: 25rpx;
+}
+
+.tx{
+width: 20rpx;
+height: 20rpx;
+border-radius:90rpx;
+background-color: #33FF99;
+position: absolute;
+
+}
+.pageHeght{
+font-size: 28rpx;
+font-weight:700;
+color: #707070;
+}
+.pingyi{
+  transform: translate(-50%,0%);
+}
+
+</style>

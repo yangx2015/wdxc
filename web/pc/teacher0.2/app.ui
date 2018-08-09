@@ -9,7 +9,7 @@ export default {
       "pages/user",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages"],
+      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/orders"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -228,6 +228,11 @@ export default {
         }
       }
       return {}
+    },
+    goProp(){
+      ui.navigateTo({
+        url: '/pages/prop/add'
+      })
     }
 
   },
@@ -242,7 +247,9 @@ export default {
     <ui-slide-menu width="280" threshold="30" touch="{{ pageConfig.touchSlideMenu }}" ui:model="showSlideMenu">
 
     <ui-view slot="menu" class="menu">
-      <ui-text block style="color:#fff;margin:10px">侧滑菜单</ui-text>
+      <ui-text block style="margin:10px">
+        侧滑菜单
+      </ui-text>
     </ui-view>
 
     <ui-view slot="panel">
@@ -252,20 +259,17 @@ export default {
         ui:show="navigationBarVisible"
         style="{{ navStyle }}">
         <ui-row>
-          <ui-col width="80">
-            <span class="back" bindtap="handleBack" ui:show="{{showBack}}">
-              <ui-icon type="arrow-left" font-size="24"></ui-icon>返回
-            </span>
-            <span class="back" ui:show="{{!showBack}}" bindtap="handleNavIconTap">
-              <ui-icon type="list" color="#2B333B" size="16"></ui-icon>
+          <ui-col width="60">
+            <span class="back" bindtap="handleNavIconTap">
+              <ui-icon type="yijianfankui" color="#2B333B" size="16"></ui-icon>
             </span>
           </ui-col>
-          <ui-col width="{{WIN_WIDTH-160}}" align="center" content-direction="row" class="nav-bar-center">
+          <ui-col align="center" content-direction="row" class="nav-bar-center">
             <ui-view class="nav-bar-center-loading" style="display: none;"></ui-view>
             <span class="nav-bar-center-text">{{ $t(winConfig.navigationBarTitleText) }}</span>
           </ui-col>
-          <ui-col width="80">
-
+          <ui-col width="60" align="center"  bindtap="goProp">
+                <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
           </ui-col>
         </ui-row>
       </ui-nav-bar>
@@ -371,4 +375,10 @@ body {
 .router-view {
   width: 100%;
 }
+#ui-app{
+  .ui-slideout-menu{
+    background-color: #fff!important;
+  }  
+}
+
 </style>

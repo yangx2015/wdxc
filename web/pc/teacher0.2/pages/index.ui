@@ -1,18 +1,6 @@
 <template>
   <ui-page  style="overflow-y: hidden;">
-      <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
-          <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60">
-          <ui-icon type="wo" size="20" color="#e2e2e2"></ui-icon>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center">
-          <ui-view class="nav_title">约车</ui-view>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center" width="60" bindtap="goProp">
-          <ui-icon type="yijianfankui" size="18" color="#fff"></ui-icon>
-          </ui-col>
-          </ui-row>
-      </ui-nav-bar>
+      
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
             <!-- 页面内容 start-->
             <ui-view>
@@ -51,18 +39,14 @@
 
                 <ui-view ui:if="{{people === '他人乘坐'}}">
                   <ui-row>
-                     <ui-col sapn=2>
-                        <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
-                      </ui-col >
-                      <ui-col span=4 bindtap="radioCalendaropen" align="left" >
-                        <ui-text   bindtap="openPopup2">{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
+                    
+                      <ui-col span=4>
+                        <ui-input show-clear="false" placeholder="姓名" maxlength="11"></ui-input>
                       
                      </ui-col>
-                     <ui-col span=2>
-                        <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
-                      </ui-col>
-                      <ui-col span=4 align="left" bindtap="getmyself()">
-                        <ui-text>{{people}}</ui-text>
+                     
+                      <ui-col span=4 >
+                        <ui-input ui:model="{{newnum}}" placeholder="手机号码" bindtap="getInput"></ui-input>
                      </ui-col>
                   </ui-row>
                 </ui-view>
@@ -133,14 +117,15 @@
 import util from "static/utils/util";
 var formatLocation = util.formatLocation
 export default {
+    // navigationStyle: 'custom',
   config: {
-    navigationStyle: 'custom',
-    navigationBarBackgroundColor:"#26a2ff",
+    navigationBarBackgroundColor:"#FF7F50",
     navigationBarTextStyle:"white",
     navigationBarTitleText:"首页约车",
     title:'首页约车',
     backgroundColor:'#fff',
     delay:false,//延迟加载
+    "touchSlideMenu": true
   },
   data () {
     return {
@@ -217,6 +202,9 @@ export default {
     }
   },
   methods: {
+    handleNavIconTap () {
+      ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
+    },
     getmyself(){
       var v = this
       const itemLists = [
