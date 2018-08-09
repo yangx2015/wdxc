@@ -2,17 +2,17 @@
     <Col span="6" style="margin-top: 16px;">
         <Card>
             <p slot="title" style="font-size: 18px">
-                <Icon type="ios-car" size="24"/>
+                <Icon type="model-s" size="22"/>
                 {{data.cph}}
             </p>
             <a href="#" slot="extra" @click.prevent="changeLimit">
-                <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
+                <Tag color="#436EEE">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
             </a>
             <Row>
                 <Col span="24">
                     <Row v-if="data.sjxm">
                         <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="md-person" size="28" color="#2d8cf0"/>
+                            <Icon type="ios-person" size="28" color="#2d81f0"/>
                         </Col>
                         <Col span="10">
                             <span>{{data.sjxm}}</span>
@@ -21,7 +21,7 @@
                             <Poptip
                                     confirm
                                     title="确认解除绑定?"
-                                    @on-ok="ok"
+                                    @on-ok="unbindDriver"
                                     @on-cancel="cancel">
                                 <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
                             </Poptip>
@@ -29,40 +29,57 @@
                     </Row>
                     <Row v-else-if="!data.sjxm">
                         <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="md-person" size="28" color="#2d8cf0"/>
+                            <Icon type="ios-person" size="28" color="#2d8cf0"/>
                         </Col>
                         <Col span="10">
                             <span  v-if="!bindDriverFlag">暂未绑定</span>
-                            <Select v-else-if="bindDriverFlag" :ref="'driverSelect_'" style="width:150px" clearable @on-clear="()=>{bindDriverFlag=false}">
-                                <Option v-for="(item,index) in drivers" :key="item.id" value="10">{{item.sjxm}}</Option>
+                            <Select v-else-if="bindDriverFlag" v-model="driverId" style="width:150px" clearable @on-clear="()=>{bindDriverFlag=false}">
+                                <Option v-for="(item,index) in driverList" :key="item.sfzhm" :value="item.sfzhm">{{item.xm}}</Option>
                             </Select>
                         </Col>
                         <Col span="4" offset="6">
                             <Tooltip content="绑定司机" v-if="!bindDriverFlag">
-                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="bindDriver">绑定1</Button>
+                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
                             </Tooltip>
-                            <Button v-else-if="bindDriverFlag" type="info" ghost >绑定2</Button>
+                            <Button v-else-if="bindDriverFlag" type="info" ghost @click="bindDriver">绑定</Button>
                         </Col>
                     </Row>
                 </Col>
             </Row>
             <Row>
                 <Col span="24">
-                    <Row>
+                    <Row v-if="data.zdbh">
                         <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="md-videocam" size="28" color="#2d8cf0"/>
+                            <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
                         </Col>
-                        <Col span="10" ref="termRef">
-                            <span v-if="!bindDeviceFlag">暂未绑定</span>
-                            <Select v-else-if="bindDeviceFlag" style="width:150px" clearable @on-clear="()=>{bindDeviceFlag=false}">
-                                <Option value="10">{{data.zdbh}}</Option>
+                        <Col span="10">
+                            <span>{{data.zdbh}}</span>
+                        </Col>
+                        <Col span="4" offset="6">
+                            <Poptip
+                                    confirm
+                                    title="确认解除绑定?"
+                                    @on-ok="unbindDevice"
+                                    @on-cancel="cancel">
+                                <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
+                            </Poptip>
+                        </Col>
+                    </Row>
+                    <Row v-else-if="!data.zdbh">
+                        <Col span="2" style="padding-right: 45px;margin-top: -5px;">
+                            <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
+                        </Col>
+                        <Col span="10">
+                            <span  v-if="!bindDeviceFlag">暂未绑定</span>
+                            <Select v-else-if="bindDeviceFlag" v-model="deviceId" style="width:150px" clearable @on-clear="()=>{bindDeviceFlag=false}">
+                                <Option v-for="(item,index) in deviceList" :key="item.zdbh" :value="item.zdbh">{{item.zdbh}}</Option>
                             </Select>
                         </Col>
                         <Col span="4" offset="6">
-                            <Tooltip content="绑定设备" v-if="!bindDeviceFlag">
-                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost  @click="bindDevice"></Button>
+                            <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
+                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
                             </Tooltip>
-                            <Button v-else-if="bindDeviceFlag" type="info" ghost >绑定</Button>
+                            <Button v-else-if="bindDeviceFlag" type="info" ghost @click="bindDevice">绑定</Button>
                         </Col>
                     </Row>
                 </Col>
@@ -71,19 +88,19 @@
                 <Col span="22">
                     <ButtonGroup size="large">
                         <Tooltip content="编辑">
-                            <Button  icon="ios-clipboard"></Button>
+                            <Button  icon="edit" @click="emit('editCar')"></Button>
                         </Tooltip>
                         <Tooltip content="车辆档案">
-                            <Button  icon="ios-bookmarks"></Button>
+                            <Button  icon="clipboard" @click="emit('showDoc')"></Button>
                         </Tooltip>
                         <Tooltip content="历史轨迹">
-                            <Button  icon="md-map"></Button>
+                            <Button  icon="map" @click="emit('trace')"></Button>
                         </Tooltip>
                         <Tooltip content="电子围栏">
-                            <Button icon="ios-globe"></Button>
+                            <Button icon="ios-world-outline" @click="emit('showFance')"></Button>
                         </Tooltip>
                         <Tooltip content="删除">
-                            <Button icon="md-trash"></Button>
+                            <Button icon="ios-trash" @click="emit('delCar')"></Button>
                         </Tooltip>
                     </ButtonGroup>
                 </Col>
@@ -97,7 +114,10 @@
         name: "carItem",
         data(){
           return{
-              drivers:[],
+              driverList:[],
+              deviceList:[],
+              driverId:'',
+              deviceId:'',
               cxDict:[],
               cxDictCode:'ZDCLK0019',
               bindDriverFlag:false,
@@ -110,24 +130,62 @@
               default:function(){
                   return {}
               }
-          }  
+          }
         },
         created(){
             this.bindDriverFlag = !!this.data.sjxm
             this.bindDeviceFlag = !!this.data.zdbh
         },
         methods:{
-            bindDriver(){
+            emit(method){
+                this.$emit(method,this.data);
+            },
+            chooseDriver(){
+                this.getdriverList();
                 this.bindDriverFlag = true
             },
-            bindDevice(){
+            chooseDevice(){
+                this.getDevices();
                 this.bindDeviceFlag = true
             },
-            getDrivers(){
+            bindDriver(){
+                this.postAndReload(this.apis.CLGL.bindDriver,{carId:this.data.clId,driverId:this.driverId})
+            },
+            bindDevice(){
+                this.postAndReload(this.apis.CLGL.bindDevice,{carId:this.data.clId,deviceId:this.deviceId})
+            },
+            unbindDriver(){
+                this.driverId = '';
+                this.postAndReload(this.apis.CLGL.unbindDriver,{carId:this.data.clId})
+            },
+            unbindDevice(){
+                this.devcieId = '';
+                this.postAndReload(this.apis.CLGL.unbindDevice,{carId:this.data.clId})
+            },
+            postAndReload(url,param){
+                let v = this;
+                v.$http.post(url,param).then((res) =>{
+                    if(res.code === 200){
+                        this.$emit('reload');
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                })
+            },
+            getdriverList(){
                 let v = this;
                 v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
-                        v.drivers = res.page.list;
+                        v.driverList = res.page.list;
+                    }
+                })
+            },
+            getDevices(){
+                let v = this;
+                v.$http.get(this.apis.ZDGL.SXQUERY).then((res) =>{
+                    if(res.code===200){
+                        v.deviceList = res.result;
                     }
                 })
             },

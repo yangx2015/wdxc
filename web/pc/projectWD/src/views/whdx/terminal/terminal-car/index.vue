@@ -66,7 +66,7 @@
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component
@@ -101,10 +101,6 @@
                 tabHeight: 220,
                 componentName:'',
                 choosedRow:{},
-                page:{
-                    pageNum:1,
-                    pageSize:8
-                },
                 //弹层
                 showModal:false,
                 columns: [
@@ -346,6 +342,7 @@
                 ],
                 //收索
                 param:{
+                    orderBy:'cjsj desc',
                     mcLike:'',
                     pageNum:1,
                     pageSize:8
@@ -379,9 +376,11 @@
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
             },
             getPageData(){
+                this.pageTotal = 0;
+                this.tableData = [];
                 this.$http.get(this.apis.ZDGL.QUERY,{params:this.param}).then((res) =>{
                     this.SpinShow = false;
-                    if(res.code===200){
+                    if(res.code === 200){
                         this.tableData = res.page.list;
                         this.pageTotal = res.page.total;
                         log('数据结构',this.tableData)
@@ -401,10 +400,6 @@
             listDele(r){
                 this.util.del(this,this.apis.ZDGL.DELE,[r.zdbh])
             },
-            pageChange(event){
-                this.param.pageNum = event;
-                this.getPageData();
-            }
         }
     }
 </script>

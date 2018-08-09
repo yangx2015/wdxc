@@ -24,4 +24,8 @@ public interface ClService extends BaseService<ClCl,String>{
 
     ApiResponse<String> unbindDevice(String carId);
     ApiResponse<String> unbindDriver(String carId);
+
+    ApiResponse<String> bindDriver(String carId, String driverId);
+
+    ApiResponse<String> bindDevice(String carId, String devcieId);
 }
