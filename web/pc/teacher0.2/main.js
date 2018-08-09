@@ -52,13 +52,8 @@ ui.extend({
   $http(method,url,data,callback){//网路数据请求
     let accessTokenStr = localStorage.getItem("token");
     if(accessTokenStr != null && accessTokenStr != ''&& accessTokenStr!=undefined){
-      let tokMess = JSON.parse(accessTokenStr)
-      ui.getApp().Ajax.header.token = tokMess.token
-      ui.getApp().Ajax.header.userId = tokMess.userId
-    }
-    let openid = localStorage.getItem("openid");
-    if(openid){
-      ui.getApp().Ajax.header.openid = openid
+      // let tokMess = JSON.parse(accessTokenStr)
+      ui.getApp().Ajax.header.token = accessTokenStr
     }
 
     ui.request({
