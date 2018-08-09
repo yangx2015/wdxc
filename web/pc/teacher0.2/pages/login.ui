@@ -91,8 +91,13 @@ export default {
       } 
     },
     login(){
+        var v =this
         this.$http('POST',ui.getApp().apis.LOGIN.QUERTY,this.form,(res)=>{
           console.log(res);
+          if(res.code==200 && res.result){
+            localStorage.setItem('token',res.result)
+            v.goindex()
+          }
           
         })
     },
