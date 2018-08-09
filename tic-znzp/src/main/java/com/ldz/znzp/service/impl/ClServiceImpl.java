@@ -186,6 +186,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             condition1.eq(ClXlzd.InnerColumn.xlId,route.getId());
             List<ClXlzd> xlzds1 = xlzdService.findByCondition(condition1);
             short k = xlzds1.get(0).getXh();
+
             if (i < k) {
                 currentStation = clZds.get(0);
             } else {
