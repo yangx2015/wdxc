@@ -10,7 +10,7 @@
 
    
    <ui-col style="padding:0 20px 0 20px" span="10" align="left">
-      <ui-input show-clear="false" ui:model="{{phone}}" placeholder="请输入用户名" maxlength="10"></ui-input>
+      <ui-input show-clear="false" ui:model="{{form.name}}" placeholder="请输入用户名" maxlength="10"></ui-input>
    </ui-col>
    
 </ui-row>
@@ -19,7 +19,7 @@
 
    
    <ui-col style="padding:0 20px 0 20px" span="10" align="left">
-<ui-input show-clear="false" ui:model="{{password}}" placeholder="请输入手机号" maxlength="11"></ui-input>
+<ui-input show-clear="false" ui:model="{{form.zjhm}}" placeholder="请输入手机号" maxlength="11"></ui-input>
    </ui-col>
    
 </ui-row>
@@ -28,14 +28,14 @@
 
 <ui-row style="margin:30px 0 0 0" bindtap="loginYZ">
   <ui-col style="padding:0 60px 0 60px">
-  <ui-button type="primary" bindtap="goindex()">登录</ui-button>
+  <ui-button type="primary">登录</ui-button>
   </ui-col>
 </ui-row>
 
 
 <ui-row style="margin:80px 0 0 0"> 
   <ui-col>
-    <ui-image src="static/img/teacher/car.jpg" mode="aspectFit" width="400" height="400"></ui-image>
+    <ui-image src="static/img/teacher/logbotimg.jpg" mode="aspectFit" width="400" height="400"></ui-image>
   </ui-col>
 </ui-row>
 
@@ -64,35 +64,43 @@
 export default {
   config: {
     
-    navigationBarTitleText: '文理学部大学生服务专车',
+    navigationBarTitleText: '',
     navigationStyle:'default',
     backgroundColor: '#fff',
-    navigationBarTextStyle: 'black'
+    navigationBarTextStyle: 'custom'
   },
   data () {
     return {
       form:{
-         phone:'',
-         password:''
+          name:'宋林殊',
+          zjhm:'32948289347289'
       }
     }
   },
   methods: {//判断用户名和手机号逻辑
     loginYZ(){
       var v = this
-      if(v.form.phone==''){
-      ui.showToast({ title: '请输入用户名!'})
-        return
-      }else if(v.form.password.lenght!==11){
-      ui.showToast({ title: '请输入正确的手机号码!'})
-      }else if(v.form.password==''){
-      ui.showToast({ title: '请输入手机号码!'})
-        return
-      }else {
-      v.login()
-    }
-    
-},
+      if(v.form.name==''){
+        ui.showToast({ title: '请输入用户名!'})
+          return
+        }else if(v.form.zjhm==''){
+        ui.showToast({ title: '请输证件号码!'})
+          return
+        }else {
+        v.login()
+      } 
+    },
+    login(){
+        var v =this
+        this.$http('POST',ui.getApp().apis.LOGIN.QUERTY,this.form,(res)=>{
+          console.log(res);
+          if(res.code==200 && res.result){
+            localStorage.setItem('token',res.result)
+            v.goindex()
+          }
+          
+        })
+    },
       gomap(){
         ui.navigateTo({
           url: '/pages/map'
