@@ -25,7 +25,7 @@
                         <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
                       </ui-col >
                       <ui-col span=4 bindtap="radioCalendaropen" align="left" >
-                        <ui-text   bindtap="openPopup2">{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
+                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
                       
                      </ui-col>
                      <ui-col span=2>
@@ -41,12 +41,12 @@
                   <ui-row>
                     
                       <ui-col span=4>
-                        <ui-input show-clear="false" placeholder="姓名" maxlength="11"></ui-input>
+                        <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
                       
                      </ui-col>
                      
                       <ui-col span=4 >
-                        <ui-input ui:model="{{newnum}}" placeholder="手机号码" bindtap="getInput"></ui-input>
+                        <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
                      </ui-col>
                   </ui-row>
                 </ui-view>
@@ -60,7 +60,7 @@
                    </ui-row>
                 </ui-view>
                
-                <ui-button class="login">提交订单</ui-button>
+                <ui-button class="login" bindtap="submit()">提交订单</ui-button>
                 
             </ui-view>
             <!-- 页面内容 end-->
@@ -135,7 +135,7 @@ export default {
       time:'',
       radioCalendar:false,
       form:{
-        name:'',
+        ck:'',
         phone:'',
         time:'',
         num:'',
@@ -146,6 +146,7 @@ export default {
           name:''
         }
       },
+      choosedCar:'',
       carlist:[
         {
           val:5,
@@ -202,6 +203,43 @@ export default {
     }
   },
   methods: {
+    indexYZ(){
+      var v = this
+      console.log(v.form)
+      if(v.form.starGPS.name==''){
+         ui.showToast({ title: '请选择您的位置!'})
+          return false
+      }
+      if(v.form.endGPS.name==''){
+        ui.showToast({ title: '请选择目的地!'})
+          return false
+      }
+      if(v.choosedCar==''){
+        ui.showToast({ title: '请选择车型!'})
+          return false
+      }
+      console.log('timeValue',v.timeValue)
+      if(v.timeValue==''){
+        ui.showToast({ title: '请选择上车时间!'})
+          return false
+      }
+      console.log(v.people)
+      console.log(v.newnum)
+      if(v.people==='他人乘车'&& v.newnum =='' && v.form.name=='' ){
+         ui.showToast({ title: '请输入乘车人信息!'})
+          return false
+      }
+      return true
+
+
+    },
+    submit(){
+      if(!this.indexYZ()) return
+      console.log("valid success,post");
+      this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
+         console.log('==========================',res)
+      })
+    },
     handleNavIconTap () {
       ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
     },
@@ -225,6 +263,7 @@ export default {
     getcarnum(val,num){
       console.log(val)
        var v = this
+       this.choosedCar = val;
        v.carlist.forEach((item,index) => {
          if(index==num){
            item.color="#f00"

@@ -79,7 +79,9 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     @Override
     public List<ClZd> getByXlIds(List<String> xlIds) {
         List<ClXlzd> xlzds = xlzdService.findIn(ClXlzd.InnerColumn.xlId,xlIds);
-        if (xlzds.size() == 0)return new ArrayList<>();
+        if (xlzds.size() == 0){
+            return new ArrayList<>();
+        }
         List<String> routeIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
 
         Map<String,Short> orderMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getXlId,ClXlzd::getXh));

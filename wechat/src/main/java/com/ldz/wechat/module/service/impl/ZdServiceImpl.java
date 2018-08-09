@@ -1,10 +1,9 @@
 package com.ldz.wechat.module.service.impl;
+
 import com.ldz.geo.bean.GeoModel;
 import com.ldz.geo.util.GeoUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.util.gps.DistanceUtil;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.bean.NearbyStation;
@@ -15,19 +14,14 @@ import com.ldz.wechat.module.model.ClXlzd;
 import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.service.*;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 

@@ -185,6 +185,8 @@ module.exports = {
         nianshen:'/api/cl/nianshen',
         unbindDevice:'/api/cl/unbindDevice',
         unbindDriver:'/api/cl/unbindDriver',
+        bindDriver:'/api/cl/bindDriver',
+        bindDevice:'/api/cl/bindDevice',
     },
     XL:{
         QUERY: '/api/xl/pager',
