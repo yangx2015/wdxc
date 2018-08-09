@@ -35,7 +35,14 @@
 				</div>
 			</Row>
 			<Row :gutter="20">
-				<car-item v-for="(item,index) in tableData" :data="item"  :key="index" style="margin-top: 16px;"></car-item>
+				<car-item v-for="(item,index) in tableData" :data="item"  :key="index" style="margin-top: 16px;"
+				@reload="getPageData"
+				@editCar="editCar"
+				@showDoc="showDoc"
+				@trace="trace"
+				@showFance="showFance"
+				@delCar="delCar"
+				></car-item>
 			</Row>
 			<!--<Row>-->
 				<!--<Table-->
@@ -126,6 +133,33 @@
 			this.getClztDict();
         },
         methods: {
+            editCar(car){
+                this.messType = false
+                this.mess = car
+                //由于数据传递丢失 司机ID 司机 姓名 单独传递
+                this.derMes.sjId = car.sjId
+                this.derMes.sjxm = car.sjxm
+                this.compName = newmes
+            },
+            showDoc(car){
+                this.mess = car
+                this.compName = allmes
+            },
+            trace(car){
+                this.$router.push(
+                    {
+                        name: 'historyTarck_new',
+                        params:{zdbh:car.zdbh}
+                    }
+                );
+            },
+			showFance(car){
+                this.compName = bkShow
+                this.mess = car
+			},
+			delCar(car){
+                this.listDele(car)
+			},
             getDeviceList(){//获取终端编号
                 let v = this;
                 v.$http.post(this.apis.ZDGL.SXQUERY).then((res) =>{

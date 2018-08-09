@@ -260,7 +260,7 @@ export default {
     getStarGps(){
       var that = this
       ui.chooseLocation({
-        backgroundColor:'#3399ff',
+        backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
           that.form.starGPS = res
@@ -273,7 +273,7 @@ export default {
     getEndGps(){
       var that = this
       ui.chooseLocation({
-        backgroundColor:'#3399ff',
+        backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
           that.form.endGPS = res

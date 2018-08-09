@@ -101,10 +101,6 @@
                 tabHeight: 220,
                 componentName:'',
                 choosedRow:{},
-                page:{
-                    pageNum:1,
-                    pageSize:8
-                },
                 //弹层
                 showModal:false,
                 columns: [
@@ -379,9 +375,11 @@
                 this.ztDictionary = this.dictUtil.getByCode(this,this.ztlmdmDictionary);
             },
             getPageData(){
+                this.pageTotal = 0;
+                this.tableData = [];
                 this.$http.get(this.apis.ZDGL.QUERY,{params:this.param}).then((res) =>{
                     this.SpinShow = false;
-                    if(res.code===200){
+                    if(res.code === 200){
                         this.tableData = res.page.list;
                         this.pageTotal = res.page.total;
                         log('数据结构',this.tableData)

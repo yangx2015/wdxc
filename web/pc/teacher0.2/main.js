@@ -50,12 +50,22 @@ ui.extend({
   //        data      -->"网络数据请求的参数传入 ：{key : val} *** 无参数传入时 {} "
   //        callback  -->"回调函数 网络数据返回"
   $http(method,url,data,callback){//网路数据请求
+    let accessTokenStr = localStorage.getItem("token");
+    if(accessTokenStr != null && accessTokenStr != ''&& accessTokenStr!=undefined){
+      let tokMess = JSON.parse(accessTokenStr)
+      ui.getApp().Ajax.header.token = tokMess.token
+      ui.getApp().Ajax.header.userId = tokMess.userId
+    }
+    let openid = localStorage.getItem("openid");
+    if(openid){
+      ui.getApp().Ajax.header.openid = openid
+    }
 
     ui.request({
       // ui.getApp().Ajax.url+':'+ui.getApp().Ajax.port+
       url: url, //仅为示例，并非真实的接口地址
       data: data,
-      header: {'Content-Type': 'application/x-www-form-urlencoded'},
+      header: ui.getApp().Ajax.header,
       method:method,
       success: function (res) {
         console.log('请求成功')
