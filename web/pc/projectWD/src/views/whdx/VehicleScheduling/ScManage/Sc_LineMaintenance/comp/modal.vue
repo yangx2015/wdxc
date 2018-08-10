@@ -98,7 +98,7 @@
 </template>
 
 <script>
-      import linemess from './comp/line'
+      import linemess from './comp/codeline'
     export default {
         name: '',
         components:{
@@ -150,6 +150,7 @@
                 this.param = this.$parent.currentRow;
             }
             this.getAllStation();
+            console.log('uio',this.choosedStations);
         },
         methods: {
             codeChangeRem(obj){
@@ -181,7 +182,11 @@
             },
             addByStationId(stationId, i) {
                 var v = this
-                this.choosedStations.push({id: stationId, name: this.getStationNameById(stationId), index: i});
+                this.choosedStations.push({
+                    id: stationId,
+                    name: this.getStationNameById(stationId),
+                    index: i,
+                    xg:true});
                 for (var i = 0; i < this.stationList.length; i++) {
                     if (v.stationList[i].id == stationId) {
                         v.stationList[i].disabled = true
