@@ -64,7 +64,11 @@
                                           <!--v-for="(item,index) in choosedStations"></Step>-->
                               <!--</Steps>-->
                               <!---->
-                              <linemess :mess="choosedStations"></linemess>
+                              <linemess :mess="choosedStations"
+                                        :stationList="stationList"
+                                        @codeChangeRem="codeChangeRem"
+                                        @codeChange = 'codeChange'
+                              ></linemess>
                         </div>
                         <div style="width: 100px;">
                               <div>
@@ -94,7 +98,7 @@
 </template>
 
 <script>
-      import linemess from './comp/line'
+      import linemess from './comp/codeline'
     export default {
         name: '',
         components:{
@@ -146,11 +150,25 @@
                 this.param = this.$parent.currentRow;
             }
             this.getAllStation();
+            console.log('uio',this.choosedStations);
         },
         methods: {
-            getStepitem(item,index){
-                console.log(item);
-                console.log(index);
+            codeChangeRem(obj){
+                this.choosedStations.splice(obj.index,1)
+                this.stationList[obj.item.index].disabled = false
+                console.log(obj);
+            },
+            codeChange(obj){
+                var mes ={
+                    id: obj.item.id,
+                    name:  obj.item.mc,
+                    'index': obj.index,
+                    xg:false
+                }
+                console.log(obj);
+                console.log(mes);
+                this.choosedStations.splice(obj.num,1,mes)
+
             },
             getStations() {
                 this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID + '?xlId=' + this.param.id).then((res) => {
@@ -164,7 +182,11 @@
             },
             addByStationId(stationId, i) {
                 var v = this
-                this.choosedStations.push({id: stationId, name: this.getStationNameById(stationId), index: i});
+                this.choosedStations.push({
+                    id: stationId,
+                    name: this.getStationNameById(stationId),
+                    index: i,
+                    xg:true});
                 for (var i = 0; i < this.stationList.length; i++) {
                     if (v.stationList[i].id == stationId) {
                         v.stationList[i].disabled = true
@@ -226,7 +248,8 @@
                 this.choosedStations.push({
                     id: this.stationList[index].id,
                     name: this.stationList[index].mc,
-                    'index': index
+                    'index': index,
+                    xg:true
                 });//向线路插入数据
                 this.stationId = 0;
                 this.stationList[index].disabled = true
