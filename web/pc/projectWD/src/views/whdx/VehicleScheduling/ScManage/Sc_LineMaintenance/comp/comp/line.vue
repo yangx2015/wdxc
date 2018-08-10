@@ -2,8 +2,13 @@
       <div id="lineModel" style="overflow: auto">
             <div class="box-row-z">
                   <div class="itemSty" v-for="(item,index) in mess">
-                        <Tooltip class="changeBut"  placement="top" content="站点信息修改">
-                              <Button size="small" type="success" shape="circle" icon="edit" @click="codeChange(item,index)"></Button>
+                        <Tooltip class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
+                              <Button size="small" type="success" shape="circle" icon="edit"
+                                      @click="item.xg = !item.xg"></Button>
+                        </Tooltip>
+                        <Tooltip class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
+                              <Button size="small" type="error" shape="circle" icon="trash-a"
+                                      @click="codeChangeRem(item,index),item.xg = !item.xg"></Button>
                         </Tooltip>
                         <i v-show="index!=mess.length-1" class="iconfont icon-one-line-arrow"></i>
 
@@ -12,6 +17,21 @@
                                     {{it}}
                               </div>
 
+                        </div>
+                        <div class="slelctSty" v-show="!item.xg">
+                              <Select filterable clearable v-model="stationId" placeholder="请选择" size="small">
+                                    <Option v-for="(it,val) in stationList"
+                                            :disabled='it.disabled'
+                                            :value="val+1">{{it.mc}}
+                                    </Option>
+                              </Select>
+                        </div>
+                        <div class="butSTY" v-show="!item.xg">
+                              <Button type="primary" shape="circle" icon="arrow-swap" size="small"
+                                      @click='codeChange(index)'></Button>
+                              <Button type="primary" shape="circle" icon="checkmark-round" size="small"
+                                      style="float: right;"
+                                      @click='item.xg = !item.xg'></Button>
                         </div>
                         <!--<Tooltip class="deleBut"  placement="bottom" content="站点移除">-->
                               <!--<Button size="small" type="error" shape="circle" icon="trash-a"></Button>-->
@@ -27,21 +47,22 @@
 <script>
     export default {
         name: "line",
+        data(){
+          return{
+              stationId:''
+          }
+        },
         props:{
             mess:{
                 type:Array,
-                default:[
-                    // {
-                    //     name:'你好啊'
-                    // },{
-                    //     name:'你好啊666666'
-                    // },{
-                    //     name:'你好啊'
-                    // },{
-                    //     name:'你好啊'
-                    // },
-                ]
+                default:[]
+            },
+            stationList:{
+                type:Array,
+                default:[]
             }
+        },
+        computed:{
         },
         watch:{
             mess:(n,o)=>{
@@ -49,19 +70,23 @@
             }
         },
         created(){
-            console.log(this.mess)
-            // this.mess.forEach((item,index)=>{
-            //     item.name.split('')
-            // })
-
         },
         methods:{
-            codeChange(item,index){
+            codeChangeRem(item,index){
                 var abj ={
                     item:item,
-                    index:inex
+                    index:index
                 }
-                this.$emit('codeMess',abj)
+                this.$emit('codeChangeRem',abj)
+            },
+            codeChange(num){
+                console.log(this.stationList[this.stationId-1]);
+                var abj = {
+                    num:num,
+                    item:this.stationList[this.stationId-1],
+                    index:this.stationId
+                }
+                this.$emit('codeChange',abj)
             }
         }
     }
@@ -74,7 +99,8 @@
             padding: 0 8px;
             .itemSty{
                   position: relative;
-                  width: 80px;
+                  width: 110px;
+                  min-width: 110px;
                   height: 100%;
                   padding: 10px 0 30px 0;
                   .icon-9{
@@ -82,12 +108,12 @@
                         color: #57a3f3;
                   }
                   .icon-one-line-arrow{
-                        font-size: 40px;
+                        font-size: 50px;
                         font-weight: 900;
                         color: #57a3f3;
                         position: absolute;
-                        left: 36px;
-                        top: -8px;
+                        left: 48px;
+                        top: -15px;
                   }
                   .name{
                         font-size: 16px;
@@ -97,6 +123,19 @@
                   .deleBut{
                         position: absolute;
                         buttom: 4px;
+                  }
+                  .slelctSty{
+                        position: absolute;
+                        left: 30px;
+                        top: 10px;
+                        width: 75px;
+                        z-index: 100;
+                  }
+                  .butSTY{
+                        position: absolute;
+                        left: 30px;
+                        top: 50px;
+                        width: 75px;
                   }
             }
       }
