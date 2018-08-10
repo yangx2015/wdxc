@@ -342,7 +342,7 @@
                 ],
                 //收索
                 param:{
-                    orderBy:'cjsj desc',
+                    orderBy:'zdbh asc',
                     mcLike:'',
                     pageNum:1,
                     pageSize:8
