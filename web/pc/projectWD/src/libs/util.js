@@ -41,13 +41,13 @@ util.fillTableColumns = (v)=>{
     }
 }
 util.buildDeleteButton = (v,h,id)=>{
-    return util.buildButton(v,h,'error','close','删除',()=>{
+    return util.buildButton(v,h,'error','md-close','删除',()=>{
         util.delete(v,[id])
     })
 }
-util.buildEditButton = (v,h,p)=>{
-    return util.buildButton(v,h,'warning','edit','编辑',()=>{
-        v.choosedItem = p.row;
+util.buildeditButton = (v,h,p)=>{
+    return util.buildButton(v,h,'warning','md-create','编辑',()=>{
+        v.chooseditem = p.row;
         v.componentName = 'formData'
     })
 }
@@ -179,9 +179,9 @@ util.initPageSize = (v)=>{
  */
 util.initFormModal = (v)=>{
     v.apiRoot = v.$parent.apiRoot;
-    if (v.$parent.choosedItem){
+    if (v.$parent.chooseditem){
         // 深复制，避免数据联动
-        v.formItem = JSON.parse(JSON.stringify(v.$parent.choosedItem));
+        v.formItem = JSON.parse(JSON.stringify(v.$parent.chooseditem));
         v.operate = '编辑'
         v.readonly = true
     }
@@ -207,7 +207,7 @@ util.initFormRule = (v)=>{
  */
 util.add = (v)=>{
     v.componentName = 'formData'
-    v.choosedItem = null;
+    v.chooseditem = null;
 }
 /**
  * 点击保存按钮事件（包括新增保存和编辑保存）
@@ -218,7 +218,7 @@ util.add = (v)=>{
  */
 util.save = function(v){
     // 根据状态自动判断调用新增接口还是修改接口
-    let url = v.saveUrl ? v.saveUrl : (v.$parent.choosedItem ? v.apiRoot['CHANGE'] : v.apiRoot['ADD']);
+    let url = v.saveUrl ? v.saveUrl : (v.$parent.chooseditem ? v.apiRoot['CHANGE'] : v.apiRoot['ADD']);
     let rules = v.$refs.form.rules;
 
     function sendSave(){

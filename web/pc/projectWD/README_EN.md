@@ -59,7 +59,7 @@ npm run build
     - Workflow
 - Tables
     - Dragable table
-    - Editable table
+    - editable table
         - Inline editable table
         - Cell editable table
     - Searchable table

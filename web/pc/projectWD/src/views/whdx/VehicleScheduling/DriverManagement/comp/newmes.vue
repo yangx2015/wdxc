@@ -104,7 +104,7 @@
 	    		</div>
     		</Form>
 		    <div slot='footer'>
-		    	<Button type="ghost" @click="colse">取消</Button>
+		    	<Button type="ghost" @click="colse"style="color: #949494">取消</Button>
 	        	<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>
 		    </div>
 		</Modal>

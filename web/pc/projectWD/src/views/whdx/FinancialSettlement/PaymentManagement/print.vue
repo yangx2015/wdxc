@@ -69,7 +69,7 @@
 				<span>收款人：_____________________</span>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" v-if="showFooter" @click="close">取消</Button>
+				<Button type="ghost" v-if="showFooter" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" v-if="showFooter" @click="print">确定</Button>
 			</div>
 		</Modal>
@@ -115,7 +115,7 @@
             let now = new Date();
             this.date = now.format("yyyy-MM-dd");
             this.number = now.format('yyyyMMddhhmmss');
-            this.item = this.$parent.choosedItem;
+            this.item = this.$parent.chooseditem;
             if (this.item.choosedOrderList && this.item.choosedOrderList.length != 0){
 				this.startTime = this.item.choosedOrderList[0].cjsj.substring(0,10);
 				this.endTime = this.item.choosedOrderList[this.item.choosedOrderList.length - 1].cjsj.substring(0,10);

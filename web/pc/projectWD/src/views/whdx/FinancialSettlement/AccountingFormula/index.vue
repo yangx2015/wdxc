@@ -20,10 +20,10 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 							<Button type="primary" @click="v.util.add(v)">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -58,7 +58,7 @@
                 apiRoot : this.apis.HSGS,
                 tabHeight: 220,
                 componentName: '',
-                choosedItem: null,
+                chooseditem: null,
                 tableTitle: [
                     {title: "序号", width: 80, align: 'center', type: 'index'},
                     {title: '类型', align: 'center', key: 'lx',
@@ -92,7 +92,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        icon: 'close',
+                                        icon: 'md-close',
                                         shape: 'circle',
                                         size: 'small'
                                     },

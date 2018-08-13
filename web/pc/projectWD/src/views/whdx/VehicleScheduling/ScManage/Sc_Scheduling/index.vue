@@ -43,7 +43,7 @@
 							<Button slot="extra" type="success"
 								size="small"
 								@click="BJ(item)"
-								shape="circle" icon="edit"></Button>
+								shape="circle" icon="md-create"></Button>
 							<div style="min-height: 260px" class="box">
 								<div class="body">
 									<div class="box-row-list">
@@ -163,7 +163,7 @@
 							h('Button', {
 									props: {
 										type: 'success',
-										icon: 'edit',
+										icon: 'md-create',
 										shape: 'circle',
 										size: 'small'
 									},

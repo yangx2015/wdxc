@@ -19,7 +19,7 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -46,7 +46,7 @@
                 SpinShow: true,
                 tabHeight: 220,
                 componentName: '',
-                choosedItem: null,
+                chooseditem: null,
                 //数据传输
                 chmess: {},
                 tableTiT: [

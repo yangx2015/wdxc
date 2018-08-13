@@ -58,7 +58,7 @@
 								</div>
 		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle"
-		    						 	size="small" icon="plus-round"
+		    						 	size="small" icon="md-add"
 		    						 	@click="AddList(item.clId,item.cph,item.sjxm)"></Button>
 		    					</span>
 		    				</div>	    		

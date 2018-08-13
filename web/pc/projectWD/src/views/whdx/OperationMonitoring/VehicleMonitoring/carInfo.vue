@@ -283,7 +283,7 @@
             },
             close(){
                 this.car = null
-                this.$emit('close')
+                this.$emit('md-close')
             },
             save(){
                 this.SpinShow = true;

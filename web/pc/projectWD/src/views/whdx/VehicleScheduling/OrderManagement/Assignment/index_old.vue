@@ -45,7 +45,7 @@
                         </div>
                         <span slot="extra">
 							        	<Button type="success" size="small">修改</Button>
-							        	<Button type="error" size="small">取消</Button>
+							        	<Button type="error" size="small"style="color: #949494">取消</Button>
 							        </span>
                         <div style="height: 60px;overflow: auto;overflow-x: hidden;">
                             <Row style="border-bottom: solid 1px #dddee1;padding-bottom: 4px;">

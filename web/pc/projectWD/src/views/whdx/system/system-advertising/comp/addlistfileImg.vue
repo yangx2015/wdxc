@@ -28,7 +28,7 @@
 	        :action="uploadUrl+'?targetPath=hdFile'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
-	            <Icon type="camera" size="20"></Icon>
+			<Icon type="md-camera"  size="20"/>
 	        </div>
 	    </Upload>
 	</div>

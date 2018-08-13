@@ -2,7 +2,7 @@
     <Col span="6" style="margin-top: 16px;">
         <Card>
             <p slot="title" style="font-size: 18px">
-                <Icon type="model-s" size="22"/>
+                <Icon type="ios-car" size="26"/>
                 {{data.cph}}
             </p>
             <a href="#" slot="extra" @click.prevent="changeLimit">
@@ -39,7 +39,7 @@
                         </Col>
                         <Col span="6" offset="4">
                             <Tooltip content="绑定司机" v-if="!bindDriverFlag">
-                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
+                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
                             </Tooltip>
                             <div v-else-if="bindDriverFlag">
                                 <Tooltip content="绑定司机">
@@ -95,16 +95,16 @@
                 <Col span="22" style="text-align: center">
                     <ButtonGroup size="large">
                         <Tooltip content="编辑">
-                            <Button  icon="edit" @click="emit('editCar')"></Button>
+                            <Button  icon="md-create" @click="emit('editCar')"></Button>
                         </Tooltip>
                         <Tooltip content="车辆档案">
-                            <Button  icon="clipboard" @click="emit('showDoc')"></Button>
+                            <Button  icon="ios-clipboard-outline" @click="emit('showDoc')"></Button>
                         </Tooltip>
                         <Tooltip content="历史轨迹">
-                            <Button  icon="map" @click="emit('trace')"></Button>
+                            <Button  icon="ios-map-outline" @click="emit('trace')"></Button>
                         </Tooltip>
                         <Tooltip content="电子围栏">
-                            <Button icon="ios-world-outline" @click="emit('showFance')"></Button>
+                            <Button icon="ios-globe-outline" @click="emit('showFance')"></Button>
                         </Tooltip>
                         <Tooltip content="删除">
                             <Button icon="ios-trash" @click="emit('delCar')"></Button>

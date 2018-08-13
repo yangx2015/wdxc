@@ -109,7 +109,7 @@
 											</div>
 											<div title="新建课题">
 												<Button type="info"
-														icon="plus-round"
+														icon="md-add"
 														:disabled="formItem.fkfs!='20'"
 														@click="newKT"></Button>
 											</div>

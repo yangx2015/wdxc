@@ -40,7 +40,7 @@
 					<DatePicker v-model="param.startTime" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
 					<DatePicker v-model="param.endTime" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
 					<Button type="primary" @click="getData()">
-						<Icon type="search"></Icon>
+						<Icon type="md-search"></Icon>
 					</Button>
 		    	</div>
 		    </Col>
@@ -114,7 +114,7 @@
                 },
 			    v:this,
                 componentName:'',
-                choosedItem:null,
+                chooseditem:null,
 				columns3: [
 					{
                         type: 'selection',
@@ -167,8 +167,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.choosedItem = params.row;
-                                            this.componentName = 'edit';
+                                            this.chooseditem = params.row;
+                                            this.componentName = 'md-create';
                                         }
                                     }
                                 }, '编辑')
@@ -317,7 +317,7 @@
                     return;
                 }
                 item.choosedOrderList = this.selectedData[index];
-		        this.choosedItem = item;
+		        this.chooseditem = item;
 		        this.componentName = 'print';
 			},
 			show(){

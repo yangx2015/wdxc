@@ -18,7 +18,7 @@
 				</Col>
 				<Col span="3">
 					<Button type="primary" @click="formList()">
-						<Icon type="search"></Icon>
+						<Icon type="md-search"></Icon>
 					</Button>
 				</Col>
 			</Row>
@@ -135,7 +135,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'success',
-                                        icon: 'navicon-round',
+                                        icon: 'md-menu',
                                         shape: 'circle',
                                         size: 'small'
                                     },
@@ -163,7 +163,7 @@
                     ignition: 50,
                     brennschluss:'60'
 				},
-				choosedItem:null,
+				chooseditem:null,
 				car:{},
 			}
 		},
@@ -208,7 +208,7 @@
 				return now.format("yyyy-MM-dd");
 			},
 		    showMap(item){
-		        this.choosedItem = item;
+		        this.chooseditem = item;
 		      	this.componentName = 'historyMap';
 			},
 		    back(){

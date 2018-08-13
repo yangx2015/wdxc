@@ -52,7 +52,7 @@
 			</div>
 			</Form>
 			<div v-show="!dataRead" slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
+				<Button type="ghost" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 			<div v-show="dataRead" slot='footer'>

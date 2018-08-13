@@ -1,10 +1,10 @@
 <style lang="less">
     @import '../../../../styles/common.less';
 </style>
-<!--角色管理-->
+<!--功能管理-->
 <template>
     <div class="boxbackborder">
-        <Card>
+        <!--<Card>-->
             <Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
@@ -19,10 +19,10 @@
                         </div>
                         <div class="butevent">
                             <Button type="primary" @click="v.util.getPageData(v)">
-                                <Icon type="search"></Icon>
+                                <Icon type="md-search"></Icon>
                             </Button>
                             <Button type="primary" @click="v.util.add(v)">
-                                <Icon type="plus-round"></Icon>
+                                <Icon type="md-add"></Icon>
                             </Button>
                         </div>
                     </div>
@@ -35,7 +35,7 @@
                 <Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top'
                       @on-change='pageChange'></Page>
             </Row>
-        </Card>
+        <!--</Card>-->
         <component
                 :is="componentName"
                 :Dictionary="Dictionary"></component>
@@ -59,13 +59,13 @@
                 apiRoot:this.apis.FUNCTION,
                 tabHeight: 220,
                 componentName: '',
-                choosedItem: null,
+                chooseditem: null,
                 //数据传输
                 chmess: {},
                 tableTiT: [
                     {title: "序号", width: 60, align: 'center', type: 'index', fixed: 'left'},
                     {title: '功能名称', align: 'center', width: 120, key: 'gnmc', fixed: 'left'},
-                    {title: '功能代码', align: 'center', width: 120, key: 'gndm'},
+                    {title: '功能代码', align: 'center', width: 140, key: 'gndm'},
                     {title: '服务代码', align: 'center', width: 120, key: 'fwdm'},
                     {
                         title: '状态', align: 'center', width: 120, key: 'zt',
@@ -76,10 +76,10 @@
 
                     },
                     {title: '排序', align: 'center', width: 120, key: 'px'},
-                    {title: '备注', align: 'center', width: 120, key: 'bz'},
-                    {title: 'URL', align: 'center', width: 120, key: 'url'},
-                    {title: '父节点', align: 'center', width: 120, key: 'fjd'},
-                    {title: '跳转地址', align: 'center', width: 120, key: 'tzdz'},
+                    {title: '备注', align: 'center', width: 140, key: 'bz'},
+                    {title: 'URL', align: 'center', width: 140, key: 'url'},
+                    {title: '父节点', align: 'center', width: 140, key: 'fjd'},
+                    {title: '跳转地址', align: 'center', width: 140, key: 'tzdz'},
                     {
                         title: '图标',
                         align: 'center',
@@ -104,27 +104,15 @@
                     {
                         title: 'API前缀',
                         align: 'center',
-                        width: 120,
+                        width: 140,
                         key: 'apiQz'
                     },
                     {
                         title: 'API后缀',
                         align: 'center',
-                        width: 120,
+                        width: 140,
                         key: 'apiHz'
                     },
-                    // {
-                    //     title: '创建人',
-                    //     width: 100,
-                    //     align: 'center',
-                    //     key: 'cjr'
-                    // },
-                    // {
-                    //     title: '创建时间',
-                    //     width: 100,
-                    //     align: 'center',
-                    //     key: 'cjsj'
-                    // },
                     {
                         title: '操作',
                         key: 'action',
@@ -136,7 +124,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'success',
-                                        icon: 'edit',
+                                        icon: 'md-create',
                                         shape: 'circle',
                                         size: 'small'
                                     },
@@ -147,14 +135,14 @@
                                     on: {
                                         click: () => {
                                             this.componentName = 'formData'
-                                            this.choosedItem = params.row;
+                                            this.chooseditem = params.row;
                                         }
                                     }
                                 }),
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        icon: 'close',
+                                        icon: 'md-close',
                                         shape: 'circle',
                                         size: 'small'
                                     },
@@ -174,6 +162,7 @@
                 ],
                 pageData: [],
                 param: {
+                    orderBy:'gnmc asc',
                     gnmcLike: '',
                     total: 0,
                     pageNum: 1,
@@ -184,6 +173,7 @@
             }
         },
         created() {
+            this.tabHeight = this.getWindowHeight() - 260
             this.$store.commit('setCurrentPath', [{title: '首页',}, {title: '系统管理',}, {title: '功能管理',}])
             this.util.initTable(this)
             this.getLXDic()//字典数据

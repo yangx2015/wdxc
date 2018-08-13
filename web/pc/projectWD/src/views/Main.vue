@@ -48,7 +48,7 @@
                 <div style="line-height: 65px;padding: 0 8px">
                       <Tooltip content="更多异常信息">
                             <Button type="primary"
-                                    size="small" icon="social-buffer"
+                                    size="small" icon="logo-buffer"
                             @click="compName='errmess'"></Button>
                       </Tooltip>
                 </div>
@@ -64,7 +64,7 @@
                             	</span>
                                 <span class="main-user-name">{{ userName }}</span>
                             </span>
-                            <Button type="primary" shape="circle" icon="person" @click="person" style="margin-right: 8px;"></Button>
+                            <Button type="primary" shape="circle" icon="md-key" @click="person" style="margin-right: 8px;"></Button>
                             <Button
                             	size="large"
                             	type="primary"
