@@ -1,5 +1,8 @@
 <style lang="less">
     @import '../main.less';
+    .ivu-tag-blue{
+        line-height: 32px;
+    }
 </style>
 
 <template>

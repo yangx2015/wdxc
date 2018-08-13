@@ -89,7 +89,7 @@
   }
 </style>
 <template>
-    <!--<div id="mapDOt" class="box linemess" :style="{backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center='+gps.ksGps+'&markers='+mapKS(gps.ksGps)+'|'+mapJS(gps.jsGps)+'&zoom=14&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}">-->
+    <!--<div id="mapDOt" class="box linemess" >-->
       <div class="linemess box">
       <div id="mapDOt" class="box">
       </div>

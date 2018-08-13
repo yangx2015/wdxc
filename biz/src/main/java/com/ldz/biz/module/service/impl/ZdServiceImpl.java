@@ -84,7 +84,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         }
         List<String> routeIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
 
-        Map<String,Short> orderMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getXlId,ClXlzd::getXh));
+        Map<String,Short> orderMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
         List<ClZd> stations = findIn(ClZd.InnerColumn.id,routeIds);
         for (ClZd station : stations) {
             station.setRouteOrder(orderMap.get(station.getId()));

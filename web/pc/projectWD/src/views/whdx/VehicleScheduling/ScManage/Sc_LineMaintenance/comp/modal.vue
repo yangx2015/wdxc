@@ -59,10 +59,16 @@
                   </div>
                   <div class="box-row">
                         <div class="body-F stepsList">
-                              <Steps :current="choosedStations.length" size="small">
-                                    <Step icon="disc" :content="item.name"
-                                          v-for="(item,index) in choosedStations"></Step>
-                              </Steps>
+                              <!--<Steps :current="choosedStations.length" size="small">-->
+                                    <!--<Step icon="disc" :content="item.name"-->
+                                          <!--v-for="(item,index) in choosedStations"></Step>-->
+                              <!--</Steps>-->
+                              <!---->
+                              <linemess :mess="choosedStations"
+                                        :stationList="stationList"
+                                        @codeChangeRem="codeChangeRem"
+                                        @codeChange = 'codeChange'
+                              ></linemess>
                         </div>
                         <div style="width: 100px;">
                               <div>
@@ -84,7 +90,7 @@
                         </div>
                   </div>
                   <div slot='footer'>
-                        <Button type="ghost" @click="colse">取消</Button>
+                        <Button type="success" @click="colse"style="color: #949494">取消</Button>
                         <Button type="primary" @click="save('addmess')">确定</Button>
                   </div>
             </Modal>
@@ -92,9 +98,12 @@
 </template>
 
 <script>
-
+      import linemess from './comp/codeline'
     export default {
         name: '',
+        components:{
+            linemess
+        },
         data() {
             return {
                 showModal: true,
@@ -141,8 +150,26 @@
                 this.param = this.$parent.currentRow;
             }
             this.getAllStation();
+            console.log('uio',this.choosedStations);
         },
         methods: {
+            codeChangeRem(obj){
+                this.choosedStations.splice(obj.index,1)
+                this.stationList[obj.item.index].disabled = false
+                console.log(obj);
+            },
+            codeChange(obj){
+                var mes ={
+                    id: obj.item.id,
+                    name:  obj.item.mc,
+                    'index': obj.index,
+                    xg:false
+                }
+                console.log(obj);
+                console.log(mes);
+                this.choosedStations.splice(obj.num,1,mes)
+
+            },
             getStations() {
                 this.$http.get(this.apis.ZD.GET_BY_ROUTE_ID + '?xlId=' + this.param.id).then((res) => {
                     if (res.code === 200) {
@@ -155,7 +182,11 @@
             },
             addByStationId(stationId, i) {
                 var v = this
-                this.choosedStations.push({id: stationId, name: this.getStationNameById(stationId), index: i});
+                this.choosedStations.push({
+                    id: stationId,
+                    name: this.getStationNameById(stationId),
+                    index: i,
+                    xg:true});
                 for (var i = 0; i < this.stationList.length; i++) {
                     if (v.stationList[i].id == stationId) {
                         v.stationList[i].disabled = true
@@ -214,11 +245,11 @@
                 })
             },
             addStation(index) {
-				debugger
                 this.choosedStations.push({
                     id: this.stationList[index].id,
                     name: this.stationList[index].mc,
-                    'index': index
+                    'index': index,
+                    xg:true
                 });//向线路插入数据
                 this.stationId = 0;
                 this.stationList[index].disabled = true

@@ -2,11 +2,11 @@
     <Col span="6" style="margin-top: 16px;">
         <Card>
             <p slot="title" style="font-size: 18px">
-                <Icon type="model-s" size="22"/>
+                <Icon type="ios-car" size="26"/>
                 {{data.cph}}
             </p>
             <a href="#" slot="extra" @click.prevent="changeLimit">
-                <Tag color="#436EEE">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
+                <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
             </a>
             <Row>
                 <Col span="24">
@@ -17,7 +17,7 @@
                         <Col span="10">
                             <span>{{data.sjxm}}</span>
                         </Col>
-                        <Col span="4" offset="6">
+                        <Col span="6" offset="4">
                             <Poptip
                                     confirm
                                     title="确认解除绑定?"
@@ -33,20 +33,27 @@
                         </Col>
                         <Col span="10">
                             <span  v-if="!bindDriverFlag">暂未绑定</span>
-                            <Select v-else-if="bindDriverFlag" v-model="driverId" style="width:150px" clearable @on-clear="()=>{bindDriverFlag=false}">
+                            <Select v-else-if="bindDriverFlag" v-model="driverId" style="width:150px" clearSingleSelect clearable v-on:clear="cancelChooseDriver">
                                 <Option v-for="(item,index) in driverList" :key="item.sfzhm" :value="item.sfzhm">{{item.xm}}</Option>
                             </Select>
                         </Col>
-                        <Col span="4" offset="6">
+                        <Col span="6" offset="4">
                             <Tooltip content="绑定司机" v-if="!bindDriverFlag">
-                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
+                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
                             </Tooltip>
-                            <Button v-else-if="bindDriverFlag" type="info" ghost @click="bindDriver">绑定</Button>
+                            <div v-else-if="bindDriverFlag">
+                                <Tooltip content="绑定司机">
+                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDriver"></Button>
+                                </Tooltip>
+                                <Tooltip content="取消绑定">
+                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDriver"></Button>
+                                </Tooltip>
+                            </div>
                         </Col>
                     </Row>
                 </Col>
             </Row>
-            <Row>
+            <Row style="margin-top: 10px;">
                 <Col span="24">
                     <Row v-if="data.zdbh">
                         <Col span="2" style="padding-right: 45px;margin-top: -5px;">
@@ -55,7 +62,7 @@
                         <Col span="10">
                             <span>{{data.zdbh}}</span>
                         </Col>
-                        <Col span="4" offset="6">
+                        <Col span="6" offset="4">
                             <Poptip
                                     confirm
                                     title="确认解除绑定?"
@@ -71,33 +78,40 @@
                         </Col>
                         <Col span="10">
                             <span  v-if="!bindDeviceFlag">暂未绑定</span>
-                            <Select v-else-if="bindDeviceFlag" v-model="deviceId" style="width:150px" clearable @on-clear="()=>{bindDeviceFlag=false}">
+                            <Select v-else-if="bindDeviceFlag" v-model="deviceId" style="width:150px" clearable v-on:on-clear="cancelChooseDevice">
                                 <Option v-for="(item,index) in deviceList" :key="item.zdbh" :value="item.zdbh">{{item.zdbh}}</Option>
                             </Select>
                         </Col>
-                        <Col span="4" offset="6">
+                        <Col span="6" offset="4">
                             <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
-                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
+                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
                             </Tooltip>
-                            <Button v-else-if="bindDeviceFlag" type="info" ghost @click="bindDevice">绑定</Button>
+                            <div v-else-if="bindDeviceFlag">
+                                <Tooltip content="绑定终端">
+                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDevice"></Button>
+                                </Tooltip>
+                                <Tooltip content="取消绑定">
+                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDevice"></Button>
+                                </Tooltip>
+                            </div>
                         </Col>
                     </Row>
                 </Col>
             </Row>
             <Row type="flex" justify="end" style="padding-top: 20px">
-                <Col span="22">
+                <Col span="22" style="text-align: center">
                     <ButtonGroup size="large">
                         <Tooltip content="编辑">
-                            <Button  icon="edit" @click="emit('editCar')"></Button>
+                            <Button  icon="md-create" @click="emit('editCar')"></Button>
                         </Tooltip>
                         <Tooltip content="车辆档案">
-                            <Button  icon="clipboard" @click="emit('showDoc')"></Button>
+                            <Button  icon="ios-clipboard-outline" @click="emit('showDoc')"></Button>
                         </Tooltip>
                         <Tooltip content="历史轨迹">
-                            <Button  icon="map" @click="emit('trace')"></Button>
+                            <Button  icon="ios-map-outline" @click="emit('trace')"></Button>
                         </Tooltip>
                         <Tooltip content="电子围栏">
-                            <Button icon="ios-world-outline" @click="emit('showFance')"></Button>
+                            <Button icon="ios-globe-outline" @click="emit('showFance')"></Button>
                         </Tooltip>
                         <Tooltip content="删除">
                             <Button icon="ios-trash" @click="emit('delCar')"></Button>
@@ -136,9 +150,17 @@
             this.bindDriverFlag = !!this.data.sjxm
             this.bindDeviceFlag = !!this.data.zdbh
         },
+        mounted(){
+        },
         methods:{
             emit(method){
                 this.$emit(method,this.data);
+            },
+            cancelChooseDriver(){
+                this.bindDriverFlag = false
+            },
+            cancelChooseDevice(){
+                this.bindDeviceFlag = false
             },
             chooseDriver(){
                 this.getdriverList();
@@ -152,7 +174,7 @@
                 this.postAndReload(this.apis.CLGL.bindDriver,{carId:this.data.clId,driverId:this.driverId})
             },
             bindDevice(){
-                this.postAndReload(this.apis.CLGL.bindDevice,{carId:this.data.clId,deviceId:this.deviceId})
+                this.postAndReload(this.apis.CLGL.bindDevice,{carId:this.data.clId,devcieId:this.deviceId})
             },
             unbindDriver(){
                 this.driverId = '';
@@ -175,15 +197,15 @@
             },
             getdriverList(){
                 let v = this;
-                v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
+                v.$http.get(this.apis.JSY.NOT_BIND_LIST,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
-                        v.driverList = res.page.list;
+                        v.driverList = res.result;
                     }
                 })
             },
             getDevices(){
                 let v = this;
-                v.$http.get(this.apis.ZDGL.SXQUERY).then((res) =>{
+                v.$http.post(this.apis.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
                         v.deviceList = res.result;
                     }

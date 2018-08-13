@@ -93,7 +93,7 @@
 			return {
 			    v:this,
                 componentName:'',
-                choosedItem:null,
+                chooseditem:null,
 				columns3: [
                     {
                         type: 'selection',
@@ -146,8 +146,8 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.choosedItem = params.row;
-                                            this.componentName = 'edit';
+                                            this.chooseditem = params.row;
+                                            this.componentName = 'md-create';
                                         }
                                     }
                                 }, '编辑')
@@ -282,7 +282,7 @@
                     return;
                 }
                 item.choosedOrderList = this.selectedData[index];
-                this.choosedItem = item;
+                this.chooseditem = item;
                 this.componentName = 'print';
             },
 			show(){

@@ -1,9 +1,39 @@
-<!---->
 <template>
-  <ui-page top='0'>
-      登录
-      <ui-button type="primary" bindtap="goIndex">首页约车</ui-button>
-  </ui-page>
+    <ui-page top="0" style="overflow-y: hidden;">
+        <ui-view class="box_col" style="{{ { height: pageHeight(46)+ 'px'} }}">
+            <ui-view class="logo">
+              <ui-image src="static/img/logo.jpg" width="130" height="130"></ui-image>
+            </ui-view>
+
+            <ui-view class="content_form">
+              <ui-form>
+                <ui-view class="input_padding">
+                  <ui-input ui:model="form.username" maxlength="11" type="tel" placeholder="请输入手机号"></ui-input>
+                </ui-view>
+                <ui-view class="input_padding">
+                  <ui-input ui:model="form.password" type="password" placeholder="请输入密码"></ui-input>
+                </ui-view>
+                <ui-view class="input_padding">
+                  <ui-row>
+                    <ui-col align="right" vertical-align="middle" bindtap="forgetpassword">
+                      <!-- <ui-navigator url="/pages/componentDemo/navigator/navigator2?state=1"> -->
+                        <ui-text block class="reset_pwd">
+                          忘记密码?
+                        </ui-text>
+                      <!-- </ui-navigator> -->
+                    </ui-col>
+                  </ui-row>
+                </ui-view>
+                <ui-view class="input_padding">
+                  <ui-button class="submit_btn" bindtap="loginYZ">登录</ui-button>
+                </ui-view>
+              </ui-form>
+            </ui-view>
+            <ui-view class="box_col_100 backimg">
+
+            </ui-view>
+        </ui-view>
+    </ui-page>
 </template>
 
 <script>
@@ -17,22 +47,60 @@ export default {
     backgroundColor:'#fff',
     delay:false,//延迟加载
   },
-  data() {
-    return {}
-  },
-  methods: {
-    goIndex(){
-      console.log('hello');
-      
-      ui.navigateTo({
-        url: '/pages/index'
-      })
+  data () {
+    return {
+      form:{
+      }
     }
   },
-  mounted() {}
+  methods: {
+    loginYZ(){
+
+    },
+    forgetpassword(){
+
+    }
+  }
 }
+
 </script>
 
 <style lang="less">
+.logo{
+  width: 100%;
+  text-align: center;
+  // position: fixed;
+  margin-top: 14%;
+  .ui-image-container{
+    margin: auto;
+  }
+}
+.content_form{
+  margin-top: 50rpx;
+  .input_padding{
+    padding: 20px 30px 0 30px;
+  }
 
+  .reset_pwd{
+    font-size: 16px;
+    font-weight: bold;
+    color: red;
+  }
+
+  .reg{
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+  }
+
+  .submit_btn{
+    font-size:18px;
+    font-weight: bold;
+    color:#5cadff;
+  }
+}
+.backimg{
+  background-image: url('../static/img/drive/logbotImg.jpg');
+  background-size: 100%;
+}
 </style>

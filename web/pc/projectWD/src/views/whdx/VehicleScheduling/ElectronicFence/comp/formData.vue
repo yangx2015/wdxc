@@ -35,7 +35,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
+				<Button type="ghost" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save">确定</Button>
 			</div>
 		</Modal>

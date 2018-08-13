@@ -133,7 +133,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">取消</Button>
+				<Button type="ghost" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save">确定</Button>
 			</div>
 		</Modal>
@@ -234,8 +234,8 @@
             }
         },
         created(){
-            if (this.$parent.choosedItem){
-                this.param = JSON.parse(JSON.stringify(this.$parent.choosedItem));
+            if (this.$parent.chooseditem){
+                this.param = JSON.parse(JSON.stringify(this.$parent.chooseditem));
                 log(this.param);
                 this.operate = '编辑'
                 this.cllx = [this.param.cllx,''+this.param.zws];

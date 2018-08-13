@@ -40,7 +40,7 @@
                                 <div style="background-color:white;z-index:110;margin:10px;">
                                     <Input v-model="securityCode" placeholder="请填写短信验证码" ></Input>
                                     <div style="margin-top:10px;text-align:right">
-                                        <Button type="ghost" @click="cancelInputCodeBox">取消</Button>
+                                        <Button type="ghost" @click="cancelInputCodeBox"style="color: #949494">取消</Button>
                                         <Button type="primary" @click="submitCode" :loading="checkIdentifyCodeLoading">确定</Button>
                                     </div>
                                 </div>
@@ -51,16 +51,16 @@
                         <span>{{ userForm.company }}</span>
                     </FormItem>
                     <!--<FormItem label="登录密码：">
-                        <Button type="text" size="small" @click="showEditPassword">修改密码</Button>
+                        <Button type="text" size="small" @click="showeditPassword">修改密码</Button>
                     </FormItem>	-->
                     <div>
                     	<Button 
                     		type="primary" 
                     		size="small" 
                     		style="width:300px;"
-                    		@click="showEditPassword">修改密码</Button>
-                        <!--<Button type="text" style="width: 100px;" @click="cancelEditUserInfor">取消</Button>
-                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveEdit">保存</Button>-->
+                    		@click="showeditPassword">修改密码</Button>
+                        <!--<Button type="text" style="width: 100px;" @click="canceleditUserInfor"style="color: #949494">取消</Button>
+                        <Button type="primary" style="width: 100px;" :loading="save_loading" @click="saveedit">保存</Button>-->
                     </div>
                 </Form>
             </div>
@@ -79,8 +79,8 @@
                 </FormItem>
             </Form>
             <div slot="footer">
-                <Button type="text" @click="cancelEditPass">取消</Button>
-                <Button type="primary" :loading="savePassLoading" @click="saveEditPass">保存</Button>
+                <Button type="text" @click="canceleditPass"style="color: #949494">取消</Button>
+                <Button type="primary" :loading="savePassLoading" @click="saveeditPass">保存</Button>
             </div>
         </Modal>
     </div>
@@ -209,10 +209,10 @@ export default {
                 }
             });
         },
-        showEditPassword () {
+        showeditPassword () {
             this.editPasswordModal = true;
         },
-        cancelEditUserInfor () {
+        canceleditUserInfor () {
             this.$store.commit('removeTag', 'ownspace_index');
             localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList);
             let lastPageName = '';
@@ -225,7 +225,7 @@ export default {
                 name: lastPageName
             });
         },
-        saveEdit () {
+        saveedit () {
             this.$refs['userForm'].validate((valid) => {
                 if (valid) {
                     if (this.phoneHasChanged && this.userForm.cellphone !== this.initPhone) { // 手机号码修改过了而且修改之后的手机号和原来的不一样
@@ -244,10 +244,10 @@ export default {
                 }
             });
         },
-        cancelEditPass () {
+        canceleditPass () {
             this.editPasswordModal = false;
         },
-        saveEditPass () {
+        saveeditPass () {
             this.$refs['editPasswordForm'].validate((valid) => {
                 if (valid) {
                     this.savePassLoading = true;

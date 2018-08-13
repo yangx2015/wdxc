@@ -28,7 +28,7 @@
         data() {
             return {
                 componentName: '',
-                choosedItem: null,
+                chooseditem: null,
                 map: '',
                 mapcenter: {
                     lng: 114.357527,
@@ -186,7 +186,7 @@
             addClickHandler(item, marker) {
                 var v = this
                 marker.addEventListener("click", function (e) {
-                    v.choosedItem = item;
+                    v.chooseditem = item;
                 })
             },
             chooseCar(item){

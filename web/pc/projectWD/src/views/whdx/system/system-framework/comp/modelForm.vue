@@ -31,7 +31,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="colse">取消</Button>
+				<Button type="ghost" @click="colse"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save('formItem')">确定</Button>
 			</div>
 		</Modal>
@@ -77,7 +77,7 @@
         },
 		mounted(){
             this.mode = this.$parent.mode;
-            if (this.mode == 'edit'){
+            if (this.mode == 'md-create'){
                 this.operate = '编辑'
                 this.formItem = this.$parent.currentNode;
                 this.parentCode = this.$parent.currentNode.fjgdm;
@@ -171,7 +171,7 @@
                 this.$refs[name].validate((valid) => {
                     if (valid) {
 						let url = this.apis.FRAMEWORK.ADD;
-                        if (this.mode == 'edit'){
+                        if (this.mode == 'md-create'){
 		                    url = this.apis.FRAMEWORK.CHANGE;
 						}
 						delete this.formItem.children;

@@ -20,7 +20,7 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -53,7 +53,7 @@
                 apiRoot : this.apis.BXJZ,
                 tabHeight: 220,
                 componentName: '',
-                choosedItem: null,
+                chooseditem: null,
                 tableTitle: [
                     {title: "序号", width: 80, align: 'center', type: 'index'},
                     {title: '报销人', align: 'center', key: 'bxr'},

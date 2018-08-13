@@ -19,11 +19,11 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 							<Button type="primary" @click="AddDataList()">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -204,7 +204,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'success',
-										icon: 'edit',
+										icon: 'md-create',
 										shape: 'circle',
 										size: 'small'
                                     },
@@ -222,7 +222,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-										icon: 'close',
+										icon: 'md-close',
 										shape: 'circle',
 										size: 'small'
                                     },
