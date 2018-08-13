@@ -47,25 +47,6 @@ public class ScheduleComponent {
         CronTrigger sbyxsjjlTrigger = TriggerBuilder.newTrigger().withIdentity(SbYxSjJlJob.class.getName(), "sbyxsjjlSync")
                 .withSchedule(sbyxsjjlBuilder).build();
 
-        // 设备状态同步job
-		/*JobDetail zdglJob = JobBuilder.newJob(GpsZtSyncJob.class).withIdentity(GpsZtSyncJob.class.getName(), "zdglsync")
-				.build();*/
-        // 终端状态监测定时周期 每10分钟执行一次
-        /*CronScheduleBuilder scheduleBuilderZD = CronScheduleBuilder.cronSchedule("0 0/10 * * * ? *");*/
-        // 创建设备状态同步trigger
-		/*CronTrigger cronTriggerzdgl = TriggerBuilder.newTrigger().withIdentity(GpsZtSyncJob.class.getName(), "zdglsync")
-				.withSchedule(scheduleBuilderZD).build();*/
-
-
-        // 纠偏gps轨迹job
-        /*JobDetail jiuPianJob = JobBuilder.newJob(GpsJuPianJob.class).withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
-						.build();*/
-		/*// 鹰眼数据纠偏记录 每6小时执行一次
-		CronScheduleBuilder scheduleBuilderJP = CronScheduleBuilder.cronSchedule("0 0 6/6 * * ? *");*/
-        //创建gps点位纠偏trigger
-        /*CronTrigger cronTriggercljp = TriggerBuilder.newTrigger().withIdentity(GpsJuPianJob.class.getName(), "cljpsync")
-					.withSchedule(scheduleBuilderJP).build();*/
-
         // 上传鹰眼定时任务
         JobDetail zdToYyJob = JobBuilder.newJob(ZdToYyJob.class).withIdentity(ZdToYyJob.class.getName(), "zdToYy")
                 .build();
@@ -78,9 +59,7 @@ public class ScheduleComponent {
 
         try {
             schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
-            //schedulerFactory.getScheduler().scheduleJob(zdglJob, cronTriggerzdgl);
             schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
-//			schedulerFactory.getScheduler().scheduleJob(jiuPianJob, cronTriggercljp);
             schedulerFactory.getScheduler().scheduleJob(sbyxsjjlJob,sbyxsjjlTrigger);
             schedulerFactory.getScheduler().scheduleJob(zdToYyJob,zdToYyTrigger);
         } catch (SchedulerException e) {
