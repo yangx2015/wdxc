@@ -1,0 +1,160 @@
+<template>
+<ui-page style="{{ {height:pageheight,background:'url(http://47.98.39.45:9092/icon/map_line_begin.png)'} }}">
+ 
+  <ui-view class="lmw" >
+  </ui-view>
+  
+ <ui-view class="lmw" style="background:#fff;">
+
+
+  <ui-row vertical-align="middle"  border-bottom style="padding:30px 35px 30px 0px" >
+
+  
+   <ui-col align="left" span=3 space-left="75" >
+    <ui-view calss="pingyi">
+     <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
+    </ui-view>
+   </ui-col>
+   <ui-col span=3 align="left" space-left="20">
+    <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+      张师傅
+    </ui-view>
+    <ui-view style="color:#A0A0A0;font-size:15px">
+      五座车
+    </ui-view>
+   </ui-col>
+    
+  <ui-col align="left" span=4> 
+   <ui-icon type="qichemoren" size=30 style="color:#888888"></ui-icon>
+  </ui-col>
+        
+
+
+  <ui-col align="left" span=4 space-right="20">
+   <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+    鄂A963MK
+   </ui-view>
+   <ui-view style="color:#A0A0A0;font-size:15px">
+    白色·标志·408
+   </ui-view> 
+  </ui-col>
+
+
+ </ui-row>
+
+
+
+
+  
+ <ui-row vertical-align="middle" style="margin:20px 0px 20px 0px;color:#686868;">
+  <ui-col align="left" space-left="20" >
+    过桥费:0元
+  </ui-col>
+  <ui-col align="right" space-right="20">
+    过路费:0元
+  </ui-col>
+ </ui-row>
+ <ui-row vertical-align="middle">
+  <ui-col align="center" style="color:#686868">
+    总价
+  </ui-col>
+ </ui-row>
+ <ui-row vertical-align="middle" style="color:#686868;font-size:25px;font-weight:700">
+   <ui-col align="center">
+      36.2元
+   </ui-col>
+ </ui-row >
+ <ui-row vertical-align="middle" style="padding:20px 0px 20px 0px;color:#686868;font-size:15px" border-bottom>
+  <ui-col align="left" space-left="20">
+    停车费:0元
+  </ui-col>
+  <ui-col align="right" space-right="20">
+    里程费:36.2元
+  </ui-col>
+</ui-row>
+
+
+<ui-row style="padding:20px 0px 10px 0px" vertical-align="middle">
+  <ui-col align="center" style="color:#A0A0A0">
+    评价本次服务
+  </ui-col>
+</ui-row>
+<ui-row>
+  <ui-col align="left" space-left="120">
+    <ui-star></ui-star>
+  </ui-col> 
+</ui-row>
+
+ <ui-row style="padding:10px 0px 20px 0px;color:#A0A0A0" vertical-align="middle">
+   <ui-col align="center">
+     您的评价会让司机做的更好!
+   </ui-col>
+ </ui-row>
+
+
+  </ui-view>
+ </ui-page>
+  
+</template>
+
+<script>
+export default {
+  config: {
+    navigationBarTitleText: '订单详情',
+    navigationStyle:'default',
+    backgroundColor: '',
+    navigationBarTextStyle: '#FFFFFF',
+    navigationBarBackgroundColor:'#F64E16'
+  },
+  data () {
+    return {
+      pageheight:ui.DEFAULT_HEADER_HEIGHT,
+      current9:0,
+      activeTabStyle2:{
+       'color':'#FF9966',
+       'border-bottom':'1px solid #FF9966',
+      },
+    }
+         
+  },
+      
+
+  methods: {
+    handleChange(index,key){
+      this[key]=index
+    },
+    handleContentChange(index,key){
+      this[key]=index
+    },
+    
+    
+    
+   
+    
+    
+    
+
+    
+    navHandle () {
+      ui.navigateTo({
+        url: '/pages/detail'
+      })
+    }
+  },
+  mounted() {
+    //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
+    setTimeout(() => {
+      //关闭app启动图
+      ui.closeSplashscreen()
+    }, 1000);
+  }
+}
+
+</script>
+
+ <style lang="less">
+
+
+
+
+</style>

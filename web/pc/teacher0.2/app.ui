@@ -178,6 +178,13 @@ export default {
     })
   },
   methods: {
+    godingdan(){
+        ui.navigateTo({
+        url: '/pages/orders'
+      })
+
+    },
+
     handleNavIconTap () {
       this.showSlideMenu = !this.showSlideMenu
     },
@@ -257,11 +264,33 @@ export default {
 
     <ui-view slot="menu" class="menu">
        <!-- 侧滑菜单 -->
-      <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
+      <ui-view  style="{{ { height: pageHeight(0)+ 'px'} }}">
         <ui-view class="box_col_auto">
           <ui-row style="margin:30px 0 30px 0">
           <ui-image src="static/img/teacher/logo.png" ></ui-image>
           </ui-row>
+        </ui-view>
+        <ui-view class="box_col_auto">
+            <ui-row class="oures" border-bottom=true space=2>
+              <ui-col align="center" span=4>
+                <ui-icon type="head-g" size="24"></ui-icon>
+              </ui-col>
+              <ui-col>
+                <ui-text>陈二狗 </ui-text>
+              </ui-col>
+            </ui-row>
+            <ui-row class="oures" border-bottom=true space=2>
+              <ui-col align="center" span=4>
+                 <ui-icon type="shouji" size="24"></ui-icon>
+              </ui-col>
+              <ui-col>
+                <ui-text> 13345453534</ui-text>
+              </ui-col>
+                
+            </ui-row>
+        </ui-view>
+        <ui-view >
+          <ui-button style="border-radius: 25px;" bindtap="godingdan()">历史订单</ui-button>
         </ui-view>
         <ui-view>
           <ui-button class="login">退出登录</ui-button>
@@ -414,5 +443,10 @@ body {
     color: #fff;
     margin-top: 30px;
   }
+.oures{
+  font-size: 20px;
+  height: 45px;
+
+}
 
 </style>
