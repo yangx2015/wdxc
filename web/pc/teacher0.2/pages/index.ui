@@ -37,19 +37,22 @@
                   </ui-row>
                 </ui-view>
 
-                <ui-view ui:if="{{people === '他人乘坐'}}">
-                  <ui-row>
-                    
-                      <ui-col span=4>
-                        <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
-                      
-                     </ui-col>
-                     
-                      <ui-col span=4 >
-                        <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
-                     </ui-col>
-                  </ui-row>
-                </ui-view>
+                <!-- <ui-view ui:if="{{people === '他人乘坐'}}"> -->
+                    <ui-mask ui:model="showMask1">
+                      <ui-view class="content">
+                            
+                          <ui-row space-top=280>
+                             <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
+                             </ui-row>  
+                            
+                          <ui-row>
+                             <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
+                           </ui-row>
+                        <ui-button type="success" bindtap="handleShowMask1(false)">确认</ui-button>
+                      </ui-view>
+                    </ui-mask>
+                <!-- </ui-view> -->
+                
                 <ui-view>
                    <ui-row height="100">
                      <ui-col ui:for="{{carlist}}" bindtap="getcarnum(item,index)">
@@ -129,14 +132,20 @@ export default {
   },
   data () {
     return {
+      showMask1: false,
       newnum:'',
       timeValue: '',
       show:false,
       time:'',
       radioCalendar:false,
+      dataMess:{
+         ck:'',//乘客姓名
+         cklxdh:'',//乘客联系电话
+      },
       form:{
-        ck:'',
-        phone:'',
+        ck:'',//乘客姓名
+        cklxdh:'',//乘客联系电话
+        phone:'',//
         time:'',
         num:'',
         starGPS:{
@@ -202,7 +211,14 @@ export default {
     
     }
   },
+  watch:{
+  },
   methods: {
+    handleShowMask1 (show) {
+      console.log('-------------------');
+      
+      this.showMask1 = show
+    },
     indexYZ(){
       var v = this
       console.log(v.form)
@@ -253,10 +269,10 @@ export default {
         itemList:itemLists ,
         success: (index) => {
           console.log(index)
+          if(index==1){
+            v.showMask1 = true
+          }
           v.people = itemLists[index]
-          // ui.showToast({
-          //   title: itemLists[index]
-          // })
         }
       })
     },
@@ -461,7 +477,7 @@ export default {
       this.radioinit(this.format(date))
 
       // 双选默认选中日历，获取默认选中时间范围【开始：当前日期。结束：当前日期推后2天】
-     
+      
 
 
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
@@ -574,5 +590,15 @@ export default {
         box-shadow: 3px 3px 8px #E57A7E;
         color: #fff;
     }
-    }
+  }
+  .otherscc{
+    &.content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    width: 100%;
+  }
+  }
 </style>

@@ -7,7 +7,7 @@
  </ui-row>
   
   
-<ui-view class="lmw">
+<ui-view class="lmw" bindtap="gomark()">
 
 
 <ui-row vertical-align="middle">
@@ -70,12 +70,12 @@
 
   
   
-<ui-view class="lmw">
+<ui-view class="lmw" bindtap="gomark()">
 
 
 <ui-row vertical-align="middle">
 <ui-col span="8"   style="padding:15px 15px 0 15px">
-    <ui-view class="pageHeght">
+    <ui-view class="pageHeght" >
         十二座车
     </ui-view>
 </ui-col>
@@ -179,7 +179,11 @@ export default {
     handleContentChange(index,key){
       this[key]=index
     },
-    
+    gomark(){
+       ui.navigateTo({
+        url: '/pages/mark'
+      })
+    },
     
     
    
