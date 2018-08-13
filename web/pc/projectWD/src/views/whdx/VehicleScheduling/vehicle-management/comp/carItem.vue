@@ -6,7 +6,7 @@
                 {{data.cph}}
             </p>
             <a href="#" slot="extra" @click.prevent="changeLimit">
-                <Tag color="#436EEE">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
+                <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
             </a>
             <Row>
                 <Col span="24">
@@ -43,10 +43,10 @@
                             </Tooltip>
                             <div v-else-if="bindDriverFlag">
                                 <Tooltip content="绑定司机">
-                                    <Button type="success" shape='circle' size="small" icon="checkmark" @click="bindDriver"></Button>
+                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDriver"></Button>
                                 </Tooltip>
                                 <Tooltip content="取消绑定">
-                                    <Button type="error" shape='circle' size="small" icon="close" @click="cancelChooseDriver"></Button>
+                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDriver"></Button>
                                 </Tooltip>
                             </div>
                         </Col>
@@ -84,14 +84,14 @@
                         </Col>
                         <Col span="6" offset="4">
                             <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
-                                <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
+                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
                             </Tooltip>
                             <div v-else-if="bindDeviceFlag">
                                 <Tooltip content="绑定终端">
-                                    <Button type="success" shape='circle' size="small" icon="checkmark" @click="bindDevice"></Button>
+                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDevice"></Button>
                                 </Tooltip>
                                 <Tooltip content="取消绑定">
-                                    <Button type="error" shape='circle' size="small" icon="close" @click="cancelChooseDevice"></Button>
+                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDevice"></Button>
                                 </Tooltip>
                             </div>
                         </Col>
