@@ -27,7 +27,7 @@ public class ZdToYyJob implements Job {
         for (ClZdgl clZdgl : zdNotYy){
             yyEntity.setEntity_name(clZdgl.getZdbh());
             YingyanResponse changeEntity = GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
-            if (StringUtils.equals(changeEntity.getStatus(), "0")) {
+            if (StringUtils.equals(changeEntity.getStatus(), "0") || StringUtils.equals(changeEntity.getStatus(),"3005")) {
                 clZdgl.setSfyy("已上传鹰眼服务器");
                 clzdglmapper.updateByPrimaryKeySelective(clZdgl);
             }

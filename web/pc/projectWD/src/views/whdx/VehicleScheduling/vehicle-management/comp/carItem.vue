@@ -86,7 +86,14 @@
                             <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
                                 <Button type="text" icon="code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
                             </Tooltip>
-                            <Button v-else-if="bindDeviceFlag" type="info" ghost @click="bindDevice">绑定</Button>
+                            <div v-else-if="bindDeviceFlag">
+                                <Tooltip content="绑定终端">
+                                    <Button type="success" shape='circle' size="small" icon="checkmark" @click="bindDevice"></Button>
+                                </Tooltip>
+                                <Tooltip content="取消绑定">
+                                    <Button type="error" shape='circle' size="small" icon="close" @click="cancelChooseDevice"></Button>
+                                </Tooltip>
+                            </div>
                         </Col>
                     </Row>
                 </Col>
@@ -143,16 +150,16 @@
             this.bindDriverFlag = !!this.data.sjxm
             this.bindDeviceFlag = !!this.data.zdbh
         },
+        mounted(){
+        },
         methods:{
             emit(method){
                 this.$emit(method,this.data);
             },
             cancelChooseDriver(){
-                console.error('cancelChooseDriver');
                 this.bindDriverFlag = false
             },
             cancelChooseDevice(){
-                console.error('cancelChooseDevice');
                 this.bindDeviceFlag = false
             },
             chooseDriver(){

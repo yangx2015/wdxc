@@ -34,8 +34,8 @@
 					</div>
 				</div>
 			</Row>
-			<Row :gutter="20">
-				<car-item v-for="(item,index) in tableData" :data="item"  :key="index" style="margin-top: 16px;"
+			<Row :gutter="20" v-for="(row,rowIndex) in tableData" :data="row"  :key="rowIndex">
+				<car-item v-for="(col,index) in row" :data="col"  :key="index" style="margin-top: 16px;"
 				@reload="getPageData"
 				@editCar="editCar"
 				@showDoc="showDoc"
@@ -202,13 +202,26 @@
             },
         	getPageData(){
 				var v = this
+                v.tableData = [];
 				this.$http.get(this.apis.CLGL.QUERY,{params:v.param}).then((res) =>{
 				    if (res.code == 200 && res.page.list){
-                        v.tableData = res.page.list
-                        v.pageTotal = res.page.total
-						for (let r of v.tableData){
-						    r.bindDrvFlag = !!r.sjxm;
+				        let data = res.page.list;
+                        for (let r of data){
+                            r.bindDrvFlag = !!r.sjxm;
+                        }
+				        let colCount = 4;
+				        let rowCount = data.length / colCount;
+				        if (data.length % colCount != 0){
+				            rowCount += 1;
 						}
+						let array = [];
+						for (let i = 0;i<rowCount;i++){
+						    let start = i*colCount;
+						    let end = start + colCount;
+						    array.push(data.slice(start,end));
+						}
+                        v.tableData = array
+                        v.pageTotal = res.page.total
 					}
 
 					v.SpinShow = false;

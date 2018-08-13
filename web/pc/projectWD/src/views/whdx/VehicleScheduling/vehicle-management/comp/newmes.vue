@@ -209,7 +209,7 @@
 								}else{
 									v.$Message.error('车辆添加创建失败');
 								}
-								v.$parent.getmess()
+								v.$parent.getPageData()
                     			v.$parent.compName = ''
 							})
                     	}else{
@@ -221,7 +221,7 @@
 								}else{
 									v.$Message.error('车辆修改失败');
 								}
-								v.$parent.getmess()
+								v.$parent.getPageData()
                     			v.$parent.compName = ''
 							})
                     	}
