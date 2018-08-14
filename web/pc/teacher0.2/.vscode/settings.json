@@ -1,6 +1,6 @@
 {
-    "workbench.colorTheme": "Visual Studio Light",
-    "touchui.deving": false,
+    "workbench.colorTheme": "Adapta Nokto",
+    "touchui.deving": true,
     "touchui.builded": false,
     "touchui.enable": true,
     "files.associations": {

@@ -178,11 +178,17 @@ export default {
     })
   },
   methods: {
+    gologin(){
+      ui.navigateTo({
+        url: '/pages/login'
+      })
+      this.showSlideMenu = !this.showSlideMenu
+    },
     godingdan(){
         ui.navigateTo({
         url: '/pages/orders'
       })
-
+        this.showSlideMenu = !this.showSlideMenu
     },
 
     handleNavIconTap () {
@@ -260,7 +266,7 @@ export default {
 
 <template>
   <ui-view id="ui-app">
-    <ui-slide-menu width="280" threshold="30" touch="{{ pageConfig.touchSlideMenu }}" ui:model="showSlideMenu">
+    <ui-slide-menu width="240" threshold="30" touch="{{ pageConfig.touchSlideMenu }}" ui:model="showSlideMenu">
 
     <ui-view slot="menu" class="menu">
        <!-- 侧滑菜单 -->
@@ -293,7 +299,7 @@ export default {
           <ui-button style="border-radius: 25px;" bindtap="godingdan()">历史订单</ui-button>
         </ui-view>
         <ui-view>
-          <ui-button class="login">退出登录</ui-button>
+          <ui-button class="login" bindtap="gologin()">退出登录</ui-button>
         </ui-view>
       </ui-view>
        
@@ -350,6 +356,8 @@ export default {
   </ui-slide-menu>
   </ui-view>
 </template>
+
+
 
 
 

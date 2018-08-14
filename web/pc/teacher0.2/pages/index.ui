@@ -10,28 +10,28 @@
                 <ui-view>
                     <ui-row>
                       <ui-icon type="webicon318"></ui-icon>
-                      <ui-input ui:model="{{form.starGPS.name}}" placeholder="你在哪儿" bindtap="getStarGps"></ui-input>
+                      <ui-input ui:model="{{form.hcdz}}" placeholder="你在哪儿" bindtap="getStarGps"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
                     <ui-row>
                       <ui-icon type="webicon318"></ui-icon>
-                      <ui-input ui:model="{{form.endGPS.name}}" placeholder="要去哪儿" bindtap="getEndGps"></ui-input>
+                      <ui-input ui:model="{{form.mdd}}" placeholder="要去哪儿" bindtap="getEndGps"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
                   <ui-row>
-                     <ui-col sapn=2>
+                     <ui-col sapn=1>
                         <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
                       </ui-col >
-                      <ui-col span=4 bindtap="radioCalendaropen" align="left" >
-                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
+                      <ui-col span=7 bindtap="radioCalendaropen" align="left" >
+                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ form.yysj }}</ui-text>
                       
                      </ui-col>
-                     <ui-col span=2>
+                     <ui-col span=1>
                         <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
                       </ui-col>
-                      <ui-col span=4 align="left" bindtap="getmyself()">
+                      <ui-col span=3 align="left" bindtap="getmyself()">
                         <ui-text>{{people}}</ui-text>
                      </ui-col>
                   </ui-row>
@@ -40,7 +40,7 @@
                 <!-- <ui-view ui:if="{{people === '他人乘坐'}}"> -->
                     <ui-mask ui:model="showMask1">
                       <ui-view class="content">
-                            
+                            <ui-view class="log_box">
                           <ui-row space-top=280>
                              <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
                              </ui-row>  
@@ -48,7 +48,8 @@
                           <ui-row>
                              <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
                            </ui-row>
-                        <ui-button type="success" bindtap="handleShowMask1(false)">确认</ui-button>
+                        <ui-button  plain="false" type="success" bindtap="handleShowMask1(false)">确认</ui-button>
+                        </ui-view>
                       </ui-view>
                     </ui-mask>
                 <!-- </ui-view> -->
@@ -94,11 +95,12 @@
                 select-range-mode="{{false}}"
                 header-height="30"
                 height="319"
+                ui:model='date'
                 show-today
                 bindchange="selectedChange"
                 value="{{radioDate}}"
               ></ui-v-calendar>
-              <ui-picker-view mode="time" value="{{ timeValue }}" bindchange="handleChange4"></ui-picker-view>
+              <ui-picker-view mode="time" value="{{ form.yysj }}" bindchange="handleChange4"></ui-picker-view>
               <ui-button  bindtap="resetPicker2">确定</ui-button>
               </ui-view>
             </ui-popup>
@@ -134,26 +136,27 @@ export default {
     return {
       showMask1: false,
       newnum:'',
-      timeValue: '',
+      yysj: '00:00',
       show:false,
-      time:'',
       radioCalendar:false,
+      radioYears:new Date().getFullYear(),
+      date:'',
       dataMess:{
-         ck:'',//乘客姓名
-         cklxdh:'',//乘客联系电话
+         ck:'',             //乘客姓名
+         cklxdh:'',         //乘客联系电话
       },
       form:{
-        ck:'',//乘客姓名
-        cklxdh:'',//乘客联系电话
-        phone:'',//
-        time:'',
-        num:'',
-        starGPS:{
-          name:''
-        },
-        endGPS:{
-          name:''
-        }
+        hcdz:'',            // 候车地址
+        mdd:'',             // 目的地
+        ck:'',              // 乘客姓名
+        cklxdh:'',          // 乘客联系电话
+        yysj:'00:00',            // 预约时间
+        originLat:'',       // 起始经度
+        originLng:'',       // 起始纬度
+        destinationLat:'',  // 目的地经度
+        destinationLng:'',  // 目的地纬度
+        zws:'',             // 座位数
+        cllx:1
       },
       choosedCar:'',
       carlist:[
@@ -222,35 +225,37 @@ export default {
     indexYZ(){
       var v = this
       console.log(v.form)
-      if(v.form.starGPS.name==''){
-         ui.showToast({ title: '请选择您的位置!'})
-          return false
-      }
-      if(v.form.endGPS.name==''){
-        ui.showToast({ title: '请选择目的地!'})
-          return false
-      }
-      if(v.choosedCar==''){
-        ui.showToast({ title: '请选择车型!'})
-          return false
-      }
-      console.log('timeValue',v.timeValue)
-      if(v.timeValue==''){
-        ui.showToast({ title: '请选择上车时间!'})
-          return false
-      }
-      console.log(v.people)
-      console.log(v.newnum)
-      if(v.people==='他人乘车'&& v.newnum =='' && v.form.name=='' ){
-         ui.showToast({ title: '请输入乘车人信息!'})
-          return false
-      }
+      // if(v.form.starGPS.name==''){
+      //    ui.showToast({ title: '请选择您的位置!'})
+      //     return false
+      // }
+      // if(v.form.endGPS.name==''){
+      //   ui.showToast({ title: '请选择目的地!'})
+      //     return false
+      // }
+      // if(v.choosedCar==''){
+      //   ui.showToast({ title: '请选择车型!'})
+      //     return false
+      // }
+      // console.log('yysj',v.yysj)
+      // if(v.yysj==''){
+      //   ui.showToast({ title: '请选择上车时间!'})
+      //     return false
+      // }
+      // console.log(v.people)
+      // console.log(v.newnum)
+      // if(v.people==='他人乘车'&& v.newnum =='' && v.form.name=='' ){
+      //    ui.showToast({ title: '请输入乘车人信息!'})
+      //     return false
+      // }
       return true
 
 
     },
     submit(){
       if(!this.indexYZ()) return
+      console.log('date:', this.date);
+      this.form.yysj = this.radioYears +'-'+ this.radioMonth +'-'+ this.radioDay +' '+ this.form.yysj + ':00';
       console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
          console.log('==========================',res)
@@ -283,6 +288,7 @@ export default {
        v.carlist.forEach((item,index) => {
          if(index==num){
            item.color="#f00"
+           v.form.zws = num
          }else{
            item.color="#000"
          }
@@ -302,7 +308,7 @@ export default {
       })
     },
     handleChange4 (val) {
-      this.timeValue = val
+      this.form.yysj = val
     },
     resetPicker2 () {
      
@@ -318,7 +324,9 @@ export default {
         backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
-          that.form.starGPS = res
+          that.form.hcdz = res.name;
+          that.form.originLat = res.latitude
+          that.form.originLng = res.longitude
         },
         fail: function (res) {
           console.log('fail:', res)
@@ -331,7 +339,9 @@ export default {
         backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
-          that.form.endGPS = res
+          that.form.mdd = res.name;
+          that.form.destinationLat = res.latitude
+          that.form.destinationLng = res.longitude
         },
         fail: function (res) {
           console.log('fail:', res)
