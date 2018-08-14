@@ -150,7 +150,7 @@
 						</div>
 						<div class="box-row">
 							<div style="margin-right: 16px">
-								<Icon type="android-car"></Icon>
+								<Icon type="ios-car"></Icon>
 								{{item.cph}}
 							</div>
 							<div class="body-O">
@@ -183,7 +183,7 @@
 							<div>
 								<Row>
 									<Col span="10">
-									<Icon type="person"
+									<Icon type="md-person"
 										  color="#7b7b7b"></Icon>
 									<!--信息工程学院—陈小伟-->
 									{{p.jgmc}}-{{p.ck}}

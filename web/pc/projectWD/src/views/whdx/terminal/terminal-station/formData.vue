@@ -59,7 +59,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close"style="color: #949494">取消</Button>
+				<Button type="default" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 		</Modal>

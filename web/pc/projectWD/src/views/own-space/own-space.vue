@@ -40,7 +40,7 @@
                                 <div style="background-color:white;z-index:110;margin:10px;">
                                     <Input v-model="securityCode" placeholder="请填写短信验证码" ></Input>
                                     <div style="margin-top:10px;text-align:right">
-                                        <Button type="ghost" @click="cancelInputCodeBox"style="color: #949494">取消</Button>
+                                        <Button type="default" @click="cancelInputCodeBox"style="color: #949494">取消</Button>
                                         <Button type="primary" @click="submitCode" :loading="checkIdentifyCodeLoading">确定</Button>
                                     </div>
                                 </div>

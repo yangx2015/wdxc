@@ -96,7 +96,8 @@ export default {
   .submit_btn{
     font-size:18px;
     font-weight: bold;
-    color:#5cadff;
+    color:#fff;
+    background-color:#5cadff ;
   }
 }
 .backimg{

@@ -58,7 +58,7 @@
 			</div>
 			</Form>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">关闭</Button>
+				<Button type="default" @click="close">关闭</Button>
 				<Button type="success" @click="seet('addmess')">设置</Button>
 			</div>
 		</Modal>
