@@ -10,7 +10,7 @@
                 <bkshow :carNumber="carID"></bkshow>
             </div>
             <div slot='footer'>
-                <Button type="ghost" @click="colse">关闭</Button>
+                <Button type="default" @click="colse">关闭</Button>
             </div>
         </Modal>
     </div>

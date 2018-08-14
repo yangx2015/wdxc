@@ -64,7 +64,7 @@
                     </Form>
                 </Row>
             <div slot='footer'>
-                <Button type="ghost" @click="close">关闭</Button>
+                <Button type="default" @click="close">关闭</Button>
             </div>
         </Modal>
     </div>

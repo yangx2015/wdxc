@@ -51,12 +51,12 @@
                                                       <div class="carListsty" v-for="it in item.clList"
                                                            style="height: 45px">
                                                             <div>
-                                                                  <Icon type="person" size="16" color="#3bb84b"></Icon>
+                                                                  <Icon type="md-person" size="16" color="#3bb84b"></Icon>
                                                                   ：
                                                                   {{it.sjxm}}
                                                             </div>
                                                             <div>
-                                                                  <Icon type="android-car" size="16"
+                                                                  <Icon type="ios-car" size="16"
                                                                         color="#ff8300"></Icon>
                                                                   ：
                                                                   {{it.cph}}

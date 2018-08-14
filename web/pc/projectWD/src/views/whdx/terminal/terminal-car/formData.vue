@@ -52,11 +52,11 @@
 			</div>
 			</Form>
 			<div v-show="!dataRead" slot='footer'>
-				<Button type="ghost" @click="close"style="color: #949494">取消</Button>
+				<Button type="default" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save('addmess')">确定</Button>
 			</div>
 			<div v-show="dataRead" slot='footer'>
-				<Button type="ghost" @click="close">关闭</Button>
+				<Button type="default" @click="close">关闭</Button>
 				<Button type="success" @click="seet('addmess')">设置</Button>
 			</div>
 		</Modal>

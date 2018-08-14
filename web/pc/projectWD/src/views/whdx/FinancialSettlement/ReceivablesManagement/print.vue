@@ -55,7 +55,7 @@
 				<span>收款人：_____________________</span>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" v-if="showFooter" @click="close"style="color: #949494">取消</Button>
+				<Button type="default" v-if="showFooter" @click="close"style="color: #949494">取消</Button>
 				<Button type="primary" v-if="showFooter" @click="print">确定</Button>
 			</div>
 		</Modal>

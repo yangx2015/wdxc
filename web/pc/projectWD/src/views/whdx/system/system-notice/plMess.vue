@@ -27,7 +27,7 @@
                                       :on-format-error="handleFormatError"
                                       :on-success="handleSuccess"
                                       :on-error="handleError">
-                                    <Button type="ghost" icon="ios-cloud-upload-outline"
+                                    <Button type="default" icon="ios-cloud-upload-outline"
                                             size="small">上传文件</Button>
                               </Upload>
                               <div v-show="!upShow" class="box-row">
@@ -52,7 +52,7 @@
                   </div>
                   <div v-for="(item,index) in errors" style="color: red">{{item}}</div>
                   <div slot='footer'>
-                        <Button type="ghost" @click="close"style="color: #949494">取消</Button>
+                        <Button type="default" @click="close"style="color: #949494">取消</Button>
                         <!--<Button type="primary" @click="save">确定</Button>-->
                   </div>
             </Modal>

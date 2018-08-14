@@ -207,7 +207,7 @@
                                 h('Button', {//电子围栏展示
                                     props: {
                                         type: 'primary',
-                                        icon: 'ios-world-outline',
+                                        icon: 'ios-globe-outline',
                                         shape: 'circle',
                                         size: 'small'
                                     },
