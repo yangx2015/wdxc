@@ -24,7 +24,7 @@
             <div class="main-header box-row" style="height: 65px;">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
+                        <Icon type="ios-menu" size="32"></Icon>
                     </Button>
                 </div>
                 <!--<div class="header-middle-con" style="background-color: #00cc66;width: 350px">-->

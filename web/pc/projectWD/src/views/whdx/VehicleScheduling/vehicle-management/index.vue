@@ -35,22 +35,17 @@
 				</div>
 			</Row>
 			<Row :gutter="20" v-for="(row,rowIndex) in tableData" :data="row"  :key="rowIndex">
-				<car-item v-for="(col,index) in row" :data="col"  :key="index" style="margin-top: 16px;"
-				@reload="getPageData"
-				@editCar="editCar"
-				@showDoc="showDoc"
-				@trace="trace"
-				@showFance="showFance"
-				@delCar="delCar"
-				></car-item>
+				<Col span="6" v-for="(col,index) in row" :key="index" style="margin-top: 16px;">
+					<car-item  :data="col"
+							  @reload="getPageData"
+							  @editCar="editCar"
+							  @showDoc="showDoc"
+							  @trace="trace"
+							  @showFance="showFance"
+							  @delCar="delCar"
+					></car-item>
+				</Col>
 			</Row>
-			<!--<Row>-->
-				<!--<Table-->
-						<!--:height="tabHeight"-->
-						<!--:columns="tableTiT"-->
-						<!--:data="tableData"-->
-				<!--&gt;</Table>-->
-			<!--</Row>-->
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
 					  :current=param.pageNum
@@ -178,9 +173,6 @@
                 v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
                         v.drivers = res.page.list;
-                        // if(v.derMess.sjId!=null&&!v.messType){
-                        // 	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
-                        // }
                     }
                 })
             },
