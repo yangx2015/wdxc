@@ -18,9 +18,13 @@ public class ClJsyCtrl {
 	@Autowired
 	private ClJsyService jsyService;
 
+	@RequestMapping("getInfo")
+	public ApiResponse<Map<String,Object>> getInfo(){
+		return jsyService.getInfo();
+	}
+
 	@PostMapping("/getjsy")
 	public ApiResponse<Map<String,Object>> findJsy(String sjh, String xm) {
-
 		return jsyService.findJsy(sjh, xm);
 	}
 	@PostMapping("/update")
