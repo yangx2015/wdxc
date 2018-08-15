@@ -5,12 +5,17 @@ import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.ZdglService;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,13 +144,25 @@ public class InstructionServiceImpl  implements InstructionService {
 	}
 
 	@Override
-	public ApiResponse<String> batchUpdate(GpsInfo info,String jgdm) {
-
-
+	public ApiResponse<String> batchUpdate(GpsInfo info,ClZdgl zdgl) {
 		// 查询当前用户所在机构及其子机构的设备编号
-		List<SysJg> sysJgs = jgService.findLike(SysJg.InnerColumn.jgdm, jgdm + "%");
+		SysYh user = ContextUtil.getCurrentUser();
+		List<SysJg> sysJgs = jgService.findLike(SysJg.InnerColumn.jgdm,  user.getJgdm()+ "%");
+		if (sysJgs.size() == 0)return ApiResponse.success("未找到机构");
 		List<String> jgdms = sysJgs.stream().map(SysJg::getJgdm).collect(Collectors.toList());
-		List<ClZdgl> zdgls = service.findIn(ClZdgl.InnerColumn.jgdm, jgdms);
+
+		SimpleCondition condition = new SimpleCondition(ClZdgl.class);
+		condition.in(ClZdgl.InnerColumn.jgdm, jgdms);
+		if (StringUtils.isNotEmpty(zdgl.getMc())){
+			condition.like(ClZdgl.InnerColumn.mc,zdgl.getMc());
+		}
+		if (StringUtils.isNotEmpty(zdgl.getZdbh())){
+			condition.like(ClZdgl.InnerColumn.zdbh,zdgl.getZdbh());
+		}
+		if (StringUtils.isNotEmpty(zdgl.getZt())){
+			condition.eq(ClZdgl.InnerColumn.zt,zdgl.getZt());
+		}
+		List<ClZdgl> zdgls = service.findByCondition(condition);
 		Map<String, String> postHeaders = new HashMap<String, String>();
 		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
 		accessLog.info("开启线程池，升级终端");

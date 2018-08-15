@@ -1,126 +1,124 @@
 <template>
-    <Col span="6" style="margin-top: 16px;">
-        <Card>
-            <p slot="title" style="font-size: 18px">
-                <Icon type="ios-car" size="26"/>
-                {{data.cph}}
-            </p>
-            <a href="#" slot="extra" @click.prevent="changeLimit">
-                <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
-            </a>
-            <Row>
-                <Col span="24">
-                    <Row v-if="data.sjxm">
-                        <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="ios-person" size="28" color="#2d81f0"/>
-                        </Col>
-                        <Col span="10">
-                            <span>{{data.sjxm}}</span>
-                        </Col>
-                        <Col span="6" offset="4">
-                            <Poptip
-                                    confirm
-                                    title="确认解除绑定?"
-                                    @on-ok="unbindDriver"
-                                    @on-cancel="cancel">
-                                <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
-                            </Poptip>
-                        </Col>
-                    </Row>
-                    <Row v-else-if="!data.sjxm">
-                        <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="ios-person" size="28" color="#2d8cf0"/>
-                        </Col>
-                        <Col span="10">
-                            <span  v-if="!bindDriverFlag">暂未绑定</span>
-                            <Select v-else-if="bindDriverFlag" v-model="driverId" style="width:150px" clearSingleSelect clearable v-on:clear="cancelChooseDriver">
-                                <Option v-for="(item,index) in driverList" :key="item.sfzhm" :value="item.sfzhm">{{item.xm}}</Option>
-                            </Select>
-                        </Col>
-                        <Col span="6" offset="4">
-                            <Tooltip content="绑定司机" v-if="!bindDriverFlag">
-                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
+    <Card>
+        <p slot="title" style="font-size: 18px">
+            <Icon type="ios-car" size="26"/>
+            {{data.cph}}
+        </p>
+        <a href="#" slot="extra" @click.prevent="changeLimit">
+            <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
+        </a>
+        <Row>
+            <Col span="24">
+                <Row v-if="data.sjxm">
+                    <Col span="2" style="padding-right: 45px;margin-top: -5px;">
+                        <Icon type="ios-person" size="28" color="#2d81f0"/>
+                    </Col>
+                    <Col span="10">
+                        <span>{{data.sjxm}}</span>
+                    </Col>
+                    <Col span="6" offset="4">
+                        <Poptip
+                                confirm
+                                title="确认解除绑定?"
+                                @on-ok="unbindDriver"
+                                @on-cancel="cancel">
+                            <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
+                        </Poptip>
+                    </Col>
+                </Row>
+                <Row v-else-if="!data.sjxm">
+                    <Col span="2" style="padding-right: 45px;margin-top: -5px;">
+                        <Icon type="ios-person" size="28" color="#2d8cf0"/>
+                    </Col>
+                    <Col span="12">
+                        <span  v-if="!bindDriverFlag">暂未绑定</span>
+                        <Select v-else-if="bindDriverFlag" v-model="driverId" style="width:100%" filterable clearable>
+                            <Option v-for="(item,index) in driverList" :key="item.sfzhm" :value="item.sfzhm">{{item.xm}}</Option>
+                        </Select>
+                    </Col>
+                    <Col span="4" offset="4">
+                        <Tooltip content="绑定司机" v-if="!bindDriverFlag">
+                            <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDriver"></Button>
+                        </Tooltip>
+                        <div v-else-if="bindDriverFlag">
+                            <Tooltip content="绑定司机">
+                                <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDriver"></Button>
                             </Tooltip>
-                            <div v-else-if="bindDriverFlag">
-                                <Tooltip content="绑定司机">
-                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDriver"></Button>
-                                </Tooltip>
-                                <Tooltip content="取消绑定">
-                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDriver"></Button>
-                                </Tooltip>
-                            </div>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
-            <Row style="margin-top: 10px;">
-                <Col span="24">
-                    <Row v-if="data.zdbh">
-                        <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
-                        </Col>
-                        <Col span="10">
-                            <span>{{data.zdbh}}</span>
-                        </Col>
-                        <Col span="6" offset="4">
-                            <Poptip
-                                    confirm
-                                    title="确认解除绑定?"
-                                    @on-ok="unbindDevice"
-                                    @on-cancel="cancel">
-                                <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
-                            </Poptip>
-                        </Col>
-                    </Row>
-                    <Row v-else-if="!data.zdbh">
-                        <Col span="2" style="padding-right: 45px;margin-top: -5px;">
-                            <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
-                        </Col>
-                        <Col span="10">
-                            <span  v-if="!bindDeviceFlag">暂未绑定</span>
-                            <Select v-else-if="bindDeviceFlag" v-model="deviceId" style="width:150px" clearable v-on:on-clear="cancelChooseDevice">
-                                <Option v-for="(item,index) in deviceList" :key="item.zdbh" :value="item.zdbh">{{item.zdbh}}</Option>
-                            </Select>
-                        </Col>
-                        <Col span="6" offset="4">
-                            <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
-                                <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
+                            <Tooltip content="取消绑定">
+                                <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDriver"></Button>
                             </Tooltip>
-                            <div v-else-if="bindDeviceFlag">
-                                <Tooltip content="绑定终端">
-                                    <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDevice"></Button>
-                                </Tooltip>
-                                <Tooltip content="取消绑定">
-                                    <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDevice"></Button>
-                                </Tooltip>
-                            </div>
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
-            <Row type="flex" justify="end" style="padding-top: 20px">
-                <Col span="22" style="text-align: center">
-                    <ButtonGroup size="large">
-                        <Tooltip content="编辑">
-                            <Button  icon="md-create" @click="emit('editCar')"></Button>
+                        </div>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
+        <Row style="margin-top: 10px;">
+            <Col span="24">
+                <Row v-if="data.zdbh">
+                    <Col span="2" style="padding-right: 45px;margin-top: -5px;">
+                        <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
+                    </Col>
+                    <Col span="10">
+                        <span>{{data.zdbh}}</span>
+                    </Col>
+                    <Col span="6" offset="4">
+                        <Poptip
+                                confirm
+                                title="确认解除绑定?"
+                                @on-ok="unbindDevice"
+                                @on-cancel="cancel">
+                            <Button type="text" icon="ios-trash" style="color:#ff9900;font-size:24px;margin-top: -16px;" ghost></Button>
+                        </Poptip>
+                    </Col>
+                </Row>
+                <Row v-else-if="!data.zdbh">
+                    <Col span="2" style="padding-right: 45px;margin-top: -5px;">
+                        <Icon type="ios-videocam" size="28" color="#2d8cf0"/>
+                    </Col>
+                    <Col span="12">
+                        <span  v-if="!bindDeviceFlag">暂未绑定</span>
+                        <Select v-else-if="bindDeviceFlag" v-model="deviceId" style="width:100%" filterable clearable sea>
+                            <Option v-for="(item,index) in deviceList" :key="item.zdbh" :value="item.zdbh">{{item.zdbh}}</Option>
+                        </Select>
+                    </Col>
+                    <Col span="4" offset="4">
+                        <Tooltip content="绑定终端" v-if="!bindDeviceFlag">
+                            <Button type="text" icon="md-code-working" style="color:#2db7f5;font-size:24px;margin-top: -16px;" ghost @click="chooseDevice"></Button>
                         </Tooltip>
-                        <Tooltip content="车辆档案">
-                            <Button  icon="ios-clipboard-outline" @click="emit('showDoc')"></Button>
-                        </Tooltip>
-                        <Tooltip content="历史轨迹">
-                            <Button  icon="ios-map-outline" @click="emit('trace')"></Button>
-                        </Tooltip>
-                        <Tooltip content="电子围栏">
-                            <Button icon="ios-globe-outline" @click="emit('showFance')"></Button>
-                        </Tooltip>
-                        <Tooltip content="删除">
-                            <Button icon="ios-trash" @click="emit('delCar')"></Button>
-                        </Tooltip>
-                    </ButtonGroup>
-                </Col>
-            </Row>
-        </Card>
-    </Col>
+                        <div v-else-if="bindDeviceFlag">
+                            <Tooltip content="绑定终端">
+                                <Button type="success" shape='circle' size="small" icon="md-checkmark" @click="bindDevice"></Button>
+                            </Tooltip>
+                            <Tooltip content="取消绑定">
+                                <Button type="error" shape='circle' size="small" icon="md-close" @click="cancelChooseDevice"></Button>
+                            </Tooltip>
+                        </div>
+                    </Col>
+                </Row>
+            </Col>
+        </Row>
+        <Row type="flex" justify="end" style="padding-top: 20px">
+            <Col span="22" style="text-align: center">
+                <ButtonGroup size="large">
+                    <Tooltip content="编辑">
+                        <Button  icon="md-create" @click="emit('editCar')"></Button>
+                    </Tooltip>
+                    <Tooltip content="车辆档案">
+                        <Button  icon="ios-clipboard-outline" @click="emit('showDoc')"></Button>
+                    </Tooltip>
+                    <Tooltip content="历史轨迹">
+                        <Button  icon="ios-map-outline" @click="emit('trace')"></Button>
+                    </Tooltip>
+                    <Tooltip content="电子围栏">
+                        <Button icon="ios-globe-outline" @click="emit('showFance')"></Button>
+                    </Tooltip>
+                    <Tooltip content="删除">
+                        <Button icon="ios-trash" @click="emit('delCar')"></Button>
+                    </Tooltip>
+                </ButtonGroup>
+            </Col>
+        </Row>
+    </Card>
 </template>
 
 <script>
@@ -197,14 +195,16 @@
             },
             getdriverList(){
                 let v = this;
-                v.$http.get(this.apis.JSY.NOT_BIND_LIST,{params:{pageSize:1000}}).then((res) =>{
+                v.driverList = [];
+                v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
-                        v.driverList = res.result;
+                        v.driverList = res.page.list;
                     }
                 })
             },
             getDevices(){
                 let v = this;
+                v.deviceList = []
                 v.$http.post(this.apis.ZDGL.SXQUERY).then((res) =>{
                     if(res.code===200){
                         v.deviceList = res.result;
