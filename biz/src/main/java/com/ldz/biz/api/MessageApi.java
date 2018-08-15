@@ -1,6 +1,7 @@
 package com.ldz.biz.api;
 
 import com.ldz.biz.module.bean.GpsInfo;
+import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
@@ -57,9 +58,9 @@ public class MessageApi {
 	}
 
 	@PostMapping("/batchUpdate")
-	public ApiResponse<String> batchUpdate( GpsInfo info,String jgdm) {
+	public ApiResponse<String> batchUpdate(GpsInfo info, ClZdgl zdgl) {
 
-		return  intstruction.batchUpdate(info,jgdm);
+		return  intstruction.batchUpdate(info,zdgl);
 	}
 
 	/*@GetMapping("/test")

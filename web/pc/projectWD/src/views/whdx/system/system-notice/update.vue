@@ -80,7 +80,8 @@
 		    	    let userInfoJson = sessionStorage.getItem("userInfo");
                     let userInfo = JSON.parse(userInfoJson);
                     let jgdm = userInfo.jgdm;
-		    	    p = {jgdm:jgdm}
+		    	    p = this.$parent.param;
+		    	    p.jgdm = jgdm;
 		    	    url = this.apis.SBZDDZ.batchUpdate;
 				}else{
                     url = this.apis.SBZDDZ.ADD
