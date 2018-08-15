@@ -8,10 +8,10 @@
             <ui-view class="content_form">
               <ui-form>
                 <ui-view class="input_padding">
-                  <ui-input ui:model="form.username" maxlength="11" type="tel" placeholder="请输入手机号"></ui-input>
+                  <ui-input ui:model="form.xm" maxlength="11" type="tel" placeholder="请输入您的帐号"></ui-input>
                 </ui-view>
                 <ui-view class="input_padding">
-                  <ui-input ui:model="form.password" type="password" placeholder="请输入密码"></ui-input>
+                  <ui-input ui:model="form.sjh" type="password" placeholder="请输入您的手机号"></ui-input>
                 </ui-view>
                 <ui-view class="input_padding">
                   <ui-row>
@@ -49,13 +49,40 @@ export default {
   },
   data () {
     return {
-      form:{
-      }
+      form: {
+          xm: '张三',//张三
+          sjh: '123',//123
+      },
     }
   },
   methods: {
     loginYZ(){
+      var v = this
+      if(v.form.xm == ''){
+        ui.showToast({
+          title: '请输入帐号'
+        })
+        return
+      }else if(v.form.sjh == ''){
+        ui.showToast({
+          title: '请输入手机号'
+        })
+      }else{
+        v.login()
+      }
 
+    },
+    login(){
+      this.$http('POST',ui.getApp().apis.LOGIN.QUERTY,this.form,(res)=>{
+        console.log('登录',res);
+        if(res.code == 200 && res.result){
+          localStorage.setItem("token",res.result.token)
+        }
+        ui.navigateTo({
+        url: '/pages/index'
+      })
+        
+      })
     },
     forgetpassword(){
 

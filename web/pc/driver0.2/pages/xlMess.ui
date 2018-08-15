@@ -16,11 +16,66 @@
           </ui-row>
       </ui-nav-bar>
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
+            <!-- <ui-view class="getmess">
+              <ui-row vertical-align="middle"  border-bottom style="padding:30px 35px 30px 0px" >
+              <ui-col align="left" span=3 space-left="75" >
+                <ui-view calss="pingyi">
+                <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
+                </ui-view>
+              </ui-col>
+              <ui-col span=3 align="left" space-left="20">
+                <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+                  张师傅
+                </ui-view>
+                <ui-view style="color:#A0A0A0;font-size:15px">
+                  五座车
+                </ui-view>
+              </ui-col>
+                
+              <ui-col align="left" span=4> 
+              <ui-icon type="qichemoren" size=30 style="color:#888888"></ui-icon>
+              </ui-col>
+                    
 
+
+              <ui-col align="left" span=4 space-right="20">
+              <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+                鄂A963MK
+              </ui-view>
+              <ui-view style="color:#A0A0A0;font-size:15px">
+                白色·标志·408
+              </ui-view> 
+              </ui-col>
+
+
+            </ui-row> -->
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
 
             <!-- 页面内容 end-->
+          </ui-view>
+
+          <ui-view class="usermess">
+              <ui-view class="box_row colCenter">
+                  <ui-view class="box_row_100">
+                    <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
+                    <ui-text>张三</ui-text>
+                  </ui-view>
+                  <a :href="'tel:123123'"  class="box_row_100">
+                    <ui-icon type="dianhua" size=30 style="color:#888888"></ui-icon>
+                    <ui-text>13112345678</ui-text>
+                  </a>
+              </ui-view>
+              <ui-view class="box_row colCenter">
+                <ui-icon type="webicon318" size=28 style="color:#489c14"></ui-icon>
+                <ui-text>
+                    武汉大学
+                </ui-text>
+                <ui-icon type="webicon318" size=28 style="color:#ff9900"></ui-icon>
+                <ui-text>
+                    火车站
+                </ui-text>
+              </ui-view>
           </ui-view>
       </ui-view>
   </ui-page>
@@ -66,44 +121,8 @@ export default {
 </script>
 
 <style lang="less">
-.f5{
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  background-color: #ff7f50;
-  color:#fff;
+.usermess{
+  border-top:solid 3rpx #f2f2f2;
   padding: 25rpx;
-  width: 240rpx;
-  .f5Tit{
-    font-size: 42rpx;
-    padding:10rpx 15rpx;
-  }
-}
-.boxRowAuto{
-  height: 600rpx;
-  background: #fff;
-  overflow-x: auto;
-  padding: 0 30rpx;
-  .ui-timeline-row{
-    ul{
-      overflow-x: auto;
-    }
-  }
-}
-
-.lineMess{
-  padding: 15rpx 25rpx;
-}
-.busMess{
-  padding: 50rpx 0;
-  border-top: #f2f2f2 3rpx solid;
-  border-bottom: #f2f2f2 5rpx solid;
-  text-align: center;
-  .leftmess{
-    border-right:#dedede 2rpx solid
-  }
-  .rightmess{
-    border-left:#dedede 2rpx solid
-  }
 }
 </style>

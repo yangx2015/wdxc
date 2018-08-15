@@ -2,8 +2,8 @@
   <ui-page  style="overflow-y: hidden;">
       <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
           <ui-row height="46">
-            <ui-col vertical-align="middle" align="center" width="60">
-              <ui-icon type="wo" size="20" color="#e2e2e2"></ui-icon>
+            <ui-col vertical-align="middle" align="center" width="60" bindtap="backPoject">
+              <ui-icon type="return" size="20" color="#e2e2e2"></ui-icon>
             </ui-col>
             <ui-col vertical-align="middle" align="center">
               <ui-view class="nav_title">约车</ui-view>
@@ -16,15 +16,14 @@
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
           <ui-view class="logoback">
             <ui-view class="logTit">
-              张
+              {{ usermess.userInfo.xm.charAt(0)}}
             </ui-view>
             <ui-view class="name">
-              张三
+              {{usermess.userInfo.xm}}
             </ui-view>
             <ui-view class="fen">
-              5分
+                {{usermess.grade}}分
             </ui-view>
-            
           </ui-view>
           <ui-view class="tabsSty">
             <ui-tabs index="{{ tabCurrent }}" ink-bar
@@ -37,35 +36,47 @@
           </ui-view>
           <ui-view class="box_col_auto">
             <!-- 页面内容 start-->
-              <ui-swiper class="box_col" current="{{ tabCurrent }}" bindchange="handleChange($event, 'tabCurrent')">
+              <ui-swiper class="box_col" current="{{ tabCurrent }}"
+               bindchange="handleChange($event, 'tabCurrent')">
                   <ui-swiper-item class="box_col_auto boxSty">
-                      <ui-view class="pagerList box_row">
-                          <ui-view class="titLog">
-                              <ui-view class="log">
-                                  tit
-                              </ui-view>
-                          </ui-view>
-                          <ui-view class="box_row_100 mess">
-                              <ui-view class="time">
-                                8月8日 12:00:00
-                                <ui-view style="float:right">
-                                  待出发
+                      <ui-scroll-view
+                        scroll-y
+                        height="{{pageHeight(-200)}}"
+                        pull-down="{{ pullDown }}"
+                        enable-reach-bottom-load ="{{loadMore}}"
+                        on-load-more="{{ handleLoadMore }}">
+                        <ui-view>
+                            <ui-view class="pagerList box_row" ui:for="{{pagerLists}}">
+                                <ui-view class="titLog">
+                                    <ui-view class="log">
+                                        tit
+                                    </ui-view>
                                 </ui-view>
-                              </ui-view>
-                              <ui-view>
-                                <ui-icon type="webicon318" size="20" color="#40a02f"></ui-icon>
-                                出发地
-                              </ui-view>
-                              <ui-view>
-                                <ui-icon type="webicon318" size="20" color="#ff9b00"></ui-icon>
-                                目的地
-                              </ui-view>
-                          </ui-view>
-                          <ui-view class="rightIcon">
-                            <ui-icon type="right1" size="#f2f2f2" color="#adadad"></ui-icon>
-                          </ui-view>
-                      </ui-view>
-
+                                <ui-view class="box_row_100 mess">
+                                    <ui-view class="time">
+                                      8月8日 12:00:00
+                                      <ui-view style="float:right">
+                                        待出发
+                                      </ui-view>
+                                    </ui-view>
+                                    <ui-view>
+                                      <ui-icon type="webicon318" size="20" color="#40a02f"></ui-icon>
+                                      出发地
+                                    </ui-view>
+                                    <ui-view>
+                                      <ui-icon type="webicon318" size="20" color="#ff9b00"></ui-icon>
+                                      目的地
+                                    </ui-view>
+                                </ui-view>
+                                <ui-view class="rightIcon">
+                                  <ui-icon type="right1" size="#f2f2f2" color="#adadad"></ui-icon>
+                                </ui-view>
+                            </ui-view>
+                        </ui-view>
+                        <ui-view style="width:200px;margin:0 auto;">
+                              <ui-divider ui:show="{{!loadMore}}">没有新数据了</ui-divider>
+                        </ui-view>
+                  </ui-scroll-view>
 
 
                         <ui-button type= "primary" bindtap="goStarPage">出发地</ui-button>
@@ -93,6 +104,7 @@ export default {
   },
   data () {
     return {
+      usermess:{},
       tabCurrent:0,
       activeTabStyle:{
         'color': '#ff7f50',
@@ -101,10 +113,70 @@ export default {
         'border-bottom': '#ff7f50 2px solid',
         'width':'60%',
         'color':'red'
-      }
+      },
+      pagerLists:[],
+      pullDown: {
+        distance: 50,
+        onBegin: () => {},
+        onActive: this.handleActive,
+        onAfter: this.handlePullDownAfter
+      },
+      count:0,
+      loadMore:true,
+      pageNum:1,//当前页面
+      pages:0,//页面总数
+      listType:0
+    }
+  },
+  watch:{
+    tabCurrent:(n,o)=>{
+      this.pagerList = []
+        console.log(n);
+        this.dqr(n,1)
     }
   },
   methods: {
+    dqr(val,num){//待确认列表
+      var v = this
+      let listType = 2
+      if(val==0){
+        listType = 2
+      }else if(val==1){
+        listType = 3
+      }
+      this.$http('POST',ui.getApp().apis.MESLIST.QUERTY,{'ddType':listType,pageSize:10,pageNum:num},(res)=>{
+        console.log(res);
+        if(res.code==200 && res.page.list.length>0){
+          v.pages = res.page.pages
+          if(res.page.list){
+            res.page.list.forEach((item,index) => {
+                v.pagerLists.push(item)
+            });
+          }
+        }
+        
+      })
+    },
+    handleLoadMore () {
+    },
+    handleActive () {
+    },
+    // 下拉结束后，执行的函数。因为只要下拉即时没有到达刷新的高度也会触发这个方法
+    // flag 为1表示执行了handleActive。为undefined代表handleActive没有执行。
+    handlePullDownAfter (flag) {
+      // if (flag) {
+        ui.showToast({
+          title: '处理下拉刷新'
+        })
+
+        this.pageNum =1
+        this.pagerLists = []
+        this.dqr(this.tabCurrent,this.pageNum)
+        if(this.pageNum<this.pages){
+          this.loadMore = true
+        }
+      // }
+    },
     goProp(){
       ui.navigateTo({
         url: '/pages/prop/add'
@@ -122,9 +194,29 @@ export default {
     },
     handleChange (index, key) {
       this[key] = index
-    }
+    },
+    backPoject(){//退出登录
+        ui.navigateTo({
+          url: '/pages/login'
+        })
+       localStorage.clear()
+    },
+    getUserMess(){
+      var v = this
+    this.$http("POST",ui.getApp().apis.INFO,{},(res)=>{
+      if(res.result.grade == 'NaN'){
+        res.result.grade = 0
+      }
+      res.result.userInfo = JSON.parse(res.result.userInfo)
+      console.log('**********************',res.result);
+      v.usermess = res.result
+      
+    })
+  },
   },
   created () {
+    this.dqr(0,1)
+    this.getUserMess()
   },
   mounted() {
     
@@ -184,9 +276,11 @@ export default {
     background-color: #fff;
   }
   .boxSty{
+    // background-color: #ffa700;
     padding: 20rpx 25rpx;
     .pagerList{
       background-color: #fff;
+      margin-bottom: 15rpx;
       .titLog{
         width: 180rpx;
         height: 180rpx;
