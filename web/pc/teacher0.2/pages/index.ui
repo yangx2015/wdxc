@@ -25,8 +25,7 @@
                         <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
                       </ui-col >
                       <ui-col span=7 bindtap="radioCalendaropen" align="left" >
-                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ form.yysj }}</ui-text>
-                      
+                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ time }}</ui-text>
                      </ui-col>
                      <ui-col span=1>
                         <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
@@ -46,7 +45,7 @@
                              </ui-row>  
                             
                           <ui-row>
-                             <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
+                             <ui-input ui:model="{{form.cklxdh}}" placeholder="手机号码" ></ui-input>
                            </ui-row>
                         <ui-button  plain="false" type="success" bindtap="handleShowMask1(false)">确认</ui-button>
                         </ui-view>
@@ -100,7 +99,7 @@
                 bindchange="selectedChange"
                 value="{{radioDate}}"
               ></ui-v-calendar>
-              <ui-picker-view mode="time" value="{{ form.yysj }}" bindchange="handleChange4"></ui-picker-view>
+              <ui-picker-view mode="time" value="{{ time }}" bindchange="handleChange4"></ui-picker-view>
               <ui-button  bindtap="resetPicker2">确定</ui-button>
               </ui-view>
             </ui-popup>
@@ -156,8 +155,9 @@ export default {
         destinationLat:'',  // 目的地经度
         destinationLng:'',  // 目的地纬度
         zws:'',             // 座位数
-        cllx:1
+        cllx:10
       },
+      time:'请选择时间:',
       choosedCar:'',
       carlist:[
         {
@@ -217,6 +217,22 @@ export default {
   watch:{
   },
   methods: {
+    gethcdz(gps){
+        var script = document.createElement("script")
+        script.type = "text/javascript"
+        var callbackName = '_callback'+Date.now()
+        window[callbackName]= function(){
+        var myGeo = new BMap.Geocoder();    
+      // 根据坐标得到地址描述    
+      myGeo.getLocation(new BMap.Point(114.36996,30.544539), function(result){      
+         if (result){
+            console.log(result);
+            }      
+      });
+    }
+    script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
+    document.body.appendChild(script)
+    },
     handleShowMask1 (show) {
       console.log('-------------------');
       
@@ -225,37 +241,35 @@ export default {
     indexYZ(){
       var v = this
       console.log(v.form)
-      // if(v.form.starGPS.name==''){
-      //    ui.showToast({ title: '请选择您的位置!'})
-      //     return false
-      // }
-      // if(v.form.endGPS.name==''){
-      //   ui.showToast({ title: '请选择目的地!'})
-      //     return false
-      // }
-      // if(v.choosedCar==''){
+      if(v.form.hcdz==''){
+         ui.showToast({ title: '请选择您的位置!'})
+          return false
+      }
+      if(v.form.mdd==''){
+        ui.showToast({ title: '请选择目的地!'})
+          return false
+      }
+      // if(v.form.zws==''){
       //   ui.showToast({ title: '请选择车型!'})
       //     return false
       // }
-      // console.log('yysj',v.yysj)
-      // if(v.yysj==''){
-      //   ui.showToast({ title: '请选择上车时间!'})
-      //     return false
-      // }
-      // console.log(v.people)
-      // console.log(v.newnum)
-      // if(v.people==='他人乘车'&& v.newnum =='' && v.form.name=='' ){
-      //    ui.showToast({ title: '请输入乘车人信息!'})
-      //     return false
-      // }
+      console.log('yysj',v.yysj)
+      if(v.yysj==''){
+        ui.showToast({ title: '请选择上车时间!'})
+          return false
+      }
+      console.log(v.people)
+      console.log(v.newnum)
+      if(v.people==='他人乘车'&& v.form.cklxdh =='' && v.form.ck=='' ){
+         ui.showToast({ title: '请输入乘车人信息!'})
+          return false
+      }
       return true
 
 
     },
     submit(){
       if(!this.indexYZ()) return
-      console.log('date:', this.date);
-      this.form.yysj = this.radioYears +'-'+ this.radioMonth +'-'+ this.radioDay +' '+ this.form.yysj + ':00';
       console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
          console.log('==========================',res)
@@ -288,7 +302,7 @@ export default {
        v.carlist.forEach((item,index) => {
          if(index==num){
            item.color="#f00"
-           v.form.zws = num
+           v.form.zws = item.val
          }else{
            item.color="#000"
          }
@@ -308,11 +322,12 @@ export default {
       })
     },
     handleChange4 (val) {
-      this.form.yysj = val
+      this.time = val
+      console.log('val:',val)
     },
     resetPicker2 () {
-     
       this.show=false
+      this.form.yysj = this.radioYears +'-'+ this.radioMonth +'-'+ this.radioDay +' '+ this.time + ':00';
 
     },
     selectedChange(val){
@@ -471,10 +486,27 @@ export default {
         this.differ2 = Math.floor((end - start) / (24 * 3600 * 1000))
       }
    
-  
-    
   },
   created () {
+    var v = this
+    ui.getLocation({
+      type: 'wgs84',
+      success: function (res) {
+        v.gethcdz(res)
+        console.log("%%%%%%weizhixinxi%%%%%",res);
+         ui.request({
+            url: 'http://apis.map.qq.com/ws/geocoder/v1/?', 
+            data: {
+              location: res.latitude+','+ res.longitude,
+              key: 'RHGBZ-S2LAU-5MRV7-4QPTZ-JI25K-HVBDV'
+            },
+            success: (res) => {
+              console.log("^^^^^^^^^^^",res)
+            
+            }
+          })
+      }
+    })
   },
   mounted() {
     
