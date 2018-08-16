@@ -46,7 +46,7 @@
                 SpinShow: true,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 //数据传输
                 chmess: {},
                 tableTiT: [

@@ -227,8 +227,8 @@
             }
         },
         created(){
-            if (this.$parent.chooseditem){
-                this.param = JSON.parse(JSON.stringify(this.$parent.chooseditem));
+            if (this.$parent.choosedItem){
+                this.param = JSON.parse(JSON.stringify(this.$parent.choosedItem));
                 this.operate = '编辑'
                 this.cllx = [this.param.cllx,''+this.param.zws];
             }

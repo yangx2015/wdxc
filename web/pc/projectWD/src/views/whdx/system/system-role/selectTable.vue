@@ -35,7 +35,7 @@
                 apiRoot:this.apis.ROLE,
                 tableHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 checkedIds: [],
                 tableColumns: [
                     {title: "#", width: 60, type: 'selection'},
