@@ -1,41 +1,30 @@
 package com.ldz.wechat.module.service.impl;
 
 
-import java.math.BigDecimal;
-import java.util.*;
-
 import com.github.pagehelper.PageInfo;
+import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.MathUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.DistanceUtil;
+import com.ldz.util.gps.LatLonUtil;
+import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClClMapper;
+import com.ldz.wechat.module.mapper.ClDdMapper;
+import com.ldz.wechat.module.mapper.ClDdrzMapper;
 import com.ldz.wechat.module.mapper.ClGpsLsMapper;
 import com.ldz.wechat.module.model.*;
+import com.ldz.wechat.module.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.commonUtil.DateUtils;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.wechat.base.BaseServiceImpl;
-import com.ldz.wechat.module.mapper.ClDdMapper;
-import com.ldz.wechat.module.mapper.ClDdrzMapper;
-import com.ldz.wechat.module.service.ClJsyService;
-import com.ldz.wechat.module.service.DdService;
-import com.ldz.wechat.module.service.DdrzService;
-import com.ldz.wechat.module.service.JgService;
-import com.ldz.wechat.module.service.SysJzgxxService;
-import com.ldz.wechat.module.service.YhService;
-
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.Date;
+import java.math.BigDecimal;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static com.ldz.util.commonUtil.MathUtil.mul;
 
 
 @Service
@@ -81,11 +70,29 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         if (drivers.size() == 0)return;
         Map<String,ClJsy> driverMap = drivers.stream().collect(Collectors.toMap(ClJsy::getSfzhm,p->p));
         for (ClDd dd : pageInfo.getList()) {
+            //计算出GPS的距离
+            BigDecimal originLat=dd.getOriginLat();//起始纬度
+            BigDecimal originLng=dd.getOriginLng();//起始经度
+            BigDecimal destinationLat=dd.getDestinationLat();//结束点经度
+            BigDecimal destinationLng=dd.getDestinationLng();//结束点纬度
+            if(originLat!=null&&originLng!=null&&destinationLat!=null&&destinationLng!=null){
+                double gpsDistance= LatLonUtil.getDistance(originLng.doubleValue(),originLat.doubleValue(),destinationLng.doubleValue(),destinationLat.doubleValue());
+                if(gpsDistance>0){
+                    dd.setGpsDistance(String.valueOf(gpsDistance));
+                }else{
+                    dd.setGpsDistance("0");
+                }
+            }else{
+//                dd.setGpsDistance("0");
+            }
+
             String driverId = dd.getSj();
             if (StringUtils.isEmpty(driverId))continue;
             ClJsy driver = driverMap.get(driverId);
             if (driver == null)continue;
             dd.setSjdh(driver.getSjh());
+
+
         }
     }
 

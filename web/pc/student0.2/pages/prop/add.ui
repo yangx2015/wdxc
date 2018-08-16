@@ -51,7 +51,7 @@
                       <ui-view class="title">
                           <ui-divider color="#ff9900">
                             <ui-view style="color:#ff9900">
-                              评论
+                              建议--投诉--反馈
                             </ui-view>
                           </ui-divider>
                       </ui-view>

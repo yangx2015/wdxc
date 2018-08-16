@@ -85,6 +85,9 @@ ui.extend({
   pageHeight(val){
     return  ui.DEFAULT_CONTENT_HEIGHT + val
   },
+  pageWidth(){
+    return  window.innerWidth
+  },
 })
 
 ui.start(options)
