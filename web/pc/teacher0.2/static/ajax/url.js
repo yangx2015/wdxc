@@ -35,5 +35,6 @@ module.exports = {
     },
     GPS:{
         DOT:'/put/dd/getStartPointAndEndPoint'
-    }
+    },
+    USERINFO:'/put/jzg/getInfo'
 }
