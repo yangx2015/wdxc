@@ -58,7 +58,7 @@
                 apiRoot : this.apis.HSGS,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 tableTitle: [
                     {title: "序号", width: 80, align: 'center', type: 'index'},
                     {title: '类型', align: 'center', key: 'lx',

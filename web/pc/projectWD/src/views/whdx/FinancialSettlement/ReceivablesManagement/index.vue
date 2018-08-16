@@ -114,7 +114,7 @@
                 },
 			    v:this,
                 componentName:'',
-                chooseditem:null,
+                choosedItem:null,
 				columns3: [
 					{
                         type: 'selection',
@@ -167,7 +167,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.chooseditem = params.row;
+                                            this.choosedItem = params.row;
                                             this.componentName = 'md-create';
                                         }
                                     }
@@ -317,7 +317,7 @@
                     return;
                 }
                 item.choosedOrderList = this.selectedData[index];
-		        this.chooseditem = item;
+		        this.choosedItem = item;
 		        this.componentName = 'print';
 			},
 			show(){

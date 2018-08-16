@@ -59,7 +59,7 @@
                 apiRoot:this.apis.FUNCTION,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 //数据传输
                 chmess: {},
                 tableTiT: [
@@ -135,7 +135,7 @@
                                     on: {
                                         click: () => {
                                             this.componentName = 'formData'
-                                            this.chooseditem = params.row;
+                                            this.choosedItem = params.row;
                                         }
                                     }
                                 }),

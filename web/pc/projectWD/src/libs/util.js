@@ -47,7 +47,7 @@ util.buildDeleteButton = (v,h,id)=>{
 }
 util.buildeditButton = (v,h,p)=>{
     return util.buildButton(v,h,'warning','md-create','编辑',()=>{
-        v.chooseditem = p.row;
+        v.choosedItem = p.row;
         v.componentName = 'formData'
     })
 }
@@ -179,9 +179,9 @@ util.initPageSize = (v)=>{
  */
 util.initFormModal = (v)=>{
     v.apiRoot = v.$parent.apiRoot;
-    if (v.$parent.chooseditem){
+    if (v.$parent.choosedItem){
         // 深复制，避免数据联动
-        v.formItem = JSON.parse(JSON.stringify(v.$parent.chooseditem));
+        v.formItem = JSON.parse(JSON.stringify(v.$parent.choosedItem));
         v.operate = '编辑'
         v.readonly = true
     }
@@ -207,7 +207,7 @@ util.initFormRule = (v)=>{
  */
 util.add = (v)=>{
     v.componentName = 'formData'
-    v.chooseditem = null;
+    v.choosedItem = null;
 }
 /**
  * 点击保存按钮事件（包括新增保存和编辑保存）
@@ -218,7 +218,7 @@ util.add = (v)=>{
  */
 util.save = function(v){
     // 根据状态自动判断调用新增接口还是修改接口
-    let url = v.saveUrl ? v.saveUrl : (v.$parent.chooseditem ? v.apiRoot['CHANGE'] : v.apiRoot['ADD']);
+    let url = v.saveUrl ? v.saveUrl : (v.$parent.choosedItem ? v.apiRoot['CHANGE'] : v.apiRoot['ADD']);
     let rules = v.$refs.form.rules;
 
     function sendSave(){
