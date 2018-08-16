@@ -61,11 +61,11 @@ export default {
         xlID:''
       },//站点ID
 
-
-
-
       globalData: {
       },
+
+      orderMess:{},
+
       WIN_WIDTH:ui.WIN_WIDTH,
       tabIndex: 0,
       tabBarList: [],
