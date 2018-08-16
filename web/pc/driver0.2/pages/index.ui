@@ -46,10 +46,10 @@
                         enable-reach-bottom-load ="{{loadMore}}"
                         on-load-more="{{ handleLoadMore }}">
                         <ui-view>
-                            <ui-view class="pagerList box_row" ui:for="{{pagerLists}}">
+                            <ui-view class="pagerList box_row" ui:for="{{pagerLists}}" bindtap="goMess(item)">
                                 <ui-view class="titLog">
                                     <ui-view class="log">
-                                        tit
+                                        {{item.jgmc.charAt(0)}}
                                     </ui-view>
                                 </ui-view>
                                 <ui-view class="box_row_100 mess">
@@ -82,7 +82,7 @@
                         <ui-button type= "primary" bindtap="goStarPage">出发地</ui-button>
                   </ui-swiper-item>
                   <ui-swiper-item class="box_col_auto boxSty">
-                        <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
+                        <ui-button type="primary">目的地</ui-button>
                   </ui-swiper-item>
               </ui-swiper>
             <!-- 页面内容 end-->
@@ -187,7 +187,8 @@ export default {
         url: '/pages/xlmap'
       })
     },
-    goEndPage(){
+    goMess(item){
+      ui.getApp().orderMess = item
       ui.navigateTo({
         url: '/pages/xlMess'
       })
@@ -203,16 +204,16 @@ export default {
     },
     getUserMess(){
       var v = this
-    this.$http("POST",ui.getApp().apis.INFO,{},(res)=>{
-      if(res.result.grade == 'NaN'){
-        res.result.grade = 0
-      }
-      res.result.userInfo = JSON.parse(res.result.userInfo)
-      console.log('**********************',res.result);
-      v.usermess = res.result
-      
-    })
-  },
+      this.$http("POST",ui.getApp().apis.INFO,{},(res)=>{
+        if(res.result.grade == 'NaN'){
+          res.result.grade = 0
+        }
+        res.result.userInfo = JSON.parse(res.result.userInfo)
+        console.log('**********************',res.result);
+        v.usermess = res.result
+        
+      })
+    }
   },
   created () {
     this.dqr(0,1)
@@ -293,6 +294,7 @@ export default {
           border-radius: 70rpx;
           text-align: center;
           line-height: 140rpx;
+          color: #fff;
         }
       }
       .mess{

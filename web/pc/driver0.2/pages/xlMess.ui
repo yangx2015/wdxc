@@ -59,21 +59,21 @@
               <ui-view class="box_row colCenter">
                   <ui-view class="box_row_100">
                     <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
-                    <ui-text>张三</ui-text>
+                    <ui-text>{{orderMess.ck}}</ui-text>
                   </ui-view>
-                  <a :href="'tel:123123'"  class="box_row_100">
+                  <a :href="'tel:'+orderMess.cklxdh"  class="box_row_100">
                     <ui-icon type="dianhua" size=30 style="color:#888888"></ui-icon>
-                    <ui-text>13112345678</ui-text>
+                    <ui-text>{{orderMess.cklxdh}}</ui-text>
                   </a>
               </ui-view>
               <ui-view class="box_row colCenter">
                 <ui-icon type="webicon318" size=28 style="color:#489c14"></ui-icon>
                 <ui-text>
-                    武汉大学
+                    {{orderMess.hcdz}}
                 </ui-text>
                 <ui-icon type="webicon318" size=28 style="color:#ff9900"></ui-icon>
                 <ui-text>
-                    火车站
+                    {{orderMess.mdd}}
                 </ui-text>
               </ui-view>
           </ui-view>
@@ -96,6 +96,7 @@ export default {
   name:'xlMess',
   data() {
     return {
+      orderMess:{}
     }
   },
   methods: {
@@ -114,6 +115,8 @@ export default {
     }
   },
   created () {
+    console.log(ui.getApp().orderMess);
+    this.orderMess = ui.getApp().orderMess
   },
   mounted() {
   }
