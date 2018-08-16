@@ -125,7 +125,7 @@
 
 		},
 		mounted() {
-		    let item = this.$parent.chooseditem
+		    let item = this.$parent.choosedItem
             this.formItem = {
 		        startTime : item.kssj,
 		        endTime : item.jssj,
@@ -194,7 +194,7 @@
                 // });
                 // var icons = new BMap.IconSequence(sy, '10', '20');
                 var polyline = new BMap.Polyline(pois, {
-                    enableediting: false,//是否启用线编辑，默认为false
+                    enableEditing: false,//是否启用线编辑，默认为false
                     enableClicking: false,//是否响应点击事件，默认为true
                     // icons:[icons],
                     strokeWeight:'8',//折线的宽度，以像素为单位

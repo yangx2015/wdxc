@@ -62,7 +62,7 @@
                 apiRoot: this.apis.TEMP_UNIT,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 tableTitle: [
                     {
                         title: '序号',
@@ -132,7 +132,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.chooseditem = params.row
+                                            this.choosedItem = params.row
                                             this.componentName = 'formData'
                                         }
                                     }
@@ -174,7 +174,7 @@
             },
             add() {
                 this.componentName = 'formData'
-                this.chooseditem = null;
+                this.choosedItem = null;
             },
             pageChange(event) {
                 this.util.pageChange(this, event);

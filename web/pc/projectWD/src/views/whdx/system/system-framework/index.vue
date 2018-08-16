@@ -133,7 +133,7 @@
                 TreeListStyleC: "text-align: center",
                 TreeListStyleF: "text-align: left",
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 mode: 'add',
                 parentNode: '',
                 currentNode: '',
@@ -207,7 +207,7 @@
                 })
             },
             add() {
-                this.parentNode = this.chooseditem;
+                this.parentNode = this.choosedItem;
                 if (this.parentNode == null) {
                     this.$Message.error('请选择福机构');
                     return;
@@ -229,10 +229,10 @@
             },
             treeClick(event) {
                 if (event.length > 0) {
-                    this.chooseditem = event[0];
+                    this.choosedItem = event[0];
                     this.treeMess = event[0]
                 } else {
-                    this.chooseditem = null;
+                    this.choosedItem = null;
                 }
             },
             treeToggleClick(event) {

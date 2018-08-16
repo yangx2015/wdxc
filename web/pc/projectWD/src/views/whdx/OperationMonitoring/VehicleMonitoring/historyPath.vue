@@ -163,7 +163,7 @@
                     ignition: 50,
                     brennschluss:'60'
 				},
-				chooseditem:null,
+				choosedItem:null,
 				car:{},
 			}
 		},
@@ -208,7 +208,7 @@
 				return now.format("yyyy-MM-dd");
 			},
 		    showMap(item){
-		        this.chooseditem = item;
+		        this.choosedItem = item;
 		      	this.componentName = 'historyMap';
 			},
 		    back(){

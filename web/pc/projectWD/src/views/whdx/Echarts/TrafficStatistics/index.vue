@@ -48,7 +48,7 @@
                 SpinShow: true,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 dateOpts: {
                     shortcuts: [
                         {

@@ -115,7 +115,7 @@
             let now = new Date();
             this.date = now.format("yyyy-MM-dd");
             this.number = now.format('yyyyMMddhhmmss');
-            this.item = this.$parent.chooseditem;
+            this.item = this.$parent.choosedItem;
             if (this.item.choosedOrderList && this.item.choosedOrderList.length != 0){
 				this.startTime = this.item.choosedOrderList[0].cjsj.substring(0,10);
 				this.endTime = this.item.choosedOrderList[this.item.choosedOrderList.length - 1].cjsj.substring(0,10);

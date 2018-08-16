@@ -57,7 +57,7 @@
                 apiRoot: this.apis.TEMP_CAR,
                 tabHeight: 220,
                 componentName: '',
-                chooseditem: null,
+                choosedItem: null,
                 tableTitle: [
                     {
                         title:'序号',
@@ -119,7 +119,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.chooseditem = params.row
+                                            this.choosedItem = params.row
                                             this.componentName = 'formData'
                                         }
                                     }
