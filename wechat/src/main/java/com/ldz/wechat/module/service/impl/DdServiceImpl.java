@@ -98,6 +98,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifBlank(entity.getCllx(),"车辆车型不能为空");
         RuntimeCheck.ifNull(entity.getZws(),"乘客人数不能为空");
         RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
+
+
+		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
+		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
+		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
+		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
+
         String orderId=genId();
         entity.setId(orderId);
 //        entity.setCjr(userId);
@@ -106,8 +113,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         entity.setJgdm(clJsy.getJgdm());
         entity.setJgmc(clJsy.getJdmc());
         if (StringUtils.isEmpty(entity.getCklxdh())){
-            entity.setCklxdh(clJsy.getSjhm());
+            if(clJsy.getSjhm()!=null){
+                entity.setCklxdh(clJsy.getSjhm());
+            }
         }
+        RuntimeCheck.ifBlank(entity.getCklxdh(),"该职工未预留手机号码，所以暂不能约车");
         entity.setCjsj(new Date());
         entity.setFkzt("00"); // 未付款
         entity.setDdzt("10");//10-订单创建；11-订单确认；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认
@@ -115,7 +125,6 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifTrue(i==0,"订单入库失败");
 
         ddrzService.log(entity);
-
         return ApiResponse.success();
     }
 
