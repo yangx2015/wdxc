@@ -49,10 +49,28 @@
 
 
             </ui-row> -->
-          <ui-view class="box_col_auto">
+          <!-- <ui-view class="box_col_auto" style="{{ {backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width=375&height=667&center='+gps.ksGps+'&markers='+mapKS(gps.ksGps)+'|'+mapJS(gps.jsGps)+'&zoom=14&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'} }}"> -->
+
+          <ui-view class="box_col_auto" 
+            ui:if="{{orderMess.originLat!=''}}"
+            style="{{ {backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width='+
+            pageWidth()+'&height='+pageHeight(-120)+
+            '&center='+(orderMess.originLng+orderMess.destinationLng)/2+','+(orderMess.originLat+orderMess.destinationLat)/2+
+            '&markers='+ orderMess.originLng+','+orderMess.originLat+'|'+ orderMess.destinationLng+','+orderMess.destinationLat+
+            '&zoom=12&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'} }}">
             <!-- 页面内容 start-->
 
             <!-- 页面内容 end-->
+          </ui-view>
+          <ui-view class="box_col_auto"
+          ui:else
+          style="{{ {backgroundImage:'url(http://api.map.baidu.com/staticimage/v2?ak=evDHwrRoILvlkrvaZEFiGp30&width='+
+          pageWidth()+'&height='+pageHeight(-120)+
+          '&center='+orderMess.hcdz+
+          '&markers='+ orderMess.hcdz +'|'+ orderMess.mdd +
+          '&zoom=10&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'} }}">
+            
+
           </ui-view>
 
           <ui-view class="usermess">
@@ -119,6 +137,8 @@ export default {
     this.orderMess = ui.getApp().orderMess
   },
   mounted() {
+    console.log(this.pageWidth());
+    
   }
 }
 </script>
@@ -127,5 +147,6 @@ export default {
 .usermess{
   border-top:solid 3rpx #f2f2f2;
   padding: 25rpx;
+  height: 120px;
 }
 </style>
