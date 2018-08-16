@@ -142,7 +142,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifBlank(entity.getCk(), "乘客姓名不能为空");
 		RuntimeCheck.ifBlank(entity.getCklxdh(), "乘客联系电话不能为空");
 
-//		赵虎说手机上一定会有，WEB端口不会有
+//		手机上一定会有，WEB端不一定会有
 //		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
 //		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
 //		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
