@@ -334,6 +334,19 @@ public class ClDd implements Serializable {
      */
     @Column(name = "DESTINATION_LNG")
     private BigDecimal destinationLng;
+    /**
+     * 起始GPS点和结束GPS点的距离
+     */
+    @Transient
+    private String gpsDistance;
+
+    public String getGpsDistance() {
+        return gpsDistance;
+    }
+
+    public void setGpsDistance(String gpsDistance) {
+        this.gpsDistance = gpsDistance;
+    }
 
     public BigDecimal getOriginLat() {
         return originLat;
