@@ -69,6 +69,9 @@ export default {
          
       },//他人乘车信息
 
+      orderMess:{
+
+      },
 
       globalData: {
       },
@@ -82,7 +85,7 @@ export default {
       headerHeight: ui.DEFAULT_HEADER_HEIGHT,
       paths: [],
       barHeight: ui.STATUS_BAR_HEIGHT,
-      showSlideMenu:false,
+      showSlideMenu:true,
     }
   },
   computed: {
@@ -189,7 +192,6 @@ export default {
         this.userinfo = res.result.userInfo
         console.log(this.userinfo);
         this.showSlideMenu = true;
-        
       })
     },
     gologin(){
