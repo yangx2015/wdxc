@@ -5,6 +5,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -312,6 +313,72 @@ public class ClDd implements Serializable {
 
     @Transient
     private Date endTime;
+
+    /**
+     * 起始纬度
+     */
+    @Column(name = "ORIGIN_LAT")
+    private BigDecimal originLat;
+    /**
+     * 起始经度
+     */
+    @Column(name = "ORIGIN_LNG")
+    private BigDecimal originLng;
+    /**
+     * 结束点经度
+     */
+    @Column(name = "DESTINATION_LAT")
+    private BigDecimal destinationLat;
+    /**
+     * 结束点纬度
+     */
+    @Column(name = "DESTINATION_LNG")
+    private BigDecimal destinationLng;
+    /**
+     * 起始GPS点和结束GPS点的距离
+     */
+    @Transient
+    private String gpsDistance;
+
+    public String getGpsDistance() {
+        return gpsDistance;
+    }
+
+    public void setGpsDistance(String gpsDistance) {
+        this.gpsDistance = gpsDistance;
+    }
+
+    public BigDecimal getOriginLat() {
+        return originLat;
+    }
+
+    public void setOriginLat(BigDecimal originLat) {
+        this.originLat = originLat;
+    }
+
+    public BigDecimal getOriginLng() {
+        return originLng;
+    }
+
+    public void setOriginLng(BigDecimal originLng) {
+        this.originLng = originLng;
+    }
+
+    public BigDecimal getDestinationLat() {
+        return destinationLat;
+    }
+
+    public void setDestinationLat(BigDecimal destinationLat) {
+        this.destinationLat = destinationLat;
+    }
+
+    public BigDecimal getDestinationLng() {
+        return destinationLng;
+    }
+
+    public void setDestinationLng(BigDecimal destinationLng) {
+        this.destinationLng = destinationLng;
+    }
 
     public String getSjdh() {
         return sjdh;

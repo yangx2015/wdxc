@@ -154,7 +154,7 @@ export default {
         originLng:'',       // 起始纬度
         destinationLat:'',  // 目的地经度
         destinationLng:'',  // 目的地纬度
-        zws:'',             // 座位数
+        zws:'5',             // 座位数
         cllx:10
       },
       time:'请选择时间:',
@@ -218,15 +218,17 @@ export default {
   },
   methods: {
     gethcdz(gps){
+        let that = this
         var script = document.createElement("script")
         script.type = "text/javascript"
         var callbackName = '_callback'+Date.now()
         window[callbackName]= function(){
         var myGeo = new BMap.Geocoder();    
       // 根据坐标得到地址描述    
-      myGeo.getLocation(new BMap.Point(114.36996,30.544539), function(result){      
+      myGeo.getLocation(new BMap.Point(gps.longitude,gps.latitude), function(result){      
          if (result){
             console.log(result);
+            that.form.hcdz = result.address
             }      
       });
     }
@@ -235,7 +237,6 @@ export default {
     },
     handleShowMask1 (show) {
       console.log('-------------------');
-      
       this.showMask1 = show
     },
     indexYZ(){
@@ -249,10 +250,10 @@ export default {
         ui.showToast({ title: '请选择目的地!'})
           return false
       }
-      // if(v.form.zws==''){
-      //   ui.showToast({ title: '请选择车型!'})
-      //     return false
-      // }
+      if(v.form.zws==''){
+        ui.showToast({ title: '请选择车型!'})
+          return false
+      }
       console.log('yysj',v.yysj)
       if(v.yysj==''){
         ui.showToast({ title: '请选择上车时间!'})
@@ -273,8 +274,13 @@ export default {
       console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
          console.log('==========================',res)
-      })
-    },
+      });
+      if(code=200 && res.page.list){
+        ui.showToast({ title: '提交成功', icon: 'success' })
+      }else{
+        ui.showToast({ title: '提交失败', icon: 'success' })
+      }
+     },  
     handleNavIconTap () {
       ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
     },

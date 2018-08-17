@@ -9,7 +9,7 @@ export default {
       "pages/user",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/orders","pages/mark"],
+      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/orders","pages/mark","pages/others"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -43,7 +43,9 @@ export default {
   data () {
     return {
       //全局变量
+      userinfo:{//个人信息
 
+      },
       // ajax数据请求参数配置
       apis:ajaxUrl,
       Ajax:{
@@ -63,7 +65,9 @@ export default {
         xlID:''
       },//站点ID
 
-
+      peopleMess:{
+         
+      },//他人乘车信息
 
 
       globalData: {
@@ -78,7 +82,7 @@ export default {
       headerHeight: ui.DEFAULT_HEADER_HEIGHT,
       paths: [],
       barHeight: ui.STATUS_BAR_HEIGHT,
-      showSlideMenu:false
+      showSlideMenu:false,
     }
   },
   computed: {
@@ -164,6 +168,7 @@ export default {
   },
     // 初始化
   created () {
+    this.getUserList() 
     //微信js 初始化
     this.getWxJs()
     //微信js初始化END
@@ -178,6 +183,15 @@ export default {
     })
   },
   methods: {
+    getUserList(){
+      this.$http('POST',ui.getApp().apis.USERINFO,{},(res)=>{
+        console.log('************',res);
+        this.userinfo = res.result.userInfo
+        console.log(this.userinfo);
+        this.showSlideMenu = true;
+        
+      })
+    },
     gologin(){
       ui.navigateTo({
         url: '/pages/login'
@@ -282,7 +296,7 @@ export default {
                 <ui-icon type="head-g" size="24"></ui-icon>
               </ui-col>
               <ui-col>
-                <ui-text>陈二狗 </ui-text>
+                <ui-text>{{userinfo.xm}}</ui-text>
               </ui-col>
             </ui-row>
             <ui-row class="oures" border-bottom=true space=2>
@@ -290,7 +304,7 @@ export default {
                  <ui-icon type="shouji" size="24"></ui-icon>
               </ui-col>
               <ui-col>
-                <ui-text> 13345453534</ui-text>
+                <ui-text>{{userinfo.sjhm}}</ui-text>
               </ui-col>
                 
             </ui-row>

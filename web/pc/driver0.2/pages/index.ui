@@ -34,57 +34,54 @@
                 <ui-tab>历史订单</ui-tab>
             </ui-tabs>
           </ui-view>
-          <ui-view class="box_col_auto">
+          <ui-view class="box_col_auto boxSty">
             <!-- 页面内容 start-->
-              <ui-swiper class="box_col" current="{{ tabCurrent }}"
+              <!-- <ui-swiper class="box_col" current="{{ tabCurrent }}"
                bindchange="handleChange($event, 'tabCurrent')">
-                  <ui-swiper-item class="box_col_auto boxSty">
+                  <ui-swiper-item class="box_col_auto boxSty"> -->
                       <ui-scroll-view
                         scroll-y
-                        height="{{pageHeight(-200)}}"
+                        height="{{pageHeight(-240)}}"
                         pull-down="{{ pullDown }}"
                         enable-reach-bottom-load ="{{loadMore}}"
                         on-load-more="{{ handleLoadMore }}">
-                        <ui-view>
-                            <ui-view class="pagerList box_row" ui:for="{{pagerLists}}">
-                                <ui-view class="titLog">
-                                    <ui-view class="log">
-                                        tit
+                            <ui-view>
+                                <ui-view class="pagerList box_row" ui:for="{{pagerLists}}" bindtap="goMess(item)">
+                                    <ui-view class="titLog">
+                                        <ui-view class="log">
+                                            {{item.jgmc.charAt(0)}}
+                                        </ui-view>
                                     </ui-view>
-                                </ui-view>
-                                <ui-view class="box_row_100 mess">
-                                    <ui-view class="time">
-                                      8月8日 12:00:00
-                                      <ui-view style="float:right">
-                                        待出发
-                                      </ui-view>
+                                    <ui-view class="box_row_100 mess">
+                                        <ui-view class="time">
+                                          {{item.yysj}}
+                                          <ui-view style="float:right">
+                                            待出发
+                                          </ui-view>
+                                        </ui-view>
+                                        <ui-view>
+                                          <ui-icon type="webicon318" size="20" color="#40a02f"></ui-icon>
+                                          {{item.hcdz}}
+                                        </ui-view>
+                                        <ui-view>
+                                          <ui-icon type="webicon318" size="20" color="#ff9b00"></ui-icon>
+                                          {{item.mdd}}
+                                        </ui-view>
                                     </ui-view>
-                                    <ui-view>
-                                      <ui-icon type="webicon318" size="20" color="#40a02f"></ui-icon>
-                                      出发地
+                                    <ui-view class="rightIcon">
+                                      <ui-icon type="right1" size="#f2f2f2" color="#adadad"></ui-icon>
                                     </ui-view>
-                                    <ui-view>
-                                      <ui-icon type="webicon318" size="20" color="#ff9b00"></ui-icon>
-                                      目的地
-                                    </ui-view>
-                                </ui-view>
-                                <ui-view class="rightIcon">
-                                  <ui-icon type="right1" size="#f2f2f2" color="#adadad"></ui-icon>
                                 </ui-view>
                             </ui-view>
-                        </ui-view>
-                        <ui-view style="width:200px;margin:0 auto;">
-                              <ui-divider ui:show="{{!loadMore}}">没有新数据了</ui-divider>
-                        </ui-view>
-                  </ui-scroll-view>
-
-
-                        <ui-button type= "primary" bindtap="goStarPage">出发地</ui-button>
-                  </ui-swiper-item>
+                            <ui-view style="width:200px;margin:0 auto;">
+                                  <ui-divider ui:show="{{!loadMore || pagerLists.length == 0}}">没有新数据了</ui-divider>
+                            </ui-view>
+                      </ui-scroll-view>
+                  <!-- </ui-swiper-item>
                   <ui-swiper-item class="box_col_auto boxSty">
-                        <ui-button type="primary" bindtap="goEndPage">目的地</ui-button>
+                        <ui-button type="primary">目的地</ui-button>
                   </ui-swiper-item>
-              </ui-swiper>
+              </ui-swiper> -->
             <!-- 页面内容 end-->
           </ui-view>
       </ui-view>
@@ -130,9 +127,9 @@ export default {
   },
   watch:{
     tabCurrent:(n,o)=>{
-      this.pagerList = []
+      // this.pagerList = []
         console.log(n);
-        this.dqr(n,1)
+      //   this.dqr(n,1)
     }
   },
   methods: {
@@ -148,16 +145,27 @@ export default {
         console.log(res);
         if(res.code==200 && res.page.list.length>0){
           v.pages = res.page.pages
-          if(res.page.list){
+          if(res.page.pages>0){
             res.page.list.forEach((item,index) => {
                 v.pagerLists.push(item)
             });
+          }else{
+            v.loadMore = false
           }
         }
         
       })
     },
     handleLoadMore () {
+      if(this.pageNum<this.pages){
+        this.pageNum ++
+        this.getpropList(this.pageNum)
+      }else{
+        window.setTimeout(() => {
+          this.loadMore = false
+          return
+        }, 1500)
+      }
     },
     handleActive () {
     },
@@ -165,9 +173,9 @@ export default {
     // flag 为1表示执行了handleActive。为undefined代表handleActive没有执行。
     handlePullDownAfter (flag) {
       // if (flag) {
-        ui.showToast({
-          title: '处理下拉刷新'
-        })
+        // ui.showToast({
+        //   title: '处理下拉刷新'
+        // })
 
         this.pageNum =1
         this.pagerLists = []
@@ -187,13 +195,18 @@ export default {
         url: '/pages/xlmap'
       })
     },
-    goEndPage(){
+    goMess(item){
+      ui.getApp().orderMess = item
       ui.navigateTo({
         url: '/pages/xlMess'
       })
     },
     handleChange (index, key) {
       this[key] = index
+      console.log('123132',index);
+      this.pagerLists = []
+      this.dqr(index,1)
+      
     },
     backPoject(){//退出登录
         ui.navigateTo({
@@ -203,16 +216,16 @@ export default {
     },
     getUserMess(){
       var v = this
-    this.$http("POST",ui.getApp().apis.INFO,{},(res)=>{
-      if(res.result.grade == 'NaN'){
-        res.result.grade = 0
-      }
-      res.result.userInfo = JSON.parse(res.result.userInfo)
-      console.log('**********************',res.result);
-      v.usermess = res.result
-      
-    })
-  },
+      this.$http("POST",ui.getApp().apis.INFO,{},(res)=>{
+        if(res.result.grade == 'NaN'){
+          res.result.grade = 0
+        }
+        res.result.userInfo = JSON.parse(res.result.userInfo)
+        console.log('**********************',res.result);
+        v.usermess = res.result
+        
+      })
+    }
   },
   created () {
     this.dqr(0,1)
@@ -220,9 +233,6 @@ export default {
   },
   mounted() {
     
-    
-
-
 
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
@@ -293,6 +303,8 @@ export default {
           border-radius: 70rpx;
           text-align: center;
           line-height: 140rpx;
+          color: #fff;
+          font-size: 22px;
         }
       }
       .mess{
