@@ -328,7 +328,7 @@ export default {
   }
   .submitBut{
     padding: 10rpx 0;
-    color:#FF7F50;
+    
   }
 }
 .sticky-in-relative-container {
