@@ -1,152 +1,275 @@
 <template>
   <ui-page>
- <ui-row style="margin:15px;color:#888888">
-   <ui-col>
-     已完成订单
-   </ui-col>
- </ui-row>
-  
-  
-<ui-view class="lmw">
+     <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FC8609'} }}">
+        <ui-row height="46">
+          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+            <ui-icon type="left" size="16" color="#fff"></ui-icon>
+          </ui-col>
+          <ui-col vertical-align="middle" align="center">
+            <ui-view class="nav_title">我的行程</ui-view>
+          </ui-col>
+          <ui-col vertical-align="middle" align="center" width="60">
+          </ui-col>
+        </ui-row>
+      </ui-nav-bar>
+      <ui-view class="box_col"> 
+          <ui-view>
+          <ui-divider></ui-divider>
+              <ui-tabs index="{{ current2 }}"  bindchange="handleChange($event, 'current2')" ink-bar active-tab-style="{{activeTabStyle}}" ink-bar-style="{{inkBarStyle}}">
+                  <ui-tab>全部</ui-tab>
+                  <ui-tab>待审核</ui-tab>
+                  <ui-tab>待派单</ui-tab>
+                  <ui-tab>被驳回</ui-tab>
+                  <ui-tab>已完成</ui-tab>
+              </ui-tabs>
+           </ui-view>
+          
+                  <ui-swiper ui:if="{{showList}}" class="box_col"  current="{{ current2 }}" bindchange="handleContentChange($event, 'current2')">
+                      <ui-swiper-item class="box_col_auto boxSty">
+                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist0}}">
+                              <ui-row vertical-align="middle">
+                                <ui-col span="8"   style="padding:15px 15px 0 15px">
+                                  <ui-view class="pageHeght">
+                                      {{item.zws}} 座车
+                                  </ui-view>
+                                </ui-col>
+                                <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+                                {{getzt(item.ddzt)}}
+                                </ui-col>
+                                <ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+                                  <ui-view class="pingyi">
+                                    <ui-icon type="right1" size=5></ui-icon>
+                                  </ui-view>
+                                
+                                    </ui-col>
+                              </ui-row>
+                              <ui-row>
+                                    <ui-col style="padding:0px 10px 0 15px" span="1">
+                                      <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="color:#A0A0A0">
+                                      {{item.cjsj}}
+                                    </ui-col>
+                              </ui-row>
+                              <ui-row >
+                                  <ui-col style="padding:5px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+                                  </ui-col>
+                                  <ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+                                      {{item.hcdz}}
+                                  </ui-col>
+                              </ui-row>
+                              <ui-row >
+                                  <ui-col style="padding:0px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+                                  </ui-col>
+                                  <ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+                                      {{item.mdd}}
+                                  </ui-col>
+                              </ui-row>
+                          </ui-view> -->
+                       </ui-swiper-item>
+                    
+                </ui-view>
+                      <ui-swiper-item class="box_col_auto boxSty">
+                        <ui-scroll-view
+                                scroll-y
+                                height="{{height - imgHeight}}"
+                                pull-down="{{ pullDown }}"
+                                pull-up="{{ pullUp }}"
+                                >
+                                <ui-view slot="pull-down" class="pull-down-content" ui:if="{{proportion}}">
+                                    <ui-view class="img-layer" ui:if="{{proportion < 1}}">
+                                      <ui-view class="img_content" style="{{{ height : proportion * 100+'px' }}}"></ui-view>
+                                    </ui-view>
 
+                                    <ui-view class="img-layer" ui:else>
+                                      <ui-view class="mt-ready" ui:if="{{state === 2}}"></ui-view>
+                                      <ui-view class="mt-loading" ui:show="{{state === 3 || state === 4}}"></ui-view>
+                                    </ui-view>
+                                  </ui-view>
+                                  <ui-view class="content_list">
+                                    <ui-view ui:for="{{ items }}" class="{{{'grey-bg': index % 2 == 0}}}">
+                                      {{ item }}
+                                    </ui-view>
+                                  </ui-view>
+                                </ui-scroll-view>
 
-<ui-row vertical-align="middle">
-<ui-col span="8"   style="padding:15px 15px 0 15px">
-    <ui-view class="pageHeght">
-        十二座车
-    </ui-view>
-</ui-col>
-<ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
-  已完成
-</ui-col>
-<ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
-  <ui-view class="pingyi">
-    <ui-icon type="right1" size=5></ui-icon>
-  </ui-view>
-  
-</ui-col>
-</ui-row>
-
-
-
-<ui-row>
-<ui-col style="padding:0px 10px 0 15px" span="1">
- <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="color:#A0A0A0">
-  今天 15:10
-</ui-col>
-</ui-row>
-
-
-<ui-row >
-<ui-col style="padding:5px 15px 0 15px" span="1">
- <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
-  武汉大学中国边界和海洋研究院
-</ui-col>
-</ui-row>
-
-<ui-row >
-<ui-col style="padding:0px 15px 0 15px" span="1">
- <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
-   武汉大学二食堂
-</ui-col>
-</ui-row>
-
-
-
-
-
-
-
-
-</ui-view>
-
-
-
-  
-  
-<ui-view class="lmw">
-
-
-<ui-row vertical-align="middle">
-<ui-col span="8"   style="padding:15px 15px 0 15px">
-    <ui-view class="pageHeght">
-        十二座车
-    </ui-view>
-</ui-col>
-<ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
-  已取消
-</ui-col>
-<ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
-  <ui-view class="pingyi">
-    <ui-icon type="right1" size=5></ui-icon>
-  </ui-view>
-  
-</ui-col>
-</ui-row>
-
-
-
-<ui-row>
-<ui-col style="padding:0px 10px 0 15px" span="1">
- <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="color:#A0A0A0">
-  今天 15:10
-</ui-col>
-</ui-row>
-
-
-<ui-row >
-<ui-col style="padding:5px 15px 0 15px" span="1">
- <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
-  武汉大学中国边界和海洋研究院
-</ui-col>
-</ui-row>
-
-<ui-row >
-<ui-col style="padding:0px 15px 0 15px" span="1">
- <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
-</ui-col>
-<ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
-   武汉大学二食堂
-</ui-col>
-</ui-row>
-
-
-
-
-
-
-
-
-</ui-view>
-
-
-
-
-
-
-
-
-    
-
-    
-   
-    
-
-
-
-
-
-
+                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist1}}">
+                              <ui-row vertical-align="middle">
+                                <ui-col span="8"   style="padding:15px 15px 0 15px">
+                                  <ui-view class="pageHeght">
+                                      {{item.zws}} 座车
+                                  </ui-view>
+                                </ui-col>
+                                 <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+                                    待审核
+                                  </ui-col>
+                                  <ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+                                     <ui-view class="pingyi">
+                                      <ui-icon type="right1" size=5></ui-icon>
+                                      </ui-view>
+                                
+                                      </ui-col>
+                              </ui-row>
+                              <ui-row>
+                                  <ui-col style="padding:0px 10px 0 15px" span="1">
+                                    <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+                                  </ui-col>
+                                  <ui-col span="11" align="left" style="color:#A0A0A0">
+                                      {{item.cjsj}}
+                                  </ui-col>
+                              </ui-row>
+                              <ui-row >
+                                  <ui-col style="padding:5px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+                                  </ui-col>
+                                  <ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+                                      {{item.hcdz}}
+                                  </ui-col>
+                              </ui-row>
+                              <ui-row >
+                                  <ui-col style="padding:0px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+                                  </ui-col>
+                                    <ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+                                      {{item.mdd}}
+                                    </ui-col>
+                              </ui-row>
+                          </ui-view> -->
+                      </ui-swiper-item>
+                      <ui-swiper-item class="box_col_auto boxSty">
+                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist2}}">
+                              <ui-row vertical-align="middle">
+                              <ui-col span="8"   style="padding:15px 15px 0 15px">
+                                  <ui-view class="pageHeght">
+                                      {{item.zws}} 座车
+                                  </ui-view>
+                              </ui-col>
+                              <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+                                待派单
+                              </ui-col>
+                              <ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+                                <ui-view class="pingyi">
+                                  <ui-icon type="right1" size=5></ui-icon>
+                                </ui-view>
+                                
+                              </ui-col>
+                              </ui-row>
+                              <ui-row>
+                                    <ui-col style="padding:0px 10px 0 15px" span="1">
+                                    <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="color:#A0A0A0">
+                                      {{item.cjsj}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:5px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+                                      {{item.hcdz}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:0px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+                                      {{item.mdd}}
+                                    </ui-col>
+                                </ui-row>
+                            </ui-view> -->
+                      </ui-swiper-item>
+                      <ui-swiper-item class="box_col_auto boxSty">
+                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist3}}">
+                              <ui-row vertical-align="middle">
+                              <ui-col span="8"   style="padding:15px 15px 0 15px">
+                                  <ui-view class="pageHeght">
+                                      {{item.zws}} 座车
+                                  </ui-view>
+                              </ui-col>
+                              <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+                                被驳回
+                              </ui-col>
+                              <ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+                                <ui-view class="pingyi">
+                                  <ui-icon type="right1" size=5></ui-icon>
+                                </ui-view>
+                                
+                              </ui-col>
+                              </ui-row>
+                              <ui-row>
+                                    <ui-col style="padding:0px 10px 0 15px" span="1">
+                                    <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="color:#A0A0A0">
+                                      {{item.cjsj}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:5px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+                                      {{item.hcdz}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:0px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+                                      {{item.mdd}}
+                                    </ui-col>
+                                </ui-row>
+                            </ui-view> -->
+                      </ui-swiper-item>
+                      <ui-swiper-item class="box_col_auto boxSty">
+                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist4}}">
+                              <ui-row vertical-align="middle">
+                              <ui-col span="8"   style="padding:15px 15px 0 15px">
+                                  <ui-view class="pageHeght">
+                                      {{item.zws}} 座车
+                                  </ui-view>
+                              </ui-col>
+                              <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
+                                已完成
+                              </ui-col>
+                              <ui-col span="1" style="padding:15px 0 0px 0;color:#A0A0A0" align="right" space-right="15">
+                                <ui-view class="pingyi">
+                                  <ui-icon type="right1" size=5></ui-icon>
+                                </ui-view>
+                                
+                              </ui-col>
+                              </ui-row>
+                              <ui-row>
+                                    <ui-col style="padding:0px 10px 0 15px" span="1">
+                                    <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="color:#A0A0A0">
+                                      {{item.cjsj}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:5px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#00CC99" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="padding:5px 15px 0 0px;color:#A0A0A0">
+                                      {{item.hcdz}}
+                                    </ui-col>
+                                    </ui-row>
+                                    <ui-row >
+                                    <ui-col style="padding:0px 15px 0 15px" span="1">
+                                    <ui-icon type="yuan-copy-copy-copy-copy" style="color:#FF9966" size=10></ui-icon>
+                                    </ui-col>
+                                    <ui-col span="11" align="left" style="margin:0px 0px 20px 0px;color:#A0A0A0">
+                                      {{item.mdd}}
+                                    </ui-col>
+                                </ui-row>
+                            </ui-view> -->
+                      </ui-swiper-item>
   </ui-page>
   
 </template>
@@ -154,14 +277,51 @@
 <script>
 export default {
   config: {
-    navigationBarTitleText: '我的行程',
-    navigationStyle:'default',
-    backgroundColor: '#F4F4F4',
-    navigationBarTextStyle: '#black',
-    navigationBarBackgroundColor:'#FFf'
+    
+    disableScroll:true,
+    
   },
   data () {
     return {
+      items: [],
+        bottom: 30,
+         state: 1,
+          showLoading: false,
+          imgSrc: require('static/img/rotate_img.png'),
+        height: ui.DEFAULT_CONTENT_HEIGHT,
+        imgHeight: parseInt(ui.WIN_WIDTH / 1125 * 628),
+        pullDown: {
+          distance: 50,
+          onBegin: () => {},
+          onActive: this.handleActive,
+          onAfter: this.handlePullDownAfter
+        },
+         pullUp: {
+        distance: 50,
+        onBegin: () => {},
+        onActive: this.handleActive,
+        onAfter: this.handlePullUpAfter
+      },
+        ddlist0:[], 
+        ddlist1:[], 
+        ddlist2:[], 
+        ddlist3:[], 
+        ddlist4:[], 
+        ddztlist:['','10','11','12','20'],
+        ddztCodelist:['10','11','12','13','20','30','40'],
+        ddztNamelist:['待审核','待派单','被驳回','已派单','已完成','队长确认','财务已收'],
+        count:0,
+        loadMore:true,
+        showList:false,
+      current2: 0,
+      activeTabStyle:{
+        'color': '#e60012',
+      },
+      inkBarStyle:{
+        'border-bottom': '1px solid red',
+        'width': '60%',
+        'color':'red'
+      },
       current9:0,
       activeTabStyle2:{
        'color':'#FF9966',
@@ -173,15 +333,90 @@ export default {
       
 
   methods: {
+    getzt(code){
+      let index = this.ddztCodelist.indexOf(code);
+      if (index == -1){
+        return '未知类型'
+      }
+      return this.ddztNamelist[index];
+    },
+   
+    getPagerList(i){
+      this.$http('POST',ui.getApp().apis.DDLIST.QUERTY,{ddzt:this.ddztlist[i]},(res)=>{
+        if (res.code ===200 && res.page.list){
+          let s = res.page.list
+            this['ddlist'+i] = s;
+          console.log('s==================',s)
+          console.log(this.ddlist4)
+          this.showList = true;
+        }
+      })
+    },
+     Goback(){
+      ui.navigateBack()
+    },
     handleChange(index,key){
       this[key]=index
     },
     handleContentChange(index,key){
       this[key]=index
     },
-    
-    
-    
+    gomark(item){
+      console.log(item);
+      ui.getApp().orderMess = item 
+       ui.navigateTo({
+        url: '/pages/mark'
+      })
+    },
+    handleLoadMore () {
+      window.setTimeout(() => {
+        for (let i = this.bottom + 1; i <= this.bottom + 10; i++) {
+          this.items.push(`列表项目${i}`)
+        }
+        this.bottom += 10
+      }, 1500)
+    },
+    handleBegin ({ distance, direction }) {
+      this.proportion = distance / 60
+      // 拉满60px
+      if (this.proportion >= 1) {
+        if (this.state === 1 && direction === 'down') {
+          // 释放刷新
+          this.state = 2
+
+          // 300ms吉祥物翻转时间
+          window.setTimeout(() => {
+            // 刷新中...
+            this.state = 3
+          }, 300)
+        }
+      } else {
+        this.state = 1
+      }
+    },
+    handleActive () {
+        // 将返回的请求接管，实现让请求结果来控制下拉刷新的状态
+        return ui.request({
+          // promise设置为true，让请求返回promise，这样就可以接管请求
+          // 请求结束后页面自动回弹
+          promise: true,
+          url: '/touchui-backstage/listInfo.do?state=1',
+          success: (response) => {
+            //
+          },
+          fail: (err) => {
+          }
+        })
+      },
+      // 下拉结束后，执行的函数。因为只要下拉即时没有到达刷新的高度也会触发这个方法
+      // flag 为1表示执行了handleActive。为undefined代表handleActive没有执行。
+      handlePullDownAfter (flag) {
+        if (flag) {
+          ui.showToast({
+            title: '处理下拉刷新'
+          })
+        }
+      },
    
     
     
@@ -194,7 +429,15 @@ export default {
       })
     }
   },
+  created(){
+    for(let i = 0;i<this.ddztlist.length;i++){
+      this.getPagerList(i)
+    }
+  },
   mounted() {
+    for (let i = 1; i <= this.bottom; i++) {
+        this.items.push(`列表项目${i}`)
+      }
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
       //关闭app启动图
@@ -206,12 +449,6 @@ export default {
 </script>
 
 // <style lang="less">
-// .lmw{
-//   background: #fff;
-//   border-radius 5rpx;
-//   borde: solid black;
-//   margin:0 15px 0 15px
-// }
 .lmw{
   background: #fff;
   border-radius: 5rpx;
@@ -234,6 +471,13 @@ color: #707070;
 }
 .pingyi{
   transform: translate(-50%,0%);
+}
+.ui-tabs{
+  background-color: #f5f5f5;
+  padding-bottom: 1px;
+}
+.content {
+  line-height: 180px;
 }
 
 </style>

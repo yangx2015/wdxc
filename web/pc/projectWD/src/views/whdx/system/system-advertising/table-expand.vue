@@ -48,10 +48,12 @@
 			<Modal class="videoStyle" title="View Image" v-model="visible">
 				<div class="ModalSty">
 					<Button class="goleft" type="primary" shape="circle" @click="leftGo()">
-			           <Icon type="arrow-left-b" size='24'></Icon>
+					<Icon type="ios-arrow-dropleft" size='24'/>
+			           <!--<Icon type="arrow-left-b" size='24'></Icon>-->
 			        </Button>
 					<Button class="goright" type="primary" shape="circle" @click="rightGo()">
-			           <Icon type="arrow-right-b" size='24'></Icon>
+						<Icon type="ios-arrow-dropright"  size='24'/>
+			           <!--<Icon type="arrow-right-b"></Icon>-->
 			        </Button>
 					<img :src="staticPath+imgUrl" style="width: 100%">
 				</div>

@@ -11,7 +11,7 @@
 		<div style="position:absolute;width:430px;padding-top:30px;padding-left:30px;z-index:9999">
 			<Col span="24">
 				<Input placeholder="查设备、找车辆、找司机" size="large" v-model="searchKey">
-				<Button slot="append" type="primary" icon="ios-search" @click="filter"></Button>
+				<Button slot="append" type="primary" icon="md-search" @click="filter"></Button>
 				</Input>
 				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;"  size="small">
 					<TabPane :label="qblabel" name="name0" style="height:300px;overflow:auto;" v-show="tabShowFlag">
@@ -31,7 +31,7 @@
 											{{item.cph}}
 										</Col>
 										<Col span="8">
-											<Icon type="person"></Icon>
+											<Icon type="md-person"></Icon>
 											{{item.sjxm ? item.sjxm : '暂无绑定'}}
 										</Col>
 										<Col span="2" offset="6">
@@ -96,7 +96,7 @@
 											{{item.cph}}
 										</Col>
 										<Col span="8">
-											<Icon type="person"></Icon>
+											<Icon type="md-person"></Icon>
 											{{item.sjxm ? item.sjxm : '暂无绑定'}}
 										</Col>
 										<Col span="2" offset="6">
@@ -161,7 +161,7 @@
 											{{item.cph}}
 										</Col>
 										<Col span="8">
-											<Icon type="person"></Icon>
+											<Icon type="md-person"></Icon>
 											{{item.sjxm ? item.sjxm : '暂无绑定'}}
 										</Col>
 										<Col span="2" offset="6">
@@ -226,7 +226,7 @@
 											{{item.cph}}
 										</Col>
 										<Col span="8">
-											<Icon type="person"></Icon>
+											<Icon type="md-person"></Icon>
 											{{item.sjxm ? item.sjxm : '暂无绑定'}}
 										</Col>
 										<Col span="2" offset="6">
@@ -339,7 +339,7 @@ export default {
             socket : new SockJS(this.$http.url+"/gps"),
             // socket : new SockJS("http://127.0.0.1/gps"),
 
-            changeBtnIcon:'chevron-down',
+            changeBtnIcon:'ios-arrow-down',
             qblabel: (h) => {
                 return h('div', [
                     h('span','全部 '),
@@ -440,11 +440,11 @@ export default {
             this.map.addOverlay(polygon);
         },
         changeBtn(){
-            if (this.changeBtnIcon == "chevron-down"){
-                this.changeBtnIcon = "chevron-up";
+            if (this.changeBtnIcon == "ios-arrow-down"){
+                this.changeBtnIcon = "ios-arrow-up";
                 this.tabShowFlag = true;
             }else{
-                this.changeBtnIcon = "chevron-down";
+                this.changeBtnIcon = "ios-arrow-down";
                 this.tabShowFlag = false;
             }
         },

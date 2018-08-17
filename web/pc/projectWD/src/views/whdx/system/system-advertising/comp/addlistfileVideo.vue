@@ -27,7 +27,7 @@
 	        :action="uploadUrl+'?targetPath=movie'"
 	        style="display: inline-block;width:58px;">
 	        <div style="width: 58px;height:58px;line-height: 58px;">
-	            <Icon type="videocamera" size="20"></Icon>
+			<Icon type="md-videocam"  size="20"/>
 	        </div>
 	    </Upload>
 	    <!--<Modal title="View Image" v-model="visible">

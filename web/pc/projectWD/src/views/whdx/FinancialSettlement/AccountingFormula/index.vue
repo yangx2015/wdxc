@@ -20,10 +20,10 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 							<Button type="primary" @click="v.util.add(v)">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -92,7 +92,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        icon: 'close',
+                                        icon: 'md-close',
                                         shape: 'circle',
                                         size: 'small'
                                     },

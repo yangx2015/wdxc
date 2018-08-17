@@ -13,10 +13,8 @@ module.exports = {
     LOGIN:{//登录
         QUERTY:'/put/jzg/getJzg'
     },
-    FEEDBACK:{//建议、投诉
-        QUERTY:'/put/yj/save',
-        LIST:'/put/yj/pager'
-    },
+    PROPOSAL:'/put/yj/save',//意见反馈 yjLx 00意见 10反馈 20投诉
+    PROPList:'/put/yj/pager',//意见列表
     DDSAVE:{//订单创建
         SAVE:'/put/dd/save'
     },
@@ -35,5 +33,6 @@ module.exports = {
     },
     GPS:{
         DOT:'/put/dd/getStartPointAndEndPoint'
-    }
+    },
+    USERINFO:'/put/jzg/getInfo'
 }

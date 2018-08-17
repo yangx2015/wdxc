@@ -1,24 +1,6 @@
 package com.ldz.wechat.module.controller;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
+import com.github.pagehelper.Page;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
@@ -29,7 +11,21 @@ import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.model.SysJzgxx;
 import com.ldz.wechat.module.model.SysZdxm;
 import com.ldz.wechat.module.service.DdService;
+import com.ldz.wechat.module.service.SjDdService;
 import com.ldz.wechat.module.service.ZdxmService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Administrator on 2018/5/12.
@@ -39,6 +35,8 @@ import com.ldz.wechat.module.service.ZdxmService;
 public class DdCtrl extends BaseController<ClDd,String> {
     @Autowired
     private DdService service;
+    @Autowired
+    private SjDdService sjService;
     @Autowired
     private ZdxmService zdxmService;
 
@@ -183,18 +181,32 @@ public class DdCtrl extends BaseController<ClDd,String> {
         String userId = getCurrentUser(true);
         return service.getOrderWorkersList(userId);
     }
+//    /**
+//     * 列驾驶员订单 表 订单查询
+//     * @param type 2、待确认  3、历史单据
+//     * @return
+//     */
+//    @RequestMapping(value = "/getsjlist",method = {RequestMethod.POST})
+//    public ApiResponse<List<ClDd>> getOrderDriverList(String type){
+//        String userType=getUserType();//
+//        RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
+//        String userId = getCurrentUser(true);
+//        return service.getOrderDriverList(userId,type);
+//    }
+
     /**
-     * 列表 订单查询
-     * @param type 2、待确认  3、历史单据
+     * 列驾驶员订单  列表 订单查询
+     * @param entity
+     * @param pager
      * @return
      */
-    @RequestMapping(value = "/getsjlist",method = {RequestMethod.POST})
-    public ApiResponse<List<ClDd>> getOrderDriverList(String type){
+    @RequestMapping(value="/getsjlist", method={RequestMethod.POST, RequestMethod.GET})
+    public ApiResponse<List<ClDd>> sjPager(ClDd entity, Page<ClDd> pager){
         String userType=getUserType();//
         RuntimeCheck.ifFalse(StringUtils.equals(userType,"jsy"),"请用司机角色登录");
-        String userId = getCurrentUser(true);
-        return service.getOrderDriverList(userId,type);
+        return sjService.pager(pager);
     }
+
 
     @RequestMapping("getStartPointAndEndPoint")
     public ApiResponse<Map<String,Object>> getStartPointAndEndPoint(String orderId){

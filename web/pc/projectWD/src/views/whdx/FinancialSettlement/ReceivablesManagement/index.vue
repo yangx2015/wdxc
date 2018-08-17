@@ -40,7 +40,7 @@
 					<DatePicker v-model="param.startTime" :options="dateOpts" type="datetime" placeholder="请输入开始时间" ></DatePicker>
 					<DatePicker v-model="param.endTime" :options="dateOpts" type="datetime"  placeholder="请输入结束时间"  ></DatePicker>
 					<Button type="primary" @click="getData()">
-						<Icon type="search"></Icon>
+						<Icon type="md-search"></Icon>
 					</Button>
 		    	</div>
 		    </Col>
@@ -49,7 +49,7 @@
 			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
 				<Card style="width:100%" :id="'group_'+item.orgCode">
 			        <div slot="title">
-			            <Icon type="person"></Icon>
+			            <Icon type="md-person"></Icon>
 			            	{{item.orgName}}
 			        </div>
 			        <span slot="extra">
@@ -168,7 +168,7 @@
                                     on: {
                                         click: () => {
                                             this.choosedItem = params.row;
-                                            this.componentName = 'edit';
+                                            this.componentName = 'md-create';
                                         }
                                     }
                                 }, '编辑')

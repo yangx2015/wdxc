@@ -20,7 +20,7 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 						</div>
 					</div>

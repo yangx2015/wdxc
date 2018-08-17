@@ -33,7 +33,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="close">关闭</Button>
+				<Button type="default" @click="close">关闭</Button>
 				<Button type="success" @click="seet('addmess')">确定</Button>
 			</div>
 		</Modal>
@@ -80,7 +80,8 @@
 		    	    let userInfoJson = sessionStorage.getItem("userInfo");
                     let userInfo = JSON.parse(userInfoJson);
                     let jgdm = userInfo.jgdm;
-		    	    p = {jgdm:jgdm}
+		    	    p = this.$parent.param;
+		    	    p.jgdm = jgdm;
 		    	    url = this.apis.SBZDDZ.batchUpdate;
 				}else{
                     url = this.apis.SBZDDZ.ADD

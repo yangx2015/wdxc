@@ -90,7 +90,7 @@
                         </div>
                   </div>
                   <div slot='footer'>
-                        <Button type="success" @click="colse">取消</Button>
+                        <Button type="success" @click="colse"style="color: #949494">取消</Button>
                         <Button type="primary" @click="save('addmess')">确定</Button>
                   </div>
             </Modal>

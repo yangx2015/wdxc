@@ -24,6 +24,8 @@
 
 .icon-yijianfankui:before { content: "\e625"; }
 
+.icon-dianhua:before { content: "\e632"; }
+
 .icon-jianxianxing:before { content: "\e615"; }
 
 .icon-shouji:before { content: "\e64d"; }
@@ -38,9 +40,17 @@
 
 .icon-bus1:before { content: "\e604"; }
 
+.icon-dianhua1:before { content: "\e63b"; }
+
 .icon-yuan-copy-copy-copy-copy:before { content: "\e637"; }
 
 .icon-right:before { content: "\e639"; }
+
+.icon-return:before { content: "\e6ba"; }
+
+.icon-qidian:before { content: "\e63c"; }
+
+.icon-zhongdian:before { content: "\e63d"; }
 
 .icon-right1:before { content: "\e688"; }
 
@@ -60,6 +70,8 @@
 
 .icon-Bus:before { content: "\e7e4"; }
 
+.icon-siji:before { content: "\e607"; }
+
 .icon-arrow-right:before { content: "\e601"; }
 
 .icon-bus2:before { content: "\e605"; }
@@ -69,6 +81,10 @@
 .icon-fangxiang1:before { content: "\e60b"; }
 
 .icon-wo:before { content: "\e636"; }
+
+.icon-qichemoren:before { content: "\e63f"; }
+
+.icon-xuanze:before { content: "\e6a8"; }
 
 .icon-xinhao1:before { content: "\e638"; }
 

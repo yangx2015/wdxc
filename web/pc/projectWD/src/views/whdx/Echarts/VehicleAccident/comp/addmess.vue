@@ -73,7 +73,7 @@
 				</Form>
 			</div>
 			<div slot='footer'>
-				<Button type="ghost" @click="colse">取消</Button>
+				<Button type="default" @click="colse"style="color: #949494">取消</Button>
 				<Button type="primary" @click="save('formItem')">确定</Button>
 			</div>
 		</Modal>

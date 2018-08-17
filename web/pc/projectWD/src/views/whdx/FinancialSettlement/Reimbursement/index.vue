@@ -1,44 +1,48 @@
 <style lang="less">
-	@import '../../../../styles/common.less';
+      @import '../../../../styles/common.less';
 </style>
 <!--角色管理-->
 <template>
-	<div class="boxbackborder">
-		<Card>
-			<Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+      <div class="boxbackborder">
+            <Card>
+                  <Row class="margin-top-10" style='background-color: #fff;position: relative;'>
 				<span class="tabPageTit">
     				<Icon type="ios-paper" size='30' color='#fff'></Icon>
     			</span>
-				<div style="height: 45px;line-height: 45px;">
-					<div class="margin-top-10 box-row">
-						<div class="titmess">
-							<span>报销记账</span>
-						</div>
-						<div class="body-r-1 inputSty">
-							<Input v-model="param.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
-								   @on-change="getPageData()"></Input>
-						</div>
-						<div class="butevent">
-							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
-							</Button>
-							<Button type="primary" @click="v.util.add(v)">
-								<Icon type="plus-round"></Icon>
-							</Button>
-						</div>
-					</div>
-				</div>
-			</Row>
-			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
-			</Row>
-			<Row class="margin-top-10 pageSty">
-				<Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top'
-					  @on-change='pageChange'></Page>
-			</Row>
-		</Card>
-		<component :is="componentName"></component>
-	</div>
+                        <div style="height: 45px;line-height: 45px;">
+                              <div class="margin-top-10 box-row">
+                                    <div class="titmess">
+                                          <span>报销记账</span>
+                                    </div>
+                                    <div class="body-r-1 inputSty">
+                                          <Input v-model="param.gnmcLike" placeholder="请输入功能名称" style="width: 200px"
+                                                 @on-change="getPageData()"></Input>
+                                    </div>
+                                    <div class="butevent">
+                                          <Button type="primary" @click="v.util.getPageData(v)">
+                                                <Icon type="md-search"></Icon>
+                                          </Button>
+                                          <Button type="primary" @click="v.util.add(v)">
+                                                <Icon type="md-add"></Icon>
+                                          </Button>
+                                    </div>
+                              </div>
+                        </div>
+                  </Row>
+                  <Row style="position: relative;">
+                        <Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle"
+                               :data="pageData"></Table>
+                  </Row>
+                  <Row class="margin-top-10 pageSty">
+                        <Page :total=param.total :current=param.pageNum :page-size=param.pageSize
+                              :page-size-opts=[8,10,20,30,40,50]
+                              @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator
+                              show-sizer placement='top'
+                              @on-change='pageChange'></Page>
+                  </Row>
+            </Card>
+            <component :is="componentName"></component>
+      </div>
 </template>
 
 <script>
@@ -53,9 +57,9 @@
         },
         data() {
             return {
-                v:this,
+                v: this,
                 SpinShow: true,
-				apiRoot : this.apis.BXJZ,
+                apiRoot: this.apis.BXJZ,
                 tabHeight: 220,
                 componentName: '',
                 choosedItem: null,

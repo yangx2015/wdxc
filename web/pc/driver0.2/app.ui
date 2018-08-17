@@ -46,7 +46,14 @@ export default {
 
       // ajax数据请求参数配置
       apis:ajaxUrl,
-
+      Ajax:{
+        url:ajaxUrl.url,
+        port:ajaxUrl.port,
+        header:{
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'token':''
+        }
+      },
       wxUtil:null,//微信 功能方法
       lineMess:{},//线路信息
       station:{
@@ -54,11 +61,11 @@ export default {
         xlID:''
       },//站点ID
 
-
-
-
       globalData: {
       },
+
+      orderMess:{},//订单详情
+
       WIN_WIDTH:ui.WIN_WIDTH,
       tabIndex: 0,
       tabBarList: [],

@@ -20,7 +20,7 @@
 							<Input v-model="param.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 						</div>
@@ -59,7 +59,7 @@
 				</Form>
 			</div>
 		    <div slot='footer'>
-				<Button type="text" @click="showModal=false,bhyy=''">取消</Button>
+				<Button type="text" @click="showModal=false,bhyy=''"style="color: #949494">取消</Button>
 				<Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
 			</div>
 		</Modal>

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<Modal v-model="editPasswordModal" 
+		<Modal v-model="editPasswordModal"
 			:closable='false' 
 			:mask-closable=false 
 			:width="500">
@@ -17,8 +17,8 @@
                 </FormItem>
             </Form>
             <div slot="footer">
-                <Button type="text" @click="cancelEditPass">取消</Button>
-                <Button type="primary" :loading="savePassLoading" @click="saveEditPass">保存</Button>
+                <Button type="text" @click="canceleditPass"style="color: #949494">取消</Button>
+                <Button type="primary" :loading="savePassLoading" @click="saveeditPass">保存</Button>
             </div>
         </Modal>
 	</div>
@@ -71,10 +71,10 @@
 		},
 		methods:{
 			//修改密码
-        	cancelEditPass () {
+        	canceleditPass () {
 	            this.$parent.compName = '';
 	        },
-	        saveEditPass () {
+	        saveeditPass () {
 	            this.$refs['editPasswordForm'].validate((valid) => {
 	                if (valid) {
 	                    this.savePassLoading = true;

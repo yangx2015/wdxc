@@ -24,11 +24,11 @@
 					</div>
 					<div class="butevent">
 						<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 						<Button type="primary" @click="AddDc()">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 					</div>
 				</div>
@@ -43,14 +43,19 @@
 							{{item.lmmc}} [{{item.lmdm}}]
 						</p>
 						<span slot="extra">
-					        <a href="#" @click.prevent="AddDcList(item,index)">
-					            <Icon type="plus-circled" size="24"></Icon>
-								<!--新增-->
-					        </a>
-					        <a href="#" @click.prevent="removeDc(item,index)" style="color: red;">
-					            <Icon type="close-circled" size="24"></Icon>
-								<!--删除-->
-					        </a>
+						<Button type="primary" shape="circle" icon="md-add"
+							size="small" @click="AddDcList(item,index)"></Button>
+					        <Button type="error" shape="circle" icon="md-close"
+						        size="small" @click="removeDc(item,index)"></Button>
+
+					        <!--<a href="#" @click.prevent="AddDcList(item,index)">-->
+					            <!--<Icon type="md-add" size="24"></Icon>-->
+								<!--&lt;!&ndash;新增&ndash;&gt;-->
+					        <!--</a>-->
+					        <!--<a href="#" @click.prevent="removeDc(item,index)" style="color: red;">-->
+					            <!--<Icon type="md-close" size="24"></Icon>-->
+								<!--&lt;!&ndash;删除&ndash;&gt;-->
+					        <!--</a>-->
 				        </span>
 						<div style="height: 240px;">
 							<div>
@@ -84,7 +89,7 @@
 										{{items.zdmc}}
 									</div>
 									<div class="body-2" style="min-width: 50px;">
-										<Button type="error" size='small' shape="circle" icon="close" @click="removeDcList(item,items)"></Button>
+										<Button type="error" size='small' shape="circle" icon="md-close" @click="removeDcList(item,items)"></Button>
 									</div>
 								</div>
 							</div>

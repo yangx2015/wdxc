@@ -34,12 +34,12 @@
 						<div class="butevent">
 							<Tooltip content="查询" placement="top">
 								<Button type="primary" @click="getPageData()">
-									<Icon type="search"></Icon>
+									<Icon type="md-search"></Icon>
 								</Button>
 							</Tooltip>
 							<Tooltip content="新增" placement="top">
 								<Button type="primary" @click="AddMess()">
-									<Icon type="plus-round"></Icon>
+									<Icon type="md-add"></Icon>
 								</Button>
 							</Tooltip>
 							<Tooltip content="批量导入" placement="top">
@@ -238,7 +238,7 @@
                                         h('Button', {
                                             props: {
                                                 type: 'success',
-                                                icon: 'edit',
+                                                icon: 'md-create',
                                                 shape: 'circle',
                                                 size: 'small'
                                             },
@@ -319,7 +319,7 @@
                                         h('Button', {
                                             props: {
                                                 type: 'error',
-                                                icon: 'close',
+                                                icon: 'md-close',
                                                 shape: 'circle',
                                                 size: 'small'
                                             },

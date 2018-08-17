@@ -258,6 +258,10 @@ public class SysYjfk implements Serializable {
         lxrxm("LXRXM"),
         lxfs("LXFS"),
         xgr("XGR"),
+
+        userId("USER_ID"),
+        sjId("SJ_ID"),
+
         xgsj("XGSJ");
 
         private final String column;

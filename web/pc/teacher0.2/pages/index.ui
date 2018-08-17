@@ -10,46 +10,49 @@
                 <ui-view>
                     <ui-row>
                       <ui-icon type="webicon318"></ui-icon>
-                      <ui-input ui:model="{{form.starGPS.name}}" placeholder="你在哪儿" bindtap="getStarGps"></ui-input>
+                      <ui-input ui:model="{{form.hcdz}}" placeholder="你在哪儿" bindtap="getStarGps"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
                     <ui-row>
                       <ui-icon type="webicon318"></ui-icon>
-                      <ui-input ui:model="{{form.endGPS.name}}" placeholder="要去哪儿" bindtap="getEndGps"></ui-input>
+                      <ui-input ui:model="{{form.mdd}}" placeholder="要去哪儿" bindtap="getEndGps"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
                   <ui-row>
-                     <ui-col sapn=2>
+                     <ui-col sapn=1>
                         <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
                       </ui-col >
-                      <ui-col span=4 bindtap="radioCalendaropen" align="left" >
-                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ timeValue }}</ui-text>
-                      
+                      <ui-col span=7 bindtap="radioCalendaropen" align="left" >
+                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ time }}</ui-text>
                      </ui-col>
-                     <ui-col span=2>
+                     <ui-col span=1>
                         <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
                       </ui-col>
-                      <ui-col span=4 align="left" bindtap="getmyself()">
+                      <ui-col span=3 align="left" bindtap="getmyself()">
                         <ui-text>{{people}}</ui-text>
                      </ui-col>
                   </ui-row>
                 </ui-view>
 
-                <ui-view ui:if="{{people === '他人乘坐'}}">
-                  <ui-row>
-                    
-                      <ui-col span=4>
-                        <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
-                      
-                     </ui-col>
-                     
-                      <ui-col span=4 >
-                        <ui-input ui:model="{{newnum}}" placeholder="手机号码" ></ui-input>
-                     </ui-col>
-                  </ui-row>
-                </ui-view>
+                <!-- <ui-view ui:if="{{people === '他人乘坐'}}"> -->
+                    <ui-mask ui:model="showMask1">
+                      <ui-view class="content">
+                            <ui-view class="log_box">
+                          <ui-row space-top=280>
+                             <ui-input  ui:model="{{form.ck}}"  placeholder="姓名" maxlength="11"></ui-input>
+                             </ui-row>  
+                            
+                          <ui-row>
+                             <ui-input ui:model="{{form.cklxdh}}" placeholder="手机号码" ></ui-input>
+                           </ui-row>
+                        <ui-button  plain="false" type="success" bindtap="handleShowMask1(false)">确认</ui-button>
+                        </ui-view>
+                      </ui-view>
+                    </ui-mask>
+                <!-- </ui-view> -->
+                
                 <ui-view>
                    <ui-row height="100">
                      <ui-col ui:for="{{carlist}}" bindtap="getcarnum(item,index)">
@@ -91,11 +94,12 @@
                 select-range-mode="{{false}}"
                 header-height="30"
                 height="319"
+                ui:model='date'
                 show-today
                 bindchange="selectedChange"
                 value="{{radioDate}}"
               ></ui-v-calendar>
-              <ui-picker-view mode="time" value="{{ timeValue }}" bindchange="handleChange4"></ui-picker-view>
+              <ui-picker-view mode="time" value="{{ time }}" bindchange="handleChange4"></ui-picker-view>
               <ui-button  bindtap="resetPicker2">确定</ui-button>
               </ui-view>
             </ui-popup>
@@ -129,23 +133,31 @@ export default {
   },
   data () {
     return {
+      showMask1: false,
       newnum:'',
-      timeValue: '',
+      yysj: '00:00',
       show:false,
-      time:'',
       radioCalendar:false,
-      form:{
-        ck:'',
-        phone:'',
-        time:'',
-        num:'',
-        starGPS:{
-          name:''
-        },
-        endGPS:{
-          name:''
-        }
+      radioYears:new Date().getFullYear(),
+      date:'',
+      dataMess:{
+         ck:'',             //乘客姓名
+         cklxdh:'',         //乘客联系电话
       },
+      form:{
+        hcdz:'',            // 候车地址
+        mdd:'',             // 目的地
+        ck:'',              // 乘客姓名
+        cklxdh:'',          // 乘客联系电话
+        yysj:'00:00',            // 预约时间
+        originLat:'',       // 起始经度
+        originLng:'',       // 起始纬度
+        destinationLat:'',  // 目的地经度
+        destinationLng:'',  // 目的地纬度
+        zws:'5',             // 座位数
+        cllx:10
+      },
+      time:'请选择时间:',
       choosedCar:'',
       carlist:[
         {
@@ -202,30 +214,54 @@ export default {
     
     }
   },
+  watch:{
+  },
   methods: {
+    gethcdz(gps){//进入首页获取到我的位置
+        let that = this
+        var script = document.createElement("script")
+        script.type = "text/javascript"
+        var callbackName = '_callback'+Date.now()
+        window[callbackName]= function(){
+        var myGeo = new BMap.Geocoder();    
+      // 根据坐标得到地址描述    
+      myGeo.getLocation(new BMap.Point(gps.longitude,gps.latitude), function(result){      
+         if (result){
+            console.log(result);
+            that.form.hcdz = result.address
+            }      
+      });
+    }
+    script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
+    document.body.appendChild(script)
+    },
+    handleShowMask1 (show) {
+      console.log('-------------------');
+      this.showMask1 = show
+    },
     indexYZ(){
       var v = this
       console.log(v.form)
-      if(v.form.starGPS.name==''){
+      if(v.form.hcdz==''){
          ui.showToast({ title: '请选择您的位置!'})
           return false
       }
-      if(v.form.endGPS.name==''){
+      if(v.form.mdd==''){
         ui.showToast({ title: '请选择目的地!'})
           return false
       }
-      if(v.choosedCar==''){
+      if(v.form.zws==''){
         ui.showToast({ title: '请选择车型!'})
           return false
       }
-      console.log('timeValue',v.timeValue)
-      if(v.timeValue==''){
+      console.log('yysj',v.yysj)
+      if(v.yysj==''){
         ui.showToast({ title: '请选择上车时间!'})
           return false
       }
       console.log(v.people)
       console.log(v.newnum)
-      if(v.people==='他人乘车'&& v.newnum =='' && v.form.name=='' ){
+      if(v.people==='他人乘车'&& v.form.cklxdh =='' && v.form.ck=='' ){
          ui.showToast({ title: '请输入乘车人信息!'})
           return false
       }
@@ -238,8 +274,13 @@ export default {
       console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
          console.log('==========================',res)
-      })
-    },
+      });
+      if(code=200 && res.page.list){
+        ui.showToast({ title: '提交成功', icon: 'success' })
+      }else{
+        ui.showToast({ title: '提交失败', icon: 'success' })
+      }
+     },  
     handleNavIconTap () {
       ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
     },
@@ -253,10 +294,10 @@ export default {
         itemList:itemLists ,
         success: (index) => {
           console.log(index)
+          if(index==1){
+            v.showMask1 = true
+          }
           v.people = itemLists[index]
-          // ui.showToast({
-          //   title: itemLists[index]
-          // })
         }
       })
     },
@@ -267,6 +308,7 @@ export default {
        v.carlist.forEach((item,index) => {
          if(index==num){
            item.color="#f00"
+           v.form.zws = item.val
          }else{
            item.color="#000"
          }
@@ -286,11 +328,12 @@ export default {
       })
     },
     handleChange4 (val) {
-      this.timeValue = val
+      this.time = val
+      console.log('val:',val)
     },
     resetPicker2 () {
-     
       this.show=false
+      this.form.yysj = this.radioYears +'-'+ this.radioMonth +'-'+ this.radioDay +' '+ this.time + ':00';
 
     },
     selectedChange(val){
@@ -302,7 +345,9 @@ export default {
         backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
-          that.form.starGPS = res
+          that.form.hcdz = res.name;
+          that.form.originLat = res.latitude
+          that.form.originLng = res.longitude
         },
         fail: function (res) {
           console.log('fail:', res)
@@ -315,7 +360,9 @@ export default {
         backgroundColor:'#000',
         success: function (res) {
           console.log('success:', res)
-          that.form.endGPS = res
+          that.form.mdd = res.name;
+          that.form.destinationLat = res.latitude
+          that.form.destinationLng = res.longitude
         },
         fail: function (res) {
           console.log('fail:', res)
@@ -445,10 +492,27 @@ export default {
         this.differ2 = Math.floor((end - start) / (24 * 3600 * 1000))
       }
    
-  
-    
   },
   created () {
+    var v = this
+    ui.getLocation({//获取位置信息
+      type: 'wgs84',
+      success: function (res) {
+        v.gethcdz(res)
+        console.log("%%%%%%weizhixinxi%%%%%",res);
+         ui.request({
+            url: 'http://apis.map.qq.com/ws/geocoder/v1/?', 
+            data: {
+              location: res.latitude+','+ res.longitude,
+              key: 'RHGBZ-S2LAU-5MRV7-4QPTZ-JI25K-HVBDV'
+            },
+            success: (res) => {
+              console.log("^^^^^^^^^^^",res)
+            
+            }
+          })
+      }
+    })
   },
   mounted() {
     
@@ -461,7 +525,7 @@ export default {
       this.radioinit(this.format(date))
 
       // 双选默认选中日历，获取默认选中时间范围【开始：当前日期。结束：当前日期推后2天】
-     
+      
 
 
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
@@ -574,5 +638,15 @@ export default {
         box-shadow: 3px 3px 8px #E57A7E;
         color: #fff;
     }
-    }
+  }
+  .otherscc{
+    &.content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: auto;
+    width: 100%;
+  }
+  }
 </style>

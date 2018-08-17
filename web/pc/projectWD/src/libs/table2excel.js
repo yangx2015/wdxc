@@ -65,7 +65,7 @@ function tranform (table, aId, name) {
             print('Nested catch caught ' + e);
         } finally {
             oWB.SaveAs(fname);
-            // oWB.Close(savechanges = false);
+            // oWB.close(savechanges = false);
             oXL.Quit();
             oXL = null;
             idTmr = setInterval(Cleanup(), 1);

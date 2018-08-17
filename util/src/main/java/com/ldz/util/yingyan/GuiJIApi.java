@@ -17,9 +17,9 @@ public class GuiJIApi {
 
     public final static int SERVICE_ID = 200779;
 
-//    public final static String AK = "Loegca5jzGqwaPWmaQEtTGooWAqexsGh";
-//
-//    public final static int SERVICE_ID = 200383;
+    /*public final static String AK = "Loegca5jzGqwaPWmaQEtTGooWAqexsGh";
+
+    public final static int SERVICE_ID = 200383;*/
 
     public final static String saveEntityuRL = "http://yingyan.baidu.com/api/v3/entity/add";
 

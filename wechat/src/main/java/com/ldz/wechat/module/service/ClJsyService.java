@@ -18,4 +18,6 @@ public interface ClJsyService extends BaseService<ClJsy,String> {
 	ApiResponse<String> updatejsy(ClJsy jsy);
 
 	ClJsy findById(String id);
+
+    ApiResponse<Map<String, Object>> getInfo();
 }

@@ -25,7 +25,7 @@ public class NearbyStation {
     public NearbyStation(ClZd zd,double distance) {
         this.id = zd.getId();
         this.xlId = zd.getId();
-        this.name = zd.getId();
+        this.name = zd.getMc();
         this.lng = zd.getJd();
         this.lat = zd.getWd();
         this.distance = (int)distance;

@@ -24,33 +24,28 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 							<Button type="primary" @click="AddDataList()">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
-			<Row :gutter="20">
-				<car-item v-for="(item,index) in tableData" :data="item"  :key="index" style="margin-top: 16px;"
-				@reload="getPageData"
-				@editCar="editCar"
-				@showDoc="showDoc"
-				@trace="trace"
-				@showFance="showFance"
-				@delCar="delCar"
-				></car-item>
+			<Row :gutter="20" v-for="(row,rowIndex) in tableData" :data="row"  :key="rowIndex">
+				<Col span="6" v-for="(col,index) in row" :key="index" style="margin-top: 16px;">
+					<car-item  :data="col"
+							  @reload="getPageData"
+							  @editCar="editCar"
+							  @showDoc="showDoc"
+							  @trace="trace"
+							  @showFance="showFance"
+							  @delCar="delCar"
+					></car-item>
+				</Col>
 			</Row>
-			<!--<Row>-->
-				<!--<Table-->
-						<!--:height="tabHeight"-->
-						<!--:columns="tableTiT"-->
-						<!--:data="tableData"-->
-				<!--&gt;</Table>-->
-			<!--</Row>-->
 			<Row class="margin-top-10 pageSty">
 				<Page :total=pageTotal
 					  :current=param.pageNum
@@ -178,9 +173,6 @@
                 v.$http.get(this.apis.JSY.QUERY,{params:{pageSize:1000}}).then((res) =>{
                     if(res.code===200){
                         v.drivers = res.page.list;
-                        // if(v.derMess.sjId!=null&&!v.messType){
-                        // 	v.drivers.push({'xm':v.derMess.sjxm,'sfzhm':v.derMess.sjId})
-                        // }
                     }
                 })
             },
@@ -202,13 +194,26 @@
             },
         	getPageData(){
 				var v = this
+                v.tableData = [];
 				this.$http.get(this.apis.CLGL.QUERY,{params:v.param}).then((res) =>{
 				    if (res.code == 200 && res.page.list){
-                        v.tableData = res.page.list
-                        v.pageTotal = res.page.total
-						for (let r of v.tableData){
-						    r.bindDrvFlag = !!r.sjxm;
+				        let data = res.page.list;
+                        for (let r of data){
+                            r.bindDrvFlag = !!r.sjxm;
+                        }
+				        let colCount = 4;
+				        let rowCount = data.length / colCount;
+				        if (data.length % colCount != 0){
+				            rowCount += 1;
 						}
+						let array = [];
+						for (let i = 0;i<rowCount;i++){
+						    let start = i*colCount;
+						    let end = start + colCount;
+						    array.push(data.slice(start,end));
+						}
+                        v.tableData = array
+                        v.pageTotal = res.page.total
 					}
 
 					v.SpinShow = false;

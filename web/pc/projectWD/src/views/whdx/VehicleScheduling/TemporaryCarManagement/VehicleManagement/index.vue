@@ -19,10 +19,10 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="v.util.getPageData(v)">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 							</Button>
 							<Button type="primary" @click="v.util.add(v)">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
@@ -110,7 +110,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'success',
-                                        icon: 'edit',
+                                        icon: 'md-create',
                                         shape: 'circle',
                                         size: 'small'
                                     },
@@ -127,7 +127,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-                                        icon: 'close',
+                                        icon: 'md-close',
                                         shape: 'circle',
                                         size: 'small'
                                     },
@@ -154,6 +154,7 @@
             }
         },
         created() {
+            this.tabHeight = this.getWindowHeight() - 300
             this.$store.commit('setCurrentPath', [{title: '首页'}, {title: '车辆管理'},{title: '临时车管理'},{title: '车辆管理'}])
 	    this.util.initTable(this);
             this.getDict()

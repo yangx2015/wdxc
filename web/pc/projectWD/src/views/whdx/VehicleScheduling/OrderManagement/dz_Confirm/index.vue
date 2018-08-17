@@ -21,7 +21,7 @@
 							<Input v-model="param.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 						</div>

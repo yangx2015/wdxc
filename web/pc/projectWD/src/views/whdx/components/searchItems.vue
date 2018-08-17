@@ -8,7 +8,7 @@
                 <Option v-for = '(item,index) in parent.dictUtil.getByCode(parent,r.dict)'  v-if="r.excludeDict == null || r.excludeDict.indexOf(item.key) < 0"  :value="item.key" :key="item.key">{{item.val}}</Option>
             </Select>
         </div>
-        <Button v-if="showSearchButton" type="primary" @click="parent.util.getPageData(parent)"><Icon type="search"></Icon></Button>
+        <Button v-if="showSearchButton" type="primary" @click="parent.util.getPageData(parent)"><Icon type="md-search"></Icon></Button>
     </div>
 </template>
 

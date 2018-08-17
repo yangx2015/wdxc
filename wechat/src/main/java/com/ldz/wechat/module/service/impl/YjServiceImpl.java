@@ -2,7 +2,10 @@ package com.ldz.wechat.module.service.impl;
 
 import java.util.Date;
 
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.wechat.base.LimitedCondition;
+import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.model.SysJzgxx;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,6 +50,24 @@ public class YjServiceImpl extends BaseServiceImpl<SysYjfk,String> implements Yj
 				condition.eq(SysYjfk.InnerColumn.yjlx.name(),yjLx);
 			}
 		}
+
+		String type = (String) request.getAttribute("type");
+		String userInfo = (String) request.getAttribute("userInfo");
+		if ("jzg".equals(type)){
+			SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
+			if(jzg!=null){
+				condition.eq(SysYjfk.InnerColumn.userId.name(),jzg.getId());
+			}
+		}else if ("jsy".equals(type)){
+			ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
+			if(jsy!=null){
+				condition.eq(SysYjfk.InnerColumn.sjId.name(),jsy.getSfzhm());
+			}
+		}else{
+			condition.and().andIsNull(SysYjfk.InnerColumn.userId.name());
+			condition.and().andIsNull(SysYjfk.InnerColumn.sjId.name());
+		}
+
 //		//审核状态 00 是未审核  10 是已审核
 //		condition.eq(SysYjfk.InnerColumn.zt.name(),"10");
 		return true;
