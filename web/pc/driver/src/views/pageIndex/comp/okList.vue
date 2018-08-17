@@ -128,9 +128,9 @@
          }else if(tp==1){
            listType = 3
          }
-        this.$http.post(this.apis.MESLIST.QUERTY,{'type':listType}).then((res)=>{
+        this.$http.post(this.apis.MESLIST.QUERTY,{'ddType':listType}).then((res)=>{
           if(res.code == 200){
-            this.mesList = res.result
+            this.mesList = res.page.list
           }
         })
       },
