@@ -101,7 +101,11 @@ export default {
   },
   data () {
     return {
-      usermess:{},
+      usermess:{
+        userInfo:{
+          xm:''
+        }
+      },
       tabCurrent:0,
       activeTabStyle:{
         'color': '#ff7f50',

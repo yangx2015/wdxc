@@ -51,7 +51,7 @@
                       <ui-view class="title">
                           <ui-divider color="#ff9900">
                             <ui-view style="color:#ff9900">
-                              评论
+                              投诉-意见-反馈 
                             </ui-view>
                           </ui-divider>
                       </ui-view>
@@ -328,6 +328,7 @@ export default {
   }
   .submitBut{
     padding: 10rpx 0;
+    
   }
 }
 .sticky-in-relative-container {
