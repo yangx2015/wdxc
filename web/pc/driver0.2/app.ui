@@ -64,7 +64,7 @@ export default {
       globalData: {
       },
 
-      orderMess:{},
+      orderMess:{},//订单详情
 
       WIN_WIDTH:ui.WIN_WIDTH,
       tabIndex: 0,
