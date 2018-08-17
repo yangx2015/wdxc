@@ -24,10 +24,10 @@
     </ui-col>
     <ui-col span=3 align="left" space-left="20">
       <ui-view style="color: #686868;font-size:15px;font-weight:700;">
-        张师傅
+        {{orderMess.sjxm}}
       </ui-view>
       <ui-view style="color:#A0A0A0;font-size:15px">
-        五座车
+        {{orderMess.zws}} 座车
       </ui-view>
     </ui-col>
       
@@ -39,7 +39,7 @@
 
     <ui-col align="left" span=4 space-right="20">
     <ui-view style="color: #686868;font-size:15px;font-weight:700;">
-      鄂A963MK
+      {{orderMess.cph}}
     </ui-view>
     <ui-view style="color:#A0A0A0;font-size:15px">
       白色·标志·408
@@ -50,10 +50,10 @@
   <ui-view>
   <ui-row vertical-align="middle" style="margin:20px 0px 20px 0px;color:#686868;">
     <ui-col align="left" space-left="20" >
-      过桥费:0元
+      里程:{{orderMess.lc}}公里
     </ui-col>
     <ui-col align="right" space-right="20">
-      过路费:0元
+      单价:{{orderMess.dj}}元
     </ui-col>
   </ui-row>
   <ui-row vertical-align="middle">
@@ -63,15 +63,15 @@
   </ui-row>
   <ui-row vertical-align="middle" style="color:#686868;font-size:25px;font-weight:700">
     <ui-col align="center">
-        36.2元
+        {{orderMess.zj}}元
     </ui-col>
   </ui-row >
   <ui-row vertical-align="middle" style="padding:20px 0px 20px 0px;color:#686868;font-size:15px" border-bottom>
     <ui-col align="left" space-left="20">
-      停车费:0元
+      过桥费:{{orderMess.gqf}}元
     </ui-col>
     <ui-col align="right" space-right="20">
-      里程费:36.2元
+      路停费:{{orderMess.lcf}}元
     </ui-col>
   </ui-row>
 </ui-view>
@@ -91,7 +91,13 @@
 
  </ui-view>
 
-  <ui-view class="box_col_100" style="background-image:url('http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30&width=400&height=300&center=116.378892,39.910039&zoom=12&markers=116.351296,39.907825|116.344397,39.942352&markerStyles=-1,http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png')">
+  <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
+   '&width=400&height=300'+
+  '&center=114.368107,30.543083'+
+  '&zoom=12'+
+  '&markers=116.351296,39.907825|116.344397,39.942352'+
+  '&markerStyles=-1,'+
+  'http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}}}">
    
   </ui-view>
 </ui-view>
@@ -108,6 +114,7 @@ export default {
   },
   data () {
     return {
+      orderMess:{},
       pageheight:ui.DEFAULT_HEADER_HEIGHT,
       current9:0,
       activeTabStyle2:{
@@ -120,6 +127,11 @@ export default {
       
 
   methods: {
+    getMarkList(){
+      this.$http('POST',ui.getApp().apis.PJDD.QUERTY,{},(res)=>{
+        console.log("##########################",res)
+      })
+    },
      Goback(){
       ui.navigateBack()
     },
@@ -143,6 +155,16 @@ export default {
         url: '/pages/detail'
       })
     }
+  },
+  created(){
+    // this.getMarkList()
+    console.log("xiangqing",ui.getApp().orderMess);
+    this.orderMess = ui.getApp().orderMess
+    if(this.orderMess.id == undefined){
+      this.Goback()
+      ui.showToast({ title: '数据丢失，请重新查看' })
+    }
+    
   },
   mounted() {
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时

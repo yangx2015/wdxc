@@ -217,7 +217,7 @@ export default {
   watch:{
   },
   methods: {
-    gethcdz(gps){
+    gethcdz(gps){//进入首页获取到我的位置
         let that = this
         var script = document.createElement("script")
         script.type = "text/javascript"
@@ -495,7 +495,7 @@ export default {
   },
   created () {
     var v = this
-    ui.getLocation({
+    ui.getLocation({//获取位置信息
       type: 'wgs84',
       success: function (res) {
         v.gethcdz(res)
