@@ -75,9 +75,9 @@ ui.extend({
       fail:function(err){
         console.log('请求失败')
         callback && callback(err.data);
-      },
-      complete:function(mess){
-        console.log('请求结果')
+      // },
+      // complete:function(mess){
+      //   console.log('请求结果')
         // callback && callback(mess.data);
       }
     })

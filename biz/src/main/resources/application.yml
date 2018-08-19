@@ -53,11 +53,5 @@ server:
   port: 80
 #GPS+OBD 混合信息 redis key值
 gpsObdMessage-key: gpsObdMessage_
-#超速设置 向tic-service 项目去请求
-#carcmd-Url: http://47.98.39.45:9095/api
 #SYS项目-重置密码
 resePwd: 111111
-
-apiurl: http://47.98.39.45:9095/api
-biz_url: http://47.98.39.45:8080
-distance: 100
