@@ -23,12 +23,15 @@
 							<Button type="primary" @click="getData()">
 								<Icon type="md-search"></Icon>
 							</Button>
+							<Button type="primary" size="large" @click="v.util.exportData(v,'收款统计')">
+								<Icon type="ios-download-outline"></Icon>导出
+							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
 		</Card>
 	</div>

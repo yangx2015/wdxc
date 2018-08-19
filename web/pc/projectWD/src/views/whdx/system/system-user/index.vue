@@ -37,7 +37,7 @@
                   </div>
             </Row>
             <Row style="position: relative;">
-                  <Table
+                  <Table ref="table"
                           size='large'
                           :height="tabHeight"
                           :row-class-name="rowClassName"

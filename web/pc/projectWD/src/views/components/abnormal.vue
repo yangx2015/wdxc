@@ -5,7 +5,7 @@
 </style>
 <template>
     <div id="abnormal" style="height: 100%;">
-        <Table
+        <Table ref="table"
                 border
                 :height="tabHeight"
                 :columns="columns1"

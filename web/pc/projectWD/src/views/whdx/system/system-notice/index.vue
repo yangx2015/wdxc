@@ -57,7 +57,7 @@
 				</div>
 			</Row>
 			<Row>
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
 						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>

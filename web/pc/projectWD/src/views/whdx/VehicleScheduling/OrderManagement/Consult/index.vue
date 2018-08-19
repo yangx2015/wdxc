@@ -30,7 +30,7 @@
 			</Row>
 			<div class="body">
 				<Row>
-					<Table
+					<Table ref="table"
 							:row-class-name="rowClassName"
 							:columns="columns10"
 							:data="data9"></Table>

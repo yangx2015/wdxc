@@ -238,4 +238,8 @@ public class MainController {
 	public ApiResponse<String> forbidden(){
 		return ApiResponse.forbidden();
 	}
+	@RequestMapping(value = "/authFiled",method = {RequestMethod.GET,RequestMethod.POST})
+	public ApiResponse<String> authFiled(){
+		return ApiResponse.authFailed();
+	}
 }

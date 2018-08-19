@@ -3,7 +3,7 @@ package com.ldz.util.config;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.exception.AuthFailedException;
 import com.ldz.util.exception.RuntimeCheckException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +43,14 @@ public class BaseControllerAdvice {
 		ObjectMapper mapper = new ObjectMapper();
 		log.error("请求参数异常，来源路径["+request.getRequestURI()+"]，请求数据["+ mapper.writeValueAsString(request.getParameterMap())+"]", e);
 		return ApiResponse.fail(e.getMessage());
+	}
+
+	@ExceptionHandler(AuthFailedException.class)
+	@ResponseBody
+	public ApiResponse<String> authFailedExceptionHandler(HttpServletRequest request,Exception e) throws JsonProcessingException {
+		ObjectMapper mapper = new ObjectMapper();
+		log.error("授权认证失败，来源路径["+request.getRequestURI()+"]，请求数据["+ mapper.writeValueAsString(request.getParameterMap())+"]", e);
+		return ApiResponse.authFailed();
 	}
 
 	/**

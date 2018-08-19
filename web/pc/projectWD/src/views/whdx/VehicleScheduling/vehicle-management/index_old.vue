@@ -35,7 +35,7 @@
 				</div>
 			</Row>
 			<Row>
-				<Table
+				<Table ref="table"
 						:height="tabHeight"
 						:columns="tableTiT"
 						:data="tableData"
