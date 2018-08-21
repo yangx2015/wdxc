@@ -40,6 +40,11 @@ util.fillTableColumns = (v)=>{
 
     }
 }
+util.exportData = (v,filename)=>{
+    v.$refs.table.exportCsv({
+        filename: filename
+    });
+}
 util.buildDeleteButton = (v,h,id)=>{
     return util.buildButton(v,h,'error','md-close','删除',()=>{
         util.delete(v,[id])

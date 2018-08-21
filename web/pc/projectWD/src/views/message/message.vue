@@ -18,7 +18,7 @@
         <div class="message-content-con">
             <transition name="view-message">
                 <div v-if="showMesTitleList" class="message-title-list-con">
-                    <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="noDataText"></Table>
+                    <Table ref="table" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="noDataText"></Table>
                 </div>
             </transition>
             <transition name="back-message-list">

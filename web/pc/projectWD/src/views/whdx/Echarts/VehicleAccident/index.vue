@@ -68,12 +68,15 @@
 							<Button type="primary" @click="getDataList()">
 								<Icon type="md-add"></Icon>
 							</Button>
+							<Button type="primary" size="large" @click="v.util.exportData(v,'事故统计')">
+								<Icon type="ios-download-outline"></Icon>导出
+							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row>
-				<Table
+				<Table ref="table"
 						:height="tabHeight"
 						:row-class-name="rowClassName"
 						:columns="columns10"

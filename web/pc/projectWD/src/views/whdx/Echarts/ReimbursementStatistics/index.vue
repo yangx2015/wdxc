@@ -22,12 +22,15 @@
 							<Button type="primary" @click="v.util.getPageData(v)">
 								<Icon type="md-search"></Icon>
 							</Button>
+							<Button type="primary" size="large" @click="v.util.exportData(v,'报销记账统计')">
+								<Icon type="ios-download-outline"></Icon>导出
+							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="tableTitle" :data="pageData"></Table>
 			</Row>
 			<Row class="margin-top-10 pageSty">
 				<Page :total=param.total :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top'

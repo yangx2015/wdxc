@@ -7,9 +7,8 @@
                 :mask-closable="false"
                 :title="'正在为 '+mess.xm+' 分配订单'">
             <div style="height: 400px">
-                <Table border
+                <Table ref="table"  border
                        height="400"
-                       ref="selection"
                        :columns="columns4"
                        :data="data1"
                        @on-selection-change="selectionClick"></Table>
