@@ -12,8 +12,8 @@
           </ui-col>
         </ui-row>
       </ui-nav-bar>
-      <ui-view class="box_col"> 
-          <ui-view>
+      
+          <!-- <ui-view>
           <ui-divider></ui-divider>
               <ui-tabs index="{{ current2 }}"  bindchange="handleChange($event, 'current2')" ink-bar active-tab-style="{{activeTabStyle}}" ink-bar-style="{{inkBarStyle}}">
                   <ui-tab>全部</ui-tab>
@@ -22,12 +22,20 @@
                   <ui-tab>被驳回</ui-tab>
                   <ui-tab>已完成</ui-tab>
               </ui-tabs>
-           </ui-view>
+           </ui-view> -->
           
-                  <ui-swiper ui:if="{{showList}}" class="box_col"  current="{{ current2 }}" bindchange="handleContentChange($event, 'current2')">
-                      <ui-swiper-item class="box_col_auto boxSty">
-                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist0}}">
-                              <ui-row vertical-align="middle">
+<ui-tab-view ink-bar ink-bar-style="{{ { borderBottom: '1px solid #39f', width: '60%' } }}">
+    <template slot="header">
+      <ui-tab-view-header>全部</ui-tab-view-header>
+      <ui-tab-view-header>待审核</ui-tab-view-header>
+      <ui-tab-view-header>待派单</ui-tab-view-header>
+      <ui-tab-view-header>被驳回</ui-tab-view-header>
+      <ui-tab-view-header>已完成</ui-tab-view-header>
+    </template>
+    <template slot="body">
+      <ui-tab-view-body>
+          <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist0}}">
+               <ui-row >
                                 <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -67,36 +75,12 @@
                                       {{item.mdd}}
                                   </ui-col>
                               </ui-row>
-                          </ui-view> -->
-                       </ui-swiper-item>
-                    
-                </ui-view>
-                      <ui-swiper-item class="box_col_auto boxSty">
-                        <ui-scroll-view
-                                scroll-y
-                                height="{{height - imgHeight}}"
-                                pull-down="{{ pullDown }}"
-                                pull-up="{{ pullUp }}"
-                                >
-                                <ui-view slot="pull-down" class="pull-down-content" ui:if="{{proportion}}">
-                                    <ui-view class="img-layer" ui:if="{{proportion < 1}}">
-                                      <ui-view class="img_content" style="{{{ height : proportion * 100+'px' }}}"></ui-view>
-                                    </ui-view>
-
-                                    <ui-view class="img-layer" ui:else>
-                                      <ui-view class="mt-ready" ui:if="{{state === 2}}"></ui-view>
-                                      <ui-view class="mt-loading" ui:show="{{state === 3 || state === 4}}"></ui-view>
-                                    </ui-view>
-                                  </ui-view>
-                                  <ui-view class="content_list">
-                                    <ui-view ui:for="{{ items }}" class="{{{'grey-bg': index % 2 == 0}}}">
-                                      {{ item }}
-                                    </ui-view>
-                                  </ui-view>
-                                </ui-scroll-view>
-
-                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist1}}">
-                              <ui-row vertical-align="middle">
+                        </ui-view>
+               </ui-tab-view-body>
+               
+               <ui-tab-view-body>
+                  <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist1}}"> 
+                        <ui-row vertical-align="middle">
                                 <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -136,11 +120,12 @@
                                       {{item.mdd}}
                                     </ui-col>
                               </ui-row>
-                          </ui-view> -->
-                      </ui-swiper-item>
-                      <ui-swiper-item class="box_col_auto boxSty">
-                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist2}}">
-                              <ui-row vertical-align="middle">
+                        </ui-view>
+              </ui-tab-view-body>
+
+              <ui-tab-view-body> 
+                    <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist2}}">
+                        <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -180,11 +165,11 @@
                                       {{item.mdd}}
                                     </ui-col>
                                 </ui-row>
-                            </ui-view> -->
-                      </ui-swiper-item>
-                      <ui-swiper-item class="box_col_auto boxSty">
-                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist3}}">
-                              <ui-row vertical-align="middle">
+                    </ui-view>
+              </ui-tab-view-body>
+               <ui-tab-view-body>
+                      <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist3}}">
+                            <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -224,11 +209,11 @@
                                       {{item.mdd}}
                                     </ui-col>
                                 </ui-row>
-                            </ui-view> -->
-                      </ui-swiper-item>
-                      <ui-swiper-item class="box_col_auto boxSty">
-                          <!-- <ui-view class="lmw" bindtap="gomark(item)" ui:for="{{ddlist4}}">
-                              <ui-row vertical-align="middle">
+                      </ui-view>
+               </ui-tab-view-body>
+                <ui-tab-view-body>
+                    <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist4}}">
+                            <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -268,8 +253,10 @@
                                       {{item.mdd}}
                                     </ui-col>
                                 </ui-row>
-                            </ui-view> -->
-                      </ui-swiper-item>
+                              </ui-view>
+                          </ui-tab-view-body>
+                </template>
+          </ui-tab-view> 
   </ui-page>
   
 </template>
@@ -286,10 +273,11 @@ export default {
       items: [],
         bottom: 30,
          state: 1,
+         proportion: 0,
           showLoading: false,
           imgSrc: require('static/img/rotate_img.png'),
         height: ui.DEFAULT_CONTENT_HEIGHT,
-        imgHeight: parseInt(ui.WIN_WIDTH / 1125 * 628),
+        
         pullDown: {
           distance: 50,
           onBegin: () => {},
@@ -400,7 +388,7 @@ export default {
           // promise设置为true，让请求返回promise，这样就可以接管请求
           // 请求结束后页面自动回弹
           promise: true,
-          url: '/touchui-backstage/listInfo.do?state=1',
+          url: 'pages/orders',
           success: (response) => {
             //
           },
