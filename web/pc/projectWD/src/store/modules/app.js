@@ -10,6 +10,7 @@ const app = {
             time:'',
             cph:''
         },
+        leftMenuList:[],
         userInfo:null,
         dictMap :new Map(),
     	socketMess:[],//校巴车辆数据
@@ -53,6 +54,9 @@ const app = {
         routerMum:[]
     },
     mutations: {
+        leftMenuChanged(state,data){
+            state.leftMenuList = data;
+        },
         echChanged(state,data){
             state.ech = data
         },
