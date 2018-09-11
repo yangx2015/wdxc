@@ -219,7 +219,9 @@ module.exports = {
         ADD:    '/api/cd/save',
         CHANGE: '/api/cd/update',
         DELE:   '/api/cd/removeIds',
-        GET_CONDITION:'/api/cd/getCondition'
+        GET_CONDITION:'/api/cd/getCondition',
+        notBindCarList:'/api/cd/notBindCarList',
+        notBindDriverList:'/api/cd/notBindDriverList',
     },
     SG:{
         QUERY:  '/api/sg/pager',
