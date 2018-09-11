@@ -3,49 +3,53 @@
 </style>
 <!--用户管理-->
 <template>
-      <div>
-            <Card>
-                  <Row>
-                        <div style="height: 45px;line-height: 45px;">
-                              <div class="margin-top-10 box-row">
-                                    <div class="body-r-1 inputSty" style="text-align: left">
-                                          <Input v-model="param.xmLike"
-                                                 placeholder="请输入用户姓名" style="width: 200px"
-                                                 @on-keyup.enter="findMessList()"
-                                                 @on-change="findMessList"></Input>
-                                          <Input v-model="param.sjhLike"
-                                                 placeholder="请输入手机号码" style="width: 200px"
-                                                 @on-keyup.enter="findMessList()"
-                                                 @on-change="findMessList"></Input>
-
-                                          <Button type="primary" @click="findMessList()">
-                                                <Icon type="md-search"></Icon>
-                                                <!--查询-->
-                                          </Button>
-                                          <Button type="primary" @click="AddDataList()">
-                                                <Icon type="md-add"></Icon>
-                                          </Button>
-                                    </div>
-                                    <div class="butevent">
-                                    </div>
+      <div class="boxbackborder">
+            <!--<Card>-->
+            <Row class="margin-top-10" style='background-color: #fff;position: relative;'>
+				<span class="tabPageTit">
+    				<Icon type="ios-paper" size='30' color='#fff'></Icon>
+    			</span>
+                  <div style="height: 45px;line-height: 45px;">
+                        <div class="margin-top-10 box-row">
+                              <div class="titmess">
+                                    <span>用户管理</span>
+                              </div>
+                              <div class="body-r-1 inputSty">
+                                    <Input v-model="param.xmLike"
+                                           placeholder="请输入用户姓名" style="width: 200px"
+                                           @on-keyup.enter="findMessList()"
+                                           @on-change="findMessList"></Input>
+                                    <Input v-model="param.sjhLike"
+                                           placeholder="请输入手机号码" style="width: 200px"
+                                           @on-keyup.enter="findMessList()"
+                                           @on-change="findMessList"></Input>
+                              </div>
+                              <div class="butevent">
+                                    <Button type="primary" @click="findMessList()">
+                                          <Icon type="md-search"></Icon>
+                                          <!--查询-->
+                                    </Button>
+                                    <Button type="primary" @click="AddDataList()">
+                                          <Icon type="md-add"></Icon>
+                                    </Button>
                               </div>
                         </div>
-                  </Row>
-                  <Row style="position: relative;">
-                        <Table ref="table"
-                               size='large'
-                               :height="tabHeight"
-                               :row-class-name="rowClassName"
-                               :columns="tableTiT"
-                               :data="tableData"></Table>
-                  </Row>
-                  <Row class="margin-top-10 pageSty">
-                        <Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize
-                              :page-size-opts=[8,10,20,30,40,50] @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
-                              show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
-                  </Row>
-            </Card>
-
+                  </div>
+            </Row>
+            <Row style="position: relative;">
+                  <Table ref="table"
+                         size='large'
+                         :height="tabHeight"
+                         :row-class-name="rowClassName"
+                         :columns="tableTiT"
+                         :data="tableData"></Table>
+            </Row>
+            <Row class="margin-top-10 pageSty">
+                  <Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize
+                        :page-size-opts=[8,10,20,30,40,50] @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
+                        show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
+            </Row>
+            <!--</Card>-->
             <component
                     :is="compName"
                     :usermes="usermes"
