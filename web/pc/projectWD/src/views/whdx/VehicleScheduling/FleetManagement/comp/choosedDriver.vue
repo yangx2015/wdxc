@@ -22,6 +22,7 @@
                     {title:"姓名",key:'xm'},
                 ],
                 tableData: [],
+                allData:[],
             }
         },
         props:{
@@ -42,6 +43,16 @@
             selectionChange(e) {
                 this.$emit("driverChange",e);
             },
+            filter(){
+                if (this.keyword.length > 0){
+                    this.tableData = [];
+                    for (let r of this.allData){
+                        if (r.xm.indexOf(this.keyword) > -1){
+                            this.tableData.push(r);
+                        }
+                    }
+                }
+            },
             getList(){
                 this.tableData = JSON.parse(JSON.stringify(this.selectedData));
                 this.$http.get(this.apis.CD.notBindDriverList).then((res)=>{
@@ -49,6 +60,7 @@
                         for (let r of res.result){
                             this.tableData.push(r);
                         }
+                        this.allData = this.tableData;
                     }else{
                         this.$Message.error(res.message);
                     }

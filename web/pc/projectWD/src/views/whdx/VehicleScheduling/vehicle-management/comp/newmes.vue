@@ -47,13 +47,13 @@
 								</Select>
 							</FormItem>
 						</Col>
-						<Col span="12">
-							<FormItem prop="cdbh" label='车队：'>
-								<Select filterable clearable  v-model="addmess.cdbh">
-									<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>
-								</Select>
-							</FormItem>
-						</Col>
+						<!--<Col span="12">-->
+							<!--<FormItem prop="cdbh" label='车队：'>-->
+								<!--<Select filterable clearable  v-model="addmess.cdbh">-->
+									<!--<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>-->
+								<!--</Select>-->
+							<!--</FormItem>-->
+						<!--</Col>-->
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
 								<Select placement='top' filterable clearable  v-model="addmess.zdbh">
