@@ -14,10 +14,10 @@
 			<Row>
 				<Col span="2">
 					<ButtonGroup vertical style="margin-top: 120px">
-						<Button type="primary" shape="circle" icon="play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
-						<Button type="error" shape="circle" icon="stop" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
-						<Button type="warning" shape="circle" icon="ios-skipforward" size="large" @click="playAndStopBtnGroup.timer = 200"></Button>
-						<Button type="warning" shape="circle" icon="ios-skipbackward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
+						<Button type="primary" shape="circle" icon="md-play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
+						<Button type="error" shape="circle" icon="ios-square" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
+						<Button type="warning" shape="circle" icon="md-skip-forward" size="large" @click="playAndStopBtnGroup.timer = 200"></Button>
+						<Button type="warning" shape="circle" icon="md-skip-backward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
 					</ButtonGroup>
 				</Col>
 				<Col span="22">
