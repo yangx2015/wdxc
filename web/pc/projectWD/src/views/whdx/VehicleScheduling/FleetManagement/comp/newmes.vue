@@ -186,8 +186,18 @@
                 console.log(e);
             },
             remoteMethod(k) {
+                console.log('remoteMethod',k);
                 var v = this
-                this.$http.get(this.apis.USER.QUERY, {params: {xmLike: k, pageSize: 1000}}).then((res) => {
+                let param = {
+                    pageSize: 1000
+                }
+                console.log(k.length);
+                if (k.length < 15){
+                    param.xmLike = k
+                }else{
+                    param.id = k
+                }
+                this.$http.get(this.apis.USER.QUERY, {params: param}).then((res) => {
                     this.userList = res.page.list
                 })
             },
@@ -199,6 +209,7 @@
                 v.$parent.compName = ''
             },
             userSelect() {
+                console.log('userSelect');
                 var v = this
                 var listIndex = 0
                 this.userList.forEach(function (item, index) {

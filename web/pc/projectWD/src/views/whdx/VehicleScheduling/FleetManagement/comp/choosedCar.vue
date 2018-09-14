@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Input placeholder="车牌号" v-model="cph" @on-change="getList"></Input>
+        <Input placeholder="车牌号" v-model="keyword" @on-change="filter"></Input>
         <Table
                 :height="300"
                 size="large"
@@ -16,7 +16,7 @@
         name: "choosedCar",
         data() {
             return {
-                cph:'',
+                keyword:'',
                 columns: [
                     {type:"selection"},
                     {title:"车牌号",key:'cph'},
@@ -25,6 +25,7 @@
                     }},
                 ],
                 tableData: [],
+                allData:[],
             }
         },
         props:{
@@ -51,11 +52,19 @@
               }
             },
             cphChange(e) {
-                console.log(e);
             },
             selectionChange(e) {
                 this.$emit("carChange",e);
-                console.log(e);
+            },
+            filter(){
+                if (this.keyword.length > 0){
+                    this.tableData = [];
+                    for (let r of this.allData){
+                        if (r.cph.indexOf(this.keyword) > -1){
+                            this.tableData.push(r);
+                        }
+                    }
+                }
             },
             getList(){
                 this.tableData = JSON.parse(JSON.stringify(this.selectedData));
@@ -64,6 +73,7 @@
                         for (let r of res.result){
                             this.tableData.push(r);
                         }
+                        this.allData = this.tableData;
                     }else{
                         this.$Message.error(res.message);
                     }

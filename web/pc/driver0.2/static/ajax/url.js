@@ -1,6 +1,6 @@
 let ajaxUrl = "http://47.98.39.45:9099";
 
-module.exports = {
+export default {
     url:ajaxUrl,
     SWIPER:{
 		QUERTY:'/put/xl/getadsense'//轮播图片
