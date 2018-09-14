@@ -27,6 +27,8 @@ import com.ldz.util.yingyan.GuiJIApi;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -50,6 +52,7 @@ import java.util.stream.Collectors;
 @Service
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
 
+	Logger errorLog = LoggerFactory.getLogger("error_info");
     @Autowired
     private ClGpsMapper entityMapper;
     @Autowired
@@ -105,8 +108,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (!gpsInfo.getLatitude().equals("-1") && !gpsInfo.getLongitude().equals("-1")) {
             eventBus.post(new SendGpsEvent(gpsInfo));
         }
-        handleEvent(gpsInfo);
-
+        try{
+        	handleEvent(gpsInfo);
+        }catch(Exception e){
+        	errorLog.error("解析GPS事件异常", e);
+        }
+        
         saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
     }
@@ -142,7 +149,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         ClGps newGps = changeCoordinates(gpsInfo);
-
+        
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
             newStatus = DeviceStatus.OFFLINE.getCode();
@@ -159,11 +166,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }else{
                 if (!newStatus.equals(gps.getStatus())){
                     statusChange = true;
+                }else if (gps.getBdwd() == null || gps.getBdjd() == null){
+                    statusChange = true;
+                }else{
+                	// 比较redis(实时gps点位)历史数据和这次接收到的数据距离
+                    double shortDistance = DistanceUtil.getShortDistance(gps.getBdwd().doubleValue(),
+                            gps.getBdjd().doubleValue(), newGps.getBdwd().doubleValue(), newGps.getBdjd().doubleValue());
+                    positionChange = shortDistance > 10;
                 }
-                // 比较redis(实时gps点位)历史数据和这次接收到的数据距离
-                double shortDistance = DistanceUtil.getShortDistance(gps.getBdwd().doubleValue(),
-                        gps.getBdjd().doubleValue(), newGps.getBdwd().doubleValue(), newGps.getBdjd().doubleValue());
-                positionChange = shortDistance > 10;
             }
         }
 
@@ -191,6 +201,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                         xlId = pb.getXlId();
                     }
                 }
+            }
+            if (newGps.getBdjd() == null){
+            	newGps.setBdjd(new BigDecimal(-1));
+            }
+            if (newGps.getBdwd() == null ){
+            	newGps.setBdwd(new BigDecimal(-1));
             }
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
             sendWebsocket(websocketInfo);
