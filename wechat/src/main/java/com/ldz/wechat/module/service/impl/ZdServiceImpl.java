@@ -13,6 +13,7 @@ import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.ClXlzd;
 import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.service.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.geo.GeoResult;
@@ -275,6 +276,9 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         }
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = geoUtil.getRadius("stations",new Double(lng),new Double(lat),100,true,"ASC",0);
         Map<String,Double> stationDistanceMap = new HashMap<>();
+        if(CollectionUtils.isEmpty(results.getContent())){
+            return new ArrayList<>();
+        }
         List<String> stationIds = new ArrayList<>();
         for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : results.getContent()) {
             String stationId = result.getContent().getName();
@@ -282,7 +286,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             stationDistanceMap.put(stationId,result.getDistance().getValue());
         }
         List<ClZd> stationList = findIn(ClZd.InnerColumn.id,stationIds);
-        if (stationList.size() == 0)return  new ArrayList<>();
+        if (stationList.size() == 0){
+            return  new ArrayList<>();
+        }
+
         List<NearbyStation> nearbyStations = new ArrayList<>(stationList.size());
         for (ClZd zd : stationList) {
             String stationId = zd.getId();

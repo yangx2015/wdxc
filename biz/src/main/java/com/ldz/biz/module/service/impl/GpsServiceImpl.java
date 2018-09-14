@@ -639,7 +639,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         // 添加一条新的记录
         redis.boundValueOps("start_end," + zdbh +","+ startTime ).set("1",5,TimeUnit.MINUTES);
 
-        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time);
+        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time,10,TimeUnit.MINUTES);
 
 
 
