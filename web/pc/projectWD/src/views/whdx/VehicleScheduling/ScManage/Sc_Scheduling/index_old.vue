@@ -44,7 +44,7 @@
 	        </Spin>
 		</div>
 		<div class="body" v-show='dateMess' style="background-color: #fff;">
-			<component 
+			<component
 				:is="modalName"
 				ref="pbxx"
 				:todaytime='todaytime'
@@ -83,10 +83,10 @@
 							</div>
 						</div>
 						<div class="body">
-							<Table 
-								border 
-								:height="tabHeight" 
-								:columns="tableTiT" 
+							<Table ref="table"
+								border
+								:height="tabHeight"
+								:columns="tableTiT"
 								:data="tableData"></Table>
 							<div>
 								<Button type="warning">复制当日排班信息</Button>
@@ -104,7 +104,7 @@
 	import drag from './comp/drag.vue'
 	import drlist from '../../../components/draggable-list/draggable-list.vue'
 	import mixins from '@/mixins'
-	
+
 
 	export default {
 		name: '',

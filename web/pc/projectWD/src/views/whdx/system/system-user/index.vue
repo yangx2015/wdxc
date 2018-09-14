@@ -37,12 +37,12 @@
                   </div>
             </Row>
             <Row style="position: relative;">
-                  <Table
-                          size='large'
-                          :height="tabHeight"
-                          :row-class-name="rowClassName"
-                          :columns="tableTiT"
-                          :data="tableData"></Table>
+                  <Table ref="table"
+                         size='large'
+                         :height="tabHeight"
+                         :row-class-name="rowClassName"
+                         :columns="tableTiT"
+                         :data="tableData"></Table>
             </Row>
             <Row class="margin-top-10 pageSty">
                   <Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize

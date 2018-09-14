@@ -3,6 +3,7 @@ package com.ldz.biz.module.model;
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -84,6 +85,28 @@ public class ClCd implements Serializable {
      */
     @Column(name = "SJHM")
     private String sjhm;
+
+    @Transient
+    private String clIds;
+
+    @Transient
+    private String driverIds;
+
+    public String getDriverIds() {
+        return driverIds;
+    }
+
+    public void setDriverIds(String driverIds) {
+        this.driverIds = driverIds;
+    }
+
+    public String getClIds() {
+        return clIds;
+    }
+
+    public void setClIds(String clIds) {
+        this.clIds = clIds;
+    }
 
     private static final long serialVersionUID = 1L;
 

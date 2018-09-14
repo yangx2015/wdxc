@@ -29,7 +29,7 @@
                         </div>
                   </Row>
                   <Row>
-                        <Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT"
+                        <Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT"
                                :data="tableData"></Table>
                   </Row>
                   <Row class="margin-top-10 pageSty">

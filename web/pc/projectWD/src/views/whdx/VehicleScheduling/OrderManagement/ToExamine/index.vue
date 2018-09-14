@@ -29,7 +29,7 @@
 			</Row>
 			<div class="body">
 				<Row>
-					<Table
+					<Table ref="table"
 							:height="tabHeight"
 							:row-class-name="rowClassName"
 							:columns="tableTiT"

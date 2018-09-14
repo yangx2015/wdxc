@@ -9,6 +9,7 @@ import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
+import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -63,6 +64,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     private PbService pbService;
     @Autowired
     private ClyxjlService clyxjlService;
+    @Autowired
+    private ClZdglMapper zdglMapper;
     @Autowired
     private SimpMessagingTemplate websocket;
 
@@ -226,7 +229,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String versionName = map.get("versionName").toString();
         if(StringUtils.isBlank(clZdgl.getVersion()) || !StringUtils.equals(versionCode + "-" + versionName,clZdgl.getVersion())){
             clZdgl.setVersion(versionCode + "-" + versionName);
-            zdglservice.updateEntity(clZdgl);
+            zdglMapper.updateByPrimaryKeySelective(clZdgl);
         }
         redis.boundValueOps("versionInfo-" + gpsInfo.getDeviceId()).set(versionCode + "-" + versionName);
     }

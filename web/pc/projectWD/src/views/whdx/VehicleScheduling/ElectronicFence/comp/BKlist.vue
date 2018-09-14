@@ -1,11 +1,11 @@
 <template>
 	<div>
-		<!--<Table
+		<!--<Table ref="table"
 	    	:height="tabHeight"
 	    	:row-class-name="rowClassName"
 	    	:columns="columns10"
 	    	:data="data9"></Table>-->
-	    
+
 	</div>
 </template>
 

@@ -53,7 +53,7 @@
                   </Row>
             </div>
             <div class="body" v-show="!RootShow">
-                  <Table
+                  <Table ref="table"
                           :height="tabHeight"
                           :row-class-name="rowClassName"
                           :columns="columns10"

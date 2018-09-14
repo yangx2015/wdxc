@@ -61,9 +61,8 @@
 			        </span>
 			        <!--信息-->
 			        <div>
-			        	<Table
+			        	<Table ref="table"
 			        		border
-			        		ref="selection"
 			        		:columns="param.ddzt === '30' ? columns3 : columns4"
 			        		height="220"
 							@on-selection-change="(e)=>{tableSelectionChange(e,index)}"

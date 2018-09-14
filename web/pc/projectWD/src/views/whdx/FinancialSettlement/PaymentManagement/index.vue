@@ -56,9 +56,8 @@
 			        </span>
 			        <!--信息-->
 			        <div>
-			        	<Table
+			        	<Table ref="table"
 			        		border
-			        		ref="selection"
 			        		:columns="param.fkzt === '00' ? columns3 : columns4"
 			        		height="220"
 			        		:data="item.orderList"

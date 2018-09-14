@@ -83,12 +83,12 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk, String> implements Sp
 
     @Override
     public ApiResponse<String> saveEntity(ClSpk entity) {
-        SysYh user = getCurrentUser();
+//        SysYh user = getCurrentUser();
         Date now = new Date();
-        entity.setCjr(getOperateUser());
+//        entity.setCjr(getOperateUser());
         entity.setCjsj(now);
         entity.setId(genId());
-        entity.setJgdm(user.getJgdm());
+//        entity.setJgdm(user.getJgdm());
 
         save(entity);
         return ApiResponse.saveSuccess();
@@ -98,7 +98,7 @@ public class SpkServiceImpl extends BaseServiceImpl<ClSpk, String> implements Sp
     public ApiResponse<String> updateEntity(ClSpk entity) {
         ClSpk oldRecord = findById(entity.getId());
         RuntimeCheck.ifNull(oldRecord, "未找到记录");
-        entity.setXgr(getOperateUser());
+//        entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);
         return ApiResponse.success();

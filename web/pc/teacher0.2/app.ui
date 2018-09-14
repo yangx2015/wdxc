@@ -68,9 +68,22 @@ export default {
       peopleMess:{
          
       },//他人乘车信息
-
+      
       orderMess:{
 
+      },
+      ckMess:{
+        hcdz:'',            // 候车地址
+        mdd:'',             // 目的地
+        ck:'',              // 乘客姓名
+        cklxdh:'',          // 乘客联系电话
+        yysj:'00:00',            // 预约时间
+        originLat:'',       // 起始经度
+        originLng:'',       // 起始纬度
+        destinationLat:'',  // 目的地经度
+        destinationLng:'',  // 目的地纬度
+        zws:'5',             // 座位数
+        cllx:10
       },
 
       globalData: {
