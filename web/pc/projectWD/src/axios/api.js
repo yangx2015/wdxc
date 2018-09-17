@@ -1,7 +1,9 @@
-let url = 'http://10.113.4.70:'
+let url = 'http://10.113.4.70:'//8080
+// let url = 'http://47.98.39.45:'//9090
+let port = '8080'
 export default {
-    url:url+'8080/biz',
-    UPLOAD:url+'8080/biz/upload',
+    url:url+port+'/biz',
+    UPLOAD:url+port+'/biz/upload',
     STATIC_PATH:url+'9092/',
     VIDEO_PATH:url+'9091/test/',
     TXT:'/api/clsbyxsjjl/pager',
