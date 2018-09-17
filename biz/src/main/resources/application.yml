@@ -55,3 +55,5 @@ server:
 gpsObdMessage-key: gpsObdMessage_
 #SYS项目-重置密码
 resePwd: 111111
+
+distance: 100
