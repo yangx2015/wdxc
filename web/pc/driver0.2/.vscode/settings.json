@@ -1,6 +1,6 @@
 {
     "workbench.colorTheme": "Adapta Nokto",
-    "touchui.deving": true,
+    "touchui.deving": false,
     "touchui.builded": true,
     "touchui.enable": true,
     "files.associations": {

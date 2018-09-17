@@ -60,6 +60,7 @@
             this.util.initTable(this);
             setTimeout(() => {
                 this.initJs();
+                this.checkIds();
             },100)
         },
         methods: {
