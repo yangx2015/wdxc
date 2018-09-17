@@ -364,7 +364,7 @@ export default {
         this.bottom += 10
       }, 1500)
     },
-    handleBegin ({ distance, direction }) {
+    handleBegin ({ distance, direction }){
       this.proportion = distance / 60
       // 拉满60px
       if (this.proportion >= 1) {
@@ -405,12 +405,6 @@ export default {
           })
         }
       },
-   
-    
-    
-    
-
-    
     navHandle () {
       ui.navigateTo({
         url: '/pages/detail'
@@ -453,9 +447,9 @@ position: absolute;
 
 }
 .pageHeght{
-font-size: 28rpx;
-font-weight:700;
-color: #707070;
+font-size: 32rpx;
+font-weight:800;
+color: #0f0f0f;
 }
 .pingyi{
   transform: translate(-50%,0%);
