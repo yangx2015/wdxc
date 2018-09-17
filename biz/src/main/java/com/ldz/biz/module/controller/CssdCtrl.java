@@ -2,6 +2,7 @@ package com.ldz.biz.module.controller;
 
 import java.util.List;
 
+import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -42,7 +43,7 @@ public class CssdCtrl extends BaseController<ClCssd, String> {
 
 	/**
 	 * 根据车牌号获取超速设定值，带有机构筛选条件
-	 * 
+	 *
 	 * @param cx
 	 * @return
 	 */
@@ -53,9 +54,7 @@ public class CssdCtrl extends BaseController<ClCssd, String> {
 
 	@PostMapping("/setCssds")
 	public ApiResponse<String> setCssds(String cphs, String csz) {
-		if (StringUtils.isEmpty(cphs)) {
-			return ApiResponse.error();
-		}
+		RuntimeCheck.ifBlank(cphs,"请先绑定车辆");
 		return service.setCssds(cphs, csz);
 	}
 
