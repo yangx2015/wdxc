@@ -46,10 +46,10 @@ export default {
     userGrade: (val) => {
       switch (val) {
         case '1':
-          return '一级用户'
+          return '直介'
           break;
         case '2':
-          return '二级用户'
+          return '转介'
       }
     },
 

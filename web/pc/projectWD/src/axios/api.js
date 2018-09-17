@@ -1,7 +1,11 @@
-module.exports = {
-    UPLOAD:'http://47.98.39.45:8080/upload',
-    STATIC_PATH:'http://47.98.39.45:9092/',
-    VIDEO_PATH:'http://47.98.39.45:9091/test/',
+let url = 'http://10.113.4.70:'//8080
+// let url = 'http://47.98.39.45:'//9090
+let port = '8080'
+export default {
+    url:url+port+'/biz',
+    UPLOAD:url+port+'/biz/upload',
+    STATIC_PATH:url+'9092/',
+    VIDEO_PATH:url+'9091/test/',
     TXT:'/api/clsbyxsjjl/pager',
     fileDR:'/api/zdgl/excel',
     USERROOT:{

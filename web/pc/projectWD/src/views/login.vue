@@ -90,8 +90,8 @@
             return {
                 SpinShow: false,
                 form: {
-                    username: 'admini',
-                    password: '123456'
+                    username: '',//admini
+                    password: ''//123456
                 },
                 menus: [],
                 rules: {
