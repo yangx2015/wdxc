@@ -51,8 +51,6 @@ public class CljsyCtrl extends BaseController<ClJsy, String> {
 	/**
 	 * 修改司机在班、休息的状态
 	 * 当司机从在班修改成休息时，需要完结或者取消未完成的订单
-	 * @param sfzhm	驾驶员编号
-	 * @param zt	00 在班、10 休息
 	 * @return
 	 */
 	@PostMapping("jsytype")
