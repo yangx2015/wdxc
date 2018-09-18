@@ -11,37 +11,32 @@
           <ui-col vertical-align="middle" align="center" width="60">
           </ui-col>
         </ui-row>
-      </ui-nav-bar>
+    </ui-nav-bar>
     <ui-view class="box_col" style="{{{height:pageHeight(0)+'px',background:'#0f0'}}}">
-  <ui-view class="getmess">
-    <ui-row vertical-align="middle"  border-bottom style="padding:10px 15px 10px 0px" >
-      <ui-col align="left" span=3 space-left="75" >
-        <ui-view calss="pingyi">
-          <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
-        </ui-view>
-    </ui-col>
-    <ui-col span=3 align="left" space-left="20">
-      <ui-view style="color: #686868;font-size:15px;font-weight:700;">
-        {{orderMess.sjxm}}
-      </ui-view>
-    </ui-col>
-      
-    <ui-col align="left" span=4> 
-    <ui-icon type="qichemoren" size=28 style="color:#888888"></ui-icon>
-    </ui-col>
-          
-
-
-    <ui-col align="left" span=4 space-right="20">
-    <ui-view style="color: #686868;font-size:15px;font-weight:700;">
-      {{orderMess.cph}}
-    </ui-view>
-    <ui-view style="color:#A0A0A0;font-size:20px">
-      {{orderMess.zws}} 座车
-    </ui-view> 
-    </ui-col>
-</ui-row>
-  
+      <ui-view class="getmess">
+        <ui-row vertical-align="middle"  border-bottom style="padding:10px 15px 10px 0px" >
+          <ui-col align="left" span=3 space-left="75" >
+            <ui-view calss="pingyi">
+              <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
+            </ui-view>
+          </ui-col>
+          <ui-col span=3 align="left" space-left="20">
+            <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+              {{orderMess.sjxm}}
+            </ui-view>
+          </ui-col>
+          <ui-col align="left" span=4> 
+          <ui-icon type="qichemoren" size=28 style="color:#888888"></ui-icon>
+          </ui-col>
+          <ui-col align="left" span=4 space-right="20">
+          <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+            {{orderMess.cph}}
+          </ui-view>
+          <ui-view style="color:#A0A0A0;font-size:20px">
+            {{orderMess.zws}} 座车
+          </ui-view> 
+          </ui-col>
+      </ui-row>
 <ui-view>
   <ui-row vertical-align="middle">
     <ui-col align="center" style="color:#000000">
@@ -73,12 +68,12 @@
 
 <ui-row style="padding:20px 0px 10px 0px" vertical-align="middle">
   <ui-col align="center" style="color:#A0A0A0">
-    评价本次服务
+    {{starResult}}
   </ui-col>
 </ui-row>
 <ui-row>
   <ui-col align="left" space-left="120">
-    <ui-star bindtap="pingfen()"></ui-star>
+    <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
   </ui-col> 
 </ui-row>
 
@@ -105,10 +100,13 @@
 export default {
   config: {
     navigationBarTitleText: '订单详情',
-   
+    navigationBarBackgroundColor: '#39f',
+    navigationBarBorderColor: '#39f',
+    navigationBarTextStyle: 'white'
   },
   data () {
     return {
+      starResult: '评价本次服务',
       orderMess:{},
       pageheight:ui.DEFAULT_HEADER_HEIGHT,
       current9:0,
@@ -120,11 +118,27 @@ export default {
   },
       
   methods: {
-    pingfen(){
-      
+    pingfen(index){
+      if(this.orderMess.pjdj!=""){
+        ui.showToast({ title: '该订单已评价!'})
+        return
+      }
+      console.log(index)
+      if (index === 1) {
+        this.starResult = '非常差'
+      } else if (index === 2) {
+        this.starResult = '感觉一般'
+      } else if (index === 3) {
+        this.starResult = '满意，感觉不错'
+      } else if (index === 4) {
+        this.starResult = '很满意'
+      } else if (index === 5) {
+        this.starResult = '非常棒，五星好评'
+      }
+      this.getMarkList(index)
     },
-    getMarkList(){
-      this.$http('POST',ui.getApp().apis.PJDD.QUERTY,{},(res)=>{
+    getMarkList(index){
+      this.$http('POST',ui.getApp().apis.PJDD.QUERTY,{orderId:this.orderMess.id,grade:index},(res)=>{
         console.log("##########################",res)
       })
     },
