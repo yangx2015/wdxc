@@ -53,8 +53,62 @@
                   </ui-row>
                 </ui-view> 
 
-               
-                    <ui-popup ui:model="{{ show3 }}" height="100%">
+                    <ui-popup ui:model="{{ show5 }}" height="570" background="transparent">
+                        <ui-view class="popup5">
+                          <ui-row height="40" border-bottom>
+                            <ui-col vertical-align="middle" space-left="20"></ui-col>
+                            <ui-col width="40" vertical-align="middle" align="center" bindtap="handleShow('show5')">
+                              <ui-icon name="x" size="18" color="#FC8950"></ui-icon>
+                            </ui-col>
+                          </ui-row>
+                          <ui-view>
+                           <ui-view style="background-color:#ffffff" padding="10px 20px 10px 20px">
+                             <ui-row>
+                               <ui-col span=12 align=center space-left=10 style="position:relative">
+                                   <ui-icon type="wo" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
+                                  <ui-input ui:model="{{form.ck}}" placeholder="请输入姓名" style="padding-left:32px"></ui-input>
+                                </ui-col>
+                                </ui-row>
+                                <ui-row>
+                                <ui-col span=12 align=center space-left=10 style="position:relative">
+                                  <ui-icon type="shouji" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
+                                
+                                  <ui-input ui:model="{{form.cklxdh }}"  type="number" placeholder="请输入手机号码" style="padding-left:32px"></ui-input>
+                                </ui-col>
+                              </ui-row>
+                            </ui-view>
+                            </ui-view>
+                            <ui-view>
+                              
+                                
+                            </ui-view>
+                            <ui-row height="50">
+                            <ui-col space-left="20" space-right="20" vertical-align="middle">
+                              <ui-button type="primary" color="red" bindtap="getinputmessage()">确定</ui-button>
+                            </ui-col>
+                          </ui-row>
+                          <ui-view>
+                            <ui-scroll-view scroll-y  height="300">
+                              <ui-view style="background-color:#fff">
+                            
+                              <ui-row border-bottom=true>
+                                 <ui-divider color="red">历史乘车人</ui-divider>
+                              </ui-row>
+                              <ui-row border-bottom=true style="font-size:18px;" ui:for="{{hisList}}" bindtap="getHisck(item)">
+                                <ui-col space-left=10>
+                                 {{(index+1)}} .  {{item.name}} · {{item.phone}}
+                                </ui-col>
+                              </ui-row>
+
+                          </ui-view>
+                            </ui-scroll-view>
+                            
+                            
+                          </ui-view>
+                        </ui-view>
+                      </ui-popup>
+
+                    <!-- <ui-popup ui:model="{{ show3 }}" height="100%">
                       <ui-view class="popup1">
                            <ui-view>
                             <ui-view>
@@ -73,7 +127,7 @@
                           <ui-view class="box_col" bindtap="getHisck()">
                               <ui-row border-bottom=true style="font-size:20px" ui:for="{{hisList}}">
                                 <ui-col span=9 align=center>
-                                  {{item.ck}}__{{item.cklxdh}}
+                                  {{item.ck}} · {{item.cklxdh}}
                                 </ui-col>
                                 <ui-col>
                                     <ui-icon type="webicon318" size=28 bindtap=""></ui-icon>
@@ -81,7 +135,7 @@
                               </ui-row>
                           </ui-view>
                       </ui-view>
-                    </ui-popup>
+                    </ui-popup> -->
 
 
                     <!-- <ui-mask ui:model="showMask1">
@@ -91,8 +145,8 @@
                         <ui-button bindtap="handleShow('show3')" plain type="primary"">确认</ui-button>
                         </ui-view>
                       </ui-view>
-                    </ui-mask> -->
-                <!-- </ui-view> -->
+                    </ui-mask>
+                </ui-view> -->
                 
                 <ui-view>
                    <ui-row height="100">
@@ -178,12 +232,10 @@ export default {
       //   name:'',
       //   phone:''
       // },
-      hisList:[{//历史乘车人信息
-        name:'',
-        phone:'',
-      }],
+      hisList:[//历史乘车人信息
+      ],
     
-      show3: false,
+      show5: false,
       newnum:'',
       yysj: '00:00',
       show:false,
@@ -199,7 +251,7 @@ export default {
         mdd:'',             // 目的地
         ck:'',              // 乘客姓名
         cklxdh:'',          // 乘客联系电话
-        yysj:'00:00',            // 预约时间
+        yysj:this.getTime(),            // 预约时间
         originLat:'',       // 起始经度
         originLng:'',       // 起始纬度
         destinationLat:'',  // 目的地经度
@@ -267,28 +319,25 @@ export default {
   watch:{
   },
   methods: {
-     getHisck(){
-       this.form.ck = this.hisList.name;
-       this.form.cklxdh = this.hisList.phone
+     getHisck(item){
+       this.form.ck = item.name;
+       this.form.cklxdh = item.phone
      },
      getinputmessage(){
       console.log(this.form);
-      ui.getApp().peopleMess = this.form//全局变量赋值
-      this.hisList.push(this.form)//历史记录添加
-      // this.form = {
-      //   ck:'',
-      //   cklxdh:''
-      // }
+      this.hisList.push({name:this.form.ck,phone:this.form.cklxdh})//历史记录添加
+
       localStorage.setItem('hisList',JSON.stringify(this.hisList)) 
       this.getHisList()
       
     },
     getHisList(){//获取历史乘车人信息
-      var hisMess = localStorage.getItem('hislist')
+      var hisMess = localStorage.getItem('hisList')
       if(hisMess != null){
         this.hisList = JSON.parse(hisMess)
+        
       }
-      this.show3 = false
+      this.show5 = false
     },
     gethcdz(gps){//进入首页获取到我的位置
         let that = this
@@ -347,12 +396,16 @@ export default {
       console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
          console.log('==========================',res)
-      });
-      if(code=200 && res.page.list){
+         if(res.code==200){
+        console.log('werewrwewewrwewew');
+        
         ui.showToast({ title: '提交成功'})
+        this.goorder()
       }else{
         ui.showToast({ title: '提交失败'})
       }
+      });
+      
      },  
     handleNavIconTap () {
       ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
@@ -368,7 +421,7 @@ export default {
         success: (index) => {
           console.log(index)
           if(index==1){
-            v.openPopup3()
+            v.openPopup5()
           }
           v.people = itemLists[index]
         }
@@ -411,6 +464,20 @@ export default {
     },
     selectedChange(val){
         console.log('s事件++++++++++++++',val)
+    },
+    getGPS(){
+      console.log('GPS');
+      
+      var v = this
+      ui.getLocation({
+        type: 'wgs84',
+        success: function (res) {
+          v.form.originLat = res.latitude
+          v.form.originLng = res.longitude
+          console.log(v.form);
+          
+        }
+      })
     },
     getStarGps(){
       var that = this
@@ -459,11 +526,16 @@ export default {
         url: '/pages/xlMess'
       })
     },
+    goorder(){
+      ui.navigateTo({
+        url: '/pages/orders'
+      })
+    },
     handleShow (key) {
       this[key] = false
     },
-    openPopup3 () {
-      this.show3 = true
+    openPopup5 () {
+      this.show5 = true
     },
     // 单选日历。获取月和天
       radioinit (thisdate) {
@@ -571,10 +643,29 @@ export default {
         start = Date.parse(this.dateobj.rangedate2[0])
         end = Date.parse(this.dateobj.rangedate2[1])
         this.differ2 = Math.floor((end - start) / (24 * 3600 * 1000))
-      }
+      },
+      getTime() {
+        var NowDate = new Date()
+        let Year = NowDate.getFullYear()
+        let Month = NowDate.getMonth() + 1
+        let Day = NowDate.getDate()
+        let Hours = NowDate.getHours()
+        let Minutes = NowDate.getMinutes()
+        let Seconds = NowDate.getSeconds()
+        if (Month < 10) {
+          Month = '0' + Month
+        }
+        if (Day < 10) {
+          Day = '0' + Day
+        }
+        let time = Year + '-' + Month + '-' + Day + ' ' + Hours + ':' + Minutes + ':' + Seconds
+        return time
+      },
    
   },
   created () {
+    this.getHisList()
+
     var v = this
     ui.getLocation({//获取位置信息
       type: 'wgs84',
@@ -594,7 +685,8 @@ export default {
           })
       }
     })
-    this.getHisList()
+    this.getGPS()
+    this.getTime()
   },
   mounted() {
     
@@ -621,8 +713,17 @@ export default {
 </script>
 
 <style lang="less">
-.popup1{
-  padding: 40px 20px 0 20px;
+.popup5{
+  width: 95%;
+  background-color:#ddd;
+  height:550px;
+  margin:0 auto;
+  border-radius:5px;
+  overflow:hidden;
+  .ui-view{
+    line-height: 30px;
+    padding: 10px 20px;
+  }
 }
 .demo{
   height: 300rpx;
@@ -675,6 +776,14 @@ export default {
 
 .log_box{
   padding: 20px 50px;
+  .login{
+    background-color: #F64E16;
+    border: 0;
+    border-radius: 25px;
+    font-size: 14px;
+    color: #fff;
+    margin-top: 30px;
+  }
   .ui-view{
     padding: 10px 0 5px 0;
     .mix-1px(0, 0, 1, 0, #ccc);
@@ -690,14 +799,7 @@ export default {
       border-radius: 25px;
     }
   }
-  .login{
-    background-color: #F64E16;
-    border: 0;
-    border-radius: 25px;
-    font-size: 14px;
-    color: #fff;
-    margin-top: 30px;
-  }
+  
   .swiper-slide {
     .ui-image {
         width: 100%;

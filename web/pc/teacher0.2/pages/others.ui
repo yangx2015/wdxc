@@ -4,7 +4,7 @@
     <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#F64E16'} }}">
         <ui-row height="46">
           <ui-col vertical-align="middle" align="center" width="60">
-            <ui-icon type="left" size="16" color="#fff"></ui-icon>
+            <!-- <ui-icon type="left" size="16" color="#fff"></ui-icon> -->
           </ui-col>
           <ui-col vertical-align="middle" align="center">
             <ui-view class="nav_title">更换乘车人</ui-view>
@@ -41,7 +41,7 @@
     <ui-view class="box_col">
         <ui-row border-bottom=true style="font-size:20px" ui:for="{{hisList}}">
           <ui-col span=9 align=center>
-             {{item.name}}__{{item.phone}}
+             {{item.name}} · {{item.phone}}
           </ui-col>
           <ui-col>
               <ui-icon type="webicon318" size=28 bindtap=""></ui-icon>
@@ -79,14 +79,16 @@ export default {
         phone:''
       }
       localStorage.setItem('hisList',JSON.stringify(this.hisList)) 
-      this.getHisList()   
+      this.getHisList()
+      
     },
     getHisList(){
       var hisMess = localStorage.getItem('hisList')
       if(hisMess != null){
         this.hisList = JSON.parse(hisMess)
       }
-    }
+    },
+    
   },
   mounted() {},
   created(){
@@ -128,7 +130,7 @@ export default {
   }
   .login{
     background-color: #F64E16;
-    border: 0;
+    border: 3;
     border-radius: 25px;
     font-size: 14px;
     color: #fff;

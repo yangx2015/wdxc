@@ -127,6 +127,7 @@
                         align: 'center',
                         key: 'lx',
                         render: (h, p) => {
+                            console.log('---------------------------------字典项处理--------------------------------------');
                             let val = this.dictUtil.getValByCode(this, this.yhlxDictCode, p.row.lx)
                             return h('div', val)
                         }

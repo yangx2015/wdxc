@@ -19,7 +19,7 @@
 
    
    <ui-col style="padding:0 20px 0 20px" span="10" align="left">
-<ui-input show-clear="false" ui:model="{{form.zjhm}}" placeholder="请输入手机号" maxlength="11"></ui-input>
+<ui-input show-clear="false" ui:model="{{form.zjhm}}" placeholder="请输入手机号"></ui-input>
    </ui-col>
    
 </ui-row>
@@ -38,13 +38,6 @@
     <ui-image src="static/img/teacher/logbotimg.jpg" mode="aspectFit" width="400" height="400"></ui-image>
   </ui-col>
 </ui-row>
-
-
-
-
-
-
-
     </ui-page>
     
 </template>
@@ -72,8 +65,8 @@ export default {
   data () {
     return {
       form:{
-          name:'宋林殊',
-          zjhm:'32948289347289'
+          name:'宋林殊',//宋林殊
+          zjhm:'32948289347289'//32948289347289
       }
     }
   },

@@ -20,9 +20,6 @@ import java.util.Set;
 public class SysMessageServiceImpl extends BaseServiceImpl<SysMessage,String> implements SysMessageService{
     @Autowired
     private SysMessageMapper entityMapper;
-    @Autowired
-    private RedisTemplate redisDao;
-
 
     @Override
     protected Mapper<SysMessage> getBaseMapper() {
@@ -42,7 +39,7 @@ public class SysMessageServiceImpl extends BaseServiceImpl<SysMessage,String> im
             if(i>0){//向redis写入标记
                 //下发消息
 //                redisDao.
-                Set<String> keys =  redisDao.keys("*-");
+//                Set<String> keys =  redisDao.keys("*-");
 //                redisDao
             }
         }catch (Exception e){}

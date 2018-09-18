@@ -113,7 +113,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }catch(Exception e){
         	errorLog.error("解析GPS事件异常", e);
         }
-        
+
         saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
     }
@@ -149,7 +149,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         ClGps newGps = changeCoordinates(gpsInfo);
-        
+
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
             newStatus = DeviceStatus.OFFLINE.getCode();
@@ -386,21 +386,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         clsbyxsjjl.setZdbh(entity.getDeviceId());
         clsbyxsjjl.setSjjb("20");
         // 封装设备终端管理
-        ClZdgl zdgl = new ClZdgl();
-        zdgl.setZdbh(entity.getDeviceId());
-        zdgl.setXgsj(new Date());
+        ClZdgl zdgl = zdglservice.findById(entity.getDeviceId());
+        if (zdgl != null){
+            // 根据传入的sczt判断终段在线状态
+            if (StringUtils.equals(entity.getSczt(), "10")) {
+                zdgl.setZt("00");
+                zdgl.setZxzt("00");
+                zdglservice.update(zdgl);
+            }
+            if (StringUtils.equals(entity.getSczt(), "20")) {
+                zdgl.setZt("00");
+                zdgl.setZxzt("10");
+                zdglservice.update(zdgl);
+            }
+        }
 
-        // 根据传入的sczt判断终段在线状态
-        if (StringUtils.equals(entity.getSczt(), "10")) {
-            zdgl.setZt("00");
-            zdgl.setZxzt("00");
-            zdglservice.insetAndUpdate(zdgl);
-        }
-        if (StringUtils.equals(entity.getSczt(), "20")) {
-            zdgl.setZt("00");
-            zdgl.setZxzt("10");
-            zdglservice.insetAndUpdate(zdgl);
-        }
 
         // 判断该点位是否在电子围栏里面
         if (clcl != null){
