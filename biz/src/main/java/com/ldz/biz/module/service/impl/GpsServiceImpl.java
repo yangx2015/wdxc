@@ -393,8 +393,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 zdgl.setZt("00");
                 zdgl.setZxzt("00");
                 zdglservice.update(zdgl);
-            }
-            if (StringUtils.equals(entity.getSczt(), "20")) {
+            }else if (StringUtils.equals(entity.getSczt(), "20")) {
                 zdgl.setZt("00");
                 zdgl.setZxzt("10");
                 zdglservice.update(zdgl);
