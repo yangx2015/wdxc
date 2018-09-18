@@ -71,13 +71,14 @@
                     </ui-view>
 
                 </ui-swiper-item>
+
                 <ui-swiper-item class="box_col_auto">
                     <ui-view class="ListItemSty">
                       <ui-view class="stationRouterBox">
-                        <ui-view class="errmess" ui:if="{{StationMess.otherRouters && StationMess.otherRouters.length==0}}">
+                        <ui-view class="errmess" ui:if="{{StationMess.scheduledBusRouters && StationMess.scheduledBusRouters.length==0}}">
                             暂无数据
                         </ui-view>
-                          <ui-view ui:else class="stationRouterItem" ui:for="{{StationMess.otherRouters}}" bindtap="golineMessOther(item)">
+                          <ui-view ui:else class="stationRouterItem" ui:for="{{StationMess.scheduledBusRouters}}" bindtap="golineMessOther(item)">
                               <ui-view class="xlName">
                                 <ui-icon class="Theme2" type="bus2" size="18"></ui-icon>
                                 {{item.name}}
@@ -93,17 +94,17 @@
                 <ui-swiper-item class="box_col_auto">
                     <ui-view class="ListItemSty">
                       <ui-view class="stationRouterBox">
-                          <ui-view class="errmess" ui:if="{{bcLine.length==0}}">
+                          <ui-view class="errmess"  ui:if="{{StationMess.otherRouters && StationMess.otherRouters.length==0}}">
                               暂无数据
                           </ui-view>
-                          <ui-view ui:else class="stationRouterItem" ui:for="{{bcLine}}" bindtap="golineMessOther(item)">
+                          <ui-view ui:else class="stationRouterItem" ui:for="{{StationMess.otherRouters}}" bindtap="golineMessOther(item)">
                               <ui-view class="xlName">
                                 <ui-icon class="Theme2" type="bus2" size="18"></ui-icon>
-                                {{item.xlmc}}
+                                {{item.name}}
                               </ui-view>
                               <ui-view class="toCode">
                                 <ui-icon class="Theme2" type="jiantouarrow591" size="14"></ui-icon>
-                                {{item.yxkssj}}-{{item.yxjssj}}
+                                {{item.startTime}}-{{item.endTime}}
                                 <!-- 开往 - {{item.endStation.mc}} -->
                               </ui-view>
                           </ui-view>
@@ -182,7 +183,7 @@ export default {
             mes = v.GPSMESS
           }
           v.getStationMess()
-          v.getbcLine()
+          // v.getbcLine()
           callback && callback(mes)
         }
       })
