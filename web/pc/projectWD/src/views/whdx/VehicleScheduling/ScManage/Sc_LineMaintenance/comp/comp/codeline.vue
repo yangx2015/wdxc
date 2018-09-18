@@ -3,12 +3,12 @@
             <div class="box-row-z">
                   <div class="itemSty" v-for="(item,index) in mess">
                         <Tooltip class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
-                              <Button size="small" type="success" shape="circle" icon="edit"
+                              <Button size="small" type="success" shape="circle" icon="md-create"
                                       @click="item.xg = !item.xg"></Button>
                         </Tooltip>
                         <Tooltip class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
-                              <Button size="small" type="error" shape="circle" icon="trash-a"
-                                      @click="codeChangeRem(item,index),item.xg = !item.xg"></Button>
+                              <Button size="small" type="error" shape="circle" icon="md-close"
+                                      @click="codeChangeRem(item,index)"></Button>
                         </Tooltip>
                         <i v-show="index!=mess.length-1" class="iconfont icon-one-line-arrow"></i>
 
@@ -93,8 +93,9 @@
                         }
                         v.$emit('codeChangeRem',abj)
                     }else {
-                        this.$Message.error('操作失败');
+                        this.$Message.error('操作取消');
                     }
+                    item.xg = !item.xg
                 });
             },
             codeChange(num){
