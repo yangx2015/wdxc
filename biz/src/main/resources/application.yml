@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test  #合并 application-test.yml 中的配置参数
+    active: prod  #合并 application-test.yml 中的配置参数
   #上传文件设置
   http:
     multipart:
@@ -55,3 +55,5 @@ server:
 gpsObdMessage-key: gpsObdMessage_
 #SYS项目-重置密码
 resePwd: 111111
+
+distance: 100
