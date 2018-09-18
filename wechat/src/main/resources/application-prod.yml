@@ -1,13 +1,14 @@
 spring:
   #redis配置信息
   redis:
-    host: 127.0.0.1
+    host: 10.113.4.70
     port: 6379
+    password: 'whCarRDB**'
   #数据库连接配置信息
   datasource:
-    url: jdbc:oracle:thin:@//47.98.39.45:1521/orcl
-    username: 'C##wdxc_admin'
-    password: 'wdxc123456'
+    url: jdbc:oracle:thin:@//10.113.1.50:1521/orcl
+    username: 'ucarmanage'
+    password: 'tahQuoaj0Fi2'
 
 server:
   port: 9099
@@ -21,4 +22,4 @@ wechat:
     aesKey: tjlq1glUbSsxADd2fsxExFvDUDo1RgdoQveqrSWyhoy
     agentId: 37
 #静态文件根目录
-staticPath: /develop/static/8081/
+staticPath: /app/data/nginx/staticpath
