@@ -71,25 +71,25 @@
                         </div>
                         <div style="width: 100px;">
                               <div>
-                                    <Select filterable clearable v-model="stationId">
+                                    <Select filterable clearable v-model="stationId" ref="clearSelect">
                                           <Option v-for="(item,index) in stationList"
                                                   :disabled='item.disabled'
-                                                  :value="index+1">{{item.mc}}
+                                                  :value="index+1" :key="index">{{item.mc}}
                                           </Option>
                                     </Select>
                               </div>
                               <div style="margin-top: 8px;">
-                                    <Button type="primary" shape="circle" icon="plus"
+                                    <Button type="primary" shape="circle" icon="md-add"
                                             :disabled="stationId==''"
                                             @click='addStation(stationId-1)'></Button>
-                                    <Button type="primary" shape="circle" icon="minus"
+                                    <Button type="primary" shape="circle" icon="md-remove"
                                             :disabled="routerList.length==0" style="float: right;"
                                             @click='removespot(stationId-1)'></Button>
                               </div>
                         </div>
                   </div>
                   <div slot='footer'>
-                        <Button type="default" @click="colse"style="color: #949494">取消</Button>
+                        <Button type="default" @click="colse">取消</Button>
                         <Button type="primary" @click="save('addmess')">确定</Button>
                   </div>
             </Modal>
@@ -250,8 +250,9 @@
                     'index': index,
                     xg:true
                 });//向线路插入数据
-                this.stationId = 0;
+                // this.stationId = 0;
                 this.stationList[index].disabled = true
+                this.$refs.clearSelect.clearSingleSelect()
                 log(this.stationList)
             },
             removespot() {
