@@ -5,9 +5,22 @@ import '#/static/css/color.less'
 let options = {
   app: app,
   beforeEach(to,from,next) {
+    let token = localStorage.getItem('token')
+    // let userinfo = ui.getApp().userinfo
+    console.log(token);
+    
+    if(!token && to.path != '/pages/login'){
+      next({path:'/pages/login'})
+    }else if(to.path == '/pages/login'){
+      next()
+    }else{
+      next()
+    }
+    // try{
+    // }catch(err){}
     console.log('去',to)
     console.log('来',from)
-    next()
+    // next()
   }
 }
 
