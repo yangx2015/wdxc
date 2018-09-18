@@ -129,8 +129,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         List<NearbyStation> nearbyStations = getNearbyStations(lng,lat); // 附近站点
         List<Router> nearbyRouters = new ArrayList<>();
         List<Router> otherRouters = new ArrayList<>(); // 其他线路
-        resultMap.put("nearbyStations",nearbyStations);
-        resultMap.put("otherRouters",otherRouters);
+        List<Router> scheduledBusRouters = new ArrayList<>(); // 班车的列表
+        resultMap.put("nearbyStations",nearbyStations);//附近站点
+        resultMap.put("otherRouters",otherRouters);//校巴的列表
+        resultMap.put("scheduledBusRouters",scheduledBusRouters);//班车的列表
 
         List<String> nearbyStationIds = nearbyStations.stream().map(NearbyStation::getId).collect(Collectors.toList());
 
@@ -155,7 +157,11 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             if (nearbyRouterIds.contains(router.getId())){
                 nearbyRouters.add(router1);
             }else{
-                otherRouters.add(router1);
+                if(StringUtils.equals(router.getLx(),"30")){//20班车  30校巴
+                    scheduledBusRouters.add(router1);
+                }else if(StringUtils.equals(router.getLx(),"20")){
+                    otherRouters.add(router1);
+                }
             }
         }
         for (Router nearbyRouter : nearbyRouters) {
@@ -176,6 +182,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         }
         return ApiResponse.success(resultMap);
     }
+
 //    public ApiResponse<Map<String, Object>> getStationInfo(String lng, String lat) {
 //        Map<String,Object> resultMap = new HashMap<>();
 //        List<Map<String,Object>> nearbyStations = new ArrayList<>(); // 附近站点
