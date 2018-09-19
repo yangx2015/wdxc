@@ -196,12 +196,14 @@ public class SbyxsjjlServiceImpl extends BaseServiceImpl<ClSbyxsjjl, String> imp
 
 	@Override
 	public ApiResponse<List<SafedrivingModel>> getSafeDrivig() {
+		SysYh currentUser = getCurrentUser();
 		String type = getRequestParamterAsString("type");
 		ApiResponse<List<SafedrivingModel>> apiResponse = new ApiResponse<>();
 		HttpServletRequest request = getRequset();
 		String sjxmLike = request.getParameter("sjxmLike");
 		Map<String,Object> param = new HashMap<>();
 		param.put("sjxmLike",sjxmLike);
+		param.put("jgdm", currentUser.getJgdm());
 		List<SafedrivingModel> safedriving = entityMapper.Safedriving(param);
 
 		if ("aqjs".equals(type)){
