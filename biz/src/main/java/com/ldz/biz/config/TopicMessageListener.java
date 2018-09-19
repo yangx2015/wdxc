@@ -223,8 +223,13 @@ public class TopicMessageListener implements MessageListener {
             clXc.setXcKssj(startTime);
             clXc.setXcJssj(endTime);
             clXc.setXcStartEnd(start_end);
-            xcService.saveEntity(clXc);
-            redisTemplate.delete("start_end," + zdbh + "xc" + startTime);
+            List<ClXc> entity = xcService.findByEntity(clXc);
+            if(CollectionUtils.isEmpty(entity)) {
+                xcService.saveEntity(clXc);
+                redisTemplate.delete("start_end," + zdbh + "xc" + startTime);
+            }else{
+                error.info("行程已存在，不存储");
+            }
         }
     }
 
