@@ -21,8 +21,8 @@ import java.util.Date;
 public class I {
     public static final String CACHE_DIR_NAME = "WeicyCARFDLog";
 
-    public static boolean isDebugModel = true;// 是否输出日志
-    public static boolean isSaveDebugInfo = true;// 是否保存调试日志
+    public static boolean isDebugModel = false;// 是否输出日志
+    public static boolean isSaveDebugInfo = false;// 是否保存调试日志
     public static boolean isSaveCrashInfo = true;// 是否保存报错日志
     private static String TAG = "APP_LOG";
 
