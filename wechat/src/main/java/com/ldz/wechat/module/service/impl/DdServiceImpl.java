@@ -4,16 +4,14 @@ package com.ldz.wechat.module.service.impl;
 import com.github.pagehelper.PageInfo;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.MathUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.LatLonUtil;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.base.LimitedCondition;
-import com.ldz.wechat.module.mapper.ClClMapper;
-import com.ldz.wechat.module.mapper.ClDdMapper;
-import com.ldz.wechat.module.mapper.ClDdrzMapper;
-import com.ldz.wechat.module.mapper.ClGpsLsMapper;
+import com.ldz.wechat.module.mapper.*;
 import com.ldz.wechat.module.model.*;
 import com.ldz.wechat.module.service.*;
 import org.apache.commons.lang.StringUtils;
@@ -42,6 +40,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private JgService jgService;
     @Autowired
     private ClGpsLsMapper gpsLsMapper;
+    @Autowired
+    private ClyyMapper clyyMapper;
+    @Autowired
+    private ClYyService clYyService;
 
     @Autowired
     private YhService yhService;
@@ -301,18 +303,32 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
      * @return
      */
     @Override
-    public ApiResponse<List<ClGpsLs>> getOrderGpsList(String orderId){
+    public ApiResponse<List<Clyy>> getOrderGpsList(String orderId){
         RuntimeCheck.ifBlank(orderId,"请选择订单");
         ClDd clDd = entityMapper.selectByPrimaryKey(orderId);
         RuntimeCheck.ifNull(clDd,"订单不存在");
 
-        SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
-        condition.eq(ClGpsLs.InnerColumn.zdbh.name(), clDd.getZdbm());// 终端编码
-        condition.gte(ClGpsLs.InnerColumn.cjsj.name(), clDd.getYysj());// 开始时间
-        condition.lte(ClGpsLs.InnerColumn.cjsj.name(), clDd.getSjqrsj());// 结束时间
-        condition.setOrderByClause(ClGpsLs.InnerColumn.cjsj.asc());// 创建时间
-        List<ClGpsLs> gpsList = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
-        ApiResponse<List<ClGpsLs>> ret=new ApiResponse<>();
+        RuntimeCheck.ifNull(clDd.getZdbm(),"暂无行程记录");
+
+        SimpleCondition condition = new SimpleCondition(Clyy.class);
+
+        condition.and().andEqualTo(Clyy.InnerColumn.zdbh.name() , clDd.getZdbm());
+        if(clDd.getYysj()!=null){
+            String strinDate=DateUtils.getDateStr(clDd.getYysj(),"yyyy-MM-dd");
+            condition.and().andGreaterThanOrEqualTo(Clyy.InnerColumn.loc_time.name() , strinDate);
+        }
+        if(clDd.getSjqrsj()!=null){
+            String StrinDate= DateUtils.getDateStr(clDd.getSjqrsj(),"yyyy-MM-dd");
+            condition.and().andLessThanOrEqualTo(Clyy.InnerColumn.loc_time.name() ,  StrinDate);
+        }
+        condition.setOrderByClause(" id ASC");
+
+//        condition.eq(Clyy.InnerColumn.zdbh.name(), clDd.getZdbm());// 终端编码
+//        condition.gte(Clyy.InnerColumn.cjsj.name(), clDd.getYysj());// 开始时间
+//        condition.lte(Clyy.InnerColumn.cjsj.name(), clDd.getSjqrsj());// 结束时间
+//        condition.setOrderByClause(Clyy.InnerColumn.cjsj.asc());// 创建时间
+        List<Clyy> gpsList = clYyService.findByCondition(condition);
+        ApiResponse<List<Clyy>> ret=new ApiResponse<>();
         ret.setResult(gpsList);
         return ret;
     }
