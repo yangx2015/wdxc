@@ -398,8 +398,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
 
     public void checkUpload(){
-        /*
-    	ReentrantLock lock = new ReentrantLock();
+        /*ReentrantLock lock = new ReentrantLock();
         lock.lock();
         I.d(TAG,"开始检查是否有文件上传");
         if( getUploadQuee()==true){

@@ -107,9 +107,10 @@ public class JsServiceImpl extends BaseServiceImpl<SysJs, String> implements JsS
 	public ApiResponse<String> modifyUserRoles(String yhid, List<String> jsIds) {
 		// 检查用户是否存在
 		SysYh user = userMapper.selectByPrimaryKey(yhid);
+
 		if (user == null)
 			return ApiResponse.fail("用户不存在");
-
+		RuntimeCheck.ifTrue(user.getLx().equals("00"), "用户为管理员，不宜分配其他角色");
 		// 删除就数据
 		Example userRoleExample = new Example(SysYhJs.class);
 		userRoleExample.and().andEqualTo(SysYhJs.InnerColumn.yhId.name(), yhid);
