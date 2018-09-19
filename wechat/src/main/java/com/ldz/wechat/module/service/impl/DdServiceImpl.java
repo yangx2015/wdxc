@@ -295,4 +295,25 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }
         return ApiResponse.success(map);
     }
+    /**
+     * 获取当前订单的订单  车辆GPS列表
+     * @param orderId
+     * @return
+     */
+    @Override
+    public ApiResponse<List<ClGpsLs>> getOrderGpsList(String orderId){
+        RuntimeCheck.ifBlank(orderId,"请选择订单");
+        ClDd clDd = entityMapper.selectByPrimaryKey(orderId);
+        RuntimeCheck.ifNull(clDd,"订单不存在");
+
+        SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
+        condition.eq(ClGpsLs.InnerColumn.zdbh.name(), clDd.getZdbm());// 终端编码
+        condition.gte(ClGpsLs.InnerColumn.cjsj.name(), clDd.getYysj());// 开始时间
+        condition.lte(ClGpsLs.InnerColumn.cjsj.name(), clDd.getSjqrsj());// 结束时间
+        condition.setOrderByClause(ClGpsLs.InnerColumn.cjsj.asc());// 创建时间
+        List<ClGpsLs> gpsList = gpsLsMapper.selectByExampleAndRowBounds(condition,new RowBounds(0,1));
+        ApiResponse<List<ClGpsLs>> ret=new ApiResponse<>();
+        ret.setResult(gpsList);
+        return ret;
+    }
 }
