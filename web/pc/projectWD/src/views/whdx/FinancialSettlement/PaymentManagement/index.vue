@@ -83,6 +83,7 @@
     }
     import edit from './edit'
     import print from './print'
+    import swal from 'sweetalert2'
 	export default{
 		name:'client',
 		components:{
@@ -146,7 +147,7 @@
                                     on: {
                                         click: () => {
                                             this.choosedItem = params.row;
-                                            this.componentName = 'md-create';
+                                            this.componentName = 'edit';
                                         }
                                     }
                                 }, '编辑')
@@ -244,11 +245,12 @@
                 }
                 swal({
                     title: "确认已付款?",
-                    text: "",
-                    icon: "warning",
-                    buttons:['取消','确认'],
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
                 }).then((confirm) => {
-                    if (confirm) {
+                    if (confirm.value) {
                         let ids = '';
                         for (let r of this.selectedData[index]){
                             ids += r.id +',';
