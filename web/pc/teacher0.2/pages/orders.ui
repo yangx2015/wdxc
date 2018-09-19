@@ -56,7 +56,7 @@
                                       <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
                                     </ui-col>
                                     <ui-col span="11" align="left" style="color:#A0A0A0">
-                                      {{item.cjsj}}
+                                      {{item.yysj}}
                                     </ui-col>
                               </ui-row>
                               <ui-row >
@@ -101,7 +101,7 @@
                                     <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
                                   </ui-col>
                                   <ui-col span="11" align="left" style="color:#A0A0A0">
-                                      {{item.cjsj}}
+                                      {{item.yysj}}
                                   </ui-col>
                               </ui-row>
                               <ui-row >
@@ -146,7 +146,7 @@
                                     <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
                                     </ui-col>
                                     <ui-col span="11" align="left" style="color:#A0A0A0">
-                                      {{item.cjsj}}
+                                      {{item.yysj}}
                                     </ui-col>
                                     </ui-row>
                                     <ui-row >
@@ -190,7 +190,7 @@
                                     <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
                                     </ui-col>
                                     <ui-col span="11" align="left" style="color:#A0A0A0">
-                                      {{item.cjsj}}
+                                      {{item.yysj}}
                                     </ui-col>
                                     </ui-row>
                                     <ui-row >
@@ -234,7 +234,7 @@
                                     <ui-icon type="shijianshizhongdaojishi" style="color:#A0A0A0" size=10></ui-icon>
                                     </ui-col>
                                     <ui-col span="11" align="left" style="color:#A0A0A0">
-                                      {{item.cjsj}}
+                                      {{item.yysj}}
                                     </ui-col>
                                     </ui-row>
                                     <ui-row >
