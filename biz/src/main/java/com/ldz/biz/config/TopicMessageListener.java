@@ -327,14 +327,19 @@ public class TopicMessageListener implements MessageListener {
                 clyy.setLongitude(BigDecimal.valueOf(point.getLongitude()));
                 clyy.setSpeed(BigDecimal.valueOf(point.getSpeed()));
                 clyy.setZdbh(zdbh);
-                yyList.add(clyy);
+                List<Clyy> clyys = clYyService.findByEntity(clyy);
+                if(CollectionUtils.isEmpty(clyys)) {
+                    yyList.add(clyy);
+                }
             }
             String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
             if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
                 return null;
             }
+            if(CollectionUtils.isEmpty(yyList)){
+                return null;
+            }
             clYyService.saveBatch(yyList);
-
             return start_end;
         } else {
             return null;
