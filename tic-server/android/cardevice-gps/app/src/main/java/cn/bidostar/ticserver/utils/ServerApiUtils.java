@@ -29,6 +29,7 @@ import cn.bidostar.ticserver.service.SocketCarBindService;
 public class ServerApiUtils {
 
     public static String TAG = "ServerApiUtils";
+    private static List<RequestCommonParamsDto> dtos = new ArrayList<>();
 
     public static void downLoadAppApk(final String url,final String path){
         RequestParams requestParams = new RequestParams(url);
@@ -150,7 +151,7 @@ public class ServerApiUtils {
             params.addQueryStringParameter("speed",dto1.getSpeed());
             params.addQueryStringParameter("direction",dto1.getFxj());
             params.addQueryStringParameter("eventType",eventType);
-            params.setConnectTimeout(400*1000);//400秒超时
+            params.setConnectTimeout(60*1000);//60秒超时
             params.setMaxRetryCount(2);//重试两次
             params.setMultipart(true);
             if(video){
@@ -203,10 +204,10 @@ public class ServerApiUtils {
         }
         RequestParams params = new RequestParams(AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFOALL);
         params.setAsJsonContent(true);
-        params.setConnectTimeout(6*1000);//400秒超时
+        params.setConnectTimeout(5*1000);//5秒超时
         // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(lists));
-        I.d(TAG,"POST DATA--->"+JSON.toJSONString(lists));
+        //I.d(TAG,"POST DATA--->"+JSON.toJSONString(lists));
 
         x.http().post(params,callback);
         return true;
@@ -259,11 +260,11 @@ public class ServerApiUtils {
         String gpsurl = AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFO;
         RequestParams params = new RequestParams(gpsurl);
         params.setAsJsonContent(true);
-        params.setConnectTimeout(6*1000);//400秒超时
+        params.setConnectTimeout(5*1000);//5秒超时
        // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(dto));
-        I.d(TAG,"POST URL --->"+gpsurl);
-        I.d(TAG,"POST DATA--->"+JSON.toJSONString(dto));
+        //I.d(TAG,"POST URL --->"+gpsurl);
+        //I.d(TAG,"POST DATA--->"+JSON.toJSONString(dto));
         if(APP_IMEI==null || APP_IMEI.trim().equals("")){
             I.e(TAG,"APP_IMEI is null");
             return false;
@@ -305,7 +306,7 @@ public class ServerApiUtils {
 
         @Override
         public void onFinished() {
-
+            System.gc();
         }
     };
 
@@ -348,7 +349,7 @@ public class ServerApiUtils {
 
         @Override
         public void onFinished() {
-
+            System.gc();
         }
     };
 
@@ -370,7 +371,7 @@ public class ServerApiUtils {
 
         @Override
         public void onFinished() {
-
+            System.gc();
         }
     };
 
@@ -401,7 +402,8 @@ public class ServerApiUtils {
         public void onSuccess(String result) {
             I.d(TAG,"upload gps success:"+result);
             RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
-            dao.deleteAll();
+            dao.deleteList(dao.findAll());
+
         }
 
         @Override
@@ -418,6 +420,7 @@ public class ServerApiUtils {
         @Override
         public void onFinished() {
             I.d(TAG,"网络请求完成");
+            System.gc();
         }
     };
 }

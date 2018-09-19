@@ -17,9 +17,18 @@ public class RequestCommonParamsDtoDao extends AppBaseDao<RequestCommonParamsDto
      */
     public List<RequestCommonParamsDto> findAll(){
         try{
-            return AppDBUtils.getDB().findAll(RequestCommonParamsDto.class);
+            //return AppDBUtils.getDB().findAll(RequestCommonParamsDto.class);
+           return AppDBUtils.getDB().selector(RequestCommonParamsDto.class).orderBy("id").limit(20).findAll();//10条10条的上传
         }catch (Exception e){
             return null;
+        }
+    }
+
+    public void deleteList(List<RequestCommonParamsDto> list){
+        try{
+            AppDBUtils.getDB().delete(list);
+        }catch (Exception e){
+
         }
     }
 

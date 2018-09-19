@@ -136,6 +136,11 @@
                         title: '对长确认',
                         align:'center',
                         key: 'ddzCount'
+                    },
+                    {
+                        title: '财务确认',
+                        align:'center',
+                        key: 'cwCount '
                     }
                 ],
                 pageData: [],

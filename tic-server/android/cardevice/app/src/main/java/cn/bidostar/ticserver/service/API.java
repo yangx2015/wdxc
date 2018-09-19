@@ -321,7 +321,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
                 dao.insertModel(localFilesModel);
-                ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);//这是碰撞索引，直接上传
+                //ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);*///这是碰撞索引，直接上传
             }else{
                 LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);
