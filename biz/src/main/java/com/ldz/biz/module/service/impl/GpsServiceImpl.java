@@ -14,6 +14,7 @@ import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
@@ -501,7 +502,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     public ApiResponse<List<WebsocketInfo>> inintGps() {
         ApiResponse<List<WebsocketInfo>> apiResponse = new ApiResponse<>();
         List<WebsocketInfo> list = new ArrayList<>();
-
+        SysYh currentUser = getCurrentUser();
         SimpleCondition condition = new SimpleCondition(ClCl.class);
         String cphLike = getRequestParamterAsString("cphLike");
         if (StringUtils.isNotEmpty(cphLike)) {
@@ -517,6 +518,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         // 获取终端状态
         condition = new LimitedCondition(ClZdgl.class);
+        condition.startWith(ClZdgl.InnerColumn.jgdm,currentUser.getJgdm());
         List<ClZdgl> zds = zdglservice.findByCondition(condition);
 
 

@@ -142,9 +142,11 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     }
 
     public ApiResponse<List<ClZdgl>> unboundList(){
+        SysYh currentUser = getCurrentUser();
+        String jgdm = currentUser.getJgdm();
 //        1、定义初始变量
         ApiResponse<List<ClZdgl>> result = new ApiResponse<List<ClZdgl>>();
-        List<ClZdgl> list=entityMapper.getUnboundList();
+        List<ClZdgl> list=entityMapper.getUnboundList(jgdm);
         result.setResult(list);
         return result;
     }
