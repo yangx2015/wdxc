@@ -106,6 +106,7 @@ export default {
   },
   data () {
     return {
+      points:[],
       starResult: '评价本次服务',
       orderMess:{},
       pageheight:ui.DEFAULT_HEADER_HEIGHT,
@@ -155,6 +156,30 @@ export default {
       ui.navigateTo({
         url: '/pages/detail'
       })
+    },
+    getDdGpsList(){
+      this.$http('POST',ui.getApp().apis.HISTORYGJ,{orderID: this.orderMess.id},(res)=>{
+        
+        if(res.code === 200){
+          this.points= res.result;
+          if(this.points.length === 0){
+            ui.showToast({title: 'ssssss'});
+          }
+        }else{
+          alert('aaaaa')
+          ui.showToast({title: res.message});
+        }
+      })
+    },
+    showLine(points){
+      let ps = [];
+      for (let r of points){
+          ps.push(new BMap.Point(r.lng, r.lat));
+      }
+      var polyline = new BMap.Polyline(ps,
+          {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
+      );
+      this.map.addOverlay(polyline);
     }
   },
   created(){
@@ -165,6 +190,7 @@ export default {
       this.Goback()
       ui.showToast({ title: '数据丢失，请重新查看' })
     }
+    this.getDdGpsList();
     
   },
   mounted() {
