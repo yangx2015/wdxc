@@ -303,7 +303,7 @@ public class TopicMessageListener implements MessageListener {
         guijis.setEntity_name(zdbh);
         guijis.setIs_processed("1");
         // 查询 去燥 ，抽希 ， 绑路 的坐标点
-        guijis.setProcess_option("need_denoise=0,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
+        guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
         guijis.setSupplement_mode("driving");
         guijis.setSort_type("asc");
         guijis.setCoord_type_output("bd09ll");
