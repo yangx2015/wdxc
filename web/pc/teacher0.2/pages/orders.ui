@@ -35,8 +35,10 @@
     <template slot="body">
       <ui-tab-view-body>
           <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist0}}">
-               <ui-row >
-                                <ui-col span="8"   style="padding:15px 15px 0 15px">
+             <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+               <ui-view class="tab-dos">
+                     <ui-row  style="padding:0px 5px 5px 5px">
+                            <ui-col span="8">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
                                   </ui-view>
@@ -48,8 +50,7 @@
                                   <ui-view class="pingyi">
                                     <ui-icon type="right1" size=5></ui-icon>
                                   </ui-view>
-                                
-                                    </ui-col>
+                                </ui-col>
                               </ui-row>
                               <ui-row>
                                     <ui-col style="padding:0px 10px 0 15px" span="1">
@@ -75,11 +76,16 @@
                                       {{item.mdd}}
                                   </ui-col>
                               </ui-row>
-                        </ui-view>
+               </ui-view>
+                           
+              </ui-view>
+             </ui-view>
                </ui-tab-view-body>
                
                <ui-tab-view-body>
                   <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist1}}"> 
+                      <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+                          <ui-view class="tab-dos">
                         <ui-row vertical-align="middle">
                                 <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
@@ -121,11 +127,15 @@
                                     </ui-col>
                               </ui-row>
                         </ui-view>
+                      </ui-view>
+                   </ui-view>
               </ui-tab-view-body>
 
               <ui-tab-view-body> 
                     <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist2}}">
-                        <ui-row vertical-align="middle">
+                      <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+                          <ui-view class="tab-dos">
+                            <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
@@ -165,10 +175,14 @@
                                       {{item.mdd}}
                                     </ui-col>
                                 </ui-row>
+                          </ui-view>
+                        </ui-view>
                     </ui-view>
               </ui-tab-view-body>
                <ui-tab-view-body>
                       <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist3}}">
+                        <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+                          <ui-view class="tab-dos">
                             <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
@@ -209,10 +223,14 @@
                                       {{item.mdd}}
                                     </ui-col>
                                 </ui-row>
+                              </ui-view>
+                           </ui-view>
                       </ui-view>
                </ui-tab-view-body>
                 <ui-tab-view-body>
                     <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist4}}">
+                      <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+                          <ui-view class="tab-dos">
                             <ui-row vertical-align="middle">
                               <ui-col span="8"   style="padding:15px 15px 0 15px">
                                   <ui-view class="pageHeght">
@@ -254,7 +272,9 @@
                                     </ui-col>
                                 </ui-row>
                               </ui-view>
-                          </ui-tab-view-body>
+                            </ui-view>
+                        </ui-view>
+                    </ui-tab-view-body>
                 </template>
           </ui-tab-view> 
   </ui-page>
@@ -455,11 +475,19 @@ color: #0f0f0f;
   transform: translate(-50%,0%);
 }
 .ui-tabs{
-  background-color: #f5f5f5;
+  background-color: #686565;
   padding-bottom: 1px;
 }
 .content {
   line-height: 180px;
 }
-
+.tab-content{
+  background-color: #555555;
+}
+.tab-dis{
+    background-color: #c0bdbd;
+  }
+.tab-dos{
+    background-color: #ffffff;
+  }
 </style>
