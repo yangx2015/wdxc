@@ -112,7 +112,7 @@
                    <ui-row height="100">
                      <ui-col ui:for="{{carlist}}" bindtap="getcarnum(item,index)">
                        <!-- <ui-text>xiaoche </ui-text> -->
-                       <ui-image src="static/img/teacher/car.jpg" mode="widthFix" width="90%" align="center"></ui-image>
+                       <ui-image src="{{item.photo}}" mode="widthFix" width="90%" align="center" ></ui-image>
                        <ui-text align="center" style="{{ {fontSize:'20px',color:item.color} }}">{{item.val}}座</ui-text>
                      </ui-col>
                    </ui-row>
@@ -217,15 +217,18 @@ export default {
       carlist:[
         {
           val:5,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car5.png'
         },
         {
           val:7,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car7.png'
         },
         {
           val:11,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car11.png'
         }
       ],
       people:'本人乘坐',

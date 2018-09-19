@@ -98,7 +98,7 @@
 
 
 
-  <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
+  <!-- <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
    '&width=400&height=300'+
   '&center=114.368107,30.543083'+
   '&zoom=12'+
@@ -106,7 +106,7 @@
   '&markerStyles=-1,'+
   'http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}}}">
    
-  </ui-view>
+  </ui-view> -->
 
  
  </ui-page>
