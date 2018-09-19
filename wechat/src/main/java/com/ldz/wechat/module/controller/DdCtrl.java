@@ -216,7 +216,7 @@ public class DdCtrl extends BaseController<ClDd,String> {
      * @return
      */
     @RequestMapping(value="/getddgps", method={RequestMethod.POST, RequestMethod.GET})
-    public ApiResponse<List<ClGpsLs>> getOrderGpsList(String orderId){
+    public ApiResponse<List<Clyy>> getOrderGpsList(String orderId){
         return service.getOrderGpsList(orderId);
     }
 }

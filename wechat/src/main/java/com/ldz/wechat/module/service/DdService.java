@@ -5,6 +5,7 @@ import com.ldz.wechat.base.BaseService;
 import com.ldz.wechat.module.model.ClDd;
 import com.ldz.wechat.module.model.ClGpsLs;
 import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.model.Clyy;
 
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,5 @@ public interface DdService extends BaseService<ClDd,String> {
 
     ApiResponse<Map<String,Object>> getStartPointAndEndPoint(String orderId);
 
-    ApiResponse<List<ClGpsLs>> getOrderGpsList(String orderId);
+    ApiResponse<List<Clyy>> getOrderGpsList(String orderId);
 }
