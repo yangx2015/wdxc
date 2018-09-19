@@ -223,8 +223,13 @@ public class TopicMessageListener implements MessageListener {
             clXc.setXcKssj(startTime);
             clXc.setXcJssj(endTime);
             clXc.setXcStartEnd(start_end);
-            xcService.saveEntity(clXc);
-            redisTemplate.delete("start_end," + zdbh + "xc" + startTime);
+            List<ClXc> entity = xcService.findByEntity(clXc);
+            if(CollectionUtils.isEmpty(entity)) {
+                xcService.saveEntity(clXc);
+                redisTemplate.delete("start_end," + zdbh + "xc" + startTime);
+            }else{
+                error.info("行程已存在，不存储");
+            }
         }
     }
 
@@ -298,7 +303,7 @@ public class TopicMessageListener implements MessageListener {
         guijis.setEntity_name(zdbh);
         guijis.setIs_processed("1");
         // 查询 去燥 ，抽希 ， 绑路 的坐标点
-        guijis.setProcess_option("need_denoise=0,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
+        guijis.setProcess_option("need_denoise=0,need_vacuate=0,need_mapmatch=1,transport_mode=driving");
         guijis.setSupplement_mode("driving");
         guijis.setSort_type("asc");
         guijis.setCoord_type_output("bd09ll");
@@ -322,14 +327,19 @@ public class TopicMessageListener implements MessageListener {
                 clyy.setLongitude(BigDecimal.valueOf(point.getLongitude()));
                 clyy.setSpeed(BigDecimal.valueOf(point.getSpeed()));
                 clyy.setZdbh(zdbh);
-                yyList.add(clyy);
+                List<Clyy> clyys = clYyService.findByEntity(clyy);
+                if(CollectionUtils.isEmpty(clyys)) {
+                    yyList.add(clyy);
+                }
             }
             String start_end = yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() + "," + yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude();
             if(StringUtils.equals( yyList.get(0).getLongitude() + "-" + yyList.get(0).getLatitude() , yyList.get(yyList.size()-1).getLongitude()+"-"+yyList.get(yyList.size()-1).getLatitude())){ // 开始点位和结束点位相同 ，不存储
                 return null;
             }
+            if(CollectionUtils.isEmpty(yyList)){
+                return null;
+            }
             clYyService.saveBatch(yyList);
-
             return start_end;
         } else {
             return null;

@@ -44,7 +44,6 @@ public class ClJsy implements Serializable {
      * 年龄
      */
     @Column(name = "NL")
-    @NotNull(message="年龄不为空")
     private Short nl;
 
     /**

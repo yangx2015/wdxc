@@ -2,6 +2,7 @@ package cn.bidostar.ticserver.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 
 import org.androidannotations.api.sharedpreferences.SharedPreferencesCompat;
 
