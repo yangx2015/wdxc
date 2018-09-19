@@ -308,7 +308,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ClDd clDd = entityMapper.selectByPrimaryKey(orderId);
         RuntimeCheck.ifNull(clDd,"订单不存在");
 
-        RuntimeCheck.ifNull(clDd.getZdbm(),"该订单还未派单");
+        RuntimeCheck.ifNull(clDd.getZdbm(),"暂无行程记录");
 
         SimpleCondition condition = new SimpleCondition(Clyy.class);
 
