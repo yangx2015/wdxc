@@ -13,7 +13,7 @@
 			</div>
 			<div slot='footer'>
 				<Button type="primary" @click="save">确定</Button>
-				<Button type="default" @click="close">取消</Button>
+				<Button type="default" @click="close" style="color: #949494">取消</Button>
 			</div>
 		</Modal>
 	</div>

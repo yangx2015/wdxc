@@ -51,7 +51,7 @@
                       <ui-view class="title">
                           <ui-divider color="#ff9900">
                             <ui-view style="color:#ff9900">
-                              评论
+                              投诉-意见-反馈 
                             </ui-view>
                           </ui-divider>
                       </ui-view>
@@ -211,6 +211,10 @@ export default {
         a = '10'
       }
       console.log(this.textareaValue+this.current);
+      if(this.textareaValue == ''){
+          ui.showToast({ title: '请填写文字信息' })
+          return
+        }
 
       this.$http('POST',ui.getApp().apis.PROPOSAL,{yjlx:a,nr:this.textareaValue},(res)=>{
         console.log(res)
@@ -218,6 +222,9 @@ export default {
           v.textareaValue = ''
 
           v.handlePullDownAfter()
+          ui.showToast({ title: '信息提交成功', icon: 'success', duration: 3000 })
+        }else{
+            ui.showToast({ title: '信息提交失败，请重新提交' })
         }
       })
       
@@ -328,6 +335,7 @@ export default {
   }
   .submitBut{
     padding: 10rpx 0;
+    
   }
 }
 .sticky-in-relative-container {

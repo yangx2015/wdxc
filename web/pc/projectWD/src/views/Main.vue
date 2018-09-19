@@ -5,13 +5,13 @@
 <template>
     <div class="main" :class="{'main-hide-text': shrink}">
         <div class="sidebar-menu-con" :style="{width: shrink?'60px':'200px', overflow: shrink ? 'visible' : 'auto'}">
-                <!--:theme="menuTheme"-->
+            <!--:theme="menuTheme"-->
             <shrinkable-menu
-                :shrink="shrink"
-                @on-change="handleSubmenuChange"
-                :before-push="beforePush"
-                :open-names="openedSubmenuArr"
-                :menu-list="menuList">
+                    :shrink="shrink"
+                    @on-change="handleSubmenuChange"
+                    :before-push="beforePush"
+                    :open-names="openedSubmenuArr"
+                    :menu-list="menuList">
                 <div slot="top" class="logo-con">
                     <div v-show="!shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">武汉大学车辆管理平台</div>
                     <div v-show="shrink" style="color: white;font-size: 9pt;background-color: rgb(45, 140, 240);border-radius: 10px;padding: 10px;text-align: center">W</div>
@@ -24,7 +24,7 @@
             <div class="main-header box-row" style="height: 65px;">
                 <div class="navicon-con">
                     <Button :style="{transform: 'rotateZ(' + (this.shrink ? '-90' : '0') + 'deg)'}" type="text" @click="toggleClick">
-                        <Icon type="navicon" size="32"></Icon>
+                        <Icon type="ios-menu" size="32"></Icon>
                     </Button>
                 </div>
                 <!--<div class="header-middle-con" style="background-color: #00cc66;width: 350px">-->
@@ -34,23 +34,23 @@
                     </div>
                 </div>
                 <div class="body-O" style="line-height: 65px;padding: 0 20px">
-                      <marquee  v-if="showTip" behavior="scroll" direction="left" align="middle"
-                               scrolldelay="120"
+                    <marquee  v-if="showTip" behavior="scroll" direction="left" align="middle"
+                              scrolldelay="120"
                               style="font-size: 18px">
-                                最近5分钟之内：
-                              <span v-if="ycMess.length==0">暂无异常数据</span>
-                              <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
+                        最近5分钟之内：
+                        <span v-if="ycMess.length==0">暂无异常数据</span>
+                        <span v-else v-for="(item,index) in ycMess" style="margin-right: 12px">
                                [{{item.cph}}]{{item.sjxm}} {{getDictVal(item.sjlx)}} {{item.cjsj.substring(11)}}
                               </span>
-                      </marquee>
+                    </marquee>
 
                 </div>
                 <div style="line-height: 65px;padding: 0 8px">
-                      <Tooltip content="更多异常信息">
-                            <Button type="primary"
-                                    size="small" icon="social-buffer"
-                            @click="compName='errmess'"></Button>
-                      </Tooltip>
+                    <Tooltip content="更多异常信息">
+                        <Button type="primary"
+                                size="small" icon="logo-buffer"
+                                @click="compName='errmess'"></Button>
+                    </Tooltip>
                 </div>
                 <!--<div class="header-avator-con" style="background-color: #00cc66">-->
                 <div class="">
@@ -64,16 +64,16 @@
                             	</span>
                                 <span class="main-user-name">{{ userName }}</span>
                             </span>
-                            <Button type="primary" shape="circle" icon="person" @click="person" style="margin-right: 8px;"></Button>
+                            <Button type="primary" shape="circle" icon="md-key" @click="person" style="margin-right: 8px;"></Button>
                             <Button
-                            	size="large"
-                            	type="primary"
-                            	shape="circle"
-                            	@click="handleClickUserDropdown"
-                            	@DOMMouseScroll="ButOnmouseover('移入')"
-                            	@mousewheel="ButOnmouseover('移出')">
-                            	<span>退出登陆</span>
-                            	<!--<Icon type="ios-redo"></Icon>-->
+                                    size="large"
+                                    type="primary"
+                                    shape="circle"
+                                    @click="handleClickUserDropdown"
+                                    @DOMMouseScroll="ButOnmouseover('移入')"
+                                    @mousewheel="ButOnmouseover('移出')">
+                                <span>退出登陆</span>
+                                <!--<Icon type="ios-redo"></Icon>-->
                             </Button>
                         </Row>
                     </div>
@@ -91,7 +91,7 @@
             </div>
         </div>
         <component
-			:is="compName"></component>
+                :is="compName"></component>
     </div>
 </template>
 <script>
@@ -105,7 +105,7 @@
     import Cookies from 'js-cookie';
     import util from '@/libs/util.js';
 
-	import SockJS from 'sockjs-client';
+    import SockJS from 'sockjs-client';
 
     Date.prototype.format = function(format)
     {
@@ -134,7 +134,7 @@
     import errmess from './components/mainAbnormess'
     export default {
         components: {
-        	pass,errmess,
+            pass,errmess,
             shrinkableMenu,
             tagsPageOpened,
             breadcrumbNav,
@@ -167,13 +167,13 @@
             return {
                 showTip:false,
                 v:this,
-            	compName:'',
-				socket : new SockJS(this.$http.url+"/gps"),
+                compName:'',
+                socket : new SockJS(this.$http.url+"/gps"),
 //				socket : '',
-				scoketMess:[],
-				scoketAllCar:[],
+                scoketMess:[],
+                scoketAllCar:[],
 
-				shrink: false,
+                shrink: false,
                 userName: '',
                 isFullScreen: false,
                 openedSubmenuArr: this.$store.state.app.openedSubmenuArr,
@@ -181,12 +181,12 @@
             };
         },
         computed: {
-        	GetscoketMess() {
-				return this.$store.state.app.socketMess
-			},
-			GetscoketAllCar() {
-				return this.$store.state.app.socketAllCar
-			},
+            GetscoketMess() {
+                return this.$store.state.app.socketMess
+            },
+            GetscoketAllCar() {
+                return this.$store.state.app.socketAllCar
+            },
             menuList () {
                 return this.$store.state.app.menuList;
             },
@@ -219,10 +219,10 @@
                 localStorage.currentPageName = to.name;
             },
             GetscoketMess: function(newQuestion, oldQuestion) {
-				this.scoketMess = newQuestion
-			},
+                this.scoketMess = newQuestion
+            },
             GetscoketAllCar:function(newQuestion, oldQuestion){
-            	this.scoketAllCar = newQuestion
+                this.scoketAllCar = newQuestion
             }
         },
         mounted () {
@@ -243,62 +243,62 @@
                 let mes = this.dictUtil.getValByCode(this,'ZDCLK0038',c)
                 return mes
             },
-        	person(){
-        		this.compName = 'pass'
-        	},
-        	sco(){
+            person(){
+                this.compName = 'pass'
+            },
+            sco(){
                 //数据推送
-				var v = this
-			/**
-		     * 建立成功的回调函数
-		     */
-			    v.socket.onopen = function() {
-			    };
-			/**
-		     * 服务器有消息返回的回调函数
-		     */
-			    v.socket.onmessage = function(e) {
+                var v = this
+                /**
+                 * 建立成功的回调函数
+                 */
+                v.socket.onopen = function() {
+                };
+                /**
+                 * 服务器有消息返回的回调函数
+                 */
+                v.socket.onmessage = function(e) {
                     // log('message', e.data);
-			    };
+                };
 
-		    /**
-		     * websocket链接关闭的回调函数
-		     */
-			    v.socket.onclose = function() {
-			        // log('关闭');
-			    };
+                /**
+                 * websocket链接关闭的回调函数
+                 */
+                v.socket.onclose = function() {
+                    // log('关闭');
+                };
                 /**
                  * /topic/sendzp  订阅拍视频   /topic/sendhbsp订阅跑照片
                  */
 
-			    var stompClient = Stomp.over(v.socket);
-			    stompClient.connect({}, function(frame) {
-			        // stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
-			        //     let jsonMess = JSON.parse(data.body)
-			        //     if(jsonMess.cx==="30"){//校巴
-				     //        v.scoketMess.forEach((item,index) => {
-						// 		if(item.clid==jsonMess.clid){
-						// 			v.scoketMess.splice(index,1)
-						// 		}
-						// 	})
-					 //        v.scoketMess.push(jsonMess)
-				     //        v.$store.commit('socketMessAdd',v.scoketMess)
-			        //     }
-			        //     // v.$store.commit('socketAllCarAdd',jsonMess)
-			        // });
-			        stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
-			            v.$store.commit('addSendhbsp',data.body)
-			        });
-			        stompClient.subscribe('/topic/sendzp',  function(data) { //订阅消息
-			            v.$store.commit('addSendZp',data.body)
-			        });
-			        stompClient.subscribe('/topic/sendsp',  function(data) { //订阅消息
-			            v.$store.commit('addSendsp',data.body)
-			        });
-			    });
-			},
-        	ButOnmouseover(mes){
-        	},
+                var stompClient = Stomp.over(v.socket);
+                stompClient.connect({}, function(frame) {
+                    // stompClient.subscribe('/topic/sendgps',  function(data) { //订阅消息
+                    //     let jsonMess = JSON.parse(data.body)
+                    //     if(jsonMess.cx==="30"){//校巴
+                    //        v.scoketMess.forEach((item,index) => {
+                    // 		if(item.clid==jsonMess.clid){
+                    // 			v.scoketMess.splice(index,1)
+                    // 		}
+                    // 	})
+                    //        v.scoketMess.push(jsonMess)
+                    //        v.$store.commit('socketMessAdd',v.scoketMess)
+                    //     }
+                    //     // v.$store.commit('socketAllCarAdd',jsonMess)
+                    // });
+                    stompClient.subscribe('/topic/sendhbsp',  function(data) { //订阅消息
+                        v.$store.commit('addSendhbsp',data.body)
+                    });
+                    stompClient.subscribe('/topic/sendzp',  function(data) { //订阅消息
+                        v.$store.commit('addSendZp',data.body)
+                    });
+                    stompClient.subscribe('/topic/sendsp',  function(data) { //订阅消息
+                        v.$store.commit('addSendsp',data.body)
+                    });
+                });
+            },
+            ButOnmouseover(mes){
+            },
             init () {
                 this.$store.commit('updateMenulist');
                 let userInfo = JSON.parse(sessionStorage.getItem('userInfo'));
@@ -312,14 +312,14 @@
                 this.shrink = !this.shrink;
             },
             handleClickUserDropdown (name) {
-                    // 退出登录
-                    Cookies.set('usermess', '');
-                    this.$store.commit('logout', this);
-                    this.$store.commit('clearOpenedSubmenu');
-                    this.$store.commit('clearAllTags');//关闭多页面操作
-                    this.$router.push({
-                        name: 'login'
-                    });
+                // 退出登录
+                Cookies.set('usermess', '');
+                this.$store.commit('logout', this);
+                this.$store.commit('clearOpenedSubmenu');
+                this.$store.commit('clearAllTags');//关闭多页面操作
+                this.$router.push({
+                    name: 'login'
+                });
 //              }
             },
             checkTag (name) {

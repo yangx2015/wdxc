@@ -3,15 +3,15 @@ import Cookies from 'js-cookie';
 import {router} from '../router/index';
 import qs from 'qs';
 import store from '@/store';
+import swal from 'sweetalert2'
+import util from "../libs/util";
+import ajaxUrl from './api'
 // 订单分配权限
 
 // let url = 'http://47.98.39.45:8080'; // 生产环境(测试时不要改动这里)
-let url = 'http://47.98.39.45:8080'; //
-// let url = 'http://127.0.0.1:8080'; //
-// let url = 'http://localhost:8081'; // cw-mac
-// let url = 'http://192.168.31.181:80',//陈
-// let url = 'http://192.168.31.228:8088',//羊
-// let url = 'http://192.168.31.228:80';//羊
+// let url = 'http://47.98.39.45:8080'; //
+let url = ajaxUrl.url
+
 let httpInstance = axios.create({
     baseURL: url,
     timeout: 300000,
@@ -63,10 +63,35 @@ httpInstance.interceptors.response.use((response) => {
     var v = this;
     // 对响应数据做点什么
     store.commit('CloadingType', false);
+
     if (response.status === 404) {
         router.push({name: 'error-404'});
     }
     if (response.status === 200) {
+        if (response.data.code === 999) {
+            Cookies.remove('user');
+            Cookies.remove('password');
+            Cookies.remove('access');
+            // 清空打开的页面等数据，但是保存主题数据
+            let theme = '';
+            if (localStorage.theme) {
+                theme = localStorage.theme;
+            }
+            localStorage.clear();
+            if (theme) {
+                localStorage.theme = theme;
+            }
+            swal({
+                text: "授权认证失败，请重新登录",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonText: '确认',
+            }).then((isConfirm) => {
+                if (isConfirm.value) {
+                    router.push({name: 'login'});
+                }
+            });
+        }
         return response.data;
         // if (response.data.code===403){
         //     router.push({name: 'erro' +

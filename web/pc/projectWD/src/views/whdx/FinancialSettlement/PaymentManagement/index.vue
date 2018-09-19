@@ -44,7 +44,7 @@
 			<Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
 				<Card style="width:100%" :id="'order_'+item.orderId">
 			        <div slot="title">
-			            <Icon type="person"></Icon>
+			            <Icon type="md-person"></Icon>
 			            	{{item.driverName}}
 			        </div>
 			        <span slot="extra">
@@ -56,9 +56,8 @@
 			        </span>
 			        <!--信息-->
 			        <div>
-			        	<Table
+			        	<Table ref="table"
 			        		border
-			        		ref="selection"
 			        		:columns="param.fkzt === '00' ? columns3 : columns4"
 			        		height="220"
 			        		:data="item.orderList"
@@ -147,7 +146,7 @@
                                     on: {
                                         click: () => {
                                             this.choosedItem = params.row;
-                                            this.componentName = 'edit';
+                                            this.componentName = 'md-create';
                                         }
                                     }
                                 }, '编辑')

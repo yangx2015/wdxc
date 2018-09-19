@@ -12,7 +12,7 @@ import java.util.List;
 @CacheNamespace(implementation=MybatisRedisCache.class)
 public interface ClZdglMapper extends Mapper<ClZdgl> ,OracleInsertListMapper<ClZdgl>{
 
-    @Select(" select * from CL_ZDGL where cl_sfyy is null")
+    @Select(" select * from CL_ZDGL where sfyy is null")
     List<ClZdgl>  getZDNotYy();
 
 }

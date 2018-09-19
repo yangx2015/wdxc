@@ -64,6 +64,7 @@
                 stationIconUrl: 'http://47.98.39.45:9092/icon/running.png',
                 colors: ['#4876FF', '#FF0000', '#5CACEE', '#EE00EE', '#00BFFF', '#BF3EFF'],
                 colorIndex: 0,
+                yxjlList:[]
             }
         },
         created() {
@@ -78,6 +79,26 @@
             this.getLineList()
         },
         methods: {
+            initData(){
+                this.$http.get(this.apis.clyxjl.QUERY,{params:{pageSize:100}}).then((res)=>{
+                    if (res.code == 200 && res.page.list){
+                        this.yxjlList = res.page.list;
+                        for(let r of this.yxjlList){
+                            for (let l of this.lineList){
+                                if (l.id == r.xlId){
+                                    let item = {cph:r.cphm,bdjd:r.jd,bdwd:r.wd,stationNumber:r.zdbh,zxzt:'00'};
+                                    if (l.carList){
+                                        l.carList.push(item)
+                                    }else{
+                                        l.carList = [item]
+                                    }
+                                }
+                            }
+                        }
+                        this.showAllCars();
+                    }
+                })
+            },
             showRoute(line) {
                 // 显示线路
                 this.showLine(line);
@@ -134,6 +155,7 @@
                             this.lineList[i].color = this.getColor();
                             this.getLineStations(i);
                         }
+                        this.initData();
                     }
                 })
             },
@@ -230,8 +252,8 @@
                         stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
                             let weksocketBody = JSON.parse(data.body)
                             if (weksocketBody.cx === "30") {//校巴
-                                let xlId = weksocketBody.xlId;
-                                // let xlId = '435390474602151936';
+                                // let xlId = weksocketBody.xlId;
+                                let xlId = '435390474602151936';
                                 v.lineList.forEach((item, index) => {
                                     if (item.id === xlId) {
                                         if (!item.carList) {
@@ -260,7 +282,7 @@
             },
             // 站点详情
             addStation(item, i) {
-                var myIcon = new BMap.Icon(this.stationIconUrl, new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
                 var marker = new BMap.Marker(new BMap.Point(item.jd, item.wd));
                 marker.setLabel(this.getNumberLabel(i));
                 this.map.addOverlay(marker);
@@ -283,21 +305,16 @@
                 this.map.addOverlay(myLabel);
             },
             addCar(item) {
-                var myIcon = new BMap.Icon(this.stationIconUrl, new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
-                var marker = new BMap.Marker(new BMap.Point(item.bdjd, item.bdwd));
+                var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+                var marker = new BMap.Marker(new BMap.Point(item.bdjd, item.bdwd), {icon: myIcon});
                 this.map.addOverlay(marker);
-
-                let station = '';
-                if (item.stationNumber) {
-                    station = '[' + item.stationNumber + ']';
-                }
-                let html = '<div style="width: 100px;height: 28px;padding:4px;text-align: center">' +
+                let html = '<div style="width: 120px;height: 28px;padding:4px;text-align: center">' +
                     '<span>' + item.cph + station + '</span> ' +
                     '</div>';
                 let point = new BMap.Point(item.bdjd, item.bdwd);
                 var myLabel = new BMap.Label(html,     //为lable填写内容
                     {
-                        offset: new BMap.Size(-55, -70),                  //label的偏移量，为了让label的中心显示在点上
+                        offset: new BMap.Size(-65, -70),                  //label的偏移量，为了让label的中心显示在点上
                         position: point
                     });                                //label的位置
                 myLabel.setStyle({                                   //给label设置样式，任意的CSS都是可以的
@@ -343,17 +360,12 @@
             },
             getIcon(car) {
                 switch (car.zxzt) {
-                    //绿色图标
-                    // case 20:
-                    //     return 'http://47.98.39.45:9092/icon/running.png';
-                    //红色图标
-                    // case 10:
-                    //     return 'http://47.98.39.45:9092/icon/ic_car.png';
-                    //灰色图标
-                    case '20':
-                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
+                    case 20:
+                        return 'http://47.98.39.45:9092/icon/running.png';
+                    case 10:
+                        return 'http://47.98.39.45:9092/icon/ic_car.png';
                     default:
-                        return 'http://47.98.39.45:9092/icon/running.png'
+                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
                 }
             },
             //地图级别中心

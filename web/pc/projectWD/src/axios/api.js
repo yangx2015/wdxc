@@ -1,7 +1,12 @@
-module.exports = {
-    UPLOAD:'http://47.98.39.45:8080/upload',
-    STATIC_PATH:'http://47.98.39.45:9092/',
-    VIDEO_PATH:'http://47.98.39.45:9091/test/',
+// let url = 'http://10.113.4.70:'//8080
+let url = 'http://47.98.39.45:'//8080
+let port = '8080'
+export default {
+    // url:url+port+'/biz',
+    url:url+port,
+    UPLOAD:url+port+'/biz/upload',
+    STATIC_PATH:url+'9092/',
+    VIDEO_PATH:url+'9091/test/',
     TXT:'/api/clsbyxsjjl/pager',
     fileDR:'/api/zdgl/excel',
     USERROOT:{
@@ -185,6 +190,8 @@ module.exports = {
         nianshen:'/api/cl/nianshen',
         unbindDevice:'/api/cl/unbindDevice',
         unbindDriver:'/api/cl/unbindDriver',
+        bindDriver:'/api/cl/bindDriver',
+        bindDevice:'/api/cl/bindDevice',
     },
     XL:{
         QUERY: '/api/xl/pager',
@@ -217,7 +224,9 @@ module.exports = {
         ADD:    '/api/cd/save',
         CHANGE: '/api/cd/update',
         DELE:   '/api/cd/removeIds',
-        GET_CONDITION:'/api/cd/getCondition'
+        GET_CONDITION:'/api/cd/getCondition',
+        notBindCarList:'/api/cd/notBindCarList',
+        notBindDriverList:'/api/cd/notBindDriverList',
     },
     SG:{
         QUERY:  '/api/sg/pager',
@@ -287,6 +296,12 @@ module.exports = {
         ADD:    '/api/dzwlCl/save',
         CHANGE: '/api/dzwlCl/update',
         DELE:   '/api/dzwlCl/removeIds',
+    },
+    clyxjl:{//车辆运行记录
+        QUERY:  '/api/clyxjl/pager',
+        ADD:    '/api/clyxjl/save',
+        CHANGE: '/api/clyxjl/update',
+        DELE:   '/api/clyxjl/removeIds',
     },
     CLJK:{
         QUERY:'/api/cl/InitClGps',

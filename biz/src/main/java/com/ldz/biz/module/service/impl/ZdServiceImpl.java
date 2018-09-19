@@ -79,14 +79,18 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     @Override
     public List<ClZd> getByXlIds(List<String> xlIds) {
         List<ClXlzd> xlzds = xlzdService.findIn(ClXlzd.InnerColumn.xlId,xlIds);
-        if (xlzds.size() == 0)return new ArrayList<>();
+        if (xlzds.size() == 0){
+            return new ArrayList<>();
+        }
         List<String> routeIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
-//        List<ClZd> stations = findIn(ClZd.InnerColumn.id,routeIds);
-//        Map<String,String> zdXlIdsMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXlId));
-//        for (ClZd station : stations) {
-//            station.setXlId(zdXlIdsMap.get(station.getId()));
-//        }
-        return findIn(ClZd.InnerColumn.id,routeIds);
+
+        Map<String,Short> orderMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
+        List<ClZd> stations = findIn(ClZd.InnerColumn.id,routeIds);
+        for (ClZd station : stations) {
+            station.setRouteOrder(orderMap.get(station.getId()));
+        }
+        stations.sort(Comparator.comparingInt(ClZd::getRouteOrder));
+        return stations;
     }
 
     @Override

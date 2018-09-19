@@ -19,6 +19,7 @@ let dictUtil = {
             return val;
         }else{
             log('字典加载失败，重新登陆',code);
+            console.log('------------------字典加载失败,请从新登录初始化字典-----------------------');
             v.$router.push({ name: 'login' });
         }
     },

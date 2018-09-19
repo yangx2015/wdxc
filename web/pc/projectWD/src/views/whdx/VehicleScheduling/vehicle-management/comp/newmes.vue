@@ -47,13 +47,13 @@
 								</Select>
 							</FormItem>
 						</Col>
-						<Col span="12">
-							<FormItem prop="cdbh" label='车队：'>
-								<Select filterable clearable  v-model="addmess.cdbh">
-									<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>
-								</Select>
-							</FormItem>
-						</Col>
+						<!--<Col span="12">-->
+							<!--<FormItem prop="cdbh" label='车队：'>-->
+								<!--<Select filterable clearable  v-model="addmess.cdbh">-->
+									<!--<Option v-for="e in fleetList" :value="e.cdbh" :key="e.cdbh">{{e.cdmc}}</Option>-->
+								<!--</Select>-->
+							<!--</FormItem>-->
+						<!--</Col>-->
 						<Col span="12">
 							<FormItem prop="zdbh" label='终端编号：'>
 								<Select placement='top' filterable clearable  v-model="addmess.zdbh">
@@ -70,7 +70,7 @@
 	    		</div>
     		</Form>
 		    <div slot='footer'>
-		    	<Button type="ghost" @click="colse">取消</Button>
+		    	<Button type="default" @click="colse"style="color: #949494">取消</Button>
 	        	<Button type="primary" @click="AddDataListOk('addmess')">确定</Button>
 		    </div>
 		</Modal>
@@ -209,7 +209,7 @@
 								}else{
 									v.$Message.error('车辆添加创建失败');
 								}
-								v.$parent.getmess()
+								v.$parent.getPageData()
                     			v.$parent.compName = ''
 							})
                     	}else{
@@ -221,7 +221,7 @@
 								}else{
 									v.$Message.error('车辆修改失败');
 								}
-								v.$parent.getmess()
+								v.$parent.getPageData()
                     			v.$parent.compName = ''
 							})
                     	}

@@ -1,6 +1,6 @@
 <template>
     <div :style="styleObj">
-        <Table :height="height" :columns="columns" :data="cityData"></Table>
+        <Table ref="table"  :height="height" :columns="columns" :data="cityData"></Table>
     </div>
 </template>
 

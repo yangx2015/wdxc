@@ -228,13 +228,13 @@ export default {
     zjZt:(val)=>{
       switch (val){
         case '0':
-          return '兑换冻结'
+          return '提现冻结'
           break;
         case '1':
           return '处理成功'
           break;
         case '2':
-          return '兑换失败'
+          return '提现失败'
           break;
       }
     },
@@ -263,7 +263,7 @@ export default {
             return '消费'
         break;
         case '4':
-          return '兑换'
+          return '提现'
         break;
       }
     },

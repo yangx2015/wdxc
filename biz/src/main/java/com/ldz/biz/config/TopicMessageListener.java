@@ -77,7 +77,7 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            if(StringUtils.contains(itemValue,"start_end") || StringUtils.contains(itemValue,"compencate")){
+            if((StringUtils.contains(itemValue,"start_end") && !StringUtils.contains(itemValue,"xc")) || StringUtils.contains(itemValue,"compencate")){
                 // 过期事件存储车辆行程
                 saveClXc(itemValue, simpleDateFormat);
             }else if(StringUtils.contains(itemValue,"offline")){
@@ -298,7 +298,7 @@ public class TopicMessageListener implements MessageListener {
         guijis.setEntity_name(zdbh);
         guijis.setIs_processed("1");
         // 查询 去燥 ，抽希 ， 绑路 的坐标点
-        guijis.setProcess_option("need_denoise=1,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
+        guijis.setProcess_option("need_denoise=0,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
         guijis.setSupplement_mode("driving");
         guijis.setSort_type("asc");
         guijis.setCoord_type_output("bd09ll");

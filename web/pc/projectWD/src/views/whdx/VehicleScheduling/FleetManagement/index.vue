@@ -20,18 +20,18 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 							<Button type="primary" @click="AddDataList()">
-								<Icon type="plus-round"></Icon>
+								<Icon type="md-add"></Icon>
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row>
-				<Table
+				<Table ref="table"
 						:height="tabHeight"
 						:row-class-name="rowClassName"
 						:columns="columns10"
@@ -49,7 +49,7 @@
 						:current=param.pageNum
 						:page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 						show-total
-						show-elevator show-sizer
+						show-elevator show-sizer placement='top'
 						@on-change='pageChange'></Page>
 			</Row>
 		</Card>
@@ -143,7 +143,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'success',
-										icon: 'edit',
+										icon: 'md-create',
 										shape: 'circle',
 										size: 'small'
                                     },
@@ -161,7 +161,7 @@
                                 h('Button', {
                                     props: {
                                         type: 'error',
-										icon: 'close',
+										icon: 'md-close',
 										shape: 'circle',
 										size: 'small'
                                     },

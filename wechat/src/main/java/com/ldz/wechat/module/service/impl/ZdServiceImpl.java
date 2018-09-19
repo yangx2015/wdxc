@@ -1,10 +1,9 @@
 package com.ldz.wechat.module.service.impl;
+
 import com.ldz.geo.bean.GeoModel;
 import com.ldz.geo.util.GeoUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
-import com.ldz.util.exception.RuntimeCheck;
-import com.ldz.util.gps.DistanceUtil;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.bean.NearbyStation;
@@ -14,20 +13,16 @@ import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.ClXlzd;
 import com.ldz.wechat.module.model.ClZd;
 import com.ldz.wechat.module.service.*;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.geo.GeoResult;
 import org.springframework.data.geo.GeoResults;
 import org.springframework.data.redis.connection.RedisGeoCommands;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.awt.*;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -134,8 +129,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         List<NearbyStation> nearbyStations = getNearbyStations(lng,lat); // 附近站点
         List<Router> nearbyRouters = new ArrayList<>();
         List<Router> otherRouters = new ArrayList<>(); // 其他线路
-        resultMap.put("nearbyStations",nearbyStations);
-        resultMap.put("otherRouters",otherRouters);
+        List<Router> scheduledBusRouters = new ArrayList<>(); // 班车的列表
+        resultMap.put("nearbyStations",nearbyStations);//附近站点
+        resultMap.put("otherRouters",otherRouters);//校巴的列表
+        resultMap.put("scheduledBusRouters",scheduledBusRouters);//班车的列表
 
         List<String> nearbyStationIds = nearbyStations.stream().map(NearbyStation::getId).collect(Collectors.toList());
 
@@ -160,7 +157,11 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             if (nearbyRouterIds.contains(router.getId())){
                 nearbyRouters.add(router1);
             }else{
-                otherRouters.add(router1);
+                if(StringUtils.equals(router.getLx(),"30")){//20班车  30校巴
+                    scheduledBusRouters.add(router1);
+                }else if(StringUtils.equals(router.getLx(),"20")){
+                    otherRouters.add(router1);
+                }
             }
         }
         for (Router nearbyRouter : nearbyRouters) {
@@ -181,6 +182,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         }
         return ApiResponse.success(resultMap);
     }
+
 //    public ApiResponse<Map<String, Object>> getStationInfo(String lng, String lat) {
 //        Map<String,Object> resultMap = new HashMap<>();
 //        List<Map<String,Object>> nearbyStations = new ArrayList<>(); // 附近站点
@@ -275,13 +277,15 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
 //        return ApiResponse.success(resultMap);
 //    }
 
-    @Override
     public List<NearbyStation> getNearbyStations(String lng, String lat) {
         if (!geoUtil.hasKey("stations")){
             initGeo();
         }
         GeoResults<RedisGeoCommands.GeoLocation<String>> results = geoUtil.getRadius("stations",new Double(lng),new Double(lat),100,true,"ASC",0);
         Map<String,Double> stationDistanceMap = new HashMap<>();
+        if(CollectionUtils.isEmpty(results.getContent())){
+            return new ArrayList<>();
+        }
         List<String> stationIds = new ArrayList<>();
         for (GeoResult<RedisGeoCommands.GeoLocation<String>> result : results.getContent()) {
             String stationId = result.getContent().getName();
@@ -289,7 +293,10 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             stationDistanceMap.put(stationId,result.getDistance().getValue());
         }
         List<ClZd> stationList = findIn(ClZd.InnerColumn.id,stationIds);
-        if (stationList.size() == 0)return  new ArrayList<>();
+        if (stationList.size() == 0){
+            return  new ArrayList<>();
+        }
+
         List<NearbyStation> nearbyStations = new ArrayList<>(stationList.size());
         for (ClZd zd : stationList) {
             String stationId = zd.getId();

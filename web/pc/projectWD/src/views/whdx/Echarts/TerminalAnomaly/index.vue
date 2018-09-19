@@ -19,14 +19,17 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
+							</Button>
+							<Button type="primary" size="large" @click="v.util.exportData(v,'终端异常统计')">
+								<Icon type="ios-download-outline"></Icon>导出
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="pageData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="tableTiT" :data="pageData"></Table>
 			</Row>
 		</Card>
 	</div>

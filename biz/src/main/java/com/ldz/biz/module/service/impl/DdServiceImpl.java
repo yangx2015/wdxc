@@ -142,10 +142,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifBlank(entity.getCk(), "乘客姓名不能为空");
 		RuntimeCheck.ifBlank(entity.getCklxdh(), "乘客联系电话不能为空");
 
-		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
-		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
-		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
-		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
+//		手机上一定会有，WEB端不一定会有
+//		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
+//		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
+//		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
+//		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
 
 
 		String orderId = genId();
@@ -1099,6 +1100,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			int yqxCount = 0;
 			int dsjCount = 0;
 			int ddzCount = 0;
+			int cwCount = 0;
 			for (ClDd clDd : value) {
 				// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 				if (StringUtils.equals(clDd.getDdzt(), "10")) {
@@ -1111,6 +1113,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 					dsjCount++;
 				} else if (StringUtils.equals(clDd.getDdzt(), "20")) {
 					ddzCount++;
+				} else if (StringUtils.equals(clDd.getDdzt(), "40")) {
+					cwCount++;
 				}
 				continue;
 			}
@@ -1120,6 +1124,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			ddtongji.setYqxCount(yqxCount);
 			ddtongji.setDsjCount(dsjCount);
 			ddtongji.setDdzCount(ddzCount);
+			ddtongji.setCwCount(cwCount);
 			ddlist.add(ddtongji);
 		}
 

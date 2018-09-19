@@ -15,6 +15,9 @@ import com.ldz.util.bean.TrackPointsForReturn.Point;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
+
+import lombok.extern.slf4j.Slf4j;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -32,6 +35,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
+@Slf4j
 public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements GpsService {
 
 
@@ -55,7 +59,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
 	@Override
 	public void insetAndUpdate(ClGps entity) {
-
+		if (StringUtils.isBlank(entity.getZdbh())){
+			return;
+		}
+		
 		boolean flag = ifExists("zdbh", entity.getZdbh());
 		if (flag == true) {
 			update(entity);
@@ -73,26 +80,30 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 		List<ClGpsLs> list = new ArrayList<>();
 		for(Object s : keys){
 			String key = (String)s;
-			if(StringUtils.contains(key,"ClGpsLs")) {
+			try{
+				if(StringUtils.contains(key,"ClGpsLs")) {
 
-				BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
-				String index = (String) boundListOps.index(0);
-				if (StringUtils.isNotEmpty(index)) {
-					Long length = boundListOps.size();
-					for (int i = 0; i < length; i++) {
-						String clgpsls = (String) boundListOps.rightPop();
-						ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
+					BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
+					String index = (String) boundListOps.index(0);
+					if (StringUtils.isNotEmpty(index)) {
+						Long length = boundListOps.size();
+						for (int i = 0; i < length; i++) {
+							String clgpsls = (String) boundListOps.rightPop();
+							ClGpsLs gpssss = JsonUtil.toBean(clgpsls, ClGpsLs.class);
 
-						list.add(gpssss);
+							list.add(gpssss);
+						}
+					}
+				}else {
+					String bean = (String) redis.boundValueOps(key).get();
+					if (bean != null) {
+						ClGps object = JsonUtil.toBean(bean, ClGps.class);
+						// 将该终端的实时点位插入数据库中
+						insetAndUpdate(object);
 					}
 				}
-			}else {
-				String bean = (String) redis.boundValueOps(key).get();
-				if (bean != null) {
-					ClGps object = JsonUtil.toBean(bean, ClGps.class);
-					// 将该终端的实时点位插入数据库中
-					insetAndUpdate(object);
-				}
+			}catch(Exception e){
+				errorLog.error("GPS数据存储异常", e);
 			}
 		}
 		if(CollectionUtils.isNotEmpty(list)) {

@@ -135,7 +135,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 //    	if (findById!=null) {
 //			return ApiResponse.fail("终端编号已存在");
 //		}
-        entity.setXgr(getOperateUser());
+//        entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);
         return ApiResponse.success();
@@ -409,6 +409,20 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
     @Override
     public void saveBatch(List<ClZdgl> clZdgls) {
+        // 批量上传终端前首先上传终端至鹰眼
+        for (ClZdgl clZdgl : clZdgls) {
+            // 上传至百度鹰眼
+            YyEntity yyEntity = new YyEntity();
+            yyEntity.setAk(GuiJIApi.AK);
+            yyEntity.setEntity_name(clZdgl.getZdbh());
+            yyEntity.setService_id(GuiJIApi.SERVICE_ID);
+            YingyanResponse yingyanResponse = GuiJIApi.changeEntity(yyEntity, GuiJIApi.saveEntityuRL);
+            if (StringUtils.equals(yingyanResponse.getStatus(), "0")) {
+                clZdgl.setSfyy("已上传鹰眼服务器");
+            }
+        }
+
+
         entityMapper.insertList(clZdgls);
     }
 

@@ -25,6 +25,12 @@
 			<artifactId>sys</artifactId>
 			<version>0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.ldz</groupId>
+			<artifactId>geo</artifactId>
+			<version>0.0.1</version>
+		</dependency>
+
 		<!--移除websocket里面 logging依赖 避免包冲突 -->
 		<dependency>
             <groupId>org.springframework.boot</groupId>

@@ -37,4 +37,9 @@ public class RuntimeCheck {
             throw new RuntimeCheckException(msg);
         }
     }
+    public static void authCheck(boolean express){
+        if (express){
+            throw new AuthFailedException("授权认证失败");
+        }
+    }
 }

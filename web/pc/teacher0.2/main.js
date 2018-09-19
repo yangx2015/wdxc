@@ -5,9 +5,22 @@ import '#/static/css/color.less'
 let options = {
   app: app,
   beforeEach(to,from,next) {
+    let token = localStorage.getItem('token')
+    // let userinfo = ui.getApp().userinfo
+    console.log(token);
+    
+    if(!token && to.path != '/pages/login'){
+      next({path:'/pages/login'})
+    }else if(to.path == '/pages/login'){
+      next()
+    }else{
+      next()
+    }
+    // try{
+    // }catch(err){}
     console.log('去',to)
     console.log('来',from)
-    next()
+    // next()
   }
 }
 
@@ -50,12 +63,17 @@ ui.extend({
   //        data      -->"网络数据请求的参数传入 ：{key : val} *** 无参数传入时 {} "
   //        callback  -->"回调函数 网络数据返回"
   $http(method,url,data,callback){//网路数据请求
+    let accessTokenStr = localStorage.getItem("token");
+    if(accessTokenStr != null && accessTokenStr != ''&& accessTokenStr!=undefined){
+      // let tokMess = JSON.parse(accessTokenStr)
+      ui.getApp().Ajax.header.token = accessTokenStr
+    }
 
     ui.request({
       // ui.getApp().Ajax.url+':'+ui.getApp().Ajax.port+
       url: url, //仅为示例，并非真实的接口地址
       data: data,
-      header: {'Content-Type': 'application/x-www-form-urlencoded'},
+      header: ui.getApp().Ajax.header,
       method:method,
       success: function (res) {
         console.log('请求成功')

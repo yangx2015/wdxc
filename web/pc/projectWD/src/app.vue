@@ -11,7 +11,7 @@
 </template>
 
 <script>
-	
+
     export default {
         data () {
             return {
@@ -47,9 +47,8 @@
 </script>
 
 <style>
-@import "//at.alicdn.com/t/font_605313_dytag0ll15eqxgvi.css";
-/* 解绑 */
-@import "//at.alicdn.com/t/font_696137_dnozm6ok211t6gvi.css";
+
+@import "//at.alicdn.com/t/font_683602_e7rww0681ms.css";
 html,body{
     width: 100%;
     height: 100%;

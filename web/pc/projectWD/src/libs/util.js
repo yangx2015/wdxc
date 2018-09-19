@@ -40,13 +40,18 @@ util.fillTableColumns = (v)=>{
 
     }
 }
+util.exportData = (v,filename)=>{
+    v.$refs.table.exportCsv({
+        filename: filename
+    });
+}
 util.buildDeleteButton = (v,h,id)=>{
-    return util.buildButton(v,h,'error','close','删除',()=>{
+    return util.buildButton(v,h,'error','md-close','删除',()=>{
         util.delete(v,[id])
     })
 }
-util.buildEditButton = (v,h,p)=>{
-    return util.buildButton(v,h,'warning','edit','编辑',()=>{
+util.buildeditButton = (v,h,p)=>{
+    return util.buildButton(v,h,'warning','md-create','编辑',()=>{
         v.choosedItem = p.row;
         v.componentName = 'formData'
     })

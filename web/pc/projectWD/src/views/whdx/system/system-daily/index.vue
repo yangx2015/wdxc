@@ -20,7 +20,7 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="findMessList()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
 								<!--查询-->
 							</Button>
 						</div>
@@ -28,7 +28,7 @@
 				</div>
 			</Row>
 			<Row>
-				<Table
+				<Table ref="table"
 						:height="tabHeight"
 						:row-class-name="rowClassName"
 						:columns="tableTiT"
@@ -39,7 +39,7 @@
 					  :current=param.pageNum
 					  :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}'
 					  show-total
-					  show-elevator show-sizer
+					  show-elevator show-sizer placement='top'
 					  @on-change='pageChange'></Page>
 			</Row>
 		</Card>

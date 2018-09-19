@@ -43,18 +43,18 @@
 							<Button slot="extra" type="success"
 								size="small"
 								@click="BJ(item)"
-								shape="circle" icon="edit"></Button>
+								shape="circle" icon="md-create"></Button>
 							<div style="min-height: 260px" class="box">
 								<div class="body">
 									<div class="box-row-list">
 										<div class="carListsty" v-for="it in item.clList" style="height: 45px">
 											<div>
-												<Icon type="person" size="16" color="#3bb84b"></Icon>
+												<Icon type="md-person" size="16" color="#3bb84b"></Icon>
 												：
 												{{it.sjxm}}
 											</div>
 											<div>
-												<Icon type="android-car" size="16" color="#ff8300"></Icon>
+												<Icon type="ios-car" size="16" color="#ff8300"></Icon>
 												：
 												{{it.cph}}
 											</div>
@@ -67,7 +67,7 @@
 				</Row>
 			</div>
 			<!--<Row style="position: relative;">-->
-				<!--<Table-->
+				<!--<Table ref="table" -->
 						<!--size='large'-->
 						<!--:height="tabHeight"-->
 						<!--:row-class-name="rowClassName"-->
@@ -75,7 +75,7 @@
 						<!--:data="tableData"></Table>-->
 			<!--</Row>-->
 			<!--<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
 			</Row>-->
 		<!--</Card>-->
 		<component
@@ -163,7 +163,7 @@
 							h('Button', {
 									props: {
 										type: 'success',
-										icon: 'edit',
+										icon: 'md-create',
 										shape: 'circle',
 										size: 'small'
 									},

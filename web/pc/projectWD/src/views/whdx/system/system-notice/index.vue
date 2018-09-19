@@ -34,12 +34,12 @@
 						<div class="butevent">
 							<Tooltip content="查询" placement="top">
 								<Button type="primary" @click="getPageData()">
-									<Icon type="search"></Icon>
+									<Icon type="md-search"></Icon>
 								</Button>
 							</Tooltip>
 							<Tooltip content="新增" placement="top">
 								<Button type="primary" @click="AddMess()">
-									<Icon type="plus-round"></Icon>
+									<Icon type="md-add"></Icon>
 								</Button>
 							</Tooltip>
 							<Tooltip content="批量导入" placement="top">
@@ -57,7 +57,7 @@
 				</div>
 			</Row>
 			<Row>
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="columns" :data="tableData"></Table>
 				<div v-if="SpinShow" style="width:100%;height:100%;position: absolute;top: 0;left:0;z-index: 100;">
 					<Spin fix>
 						<Icon type="load-c" :size=loading.size class="demo-spin-icon-load"></Icon>
@@ -66,7 +66,7 @@
 				</div>
 			</Row>
 			<Row class="margin-top-10 pageSty">
-				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{console.log(e);param.pageSize=e;pageChange(1)}' show-total show-elevator show-sizer @on-change='pageChange'></Page>
+				<Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{console.log(e);param.pageSize=e;pageChange(1)}' show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
 			</Row>
 		</Card>
 		<component
@@ -238,7 +238,7 @@
                                         h('Button', {
                                             props: {
                                                 type: 'success',
-                                                icon: 'edit',
+                                                icon: 'md-create',
                                                 shape: 'circle',
                                                 size: 'small'
                                             },
@@ -319,7 +319,7 @@
                                         h('Button', {
                                             props: {
                                                 type: 'error',
-                                                icon: 'close',
+                                                icon: 'md-close',
                                                 shape: 'circle',
                                                 size: 'small'
                                             },
@@ -402,24 +402,24 @@
             //删除数据
             listDele(r){
             	var v = this
-				swal({
-				  title: "是删除数据?",
-				  text: "",
-				  icon: "warning",
-				  buttons:['取消','确认'],
-				})
-				.then((willDelete) => {
-				  if (willDelete) {
-					v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
-						if(res.code===200){
-							this.$Message.success('操作成功');
-						}
-						v.getPageData()
-					})
-				  } else {
-				  	this.$Message.error('操作失败');
-				  }
-				})
+		swal({
+		  title: "是删除数据?",
+		  text: "",
+		  icon: "warning",
+		  buttons:['取消','确认'],
+		})
+		.then((willDelete) => {
+		  if (willDelete) {
+			v.$http.post(this.apis.ZDGL.DELE,{'ids':[r.zdbh]}).then((res) =>{
+				if(res.code===200){
+					this.$Message.success('操作成功');
+				}
+				v.getPageData()
+			})
+		  } else {
+			this.$Message.error('操作失败');
+		  }
+		})
             },
             pageChange(event){
                 this.param.pageNum = event;

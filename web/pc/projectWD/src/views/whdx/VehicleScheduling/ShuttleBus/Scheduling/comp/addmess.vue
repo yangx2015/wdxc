@@ -22,12 +22,12 @@
 		    			<Col span="6" v-if="mess.clList.length>0" v-for = '(item,index) in mess.clList'>
 		    				<div class="carListsty">
 								<div>
-									<Icon type="person" size="16" color="#3bb84b"></Icon>
+									<Icon type="md-person" size="16" color="#3bb84b"></Icon>
 									：
 									{{item.sjxm}}
 								</div>
 								<div>
-									<Icon type="android-car" size="16" color="#ff8300"></Icon>
+									<Icon type="ios-car" size="16" color="#ff8300"></Icon>
 									：
 									{{item.cph}}
 								</div>
@@ -47,18 +47,18 @@
 		    					@mouseenter="item.ico = true"
 		    					@mouseleave="item.ico = false">
 								<div>
-									<Icon type="person" size="16" color="#3bb84b"></Icon>
+									<Icon type="md-person" size="16" color="#3bb84b"></Icon>
 									：
 									{{item.sjxm}}
 								</div>
 								<div>
-									<Icon type="android-car" size="16" color="#ff8300"></Icon>
+									<Icon type="ios-car" size="16" color="#ff8300"></Icon>
 									：
 									{{item.cph}}
 								</div>
 		    					<span style="position:absolute;top: -6px;right: -6px;z-index: 100;">
 		    						 <Button v-if="!(item.clId==='000000')" type="primary" shape="circle"
-		    						 	size="small" icon="plus-round"
+		    						 	size="small" icon="md-add"
 		    						 	@click="AddList(item.clId,item.cph,item.sjxm)"></Button>
 		    					</span>
 		    				</div>	    		

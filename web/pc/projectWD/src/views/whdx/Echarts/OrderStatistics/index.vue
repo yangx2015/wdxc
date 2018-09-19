@@ -21,14 +21,17 @@
 						</div>
 						<div class="butevent">
 							<Button type="primary" @click="getData()">
-								<Icon type="search"></Icon>
+								<Icon type="md-search"></Icon>
+							</Button>
+							<Button type="primary" size="large" @click="v.util.exportData(v,'订单统计')">
+								<Icon type="ios-download-outline"></Icon>导出
 							</Button>
 						</div>
 					</div>
 				</div>
 			</Row>
 			<Row style="position: relative;">
-				<Table :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
+				<Table ref="table"  :height="tabHeight" :row-class-name="rowClassName" :columns="tableColumns" :data="pageData"></Table>
 			</Row>
 		</Card>
 	</div>
@@ -133,6 +136,11 @@
                         title: '对长确认',
                         align:'center',
                         key: 'ddzCount'
+                    },
+                    {
+                        title: '财务确认',
+                        align:'center',
+                        key: 'cwCount '
                     }
                 ],
                 pageData: [],

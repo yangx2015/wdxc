@@ -8,6 +8,7 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.GnService;
 import com.ldz.sys.service.YhService;
 import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.spring.SpringContextUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -15,8 +16,10 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 	private StringRedisTemplate redisDao;
 
 	// 只要登录的用户都能访问
-	private List<String> whiteList = Arrays.asList("/api/jg/getOrgPath","/api/gn/getPermissionTreeWithChecked","/api/gn/getRolePermissionTree","/api/jg/getCurrentOrgTree","/api/gn/getMenuTree","/api/jg/pager","/api/zd/pager","/api/jg/getTree","/api/gn/getMenuTree","/api/jg/pager","/api/jg/getOrgTree","/api/jg/getOrgTree","/api/clsbyxsjjl/history","/api/clsbyxsjjl/history");
+	private List<String> whiteList = Arrays.asList("/api/jg/getOrgPath","/api/gn/getPermissionTreeWithChecked","/api/gn/getRolePermissionTree","/api/jg/getCurrentUserOrgTree","/api/jg/getCurrentOrgTree","/api/gn/getMenuTree","/api/jg/pager","/api/zd/pager","/api/jg/getTree","/api/gn/getMenuTree","/api/jg/pager","/api/jg/getOrgTree","/api/jg/getOrgTree","/api/clsbyxsjjl/history","/api/clsbyxsjjl/history");
 
 	public AccessInterceptor() {
 	}
@@ -73,27 +76,32 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			token = request.getParameter("token");
 		if (userid == null)
 			userid = request.getParameter("userid");
-		if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(token)) {
+
+		if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(token)){
+			request.getRequestDispatcher("/authFiled").forward(request, response);
 			return false;
 		}
 		log.debug("访问地址[{}], 请求openid[{}],请求token[{},header请求地址[{}]]", request.getRequestURI(), userid, token, url);
 
 		// 验证用户状态
 		SysYh user = yhService.findById(userid);
-		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())) {
+		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())){
+			request.getRequestDispatcher("/authFiled").forward(request, response);
 			return false;
 		}
 		try {
 			// 验证访问者是否合法
 			String userId = JwtUtil.getClaimAsString(token, "userId");
 			log.debug("userId=" + userId);
-			if (!userid.equals(userId)) {
+			if (!userid.equals(userId)){
+				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
 			}
 			String value = redisDao.boundValueOps(userid).get();
 			log.debug("value=" + value);
 			log.debug("token=" + token);
-			if (StringUtils.isEmpty(value) || !value.equals(token)) {
+			if (StringUtils.isEmpty(value) || !value.equals(token)){
+				request.getRequestDispatcher("/authFiled").forward(request, response);
 				return false;
 			}
 			request.setAttribute("userInfo", user);
@@ -115,6 +123,11 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}
 
 		return super.preHandle(request, response, handler);
+	}
+
+	private boolean authCheck(boolean expression,HttpServletRequest request,HttpServletResponse response) throws ServletException, IOException {
+		request.getRequestDispatcher("/999").forward(request, response);
+		return true;
 	}
 
 	private boolean checkPermission(SysYh user, HttpServletRequest request) {
