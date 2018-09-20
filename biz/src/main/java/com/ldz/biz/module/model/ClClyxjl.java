@@ -381,6 +381,7 @@ public class ClClyxjl implements Serializable {
         clId("CL_ID"),
         cphm("CPHM"),
         zdbh("ZDBH"),
+        szdbh("SZDBH"),
         cjsj("CJSJ"),
         jd("JD"),
         wd("WD"),
