@@ -70,12 +70,12 @@
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 <ui-input ui:model="{{ form.lc }}" 
                  type='number'
-                 placeholder="里程/公里数"></ui-input>
+                 placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
                 <ui-input ui:model="{{ form.dj }}"
                  type='number'
-                 placeholder="行程单价"></ui-input>
+                 placeholder="0"></ui-input>
               </ui-col>
             </ui-row>
             <ui-row space-top=15>
@@ -90,12 +90,12 @@
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 <ui-input ui:model="{{ form.gqf }}"
                  type='number'
-                 placeholder="里程/公里数"></ui-input>
+                 placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
                 <ui-input ui:model="{{ form.glf }}"
                  type='number'
-                 placeholder="行程单价"></ui-input>
+                 placeholder="0"></ui-input>
               </ui-col>
             </ui-row>
             <ui-view>
@@ -115,12 +115,12 @@
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 <ui-input ui:model="{{ orderMess.lc }}"
                   disabled
-                  placeholder="里程/公里数"></ui-input>
+                  placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
                 <ui-input ui:model="{{ orderMess.dj }}"
                   disabled
-                  placeholder="行程单价"></ui-input>
+                  placeholder="0"></ui-input>
               </ui-col>
             </ui-row>
             <ui-row space-top=15>
@@ -135,12 +135,12 @@
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 <ui-input ui:model="{{ orderMess.gqf }}" 
                   disabled
-                  placeholder="里程/公里数"></ui-input>
+                  placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
                 <ui-input ui:model="{{ orderMess.glf }}"
                   disabled
-                  placeholder="行程单价"></ui-input>
+                  placeholder="0"></ui-input>
               </ui-col>
             </ui-row>
           </ui-view>
