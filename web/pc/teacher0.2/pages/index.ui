@@ -36,7 +36,7 @@
                   </ui-row>
                 </ui-view>
 
-               <ui-view ui:show="{{people == '他人乘坐'}}">
+               <!-- <ui-view ui:show="{{people == '他人乘坐'}}">
                   <ui-row>
                       <ui-col span=2>
                         <ui-text>姓名</ui-text>
@@ -51,7 +51,7 @@
                         <ui-text>{{form.cklxdh}} </ui-text>
                       </ui-col>
                   </ui-row>
-                </ui-view> 
+                </ui-view>  -->
 
                 <ui-popup ui:model="{{ show5 }}" height="570" background="transparent">
                     <ui-view class="popup5">
@@ -284,8 +284,8 @@ export default {
       this.hisList.push({name:this.form.ck,phone:this.form.cklxdh})//历史记录添加
 
       localStorage.setItem('hisList',JSON.stringify(this.hisList)) 
-      this.getHisList()
-      
+      this.getHisList();
+      this.people = this.form.ck
     },
     getHisList(){//获取历史乘车人信息
       var hisMess = localStorage.getItem('hisList')
