@@ -7,7 +7,6 @@
                   position: relative;
                   .loginImg {
                         width: 90%;
-                        position: absolute;
                         bottom: 0;
                         border-radius: 50px;
                   }
@@ -37,13 +36,16 @@
                   </Spin>
             </div>
             <div class="login-con">
-                  <Card :bordered="false" style="width: 100%;">
+                  <Card :bordered="false" style="width: 100%;height: 400px">
                         <div class="form-con box-row">
                               <div class="body-O imgLeft">
                                     <!--<img class="loginImg" src="/static/logo.png" alt="" />-->
                                     <img class="loginImg" src="/static/login-left.png" alt=""/>
                               </div>
                               <div class="body-O from">
+                                    <div class="loginTiT">
+                                          <img class="loginImg" src="/static/logo.png" alt=""/>
+                                    </div>
                                     <div class="loginTiT">
                                           <h1>
                                                 武汉大学车辆管理平台

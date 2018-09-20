@@ -178,7 +178,6 @@
                         align: 'center',
                         key: 'zxzt',
                         render: (h, p) => {
-                            console.log(p.row.zxzt);
                             let val = this.dictUtil.getValByCode(this, this.lmdmDictionary, p.row.zxzt)
                             return h('div', {
                                 style: {
