@@ -27,6 +27,12 @@ public class ClClyxjl implements Serializable {
      */
     @Column(name = "CPHM")
     private String cphm;
+    
+    /**
+     * 设备终端编号
+     */
+    @Column(name = "SZDBH")
+    private String szdbh;
 
     /**
      * 站点编号
@@ -102,7 +108,15 @@ public class ClClyxjl implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    public String getZt() {
+    public String getSzdbh() {
+		return szdbh;
+	}
+
+	public void setSzdbh(String szdbh) {
+		this.szdbh = szdbh;
+	}
+
+	public String getZt() {
         return zt;
     }
 
