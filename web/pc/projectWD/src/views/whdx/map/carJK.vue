@@ -31,10 +31,10 @@
                 choosedItem: null,
                 map: '',
                 mapcenter: {
-                    lng: 114.357527,
-                    lat: 30.550822
+                    lng: 114.3712668464,
+                    lat: 30.5440310131
                 },
-                zoom: 18,
+                zoom: 16,
                 carList: [],
                 zoomDot:[],
                 fancePoints: [
@@ -118,6 +118,7 @@
             showCarPosition() {
                 this.clear()
                 var v = this
+                console.log(this.carList.length);
                 for (let r of this.carList) {
                     var point = new BMap.Point(r.lng, r.lat);
                     this.addMarker(r, point);

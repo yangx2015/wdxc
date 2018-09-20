@@ -16,7 +16,7 @@
                 {{car.zdbh}}
             </p>
             <a href="#" slot="extra">
-                <Icon type="close" @click.native="close"></Icon>
+                <Icon type="md-close" @click.native="close"></Icon>
             </a>
             <Row>
                 <Row style="z-index: 1000000;" class="buttons" v-if="car != null">
@@ -277,6 +277,8 @@
             init(item){
                 this.car = item;
                 // this.$refs.carInfo.init(item);
+                this.resetPhotoCount();
+                this.resetVideoCount();
             },
             hide(){
                 this.car = null;
