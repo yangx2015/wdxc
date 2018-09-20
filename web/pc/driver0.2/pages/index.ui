@@ -56,7 +56,7 @@
                                         <ui-view class="time">
                                           {{item.yysj}}
                                           <ui-view style="float:right">
-                                            待出发
+                                             {{item.ddzt | ddzt}}
                                           </ui-view>
                                         </ui-view>
                                         <ui-view>
@@ -127,6 +127,25 @@ export default {
       pageNum:1,//当前页面
       pages:0,//页面总数
       listType:0
+    }
+  },
+  filters:{
+    ddzt:(val)=>{
+      if(val == 10){
+        return "待审核"
+      }else if(val == 11){
+        return "待派单"
+      }else if(val == 12){
+        return "被驳回"
+      }else if(val == 13){
+        return "已派单"
+      }else if(val == 20){
+        return "已完成"
+      }else if(val == 30){
+        return "队长确认"
+      }else if(val == 40){
+        return "财务已收"
+      }
     }
   },
   watch:{
