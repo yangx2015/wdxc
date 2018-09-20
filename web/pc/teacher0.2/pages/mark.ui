@@ -12,16 +12,20 @@
           </ui-col>
         </ui-row>
     </ui-nav-bar>
-    <ui-view class="box_col" style="{{{height:pageHeight(0)+'px',background:'#0f0'}}}">
+
+     <div id="allmap" style="{{{height:height+'px'}}}"></div>
+
+<ui-fixed-view bottom="20" left="10" right="10">
+    <ui-view class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
       <ui-view class="getmess">
-        <ui-row vertical-align="middle"  border-bottom style="padding:10px 15px 10px 0px" >
+        <ui-row vertical-align="middle" height="50rpx"  border-bottom style="padding:0px 15px 0px 0px" >
           <ui-col align="left" span=3 space-left="75" >
             <ui-view calss="pingyi">
-              <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
+              <ui-icon type="head-g" size=28 style="color:#888888"></ui-icon>
             </ui-view>
           </ui-col>
-          <ui-col span=3 align="left" space-left="20">
-            <ui-view style="color: #686868;font-size:15px;font-weight:700;">
+          <ui-col span=3 align="left" space-left="10" vertical-align="middle">
+            <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
               {{orderMess.sjxm}}
             </ui-view>
           </ui-col>
@@ -32,56 +36,69 @@
           <ui-view style="color: #686868;font-size:15px;font-weight:700;">
             {{orderMess.cph}}
           </ui-view>
-          <ui-view style="color:#A0A0A0;font-size:20px">
+          <ui-view style="color:#A0A0A0;font-size:15px">
             {{orderMess.zws}} 座车
           </ui-view> 
           </ui-col>
       </ui-row>
-<ui-view>
-  <ui-row vertical-align="middle">
-    <ui-col align="center" style="color:#000000">
-      总价
-    </ui-col>
-  </ui-row>
-  <ui-row vertical-align="middle" style="color:#686868;font-size:25px;font-weight:700">
-    <ui-col align="center">
-        {{orderMess.zj}}元
-    </ui-col>
-  </ui-row >
-  <ui-row vertical-align="middle" style="padding:0px 0px 0px 0px;color:#686868;font-size:15px">
-    <ui-col align="left" space-left="20">
-      过桥费:{{orderMess.gqf}}元
-    </ui-col>
-    <ui-col align="right" space-right="20">
-      路停费:{{orderMess.lcf}}元
-    </ui-col>
-  </ui-row>
-  <ui-row vertical-align="middle" style="margin:20px 0px 20px 0px;color:#686868;" border-bottom>
-    <ui-col align="left" space-left="20" >
-      里程:{{orderMess.lc}}公里
-    </ui-col>
-    <ui-col align="right" space-right="20">
-      单价:{{orderMess.dj}}元
-    </ui-col>
-  </ui-row>
-</ui-view>
-
-<ui-row style="padding:20px 0px 10px 0px" vertical-align="middle">
-  <ui-col align="center" style="color:#A0A0A0">
+      <ui-row style="padding:10px 0px 10px 0px" vertical-align="middle">
+  <ui-col align="left" space-left="55"  style="color:#A0A0A0">
     {{starResult}}
   </ui-col>
 </ui-row>
 <ui-row>
-  <ui-col align="left" space-left="120">
+  
+  <ui-col align="left" space-left="20">
     <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
   </ui-col> 
+  <ui-col span=6  space-right="20" style="color:#686868;font-size:22px;font-weight:700">
+      <ui-view>
+        <ui-row style="color:#686868;font-size:12px">
+          <ui-col align="left" space-left="20">
+            过桥费:{{orderMess.gqf}}元
+          </ui-col>
+          <ui-col align="right" space-right="1">
+            路停费:{{orderMess.lcf}}元
+          </ui-col>
+        </ui-row>
+        <ui-row style="color:#686868;font-size:12px" >
+          <ui-col align="left" space-left="20">
+            里程:{{orderMess.lc}}KM
+          </ui-col>
+          <ui-col align="right" space-right="1">
+            单价:{{orderMess.dj}}元
+          </ui-col>
+        </ui-row>
+      </ui-view>
+      <ui-view style="color:#ff0000">
+        <ui-col align="right" space-right="1">
+          总价{{orderMess.zj}}元
+        </ui-col>
+    </ui-view>
+  </ui-col>
 </ui-row>
+<ui-view>
+   </ui-fixed-view>
+  <!-- <ui-row vertical-align="middle">
+    <ui-col align="center" style="color:#000000">
+      总价
+    </ui-col>
+  </ui-row> -->
+ 
+
+
+  
+  
+  
 
 
 
- </ui-view>
 
-  <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
+
+
+
+
+  <!-- <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
    '&width=400&height=300'+
   '&center=114.368107,30.543083'+
   '&zoom=12'+
@@ -89,14 +106,16 @@
   '&markerStyles=-1,'+
   'http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}}}">
    
-  </ui-view>
-</ui-view>
+  </ui-view> -->
+
  
  </ui-page>
   
 </template>
 
 <script>
+import $ from 'jquery';
+
 export default {
   config: {
     navigationBarTitleText: '订单详情',
@@ -106,6 +125,9 @@ export default {
   },
   data () {
     return {
+      height:ui.WIN_HEIGHT,
+      carHeight:180,
+      points:[],
       starResult: '评价本次服务',
       orderMess:{},
       pageheight:ui.DEFAULT_HEADER_HEIGHT,
@@ -114,14 +136,29 @@ export default {
        'color':'#FF9966',
        'border-bottom':'1px solid #FF9966',
       },
+      map:''
     }   
   },
       
   methods: {
-    pingfen(index){
-      if(this.orderMess.pjdj!=""){
-        ui.showToast({ title: '该订单已评价!'})
-        return
+    addMarker(points) {
+      console.log('666',points);
+        var pt = new BMap.Point(points[0].longitude, points[0].latitude);
+        var myIcon = new BMap.Icon("/static/img/qd.png", new BMap.Size(70,70),{imageSize: new BMap.Size(40,40),anchor: new BMap.Size(25, 25)});
+        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+        this.map.addOverlay(marker2);              // 将标注添加到地图中
+      },
+      addMarkert(points) {
+      console.log('666',points.length);
+        var pt = new BMap.Point(points[points.length-1].longitude, points[points.length-1].latitude);
+        var myIcon = new BMap.Icon("/static/img/zd.png", new BMap.Size(70,70),{imageSize: new BMap.Size(40,40),anchor: new BMap.Size(25, 25)});
+        var marker2 = new BMap.Marker(pt,{icon:myIcon});  // 创建标注
+        this.map.addOverlay(marker2);              // 将标注添加到地图中
+      },
+      pingfen(index){
+        if(this.orderMess.pjdj!=""){
+          ui.showToast({ title: '该订单已评价!'})
+          return
       }
       console.log(index)
       if (index === 1) {
@@ -155,7 +192,67 @@ export default {
       ui.navigateTo({
         url: '/pages/detail'
       })
+    },
+    getDdGpsList(){
+      this.$http('POST',ui.getApp().apis.HISTORYGJ,{orderId: this.orderMess.id},(res)=>{
+        console.log(res.result);
+        
+        if(res.code == 200 && res.result){
+          this.points= res.result;
+          if(this.points.length > 0){
+            this.showLine(this.points);
+            this.addMarker(this.points);
+            this.addMarkert(this.points)
+          }
+        }else{
+          ui.showToast({title: res.message});
+        }
+        // this.addMarker()
+      })
+    },
+    
+    showLine(points){
+      let ps = [];
+     this.map.centerAndZoom(new BMap.Point(points[0].longitude, points[0].latitude), 14);
+      for (let r of points){
+          ps.push(new BMap.Point(r.longitude, r.latitude));
+      }
+      var polyline = new BMap.Polyline(ps,
+          {strokeColor:"green", strokeWeight:6, strokeOpacity:0.5}
+      );
+
+       this.map.addOverlay(polyline);
+    },
+    initMap(){
+      var script = document.createElement("script")
+      script.type = "text/javascript"
+      var callbackName = '_callback'+Date.now()
+      let v = this
+      window[callbackName]= function(){
+       console.log(BMap)
+      v.map = new BMap.Map("allmap");    // 创建Map实例
+      v.map.centerAndZoom(new BMap.Point(114.368107, 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
+      var point = new BMap.Point(114.368107, 30.543083);
+      v.map.centerAndZoom(point, 15);    
+      var marker = new BMap.Marker(point,);
+      v.map.addOverlay(marker);     
+      //添加地图类型控件
+      v.map.addControl(new BMap.MapTypeControl({
+        mapTypes:[
+                BMAP_NORMAL_MAP,
+                BMAP_HYBRID_MAP
+            ]}));   
+      v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
+      v.map.enableScrollWheelZoom(true);
+      
+        v.getDdGpsList()
+           //开启鼠标滚轮缩放
+      delete window[callbackName]
     }
+        script.src="https://api.map.baidu.com/api?v=2.0&ak=evDHwrRoILvlkrvaZEFiGp30&callback="+callbackName
+        document.body.appendChild(script)
+    },
+    
   },
   created(){
     // this.getMarkList()
@@ -166,12 +263,14 @@ export default {
       ui.showToast({ title: '数据丢失，请重新查看' })
     }
     
+    
   },
   mounted() {
+    this.initMap();
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
       //关闭app启动图
-      ui.closeSplashscreen()
+      ui.closeSplashscreen();
     }, 1000);
   }
 }
