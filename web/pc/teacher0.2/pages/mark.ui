@@ -213,12 +213,12 @@ export default {
     
     showLine(points){
       let ps = [];
-     this.map.centerAndZoom(new BMap.Point(points[0].longitude, points[0].latitude), 14);
+      this.map.centerAndZoom(new BMap.Point(points[(points.length -(points.length % 2))/2].longitude, points[(points.length -(points.length % 2))/2].latitude), 14);
       for (let r of points){
           ps.push(new BMap.Point(r.longitude, r.latitude));
       }
       var polyline = new BMap.Polyline(ps,
-          {strokeColor:"green", strokeWeight:6, strokeOpacity:0.5}
+          {strokeColor:"green", strokeWeight:5, strokeOpacity:0.5}
       );
 
        this.map.addOverlay(polyline);
