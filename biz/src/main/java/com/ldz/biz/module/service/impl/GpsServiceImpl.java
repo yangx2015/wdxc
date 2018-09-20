@@ -391,13 +391,17 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (zdgl != null){
             // 根据传入的sczt判断终段在线状态
             if (StringUtils.equals(entity.getSczt(), "10")) {
-                zdgl.setZt("00");
-                zdgl.setZxzt("00");
-                zdglservice.update(zdgl);
+                if(!StringUtils.equals(zdgl.getZt(),"00") || !StringUtils.equals(zdgl.getZxzt(),"00")){
+                    zdgl.setZt("00");
+                    zdgl.setZxzt("00");
+                    zdglservice.update(zdgl);
+                }
             }else if (StringUtils.equals(entity.getSczt(), "20")) {
-                zdgl.setZt("00");
-                zdgl.setZxzt("10");
-                zdglservice.update(zdgl);
+                if(!StringUtils.equals(zdgl.getZt(),"00") || !StringUtils.equals(zdgl.getZxzt(),"10")) {
+                    zdgl.setZt("00");
+                    zdgl.setZxzt("10");
+                    zdglservice.update(zdgl);
+                }
             }
         }
 
