@@ -28,11 +28,11 @@
                         </div>
                         <div class="butSTY" v-show="!item.xg">
                               <Tooltip class="changeBut"  placement="bottom" content="站点替换" v-show="!item.xg">
-                                    <Button type="primary" shape="circle" icon="arrow-swap" size="small"
+                                    <Button type="primary" shape="circle" icon="md-swap" size="small"
                                             @click='codeChange(index)'></Button>
                               </Tooltip>
                               <Tooltip class="changeBut"  placement="bottom" content="完成" v-show="!item.xg" style="float: right;">
-                                    <Button type="primary" shape="circle" icon="checkmark-round" size="small"
+                                    <Button type="primary" shape="circle" icon="md-checkmark" size="small"
                                             @click='item.xg = !item.xg'></Button>
                               </Tooltip>
                         </div>
