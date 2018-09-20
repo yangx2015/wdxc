@@ -549,8 +549,8 @@ export default {
                     this.mapCarList = [this.choosedCar];
 				}
             }else{
-                let activeKey = v.$refs.tabRef.activeKey;
-                if (activeKey != 'name0' || activeKey != 'name1'){
+                let activeKey = this.$refs.tabRef.activeKey;
+                if (activeKey != 'name0' && activeKey != 'name1'){
                     return;
 				}
                 this.mapCarList = this.carArray[this.status];
