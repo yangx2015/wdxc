@@ -235,7 +235,7 @@ export default {
       var point = new BMap.Point(114.368107, 30.543083);
       v.map.centerAndZoom(point, 15);    
       var marker = new BMap.Marker(point,);
-      v.map.addOverlay(marker);     
+      // v.map.addOverlay(marker);     
       //添加地图类型控件
       v.map.addControl(new BMap.MapTypeControl({
         mapTypes:[
