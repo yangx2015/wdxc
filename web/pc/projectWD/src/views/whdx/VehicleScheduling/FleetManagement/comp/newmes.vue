@@ -108,10 +108,10 @@
                 },
                 ruleInline: {
                     cdmc: [
-                        {required: true, message: '请输入姓名', trigger: 'blur'}
+                        {required: true, message: '请输填写车队名称', trigger: 'blur'}
                     ],
                     dzxm: [
-                        {required: true, message: '请设置密码', trigger: 'blur'}
+                        {required: true, message: '请设队长姓名', trigger: 'blur'}
                     ],
                     sjhm: [
                         {required: true, message: '请输入手机号码', trigger: 'blur'}

@@ -328,6 +328,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        condition.lte(Clyy.InnerColumn.cjsj.name(), clDd.getSjqrsj());// 结束时间
 //        condition.setOrderByClause(Clyy.InnerColumn.cjsj.asc());// 创建时间
         List<Clyy> gpsList = clYyService.findByCondition(condition);
+        //gpsList!=null&&gpsList.size()>0
+        RuntimeCheck.ifFalse(gpsList!=null&&gpsList.size()>0,"暂无行程记录");
+
         ApiResponse<List<Clyy>> ret=new ApiResponse<>();
         ret.setResult(gpsList);
         return ret;

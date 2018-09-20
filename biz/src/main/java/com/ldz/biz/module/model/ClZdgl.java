@@ -161,6 +161,14 @@ public class ClZdgl implements Serializable {
     @Column(name = "VERSION")
     private String version;
 
+    public String getJgdm() {
+        return jgdm;
+    }
+
+    public String getJgmc() {
+        return jgmc;
+    }
+
     public String getVersion() {
         return version;
     }

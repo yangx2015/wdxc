@@ -1,18 +1,28 @@
 package com.ldz.biz.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.GpsLsService;
 import com.ldz.biz.module.service.GpsService;
 import com.ldz.biz.module.service.InstructionService;
 import com.ldz.biz.module.service.SpkService;
+import com.ldz.sys.constant.Dict;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.YhService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
 
 /*
  * 业务系统对外开放的接口
@@ -28,6 +38,12 @@ public class MessageApi {
 	private SpkService spkservice;
 	@Autowired
 	private InstructionService intstruction;
+
+	@Autowired
+	private YhService yhService;
+	@Autowired
+	private StringRedisTemplate redisDao;
+
 	@Autowired
 	private RedisTemplateUtil redisTemplateUtil;
 	@Autowired
@@ -57,9 +73,45 @@ public class MessageApi {
 	}
 
 	@PostMapping("/batchUpdate")
-	public ApiResponse<String> batchUpdate(GpsInfo info, ClZdgl zdgl) {
+	public ApiResponse<String> batchUpdate(HttpServletRequest request, GpsInfo info, ClZdgl zdgl) {
+		String userid = request.getHeader("userid");
+		String token = request.getHeader("token");
+		if (token == null)
+			token = request.getParameter("token");
+		if (userid == null)
+			userid = request.getParameter("userid");
 
-		return  intstruction.batchUpdate(info,zdgl);
+		if (StringUtils.isEmpty(userid) || StringUtils.isEmpty(token)){
+			return ApiResponse.fail("请您登录后再操作");
+		}
+		// 验证用户状态
+		SysYh user = yhService.findById(userid);
+		if (!Dict.UserStatus.VALID.getCode().equals(user.getZt())){
+			return ApiResponse.fail("该用户已锁定，请联系管理人员");
+		}
+		SysYh userInfo =null;
+		try {
+			// 验证访问者是否合法
+			String userId = JwtUtil.getClaimAsString(token, "userId");
+			if (!userid.equals(userId)){
+				return ApiResponse.fail("登录失败");
+			}
+			String value = redisDao.boundValueOps(userid).get();
+			if (StringUtils.isEmpty(value) || !value.equals(token)){
+				return ApiResponse.fail("未找到该用户的缓存信息");
+			}
+			request.setAttribute("userInfo", user);
+			request.setAttribute("orgCode", user.getJgdm());
+			String userInfoJson = redisDao.boundValueOps(userid + "-userInfo").get();
+			ObjectMapper mapper = new ObjectMapper();
+			userInfo = mapper.readValue(userInfoJson, SysYh.class);
+
+		} catch (Exception e) {
+			return ApiResponse.fail("用户验证失败");
+		}
+		RuntimeCheck.ifNull(userInfo,"用户登录验证失败");
+
+		return  intstruction.batchUpdate(info,zdgl,userInfo);
 	}
 
 	/*@GetMapping("/test")
