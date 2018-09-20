@@ -37,10 +37,10 @@
                   </Row>
                   <Row style="position: relative;">
                         <Table ref="table"
-                                :row-class-name="rowClassName"
-                                :height="tabHeight"
-                                :columns="tableTiT"
-                                :data="tableData">
+                               :row-class-name="rowClassName"
+                               :height="tabHeight"
+                               :columns="tableTiT"
+                               :data="tableData">
 
                         </Table>
                   </Row>
@@ -218,6 +218,7 @@
                 this.$http.get(this.apis.ROLE.QUERY).then((res) => {
                     this.tableData = res.page.list
                     this.SpinShow = false;
+                    this.pageTotal = res.page.total
                 })
             },
             RootShowF(val) {
