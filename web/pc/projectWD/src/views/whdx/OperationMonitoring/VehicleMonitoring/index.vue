@@ -549,12 +549,21 @@ export default {
                     this.mapCarList = [this.choosedCar];
 				}
             }else{
-                let activeKey = this.$refs.tabRef.activeKey;
-                if (activeKey != 'name0' && activeKey != 'name1'){
-                    return;
-				}
-                this.mapCarList = this.carArray[this.status];
-                this.$refs.map.update();
+                try{
+                    //如果界面切换后，无该对象，websocket需停止
+                    if (this.$refs.map == undefined){
+                        this.stompClient.disconnect(function(){});
+                        return
+					}
+
+                    let activeKey = this.$refs.tabRef.activeKey;
+                    if (activeKey != 'name0' && activeKey != 'name1'){
+                        return;
+                    }
+
+                    this.mapCarList = this.carArray[this.status];
+                    this.$refs.map.update();
+				}catch(e){}
             }
 		},
         init(){
