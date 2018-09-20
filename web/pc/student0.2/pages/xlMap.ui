@@ -55,24 +55,27 @@ export default {
     }
   },
   methods: {
+    showRoute(line) {
+                // 显示线路
+                this.showLine(line);
+                // 显示站点
+                this.showStations(line);
+                // 显示车辆
+                this.showCars(line);
+    },
     getBusCode(callback){
       var v = this
       this.$http('POST',ui.getApp().apis.XLMAP,{xlId:this.xlID},(res)=>{
-          console.log('数据请求====',res);
           if(res.code==200&&res.result){
             v.carList = v.carList.concat(res.result)
             
           }
                 callback && callback(v.carList)
-          // this.carList = res.result
-          
-          console.log('======',v.carList)
       })
     },
     getxlmess(callback,callback2){
       var v = this
       this.$http('POST',ui.getApp().apis.ZDMESS,{xlid:this.xlID},(res)=>{
-        console.log('shujuqingqiu====',res);
          if(res.code==200&&res.result){
             v.carList =  res.result.list
 
@@ -81,7 +84,6 @@ export default {
             })
             callback2 && callback2(res.result.list)
           }
-           console.log('======',v.carList)
       })
     },
     goXlMess () {
@@ -92,17 +94,47 @@ export default {
     Goback(){
       ui.navigateBack()
     },
-    addMarker(item, point) {
+     getIcon(car) {
+                switch (car.zxzt) {
+                    case 20:
+                        return 'http://47.98.39.45:9092/icon/running.png';
+                    case 10:
+                        return 'http://47.98.39.45:9092/icon/ic_car.png';
+                    default:
+                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
+                }
+    },
+    addMarker(item, point,i) {
       var myIcon = ''
+      var mess = ""
       if(item.cphm){
-         myIcon = new BMap.Icon("/static/img/bus2.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+         myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
+         var marker = new BMap.Marker(point,{icon:myIcon});
+         mess = item.cphm
+         this.map.addOverlay(marker);
       }else{
-        myIcon = new BMap.Icon("/static/img/gjzp.png", new BMap.Size(40,40),{imageSize: new BMap.Size(25,25),anchor: new BMap.Size(25, 25)} );
+        var marker = new BMap.Marker(point);
+        marker.setLabel(this.getNumberLabel(i));
+        mess = item.zdName
+        this.map.addOverlay(marker);
       }
-        
-      // var myIcon = new BMap.Icon(v.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
-      var marker = new BMap.Marker(point,{icon:myIcon});
       this.map.addOverlay(marker);
+      let html = '<div style=" width: 120px;height: 28px;padding:4px;text-align: center">' +
+                      '<span>' + mess +'</span> ' +
+                      '</div>';
+
+        var myLabel = new BMap.Label(html,     //为lable填写内容
+            {
+                offset: new BMap.Size(-80, -70),                  //label的偏移量，为了让label的中心显示在点上
+                position: point
+            });                                //label的位置
+        myLabel.setStyle({                                   //给label设置样式，任意的CSS都是可以的
+            fontSize: "16px",               //字号
+            'background-color': 'rgba(255,255,255,0.6)',
+            'border-radius': '4px',
+        });
+        myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
+        this.map.addOverlay(myLabel);
       // this.addClickHandler(item, marker);
     },
     // 获取一条线路的途径点
@@ -116,6 +148,7 @@ showLine(points){
         {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5}
     );
     this.map.addOverlay(polyline);
+
 },
 // 获取一条线路的途径点
 getLinePoints(stationList){
@@ -150,6 +183,38 @@ getLinePoints(stationList){
               }
           })
       },
+        getNumberLabel(number) {
+                var offsetSize = new BMap.Size(0, 0);
+                var labelStyle = {
+                    color: "#fff",
+                    backgroundColor: "0.05",
+                    border: "0"
+                };
+
+                //不同数字长度需要设置不同的样式。
+                switch ((number + '').length) {
+                    case 1:
+                        labelStyle.fontSize = "14px";
+                        offsetSize = new BMap.Size(4, 2);
+                        break;
+                    case 2:
+                        labelStyle.fontSize = "12px";
+                        offsetSize = new BMap.Size(2, 4);
+                        break;
+                    case 3:
+                        labelStyle.fontSize = "10px";
+                        offsetSize = new BMap.Size(-2, 4);
+                        break;
+                    default:
+                        break;
+                }
+
+                var label = new BMap.Label(number, {
+                    offset: offsetSize
+                });
+                label.setStyle(labelStyle);
+                return label;
+            },
   },
   mounted() {
     var script = document.createElement("script")
@@ -157,22 +222,20 @@ getLinePoints(stationList){
     var callbackName = '_callback'+Date.now()
     let v = this;
     window[callbackName]= function(){
-     console.log(BMap)
       v.map = new BMap.Map("allmap");    // 创建Map实例
       v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
       var point = new BMap.Point(114.368107, 30.543083);
       v.map.centerAndZoom(point, 16); 
 
-      v.getxlmess( (res)=>{
+      v.getxlmess((res)=>{
+        let c = 0;
         for (let r of res) {
           var point = new BMap.Point(r.jd, r.wd);
-          v.addMarker(r, point);
+          v.addMarker(r, point,++c);
         };  
       },(reslist)=>{
         v.getLinePoints(reslist)
-      } )
-      
-      
+      })      
       
       // 自定义icon,创建标注
         
