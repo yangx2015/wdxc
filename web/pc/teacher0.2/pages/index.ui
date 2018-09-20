@@ -1,6 +1,5 @@
 <template>
   <ui-page  style="overflow-y: hidden;">
-      
       <ui-view class="box_col" style="{{ { height: pageHeight(0)+ 'px'} }}">
             <!-- 页面内容 start-->
             <ui-view>
@@ -8,27 +7,28 @@
             </ui-view>
             <ui-view class="log_box">
                 <ui-view>
-                    <ui-row>
-                      <ui-icon type="webicon318"></ui-icon>
+                    <ui-row style="height:32px">
+                      <ui-icon type="webicon318" style="color:#19be6b;line-height:32px"></ui-icon>
                       <ui-input ui:model="{{form.hcdz}}" placeholder="你在哪儿" bindtap="getStarGps()"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
-                    <ui-row>
-                      <ui-icon type="webicon318"></ui-icon>
+                    <ui-row style="height:32px">
+                      <ui-icon type="webicon318" style="color:orange;line-height:32px"></ui-icon>
                       <ui-input ui:model="{{form.mdd}}" placeholder="要去哪儿" bindtap="getEndGps()"></ui-input>
                     </ui-row>
                 </ui-view>
                 <ui-view>
                   <ui-row>
                      <ui-col sapn=1>
-                        <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" ></ui-icon>
+                        <ui-icon type="shijianshizhongdaojishi" bindtap="radioCalendaropen" style="color:#808695"></ui-icon>
                       </ui-col >
                       <ui-col span=7 bindtap="radioCalendaropen" align="left" >
-                        <ui-text>{{radioMonth}}月{{radioDay}}日{{ time }}</ui-text>
+                        <ui-text ui:if="showSelectTime == ''">选择用车时间</ui-text>
+                        <ui-text ui:else>{{ showSelectTime }}</ui-text>
                      </ui-col>
                      <ui-col span=1>
-                        <ui-icon type="yuan-copy-copy-copy-copy" ></ui-icon>
+                        <ui-icon type="wo"  style="color:#808695"></ui-icon>
                       </ui-col>
                       <ui-col span=3 align="left" bindtap="getmyself()">
                         <ui-text>{{people}}</ui-text>
@@ -36,7 +36,7 @@
                   </ui-row>
                 </ui-view>
 
-               <ui-view ui:show="{{people == '他人乘坐'}}">
+               <!-- <ui-view ui:show="{{people == '他人乘坐'}}">
                   <ui-row>
                       <ui-col span=2>
                         <ui-text>姓名</ui-text>
@@ -51,108 +51,68 @@
                         <ui-text>{{form.cklxdh}} </ui-text>
                       </ui-col>
                   </ui-row>
-                </ui-view> 
+                </ui-view>  -->
 
-                    <ui-popup ui:model="{{ show5 }}" height="570" background="transparent">
-                        <ui-view class="popup5">
-                          <ui-row height="40" border-bottom>
-                            <ui-col vertical-align="middle" space-left="20"></ui-col>
-                            <ui-col width="40" vertical-align="middle" align="center" bindtap="handleShow('show5')">
-                              <ui-icon name="x" size="18" color="#FC8950"></ui-icon>
+                <ui-popup ui:model="{{ show5 }}" height="570" background="transparent">
+                    <ui-view class="popup5">
+                      <ui-row height="40" border-bottom>
+                        <ui-col vertical-align="middle" space-left="20"></ui-col>
+                        <ui-col width="40" vertical-align="middle" align="center" bindtap="handleShow('show5')">
+                          <ui-icon name="x" size="18" color="#FC8950"></ui-icon>
+                        </ui-col>
+                      </ui-row>
+                      <ui-view>
+                        <ui-view style="background-color:#ffffff" padding="10px 20px 10px 20px">
+                          <ui-row>
+                            <ui-col span=12 align=center space-left=10 style="position:relative">
+                                <ui-icon type="wo" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
+                              <ui-input ui:model="{{form.ck}}" placeholder="请输入姓名" style="padding-left:32px"></ui-input>
+                            </ui-col>
+                            </ui-row>
+                            <ui-row>
+                            <ui-col span=12 align=center space-left=10 style="position:relative">
+                              <ui-icon type="shouji" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
+                            
+                              <ui-input ui:model="{{form.cklxdh }}"  type="number" placeholder="请输入手机号码" style="padding-left:32px"></ui-input>
                             </ui-col>
                           </ui-row>
-                          <ui-view>
-                           <ui-view style="background-color:#ffffff" padding="10px 20px 10px 20px">
-                             <ui-row>
-                               <ui-col span=12 align=center space-left=10 style="position:relative">
-                                   <ui-icon type="wo" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
-                                  <ui-input ui:model="{{form.ck}}" placeholder="请输入姓名" style="padding-left:32px"></ui-input>
-                                </ui-col>
-                                </ui-row>
-                                <ui-row>
-                                <ui-col span=12 align=center space-left=10 style="position:relative">
-                                  <ui-icon type="shouji" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
-                                
-                                  <ui-input ui:model="{{form.cklxdh }}"  type="number" placeholder="请输入手机号码" style="padding-left:32px"></ui-input>
-                                </ui-col>
-                              </ui-row>
-                            </ui-view>
-                            </ui-view>
-                            <ui-view>
-                              
-                                
-                            </ui-view>
-                            <ui-row height="50">
-                            <ui-col space-left="20" space-right="20" vertical-align="middle">
-                              <ui-button type="primary" color="red" bindtap="getinputmessage()">确定</ui-button>
-                            </ui-col>
-                          </ui-row>
-                          <ui-view>
-                            <ui-scroll-view scroll-y  height="300">
-                              <ui-view style="background-color:#fff">
-                            
-                              <ui-row border-bottom=true>
-                                 <ui-divider color="red">历史乘车人</ui-divider>
-                              </ui-row>
-                              <ui-row border-bottom=true style="font-size:18px;" ui:for="{{hisList}}" bindtap="getHisck(item)">
-                                <ui-col space-left=10>
-                                 {{(index+1)}} .  {{item.name}} · {{item.phone}}
-                                </ui-col>
-                              </ui-row>
-
-                          </ui-view>
-                            </ui-scroll-view>
-                            
-                            
-                          </ui-view>
                         </ui-view>
-                      </ui-popup>
-
-                    <!-- <ui-popup ui:model="{{ show3 }}" height="100%">
-                      <ui-view class="popup1">
-                           <ui-view>
-                            <ui-view>
-                                <ui-input ui:model="{{form.ck}}" placeholder="请输入姓名"></ui-input>
-                            </ui-view>
-                            <ui-view>
-                                <ui-input ui:model="{{form.cklxdh }}"  type="number" placeholder="请输入手机号码"></ui-input>
-                            </ui-view>
-                            <ui-button class="login" bindtap="getinputmessage()" plain type="primary">提交</ui-button>
-                          </ui-view>
-                          <ui-view class="box_col">
-                              <ui-row border-bottom=true>
-                                历史乘车人
-                              </ui-row>
-                          </ui-view>
-                          <ui-view class="box_col" bindtap="getHisck()">
-                              <ui-row border-bottom=true style="font-size:20px" ui:for="{{hisList}}">
-                                <ui-col span=9 align=center>
-                                  {{item.ck}} · {{item.cklxdh}}
-                                </ui-col>
-                                <ui-col>
-                                    <ui-icon type="webicon318" size=28 bindtap=""></ui-icon>
-                                </ui-col>
-                              </ui-row>
-                          </ui-view>
-                      </ui-view>
-                    </ui-popup> -->
-
-
-                    <!-- <ui-mask ui:model="showMask1">
-                      <ui-view class="content">
-                            <ui-view class="log_box">
+                        </ui-view>
+                        <ui-view>
                           
-                        <ui-button bindtap="handleShow('show3')" plain type="primary"">确认</ui-button>
+                            
                         </ui-view>
+                        <ui-row height="50">
+                        <ui-col space-left="20" space-right="20" vertical-align="middle">
+                          <ui-button type="primary" color="red" bindtap="getinputmessage()">确定</ui-button>
+                        </ui-col>
+                      </ui-row>
+                      <ui-view>
+                        <ui-scroll-view scroll-y  height="300">
+                          <ui-view style="background-color:#fff">
+                        
+                          <ui-row border-bottom=true>
+                              <ui-divider color="red">历史乘车人</ui-divider>
+                          </ui-row>
+                          <ui-row border-bottom=true style="font-size:18px;" ui:for="{{hisList}}" bindtap="getHisck(item)">
+                            <ui-col space-left=10>
+                              {{(index+1)}} .  {{item.name}} · {{item.phone}}
+                            </ui-col>
+                          </ui-row>
+
                       </ui-view>
-                    </ui-mask>
-                </ui-view> -->
+                        </ui-scroll-view>
+                        
+                        
+                      </ui-view>
+                    </ui-view>
+                  </ui-popup>
                 
                 <ui-view>
                    <ui-row height="100">
                      <ui-col ui:for="{{carlist}}" bindtap="getcarnum(item,index)">
                        <!-- <ui-text>xiaoche </ui-text> -->
-                       <ui-image src="static/img/teacher/car.jpg" mode="widthFix" width="90%" align="center"></ui-image>
+                       <ui-image src="{{item.photo}}" mode="widthFix" width="90%" align="center" ></ui-image>
                        <ui-text align="center" style="{{ {fontSize:'20px',color:item.color} }}">{{item.val}}座</ui-text>
                      </ui-col>
                    </ui-row>
@@ -183,18 +143,8 @@
                   </ui-col>
 
                 </ui-row>
-                <ui-v-calendar
-                ui:if="{{ show }}"
-                disable-past-days
-                select-range-mode="{{false}}"
-                header-height="30"
-                height="319"
-                ui:model='date'
-                show-today
-                bindchange="selectedChange"
-                value="{{radioDate}}"
-              ></ui-v-calendar>
-              <ui-picker-view mode="time" value="{{ time }}" bindchange="handleChange4"></ui-picker-view>
+
+              <ui-picker-view mode="multiSelector" is-chain range="{{ selectTimeRange }}" value="{{ time }}" bindchange="handleChange4"></ui-picker-view>
               <ui-button  bindtap="resetPicker2">确定</ui-button>
               </ui-view>
             </ui-popup>
@@ -214,6 +164,7 @@
 
 <script>
 import util from "static/utils/util";
+import moment from 'moment';
 var formatLocation = util.formatLocation
 export default {
     // navigationStyle: 'custom',
@@ -234,7 +185,9 @@ export default {
       // },
       hisList:[//历史乘车人信息
       ],
-    
+      //日期级联选择
+      selectTimeRange: [],
+      showSelectTime:'',
       show5: false,
       newnum:'',
       yysj: '00:00',
@@ -251,7 +204,7 @@ export default {
         mdd:'',             // 目的地
         ck:'',              // 乘客姓名
         cklxdh:'',          // 乘客联系电话
-        yysj:this.getTime(),            // 预约时间
+        yysj:'',            // 预约时间
         originLat:'',       // 起始经度
         originLng:'',       // 起始纬度
         destinationLat:'',  // 目的地经度
@@ -259,20 +212,23 @@ export default {
         zws:'5',             // 座位数
         cllx:10
       },
-      time:'00:00',
+      time:null,
       choosedCar:'',
       carlist:[
         {
           val:5,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car5.png'
         },
         {
           val:7,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car7.png'
         },
         {
           val:11,
-          color:"#000"
+          color:"#000",
+          photo:'/static/img/teacher/car11.png'
         }
       ],
       people:'本人乘坐',
@@ -328,8 +284,8 @@ export default {
       this.hisList.push({name:this.form.ck,phone:this.form.cklxdh})//历史记录添加
 
       localStorage.setItem('hisList',JSON.stringify(this.hisList)) 
-      this.getHisList()
-      
+      this.getHisList();
+      this.people = this.form.ck
     },
     getHisList(){//获取历史乘车人信息
       var hisMess = localStorage.getItem('hisList')
@@ -377,12 +333,11 @@ export default {
           return false
       }
       console.log('yysj',v.yysj)
-      if(v.yysj==''){
+      if(v.form.yysj==''){
         ui.showToast({ title: '请选择上车时间!'})
           return false
       }
-      console.log(v.people)
-      console.log(v.newnum)
+
       if(v.people==='他人乘车'&& v.form.cklxdh =='' && v.form.ck=='' ){
          ui.showToast({ title: '请输入乘车人信息!'})
           return false
@@ -393,20 +348,15 @@ export default {
     },
     submit(){
       if(!this.indexYZ()) return
-      console.log("valid success,post");
       this.$http("POST",ui.getApp().apis.DDSAVE.SAVE,this.form,(res)=>{
-         console.log('==========================',res)
-         if(res.code==200){
-        console.log('werewrwewewrwewew');
-        
-        ui.showToast({ title: '提交成功'})
-        this.goorder()
-      }else{
-        ui.showToast({ title: '提交失败'})
-      }
+        if(res.code==200){
+          ui.showToast({ title: '提交成功'})
+          this.goorder()
+        }else{
+          ui.showToast({ title: '提交失败'})
+        }
       });
-      
-     },  
+    },  
     handleNavIconTap () {
       ui.getApp().showSlideMenu = !ui.getApp().showSlideMenu
     },
@@ -459,8 +409,8 @@ export default {
     },
     resetPicker2 () {
       this.show=false
-      this.form.yysj = this.radioYears +'-'+ this.radioMonth +'-'+ this.radioDay +' '+ this.time + ':00';
-
+      this.form.yysj = this.time[0] + " " + this.time[1] + ':00:00';
+      this.showSelectTime = moment(this.form.yysj).format('MM月DD日 HH时');
     },
     selectedChange(val){
         console.log('s事件++++++++++++++',val)
@@ -661,7 +611,40 @@ export default {
         let time = Year + '-' + Month + '-' + Day + ' ' + Hours + ':' + Minutes + ':' + Seconds
         return time
       },
-   
+    //初始化出行时间选择控件
+    initSelectTime(){
+      this.selectTimeRange = [];
+      for (let d=0; d<10; d++){
+        let monthDay = moment().add('days',d);
+        let hourStart = 0;
+        let hourEnd = 24;
+        if (d == 0){
+          hourStart = parseInt(monthDay.format("HH")) + 1;
+        }
+        let hours = [];
+        for (let i=hourStart; i<hourEnd; i++){
+          let append = '';
+          if (i < 10){
+            append = '0';
+          }
+          hours.push({
+            name:append + i  + '点',
+            value:append + i
+          });
+        }
+
+        if (hours.length == 0){
+          continue;
+        }
+        this.selectTimeRange.push(
+          {
+            name: monthDay.format("MM月DD日"),
+            value: monthDay.format("YYYY-MM-DD"),
+            children:hours
+          }
+        );
+      }
+    }
   },
   created () {
     this.getHisList()
@@ -671,37 +654,22 @@ export default {
       type: 'wgs84',
       success: function (res) {
         v.gethcdz(res)
-        console.log("%%%%%%weizhixinxi%%%%%",res);
-         ui.request({
-            url: 'http://apis.map.qq.com/ws/geocoder/v1/?', 
-            data: {
-              location: res.latitude+','+ res.longitude,
-              key: 'RHGBZ-S2LAU-5MRV7-4QPTZ-JI25K-HVBDV'
-            },
-            success: (res) => {
-              console.log("^^^^^^^^^^^",res)
-            
-            }
-          })
+        ui.request({
+          url: 'http://apis.map.qq.com/ws/geocoder/v1/?', 
+          data: {
+            location: res.latitude+','+ res.longitude,
+            key: 'RHGBZ-S2LAU-5MRV7-4QPTZ-JI25K-HVBDV'
+          },
+          success: (res) => {
+          }
+        })
       }
     })
     this.getGPS()
-    this.getTime()
+    //this.getTime()
   },
   mounted() {
-    
-    //单选日期 获取当前日期，并格式化赋值给日历
-      let radiodate = new Date()
-      this.radioDate = this.format(Date.parse(radiodate))
-
-      //获取单选日历 获取月和天。
-      let date = new Date()
-      this.radioinit(this.format(date))
-
-      // 双选默认选中日历，获取默认选中时间范围【开始：当前日期。结束：当前日期推后2天】
-      
-
-
+    this.initSelectTime();
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
       //关闭app启动图

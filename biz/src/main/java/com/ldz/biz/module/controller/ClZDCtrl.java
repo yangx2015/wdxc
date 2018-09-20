@@ -7,6 +7,7 @@ import com.ldz.biz.module.service.ZdService;
 import com.ldz.sys.base.BaseController;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -35,6 +36,9 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 
 	@RequestMapping(value = "/save", method = { RequestMethod.POST })
 	public ApiResponse<String> save(@Valid ClZd entity) {
+		if(StringUtils.isNotEmpty(entity.getId())){
+			return zdservice.updateEntity(entity);
+		}
 		return zdservice.saveEntity(entity);
 	}
 

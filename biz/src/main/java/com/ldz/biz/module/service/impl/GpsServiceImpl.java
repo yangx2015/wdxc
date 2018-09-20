@@ -14,6 +14,7 @@ import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
+import com.ldz.sys.model.SysYh;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
@@ -390,13 +391,17 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         if (zdgl != null){
             // 根据传入的sczt判断终段在线状态
             if (StringUtils.equals(entity.getSczt(), "10")) {
-                zdgl.setZt("00");
-                zdgl.setZxzt("00");
-                zdglservice.update(zdgl);
+                if(!StringUtils.equals(zdgl.getZt(),"00") || !StringUtils.equals(zdgl.getZxzt(),"00")){
+                    zdgl.setZt("00");
+                    zdgl.setZxzt("00");
+                    zdglservice.update(zdgl);
+                }
             }else if (StringUtils.equals(entity.getSczt(), "20")) {
-                zdgl.setZt("00");
-                zdgl.setZxzt("10");
-                zdglservice.update(zdgl);
+                if(!StringUtils.equals(zdgl.getZt(),"00") || !StringUtils.equals(zdgl.getZxzt(),"10")) {
+                    zdgl.setZt("00");
+                    zdgl.setZxzt("10");
+                    zdglservice.update(zdgl);
+                }
             }
         }
 
@@ -472,6 +477,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
         }
         if(seleByZdbh !=null) {
+            info.setXlId(xlId);
             info.setClid(seleByZdbh.getClId());
             info.setCph(seleByZdbh.getCph());
             info.setZdbh(seleByZdbh.getZdbh());
@@ -501,7 +507,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     public ApiResponse<List<WebsocketInfo>> inintGps() {
         ApiResponse<List<WebsocketInfo>> apiResponse = new ApiResponse<>();
         List<WebsocketInfo> list = new ArrayList<>();
-
+        SysYh currentUser = getCurrentUser();
         SimpleCondition condition = new SimpleCondition(ClCl.class);
         String cphLike = getRequestParamterAsString("cphLike");
         if (StringUtils.isNotEmpty(cphLike)) {
@@ -517,6 +523,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         // 获取终端状态
         condition = new LimitedCondition(ClZdgl.class);
+        condition.startWith(ClZdgl.InnerColumn.jgdm,currentUser.getJgdm());
         List<ClZdgl> zds = zdglservice.findByCondition(condition);
 
 

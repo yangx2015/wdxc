@@ -142,9 +142,11 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     }
 
     public ApiResponse<List<ClZdgl>> unboundList(){
+        SysYh currentUser = getCurrentUser();
+        String jgdm = currentUser.getJgdm();
 //        1、定义初始变量
         ApiResponse<List<ClZdgl>> result = new ApiResponse<List<ClZdgl>>();
-        List<ClZdgl> list=entityMapper.getUnboundList();
+        List<ClZdgl> list=entityMapper.getUnboundList(jgdm);
         result.setResult(list);
         return result;
     }
@@ -198,24 +200,30 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 
 	@Override
 	public ApiResponse<Map<String, Integer>> getzdxc() {
+        SysYh user = getCurrentUser();
+        String userJgdm=user.getJgdm();
 		int dianhuo =0;
 		int xihuo =0;
 		int lixian=0;
 		List<ClZdgl> selectAll = entityMapper.selectAll();
 	       RuntimeCheck.ifEmpty(selectAll, "暂无设备");
 		for (ClZdgl clZdgl : selectAll) {
-			//点火
-			if (StringUtils.equals(clZdgl.getZxzt(), "00")) {
-				dianhuo++;
-			}
-			//熄火
-			if (StringUtils.equals(clZdgl.getZxzt(), "10")) {
-				xihuo++;
-			}
-			//离线
-			if (StringUtils.equals(clZdgl.getZxzt(), "20")) {
-				lixian++;
-			}
+		    if(StringUtils.isNotEmpty(userJgdm)){
+                if(StringUtils.indexOf(userJgdm,clZdgl.getJgdm())>-1){
+                    //点火
+                    if (StringUtils.equals(clZdgl.getZxzt(), "00")) {
+                        dianhuo++;
+                    }
+                    //熄火
+                    if (StringUtils.equals(clZdgl.getZxzt(), "10")) {
+                        xihuo++;
+                    }
+                    //离线
+                    if (StringUtils.equals(clZdgl.getZxzt(), "20")) {
+                        lixian++;
+                    }
+                }
+            }
 
 		}
 		Map<String,Integer> map = new HashMap<>();

@@ -6,10 +6,7 @@ import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.wechat.base.BaseController;
 import com.ldz.wechat.base.BaseService;
-import com.ldz.wechat.module.model.ClDd;
-import com.ldz.wechat.module.model.ClJsy;
-import com.ldz.wechat.module.model.SysJzgxx;
-import com.ldz.wechat.module.model.SysZdxm;
+import com.ldz.wechat.module.model.*;
 import com.ldz.wechat.module.service.DdService;
 import com.ldz.wechat.module.service.SjDdService;
 import com.ldz.wechat.module.service.ZdxmService;
@@ -211,5 +208,15 @@ public class DdCtrl extends BaseController<ClDd,String> {
     @RequestMapping("getStartPointAndEndPoint")
     public ApiResponse<Map<String,Object>> getStartPointAndEndPoint(String orderId){
         return service.getStartPointAndEndPoint(orderId);
+    }
+
+    /**
+     * 获取当前订单的订单  车辆GPS列表
+     * @param orderId
+     * @return
+     */
+    @RequestMapping(value="/getddgps", method={RequestMethod.POST, RequestMethod.GET})
+    public ApiResponse<List<Clyy>> getOrderGpsList(String orderId){
+        return service.getOrderGpsList(orderId);
     }
 }

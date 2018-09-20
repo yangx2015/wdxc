@@ -38,7 +38,6 @@ public class MessageApi {
 	 */
 	@PostMapping("/gps/save")
 	public ApiResponse<String> filterAndSave(@RequestBody GpsInfo entity) {
-
 		return gpsservice.onReceiveGps(entity);
 	}
 

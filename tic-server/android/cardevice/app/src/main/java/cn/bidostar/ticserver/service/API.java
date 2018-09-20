@@ -952,6 +952,20 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         mAppContext.sendBroadcast(intent);
     }
 
+    /**
+     * 新增的api 让app在休眠时可以不断网
+     */
+    public void setAppKeepAlive2(String packageName){
+        if(packageName == null){
+            packageName = mAppContext.getPackageName();
+        }
+        Intent intent = new Intent();
+        intent.setAction(CarIntents.ACTION_SET_PROP);
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_KEY, "sys.rtc.packages");
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_VAL, packageName);
+        mAppContext.sendBroadcast(intent);
+    }
+
 
     /**
      * 通过广播设置系统属性

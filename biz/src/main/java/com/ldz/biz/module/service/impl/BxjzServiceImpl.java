@@ -4,6 +4,7 @@ import com.ldz.biz.module.mapper.ClBxjzMapper;
 import com.ldz.biz.module.model.ClBxjz;
 import com.ldz.biz.module.service.BxjzService;
 import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
@@ -43,5 +44,15 @@ public class BxjzServiceImpl extends BaseServiceImpl<ClBxjz,String> implements B
         update(e);
         return ApiResponse.success();
     }
+
+
+    @Override
+    public boolean fillPagerCondition(LimitedCondition condition){
+
+        SysYh currentUser = getCurrentUser();
+        condition.startWith(ClBxjz.InnerColumn.jgdm,currentUser.getJgdm());
+        return true;
+    }
+
 
 }
