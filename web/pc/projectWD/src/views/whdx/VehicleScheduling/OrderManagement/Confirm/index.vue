@@ -127,9 +127,19 @@
                         key: 'sjxm'
                     },
                     {
-                        title: '司机电话',
-                        align: 'center',
-                        key: 'DriverPhone'
+                        title: '约车时间',
+                        key: 'yysj',
+                        render:(h,p)=>{
+                            return h('div', p.row.yysj.substring(0, 13));
+                        }
+                    },
+                    {
+                        title: '约车地点',
+                        key: 'hcdz'
+                    },
+                    {
+                        title: '目的地',
+                        key: 'mdd'
                     },
                     {
                         title: '座位数',

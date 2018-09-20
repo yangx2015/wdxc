@@ -549,6 +549,10 @@ export default {
                     this.mapCarList = [this.choosedCar];
 				}
             }else{
+                let activeKey = v.$refs.tabRef.activeKey;
+                if (activeKey != 'name0' || activeKey != 'name1'){
+                    return;
+				}
                 this.mapCarList = this.carArray[this.status];
                 this.$refs.map.update();
             }
@@ -556,6 +560,9 @@ export default {
         init(){
             this.classify();
             this.mapCarList = this.allCarList;
+            if (this.mapCarList.length > 0){
+                this.$refs.map.update();
+			}
             this.showTabs = true;
             this.changeBtn();
 		},
@@ -694,9 +701,13 @@ export default {
             this.$refs.carInfoRef.init(item);
 		},
         changeTabMarkPoint(name){
-            //this.stompClient.disconnect(function(){});
-            for (let r of this.allCarList){
-                this.subscribes[r.zdbh].unsubscribe();
+			try{
+                for (let r of this.allCarList){
+                    this.subscribes[r.zdbh].unsubscribe();
+                }
+                this.wsconnect();
+			}catch(e){
+
 			}
 
 		    if (name == 'name0'){
@@ -709,7 +720,6 @@ export default {
                 this.mapCarList = this.carArray[2];
             }
 
-            this.wsconnect();
             this.$refs.map.update();
 		}
     }

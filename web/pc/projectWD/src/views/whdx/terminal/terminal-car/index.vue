@@ -178,10 +178,11 @@
                         align: 'center',
                         key: 'zxzt',
                         render: (h, p) => {
+                            console.log(p.row.zxzt);
                             let val = this.dictUtil.getValByCode(this, this.lmdmDictionary, p.row.zxzt)
                             return h('div', {
                                 style: {
-                                    color: p.row.zxzt == "00" ? '#279a3b' : '#727272'
+                                    color: p.row.zxzt == 20 ? '#727272' : (p.row.zxzt == 10 ? '#ed4014' : '#279a3b')
                                 }
                             }, val)
                         }
