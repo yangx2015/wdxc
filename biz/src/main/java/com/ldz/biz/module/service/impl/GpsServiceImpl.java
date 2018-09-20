@@ -477,6 +477,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
         }
         if(seleByZdbh !=null) {
+            info.setXlId(xlId);
             info.setClid(seleByZdbh.getClId());
             info.setCph(seleByZdbh.getCph());
             info.setZdbh(seleByZdbh.getZdbh());
