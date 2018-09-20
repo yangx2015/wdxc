@@ -19,11 +19,40 @@
     <ui-view class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
       <ui-view class="getmess">
           <ui-view>
-            <ui-row>
-              <ui-col align="center" space-left="55" style="color:#000000;font-size:25px">
-                  总价{{orderMess.zj}}元
+            <ui-row vertical-align="middle" height="50rpx"  border-bottom style="padding:0px 15px 0px 0px" >
+                <ui-col align="left" span=1 space-left="15" >
+                  <ui-view calss="pingyi">
+                    <ui-icon type="head-g" size=28 style="color:#888888"></ui-icon>
+                  </ui-view>
                 </ui-col>
-                <ui-col span="2">
+                <ui-col  align="left" space-left="20" vertical-align="middle">
+                  <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
+                    {{orderMess.sjxm}}
+                  </ui-view>
+                </ui-col>
+                <ui-col align="left" span=1 space-left="15" >
+                  <ui-view calss="pingyi">
+                    <ui-icon type="shouji" size=28 style="color:#888888"></ui-icon>
+                  </ui-view>
+                </ui-col>
+                <ui-col align="right"  space-right="1" vertical-align="middle"> 
+                    <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:1px">
+                    {{orderMess.sjdh}}45672435
+                  </ui-view>
+                </ui-col>
+            </ui-row>
+            <ui-row>
+                <ui-col align="center" span=4 space-right="20">
+                <ui-view class="text" style="color: #686868;font-size:15px;font-weight:700;">
+                  {{orderMess.cph}}
+                </ui-view>
+                </ui-col>
+                <ui-col vertical-align="middle">
+                <ui-view align="center" style="color:#A0A0A0;font-size:15px">
+                  {{orderMess.zws}} 座车
+                </ui-view> 
+                </ui-col>
+                <ui-col span="4">
                   <ui-popover value="{{show3}}" position="bottom" bindhide="show3toggle('hide')" bindshow="show3toggle('show')">
                     <ui-view>
                       <ui-view class="popover_item">
@@ -52,50 +81,22 @@
                 </ui-col>
             </ui-row>
             </ui-view>
-           <ui-row vertical-align="middle">
+           <ui-row space-top="10" vertical-align="middle">
             <ui-col align="center"  style="color:#A0A0A0">
               {{starResult}}
             </ui-col>
-          
           </ui-row>
         <ui-row align=center>
-          <ui-col>
+          <ui-col space-right="35">
             <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
           </ui-col> 
-        </ui-row>       
-
-        <ui-row vertical-align="middle" height="50rpx"  border-bottom style="padding:0px 15px 0px 0px" >
-          <ui-col align="left" span=1 space-left="25" >
-            <ui-view calss="pingyi">
-              <ui-icon type="head-g" size=28 style="color:#888888"></ui-icon>
-            </ui-view>
-          </ui-col>
-          <ui-col  align="left" space-left="20" vertical-align="middle">
-            <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
-              {{orderMess.sjxm}}
-            </ui-view>
-          </ui-col>
-          <ui-col align="left"  space-right="20"> 
-              <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
-              {{orderMess.sjdh}}
-            </ui-view>
-          </ui-col>
-      </ui-row>
-      <ui-row>
-          <ui-col align="center" span=4 space-right="20">
-          <ui-view style="color: #686868;font-size:15px;font-weight:700;">
-            {{orderMess.cph}}
-          </ui-view>
-          </ui-col>
-          <ui-col>
-          <ui-view align="center" style="color:#A0A0A0;font-size:15px">
-            {{orderMess.zws}} 座车
-          </ui-view> 
-          </ui-col>
-      </ui-row>
-     
-
-<ui-view>
+        </ui-row> 
+        <ui-row space-top="10">
+            <ui-col align="center" style="color:#c0c0c0;font-size:22px">
+                合计：{{orderMess.zj}}元
+            </ui-col>
+         </ui-row>     
+      <ui-view>
    </ui-fixed-view>
   <!-- <ui-row vertical-align="middle">
     <ui-col align="center" style="color:#000000">
@@ -124,7 +125,7 @@
   '&markerStyles=-1,'+
   'http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}}}">
    
-  </ui-view> -->
+  </> -->
 
  
  </ui-page>
@@ -146,7 +147,7 @@ export default {
       show3: false,
       show4: false,
       height:ui.WIN_HEIGHT,
-      carHeight:180,
+      carHeight:220,
       points:[],
       starResult: '评价本次服务',
       orderMess:{},
@@ -324,19 +325,19 @@ export default {
  <style lang="less">
 .getmess{
   background-color:#ffffff;
-  height:600rpx;
+  height:500rpx;
 }
 .pingyi{
-  transform: translate(-50%,0%);
+  transform: translate(-10%,0%);
 }
 .ui-divider {
   padding: 40px 0;
 }
 
 .text {
-  padding: 5px;
-  width: 60px;
-  border-bottom: 1px dashed #39f;
+  padding: 10px;
+  width: 100%;
+  border-bottom: 1px dashed rgb(255, 143, 51);
   text-align: center;
 }
 
