@@ -61,7 +61,7 @@
                 scoketMess: [],
                 allDeviceList: [],
                 socket: new SockJS(this.$http.url + "/gps"),
-                stationIconUrl: 'http://47.98.39.45:9092/icon/running.png',
+                stationIconUrl: this.apis.STATIC_PATH+'icon/running.png',
                 colors: ['#4876FF', '#FF0000', '#5CACEE', '#EE00EE', '#00BFFF', '#BF3EFF'],
                 colorIndex: 0,
                 yxjlList:[]
@@ -369,11 +369,11 @@
             getIcon(car) {
                 switch (car.zxzt) {
                     case 20:
-                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png';
+                        return this.apis.STATIC_PATH+'icon/ic_car_offline.png';
                     case 10:
-                        return 'http://47.98.39.45:9092/icon/ic_car.png';
+                        return this.apis.STATIC_PATH+'icon/ic_car.png';
                     default:
-                        return 'http://47.98.39.45:9092/icon/running.png'
+                        return this.apis.STATIC_PATH+'icon/running.png'
                 }
             },
             //地图级别中心
