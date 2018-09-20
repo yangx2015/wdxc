@@ -18,65 +18,83 @@
 <ui-fixed-view bottom="20" left="10" right="10">
     <ui-view class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
       <ui-view class="getmess">
+          <ui-view>
+            <ui-row>
+              <ui-col align="center" space-left="55" style="color:#000000;font-size:25px">
+                  总价{{orderMess.zj}}元
+                </ui-col>
+                <ui-col span="2">
+                  <ui-popover value="{{show3}}" position="bottom" bindhide="show3toggle('hide')" bindshow="show3toggle('show')">
+                    <ui-view>
+                      <ui-view class="popover_item">
+                        <ui-row height="35" bindtap="handleHide('扫一扫')" border-bottom>
+                          <ui-col vertical-align="middle" space-left="5">里程:{{orderMess.lc}}KM</ui-col>
+                        </ui-row>
+                      </ui-view>
+                      <ui-view class="popover_item">
+                        <ui-row height="35" bindtap="handleHide('收付款')" border-bottom>
+                          <ui-col vertical-align="middle" space-left="5">过桥费:{{orderMess.gqf}}元</ui-col>
+                        </ui-row>
+                      </ui-view>
+                      <ui-view class="popover_item">
+                        <ui-row height="35" bindtap="handleHide('帮助')">
+                          <ui-col vertical-align="middle" space-left="5">路停费:{{orderMess.lcf}}元</ui-col>
+                        </ui-row>
+                      </ui-view>
+                      <ui-view class="popover_item">
+                        <ui-row height="35" bindtap="handleHide('帮助')">
+                          <ui-col vertical-align="middle" space-left="5">单价:{{orderMess.dj}}元</ui-col>
+                        </ui-row>
+                      </ui-view>
+                    </ui-view>
+                    <ui-view slot="content" bindtap="handleShow3" class="text">详情</ui-view>
+                  </ui-popover>
+                </ui-col>
+            </ui-row>
+            </ui-view>
+           <ui-row vertical-align="middle">
+            <ui-col align="center"  style="color:#A0A0A0">
+              {{starResult}}
+            </ui-col>
+          
+          </ui-row>
+        <ui-row align=center>
+          <ui-col>
+            <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
+          </ui-col> 
+        </ui-row>       
+
         <ui-row vertical-align="middle" height="50rpx"  border-bottom style="padding:0px 15px 0px 0px" >
-          <ui-col align="left" span=3 space-left="75" >
+          <ui-col align="left" span=1 space-left="25" >
             <ui-view calss="pingyi">
               <ui-icon type="head-g" size=28 style="color:#888888"></ui-icon>
             </ui-view>
           </ui-col>
-          <ui-col span=3 align="left" space-left="10" vertical-align="middle">
+          <ui-col  align="left" space-left="20" vertical-align="middle">
             <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
               {{orderMess.sjxm}}
             </ui-view>
           </ui-col>
-          <ui-col align="left" span=4> 
-          <ui-icon type="qichemoren" size=28 style="color:#888888"></ui-icon>
+          <ui-col align="left"  space-right="20"> 
+              <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
+              {{orderMess.sjdh}}
+            </ui-view>
           </ui-col>
-          <ui-col align="left" span=4 space-right="20">
+      </ui-row>
+      <ui-row>
+          <ui-col align="center" span=4 space-right="20">
           <ui-view style="color: #686868;font-size:15px;font-weight:700;">
             {{orderMess.cph}}
           </ui-view>
-          <ui-view style="color:#A0A0A0;font-size:15px">
+          </ui-col>
+          <ui-col>
+          <ui-view align="center" style="color:#A0A0A0;font-size:15px">
             {{orderMess.zws}} 座车
           </ui-view> 
           </ui-col>
       </ui-row>
-      <ui-row style="padding:10px 0px 10px 0px" vertical-align="middle">
-  <ui-col align="left" space-left="55"  style="color:#A0A0A0">
-    {{starResult}}
-  </ui-col>
-</ui-row>
-<ui-row>
-  
-  <ui-col align="left" space-left="20">
-    <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
-  </ui-col> 
-  <ui-col span=6  space-right="20" style="color:#686868;font-size:22px;font-weight:700">
-      <ui-view>
-        <ui-row style="color:#686868;font-size:12px">
-          <ui-col align="left" space-left="20">
-            过桥费:{{orderMess.gqf}}元
-          </ui-col>
-          <ui-col align="right" space-right="1">
-            路停费:{{orderMess.lcf}}元
-          </ui-col>
-        </ui-row>
-        <ui-row style="color:#686868;font-size:12px" >
-          <ui-col align="left" space-left="20">
-            里程:{{orderMess.lc}}KM
-          </ui-col>
-          <ui-col align="right" space-right="1">
-            单价:{{orderMess.dj}}元
-          </ui-col>
-        </ui-row>
-      </ui-view>
-      <ui-view style="color:#ff0000">
-        <ui-col align="right" space-right="1">
-          总价{{orderMess.zj}}元
-        </ui-col>
-    </ui-view>
-  </ui-col>
-</ui-row>
+     
+
 <ui-view>
    </ui-fixed-view>
   <!-- <ui-row vertical-align="middle">
@@ -125,6 +143,8 @@ export default {
   },
   data () {
     return {
+      show3: false,
+      show4: false,
       height:ui.WIN_HEIGHT,
       carHeight:180,
       points:[],
@@ -141,6 +161,30 @@ export default {
   },
       
   methods: {
+    show3toggle (str) {
+      if (str === 'hide') {
+        this.show3 = false
+      }
+    },
+    show4toggle (str) {
+      if (str === 'hide') {
+        this.show4 = false
+      }
+    },
+    handleShow3 () {
+      this.show3 = true
+    },
+    handleShow4 () {
+      this.show4 = true
+    },
+    handleHide (text) {
+      this.show3 = false
+      this.show4 = false
+
+      ui.showToast({
+        title: text
+      })
+    },
     addMarker(points) {
       console.log('666',points);
         var pt = new BMap.Point(points[0].longitude, points[0].latitude);
@@ -235,7 +279,7 @@ export default {
       var point = new BMap.Point(114.368107, 30.543083);
       v.map.centerAndZoom(point, 15);    
       var marker = new BMap.Marker(point,);
-      v.map.addOverlay(marker);     
+      // v.map.addOverlay(marker);     
       //添加地图类型控件
       v.map.addControl(new BMap.MapTypeControl({
         mapTypes:[
@@ -284,5 +328,29 @@ export default {
 }
 .pingyi{
   transform: translate(-50%,0%);
+}
+.ui-divider {
+  padding: 40px 0;
+}
+
+.text {
+  padding: 5px;
+  width: 60px;
+  border-bottom: 1px dashed #39f;
+  text-align: center;
+}
+
+.ui-popover-overlay {
+  padding: 0;
+  width: 120px;
+}
+.touch_end {
+  background: #eee;
+}
+.popover_item{
+  padding: 0 10px;
+  &:active{
+    background-color: #eee;
+  }
 }
 </style>

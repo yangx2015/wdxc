@@ -26,4 +26,5 @@ export default {
     INFO:'/put/jsy/getInfo',//用户信息
     PROPOSAL:'/put/yj/save',//意见反馈 yjLx 00意见 10反馈 20投诉
     PROPList:'/put/yj/pager',//意见列表
+    HISTORYGJ: '/put/dd/getddgps'//历史轨迹
 }
