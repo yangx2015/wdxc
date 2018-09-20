@@ -45,6 +45,44 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
         return ClCd.class;
     }
 
+//    车队删除时，撤销车辆、驾驶员所绑定的车队编号
+
+    @Override
+    public void remove(String id) {
+        int i=getBaseMapper().deleteByPrimaryKey(id);
+        if(i==1){
+            cancelMotorcade(id);
+        }
+    }
+
+    @Override
+    public void remove(ClCd entity) {
+        int i=getBaseMapper().delete(entity);
+        if(i==1){
+            cancelMotorcade(entity.getCdbh());
+        }
+    }
+
+    @Override
+    public ApiResponse<String> removeIds(String[] ids) {
+        for (String id : ids) {
+            int i=getBaseMapper().deleteByPrimaryKey(id);
+            if(i==1){
+                cancelMotorcade(id);
+            }
+        }
+        return ApiResponse.deleteSuccess();
+    }
+    //撤销车队信息
+    private void cancelMotorcade(String id) {
+        //撤销车辆的车队编号
+        entityMapper.cancelClMotorcade(id);
+        //撤销驾驶员的车队编号
+        entityMapper.cancelJsyMotorcade(id);
+    }
+
+    //车队删除结束*******************************
+
     @Override
     public ApiResponse<String> saveEntity(ClCd entity) {
         RuntimeCheck.ifBlank(entity.getCdmc(), "请输入车队名称");
@@ -95,7 +133,7 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
                 }
             }
         }
-        if (hasIds != null){
+        if (hasIds != null&&hasIds.size()>0){
             carIdList.retainAll(hasIds);
         }
         List<ClCl> modifyCarList = clService.findIn(ClCl.InnerColumn.clId, carIdList);
@@ -135,7 +173,7 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
                 }
             }
         }
-        if (hasIds != null){
+        if (hasIds != null&&hasIds.size()>0){
             driverIdList.retainAll(hasIds);
         }
         List<ClJsy> modifyDriverList = jsyService.findIn(ClJsy.InnerColumn.sfzhm, driverIdList);

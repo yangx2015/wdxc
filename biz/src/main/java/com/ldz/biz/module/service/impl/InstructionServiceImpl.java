@@ -144,9 +144,8 @@ public class InstructionServiceImpl  implements InstructionService {
 	}
 
 	@Override
-	public ApiResponse<String> batchUpdate(GpsInfo info,ClZdgl zdgl) {
+	public ApiResponse<String> batchUpdate(GpsInfo info,ClZdgl zdgl,SysYh user) {
 		// 查询当前用户所在机构及其子机构的设备编号
-		SysYh user = ContextUtil.getCurrentUser();
 		List<SysJg> sysJgs = jgService.findLike(SysJg.InnerColumn.jgdm,  user.getJgdm()+ "%");
 		if (sysJgs.size() == 0)return ApiResponse.success("未找到机构");
 		List<String> jgdms = sysJgs.stream().map(SysJg::getJgdm).collect(Collectors.toList());
