@@ -18,7 +18,7 @@
                     lng: 114.368383,
                     lat: 30.551134
                 },
-                zoom: 16,
+                zoom: 12,
             }
         },
         created(){
@@ -61,9 +61,9 @@
                 this.addMarker(this.gpsList[this.gpsList.length-1].longitude,
                     this.gpsList[this.gpsList.length-1].latitude,
                     this.apis.STATIC_PATH+'icon/map_line_end.png')
-                setTimeout(function () {
-                    v.map.setViewport(this.gpsList);
-                },100)
+                // setTimeout(function () {
+                //     v.map.setViewport(this.gpsList);
+                // },100)
             },
             showLine(line) {
                 var v = this
