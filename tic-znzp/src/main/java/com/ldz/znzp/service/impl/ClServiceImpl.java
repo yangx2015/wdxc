@@ -356,6 +356,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         record.setJd(clGps.getBdjd());
         record.setWd(clGps.getBdwd());
         record.setZt(zt);
+        //2018年9月20日。新增设备ID
+        record.setSzdbh(gpsInfo.getDeviceId());
         if (hasRecord){
             clyxjlMapper.updateByPrimaryKeySelective(record);
         }else{
