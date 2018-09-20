@@ -976,7 +976,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		RuntimeCheck.ifNull(clDd, "未找到订单记录");
 		// 2、验证当前状态必须是 11-订单确认状态
 		String ddzt = clDd.getDdzt();
-		RuntimeCheck.ifFalse(StringUtils.equals(ddzt, "30"), "订单没有处理队长确认状态，不能进行编辑操作");
+		RuntimeCheck.ifFalse(StringUtils.equals(ddzt, "30")||StringUtils.equals(ddzt,"40") , "订单没有处理队长确认状态，不能进行编辑操作");
 
 		RuntimeCheck.ifNull(entity.getZj(), "订单总价不能为空");
 
