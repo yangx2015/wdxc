@@ -87,8 +87,8 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         this.mAppContext = context.getApplicationContext();
         IntentFilter filter = new IntentFilter();
         filter.addAction(CarIntents.ACTION_MONITOR_NOTIFY);
-        //filter.addAction(CarIntents.ACTION_RECORD_FILE);
-        //filter.addAction(CarIntents.ACTION_DELETE_FILE);
+        filter.addAction(CarIntents.ACTION_RECORD_FILE);
+        filter.addAction(CarIntents.ACTION_DELETE_FILE);
         filter.addAction(CarIntents.ACTION_CAMERA_LIVING_CALLBACK);
         filter.addAction(CarIntents.ACTION_RECORDING_STORAGE_SLOW);
         filter.addAction(CarIntents.ACTION_CAPTURE_CUSTOM_VIDEO);
@@ -314,14 +314,14 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             String error = intent.getStringExtra("error");
             long takeId = intent.getLongExtra("id", 0);
             if(filename!=null && filename.contains("lock")) {//如果再lock目录，则是碰撞的直接上传
-                /*LocalFilesModel localFilesModel = new LocalFilesModel();
+                LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);
                 localFilesModel.setFlagUpload("0");
                 localFilesModel.setJltype("2");
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
                 dao.insertModel(localFilesModel);
-                ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);*///这是碰撞索引，直接上传
+                //ServerApiUtils.uploadFile("101", filename, ServerApiUtils.fileUploadCallback);*///这是碰撞索引，直接上传
             }else{
                 LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);
@@ -948,6 +948,20 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         Intent intent = new Intent();
         intent.setAction(CarIntents.ACTION_SET_PROP);
         intent.putExtra(CarIntents.EXTRA_SET_PROP_KEY, "persist.sys.app.keepalive");
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_VAL, packageName);
+        mAppContext.sendBroadcast(intent);
+    }
+
+    /**
+     * 新增的api 让app在休眠时可以不断网
+     */
+    public void setAppKeepAlive2(String packageName){
+        if(packageName == null){
+            packageName = mAppContext.getPackageName();
+        }
+        Intent intent = new Intent();
+        intent.setAction(CarIntents.ACTION_SET_PROP);
+        intent.putExtra(CarIntents.EXTRA_SET_PROP_KEY, "sys.rtc.packages");
         intent.putExtra(CarIntents.EXTRA_SET_PROP_VAL, packageName);
         mAppContext.sendBroadcast(intent);
     }

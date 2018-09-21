@@ -3,11 +3,9 @@ package com.ldz.biz.module.service.impl;
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClJsy;
-import com.ldz.biz.module.model.ClZd;
-import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClService;
+import com.ldz.biz.module.service.ClyxjlService;
 import com.ldz.biz.module.service.JsyService;
 import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -51,6 +49,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	@Autowired
 	private ZdglService zdglService;
 	@Autowired
+	private ClyxjlService clyxjlService;
+	@Autowired
 	private RedisUtil redisUtil;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
@@ -62,6 +62,42 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	@Override
 	protected Class<?> getEntityCls() {
 		return ClCl.class;
+	}
+//车辆删除后，同步移除
+	@Override
+	public void remove(String id) {
+		int i=getBaseMapper().deleteByPrimaryKey(id);
+		if(i==1){
+//			移除 车辆运行记录表中的记录
+			ClClyxjl clClyxjl=new ClClyxjl();
+			clClyxjl.setClId(id);//车辆ID
+			clyxjlService.remove(clClyxjl);
+		}
+	}
+
+	@Override
+	public void remove(ClCl entity) {
+		int i=getBaseMapper().delete(entity);
+		if(i==1){
+//			移除 CL_CLYXJL
+			ClClyxjl clClyxjl=new ClClyxjl();
+			clClyxjl.setClId(entity.getClId());//车辆ID
+			clyxjlService.remove(clClyxjl);
+		}
+	}
+
+	@Override
+	public ApiResponse<String> removeIds(String[] ids) {
+		for (String id : ids) {
+			int i=getBaseMapper().deleteByPrimaryKey(id);
+			if(i==1){
+//			移除 CL_CLYXJL
+				ClClyxjl clClyxjl=new ClClyxjl();
+				clClyxjl.setClId(id);//车辆ID
+				clyxjlService.remove(clClyxjl);
+			}
+		}
+		return ApiResponse.deleteSuccess();
 	}
 
 	@Override

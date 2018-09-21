@@ -310,6 +310,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         RuntimeCheck.ifNull(clDd.getZdbm(),"暂无行程记录");
 
+        RuntimeCheck.ifNull(clDd.getYysj(),"该行程还未开始");
+        RuntimeCheck.ifNull(clDd.getSjqrsj(),"该行程还未结束");
+
+
         SimpleCondition condition = new SimpleCondition(Clyy.class);
 
         condition.and().andEqualTo(Clyy.InnerColumn.zdbh.name() , clDd.getZdbm());
@@ -323,11 +327,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         }
         condition.setOrderByClause(" id ASC");
 
-//        condition.eq(Clyy.InnerColumn.zdbh.name(), clDd.getZdbm());// 终端编码
-//        condition.gte(Clyy.InnerColumn.cjsj.name(), clDd.getYysj());// 开始时间
-//        condition.lte(Clyy.InnerColumn.cjsj.name(), clDd.getSjqrsj());// 结束时间
-//        condition.setOrderByClause(Clyy.InnerColumn.cjsj.asc());// 创建时间
         List<Clyy> gpsList = clYyService.findByCondition(condition);
+
+        RuntimeCheck.ifFalse(gpsList!=null&&gpsList.size()>0,"暂无行程记录");
+
         ApiResponse<List<Clyy>> ret=new ApiResponse<>();
         ret.setResult(gpsList);
         return ret;

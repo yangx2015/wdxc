@@ -74,8 +74,6 @@
                             this.tableData.push(r);
                         }
                         this.allData = this.tableData;
-                    }else{
-                        this.$Message.error(res.message);
                     }
                 })
             }
