@@ -37,8 +37,8 @@
           <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist0}}">
              <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
                <ui-view class="tab-dos">
-                     <ui-row  style="padding:0px 5px 5px 5px">
-                            <ui-col span="8">
+                     <ui-row  style="padding:15px 15px 0px 15px">
+                            <ui-col span="8" space-left="10">
                                   <ui-view class="pageHeght">
                                       {{item.zws}} 座车
                                   </ui-view>
@@ -469,7 +469,7 @@ position: absolute;
 .pageHeght{
 font-size: 32rpx;
 font-weight:800;
-color: #0f0f0f;
+color: #6e6e6e;
 }
 .pingyi{
   transform: translate(-50%,0%);
@@ -485,7 +485,7 @@ color: #0f0f0f;
   background-color: #d0cccc;
 }
 .tab-dis{
-    background-color: #c0bdbd;
+    background-color: #f2f2f2;
   }
 .tab-dos{
     background-color: #ffffff;
