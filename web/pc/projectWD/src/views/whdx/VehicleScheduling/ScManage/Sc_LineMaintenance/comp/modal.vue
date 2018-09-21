@@ -252,7 +252,7 @@
                     xg:true
                 });//向线路插入数据
                 this.stationList[index].disabled = true
-                console.log(this.$refs.clearSelect);
+                // console.log(this.$refs.clearSelect);
                 this.$refs.clearSelect.clearSingleSelect()
                 // this.stationId = 0;
                 // console.log(this.stationList);
