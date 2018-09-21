@@ -4,6 +4,7 @@ import com.ldz.geo.bean.GeoModel;
 import com.ldz.geo.util.GeoUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.SnowflakeIdWorker;
 import com.ldz.util.exception.RuntimeCheck;
@@ -473,6 +474,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     public ClPb getCarPb(String carId) {
         SimpleCondition condition = new SimpleCondition(ClPb.class);
         condition.eq(ClPb.InnerColumn.clId,carId);
+        condition.lte(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(), "yyyy-MM-dd") + " 23:59:59");
+        condition.gte(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
         List<ClPb> clPbs = clPbMapper.selectByExample(condition);
         if (clPbs.size() == 0){
             return null;
