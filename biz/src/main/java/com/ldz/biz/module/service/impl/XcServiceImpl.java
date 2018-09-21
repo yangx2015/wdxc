@@ -53,15 +53,22 @@ public class XcServiceImpl extends BaseServiceImpl<ClXc,String> implements XcSer
             return ApiResponse.success(list);
         }
         for (ClXc xc : xcList) {
-            if (StringUtils.isEmpty(xc.getXcStartEnd()))continue;
+            if (StringUtils.isEmpty(xc.getXcStartEnd())){
+                continue;
+            }
             String[] startAndEndPoint = xc.getXcStartEnd().split(",");
             String startPoint = startAndEndPoint[0].replace("-",",");
             String endPoint = startAndEndPoint[1].replace("-",",");
+            String distance = "0";
+            if(startAndEndPoint.length == 3){
+                distance = startAndEndPoint[2];
+            }
             Map<String,Object> map = new HashMap<>();
             map.put("jsjps",endPoint);
             map.put("ksjps",startPoint);
             map.put("kssj",xc.getXcKssj());
             map.put("jssj",xc.getXcJssj());
+            map.put("distance",distance);
             long sc = 0 ;
             try {
                 Date startDate = DateUtils.getDate(xc.getXcKssj(),"yyyy-MM-dd HH:mm:ss");

@@ -40,4 +40,8 @@ public interface PbService extends BaseService<ClPb, String> {
 	ApiResponse<List<PbInfo>> bancheTj(PbClXlmodel pbclxlmodel);
     //校巴开班条形图
 	ApiResponse<JrXbKb> xbkb(PbClXlmodel pbclxlmodel);
+
+    ApiResponse<String> savePbList(ClPb entity);
+
+	ApiResponse<List<PbInfo>> checkPbCl(ClPb entity);
 }
