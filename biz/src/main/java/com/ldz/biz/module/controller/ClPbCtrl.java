@@ -126,5 +126,13 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 		return pbservice.checkPbCl(entity);
 	}
 
+	/**
+	 * 删除排班列表
+	 */
+	@PostMapping("/delPbList")
+	public ApiResponse<String> delPbList(ClPb entity){
+		return pbservice.delPbList(entity);
+	}
+
 
 }

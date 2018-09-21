@@ -44,4 +44,6 @@ public interface PbService extends BaseService<ClPb, String> {
     ApiResponse<String> savePbList(ClPb entity);
 
 	ApiResponse<List<PbInfo>> checkPbCl(ClPb entity);
+
+	ApiResponse<String> delPbList(ClPb entity);
 }

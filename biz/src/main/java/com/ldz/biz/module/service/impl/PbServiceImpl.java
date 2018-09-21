@@ -432,4 +432,29 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		return ApiResponse.success(pbInfos);
 	}
 
+	@Override
+	public ApiResponse<String> delPbList(ClPb entity) {
+		RuntimeCheck.ifBlank(entity.getXlId(), "请选择线路");
+		RuntimeCheck.ifBlank(entity.getClId(), "请选择车辆");
+		RuntimeCheck.ifBlank(entity.getKssj(), "请输入开始时间");
+		RuntimeCheck.ifBlank(entity.getJssj(), "请输入结束时间");
+		SimpleCondition simpleCondition = new SimpleCondition(ClPb.class);
+		List<Date> dates = new ArrayList<>();
+		try {
+			dates = DateUtils.createDateList(entity.getKssj(),entity.getJssj());
+		} catch (ParseException e) {
+			return ApiResponse.fail("时间格式有误");
+		}
+		if(CollectionUtils.isNotEmpty(dates)){
+			simpleCondition.eq(ClPb.InnerColumn.xlId, entity.getXlId());
+			simpleCondition.eq(ClPb.InnerColumn.clId, entity.getClId());
+			simpleCondition.lte(ClPb.InnerColumn.pbsj, dates.get(dates.size()-1));
+			simpleCondition.gte(ClPb.InnerColumn.pbsj, dates.get(0));
+			entityMapper.deleteByExample(simpleCondition);
+		}
+
+
+		return ApiResponse.success();
+	}
+
 }
