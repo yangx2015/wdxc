@@ -31,6 +31,7 @@ import org.springframework.util.ObjectUtils;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -471,11 +472,14 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     }
 
     @Override
-    public ClPb getCarPb(String carId) {
+    public ClPb getCarPb(String carId)  {
         SimpleCondition condition = new SimpleCondition(ClPb.class);
         condition.eq(ClPb.InnerColumn.clId,carId);
-        condition.lte(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(), "yyyy-MM-dd") + " 23:59:59");
-        condition.gte(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
+        try {
+            condition.eq(ClPb.InnerColumn.pbsj,DateUtils.getDateToday("yyyy-MM-dd"));
+        } catch (ParseException e) {
+            log.error("时间转换出错");
+        }
         List<ClPb> clPbs = clPbMapper.selectByExample(condition);
         if (clPbs.size() == 0){
             return null;
