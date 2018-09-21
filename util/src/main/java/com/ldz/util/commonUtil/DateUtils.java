@@ -6,8 +6,10 @@ import java.time.LocalDateTime;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class DateUtils {
 	/**
@@ -82,32 +84,39 @@ public class DateUtils {
 
 	}
 
+	public static long get_D_Plaus_1(Calendar c) {
+		c.set(Calendar.DAY_OF_MONTH, c.get(Calendar.DAY_OF_MONTH) + 1);
+		return c.getTimeInMillis();
+	}
 
 
 
+	/**
+	 * 根据传入的开始时间和结束时间，获取时间段
+	 * @param kssj
+	 * @param jssj
+	 * @return
+	 */
+	public static List<Date> createDateList(String kssj,String jssj) throws ParseException {
+		List<Date> dates = new ArrayList<>();
 
 
-//	/**
-//	 * 考试年份编码
-//	 * @return
-//	 */
-//	public static String getYearCode(){
-//		Calendar cal = Calendar.getInstance();
-//    	int year = cal.get(Calendar.YEAR);
-//    	String yearStr = new Integer(year).toString();
-//    	return yearStr.substring(2,4);//当前年份后两位
-//	}
-	
-	public static void main(String[] args){
-//		String dateStr = DateUtils.getDateStr(parseMills(1350994695000l), "yyyy-MM-dd HH:mm:ss");
-//		System.out.println(dateStr);
-		System.out.println(calculateTime(LocalDateTime.now(), "-", 60 * Integer.parseInt("1")));
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(sdf.parse(kssj));
 
-		try {
-			DateUtils.getDate("2018-04-10","yyyy-MM-dd");
-		} catch (ParseException e) {
-			e.printStackTrace();
+		for (long d = cal.getTimeInMillis(); d <= sdf.parse(jssj).getTime(); d = get_D_Plaus_1(cal)) {
+			String format = sdf.format(d);
+			Date parse = sdf.parse(format);
+			dates.add(parse);
 		}
+
+		return dates;
+	}
+
+
+	public static void main(String[] args) throws ParseException {
+		System.out.println(createDateList("2018-09-08","2018-09-08"));
 	}
 	public static String getNowTime() {
 		return getToday("yyyy-MM-dd HH:mm:ss");
