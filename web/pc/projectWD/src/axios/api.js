@@ -5,7 +5,7 @@ export default {
     // url:url+port+'/biz',
     url:url+port,
     UPLOAD:url+port+'/biz/upload',
-    STATIC_PATH:url+'9092/',
+    STATIC_PATH:url+'9092/',//地图icon地址前缀
     VIDEO_PATH:url+'9091/test/',
     TXT:'/api/clsbyxsjjl/pager',
     fileDR:'/api/zdgl/excel',

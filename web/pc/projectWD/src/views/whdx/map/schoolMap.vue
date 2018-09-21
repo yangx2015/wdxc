@@ -61,7 +61,7 @@
                 scoketMess: [],
                 allDeviceList: [],
                 socket: new SockJS(this.$http.url + "/gps"),
-                stationIconUrl: 'http://47.98.39.45:9092/icon/running.png',
+                stationIconUrl: this.apis.STATIC_PATH+'icon/running.png',
                 colors: ['#4876FF', '#FF0000', '#5CACEE', '#EE00EE', '#00BFFF', '#BF3EFF'],
                 colorIndex: 0,
                 yxjlList:[]
@@ -86,7 +86,14 @@
                         for(let r of this.yxjlList){
                             for (let l of this.lineList){
                                 if (l.id == r.xlId){
-                                    let item = {cph:r.cphm,bdjd:r.jd,bdwd:r.wd,stationNumber:r.zdbh,zxzt:'00'};
+                                    let item = {
+                                        cph:r.cphm,
+                                        bdjd:r.jd,
+                                        bdwd:r.wd,
+                                        stationNumber:r.zdbh,
+                                        zxzt:r.zt == 'off' ? 20 : 30,
+                                        zdbh:r.szdbh
+                                    };
                                     if (l.carList){
                                         l.carList.push(item)
                                     }else{
@@ -252,9 +259,10 @@
                         stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
                             let weksocketBody = JSON.parse(data.body)
                             if (weksocketBody.cx === "30") {//校巴
-                                // let xlId = weksocketBody.xlId;
-                                let xlId = '435390474602151936';
+                                let xlId = weksocketBody.xlId;
+                                //let xlId = '435390474602151936';
                                 v.lineList.forEach((item, index) => {
+                                    //console.log(item.id +'='+xlId);
                                     if (item.id === xlId) {
                                         if (!item.carList) {
                                             item.carList = [weksocketBody];
@@ -309,7 +317,7 @@
                 var marker = new BMap.Marker(new BMap.Point(item.bdjd, item.bdwd), {icon: myIcon});
                 this.map.addOverlay(marker);
                 let html = '<div style="width: 120px;height: 28px;padding:4px;text-align: center">' +
-                    '<span>' + item.cph + station + '</span> ' +
+                    '<span>' + item.cph + '</span> ' +
                     '</div>';
                 let point = new BMap.Point(item.bdjd, item.bdwd);
                 var myLabel = new BMap.Label(html,     //为lable填写内容
@@ -323,7 +331,7 @@
                     'background-color': 'rgba(255,255,255,0.6)',
                     'border-radius': '4px',
                 });
-                myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
+                myLabel.setTitle(item.cph);               //为label添加鼠标提示
                 this.map.addOverlay(myLabel);
             },
             getNumberLabel(number) {
@@ -361,11 +369,11 @@
             getIcon(car) {
                 switch (car.zxzt) {
                     case 20:
-                        return 'http://47.98.39.45:9092/icon/running.png';
+                        return this.apis.STATIC_PATH+'icon/ic_car_offline.png';
                     case 10:
-                        return 'http://47.98.39.45:9092/icon/ic_car.png';
+                        return this.apis.STATIC_PATH+'icon/ic_car.png';
                     default:
-                        return 'http://47.98.39.45:9092/icon/ic_car_offline.png'
+                        return this.apis.STATIC_PATH+'icon/running.png'
                 }
             },
             //地图级别中心

@@ -13,7 +13,7 @@
 				<Input placeholder="查设备、找车辆、找司机" size="large" v-model="searchKey">
 				<Button slot="append" type="primary" icon="md-search" @click="filter"></Button>
 				</Input>
-				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;"  size="small">
+				<Tabs v-if="showTabs" ref="tabRef" style="background-color:white;"  size="small" @on-click="changeTabMarkPoint">
 					<TabPane :label="qblabel" name="name0" style="height:300px;overflow:auto;" v-show="tabShowFlag">
 						<Row v-for="(item,index) in allCarList" v-if="item.show" @click.native="rowClick(item)">
 							<Col span="24">
@@ -335,10 +335,10 @@ export default {
             showTabs:false,
 			allCarList:[],
 			allCarCount:0,
-
-            socket : new SockJS(this.$http.url+"/gps"),
+			socket : new SockJS(this.$http.url+"/gps"),
+            stompClient:null,
+            subscribes:[],
             // socket : new SockJS("http://127.0.0.1/gps"),
-
             changeBtnIcon:'ios-arrow-down',
             qblabel: (h) => {
                 return h('div', [
@@ -457,15 +457,33 @@ export default {
             v.socket.onopen = function() { };
             v.socket.onmessage = function(e) { };
             v.socket.onclose = function() { };
-            var stompClient = Stomp.over(v.socket);
-            stompClient.connect({}, function(frame) {
-                for (let r of v.allCarList){
-                    stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
-                        v.onGpsInfo(JSON.parse(data.body))
-                    });
-				}
+            this.stompClient = Stomp.over(v.socket);
+            this.stompClient.connect({}, function(frame) {
+                v.wsconnect();
             });
         },
+		wsconnect(){
+            if (this.stompClient == null){
+                return;
+			}
+
+            var v = this;
+            let activeKey = v.$refs.tabRef.activeKey;
+            let showCarList = v.allCarList;
+            if (activeKey == 'name1'){
+                showCarList = v.carArray[0];
+            }else if (activeKey == 'name2'){
+                showCarList = v.carArray[1];
+            }else if (activeKey == 'name3'){
+                showCarList = v.carArray[2];
+            }
+
+            for (let r of showCarList){
+                this.subscribes[r.zdbh] = this.stompClient.subscribe('/topic/sendgps-'+r.zdbh,  function(data) { //订阅消息
+                    v.onGpsInfo(JSON.parse(data.body));
+                });
+            }
+		},
         formateLongDate(long){
             log(long);
             if (typeof long == 'string'){
@@ -476,12 +494,10 @@ export default {
             return d.format("yyyy-MM-dd hh:mm:ss");
 		},
         formatDate(date){
-            log(date);
             if (!date)return '';
             return date.substring(0,4)+'-'+date.substring(4,6)+"-"+date.substring(6,8)+"-";
         },
         formatTime(time){
-            log(time);
             if (!time)return '';
             return time.substring(0,2)+':'+time.substring(2,4)+":"+time.substring(4,6);
         },
@@ -533,18 +549,33 @@ export default {
                     this.mapCarList = [this.choosedCar];
 				}
             }else{
-                this.mapCarList = this.carArray[this.status];
-                this.$refs.map.update();
+                try{
+                    //如果界面切换后，无该对象，websocket需停止
+                    if (this.$refs.map == undefined){
+                        this.stompClient.disconnect(function(){});
+                        return
+					}
+
+                    let activeKey = this.$refs.tabRef.activeKey;
+                    if (activeKey != 'name0' && activeKey != 'name1'){
+                        return;
+                    }
+
+                    this.mapCarList = this.carArray[this.status];
+                    this.$refs.map.update();
+				}catch(e){}
             }
 		},
         init(){
             this.classify();
-            this.mapCarList = this.carArray[0];
+            this.mapCarList = this.allCarList;
+            if (this.mapCarList.length > 0){
+                this.$refs.map.update();
+			}
             this.showTabs = true;
             this.changeBtn();
 		},
 		initGps(){
-            log('initGps');
             var v = this
             this.$http.get(this.apis.CLJK.QUERY).then((res) =>{
                 if (res.code === 200){
@@ -677,6 +708,28 @@ export default {
             this.mapCarList = [this.choosedCar];
             this.$refs.map.init();
             this.$refs.carInfoRef.init(item);
+		},
+        changeTabMarkPoint(name){
+			try{
+                for (let r of this.allCarList){
+                    this.subscribes[r.zdbh].unsubscribe();
+                }
+                this.wsconnect();
+			}catch(e){
+
+			}
+
+		    if (name == 'name0'){
+                this.mapCarList = this.allCarList;
+			}else if (name == 'name1'){
+                this.mapCarList = this.carArray[0];
+			}else if (name == 'name2'){
+                this.mapCarList = this.carArray[1];
+            }else if (name == 'name3'){
+                this.mapCarList = this.carArray[2];
+            }
+
+            this.$refs.map.update();
 		}
     }
 };
