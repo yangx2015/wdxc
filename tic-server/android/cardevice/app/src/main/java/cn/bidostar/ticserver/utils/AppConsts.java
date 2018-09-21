@@ -9,6 +9,7 @@ public class AppConsts {
     public static final String PUSH_KEY = "ScePwSdAgonrPsPSTlef7hRR";
 
     
+    
     /**
      * 设置加减速监测灵敏等级缓存，level 1-6，默认为 2 :
      */
