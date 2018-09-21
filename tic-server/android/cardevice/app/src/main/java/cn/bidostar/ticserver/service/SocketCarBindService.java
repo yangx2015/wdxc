@@ -104,7 +104,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
          */
         mApi.setWakeupLockWhiteList("com.bidostar.rmt,cn.bidostar.ticserver");
         mApi.setAppKeepAlive("com.bidostar.rmt,cn.bidostar.ticserver");
-        mApi.setAppKeepAlive2("com.bidostar.rmt,cn.bidostar.ticserver");
+        mApi.setAppRTC("com.bidostar.rmt,cn.bidostar.ticserver");
         new Thread() {
             public void run() {
                 while (true) {

@@ -953,9 +953,9 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
     }
 
     /**
-     * 新增的api 让app在休眠时可以不断网
+     * #RTC定时唤醒系统程序
      */
-    public void setAppKeepAlive2(String packageName){
+    public void setAppRTC(String packageName){
         if(packageName == null){
             packageName = mAppContext.getPackageName();
         }
