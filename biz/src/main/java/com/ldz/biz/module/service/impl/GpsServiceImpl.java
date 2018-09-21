@@ -99,8 +99,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      */
     @Override
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
-        // 只要上传点位信息 则为在线状态
-        redis.boundValueOps("offline-"+gpsInfo.getDeviceId()).set(1,10,TimeUnit.MINUTES);
+        // 只要上传点位信息 且不为离线事件 则为在线状态
+        if(!StringUtils.equals(gpsInfo.getEventType(),"80")) {
+            redis.boundValueOps("offline-" + gpsInfo.getDeviceId()).set(1, 10, TimeUnit.MINUTES);
+        }
         if (StringUtils.isEmpty(gpsInfo.getLatitude()) || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getDeviceId())) {
             return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
