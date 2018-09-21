@@ -4,6 +4,7 @@ import {router} from '../router/index';
 import qs from 'qs';
 import store from '@/store';
 import swal from 'sweetalert2'
+import iView from 'iview';
 import util from "../libs/util";
 import ajaxUrl from './api'
 // 订单分配权限
@@ -100,7 +101,9 @@ httpInstance.interceptors.response.use((response) => {
         //     return response.data;
         // }
     } else {
-        router.push({name: 'error-500'});
+        iView.Message.error('网络连接异常，请重试！');
+
+        // router.push({name: 'error-500'});
     }
     // if(response.status===200&&response.data.code===200){
     // 	return response.data;
@@ -116,9 +119,9 @@ httpInstance.interceptors.response.use((response) => {
 }, function (error) {
     // 对响应错误做点什么
     if (!Cookies.get('result')) {
-  		router.push({name: 'error-500'});
+        iView.Message.error('网络连接异常，请重试！');
     } else if (Cookies.get('result')) {
-  		router.push({name: 'errorpage_500'});
+        iView.Message.error('网络连接异常，请重试！');
     }
     return Promise.reject(error);
 });
