@@ -108,4 +108,31 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 		
 		return pbservice.xbkb(pbclxlmodel);
 	}
+
+
+	/**
+	 * 批量排班操作
+	 */
+	@PostMapping("/pbList")
+	public ApiResponse<String> savePbList(ClPb entity){
+		return pbservice.savePbList(entity);
+	}
+
+	/**
+	 * 查询当前时间段，当前路线有哪些车辆有排班
+	 */
+	@PostMapping("/checkPbCl")
+	public ApiResponse<List<PbInfo>> checkPbCl(ClPb entity){
+		return pbservice.checkPbCl(entity);
+	}
+
+	/**
+	 * 删除排班列表
+	 */
+	@PostMapping("/delPbList")
+	public ApiResponse<String> delPbList(ClPb entity){
+		return pbservice.delPbList(entity);
+	}
+
+
 }

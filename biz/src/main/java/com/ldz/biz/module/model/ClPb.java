@@ -95,8 +95,36 @@ public class ClPb implements Serializable {
     @Transient
     private String cx;
 
+    /**
+     * 排班开始时间
+     */
+    @Transient
+    private String kssj;
+
+    /**
+     * 排班结束时间
+     */
+    @Transient
+    private String jssj;
+
     private static final long serialVersionUID = 1L;
 
+
+    public String getKssj() {
+        return kssj;
+    }
+
+    public void setKssj(String kssj) {
+        this.kssj = kssj;
+    }
+
+    public String getJssj() {
+        return jssj;
+    }
+
+    public void setJssj(String jssj) {
+        this.jssj = jssj;
+    }
 
     public String getCx() {
         return cx;

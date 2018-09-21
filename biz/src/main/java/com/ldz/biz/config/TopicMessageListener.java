@@ -340,7 +340,7 @@ public class TopicMessageListener implements MessageListener {
                 return null;
             }
             clYyService.saveBatch(yyList);
-            return start_end;
+            return start_end + "," + points.getDistance();
         } else {
             return null;
         }
