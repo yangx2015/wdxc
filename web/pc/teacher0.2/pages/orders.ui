@@ -475,14 +475,14 @@ color: #0f0f0f;
   transform: translate(-50%,0%);
 }
 .ui-tabs{
-  background-color: #686565;
+  background-color: #c0c0c0;
   padding-bottom: 1px;
 }
 .content {
   line-height: 180px;
 }
 .tab-content{
-  background-color: #555555;
+  background-color: #d0cccc;
 }
 .tab-dis{
     background-color: #c0bdbd;
