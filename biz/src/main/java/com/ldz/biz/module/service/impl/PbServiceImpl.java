@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
+import com.ldz.biz.module.service.XlService;
+import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,8 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	private PbInfoMapper pbinfomapper;
 	@Autowired
 	private ClClMapper clclmapper;
+	@Autowired
+	private XlService xlService;
 
 	@Override
 	protected Mapper<ClPb> getBaseMapper() {
@@ -295,6 +299,137 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		jrXbKb.setCount(count);
 		apiResponse.setResult(jrXbKb);
 		return apiResponse;
+	}
+
+	/**
+	 * 批量排班
+	 * @param entity 排班模型
+	 * @return
+	 */
+    @Override
+    public ApiResponse<String> savePbList(ClPb entity) {
+		SysYh currentUser = getCurrentUser();
+		SysJg org = jgService.findByOrgCode(currentUser.getJgdm());
+		RuntimeCheck.ifBlank(entity.getClId(), "请选择车辆");
+    	RuntimeCheck.ifBlank(entity.getXlId(), "请选择线路");
+    	RuntimeCheck.ifBlank(entity.getCx(), "请选择车型");
+    	if(StringUtils.isBlank(entity.getKssj())){
+    		entity.setKssj(DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
+		}else{
+    		if(entity.getKssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0 ){
+    			return ApiResponse.fail("排班开始时间需要大于或等于当前时间");
+			}
+		}
+		if(StringUtils.isBlank(entity.getJssj())){
+			entity.setJssj(DateUtils.getToday("yyyy-MM-dd"));
+		}else{
+			if(entity.getJssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0){
+				return ApiResponse.fail("排班结束时间需要大于或等于当前时间");
+			}
+		}
+
+
+
+		ClCl clCl = clService.findByOrgCode(entity.getClId());
+		RuntimeCheck.ifNull(clCl, "车辆信息有误，请核实！");
+		String sjId = clCl.getSjId();
+		RuntimeCheck.ifBlank(sjId, "该车辆未绑定司机，无法进行排班");
+		String clZt = clCl.getZt();
+		if (!StringUtils.equals(clZt, "00")) {
+			RuntimeCheck.ifBlank(sjId, "该车辆状态异常，无法进行排班");
+		}
+		if (!StringUtils.equals(entity.getCx(), clCl.getCx())) {
+			RuntimeCheck.ifBlank(sjId, "该车辆车型异常，无法进行排班");
+		}
+		List<Date> dates = new ArrayList<>();
+		try {
+			dates = DateUtils.createDateList(entity.getKssj(),entity.getJssj());
+		} catch (ParseException e) {
+			return ApiResponse.fail("时间格式异常");
+		}
+
+		// 根据开始时间和结束时间生成List
+		List<ClPb> clPbs = new ArrayList<>();
+
+		if(CollectionUtils.isNotEmpty(dates)){
+			SimpleCondition condition = new SimpleCondition(ClPb.class);
+			condition.eq(ClPb.InnerColumn.xlId, entity.getXlId());
+			condition.eq(ClPb.InnerColumn.clId, entity.getClId());
+			condition.lte(ClPb.InnerColumn.pbsj, dates.get(dates.size()-1));
+			condition.gte(ClPb.InnerColumn.pbsj, dates.get(0));
+			// 首先删除掉当前车辆和线路上已经存在的排班
+			int i = entityMapper.deleteByExample(condition);
+			for (Date date : dates) {
+				ClPb clPb = new ClPb();
+				clPb.setPbsj(date);
+				clPb.setClId(entity.getClId());
+				clPb.setXlId(entity.getXlId());
+				clPb.setId(genId());
+				clPb.setCjr(getOperateUser());
+				clPb.setCjsj(new Date());
+				clPb.setCph(clCl.getCph());
+				clPb.setJgdm(currentUser.getJgdm());
+				clPb.setJgmc(org.getJgmc());
+				clPb.setSj(clCl.getSjId());
+				clPb.setSjxm(clCl.getSjxm());
+				clPbs.add(clPb);
+			}
+			entityMapper.insertList(clPbs);
+		}
+
+
+		return ApiResponse.success();
+    }
+
+
+	/**
+	 * 根据时间段和线路Id ， 返回当前线路，当前时间段的车辆排班信息
+	 * @param entity
+	 * @return
+	 */
+	@Override
+	public ApiResponse<List<PbInfo>> checkPbCl(ClPb entity) {
+
+		RuntimeCheck.ifBlank(entity.getXlId(), "请选择要查询的线路");
+		if(StringUtils.isBlank(entity.getKssj())){
+			entity.setKssj(DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
+		}
+		if(StringUtils.isBlank(entity.getJssj())){
+			entity.setJssj(DateUtils.getToday("yyyy-MM-dd"));
+		}
+		SimpleCondition simpleCondition = new SimpleCondition(ClPb.class);
+		simpleCondition.eq(ClPb.InnerColumn.xlId,entity.getXlId());
+		try {
+			simpleCondition.lte(ClPb.InnerColumn.pbsj, DateUtils.getDate(entity.getJssj(),"yyyy-MM-dd"));
+			simpleCondition.gte(ClPb.InnerColumn.pbsj, DateUtils.getDate(entity.getKssj(), "yyyy-MM-dd"));
+		} catch (ParseException e) {
+			ApiResponse<List<PbInfo>>  response = new ApiResponse<>();
+			response.setCode(500);
+			response.setResult(null);
+			response.setMessage("时间格式异常");
+			return response;
+		}
+		List<PbInfo> pbInfos = new ArrayList<>();
+		List<ClPb> clPbs = findByCondition(simpleCondition);
+		for (ClPb clPb : clPbs) {
+
+			PbInfo pbInfo = new PbInfo();
+			pbInfo.setClXl(xlService.findById(clPb.getXlId()));
+			pbInfo.setXlId(clPb.getXlId());
+			ClCl clCl = clService.findById(clPb.getClId());
+			pbInfo.setClcl(clCl);
+			pbInfo.setClId(clPb.getClId());
+			pbInfo.setPbsj(clPb.getPbsj());
+			pbInfo.setCph(clCl.getCph());
+			pbInfo.setJgdm(clPb.getJgdm());
+			pbInfo.setJgmc(clPb.getJgmc());
+			pbInfo.setSj(clPb.getSj());
+			pbInfo.setSjxm(clPb.getSjxm());
+			pbInfos.add(pbInfo);
+		}
+
+
+		return ApiResponse.success(pbInfos);
 	}
 
 }
