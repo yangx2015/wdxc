@@ -2,11 +2,11 @@
       <div id="lineModel" style="overflow: auto">
             <div class="box-row-z">
                   <div class="itemSty" v-for="(item,index) in mess">
-                        <Tooltip class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
+                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
                               <Button size="small" type="success" shape="circle" icon="md-create"
-                                      @click="item.xg = !item.xg"></Button>
+                                      @click="xg(item,index)"></Button>
                         </Tooltip>
-                        <Tooltip class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
+                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
                               <Button size="small" type="error" shape="circle" icon="md-close"
                                       @click="codeChangeRem(item,index)"></Button>
                         </Tooltip>
@@ -19,7 +19,7 @@
 
                         </div>
                         <div class="slelctSty" v-show="!item.xg">
-                              <Select filterable clearable v-model="stationId" placeholder="请选择" size="small">
+                              <Select ref="clearSelectItem" filterable clearable v-model="stationId" placeholder="请选择" size="small">
                                     <Option v-for="(it,val) in stationList"
                                             :disabled='it.disabled'
                                             :value="val+1">{{it.mc}}
@@ -29,7 +29,7 @@
                         <div class="butSTY" v-show="!item.xg">
                               <Tooltip class="changeBut"  placement="bottom" content="站点替换" v-show="!item.xg">
                                     <Button type="primary" shape="circle" icon="md-swap" size="small"
-                                            @click='codeChange(index)'></Button>
+                                            @click="codeChange(index)"></Button>
                               </Tooltip>
                               <Tooltip class="changeBut"  placement="bottom" content="完成" v-show="!item.xg" style="float: right;">
                                     <Button type="primary" shape="circle" icon="md-checkmark" size="small"
@@ -41,7 +41,6 @@
                         <!--</Tooltip>-->
 
                   </div>
-
             </div>
       </div>
       
@@ -76,6 +75,17 @@
         created(){
         },
         methods:{
+            xg(item,index){
+                this.mess.forEach((it,ix)=>{
+                    if(ix == index){
+                        it.xg = false
+                    }else {
+                        it.xg = true
+                    }
+                })
+                // this.mess[index]
+
+            },
             codeChangeRem(item,index){
                 var v = this
                 swal({
@@ -99,13 +109,19 @@
                 });
             },
             codeChange(num){
-                console.log(this.stationList[this.stationId-1]);
-                var abj = {
-                    num:num,
-                    item:this.stationList[this.stationId-1],
-                    index:this.stationId
-                }
-                this.$emit('codeChange',abj)
+                // console.log(this.stationList[this.stationId-1]);
+                // if(num.id){
+                      var abj = {
+                          num:num,
+                          item:this.stationList[this.stationId-1],
+                          index:this.stationId
+                      }
+                      this.$emit('codeChange',abj)
+                // console.log(this.$refs.clearSelectItem);
+                this.$refs.clearSelectItem[num].clearSingleSelect()
+                      // console.log('res',this.$refs['thzd'+num].clearSingleSelect());
+                // }
+
             }
         }
     }

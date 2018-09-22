@@ -22,33 +22,33 @@
             <ui-row vertical-align="middle" height="50rpx"  border-bottom style="padding:0px 15px 0px 0px" >
                 <ui-col align="left" span=1 space-left="15" >
                   <ui-view calss="pingyi">
-                    <ui-icon type="head-g" size=28 style="color:#888888"></ui-icon>
+                    <ui-icon type="head-g" size=28 style="color:#c0c0c0"></ui-icon>
                   </ui-view>
                 </ui-col>
                 <ui-col  align="left" space-left="20" vertical-align="middle">
-                  <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:6px">
+                  <ui-view style="color: #c0c0c0;font-size:20px;font-weight:700;padding:6px">
                     {{orderMess.sjxm}}
                   </ui-view>
                 </ui-col>
-                <ui-col align="left" span=1 space-left="15" >
+                <ui-col align="left" span=1 space-left="15">
                   <ui-view calss="pingyi">
-                    <ui-icon type="shouji" size=28 style="color:#888888"></ui-icon>
+                    <ui-icon type="shouji" size=28 style="color:#c0c0c0"></ui-icon>
                   </ui-view>
                 </ui-col>
                 <ui-col align="right"  space-right="1" vertical-align="middle"> 
-                    <ui-view style="color: #686868;font-size:20px;font-weight:700;padding:1px">
+                    <ui-view style="color: #c0c0c0;font-size:20px;font-weight:700;padding:1px">
                     {{orderMess.sjdh}}45672435
                   </ui-view>
                 </ui-col>
             </ui-row>
             <ui-row>
                 <ui-col align="center" span=4 space-right="20">
-                <ui-view class="text" style="color: #686868;font-size:15px;font-weight:700;">
+                <ui-view class="text" style="color: #c0c0c0;font-size:16px">
                   {{orderMess.cph}}
                 </ui-view>
                 </ui-col>
                 <ui-col vertical-align="middle">
-                <ui-view align="center" style="color:#A0A0A0;font-size:15px">
+                <ui-view align="center" style="color:#A0A0A0;font-size:16px">
                   {{orderMess.zws}} 座车
                 </ui-view> 
                 </ui-col>
@@ -337,7 +337,7 @@ export default {
 .text {
   padding: 10px;
   width: 100%;
-  border-bottom: 1px dashed rgb(255, 143, 51);
+  border-bottom: 5px dashed rgb(255, 143, 51);
   text-align: center;
 }
 

@@ -2,11 +2,11 @@
       <div id="lineModel" style="overflow: auto">
             <div class="box-row-z">
                   <div class="itemSty" v-for="(item,index) in mess">
-                        <Tooltip class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
+                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
                               <Button size="small" type="success" shape="circle" icon="md-create"
-                                      @click="item.xg = !item.xg"></Button>
+                                      @click="xg(item,index)"></Button>
                         </Tooltip>
-                        <Tooltip class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
+                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
                               <Button size="small" type="error" shape="circle" icon="md-close"
                                       @click="codeChangeRem(item,index),item.xg = !item.xg"></Button>
                         </Tooltip>
@@ -19,7 +19,7 @@
 
                         </div>
                         <div class="slelctSty" v-show="!item.xg">
-                              <Select filterable clearable v-model="stationId" placeholder="请选择" size="small">
+                              <Select ref="clearSelectItem" filterable clearable v-model="stationId" placeholder="请选择" size="small">
                                     <Option v-for="(it,val) in stationList"
                                             :disabled='it.disabled'
                                             :value="val+1">{{it.mc}}
@@ -76,6 +76,17 @@
         created(){
         },
         methods:{
+            xg(item,index){
+                this.mess.forEach((it,ix)=>{
+                    if(ix == index){
+                        it.xg = false
+                    }else {
+                        it.xg = true
+                    }
+                })
+                // this.mess[index]
+
+            },
             codeChangeRem(item,index){
                 var v = this
                 swal({
@@ -98,13 +109,14 @@
                 });
             },
             codeChange(num){
-                console.log(this.stationList[this.stationId-1]);
+                // console.log(this.stationList[this.stationId-1]);
                 var abj = {
                     num:num,
                     item:this.stationList[this.stationId-1],
                     index:this.stationId
                 }
                 this.$emit('codeChange',abj)
+                this.$refs.clearSelectItem[num].clearSingleSelect()
             }
         }
     }

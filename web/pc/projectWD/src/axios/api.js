@@ -1,6 +1,7 @@
 // let url = 'http://10.113.4.70:'//8080
-let url = 'http://47.98.39.45:'//8080
-let port = '8080'
+// let url = 'http://47.98.39.45:'//8080
+let url = 'http://192.168.31.92:'//8000
+let port = '8000'
 export default {
     // url:url+port+'/biz',
     url:url+port,
@@ -250,9 +251,10 @@ export default {
     },
     XLPBXX:{//车辆排班信息
         QUERY: '/api/pb/xbbjpb/',
-//		ADD:    '/api/pb/save',
         ADD:    '/api/pb/savepb',
-//      DELE:   '/api/pb/removeIds',
+        PLADD:'/api/pb/pbList',
+        YZ:'/api/pb/checkPbCl',
+        PLDELE:'/api/pb/delPbList',
         DELE:   '/api/pb/deleteByXlAndCl',
         CARLIST:'api/pb/getcllist',//其余车辆
         deleteByXlAndCl:   '/api/pb/deleteByXlAndCl',

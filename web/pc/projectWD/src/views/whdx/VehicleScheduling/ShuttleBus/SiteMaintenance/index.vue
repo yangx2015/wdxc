@@ -19,7 +19,7 @@
                                                       placement="bottom-end" placeholder="请输时间"
                                                       @on-keyup.enter="findMessList()"
                                                       style="width: 220px"></DatePicker>
-                                          <Input v-model="param.mcLike" placeholder="请输入用户名" style="width: 200px"
+                                          <Input v-model="param.mcLike" placeholder="请输入站点名称" style="width: 200px"
                                                  @on-keyup.enter="findMessList()"></Input>
                                     </div>
                                     <div class="butevent">
