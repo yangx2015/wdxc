@@ -322,6 +322,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 record.setXlmc(route.getXlmc());
             }
         }else {
+            if(route != null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
+            }
             log.info("已有运行记录："+record.toString());
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
