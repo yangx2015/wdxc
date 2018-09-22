@@ -353,7 +353,6 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 		if(CollectionUtils.isNotEmpty(dates)){
 			SimpleCondition condition = new SimpleCondition(ClPb.class);
-			condition.eq(ClPb.InnerColumn.xlId, entity.getXlId());
 			condition.eq(ClPb.InnerColumn.clId, entity.getClId());
 			condition.lte(ClPb.InnerColumn.pbsj, dates.get(dates.size()-1));
 			condition.gte(ClPb.InnerColumn.pbsj, dates.get(0));
