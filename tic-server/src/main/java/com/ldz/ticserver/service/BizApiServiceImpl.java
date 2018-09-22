@@ -55,13 +55,13 @@ public class BizApiServiceImpl implements BizApiService{
 		if (StringUtils.isNotEmpty(serverUrl)){
 			final String[] apis = serverUrl.split(";");
 			System.err.println(apis.length);
+			Boolean sendType=false;
 			for (int i=0; i<apis.length; i++){
 				final String apiUrl = apis[i];
 				//向所有配置接口写数据
 				System.err.println(apiUrl);
 				if (StringUtils.isNotEmpty(apiUrl)){
-					String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
-					redisTemplate.convertAndSend(topic, dto);
+
 					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
 					/*executor.execute(new Runnable() {
 						@Override
@@ -83,6 +83,10 @@ public class BizApiServiceImpl implements BizApiService{
 							}
 						}
 					});*/
+				}
+				if(sendType){
+					String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
+					redisTemplate.convertAndSend(topic, dto);
 				}
 			}
 		}
