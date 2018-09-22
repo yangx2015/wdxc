@@ -162,7 +162,7 @@
                     "clId": carID,
                     "xlId": v.mess.id,
                     "kssj":this.DatePicker[0],
-                    "kssj":this.DatePicker[1],
+                    "jssj":this.DatePicker[1],
                     'cx': '30'
                 }).then((res) => {
                     log('排版新增', res)
@@ -203,7 +203,7 @@
                     "clId": carID,
                     "xlId": v.mess.id,
                     "kssj":this.DatePicker[0],
-                    "kssj":this.DatePicker[1],
+                    "jssj":this.DatePicker[1],
                     'cx': '30'
                 }).then((res) => {
                     if (res.code == 200) {
