@@ -131,7 +131,7 @@ export default {
   },
   data () {
     return {
-      tabCurrent:0,
+      tabCurrent:ui.getApp().swiperIndex,
       swiperShow:false,
       swiperImg: [],
       StationMess:{},
@@ -190,6 +190,7 @@ export default {
     },
     handleChange (index, key) {
       this[key] = index
+      ui.getApp().swiperIndex = index
     },
     goXlMess () {
       ui.navigateTo({

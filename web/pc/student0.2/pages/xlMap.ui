@@ -172,12 +172,19 @@ getLinePoints(stationList){
               dataType:'JSONP',
               success:function(res){
                   if (res.status == 0){
-                      let route = res.result.routes[0];
-                      points.push({lat:route.origin.lat,lng:route.origin.lng});
-                      for (let r of route.steps){
-                          points.push({lng:r.end_location.lng,lat:r.end_location.lat});
-                      }
-
+                    
+                            let route = res.result.routes[0];
+                            points.push({lat: route.origin.lat, lng: route.origin.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.start_location.lng, lat: step.start_location.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.end_location.lng, lat: step.end_location.lat});
+                            }
                       v.showLine(points);
                   }
               }
