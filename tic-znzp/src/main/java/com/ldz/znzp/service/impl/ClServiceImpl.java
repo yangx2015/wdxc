@@ -418,7 +418,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (car == null)return ApiResponse.fail("未找到车辆");
         ClPb pb = getCarPb(car.getClId());
         if (pb == null)return ApiResponse.fail("未找到车辆排班");
-        ClXl route = xlService.getByCarId(car.getClId());
+        ClXl route = xlService.getByCarId(pb);
         if (route == null)return ApiResponse.fail("未找到车辆线路");
         List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
         return report(tid,pb,car,route,clClyxjls.size() == 0 ? null : clClyxjls.get(0));
