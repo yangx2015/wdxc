@@ -61,7 +61,7 @@ public class BizApiServiceImpl implements BizApiService{
 				//向所有配置接口写数据
 				System.err.println(apiUrl);
 				if (StringUtils.isNotEmpty(apiUrl)){
-
+					sendType=true;
 					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
 					/*executor.execute(new Runnable() {
 						@Override
@@ -84,11 +84,12 @@ public class BizApiServiceImpl implements BizApiService{
 						}
 					});*/
 				}
-				if(sendType){
-					String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
-					redisTemplate.convertAndSend(topic, dto);
-				}
 			}
+			if(sendType){
+				String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
+				redisTemplate.convertAndSend(topic, dto);
+			}
+
 		}
 	}
 	
