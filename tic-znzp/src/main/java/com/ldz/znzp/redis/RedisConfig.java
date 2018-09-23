@@ -2,7 +2,7 @@ package com.ldz.znzp.redis;
 
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.spring.SpringContextUtil;
-import com.ldz.znzp.service.ZnzpService;
+import com.ldz.znzp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -42,7 +42,7 @@ public class RedisConfig {
 		RedisTemplateUtil bean = new RedisTemplateUtil(redisConnectionFactory);
 		return bean;
 	}
-	
+
 	/**
 	 * 从外部提取数据的Redis对象
 	 * @return
@@ -57,7 +57,7 @@ public class RedisConfig {
 		nJedisConn.setUsePool(true);
 		nJedisConn.setShardInfo(jedisConn.getShardInfo());
 		nJedisConn.setDatabase(otherDatabase);
-		
+
 		RedisTemplateUtil bean = new RedisTemplateUtil(nJedisConn);
 		return bean;
 	}
@@ -79,7 +79,11 @@ public class RedisConfig {
 		List<Topic> topics = new ArrayList<>();
 		topics.add(new PatternTopic("gps"));
 		topics.add(new PatternTopic("spk"));
-		container.addMessageListener(new MessageReceiver(redisTemplateDefault()), topics);
+		ClService clService = SpringContextUtil.getBean(ClService.class);
+		XlService xlService = SpringContextUtil.getBean(XlService.class);
+		ClyxjlService clyxjlService = SpringContextUtil.getBean(ClyxjlService.class);
+
+		container.addMessageListener(new MessageReceiver(redisTemplateDefault(),clService,xlService,clyxjlService), topics);
 		container.addMessageListener(new OffLineMessageReceiver(redisTemplateDefault(),SpringContextUtil.getBean(ZnzpService.class)),new PatternTopic("offline"));
 		//这个container 可以添加多个 messageListener
 		return container;

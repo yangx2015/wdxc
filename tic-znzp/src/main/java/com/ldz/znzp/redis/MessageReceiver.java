@@ -12,18 +12,17 @@ import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.ClService;
 import com.ldz.znzp.service.ClyxjlService;
 import com.ldz.znzp.service.XlService;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 
-
-@Component
+@Slf4j
 public class MessageReceiver implements MessageListener {
 
 	@Autowired
@@ -36,14 +35,19 @@ public class MessageReceiver implements MessageListener {
 
 	private RedisTemplateUtil redisTemplate;
 
-	public MessageReceiver(RedisTemplateUtil redisTemplate) {
+	public MessageReceiver(RedisTemplateUtil redisTemplate, ClService clService, XlService xlService, ClyxjlService clyxjlService) {
 		this.redisTemplate = redisTemplate;
+		this.clService=clService;
+		this.xlService=xlService;
+		this.clyxjlService=clyxjlService;
 	}
 
 	@Override
 	public void onMessage(Message message, byte[] pattern) {
 		val topic = redisTemplate.getStringSerializer().deserialize(message.getChannel());
 		val eventMessage = redisTemplate.getValueSerializer().deserialize(message.getBody());
+		log.error("订阅的topic:"+topic);
+		log.error("订阅的值:"+eventMessage.toString());
 		System.out.println(eventMessage);
 		// String topic = Arrays.toString(pattern);
         GpsInfo gpsInfo = new GpsInfo();
