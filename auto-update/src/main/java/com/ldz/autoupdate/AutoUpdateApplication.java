@@ -7,6 +7,8 @@ import com.ldz.autoupdate.util.SpringContextUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -16,8 +18,13 @@ public class AutoUpdateApplication {
 
 
     public static void main(String[] args) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String time = "["+sdf.format(new Date()) +"]";
         FileUtil fileUtil = new FileUtil();
         String path = fileUtil.getCurrentPath();
+        System.out.println(time+"starting autoUpdate...");
+        System.out.println(time+"current path : "+path);
+        System.out.println(time+"see log.txt for further information");
         LogUtil logUtil = LogUtil.getInstance();
         logUtil.setInfoLogPath(path + "/info.log");
         logUtil.setErrorLogPath(path + "/error.log");
@@ -25,7 +32,9 @@ public class AutoUpdateApplication {
         ConfigUtil configUtil = new ConfigUtil();
 
         Map<String,String> configMap = configUtil.getConfig(path + "/config.txt");
+        if (configMap == null)return;
         List<DeviceItem> deviceList = configUtil.getItems(path+"/deviceList.txt");
+        if (deviceList == null)return;
         if (deviceList.size() == 0) {
             logUtil.info("暂无需要升级的设备");
             return;
@@ -40,5 +49,7 @@ public class AutoUpdateApplication {
         config.setDecviceIds(deviceIds);
         config.setDeviceItemList(deviceList);
         config.setConfigMap(configMap);
+
+        System.out.println(time+"starting autoUpdate success!");
     }
 }

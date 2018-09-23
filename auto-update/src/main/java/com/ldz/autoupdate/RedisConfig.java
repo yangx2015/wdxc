@@ -28,7 +28,6 @@ public class RedisConfig {
 	private RedisConnectionFactory redisConnectionFactory;
 
 
-	private LogUtil logUtil = LogUtil.getInstance();
 	private RedisTemplateUtil redisTemplateUtil;
 
 	@Autowired
