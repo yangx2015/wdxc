@@ -44,7 +44,7 @@ export default {
   data () {
     return {
       //全局变量
-
+      swiperIndex:0,
       // ajax数据请求参数配置
       apis:ajaxUrl,
       Ajax:{

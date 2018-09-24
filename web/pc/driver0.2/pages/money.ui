@@ -1,7 +1,60 @@
 <!--money-->
 <template>
   <ui-page>
+      <ui-view class="box_col" style="height:740px">
+          <ui-view class="logoback">
+             <ui-view class="logTit">
+             费用合计
+            </ui-view>
+            <ui-view class="name">
+             
+                {{moneyAdd}} 
 
+            </ui-view>
+            <ui-view class="fen">
+              单位:元
+            </ui-view>
+         </ui-view>
+         
+         <ui-view>
+           <ui-row height=50 space=20>
+             <ui-col vertical-align="middle" align="center" style="font-size:20px">
+                  里程数/km：
+             </ui-col>
+             <ui-col vertical-align="middle" align="center">
+                  <ui-input ui:model="{{ form.lc }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+             </ui-col>
+           </ui-row>
+            <ui-row height=50 space=20>
+             <ui-col vertical-align="middle" align="center" style="font-size:20px">
+                  单价/元：
+             </ui-col>
+             <ui-col vertical-align="middle" align="center">
+                  <ui-input ui:model="{{ form.dj }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+             </ui-col>
+           </ui-row>
+            <ui-row height=50 space=20>
+             <ui-col vertical-align="middle" align="center" style="font-size:20px">
+                  过桥费/元：
+             </ui-col>
+             <ui-col vertical-align="middle" align="center">
+                  <ui-input ui:model="{{ form.gqf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+             </ui-col>
+           </ui-row>
+            <ui-row height=50 space=20>
+             <ui-col vertical-align="middle" align="center" style="font-size:20px">
+                  过路费/元：
+             </ui-col>
+             <ui-col vertical-align="middle" align="center">
+                  <ui-input ui:model="{{ form.glf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+             </ui-col>
+           </ui-row>
+           <ui-row>
+             <ui-col space=30>
+                <ui-button class="submit_btn" bindtap="orderYZ">行程结束</ui-button>
+             </ui-col>
+           </ui-row>
+         </ui-view>
   </ui-page>
 </template>
 
@@ -11,13 +64,167 @@ export default {
     navigationBarTitleText: "费用详情"
   },
   data() {
-    return {}
+    return {
+      height:"80",
+      moneyAdd:0,
+      form:{
+        id:'',
+        lc:'',
+        dj:'',
+        gqf:'', 
+        glf:''
+      },
+      orderMess:{}
+      // heji:this.orderMess.glf + this.orderMess.gqf+this.orderMess.dj+this.orderMess.lc,
+    }
   },
-  methods: {},
-  mounted() {}
+  filters:{
+    mo:(val)=>{
+      if(val == NaN){
+        return '0'
+      }
+      return val
+    }
+  },
+  created(){
+    this.getInputVal();
+    console.log('=======',ui.getApp().orderMess);
+    if(ui.getApp().orderMess.id){
+      this.form.id = ui.getApp().orderMess.id
+    }else{
+      ui.showToast({ title: '请重新选择订单' })
+      ui.navigateTo({
+        url: '/pages/index'
+      })
+    }
+     
+     
+  },
+  methods: {
+    Goback(){
+      ui.navigateBack()
+    },
+    getInputVal(val){
+      let lc = '0'
+      let dj = '0'
+      let gqf = '0'
+      let glf = '0'
+
+      if(this.form.lc == ''){
+        lc='0'
+      }else{
+        lc = this.form.lc
+      }
+
+      if(this.form.dj == ''){
+        dj='0'
+      }else{
+        dj = this.form.dj
+      }
+
+      if(this.form.gqf == ''){
+        gqf='0'
+      }else{
+        gqf = this.form.gqf
+      }
+
+      if(this.form.glf == ''){
+        glf='0'
+      }else{
+        glf = this.form.glf
+      }
+
+
+
+      this.moneyAdd = parseInt(lc)*parseInt(dj)+parseInt(gqf)+parseInt(glf)
+      
+    },
+    orderYZ(){
+      if(this.form.lc == ''){
+        ui.showToast({ title: '请输入里程数' })
+        return
+      }else if(this.form.dj == ''){
+        ui.showToast({ title: '请输入行程单价' })
+        return
+      }else if(this.form.gqf == ''){
+        ui.showToast({ title: '请输入过桥费' })
+        return
+      }else if(this.form.glf == ''){
+        ui.showToast({ title: '请输入路停费' })
+        return
+      }else{
+        this.orderOk()
+      }
+    },
+    orderOk(){
+      var v = this
+      this.$http('POST',ui.getApp().apis.LISTOK.CHANGE,this.form,(res)=>{
+        if(res.code == 200){
+          ui.showToast({ title: '行程结束' })
+          ui.getApp().orderMess.lc = this.form.lc
+          ui.getApp().orderMess.dj = this.form.dj
+          ui.getApp().orderMess.glf = this.form.glf
+          ui.getApp().orderMess.gqf = this.form.gqf
+          ui.getApp().swiperIndex = 1
+          v.Goback()
+        }else{
+          ui.showToast({ title: res.message })
+          ui.navigateTo({
+            url: '/pages/index'
+          })
+        }
+      })
+    },
+  },
+  mounted() {
+
+  }
 }
 </script>
 
 <style lang="less">
-
+.logoback{
+    height: 340rpx;
+    background-image: url('../static/img/drive/backTit.png');
+    background: 100% no-repeat top;
+    position: relative;
+    text-align: center;
+    .logTit{
+      background-color: #ff8040;
+      color: #fff;
+      width: 220rpx;
+      height: 120rpx;
+      border-radius: 10rpx;
+      line-height: 120rpx;
+      font-size: 50rpx;
+      font-weight: 700;
+      position: absolute;
+      top:10%;
+      left: 50%;
+      transform: translate(-50%,0);
+    }
+    .name{
+      position: absolute;
+      top: 170rpx;
+      width: 100%;
+      font-size: 60rpx;
+      font-weight: 700;
+      color: #616161;
+    }
+    .fen{
+      position: absolute;
+      top: 240rpx;
+      width: 100%;
+      font-size: 40rpx;
+      font-weight: 700;
+      color: #ffa700;
+    }
+  }
+   .submit_btn{
+    font-size:18px;
+    font-weight: bold;
+    color:#fff;
+    border-radius: 10rpx;
+    background-color:#ff8040 ;
+  }
 </style>

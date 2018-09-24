@@ -61,8 +61,8 @@
         </ui-view>
     </ui-fixed-view>          
   <ui-fixed-view bottom="20" left="10" right="10">
-          <ui-view class="popup" ui:if="{{orderMess.ddzt == '13'}}">
-            <ui-row space-top=15>
+          <ui-view ui:if="{{orderMess.lc == ''}}">
+            <!-- <ui-row space-top=15>
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 里程
               </ui-col>
@@ -72,12 +72,12 @@
             </ui-row>
             <ui-row height="30">
               <ui-col space-left="20" space-right="10" vertical-align="middle">
-                <ui-input ui:model="{{ form.lc }}" 
+                <ui-input ui:model="{{ orderMess.lc }}" 
                  type='number'
                  placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
-                <ui-input ui:model="{{ form.dj }}"
+                <ui-input ui:model="{{ orderMess.dj }}"
                  type='number'
                  placeholder="0"></ui-input>
               </ui-col>
@@ -92,21 +92,23 @@
             </ui-row>
             <ui-row height="30">
               <ui-col space-left="20" space-right="10" vertical-align="middle">
-                <ui-input ui:model="{{ form.gqf }}"
+                <ui-input ui:model="{{ orderMess.gqf}}"
                  type='number'
                  placeholder="0"></ui-input>
               </ui-col>
               <ui-col space-left="10" space-right="20" vertical-align="middle">
-                <ui-input ui:model="{{ form.glf }}"
+                <ui-input ui:model="{{ orderMess.glf}}"
                  type='number'
                  placeholder="0"></ui-input>
               </ui-col>
-            </ui-row>
+            </ui-row> -->
             <ui-view>
-              <ui-button type="primary" bindtap="orderYZ">行程结束</ui-button>
+              <ui-button type="primary" bindtap="gomoney()">行程结束</ui-button>
             </ui-view>
           </ui-view>
-          <ui-view class="popup" ui:elif="{{orderMess.ddzt == '20' ||orderMess.ddzt == '30' || orderMess.ddzt == '40'}}">
+          
+          <!-- <ui-view class="popup" ui:elif="{{orderMess.ddzt == '20' ||orderMess.ddzt == '30' || orderMess.ddzt == '40'}}"> -->
+          <ui-view class="popup" ui:else>
             <ui-row space-top=15>
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 里程/公里
@@ -185,7 +187,20 @@ export default {
       fixedTop: 60
     }
   },
+  filters:{
+    mo:(val)=>{
+      if(val == ''){
+        return '0'
+      }
+      return val
+    }
+  },
   methods: {
+    gomoney(){
+        ui.navigateTo({
+          url: 'money'
+        })
+    },
     addMarker(points) {
       console.log('666',points);
         var pt = new BMap.Point(points[0].longitude, points[0].latitude);
@@ -207,10 +222,10 @@ export default {
       }else if(this.form.dj == ''){
         ui.showToast({ title: '请输入行程单价' })
         return
-      }else if(this.form.dj == ''){
+      }else if(this.form.gqf == ''){
         ui.showToast({ title: '请输入过桥费' })
         return
-      }else if(this.form.dj == ''){
+      }else if(this.form.glf == ''){
         ui.showToast({ title: '请输入路停费' })
         return
       }else{
