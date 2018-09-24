@@ -150,8 +150,60 @@
                         key: 'yysj'
                     }, {
                         title: '里程(公里)',
-                        key: 'lc'
+                        key: 'lc',
+                        render: (h, p) => {
+                            if (p.row.lc == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.lc)
+                        }
                     }, {
+                        title: '里程单价',
+                        key: 'dj',
+                        render: (h, p) => {
+                            if (p.row.dj == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.dj)
+                        }
+                    }, {
+                        title: '过路费',
+                        key: 'glf',
+                        render: (h, p) => {
+                            if (p.row.glf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.glf)
+                        }
+                    }, {
+                        title: '路停费',
+                        key: 'gqf',
+                        render: (h, p) => {
+                            if (p.row.gqf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.gqf)
+                        }
+                    }, {
+                        title: '加班费',
+                        key: 'jbf',
+                        render: (h, p) => {
+                            if (p.row.jbf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.jbf)
+                        }
+                    }, {
+                        title: '节假日补助费',
+                        width: 130,
+                        key: 'jjrjl',
+                        render: (h, p) => {
+                            if (p.row.jjrjl == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.jjrjl)
+                        }
+                    },{
                         title: '车费合计',
                         key: 'zj'
                     }, {
@@ -211,8 +263,60 @@
                         key: 'yysj'
                     }, {
                         title: '里程(公里)',
-                        key: 'lc'
+                        key: 'lc',
+                        render: (h, p) => {
+                            if (p.row.lc == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.lc)
+                        }
                     }, {
+                        title: '里程单价',
+                        key: 'dj',
+                        render: (h, p) => {
+                            if (p.row.dj == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.dj)
+                        }
+                    }, {
+                        title: '过路费',
+                        key: 'glf',
+                        render: (h, p) => {
+                            if (p.row.glf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.glf)
+                        }
+                    }, {
+                        title: '路停费',
+                        key: 'gqf',
+                        render: (h, p) => {
+                            if (p.row.gqf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.gqf)
+                        }
+                    }, {
+                        title: '加班费',
+                        key: 'jbf',
+                        render: (h, p) => {
+                            if (p.row.jbf == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.jbf)
+                        }
+                    }, {
+                        title: '节假日补助费',
+                        width: 130,
+                        key: 'jjrjl',
+                        render: (h, p) => {
+                            if (p.row.jjrjl == '') {
+                                return h('div', '0')
+                            }
+                            return h('div', p.row.jjrjl)
+                        }
+                    },{
                         title: '车费合计',
                         key: 'zj'
                     }, {
