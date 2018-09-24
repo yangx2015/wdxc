@@ -179,6 +179,7 @@
             },
             // 获取一条线路的途径点
             getLinePoints(index) {
+                console.log('线路途径点',index);
                 let line = this.lineList[index];
                 if (!line || !line.stationList) {
                     return;
