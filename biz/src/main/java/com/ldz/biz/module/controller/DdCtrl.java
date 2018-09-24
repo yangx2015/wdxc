@@ -257,12 +257,12 @@ public class DdCtrl{
      * @param id
      * @return
      */
-    @RequestMapping(value = "driverConfirm",method = {RequestMethod.POST})
+    @RequestMapping(value = "/driverConfirm",method = {RequestMethod.POST})
     public ApiResponse<String> driverConfirm(String id){
         return service.driverConfirm(id);
     }
     /**
-     * 订单确认 操作
+     * 队长 订单确认 操作
      * 1、订单处于：司机确认(行程结束)
      * 2、只有该队队长才能有限制
      * 3、修改订单状态为 队长确认
