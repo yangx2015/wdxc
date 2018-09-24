@@ -53,7 +53,7 @@
                   </ui-row>
                 </ui-view>  -->
 
-                <ui-popup ui:model="{{ show5 }}" height="570" background="transparent">
+                <ui-popup ui:model="{{ show5 }}" height="90%" background="transparent">
                     <ui-view class="popup5">
                       <ui-row height="40" border-bottom>
                         <ui-col vertical-align="middle" space-left="20"></ui-col>
@@ -63,7 +63,7 @@
                       </ui-row>
                       <ui-view>
                         <ui-view style="background-color:#ffffff" padding="10px 20px 10px 20px">
-                          <ui-row>
+                          <ui-row height="50" space-top=15>
                             <ui-col span=12 align=center space-left=10 style="position:relative">
                                 <ui-icon type="wo" size=22 color="#b5b5b5" style="position:absolute;left:15px;top:-5px"></ui-icon>
                               <ui-input ui:model="{{form.ck}}" placeholder="请输入姓名" style="padding-left:32px"></ui-input>
@@ -683,8 +683,8 @@ export default {
 <style lang="less">
 .popup5{
   width: 95%;
-  background-color:#ddd;
-  height:550px;
+  background-color:#ffffff;
+  height:100%;
   margin:0 auto;
   border-radius:5px;
   overflow:hidden;
