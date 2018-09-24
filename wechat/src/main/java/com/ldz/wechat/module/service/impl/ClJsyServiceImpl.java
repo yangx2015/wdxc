@@ -52,17 +52,17 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 		return ApiResponse.success(map);
 	}
 
-	private float getJsyGrade(String jsyId){
+	private int getJsyGrade(String jsyId){
 		SimpleCondition condition = new SimpleCondition(ClDd.class);
 		condition.eq(ClDd.InnerColumn.sj,jsyId);
 		List<ClDd> orders = ddMapper.selectByExample(condition);
-		if (orders.size() == 0)return 0F;
+		if (orders.size() == 0)return 0;
 		orders = orders.stream().filter(p->p.getPjdj() != null).collect(Collectors.toList());
 		float total = 0f;
 		for (ClDd order : orders) {
 			total += order.getPjdj();
 		}
-		return total/orders.size();
+		return (int) (total/orders.size());
 	}
 
 	@Override
