@@ -152,60 +152,54 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         // 经纬度转换
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
         Gps gps = new Gps(Double.parseDouble(gpsInfo.getLatitude()),Double.parseDouble(gpsInfo.getLongitude()));
+        // 获取当前站点
         boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
-        // 根据传入进来的线路id ,经纬度 找到最近的两个站点 （或者找到当前线路的所有站点距离排序 取最近两个站点），
-        GeoResults<RedisGeoCommands.GeoLocation<String>> geoLocationGeoResults = geoUtil.getRadius(route.getId() + "_stations", gps.getWgLon(), gps.getWgLat(), 20000000, true, "ASC", 2);
-        List<String> stationIds = new ArrayList<>();
-        Map<String,Double> stationDistanceMap = new HashMap<>();
-        for (GeoResult<RedisGeoCommands.GeoLocation<String>> geoLocationGeoResult : geoLocationGeoResults.getContent()) {
-            String stationId = geoLocationGeoResult.getContent().getName();
-            stationIds.add(stationId);
-            stationDistanceMap.put(stationId,geoLocationGeoResult.getDistance().getValue());
-        }
-        List<ClZd> clZds = zdService.findIn(ClZd.InnerColumn.id, stationIds);
-
-        List<ClZd> currentStations = new ArrayList<>();
-        ClZd  currentStation = null;
-        // 对当前最近的两个点进行比较
-        for (ClZd clZd : clZds) {
-            Short fw = clZd.getFw();
-            Double distance = stationDistanceMap.get(clZd.getId());
-            if(distance < fw){ // 所在距离在该站点的范围内
-                zt = "inStation";
-                currentStations.add(clZd);
+        ClZd currentStation = null;
+        zt = null;
+        if (record == null){
+            log.info("没有运行记录");
+            currentStation = findCurrentZd("",gps,car,pb);
+            record = new ClClyxjl();
+            record.setCjsj(now);
+            record.setClId(car.getClId());
+            record.setCphm(car.getCph());
+            record.setId(""+idGenerator.nextId());
+            if(route != null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
             }
-        }
-
-        if(CollectionUtils.isEmpty(currentStations)) {// 当前站点空 说明车辆正在行驶的路上 取相近站点中序号较小的一个站
-            SimpleCondition condition = new SimpleCondition(ClXlzd.class);
-            condition.eq(ClXlzd.InnerColumn.zdId,clZds.get(0).getId());
-            condition.eq(ClXlzd.InnerColumn.xlId,route.getId());
-            List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
-            short i = xlzds.get(0).getXh();
-
-            SimpleCondition condition1 = new SimpleCondition(ClXlzd.class);
-            condition1.eq(ClXlzd.InnerColumn.zdId,clZds.get(1).getId());
-            condition1.eq(ClXlzd.InnerColumn.xlId,route.getId());
-            List<ClXlzd> xlzds1 = xlzdService.findByCondition(condition1);
-            short k = xlzds1.get(0).getXh();
-
-            if (i < k) {
-                currentStation = clZds.get(0);
-            } else {
-                currentStation = clZds.get(1);
+        }else {
+            if(route != null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
             }
-
-        }else if(CollectionUtils.size(currentStations) == 2){
-            // 取距离近的
-            Double distan1 = stationDistanceMap.get(currentStations.get(0).getId());
-            Double distan2 = stationDistanceMap.get(currentStations.get(1).getId());
-            if(distan1 <= distan2){
-                currentStation = currentStations.get(0);
+            log.info("已有运行记录："+record.toString());
+            String stationId = record.getZdId();
+            currentStation = zdService.findById(stationId);
+            double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+            log.info("distance:"+distance);
+            if (distance < currentStation.getFw()){
+                if ("80".equals(gpsInfo.getEventType())){
+                    zt = "off";
+                }else{
+                    zt = "inStation"; // 进站
+                }
             }else{
-                currentStation = currentStations.get(1);
+                currentStation = findCurrentZd(record.getZdId(),gps,car,pb);
             }
-        }else{
-            currentStation = currentStations.get(0);
+        }
+        if (zt == null){
+            if ("80".equals(gpsInfo.getEventType())){
+                zt = "off";
+            }else{
+                double distance = DistanceUtil.getLongDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
+                log.info("distance:"+distance);
+                if (distance < currentStation.getFw()){
+                    zt = "inStation"; // 进站
+                }else{
+                    zt = "runing"; // 正常
+                }
+            }
         }
 
         currentStation.setXlId(route.getId());
@@ -322,6 +316,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 record.setXlmc(route.getXlmc());
             }
         }else {
+            if(route != null){
+                record.setXlId(route.getId());
+                record.setXlmc(route.getXlmc());
+            }
             log.info("已有运行记录："+record.toString());
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
@@ -418,7 +416,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (car == null)return ApiResponse.fail("未找到车辆");
         ClPb pb = getCarPb(car.getClId());
         if (pb == null)return ApiResponse.fail("未找到车辆排班");
-        ClXl route = xlService.getByCarId(car.getClId());
+        ClXl route = xlService.getByCarId(pb);
         if (route == null)return ApiResponse.fail("未找到车辆线路");
         List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
         return report(tid,pb,car,route,clClyxjls.size() == 0 ? null : clClyxjls.get(0));
