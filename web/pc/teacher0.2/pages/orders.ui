@@ -35,12 +35,22 @@
     <template slot="body">
       <ui-tab-view-body>
           <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist0}}">
-             <ui-view class="tab-dis" style="padding:2px 0px 5px 0px">
+             <ui-view class="tab-dis" style="padding:5px 10px 5px 10px">
                <ui-view class="tab-dos">
                      <ui-row  style="padding:15px 15px 0px 15px">
                             <ui-col span="8" space-left="10">
-                                  <ui-view class="pageHeght">
-                                      {{item.zws}} 座车
+                                  <ui-view class="pageHeght" ui:if="{{item.cph}}">
+                                    <ui-row>
+                                      <ui-col>
+                                           {{item.cph}}
+                                      </ui-col>
+                                      <ui-col>
+                                         <ui-tag text="{{item.zws}}" tagClass="tag-before-0"></ui-tag>
+                                      </ui-col>
+                                    </ui-row>
+                                  </ui-view>
+                                  <ui-view class="pageHeght" ui:else>
+                                      待派单
                                   </ui-view>
                                 </ui-col>
                                 <ui-col align="right" spam="3" style="padding:15px 0 0 0;color:#A0A0A0">
@@ -490,4 +500,17 @@ color: #6e6e6e;
 .tab-dos{
     background-color: #ffffff;
   }
+.tag-before-0{
+  border: 1px solid #ff5800;
+  background: #fff;
+  color: #ff5800;
+  padding: 0 5px;
+  border-radius: 10px;
+  text-align: center;
+  height: 25px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  line-height: 20px;
+}
 </style>

@@ -13,9 +13,9 @@ import java.util.concurrent.Executor;
 
 @Service("bizApiService")
 public class BizApiServiceImpl implements BizApiService{
-	
+
 	Logger accessLog = LoggerFactory.getLogger("access_info");
-	
+
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 
 	//设备状态更新接口
@@ -33,12 +33,12 @@ public class BizApiServiceImpl implements BizApiService{
 
 	@Autowired
 	private RedisTemplateUtil redisTemplate;
-	
-	
-	
+
+
+
 	@Autowired
 	private Executor executor;
-	
+
 	//测试上传设备状态接口
 	@Override
 	public void pushData(RequestCommonParamsDto dto){
@@ -50,7 +50,7 @@ public class BizApiServiceImpl implements BizApiService{
 		// TODO Auto-generated method stub
 		pushDataApi(fileApi,dto);
 	}
-	
+
 	private void pushDataApi(String serverUrl,RequestCommonParamsDto dto){
 		if (StringUtils.isNotEmpty(serverUrl)){
 			final String[] apis = serverUrl.split(";");
@@ -92,5 +92,5 @@ public class BizApiServiceImpl implements BizApiService{
 
 		}
 	}
-	
+
 }
