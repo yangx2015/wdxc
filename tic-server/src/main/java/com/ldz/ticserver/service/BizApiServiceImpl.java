@@ -13,9 +13,9 @@ import java.util.concurrent.Executor;
 
 @Service("bizApiService")
 public class BizApiServiceImpl implements BizApiService{
-	
+
 	Logger accessLog = LoggerFactory.getLogger("access_info");
-	
+
 	Logger errorLog = LoggerFactory.getLogger("error_info");
 
 	//设备状态更新接口
@@ -33,12 +33,12 @@ public class BizApiServiceImpl implements BizApiService{
 
 	@Autowired
 	private RedisTemplateUtil redisTemplate;
-	
-	
-	
+
+
+
 	@Autowired
 	private Executor executor;
-	
+
 	//测试上传设备状态接口
 	@Override
 	public void pushData(RequestCommonParamsDto dto){
@@ -50,7 +50,7 @@ public class BizApiServiceImpl implements BizApiService{
 		// TODO Auto-generated method stub
 		pushDataApi(fileApi,dto);
 	}
-	
+
 	private void pushDataApi(String serverUrl,RequestCommonParamsDto dto){
 		if (StringUtils.isNotEmpty(serverUrl)){
 			final String[] apis = serverUrl.split(";");
@@ -61,7 +61,7 @@ public class BizApiServiceImpl implements BizApiService{
 				//向所有配置接口写数据
 				System.err.println(apiUrl);
 				if (StringUtils.isNotEmpty(apiUrl)){
-
+					sendType=true;
 					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
 					/*executor.execute(new Runnable() {
 						@Override
@@ -84,12 +84,13 @@ public class BizApiServiceImpl implements BizApiService{
 						}
 					});*/
 				}
-				if(sendType){
-					String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
-					redisTemplate.convertAndSend(topic, dto);
-				}
 			}
+			if(sendType){
+				String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
+				redisTemplate.convertAndSend(topic, dto);
+			}
+
 		}
 	}
-	
+
 }
