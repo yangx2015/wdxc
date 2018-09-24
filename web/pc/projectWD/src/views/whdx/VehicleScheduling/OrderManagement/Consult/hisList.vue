@@ -24,7 +24,7 @@
             }
         },
         created(){
-            // console.log(this.gpsList);
+            console.log('历史轨迹数据',this.gpsList);
             // console.log(this.index);
             this.mapID = this.mapID +this.index
         },
@@ -61,23 +61,70 @@
                 this.map.addControl(new BMap.OverviewMapControl());              //添加缩略地图控件
                 this.map.addControl(new BMap.NavigationControl());               // 添加平移缩放控件
 
-                this.addMarker(this.gpsList[0].longitude,
-                    this.gpsList[0].latitude,
+                this.addMarker(this.gpsList[0].bdjd,
+                    this.gpsList[0].bdwd,
                     this.apis.STATIC_PATH+'icon/map_line_begin.png')
-                this.addMarker(this.gpsList[this.gpsList.length-1].longitude,
-                    this.gpsList[this.gpsList.length-1].latitude,
+                this.addMarker(this.gpsList[this.gpsList.length-1].bdjd,
+                    this.gpsList[this.gpsList.length-1].bdwd,
                     this.apis.STATIC_PATH+'icon/map_line_end.png')
-                this.showLine(this.gpsList)
+                // this.showLine(this.gpsList)
+                this.getLinePoints(this.gpsList)
                 // setTimeout(function () {
                 //     v.map.setViewport(this.gpsList);
                 // },100)
             },
+            getLinePoints(stationList) {
+                console.log('============',stationList);
+                // let line = this.lineList[index];
+                // if (!line || !line.stationList) {
+                //     return;
+                // }
+                // let stationList = line.stationList;
+                // let startPoint = new BMap.Point(stationList[0].bdwd, stationList[0].bdjd);
+                // let endPoint = new BMap.Point(stationList[stationList.length - 1].bdwd, stationList[stationList.length - 1].bdjd);
+                let waypoints = '';
+                for (let i = 1; i <= stationList.length - 2; i++) {
+                    let station = stationList[i];
+                    waypoints += station.bdwd + ',' + station.bdjd;
+                    if (i < stationList.length - 2) {
+                        waypoints += '|';
+                    }
+                }
+                let url = 'http://api.map.baidu.com/direction/v2/driving?origin=' + stationList[0].bdwd + ',' + stationList[0].bdjd + '&destination=' + stationList[stationList.length - 1].bdwd + ',' + stationList[stationList.length - 1].bdjd + '&ak=evDHwrRoILvlkrvaZEFiGp30';
+                url += '&waypoints=' + waypoints;
+                let points = [];
+                let v = this;
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    dataType: 'JSONP',
+                    success: function (res) {
+                        if (res.status == 0) {
+                            let route = res.result.routes[0];
+                            points.push({lat: route.origin.lat, lng: route.origin.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.start_location.lng, lat: step.start_location.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.end_location.lng, lat: step.end_location.lat});
+                            }
+                            v.showLine(points);
+                            // line.points = points;
+                        }
+                    }
+                })
+            },
             showLine(line) {
                 var v = this
+                console.log('线路数据',line)
                 // if (!line.points) return;
                 let ps = [];
                 for (let r of line) {
-                    ps.push(new BMap.Point(r.longitude, r.latitude));
+                    ps.push(new BMap.Point(r.lng, r.lat));
                 }
                 var polyline = new BMap.Polyline(ps,
                     {strokeColor: line.color, strokeWeight: 6, strokeOpacity: 0.9}
