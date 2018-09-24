@@ -107,35 +107,44 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
         List<String> carIdList = null;
         if (StringUtils.isNotEmpty(carIds)) {
             String[] carIdsArr = carIds.split(",");
-            carIdList = Arrays.asList(carIdsArr);
-        }
-        ;
-        List<ClCl> carList = clService.findEq(ClCl.InnerColumn.cdbh, cdbh);
-        if (carIdList == null) {
-            if (carList.size() != 0) {
-                for (ClCl cl : carList) {
-                    cl.setCdbh("");
-                    clService.updateEntity(cl);
+            if(carIdsArr!=null&&carIdsArr.length>0){
+                carIdList = new ArrayList<String>();
+                for(String car:carIdsArr){
+                    if(StringUtils.isNotEmpty(car)){
+                        carIdList.add(car);
+                    }
                 }
-            }
-            return;
-        }
 
-        List<String> hasIds = null;
-        if (carList.size() != 0) {
-            hasIds = new ArrayList<>();
-            for (ClCl cl : carList) {
-                if (carIdList.contains(cl.getClId())) {
-                    hasIds.add(cl.getClId());
-                } else {
-                    cl.setCdbh("");
-                    clService.updateEntity(cl);
-                }
             }
+//            carIdList = Arrays.asList(carIdsArr);
         }
-        if (hasIds != null&&hasIds.size()>0){
-            carIdList.retainAll(hasIds);
-        }
+//        ;
+//        List<ClCl> carList = clService.findEq(ClCl.InnerColumn.cdbh, cdbh);
+//        if (carIdList == null) {
+//            if (carList.size() != 0) {
+//                for (ClCl cl : carList) {
+//                    cl.setCdbh("");
+//                    clService.updateEntity(cl);
+//                }
+//            }
+//            return;
+//        }
+//
+//        List<String> hasIds = null;
+//        if (carList.size() != 0) {
+//            hasIds = new ArrayList<>();
+//            for (ClCl cl : carList) {
+//                if (carIdList.contains(cl.getClId())) {
+//                    hasIds.add(cl.getClId());
+//                } else {
+//                    cl.setCdbh("");
+//                    clService.updateEntity(cl);
+//                }
+//            }
+//        }
+//        if (hasIds != null&&hasIds.size()>0){
+//            carIdList.retainAll(hasIds);
+//        }
         List<ClCl> modifyCarList = clService.findIn(ClCl.InnerColumn.clId, carIdList);
         for (ClCl cl : modifyCarList) {
             cl.setCdbh(cdbh);
@@ -147,35 +156,42 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
         List<String> driverIdList = null;
         if (StringUtils.isNotEmpty(driverIds)) {
             String[] arr = driverIds.split(",");
-            driverIdList = Arrays.asList(arr);
-        }
-        ;
-        List<ClJsy> driverList = jsyService.findEq(ClJsy.InnerColumn.cdbh, cdbh);
-        if (driverIdList == null) {
-            if (driverList.size() != 0) {
-                for (ClJsy driver : driverList) {
-                    driver.setCdbh("");
-                    jsyService.updateEntity(driver);
-                }
-            }
-            return;
-        }
-
-        List<String> hasIds = null;
-        if (driverList.size() != 0) {
-            hasIds = new ArrayList<>();
-            for (ClJsy driver : driverList) {
-                if (driverIdList.contains(driver.getSfzhm())) {
-                    hasIds.add(driver.getSfzhm());
-                } else {
-                    driver.setCdbh("");
-                    jsyService.updateEntity(driver);
+            if(arr!=null&&arr.length>0){
+                driverIdList = new ArrayList<String>();
+                for(String car:arr){
+                    if(StringUtils.isNotEmpty(car)){
+                        driverIdList.add(car);
+                    }
                 }
             }
         }
-        if (hasIds != null&&hasIds.size()>0){
-            driverIdList.retainAll(hasIds);
-        }
+//        ;
+//        List<ClJsy> driverList = jsyService.findEq(ClJsy.InnerColumn.cdbh, cdbh);
+//        if (driverIdList == null) {
+//            if (driverList.size() != 0) {
+//                for (ClJsy driver : driverList) {
+//                    driver.setCdbh("");
+//                    jsyService.updateEntity(driver);
+//                }
+//            }
+//            return;
+//        }
+//
+//        List<String> hasIds = null;
+//        if (driverList.size() != 0) {
+//            hasIds = new ArrayList<>();
+//            for (ClJsy driver : driverList) {
+//                if (driverIdList.contains(driver.getSfzhm())) {
+//                    hasIds.add(driver.getSfzhm());
+//                } else {
+//                    driver.setCdbh("");
+//                    jsyService.updateEntity(driver);
+//                }
+//            }
+//        }
+//        if (hasIds != null&&hasIds.size()>0){
+//            driverIdList.retainAll(hasIds);
+//        }
         List<ClJsy> modifyDriverList = jsyService.findIn(ClJsy.InnerColumn.sfzhm, driverIdList);
         for (ClJsy driver : modifyDriverList) {
             driver.setCdbh(cdbh);
@@ -195,6 +211,7 @@ public class CdServiceImpl extends BaseServiceImpl<ClCd, String> implements CdSe
         entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);
+        cancelMotorcade(entity.getCdbh());
         setCars(entity.getCdbh(), entity.getClIds());
         setDrivers(entity.getCdbh(), entity.getDriverIds());
         return ApiResponse.success();
