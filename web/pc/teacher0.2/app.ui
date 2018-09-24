@@ -9,7 +9,13 @@ export default {
       "pages/user",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/orders","pages/mark","pages/others"],
+      "pages/welcome",
+      "pages/common/busline",
+      "pages/prop/add",
+      "pages/prop/pages",
+      "pages/mark",
+      "pages/orders",
+      "pages/others"],
     "theme": {
       "theme-color": "#3399ff"
     },

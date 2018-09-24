@@ -387,6 +387,72 @@ public class ClDd implements Serializable {
     @Column(name = "CK_CJL")
     private String ckCjl;
 
+    /**
+     * 节假日单价
+     */
+    @Column(name = "JJRDJ")
+    private String jjrdj;
+    /**
+     * 节假日时长
+     */
+    @Column(name = "JJRSC")
+    private String jjrsc;
+    /**
+     * 加班费
+     */
+    @Column(name = "JBF")
+    private String jbf;
+    /**
+     * 加班费单价
+     */
+    @Column(name = "JBFDJ")
+    private String jbfdj;
+    /**
+     * 节假日金额
+     */
+    @Column(name = "JJRJL")
+    private String jjrjl;
+
+    public String getJjrdj() {
+        return jjrdj;
+    }
+
+    public String getJjrsc() {
+        return jjrsc;
+    }
+
+    public String getJbf() {
+        return jbf;
+    }
+
+    public String getJbfdj() {
+        return jbfdj;
+    }
+
+    public String getJjrjl() {
+        return jjrjl;
+    }
+
+    public void setJjrjl(String jjrjl) {
+        this.jjrjl = jjrjl;
+    }
+
+    public void setJjrdj(String jjrdj) {
+        this.jjrdj = jjrdj;
+    }
+
+    public void setJjrsc(String jjrsc) {
+        this.jjrsc = jjrsc;
+    }
+
+    public void setJbf(String jbf) {
+        this.jbf = jbf;
+    }
+
+    public void setJbfdj(String jbfdj) {
+        this.jbfdj = jbfdj;
+    }
+
     public Short getJbsc() {
         return jbsc;
     }

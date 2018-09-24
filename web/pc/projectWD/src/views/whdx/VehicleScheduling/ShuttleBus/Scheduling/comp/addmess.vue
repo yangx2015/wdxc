@@ -14,8 +14,29 @@
                     height="400"
                     :closable='false'
                     :mask-closable="false"
-                    width='600'
-                    :title="mess.xlmc+'_线路排班__'+pbTime">
+                    width='600'>
+                  <div slot="header" class="box-row" style="align-items: center">
+                        <div style="font-weight: 600;font-size: 18px">
+                              {{mess.xlmc+'_线路排班'}}
+                        </div>
+                        <div style="margin-left: 22px">
+                              <RadioGroup v-model="vertical">
+                                    <Radio label="0" size="large">
+                                          <span style="font-weight: 600;font-size: 18px">今日排班</span>
+                                    </Radio>
+                                    <Radio label="1">
+                                          <span style="font-weight: 600;font-size: 18px">批量排班</span>
+                                    </Radio>
+                              </RadioGroup>
+                        </div>
+                        <div>
+                              <DatePicker :readonly="vertical=='0'" :value="DatePicker"
+                                          format="yyyy-MM-dd" type="daterange"
+                                          placement="bottom-end" placeholder="Select date"
+                                          @on-change="DatePick"
+                                          style="width: 200px"></DatePicker>
+                        </div>
+                  </div>
                   <div>
                         <div style="height: 200px;border: solid 1px #000;overflow: auto">
                               <Row>
@@ -81,8 +102,17 @@
         name: '',
         data() {
             return {
+                vertical:'0',
                 showModal: true,
-                chrlist: []
+                chrlist: [],
+                DatePicker:[this.pbTime,this.pbTime]
+            }
+        },
+        watch:{
+            vertical:function(val){
+                if(val=='0'){
+                    this.DatePicker = [this.pbTime,this.pbTime]
+                }
             }
         },
         props: {
@@ -100,6 +130,22 @@
             this.getCarList()
         },
         methods: {
+            DatePick(val){
+                console.log(val);
+                var v = this
+                this.DatePicker = [val[0],val[1]]
+                this.$http.post(this.apis.XLPBXX.YZ, {
+                    "xlId": v.mess.id,
+                    "kssj":val[0],
+                    "jssj":val[1],
+                    'cx': '30'
+                }).then((res) => {
+                    log('数据数据数据车量', res)
+                    this.swa
+                }).catch((error) => {
+                    v.$Message.error('出错了！！！');
+                })
+            },
             getCarList() {//获取车辆列表
                 var v = this
                 this.$http.post(this.apis.XLPBXX.CARLIST, {
@@ -124,10 +170,11 @@
             },
             AddList(carID, cph, sjxm) {
                 var v = this
-                this.$http.post(this.apis.XLPBXX.ADD, {
+                this.$http.post(this.apis.XLPBXX.PLADD, {
                     "clId": carID,
                     "xlId": v.mess.id,
-                    "date": v.pbTime,
+                    "kssj":this.DatePicker[0],
+                    "jssj":this.DatePicker[1],
                     'cx': '20'
                 }).then((res) => {
                     log('排版新增', res)
@@ -146,10 +193,11 @@
             },
             deleteById(carID, index) {
                 var v = this
-                this.$http.post(this.apis.XLPBXX.DELE, {
+                this.$http.post(this.apis.XLPBXX.PLDELE, {
                     "clId": carID,
                     "xlId": v.mess.id,
-                    "date": v.pbTime,
+                    "kssj":this.DatePicker[0],
+                    "jssj":this.DatePicker[1],
                     'cx': '20'
                 }).then((res) => {
                     if (res.code == 200) {
