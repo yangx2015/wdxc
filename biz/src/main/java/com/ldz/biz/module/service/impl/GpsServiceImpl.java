@@ -446,6 +446,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         WebsocketInfo info = new WebsocketInfo();
 
         if (clpgs != null) {
+            info.setSpeed(clpgs.getYxsd());
             if (StringUtils.isNotEmpty(gpsinfo.getSczt())) {
                 if (StringUtils.equals(gpsinfo.getSczt(), "10")) {
                     if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
@@ -455,7 +456,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setBdjd(clpgs.getBdjd().toString());
                     info.setBdwd(clpgs.getBdwd().toString());
                     info.setTime(simpledate(gpsinfo.getStartTime()));
-                    info.setSpeed(clpgs.getYxsd());
                 }
                 if (StringUtils.equals(gpsinfo.getSczt(), "20")) {
                     info.setZxzt("10");
@@ -465,7 +465,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setBdjd(clpgs.getBdjd().toString());
                     info.setBdwd(clpgs.getBdwd().toString());
                     info.setTime(simpledate(gpsinfo.getStartTime()));
-                    info.setSpeed(clpgs.getYxsd());
                 }
             }
             if (StringUtils.isNotEmpty(gpsinfo.getEventType())) {
@@ -474,7 +473,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                     info.setBdjd(clpgs.getBdjd().toString());
                     info.setBdwd(clpgs.getBdwd().toString());
                     info.setTime(clpgs.getCjsj());
-                    info.setSpeed(clpgs.getYxsd());
                 }
             }
         }
