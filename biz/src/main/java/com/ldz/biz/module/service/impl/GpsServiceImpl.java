@@ -99,6 +99,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      */
     @Override
     public ApiResponse<String> onReceiveGps(GpsInfo gpsInfo) {
+        errorLog.error("gpsInfo:"+gpsInfo.toString());
         // 只要上传点位信息 且不为离线事件 则为在线状态
         if(!StringUtils.equals(gpsInfo.getEventType(),"80")) {
             redis.boundValueOps("offline-" + gpsInfo.getDeviceId()).set(1, 10, TimeUnit.MINUTES);
@@ -152,6 +153,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         ClGps newGps = changeCoordinates(gpsInfo);
+        errorLog.error("newGps:"+newGps.toString());
 
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
@@ -225,6 +227,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      * @param websocketInfo
      */
     private void sendWebsocket(WebsocketInfo websocketInfo){
+        errorLog.error("sendWebsocket websocketInfo:"+websocketInfo.toString());
         String socket = JsonUtil.toJson(websocketInfo);
         log.info("推送前端的数据为" + socket);
         websocket.convertAndSend("/topic/sendgps-" + websocketInfo.getZdbh(), socket);
@@ -441,6 +444,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
     @Override
     public WebsocketInfo changeSocketNew(GpsInfo gpsinfo, ClGps clpgs, String xlId) {
+        errorLog.error("changeSocketNew gpsinfo:"+gpsinfo.toString());
         ClCl seleByZdbh = clclmapper.seleClInfoByZdbh(gpsinfo.getDeviceId());
         // 通过终端id获取车辆信息
         WebsocketInfo info = new WebsocketInfo();
