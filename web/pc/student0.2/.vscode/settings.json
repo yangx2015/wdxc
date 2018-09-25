@@ -1,7 +1,7 @@
 {
     "workbench.colorTheme": "Adapta Nokto",
     "touchui.deving": false,
-    "touchui.builded": true,
+    "touchui.builded": false,
     "touchui.enable": true,
     "files.associations": {
         "*.ui": "vue"

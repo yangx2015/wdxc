@@ -123,13 +123,13 @@ export default {
                       '<span>' + mess +'</span> ' +
                       '</div>';
 
-        var myLabel = new BMap.Label(html,     //为lable填写内容
+        var myLabel = new BMap.Label(html,                 //为lable填写内容
             {
-                offset: new BMap.Size(-80, -70),                  //label的偏移量，为了让label的中心显示在点上
+                offset: new BMap.Size(-80, -70),           //label的偏移量，为了让label的中心显示在点上
                 position: point
-            });                                //label的位置
-        myLabel.setStyle({                                   //给label设置样式，任意的CSS都是可以的
-            fontSize: "16px",               //字号
+            });                                            //label的位置
+        myLabel.setStyle({                                 //给label设置样式，任意的CSS都是可以的
+            fontSize: "16px",                              //字号
             'background-color': 'rgba(255,255,255,0.6)',
             'border-radius': '4px',
         });

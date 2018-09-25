@@ -17,9 +17,9 @@
                   <ui-row>
                     <ui-col align="right" vertical-align="middle" bindtap="forgetpassword">
                       <!-- <ui-navigator url="/pages/componentDemo/navigator/navigator2?state=1"> -->
-                        <ui-text block class="reset_pwd">
+                        <!-- <ui-text block class="reset_pwd">
                           忘记密码?
-                        </ui-text>
+                        </ui-text> -->
                       <!-- </ui-navigator> -->
                     </ui-col>
                   </ui-row>

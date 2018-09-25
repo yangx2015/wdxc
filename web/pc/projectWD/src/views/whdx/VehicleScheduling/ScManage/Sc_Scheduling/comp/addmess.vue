@@ -36,7 +36,6 @@
                                           @on-change="DatePick"
                                           style="width: 200px"></DatePicker>
                         </div>
-                         <!--{{pbTime}}{{vertical}}-->
                   </div>
                   <div>
                         <div style="height: 200px;border: solid 1px #000;overflow: auto">
@@ -133,6 +132,19 @@
         methods: {
             DatePick(val){
                 console.log(val);
+                var v = this
+                this.DatePicker = [val[0],val[1]]
+                this.$http.post(this.apis.XLPBXX.YZ, {
+                    "xlId": v.mess.id,
+                    "kssj":val[0],
+                    "jssj":val[1],
+                    'cx': '30'
+                }).then((res) => {
+                    log('数据数据数据车量', res)
+                    this.swa
+                }).catch((error) => {
+                    v.$Message.error('出错了！！！');
+                })
             },
             getCarList() {//获取车辆列表
                 var v = this
@@ -162,7 +174,7 @@
                     "clId": carID,
                     "xlId": v.mess.id,
                     "kssj":this.DatePicker[0],
-                    "kssj":this.DatePicker[1],
+                    "jssj":this.DatePicker[1],
                     'cx': '30'
                 }).then((res) => {
                     log('排版新增', res)
@@ -203,7 +215,7 @@
                     "clId": carID,
                     "xlId": v.mess.id,
                     "kssj":this.DatePicker[0],
-                    "kssj":this.DatePicker[1],
+                    "jssj":this.DatePicker[1],
                     'cx': '30'
                 }).then((res) => {
                     if (res.code == 200) {

@@ -126,9 +126,10 @@
                 }
             },
             addLabel(item,point) {
+                let speed = item.speed ? item.speed : 0;
                 let html = '<div style="width: 160px;height: 28px;padding:4px;">' +
                         '<span>['+item.cph+']</span> ' +
-                        '<span style="float: right">'+item.speed+' km/h</span>' +
+                        '<span style="float: right">'+speed+' km/h</span>' +
                     '</div>'
                 var myLabel = new BMap.Label(html,     //为lable填写内容
                     {
