@@ -31,6 +31,3 @@ COMMENT ON COLUMN CL_XC.XC_START_END IS '行程的开始和结束点 长度增�
 
 --生产环境还没有更新 ，需要联系肖老师，更新数据库
 
-
-
-
