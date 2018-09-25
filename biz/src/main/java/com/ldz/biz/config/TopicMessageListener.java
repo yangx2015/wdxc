@@ -100,39 +100,38 @@ public class TopicMessageListener implements MessageListener {
             String string = HttpUtil.get(url +"/push/checkOnlin/" + zdbh);
             bean = JsonUtil.toBean(string, ApiResponse.class);
         } catch (Exception e) {
-            error.error(e.getMessage());
+            error.error("验证客户端是否在线接口异常：", e);
         }
 
 
-       if(!ObjectUtils.isEmpty(bean)  ) {
-            if(bean.getCode() !=200) {
-                ClZdgl zdgl = zdglService.findById(zdbh);
-                if (!ObjectUtils.isEmpty(zdgl)) {
-                    zdgl.setZxzt("20");
-                    zdglService.update(zdgl);
+        if(ObjectUtils.isEmpty(bean)||bean.getCode() !=200) {
+            ClZdgl zdgl = zdglService.findById(zdbh);
+            if (!ObjectUtils.isEmpty(zdgl)) {
+                zdgl.setZxzt("20");
+                zdglService.update(zdgl);
 
-                    //独立线程通知其他服务器离线消息
-                    pool.submit(new Runnable() {
+                //独立线程通知其他服务器离线消息
+                pool.submit(new Runnable() {
 
-                        @Override
-                        public void run() {
+                    @Override
+                    public void run() {
 
-                            // 并将离线消息通知到gps上传
-                            ApiResponse<String> senML = senML(zdbh, bizurl +"/pub/gps/save");
-                            //accessLog.debug(senML+"biz接口离线消息返回");
+                        // 并将离线消息通知到gps上传
+                        ApiResponse<String> senML = senML(zdbh, bizurl +"/pub/gps/save");
+                        //accessLog.debug(senML+"biz接口离线消息返回");
 
-                            ApiResponse<String> znzpsenML = senML(zdbh, znzpurl  + "/reporting");
-                            //accessLog.debug(znzpsenML+"znzp接口离线消息返回");
+                        ApiResponse<String> znzpsenML = senML(zdbh, znzpurl  + "/reporting");
+                        //accessLog.debug(znzpsenML+"znzp接口离线消息返回");
 
 
-                        }
-                    });
+                    }
+                });
 
-                }
-            }else{
-                redisTemplate.boundValueOps("offline-" + zdbh).set(1,10,TimeUnit.MINUTES);
             }
-       }
+        }else{
+            redisTemplate.boundValueOps("offline-" + zdbh).set(1,10,TimeUnit.MINUTES);
+        }
+
     }
 
 
