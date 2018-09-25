@@ -85,8 +85,11 @@ public class MessageReceiver implements MessageListener {
 
 		Map<String, String> postHeaders = new HashMap<>();
 		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+		String apkUrl = config.getConfigMap().get("apkUrl");
 		try {
 			info.setDeviceId(info.getDeviceId());
+			info.setCmdType("90");
+			info.setCmd(apkUrl);
 			String finalPostEntity = JsonUtil.toJson(info);
 			HttpUtil.postJson(apiUrl + "/push/carcmd", postHeaders, finalPostEntity);
 		} catch (Exception e) {
