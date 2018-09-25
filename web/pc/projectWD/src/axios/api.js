@@ -1,5 +1,5 @@
-let url = 'http://10.113.4.70:'//8080
-// let url = 'http://47.98.39.45:'//8080
+// let url = 'http://10.113.4.70:'//8080
+let url = 'http://47.98.39.45:'//8080
 // let url = 'http://192.168.31.92:'//8000
 let port = '8080'
 export default {

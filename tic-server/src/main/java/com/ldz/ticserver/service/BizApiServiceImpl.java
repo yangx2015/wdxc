@@ -53,43 +53,9 @@ public class BizApiServiceImpl implements BizApiService{
 
 	private void pushDataApi(String serverUrl,RequestCommonParamsDto dto){
 		if (StringUtils.isNotEmpty(serverUrl)){
-			final String[] apis = serverUrl.split(";");
-			System.err.println(apis.length);
-			Boolean sendType=false;
-			for (int i=0; i<apis.length; i++){
-				final String apiUrl = apis[i];
-				//向所有配置接口写数据
-				System.err.println(apiUrl);
-				if (StringUtils.isNotEmpty(apiUrl)){
-					sendType=true;
-					//使用独立线程去执行接口数据写入，不要影响tic-server主线程接收数据
-					/*executor.execute(new Runnable() {
-						@Override
-						public void run() {
-							//具体写入数据bean对象，数据库定义出来以后，会变为具体对象
-							ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-							String paramJson = "";
-							try {
-								//将bean对象转成json格式字符串进行数据传输
-								paramJson = mapper.writeValueAsString(dto);
-								Map<String, String> params = new HashMap<String, String>();
-								params.put("content-type", "application/json");
-								//发送数据请求
-								String result = HttpUtil.postJson(apiUrl, params, paramJson);
-								//数据本地日志记录
-								accessLog.debug("请求数据["+paramJson+"],接口响应["+result+"]");
-							} catch (Exception e) {
-								errorLog.error(serverUrl+"接口请求异常", e);
-							}
-						}
-					});*/
-				}
-			}
-			if(sendType){
-				String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
-				redisTemplate.convertAndSend(topic, dto);
-			}
-
+			errorLog.error("dto:"+dto.toString());
+			String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
+			redisTemplate.convertAndSend(topic, dto);
 		}
 	}
 
