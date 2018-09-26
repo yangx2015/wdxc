@@ -109,18 +109,20 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
         }
 
+        boolean change = false;
+        try{
+            change = handleEvent(gpsInfo);
+        }catch(Exception e){
+        	errorLog.error("解析GPS事件异常", e);
+        }
+        if (!change) return ApiResponse.success();
+
         if (!gpsInfo.getLatitude().equals("-1") && !gpsInfo.getLongitude().equals("-1")) {
             // 只有已录入的设备才上传到鹰眼
             if (isDeviceExist(gpsInfo.getDeviceId())){
                 eventBus.post(new SendGpsEvent(gpsInfo));
             }
         }
-        try{
-        	handleEvent(gpsInfo);
-        }catch(Exception e){
-        	errorLog.error("解析GPS事件异常", e);
-        }
-
         saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
     }
@@ -131,12 +133,13 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     }
 
 
-    private void handleEvent(GpsInfo gpsInfo){
+    private boolean handleEvent(GpsInfo gpsInfo){
         String eventType = gpsInfo.getEventType();
         String deviceId = gpsInfo.getDeviceId();
 
         String newStatus = "";
 
+        boolean change = false;
         boolean statusChange = false;
         boolean positionChange = false;
 
@@ -144,7 +147,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             EventType type = EventType.toEmun(eventType);
             if (type == null){
                 log.error("未知事件类型："+eventType);
-                return;
+                return false;
             }
             switch (type){
                 case IGNITION:
@@ -165,7 +168,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         String sczt = gpsInfo.getSczt();
         if ("20".equals(sczt)){
-            newStatus = DeviceStatus.OFFLINE.getCode();
+            newStatus = DeviceStatus.FLAMEOUT.getCode();
         }else if ("10".equals(sczt)){
             newStatus = DeviceStatus.IGNITION.getCode();
         }
@@ -196,7 +199,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             car = carList.get(0);
         }
         if (statusChange || positionChange){
+            change = true;
             ClGpsLs gpsls = new ClGpsLs(newGps);
+            newGps.setStatus(newStatus);
             gpsls.setId(genId());
             gpsls.setZdbh(deviceId);
             redis.boundListOps(ClGpsLs.class.getSimpleName() + deviceId).leftPush(JsonUtil.toJson(gpsls));
@@ -226,6 +231,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
         clXc(gpsInfo);
         saveClSbyxsjjl(gpsInfo, newGps, car);
+        return change;
     }
 
     /**
