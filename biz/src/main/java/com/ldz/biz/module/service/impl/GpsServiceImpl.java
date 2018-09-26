@@ -110,7 +110,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
         if (!gpsInfo.getLatitude().equals("-1") && !gpsInfo.getLongitude().equals("-1")) {
-            eventBus.post(new SendGpsEvent(gpsInfo));
+            // 只有已录入的设备才上传到鹰眼
+            if (isDeviceExist(gpsInfo.getDeviceId())){
+                eventBus.post(new SendGpsEvent(gpsInfo));
+            }
         }
         try{
         	handleEvent(gpsInfo);
@@ -120,6 +123,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 
         saveVersionInfoToRedis(gpsInfo);
         return ApiResponse.success();
+    }
+
+    private boolean isDeviceExist(String deviceId){
+        long c = zdglservice.countEq(ClZdgl.InnerColumn.zdbh.name(),deviceId);
+        return c > 0;
     }
 
 
@@ -614,6 +622,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      * @param gpsInfo
      */
     private void clXc(GpsInfo gpsInfo){
+        // 只有已录入的设备才上传到鹰眼
+        if (!isDeviceExist(gpsInfo.getDeviceId())){
+            return;
+        }
         // 获取 gps 存储事件的 终端号 和 时间
         String time = gpsInfo.getStartTime();
         String startTime  = time; // 开始时间
