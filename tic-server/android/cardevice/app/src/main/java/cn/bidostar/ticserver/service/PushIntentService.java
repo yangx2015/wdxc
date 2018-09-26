@@ -63,8 +63,7 @@ public class PushIntentService extends GTIntentService {
         //boolean result = PushManager.getInstance().sendFeedbackMessage(context, taskid, messageid, 90001);
         //Log.d(TAG, "call sendFeedbackMessage = " + (result ? "success" : "failed"));
 
-        I.e(TAG, "onReceiveMessageData -> " + "appid = " + appid + "\ntaskid = " + taskid + "\nmessageid = " + messageid + "\npkg = " + pkg
-                + "\ncid = " + cid);
+        //I.e(TAG, "onReceiveMessageData -> " + "appid = " + appid + "\ntaskid = " + taskid + "\nmessageid = " + messageid + "\npkg = " + pkg+ "\ncid = " + cid);
 
         if (payload == null) {
             I.e(TAG, "receiver payload = null");

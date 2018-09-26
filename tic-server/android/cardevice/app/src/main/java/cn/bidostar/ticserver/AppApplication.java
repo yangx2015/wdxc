@@ -117,34 +117,28 @@ public class AppApplication extends Application  {
     @Override
     public void onCreate() {
         super.onCreate();
-        CrashHandler.getInstance().init(this); // 一定要先初始化
-        Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
-        //UserCache.setContext(this);
-        //HttpURIUtils.isDedebug = false;
-        sInstance = this;
-        x.Ext.init(this);
-        x.Ext.setDebug(false);
-        AppSharedpreferencesUtils.init(this);
+        sInstance = AppApplication.this;
         APP_IMEI = getDeviceIMEI();
         APP_SIMCID = getSimICCID();
+        initPushServer();
+        CrashHandler.getInstance().init(AppApplication.this); // 一定要先初始化
+        Thread.setDefaultUncaughtExceptionHandler(CrashHandler.getInstance());
 
-            initPushServer();
+        x.Ext.init(AppApplication.this);
+        x.Ext.setDebug(false);
+        AppSharedpreferencesUtils.init(AppApplication.this);
 
-        if(inMainProcess()) {
-
-            pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-            wakeLock = pm.newWakeLock(PowerManager.SCREEN_BRIGHT_WAKE_LOCK
-                    | PowerManager.ON_AFTER_RELEASE, TAG);
+        I.e("AppApplication", "wakeLock======================");
+        pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
         if(wakeLock.isHeld()){
             I.i(TAG,"已经存在休眠锁，不需要再次进行获取");
         }else{
+            I.e("AppApplication", "wakeLock acquire success======================");
             wakeLock.acquire();
         }
 
-      }
         versionStr = getAPPVersionCode(this);
-
-
     }
 
     public static String getVersionStr(){

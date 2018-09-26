@@ -89,7 +89,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         filter.addAction(CarIntents.ACTION_MONITOR_NOTIFY);
         filter.addAction(CarIntents.ACTION_RECORD_FILE);
         filter.addAction(CarIntents.ACTION_DELETE_FILE);
-        filter.addAction(CarIntents.ACTION_CAMERA_LIVING_CALLBACK);
+        //filter.addAction(CarIntents.ACTION_CAMERA_LIVING_CALLBACK);
         filter.addAction(CarIntents.ACTION_RECORDING_STORAGE_SLOW);
         filter.addAction(CarIntents.ACTION_CAPTURE_CUSTOM_VIDEO);
         filter.addAction(CarIntents.ACTION_CAPTURE_FILE_INFO);
@@ -197,7 +197,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                                     final String imgPath = joResult.getString("imgurl");
                                     //ServerApiUtils.uploadFile("50", imgPath, ServerApiUtils.fileUploadImgCallback);
                                     I.d(TAG,"上传后台指令图片："+imgPath);
-                                    ServerApiUtils.uploadFile("50", imgPath,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);
+                                    ServerApiUtils.uploadFile("50", imgPath,new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID),ServerApiUtils.fileUploadCallback);
                                 }
                             }
 
@@ -205,7 +205,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                                 if (joResult.getString("imgurlrear").length() > 0) {
                                     final String imgPath = joResult.getString("imgurlrear");
                                     I.d(TAG,"上传后台指令图片："+imgPath);
-                                    ServerApiUtils.uploadFile("50", imgPath,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);
+                                    ServerApiUtils.uploadFile("50", imgPath,new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID),ServerApiUtils.fileUploadCallback);
                                 }
                             }
                             if (joResult.has("videourl")) {
@@ -213,7 +213,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                                     final String imgPath = joResult.getString("videourl");
                                     I.d(TAG,"上传后台指令视频："+imgPath);
                                     if(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID!=null && SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID.length()>2) {
-                                        ServerApiUtils.uploadFile("60", imgPath, SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);
+                                        ServerApiUtils.uploadFile("60", imgPath, new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID), ServerApiUtils.fileUploadCallback);
                                     }
 
                                 }
@@ -224,7 +224,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                                     final String imgPath = joResult.getString("videourlrear");
                                     I.d(TAG,"上传后台指令视频："+imgPath);
                                     if(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID!=null && SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID.length()>2) {
-                                        ServerApiUtils.uploadFile("60", imgPath, SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);
+                                        ServerApiUtils.uploadFile("60", imgPath, new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID), ServerApiUtils.fileUploadCallback);
                                     }
                                 }
                             }
@@ -260,29 +260,17 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
         } else if(intent.getAction().equals(CarIntents.ACTION_DELETE_FILE)) {
             try{
                 String filename = intent.getStringExtra("filename");
-                I.e(TAG, "Delete Record filename:" + filename);
+                //I.e(TAG, "Delete Record filename:" + filename);
                 LocalFilesModel localFilesModel = new LocalFilesModel();
                 localFilesModel.setLocalPath(filename);
 
                 LocalFilesModelDao dao = new LocalFilesModelDao();
                 dao.deleteLikeFileName(filename);
-
-
             }catch (Exception e){
 
             }
 
-        } else if(intent.getAction().equals(CarIntents.ACTION_CAMERA_LIVING_CALLBACK)) {
-            int result = intent.getIntExtra("result", 0);
-            String error = intent.getStringExtra("error");
-            if(result == 0) {
-                I.e(TAG, "Camera Living Started");
-            } else if(result == 1) {
-                I.e(TAG, "Camera Living Stopped");
-            } else if(result == 2) {
-                I.e(TAG, "Camera Living Error:" + error);
-            }
-        } else if(intent.getAction().equals(CarIntents.ACTION_RECORDING_STORAGE_SLOW)) {
+        }  else if(intent.getAction().equals(CarIntents.ACTION_RECORDING_STORAGE_SLOW)) {
             Log.d(TAG, "Write Storgae speed slow, change high speed card");
         } else if(intent.getAction().equals(CarIntents.ACTION_CAMERA_SNAPSHOT_CALLBACK)) {
             int ret = intent.getIntExtra("ret", -1);
@@ -296,11 +284,10 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             LocalFilesModelDao dao = new LocalFilesModelDao();
             dao.insertModel(localFilesModel);
             if(path!=null&&path.trim().length()>1){
-                ServerApiUtils.uploadFile("100",path,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID,ServerApiUtils.fileUploadCallback);//直接上传到服务器 出现这个表示是后台截图的视频，所以直接上传即可
+                ServerApiUtils.uploadFile("100",path, new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID),ServerApiUtils.fileUploadCallback);//直接上传到服务器 出现这个表示是后台截图的视频，所以直接上传即可
                 SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID = "";//上传完成之后任务编号设置为null
             }
-            I.e(TAG, "ACTION_CAMERA_SNAPSHOT_CALLBACK ret = " + ret + " error = " + (error != null ? error : "")
-                                        + " path = " + (path != null ? path : ""));
+            //I.e(TAG, "ACTION_CAMERA_SNAPSHOT_CALLBACK ret = " + ret + " error = " + (error != null ? error : "")+ " path = " + (path != null ? path : ""));
         } else if (intent.getAction().equals(CarIntents.ACTION_CAPTURE_CUSTOM_VIDEO)) {
             int prev = intent.getIntExtra("prev", 10);
             int post = intent.getIntExtra("post", 10);
@@ -330,7 +317,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 localFilesModel.setFileType(2);
                 LocalFilesModelDao dao = new LocalFilesModelDao();
                 dao.insertModel(localFilesModel);
-                ServerApiUtils.uploadFile("102", filename,SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID, ServerApiUtils.fileUploadCallback);//截图视频，直接上传
+                ServerApiUtils.uploadFile("102", filename, new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID), ServerApiUtils.fileUploadCallback);//截图视频，直接上传
                 SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID = "";
             }
             I.e(TAG, "capture fileinfo cameraid = " + cameraid
@@ -953,9 +940,9 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
     }
 
     /**
-     * 新增的api 让app在休眠时可以不断网
+     * #RTC定时唤醒系统程序
      */
-    public void setAppKeepAlive2(String packageName){
+    public void setAppRTC(String packageName){
         if(packageName == null){
             packageName = mAppContext.getPackageName();
         }
