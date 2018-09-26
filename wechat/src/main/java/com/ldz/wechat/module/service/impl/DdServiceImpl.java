@@ -44,6 +44,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     private ClyyMapper clyyMapper;
     @Autowired
     private ClYyService clYyService;
+    @Autowired
+    private SysHsgsMapper hsgsMapper;
+
+    @Autowired
+    private SysRlbMapper rlbMapper;
+
 
     @Autowired
     private YhService yhService;
@@ -167,10 +173,26 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       newClDd.setFkzt("00"); // 未付款
       newClDd.setDdzt("20");//订单状态
       newClDd.setSjqrsj(new Date());
-      double amount = MathUtil.mul(entity.getLc(),entity.getDj());
-      amount = MathUtil.add(amount,entity.getGqf());
-      amount = MathUtil.add(amount,entity.getGlf());
-      newClDd.setZj(amount);
+
+      Map<String,Double>  retMap = overWorkMoney(newClDd);
+      newClDd.setDj(retMap.get("dj"));//单价
+      newClDd.setLcf(retMap.get("lcf"));//里程费
+      newClDd.setJbfdj(String.valueOf(retMap.get("jbfdj")));//加班费单价
+//			newClDd.setJbsc((short) retMap.get("jbsc").intValue());//加班时长(小时)
+      newClDd.setJbf(String.valueOf(retMap.get("jbf")));//加班费
+      newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
+      newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
+      newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
+
+
+      Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(entity.getGlf()==null?0:entity.getGlf())+(entity.getGqf()==null?0:entity.getGqf());
+      newClDd.setZj(zj);
+
+
+//      double amount = MathUtil.mul(entity.getLc(),entity.getDj());
+//      amount = MathUtil.add(amount,entity.getGqf());
+//      amount = MathUtil.add(amount,entity.getGlf());
+//      newClDd.setZj(amount);
 
       int i=update(newClDd);
       if(i==0){
@@ -190,6 +212,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
           return ApiResponse.success();
       }
   }
+
+
+
 
     /**
      * 教职工 订单查询
@@ -335,4 +360,188 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         ret.setResult(gpsList);
         return ret;
     }
+
+
+
+    /**
+     * 获取出 该订单 里程单价[dj]、里程费[lcf]、加班单价[jbfdj]、加班时长(小时)[jbsc]、加班费[jbf]、 节假日单价[jjrdj]、节假日(天)[jjrsc] 、节假日金额()[jjrjl]
+     * @param order
+     * @return
+     * dj		里程单价
+     * lcf		里程费
+     * jbfdj	加班单价
+     * jbsc		加班时长(小时)
+     * jbf		加班费
+     * jjrdj	节假日单价
+     * jjrsc	节假日
+     * jjrjl	节假日金额
+     */
+    private Map<String,Double>  overWorkMoney(ClDd order){
+        Map<String,Double> retMap=new HashMap<>();
+        SimpleCondition condition = new SimpleCondition(SysHsgs.class);
+        condition.eq(SysHsgs.InnerColumn.cx,order.getCllx());
+        List<SysHsgs> hsgsList = hsgsMapper.selectByExample(condition);
+        RuntimeCheck.ifTrue(hsgsList.size() == 0,"未找到核算公式");
+        BigDecimal lcPrice= BigDecimal.valueOf(0);//里程单价
+        BigDecimal festivalHlidayPrice= BigDecimal.valueOf(0);//节假日单价
+        BigDecimal duration= BigDecimal.valueOf(0);//加班单价
+        String nr = "";
+        for(SysHsgs pric:hsgsList){
+//			'00', '里程'   '10', '加班   20', '节假日'
+            if(StringUtils.equals(pric.getLx(),"00")){//和里程参数计算
+                lcPrice=pric.getJe();
+            }else if(StringUtils.equals(pric.getLx(),"10")){//加班时间按小时
+                duration=pric.getJe();
+                nr=pric.getNr();
+            }else if(StringUtils.equals(pric.getLx(),"20")){//节假日按天算
+                festivalHlidayPrice=pric.getJe();
+            }
+        }
+        RuntimeCheck.ifTrue(StringUtils.equals(order.getCllx(),"10") && lcPrice.compareTo(BigDecimal.ZERO)==0,"您好，请配置小车的里程单价");
+        long durationMs = 0;//加班秒数
+        long festivalHlidayDay=0;//节假日的天数
+        List<Map<String,Date>> dateList = splitDate(order.getYysj(),order.getSjqrsj());
+        for (Map<String, Date> map : dateList) {
+            Date startTime = map.get("startTime");
+            String startTimeStr = DateUtils.getDateStr(startTime,"yyyy-MM-dd");
+            SimpleCondition rlCond = new SimpleCondition(SysRlb.class);
+            rlCond.eq(SysRlb.InnerColumn.rq,startTimeStr);
+            List<SysRlb> rlbs = rlbMapper.selectByExample(rlCond);
+            RuntimeCheck.ifEmpty(rlbs,"未找到日历");
+            SysRlb rlb = rlbs.get(0);
+            //判断是否为节假日
+            if (!"1".equals(rlb.getZt().trim())){
+                festivalHlidayDay++;
+                continue;
+            }
+            durationMs += getExtraTime(nr,map.get("startTime"),map.get("endTime"));
+        }
+        order.setJbsc(new BigDecimal(durationMs/(1000*60*60)).shortValue());//加班时长
+        entityMapper.updateByPrimaryKeySelective(order);
+
+        retMap.put("dj",lcPrice.doubleValue());//里程单价
+        BigDecimal amount = lcPrice.multiply(new BigDecimal(order.getLc()));
+        retMap.put("lcf",amount.doubleValue());//里程费
+        retMap.put("jbfdj",duration.doubleValue());//加班单价
+        retMap.put("jbsc", Double.valueOf(order.getJbsc()));//加班时长(小时)
+        try {
+            retMap.put("jbf",duration.doubleValue()*Double.valueOf(order.getJbsc()));
+        }catch (Exception e){
+            retMap.put("jbf",0D);//加班费
+        }
+
+        retMap.put("jjrdj",festivalHlidayPrice.doubleValue());//节假日单价
+        retMap.put("jjrsc", Double.valueOf(festivalHlidayDay));//节假日
+
+        try {
+            retMap.put("jjrjl",festivalHlidayPrice.doubleValue()*festivalHlidayDay);//节假日金额
+        }catch (Exception e){
+            retMap.put("jjrjl",0d);
+        }
+        return retMap;
+    }
+
+    /**
+     *	将时间段拆分为天数  这个有问题。跨度时间过长， 2018-09-23 到 2018-09-24 只计算出两天-BUG。todo
+     * @param startTime
+     * @param endTime
+     * @return
+     */
+    private static List<Map<String,Date>> splitDate(Date startTime,Date endTime){
+        int startDate = startTime.getDate();//获取天数
+        int endDate = endTime.getDate();//
+        List<Map<String,Date>> list = new ArrayList<>();
+        if (startDate == endDate){
+            Map<String,Date> map = new HashMap<>();
+            map.put("startTime",startTime);
+            map.put("endTime",endTime);
+            list.add(map);
+            return list;
+        }
+        for (int i = startDate; i <= endDate; i++){
+            Map<String,Date> map = new HashMap<>();
+            Date sTime = null;
+            Date eTime = null;
+            if (i == startDate){
+                sTime = startTime;
+            }else if (i == endDate){
+                eTime = endTime;
+            }
+            if (sTime == null){
+                sTime = new Date();
+                sTime.setDate(i);
+                sTime.setHours(0);
+                sTime.setMinutes(0);
+                sTime.setSeconds(0);
+            }
+            if (eTime == null){
+                eTime = new Date();
+                eTime.setDate(i);
+                eTime.setHours(23);
+                eTime.setMinutes(59);
+                eTime.setSeconds(59);
+            }
+            map.put("startTime",sTime);
+            map.put("endTime",eTime);
+            list.add(map);
+        }
+        return list;
+    }
+
+    private static long getExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime){
+        String[] times = workTimeStr.split(",");
+        String time0 = times[0];
+        Date midTime = new Date();
+        String midEndTime = time0.split("-")[1];
+        int midEndHour = Integer.parseInt(midEndTime.split(":")[0]);
+        int midEndMinute = Integer.parseInt(midEndTime.split(":")[1]);
+        midTime.setHours(midEndHour);
+        midTime.setMinutes(midEndMinute);
+        midTime.setSeconds(0);
+        long duration = 0;
+        if (orderEndTime.getTime() - midTime.getTime() > 0){
+            duration += getPartExtraTime(times[0],orderStartTime,midTime,0);
+            duration += getPartExtraTime(times[1],midTime,orderEndTime,1);
+        }else{
+            duration += getPartExtraTime(times[0],orderStartTime,midTime,0);
+        }
+        return duration;
+    }
+
+    private static long getPartExtraTime(String workTimeStr,Date orderStartTime,Date orderEndTime,int i){
+        String[] workTimeArray = workTimeStr.split("-");
+        String startWorkTime = workTimeArray[0];
+        String endWorkTime = workTimeArray[1];
+
+        String[] startWorkTimeArr = startWorkTime.split(":");
+        int workStartHour = Integer.parseInt(startWorkTimeArr[0]);
+        int workStartMinute = Integer.parseInt(startWorkTimeArr[1]);
+
+        long duration = 0;
+
+        Date workStartTime = new Date(orderStartTime.getTime());
+        workStartTime.setHours(workStartHour);
+        workStartTime.setMinutes(workStartMinute);
+        workStartTime.setSeconds(0);
+        long duration1 = workStartTime.getTime() - orderStartTime.getTime();
+        if (duration1 > 0)duration += duration1;
+
+        if (i == 1){
+            String[] endWorkTimeArr = endWorkTime.split(":");
+            int workEndHour = Integer.parseInt(endWorkTimeArr[0]);
+            int workEndMinute = Integer.parseInt(endWorkTimeArr[1]);
+            Date workEndTime = new Date(orderEndTime.getTime());
+            workEndTime.setHours(workEndHour);
+            workEndTime.setMinutes(workEndMinute);
+            workEndTime.setSeconds(0);
+            long duration2 = orderEndTime.getTime() - workEndTime.getTime();
+            if (duration2 > 0){
+                duration += duration2;
+            }
+        }
+        return duration;
+    }
+
+
+
 }

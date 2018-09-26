@@ -339,6 +339,11 @@ public class ClDd implements Serializable {
      */
     @Transient
     private String gpsDistance;
+    /**
+     * 加班时长
+     */
+    @Column(name = "JBSC")
+    private Short jbsc;
 
     /**
      * 节假日单价
@@ -365,6 +370,14 @@ public class ClDd implements Serializable {
      */
     @Column(name = "JJRJL")
     private String jjrjl;
+
+    public Short getJbsc() {
+        return jbsc;
+    }
+
+    public void setJbsc(Short jbsc) {
+        this.jbsc = jbsc;
+    }
 
     public String getJjrjl() {
         return jjrjl;
