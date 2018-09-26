@@ -14,25 +14,23 @@
     </ui-nav-bar>
 
      <div id="allmap" style="{{{height:height+'px'}}}"></div>
+
+
 <ui-fixed-view bottom="20" left="10" right="10">
-    <ui-view class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
+    <ui-view  ui:if="{{orderMess.ddzt =='20' || orderMess.ddzt =='30' || orderMess.ddzt =='40'}}" class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
       <ui-view class="getmess">
           <ui-view> 
             <ui-row vertical-align="middle" height="50rpx" border-bottom>
                 <ui-col  align="center" vertical-align="middle">
                   <ui-row height="50rpx">
-                    
-                         <ui-view style="color: #808080;font-size:16px;font-weight:700;padding:6px">
-                            {{orderMess.cph}}
-                          </ui-view>
-                    
+                      <ui-view style="color: #808080;font-size:16px;font-weight:700;padding:6px">
+                        {{orderMess.cph}}
+                      </ui-view>
                   </ui-row>
-                   <ui-row>
-                      
+                  <ui-row>
                       <ui-view align="center" style="color:#808080;font-size:12px">
                         {{orderMess.zws}} 座车
                       </ui-view> 
-                      
                   </ui-row>
                 </ui-col>
                 <ui-col align="center" vertical-align="middle">
@@ -49,82 +47,51 @@
                    
                 </ui-col>
             </ui-row>
+          </ui-view>
            
-                <!-- <ui-col align="center" span=4 space-right="20">
-                <ui-view class="text" style="color: #c0c0c0;font-size:16px">
-                 {{orderMess.sjxm}}
-                </ui-view>
-                </ui-col>
-                
-                <!-<ui-col span="4">
-                  <ui-popover value="{{show3}}" position="left" bindhide="show3toggle('hide')" bindshow="show3toggle('show')">
-                    <ui-view>
-                      <ui-view class="popover_item">
-                        <ui-row height="35" bindtap="handleHide('扫一扫')" border-bottom>
-                         
-                        </ui-row>
-                      </ui-view>
-                      <ui-view class="popover_item">
-                        <ui-row height="35" bindtap="handleHide('收付款')" border-bottom>
-                          
-                        </ui-row>
-                      </ui-view>
-                      <ui-view class="popover_item">
-                        <ui-row height="35" bindtap="handleHide('帮助')">
-                          
-                        </ui-row>
-                      </ui-view>
-                      <ui-view class="popover_item">
-                        <ui-row height="35" bindtap="handleHide('帮助')">
-                         
-                        </ui-row>
-                      </ui-view>
-                    </ui-view>
-                    <ui-view slot="content" bindtap="handleShow3" class="text">详情</ui-view>
-                  </ui-popover>
-                </ui-col> -->
-           
-            </ui-view>
-           
-            <ui-row space="10">
+          <ui-row space="10">
             <ui-col>
               <ui-row height=32>
                 <ui-col  align="center" vertical-align="middle" style="color:#000000;font-size:28px">
                    {{orderMess.zj}}元
                 </ui-col>
-                
               </ui-row>
             </ui-col>
-            </ui-row>   
-             <ui-row>
+          </ui-row>   
+          <ui-row>
                  <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">里程:{{orderMess.lc}}KM</ui-col>
                  <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">过桥费:{{orderMess.gqf}}元</ui-col>
                  <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">路停费:{{orderMess.lcf}}元</ui-col>
                  <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">单价:{{orderMess.dj}}元</ui-col>
-            </ui-row>
-           <ui-row space-top="10" vertical-align="middle">
+          </ui-row>
+          <ui-row space-top="10" vertical-align="middle">
             <ui-col align="center"  style="color:#A0A0A0">
               {{starResult}}
             </ui-col>
           </ui-row>
-        <ui-row align=center>
-          <ui-col space-right="35">
-            <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
-          </ui-col> 
-        </ui-row> 
-      <ui-view>
-   </ui-fixed-view>
+          <ui-row align=center>
+            <ui-col space-right="35">
+              <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
+            </ui-col> 
+          </ui-row> 
+      </ui-view>
+    </ui-view>
+    <ui-view ui:else if="{{orderMess.ddzt =='12'}}">
+        
+    </ui-view>
+    <ui-view ui:else class="box_col">
+       <ui-row height=50   style="background-color:#ff8040">
+           <ui-col vertical-align="middle" align="center" style="font-size:24px;color:#ffffff">
+             该订单未结束
+           </ui-col>
+       </ui-row>
+    </ui-view>
+</ui-fixed-view>
   <!-- <ui-row vertical-align="middle">
     <ui-col align="center" style="color:#000000">
       总价
     </ui-col>
   </ui-row> -->
- 
-
-
-  
-  
-  
 
 
 
@@ -178,6 +145,14 @@ export default {
   },
       
   methods: {
+    bohuixq(){
+      if(this.orderMess.ddzt == '12'){
+         ui.showAlert({
+          title: '驳回原因',
+          content:  this.orderMess.bhyy
+      })
+      }
+    },
     show3toggle (str) {
       if (str === 'hide') {
         this.show3 = false
@@ -319,6 +294,7 @@ export default {
     // this.getMarkList()
     console.log("xiangqing",ui.getApp().orderMess);
     this.orderMess = ui.getApp().orderMess
+    this.bohuixq()
     if(this.orderMess.id == undefined){
       this.Goback()
       ui.showToast({ title: '数据丢失，请重新查看' })

@@ -24,7 +24,10 @@
               </ui-tabs>
            </ui-view> -->
           
-      <ui-tab-view ink-bar ink-bar-style="{{ { borderBottom: '1px solid #39f', width: '60%' } }}">
+      <ui-tab-view ink-bar 
+      index="{{tabindex}}" 
+      bindchange="tabviewclick"
+      ink-bar-style="{{ { borderBottom: '1px solid #39f', width: '60%' } }}">
         <template slot="header">
           <ui-tab-view-header>全部</ui-tab-view-header>
           <ui-tab-view-header>待审核</ui-tab-view-header>
@@ -34,8 +37,8 @@
         </template>
         <template slot="body">
                   <ui-tab-view-body>
-                    <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist0}}">
-                        <ui-view class="tab-dis" style="padding:5px 10px 5px 10px">
+                    <ui-view class="tab-content" bindtap="gomark(item,0)" ui:for="{{ddlist0}}">
+                        <ui-view class="tab-dis" style="padding:10px 15px">
                           <ui-view class="tab-dos">
                                 <ui-row  style="padding:15px 15px 0px 15px">
                                       <ui-col span="8" space-left="10">
@@ -97,8 +100,8 @@
                   </ui-tab-view-body>
                   
                   <ui-tab-view-body>
-                      <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist1}}"> 
-                          <ui-view class="tab-dis" style="padding:5px 10px 5px 10px">
+                      <ui-view class="tab-content" bindtap="gomark(item,1)" ui:for="{{ddlist1}}"> 
+                          <ui-view class="tab-dis" style="padding:10px 15px">
                               <ui-view class="tab-dos">
                                   <ui-row vertical-align="middle">
                                     <ui-col span="8"   style="padding:15px 15px 0 15px">
@@ -160,8 +163,8 @@
                   </ui-tab-view-body>
 
                   <ui-tab-view-body> 
-                        <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist2}}">
-                          <ui-view class="tab-dis" style="padding:5px 10px 5px 10px">
+                        <ui-view class="tab-content" bindtap="gomark(item,2)" ui:for="{{ddlist2}}">
+                          <ui-view class="tab-dis" style="padding:10px 15px">
                               <ui-view class="tab-dos">
                                 <ui-row vertical-align="middle">
                                   <ui-col span="8"   style="padding:15px 15px 0 15px">
@@ -222,8 +225,8 @@
                         </ui-view>
                   </ui-tab-view-body>
                   <ui-tab-view-body>
-                          <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist3}}">
-                            <ui-view class="tab-dis" style="padding:5px 10px 5px 10px">
+                          <ui-view class="tab-content" bindtap="gomark(item,3)" ui:for="{{ddlist3}}">
+                            <ui-view class="tab-dis" style="padding:10px 15px">
                               <ui-view class="tab-dos">
                                 <ui-row vertical-align="middle">
                                   <ui-col span="8"   style="padding:15px 15px 0 15px">
@@ -284,8 +287,8 @@
                           </ui-view>
                   </ui-tab-view-body>
                   <ui-tab-view-body>
-                        <ui-view class="tab-content" bindtap="gomark(item)" ui:for="{{ddlist4}}">
-                          <ui-view class="tab-dis" style="padding:5px 10px 5px 10px ">
+                        <ui-view class="tab-content" bindtap="gomark(item,4)" ui:for="{{ddlist4}}">
+                          <ui-view class="tab-dis" style="padding:10px 15px">
                               <ui-view class="tab-dos">
                                 <ui-row vertical-align="middle">
                                     <ui-col span="8"   style="padding:15px 15px 0 15px">
@@ -393,9 +396,10 @@ export default {
         "被驳回",
         "已派单",
         "已完成",
-        "队长确认",
-        "财务已收"
+        "已完成",
+        "已完成"
       ],
+      tabindex:2,
       count: 0,
       loadMore: true,
       showList: false,
@@ -417,6 +421,10 @@ export default {
   },
 
   methods: {
+    tabviewclick(index){
+      console.log(index);
+      
+    },
     getzt(code) {
       let index = this.ddztCodelist.indexOf(code);
       if (index == -1) {
@@ -450,8 +458,9 @@ export default {
     handleContentChange(index, key) {
       this[key] = index;
     },
-    gomark(item) {
-      console.log(item);
+    gomark(item,index) {
+      ui.getApp().tabindex = index;
+      console.log(index);
       ui.getApp().orderMess = item;
       ui.navigateTo({
         url: "/pages/mark"
@@ -517,6 +526,7 @@ export default {
     }
   },
   created() {
+    this.tabindex = ui.getApp().tabindex
     for (let i = 0; i < this.ddztlist.length; i++) {
       this.getPagerList(i);
     }

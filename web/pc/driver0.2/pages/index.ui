@@ -30,7 +30,7 @@
               active-tab-style="{{activeTabStyle}}"
               ink-bar-style="{{inkBarStyle}}"
               bindchange="handleChange($event, 'tabCurrent')">
-                <ui-tab>待确认</ui-tab>
+                <ui-tab>待出发</ui-tab>
                 <ui-tab>历史订单</ui-tab>
             </ui-tabs>
           </ui-view>
@@ -141,13 +141,13 @@ export default {
       }else if(val == 12){
         return "被驳回"
       }else if(val == 13){
-        return "已派单"
+        return "待出发"
       }else if(val == 20){
         return "已完成"
       }else if(val == 30){
-        return "队长确认"
+        return "已完成"
       }else if(val == 40){
-        return "财务已收"
+        return "已完成"
       }
     }
   },

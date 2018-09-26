@@ -37,7 +37,44 @@
            
   <div id="allmap" style="{{{height:height+'px'}}}"></div>
     <ui-fixed-view top="{{ fixedTop }}" left="10" right="10">
-        <ui-view class="fixed-view-content">
+       <ui-view height=200 style="background-color:#ffffff;border-radius: 25px">
+         <ui-row height=50 border-bottom>
+            <!-- <ui-col span=2 align="center" space-lef=10>
+               <ui-icon type="wo" size=35 style="color:#000000"></ui-icon>
+            </ui-col> -->
+            <ui-col span=3 align="center" space-lef=10 vertical-align="middle"  style="font-size:20px;color:#000000">
+                {{orderMess.ck}}
+            </ui-col>
+            <ui-col align="right" vertical-align="middle" space-right=20>
+                <ui-icon type="dianhua" size=32 style="color:#000000" bindtap="gophone"></ui-icon>
+            </ui-col>
+         </ui-row>
+         <ui-row height=20 space-top=5>
+           <ui-col span=1 vertical-align="middle " align="center">
+             <ui-icon type="shijianshizhongdaojishi" size=10 style="color:#c0c0c0"></ui-icon>
+           </ui-col>
+           <ui-col vertical-align="middle " style="font-size:12px;color:#000000">
+             {{orderMess.yysj}}
+           </ui-col>
+         </ui-row>
+         <ui-row height=20 space-top=5>
+           <ui-col span=1 vertical-align="middle " align="center">
+              <ui-icon type="webicon318" size=18 style="color:#31af01"></ui-icon>
+           </ui-col>
+           <ui-col vertical-align="middle "  style="font-size:14px;color:#000000">
+             {{orderMess.hcdz}}
+           </ui-col>
+         </ui-row>
+         <ui-row height=20 space-top=5>
+           <ui-col span=1 vertical-align="middle " align="center">
+              <ui-icon type="webicon318" size=18 style="color:#ff0000"></ui-icon>
+           </ui-col>
+           <ui-col vertical-align="middle " style="font-size:14px;color:#000000">
+             {{orderMess.mdd}}
+           </ui-col>
+         </ui-row>
+       </ui-view>
+        <!-- <ui-view class="fixed-view-content">
           <ui-view class="box_row colCenter">
               <ui-view> 
                   <ui-icon type="head-g" size=35 style="color:#888888"></ui-icon>
@@ -58,10 +95,10 @@
                     {{orderMess.mdd}}
                 </ui-text>
               </ui-view>
-        </ui-view>
+        </ui-view> -->
     </ui-fixed-view>          
   <ui-fixed-view bottom="20" left="10" right="10">
-          <ui-view ui:if="{{orderMess.lc == ''}}">
+          <ui-view ui:if="{{orderMess.ddzt == '10' || orderMess.ddzt == '11' || orderMess.ddzt == '12' || orderMess.ddzt == '13'}}">
             <!-- <ui-row space-top=15>
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 里程
@@ -103,13 +140,13 @@
               </ui-col>
             </ui-row> -->
             <ui-view>
-              <ui-button type="primary" bindtap="gomoney()">行程结束</ui-button>
+              <ui-button class="bootom" bindtap="gomoney()">行程结束</ui-button>
             </ui-view>
           </ui-view>
           
           <!-- <ui-view class="popup" ui:elif="{{orderMess.ddzt == '20' ||orderMess.ddzt == '30' || orderMess.ddzt == '40'}}"> -->
-          <ui-view class="popup" ui:else>
-            <ui-row space-top=15>
+          <ui-view  ui:else>
+            <!-- <ui-row space-top=15>
               <ui-col space-left="20" space-right="10" vertical-align="middle">
                 里程/公里
               </ui-col>
@@ -151,10 +188,70 @@
             </ui-row>
             <ui-row space-top="20" style="font-size:20px；font-color:#c0c0c0;font-weight:700">
                合计：{{orderMess.zj}} 元
-            </ui-row>
+            </ui-row> -->
+            <ui-view>
+              <ui-button class="bootom" bindtap="openPopup5()">费用详情</ui-button>
+            </ui-view>
           </ui-view>
       </ui-fixed-view>
-      
+
+
+      <ui-popup ui:model="{{ show5 }}" height="600" background="transparent">
+          <ui-view class="popup5">
+            <ui-view>
+                 <!-- <img ui:if="{{ show5 }}" src="/static/img/qbu.jpg" width="300" height="150"></img> -->
+               <img src="/static/img/qbu.jpg" alt="img" width="100%" height="100%">
+            </ui-view>
+            <ui-row height=25>
+              <ui-col space-left="20" space-right="10" vertical-align="middle">
+                里程/公里 ： {{ orderMess.lc }} km
+              </ui-col>
+               <ui-col space-left="10"  space-right="10" vertical-align="middle">
+                
+              </ui-col>
+            </ui-row>
+            <ui-row height=25>
+              <ui-col space-left="35" space-right="10" vertical-align="middle">
+                单价/元 ： {{ orderMess.dj }} 元
+              </ui-col>
+              <ui-col space-left="10" space-right="10" vertical-align="middle">
+              
+              </ui-col>
+            </ui-row>
+            <ui-row height=25>
+              <ui-col space-left="20" space-right="10" vertical-align="middle">
+                过桥费/元 ： {{ orderMess.gqf }} 元
+              </ui-col>
+              <ui-col space-left="10" space-right="10" vertical-align="middle">
+               
+              </ui-col>
+            </ui-row>
+            <ui-row height=25>
+              <ui-col space-left="20" space-right="10" vertical-align="middle">
+                路停费/元 ： {{ orderMess.glf }} 元
+              </ui-col>
+              <ui-col space-left="10" space-right="10" vertical-align="middle">
+               
+              </ui-col>
+            </ui-row>
+           <ui-row height=40 space-top="40">
+             <ui-col vertical-align="bottom" align="right">
+               合计：
+             </ui-col>
+             <ui-col align=center vertical-align="" style="font-size:30px;font-color:#000000;font-weight:700">
+                {{orderMess.zj}} 
+             </ui-col>
+              <ui-col vertical-align="bottom" space-left=5>
+                (元)
+              </ui-col>
+            </ui-row>
+            <ui-row height="50" space-top="20">
+              <ui-col space-left="20" space-right="20"  align=center>
+                <ui-button bindtap="handleShow('show5')">已经了解</ui-button>
+              </ui-col>
+            </ui-row>
+          </ui-view>
+        </ui-popup>
   </ui-page>
 </template>
 
@@ -173,6 +270,7 @@ export default {
   name:'xlMess',
   data() {
     return {
+      show5: false,
       form:{
         id:'',
         lc:'',
@@ -184,7 +282,7 @@ export default {
       orderMess:{},
       zoom:12,
       height:ui.WIN_HEIGHT,
-      fixedTop: 60
+      fixedTop: 80
     }
   },
   filters:{
@@ -196,6 +294,17 @@ export default {
     }
   },
   methods: {
+    gophone(){
+      ui.makePhoneCall({
+        phoneNumber: this.orderMess.cklxdh
+      })
+    },
+     handleShow (key) {
+      this[key] = false
+    },
+    openPopup5 () {
+      this.show5 = true
+    },
     gomoney(){
         ui.navigateTo({
           url: 'money'
@@ -360,19 +469,7 @@ export default {
   padding: 25rpx;
   height: 140px;
 }
-.popup{
-  width: 100%;
-  background-color:#fff;
-  height:200px;
-  margin:0 auto;
-  border-radius:5px;
-  overflow:hidden;
-  border-top: #f2f2f2 2px solid;
-  .ui-view{
-    line-height: 30px;
-    padding: 10px 20px;
-  }
-}
+
 .fixed-view-content {
   padding: 0 6px;
   height: 120px;
@@ -381,5 +478,23 @@ export default {
   color: #808080;
   background-color: rgb(248, 245, 244);
   z-index: 99;
+}
+.bootom{
+  background-color: #ff8000;
+  color: #ffffff;
+  border-radius: 25px;
+  height: 38px
+}
+.popup5{
+  width: 80%;
+  background-color:#fff;
+  height:450px;
+  margin:0 auto;
+  border-radius:5px;
+  overflow:hidden;
+  .ui-view{
+    line-height: 30px;
+    
+  }
 }
 </style>

@@ -1,6 +1,19 @@
 <!--money-->
 <template>
   <ui-page>
+    <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
+          <ui-row height="46">
+            <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+              <ui-icon type="return" size="20" color="#e2e2e2"></ui-icon>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center">
+              <ui-view class="nav_title"></ui-view>
+            </ui-col>
+            <ui-col vertical-align="middle" align="center" width="60">
+              
+            </ui-col>
+          </ui-row>
+      </ui-nav-bar>
       <ui-view class="box_col" style="height:740px">
           <ui-view class="logoback">
              <ui-view class="logTit">
@@ -21,7 +34,7 @@
              <ui-col vertical-align="middle" align="center" style="font-size:20px">
                   里程数/km：
              </ui-col>
-             <ui-col vertical-align="middle" align="center">
+             <ui-col vertical-align="middle" align="center" space-right=10>
                   <ui-input ui:model="{{ form.lc }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
@@ -29,15 +42,15 @@
              <ui-col vertical-align="middle" align="center" style="font-size:20px">
                   单价/元：
              </ui-col>
-             <ui-col vertical-align="middle" align="center">
-                  <ui-input ui:model="{{ form.dj }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+             <ui-col vertical-align="middle" align="center" space-right=10>
+                  <ui-input ui:model="{{ form.dj }}" disabled type="number" placeholder="0" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
             <ui-row height=50 space=20>
              <ui-col vertical-align="middle" align="center" style="font-size:20px">
                   过桥费/元：
              </ui-col>
-             <ui-col vertical-align="middle" align="center">
+             <ui-col vertical-align="middle" align="center" space-right=10>
                   <ui-input ui:model="{{ form.gqf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
@@ -45,7 +58,7 @@
              <ui-col vertical-align="middle" align="center" style="font-size:20px">
                   过路费/元：
              </ui-col>
-             <ui-col vertical-align="middle" align="center">
+             <ui-col vertical-align="middle" align="center" space-right=10>
                   <ui-input ui:model="{{ form.glf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
@@ -90,7 +103,8 @@ export default {
     this.getInputVal();
     console.log('=======',ui.getApp().orderMess);
     if(ui.getApp().orderMess.id){
-      this.form.id = ui.getApp().orderMess.id
+      this.form.id = ui.getApp().orderMess.id;
+      this.form.dj = ui.getApp().orderMess.dj
     }else{
       ui.showToast({ title: '请重新选择订单' })
       ui.navigateTo({
