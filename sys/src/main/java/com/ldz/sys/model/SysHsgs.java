@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 import javax.persistence.*;
-
+//核算公式
 @Table(name = "SYS_HSGS")
 public class SysHsgs implements Serializable {
     @Id

@@ -318,11 +318,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 
         condition.and().andEqualTo(Clyy.InnerColumn.zdbh.name() , clDd.getZdbm());
         if(clDd.getYysj()!=null){
-            String strinDate=DateUtils.getDateStr(clDd.getYysj(),"yyyy-MM-dd");
+            String strinDate=DateUtils.getDateStr(clDd.getYysj(),"yyyy-MM-dd HH:mm:ss");
             condition.and().andGreaterThanOrEqualTo(Clyy.InnerColumn.loc_time.name() , strinDate);
         }
         if(clDd.getSjqrsj()!=null){
-            String StrinDate= DateUtils.getDateStr(clDd.getSjqrsj(),"yyyy-MM-dd");
+            String StrinDate= DateUtils.getDateStr(clDd.getSjqrsj(),"yyyy-MM-dd HH:mm:ss");
             condition.and().andLessThanOrEqualTo(Clyy.InnerColumn.loc_time.name() ,  StrinDate);
         }
         condition.setOrderByClause(" id ASC");

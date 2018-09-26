@@ -18,6 +18,7 @@
         <module>wechat</module>
         <module>tic-obd</module>
         <module>geo</module>
+        <module>auto-update</module>
     </modules>
     <packaging>pom</packaging>
     <parent>

@@ -9,7 +9,7 @@ export default {
       "pages/user",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages"],
+      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/money"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -44,7 +44,7 @@ export default {
   data () {
     return {
       //全局变量
-
+      swiperIndex:0,
       // ajax数据请求参数配置
       apis:ajaxUrl,
       Ajax:{

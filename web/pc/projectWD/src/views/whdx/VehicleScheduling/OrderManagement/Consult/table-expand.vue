@@ -229,9 +229,11 @@
             getOrderDetails() {
                 this.$http.get(this.apis.ORDER.orderDetails + '?id=' + this.row.id).then((res) => {
                     if (res.code == 200) {
+                        console.log('数据',res.result);
                         this.detail = res.result;
                         this.settleStatus = this.detail.oracleLog.length;
-                        this.NewGps = this.detail.gpslist
+                        // this.NewGps = this.detail.gpslist
+                        this.NewGps = this.detail.gpsLog
                         let gpsLog = this.detail.gpsLog;
                         if (gpsLog.length != 0) {
                             this.simpleRoute = {
