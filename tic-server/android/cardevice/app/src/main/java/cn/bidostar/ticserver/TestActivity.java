@@ -55,33 +55,32 @@ public class TestActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(cn.bidostar.ticserver.R.layout.activity_main);
+        //2018年9月24日。先取消socket守护线程，以后根据测算情况，如果效果不佳，再开启
+        /*setContentView(cn.bidostar.ticserver.R.layout.activity_main);
         Intent service = new Intent(this,CarBindService.class);
-        startService(service);
+        startService(service);*/
         Intent serviceTwo = new Intent();
         serviceTwo.setClass(this, SocketCarBindService.class);
         startService(serviceTwo);
-        I.e(TAG,TestActivity.class.getName());
+        //
+        finish();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
         //mApi.registerCarMotionListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
         //mApi.unregisterCarMotionListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
      //   mApi.unregisterCarMotionListener(this);
     }
 

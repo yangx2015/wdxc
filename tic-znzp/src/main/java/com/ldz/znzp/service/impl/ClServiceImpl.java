@@ -265,7 +265,6 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
          */
 
         // 原始gps转百度gps
-        log.info("转换前-经度："+gpsInfo.getLongitude()+",纬度："+gpsInfo.getLatitude());
         Date now = new Date();
         if ("80".equals(gpsInfo.getEventType())
                 || "20".equals(gpsInfo.getSczt())
@@ -274,20 +273,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 || StringUtils.isEmpty(gpsInfo.getLongitude())
                 || StringUtils.isEmpty(gpsInfo.getLatitude())
                 ){
-            if (record == null){
-                log.info("gps为 -1");
-                record = new ClClyxjl();
-                record.setCjsj(now);
-                record.setClId(car.getClId());
-                record.setCphm(car.getCph());
-                record.setId(""+idGenerator.nextId());
-                record.setZt("off");
-                if(route != null){
-                    record.setXlId(route.getId());
-                    record.setXlmc(route.getXlmc());
-                }
-                clyxjlMapper.insertSelective(record);
-            }else{
+            if (record != null){
                 record.setZt("off");
                 clyxjlMapper.updateByPrimaryKeySelective(record);
             }
@@ -295,16 +281,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }
 
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
-        log.info("转换后-经度："+clGps.getBdjd()+",纬度："+clGps.getBdwd());
-
-        // 获取车辆运行记录
+    	// 获取车辆运行记录
         // 获取当前站点
         boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
         ClZd currentStation = null;
         String zt = null;
         Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         if (record == null){
-            log.info("没有运行记录");
             currentStation = findCurrentZd("",gps,car,pb);
             record = new ClClyxjl();
             record.setCjsj(now);
@@ -320,11 +303,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 record.setXlId(route.getId());
                 record.setXlmc(route.getXlmc());
             }
-            log.info("已有运行记录："+record.toString());
             String stationId = record.getZdId();
             currentStation = zdService.findById(stationId);
+            
             double distance = DistanceUtil.getShortDistance(currentStation.getJd(),currentStation.getWd(),clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
-            log.info("distance:"+distance);
             if (distance < currentStation.getFw()){
                 if ("80".equals(gpsInfo.getEventType())){
                     zt = "off";
@@ -348,6 +330,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                 }
             }
         }
+        
         currentStation.setXlId(route.getId());
         zdService.setStationOrder(currentStation);
         record.setZdbh(currentStation.getRouteOrder());
@@ -367,6 +350,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if ("80".equals(gpsInfo.getSczt()) || "20".equals(gpsInfo.getSczt())){
             return ApiResponse.success("设备已离线");
         }
+        
         return ApiResponse.success();
     }
 
@@ -418,6 +402,24 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (pb == null)return ApiResponse.fail("未找到车辆排班");
         ClXl route = xlService.getByCarId(pb);
         if (route == null)return ApiResponse.fail("未找到车辆线路");
+
+        String yxkssj =route.getYxkssj();//运行开始时间
+        String yxjssj =route.getYxjssj();//运行结束时间
+        if(StringUtils.isNotEmpty(yxkssj)&&StringUtils.isNotEmpty(yxjssj)){
+            try {
+                Date ksDate = DateUtils.getDate(DateUtils.getToday()+" "+yxkssj,"yyyy-MM-dd HH:mm");
+                ksDate=new Date(ksDate.getTime() - 1000*60*5);//当前时间向前推5分钟
+                Date jsDate= DateUtils.getDate(DateUtils.getToday()+" "+yxjssj,"yyyy-MM-dd HH:mm");
+                jsDate= new Date(jsDate.getTime()+ 1000*60*30);//当前时间向后推30分钟
+                //开始时间
+                if(ksDate==null || ksDate.compareTo(new Date())>0 ||jsDate==null || new Date().compareTo(jsDate)>0){
+                    return ApiResponse.fail("该线程还未开始运营");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
         return report(tid,pb,car,route,clClyxjls.size() == 0 ? null : clClyxjls.get(0));
     }
@@ -458,6 +460,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         }else{
             stationB = station1;
         }
+        log.error("查找站点，上一站点["+prvStationId+"]:", stationB.toString());
         if (stationB.getRouteOrder() == maxStationOrder){
             // 如果上一次站点是最后一个站点，并且状态为到站，则设置当前站点为离线
             if (prvStationId.equals(stationB.getId())){

@@ -2,14 +2,17 @@ package com.ldz.wechat.module.service.impl;
 
 
 import com.github.pagehelper.PageInfo;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.LatLonUtil;
 import com.ldz.wechat.base.BaseServiceImpl;
 import com.ldz.wechat.base.LimitedCondition;
 import com.ldz.wechat.module.mapper.ClDdMapper;
+import com.ldz.wechat.module.mapper.SysHsgsMapper;
 import com.ldz.wechat.module.model.ClDd;
 import com.ldz.wechat.module.model.ClJsy;
+import com.ldz.wechat.module.model.SysHsgs;
 import com.ldz.wechat.module.service.ClJsyService;
 import com.ldz.wechat.module.service.SjDdService;
 import org.apache.commons.lang.StringUtils;
@@ -22,6 +25,7 @@ import tk.mybatis.mapper.common.Mapper;
 import javax.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,6 +39,7 @@ public class SjDdServiceImpl extends BaseServiceImpl<ClDd,String> implements SjD
     @Autowired
     private ClJsyService jsyService;
     @Autowired
+    private SysHsgsMapper hsgsMapper;
 
     @Override
     protected Mapper<ClDd> getBaseMapper() {
@@ -105,9 +110,20 @@ public class SjDdServiceImpl extends BaseServiceImpl<ClDd,String> implements SjD
             ClJsy driver = driverMap.get(driverId);
             if (driver == null)continue;
             dd.setSjdh(driver.getSjh());
-
-
-
+//            订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+            String ddzt= dd.getDdzt();
+            if(StringUtils.equals(ddzt,"13")){
+                Map<String,Double> retMap=new HashMap<>();
+                SimpleCondition condition = new SimpleCondition(SysHsgs.class);
+                condition.eq(SysHsgs.InnerColumn.cx,dd.getCllx());
+                condition.eq(SysHsgs.InnerColumn.lx,"00");
+                List<SysHsgs> hsgsList = hsgsMapper.selectByExample(condition);
+                if(hsgsList==null || hsgsList.size() == 0){
+                    dd.setDj(0D);
+                }else{
+                    dd.setDj(hsgsList.get(0).getJe().doubleValue());
+                }
+            }
         }
     }
 

@@ -58,8 +58,27 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	public ApiResponse<Map<String,Object>> getBySiteVehicleList(String xlId){
    		ClXl clXl=findById(xlId);
 		RuntimeCheck.ifNull(clXl,"线路ID有误，请核实！");
+
+		String yxkssj =clXl.getYxkssj();//运行开始时间
+		String yxjssj =clXl.getYxjssj();//运行结束时间
+        boolean yxsjType=true;
+		if(org.apache.commons.lang.StringUtils.isNotEmpty(yxkssj)&&org.apache.commons.lang.StringUtils.isNotEmpty(yxjssj)){
+			try {
+				Date ksDate = DateUtils.getDate(DateUtils.getToday()+" "+yxkssj,"yyyy-MM-dd HH:mm");
+				ksDate=new Date(ksDate.getTime() - 1000*60*5);//当前时间向前推5分钟
+				Date jsDate= DateUtils.getDate(DateUtils.getToday()+" "+yxjssj,"yyyy-MM-dd HH:mm");
+				jsDate= new Date(jsDate.getTime()+ 1000*60*30);//当前时间向后推30分钟
+				if(ksDate==null || ksDate.compareTo(new Date())>0 ||jsDate==null || new Date().compareTo(jsDate)>0){
+					yxsjType=false;
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+
 		List<DdClModel> clZds=entityMapper.getBySiteVehicleList(xlId);
-		if(clZds!=null){
+		if(clZds!=null&&yxsjType){
 			SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
 			Date today = new Date();
 			today.setHours(0);
@@ -191,6 +210,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		if (!StringUtils.isEmpty(xlId)){
 			condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
 		}
+		condition.and().andNotEqualTo(ClClyxjl.InnerColumn.zt.name(),"off");
+
 		condition.gte(ClClyxjl.InnerColumn.cjsj,todayDate);
 		List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 		return ApiResponse.success(clClyxjls);

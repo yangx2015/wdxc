@@ -19,6 +19,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.biz.module.model.*;
+import com.ldz.biz.module.service.ClYyService;
 import com.ldz.sys.mapper.SysRlbMapper;
 import com.ldz.sys.model.*;
 import org.apache.commons.collections4.CollectionUtils;
@@ -43,15 +45,6 @@ import com.ldz.biz.module.mapper.ClDdrzMapper;
 import com.ldz.biz.module.mapper.ClGpsLsMapper;
 import com.ldz.biz.module.mapper.ClJsyMapper;
 import com.ldz.biz.module.mapper.ClLscMapper;
-import com.ldz.biz.module.model.ClCd;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClDd;
-import com.ldz.biz.module.model.ClDdlsb;
-import com.ldz.biz.module.model.ClDdrz;
-import com.ldz.biz.module.model.ClGps;
-import com.ldz.biz.module.model.ClGpsLs;
-import com.ldz.biz.module.model.ClJsy;
-import com.ldz.biz.module.model.ClLsc;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
@@ -85,6 +78,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	 */
 	@Autowired
 	private DdrzService ddrzService;
+	@Autowired
+	private ClYyService clyyService;
+
 
 	@Autowired
 	private ClDdrzMapper ddrzMapper;// 历史订单明细表
@@ -230,15 +226,60 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		if (clDd.getSjqrsj() != null) {
 			rMap.put("sjqrsj", clDd.getSjqrsj());
+
 			// 4、车辆GPS列表
 			SimpleCondition condition = new SimpleCondition(ClGpsLs.class);
+			String strinDate=DateUtils.getNowTime();
+			if(clDd.getYysj()!=null){
+				strinDate=DateUtils.getDateStr(clDd.getYysj(),"yyyy-MM-dd HH:mm:ss");
+			}
+
+			String endDate=DateUtils.getNowTime();
+			if(clDd.getSjqrsj()!=null){
+				endDate=DateUtils.getDateStr(clDd.getSjqrsj(),"yyyy-MM-dd HH:mm:ss");
+			}
+
 			condition.gte(ClGpsLs.InnerColumn.cjsj, clDd.getYysj());// 开始时间
 			condition.lte(ClGpsLs.InnerColumn.cjsj, clDd.getSjqrsj());// 结束时间
 			condition.eq(ClGpsLs.InnerColumn.zdbh, clDd.getZdbm());// 终端编码
 			condition.setOrderByClause(ClGps.InnerColumn.cjsj.asc());// 创建时间
 			List<ClGpsLs> gpsLog = clGpsLsMapper.selectByExample(condition);
 			rMap.put("gpsLog", gpsLog);
+
+			if(StringUtils.isNotEmpty(clDd.getZdbm())){//终端编码
+				SimpleCondition conditionClyy = new SimpleCondition(Clyy.class);
+				conditionClyy.gte(Clyy.InnerColumn.loc_time, strinDate);// 开始时间
+				conditionClyy.lte(Clyy.InnerColumn.loc_time, endDate);// 结束时间
+				conditionClyy.eq(Clyy.InnerColumn.zdbh, clDd.getZdbm());// 终端编码
+				conditionClyy.setOrderByClause(Clyy.InnerColumn.loc_time.asc());// 创建时间
+				List<Clyy> clyyList = clyyService.findByCondition(conditionClyy);
+				List<ClGpsLs> gpsl=new ArrayList<>();
+				if(clyyList!=null&& clyyList.size()>0){
+					for(Clyy c:clyyList){
+						ClGpsLs gps=new ClGpsLs();
+						gps.setId(c.getId());
+						gps.setZdbh(c.getZdbh());
+//						gps.setCjsj(c.getLoc_time());
+						gps.setJd(c.getLongitude());
+						gps.setWd(c.getLatitude());
+						gps.setGgjd(c.getLongitude());
+						gps.setGgwd(c.getLatitude());
+						gps.setBdjd(c.getLongitude());
+						gps.setBdwd(c.getLatitude());
+						gps.setGdjd(c.getLongitude());
+						gps.setGdwd(c.getLatitude());
+//						gps.setFxj(c.getDirection());
+						gps.setYxsd(c.getSpeed().toString());
+						gpsl.add(gps);
+					}
+					rMap.put("gpsLog", gpsl);
+				}
+				rMap.put("gpslist", clyyList);
+			}else{
+				rMap.put("gpslist", new ArrayList<>());
+			}
 		} else {
+			rMap.put("gpslist", new ArrayList());
 			rMap.put("gpsLog", new ArrayList());
 			rMap.put("sjqrsj", null);
 		}
@@ -510,8 +551,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 				String message = JsonUtil.toJson(mapBody);// 接收方报文 mapBody
 				String bizId = "BIZ_10";// 业务编号
 				long type = 1;// 1、短信
-				// TODO: 2018/5/9 插入系统消息表
-				// todo 羊哥代码没有提交完 SysMessage 没有
+
 				SysMessage sysMessage = new SysMessage();
 				sysMessage.setMessage(message);//
 				sysMessage.setType(type + "");//
@@ -582,7 +622,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 	/**
 	 * 订单编辑-订单确认 1、订单处于：司机确认(行程结束) 2、只有该队队长才能有限制
 	 *
-	 * ---------------20180506修改如下------------- 1、订单处理13（派单）、20（司机确认）后都可以修改
+	 * ---------------20180506修改如下-------------
+	 * 1、订单处理13（派单）、20（司机确认）后都可以修改
 	 * 2、司机、队长、su(超级管理员)可以进行修改
 	 *
 	 * @param entity
@@ -600,6 +641,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		// 订单状态 10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 		String ddzt = clDd.getDdzt();
 		if (StringUtils.equals(ddzt, "13")) {
+			//车辆类型 字典项：ZDCLK0019：车辆类型 10、小车 20、大车 30、校巴
+			if(StringUtils.equals(clDd.getSj(),userId)&&StringUtils.equals(clDd.getCllx(),"10")){//如何司机编辑自己的订单，不能让司机输入单价
+
+				entity.setDj(null);
+				entity.setZj(null);
+			}
 			// RuntimeCheck.ifFalse(StringUtils.equals(clDd.getSj(),userId)||StringUtils.equals(user.getLx(),"su"),"订单不属于本人，不能进行编辑操作");
 		} else if (StringUtils.equals(ddzt, "20")) {
 			// RuntimeCheck.ifFalse(StringUtils.equals(clDd.getDzbh(),userId)||StringUtils.equals(user.getLx(),"su"),"订单不属于本人，不能进行编辑操作");
@@ -610,6 +657,8 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			RuntimeCheck.ifTrue(true, "订单状态异常，不能进行订单编辑操作");
 		}
 
+		RuntimeCheck.ifTrue(StringUtils.equals(clDd.getCllx(),"10")&&entity.getLc()<=0,"小车的里程数必须大于0");
+
 		ClDd newClDd = new ClDd();
 		newClDd.setId(clDd.getId());
 		newClDd.setSj(userId);// 修改人
@@ -618,11 +667,13 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		newClDd.setGqf(entity.getGqf());//过桥费
 		newClDd.setSy(entity.getSy());// 事由
 		newClDd.setZj(entity.getZj());// 总价
+
 		newClDd.setSc(entity.getSc());// 时长
 		newClDd.setDj(entity.getDj());// 单价
 		newClDd.setLc(entity.getLc());// 里程
 		newClDd.setScf(entity.getScf());// 时长费
 		newClDd.setLcf(entity.getLcf());// 里程费
+
 		newClDd.setFkzt("00"); // 未付款
 		newClDd.setYysj(entity.getYysj());
 		newClDd.setSjqrsj(entity.getSjqrsj());
@@ -651,6 +702,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		ClDd clDd = findById(entity.getId());
 		RuntimeCheck.ifNull(clDd, "未找到订单记录");
 		RuntimeCheck.ifFalse(clDd.getJgdm().indexOf(user.getJgdm()) == 0, "您不能对非本机构订单进行操作");
+
+		// 订单状态 10-订单创建；11-订单确认(待派单)；20-司机确认(行程结束)；30-队长确认; 40-财务已收
+
 		//// 2、验证当前状态必须是 11-订单确认状态
 		// String ddzt=clDd.getDdzt();
 		// RuntimeCheck.ifFalse(StringUtils.equals(ddzt,"20"),"订单没有处理司机
@@ -1206,13 +1260,21 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		return ApiResponse.success(map);
 	}
 
+	/**
+	 * 司机确定
+	 * @param id
+	 * @return
+	 */
 	@Override
 	public ApiResponse<String> driverConfirm(String id) {
 		RuntimeCheck.ifBlank(id, "请选择订单");
 		ClDd order = findById(id);
+		if(order.getLc()==null){
+			order.setLc(0D);
+		}
 		RuntimeCheck.ifNull(order, "订单不存在");
 
-		// 2、验证当前状态必须是 11-订单确认状态
+		// 2、验证当前状态必须是 11-订单确认状态   10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 		String ddzt = order.getDdzt();
 		RuntimeCheck.ifFalse(StringUtils.equals(ddzt, "13"), "订单没有被派单，不能进行司机确认操作");
 
@@ -1220,9 +1282,32 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		if (order.getSjqrsj() == null){
 			order.setSjqrsj(new Date());
 		}
-		BigDecimal lcf = overWorkMoney(order);
 		ClDd newClDd = new ClDd();
-		newClDd.setLcf(lcf.doubleValue());
+		Double lcf=0d;
+		if(StringUtils.equals(order.getCllx(),"10")){//小车参数计算
+//	 * dj		里程单价
+//	 * lcf		里程费
+//	 * jbfdj	加班单价
+//	 * jbsc		加班时长(小时)
+//	* jbf		加班费
+//	* jjrdj	节假日单价
+//	* jjrsc	节假日
+//	* jjrjl	节假日金额
+			//费用计算
+			Map<String,Double>  retMap = overWorkMoney(order);
+			newClDd.setDj(retMap.get("dj"));//单价
+			newClDd.setLcf(retMap.get("lcf"));//里程费
+			newClDd.setJbfdj(String.valueOf(retMap.get("jbfdj")));//加班费单价
+//			newClDd.setJbsc((short) retMap.get("jbsc").intValue());//加班时长(小时)
+			newClDd.setJbf(String.valueOf(retMap.get("jbf")));//加班费
+			newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
+			newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
+			newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
+//			过路费	过桥费
+			Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(order.getGlf()==null?0:order.getGlf())+(order.getGqf()==null?0:order.getGqf());
+			newClDd.setZj(zj);
+		}
+		newClDd.setLcf(lcf);
 		newClDd.setId(order.getId());
 		newClDd.setDdzt("20");// 订单状态
 		if (order.getSjqrsj() == null){
@@ -1231,7 +1316,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		int i = update(newClDd);
 		RuntimeCheck.ifTrue(i == 0, "操作数据库失败");
 
-		order.setLcf(lcf.doubleValue());
+		order.setLcf(lcf);
 		order.setDdzt("20");
 		ddrzService.log(order);
 		return ApiResponse.success();
@@ -1342,15 +1427,44 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		apiResponse.setResult(ddlist);
 		return apiResponse;
 	}
-	private BigDecimal overWorkMoney(ClDd order){
+
+	/**
+	 * 获取出 该订单 里程单价[dj]、里程费[lcf]、加班单价[jbfdj]、加班时长(小时)[jbsc]、加班费[jbf]、 节假日单价[jjrdj]、节假日(天)[jjrsc] 、节假日金额()[jjrjl]
+	 * @param order
+	 * @return
+	 * dj		里程单价
+	 * lcf		里程费
+	 * jbfdj	加班单价
+	 * jbsc		加班时长(小时)
+	 * jbf		加班费
+	 * jjrdj	节假日单价
+	 * jjrsc	节假日
+	 * jjrjl	节假日金额
+	 */
+	private Map<String,Double>  overWorkMoney(ClDd order){
+		Map<String,Double> retMap=new HashMap<>();
 		SimpleCondition condition = new SimpleCondition(SysHsgs.class);
-		condition.eq(SysHsgs.InnerColumn.lx,"10");
+		condition.eq(SysHsgs.InnerColumn.cx,order.getCllx());
 		List<SysHsgs> hsgsList = hsgsMapper.selectByExample(condition);
 		RuntimeCheck.ifTrue(hsgsList.size() == 0,"未找到核算公式");
-		SysHsgs hsgs = hsgsList.get(0);
-		BigDecimal price = hsgs.getJe();
-		String nr = hsgs.getNr();
-		long durationMs = 0;
+		BigDecimal lcPrice= BigDecimal.valueOf(0);//里程单价
+		BigDecimal festivalHlidayPrice= BigDecimal.valueOf(0);//节假日单价
+		BigDecimal duration= BigDecimal.valueOf(0);//加班单价
+		String nr = "";
+		for(SysHsgs pric:hsgsList){
+//			'00', '里程'   '10', '加班   20', '节假日'
+			if(StringUtils.equals(pric.getLx(),"00")){//和里程参数计算
+				lcPrice=pric.getJe();
+			}else if(StringUtils.equals(pric.getLx(),"10")){//加班时间按小时
+				duration=pric.getJe();
+				nr=pric.getNr();
+			}else if(StringUtils.equals(pric.getLx(),"20")){//节假日按天算
+				festivalHlidayPrice=pric.getJe();
+			}
+		}
+		RuntimeCheck.ifTrue(StringUtils.equals(order.getCllx(),"10") && lcPrice.compareTo(BigDecimal.ZERO)==0,"您好，请配置小车的里程单价");
+		long durationMs = 0;//加班秒数
+		long festivalHlidayDay=0;//节假日的天数
 		List<Map<String,Date>> dateList = splitDate(order.getYysj(),order.getSjqrsj());
 		for (Map<String, Date> map : dateList) {
 			Date startTime = map.get("startTime");
@@ -1360,19 +1474,47 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			List<SysRlb> rlbs = rlbMapper.selectByExample(rlCond);
 			RuntimeCheck.ifEmpty(rlbs,"未找到日历");
 			SysRlb rlb = rlbs.get(0);
-			if (!"1".equals(rlb.getZt().trim()))continue;
+			//判断是否为节假日
+			if (!"1".equals(rlb.getZt().trim())){
+				festivalHlidayDay++;
+				continue;
+			}
 			durationMs += getExtraTime(nr,map.get("startTime"),map.get("endTime"));
 		}
-		order.setJbsc(new BigDecimal(durationMs/(1000*60*60)).shortValue());
+		order.setJbsc(new BigDecimal(durationMs/(1000*60*60)).shortValue());//加班时长
 		entityMapper.updateByPrimaryKeySelective(order);
-		BigDecimal amount = price.multiply(new BigDecimal(durationMs)).divide(new BigDecimal(1000*60*60),2,BigDecimal.ROUND_HALF_UP);
-		return amount;
+
+		retMap.put("dj",lcPrice.doubleValue());//里程单价
+		BigDecimal amount = lcPrice.multiply(new BigDecimal(order.getLc()));
+		retMap.put("lcf",amount.doubleValue());//里程费
+		retMap.put("jbfdj",duration.doubleValue());//加班单价
+		retMap.put("jbsc", Double.valueOf(order.getJbsc()));//加班时长(小时)
+		try {
+			retMap.put("jbf",duration.doubleValue()*Double.valueOf(order.getJbsc()));
+		}catch (Exception e){
+			retMap.put("jbf",0D);//加班费
+		}
+
+		retMap.put("jjrdj",festivalHlidayPrice.doubleValue());//节假日单价
+		retMap.put("jjrsc", Double.valueOf(festivalHlidayDay));//节假日
+
+		try {
+			retMap.put("jjrjl",festivalHlidayPrice.doubleValue()*festivalHlidayDay);//节假日金额
+		}catch (Exception e){
+			retMap.put("jjrjl",0d);
+		}
+		return retMap;
 	}
 
-
+	/**
+	 *	将时间段拆分为天数  这个有问题。跨度时间过长， 2018-09-23 到 2018-09-24 只计算出两天-BUG。todo
+	 * @param startTime
+	 * @param endTime
+	 * @return
+	 */
 	private static List<Map<String,Date>> splitDate(Date startTime,Date endTime){
-		int startDate = startTime.getDate();
-		int endDate = endTime.getDate();
+		int startDate = startTime.getDate();//获取天数
+		int endDate = endTime.getDate();//
 		List<Map<String,Date>> list = new ArrayList<>();
 		if (startDate == endDate){
 			Map<String,Date> map = new HashMap<>();
