@@ -7,11 +7,11 @@ ext {
             AndroidTargetSdkVersion : 25,
             AndroidCompileSdkVersion : 25,
             applicationId : "cn.bidostar.ticserver",
-            versionCode:14,
-            versionName:"0.1.9",
+            versionCode:16,
+            versionName:"0.2.4",
             testInstrumentationRunner:"android.support.test.runner.AndroidJUnitRunner",
-            corLibVCode:14,
-            corLibVName:"0.1.9"
+            corLibVCode:16,
+            corLibVName:"0.2.3"
     ]
 
 

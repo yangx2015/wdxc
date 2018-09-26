@@ -36,7 +36,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
 
         }
 
-        I.e("BootBroadcastReceiver", "开机自动服务自动启动.....");
+        //I.e("BootBroadcastReceiver", "开机自动服务自动启动.....");
         //启动应用，参数为需要自动启动的应用的包名
         Intent intent1 = context.getPackageManager().getLaunchIntentForPackage("cn.bidostar.ticserver");
         context.startActivity(intent1);

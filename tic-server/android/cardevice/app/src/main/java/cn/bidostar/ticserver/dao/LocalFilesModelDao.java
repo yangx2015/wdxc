@@ -82,7 +82,7 @@ public class LocalFilesModelDao extends AppBaseDao<LocalFilesModel> {
     public boolean deleteLikeFileName(String fileLikeName){
         try {
            int i =   AppDBUtils.getDB().delete(LocalFilesModel.class, WhereBuilder.b().expr("localpath like '%"+fileLikeName+"%'"));
-            I.e("database delete :删除"+fileLikeName+i);
+            //I.e("database delete :删除"+fileLikeName+i);
         } catch (DbException e) {
             e.printStackTrace();
             I.e("database delete error:",e);
