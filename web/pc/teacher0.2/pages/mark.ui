@@ -1,69 +1,98 @@
 <template>
 <ui-page style="overflow:hidden">
   <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FC8609'} }}">
-        <ui-row height="46">
-          <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
-            <ui-icon type="left" size="16" color="#fff"></ui-icon>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center">
-            <ui-view class="nav_title">详情与评价</ui-view>
-          </ui-col>
-          <ui-col vertical-align="middle" align="center" width="60">
-          </ui-col>
-        </ui-row>
-    </ui-nav-bar>
+      <ui-row height="46">
+        <ui-col vertical-align="middle" align="center" width="60" bindtap="Goback">
+          <ui-icon type="left" size="16" color="#fff"></ui-icon>
+        </ui-col>
+        <ui-col vertical-align="middle" align="center">
+          <ui-view class="nav_title">详情与评价</ui-view>
+        </ui-col>
+        <ui-col vertical-align="middle" align="center" width="60">
+        </ui-col>
+      </ui-row>
+  </ui-nav-bar>
 
-     <div id="allmap" style="{{{height:height+'px'}}}"></div>
+  <div id="allmap" style="{{{height:height+'px'}}}"></div>
 
 
-<ui-fixed-view bottom="20" left="10" right="10">
-    <ui-view  ui:if="{{orderMess.ddzt =='20' || orderMess.ddzt =='30' || orderMess.ddzt =='40'}}" class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
+<ui-fixed-view bottom="30" left="10" right="10">
+    <ui-view  ui:if="{{orderMess.ddzt =='20' || orderMess.ddzt =='30' || orderMess.ddzt =='40'}}" class="box_col" style="{{{height:carHeight +'px'}}}">
       <ui-view class="getmess">
           <ui-view> 
-            <ui-row vertical-align="middle" height=50 border-bottom>
-                <ui-col  align="center" vertical-align="middle">
+            <ui-row vertical-align="middle" height=80 border-bottom>
+                <ui-col span=5 align="left"  vertical-align="middle">
+                    <ui-view style="color: #000;font-size:18px;font-weight:900">
+                          {{orderMess.sjxm}}
+                    </ui-view>
+                    <ui-view style="color: #000;font-size:16px;font-weight:500">
+                            {{orderMess.cph}}
+                    </ui-view>
+                </ui-col>
+                <ui-col span=6 align="right"  vertical-align="middle">
+                    <ui-view style="color: #000;font-size:18px;font-weight:500">
+                            <!-- {{orderMess.cph}} -->
+                            <ui-icon type="dianhua" size="30" color="#000"></ui-icon>
+                    </ui-view>
+                </ui-col>
+                <!-- <ui-col span=8 align="center" vertical-align="middle">
                   <ui-row height="50rpx">
                       <ui-view style="color: #808080;font-size:16px;font-weight:700;padding:6px">
                         {{orderMess.cph}}
                       </ui-view>
                   </ui-row>
-                </ui-col>
-                <ui-col span=4 align="right"  vertical-align="middle" style="color: #808080;font-size:16px;font-weight:700">
-                        {{orderMess.sjxm}}
-                 </ui-col>
-                 <ui-col span=2 align="left" >
+                </ui-col> -->
+                 <!-- <ui-col span=2 align="left" >
                          <ui-row style="color:#808080;font-size:12px">
                                 {{orderMess.pjdj}}分
                           </ui-row>
-                </ui-col>
+                </ui-col> -->
             </ui-row>
           </ui-view>
            
           <ui-row space="10">
             <ui-col>
               <ui-row height=32>
-                <ui-col  align="center" vertical-align="middle" style="color:#000000;font-size:28px">
-                   {{orderMess.zj}}元
+                <ui-col  align="center" vertical-align="middle">
+                 <ui-view style="font-size:18px;font-weight:900">
+                    总价：{{orderMess.zj}}元
+                 </ui-view>
                 </ui-col>
               </ui-row>
             </ui-col>
-          </ui-row>   
-          <ui-row>
-                 <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">里程:{{orderMess.lc}}KM</ui-col>
-                 <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">过桥费:{{orderMess.gqf}}元</ui-col>
-                 <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">路停费:{{orderMess.lcf}}元</ui-col>
-                 <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">单价:{{orderMess.dj}}元</ui-col>
-          </ui-row>
-          <ui-row space-top="10" vertical-align="middle">
-            <ui-col align="center"  style="color:#A0A0A0">
-              {{starResult}}
-            </ui-col>
-          </ui-row>
-          <ui-row align=center>
-            <ui-col space-right="35">
-              <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
-            </ui-col> 
-          </ui-row> 
+          </ui-row>  
+
+          <ui-accordion header-height="25" bindchange="slide">
+            <ui-view slot="header">
+              <ui-view>
+                费用明细
+              </ui-view>
+            </ui-view>
+            <ui-view slot="content">
+              <ui-row  space="10" height=32>
+                    <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">
+                      里程:{{orderMess.lc}}KM
+                    </ui-col>
+                    <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">单价:{{orderMess.dj}}元/KM</ui-col>
+              </ui-row>
+              <ui-row  space="5" height=32 border-bottom>
+                    <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">过桥费:{{orderMess.gqf | kong}}元</ui-col>
+                    <ui-col style="color:#000000;font-size:12px" vertical-align="middle" align="center">路停费:{{orderMess.lcf | kong}}元</ui-col>
+              </ui-row>
+            </ui-view>
+          </ui-accordion>
+          <ui-view ui:if="{{pjshow}}">
+            <ui-row space-top="10" vertical-align="middle">
+              <ui-col align="center"  style="color:#A0A0A0">
+                {{starResult}}
+              </ui-col>
+            </ui-row>
+            <ui-row align=center height=50>
+              <ui-col space-right="35">
+                <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
+              </ui-col> 
+            </ui-row> 
+          </ui-view>
       </ui-view>
     </ui-view>
     <ui-view ui:else if="{{orderMess.ddzt =='12'}}" style="background-color:#ffffff;border-radius: 10px">
@@ -86,30 +115,7 @@
        </ui-row>
     </ui-view>
 </ui-fixed-view>
-  <!-- <ui-row vertical-align="middle">
-    <ui-col align="center" style="color:#000000">
-      总价
-    </ui-col>
-  </ui-row> -->
 
-
-
-
-
-
-
-
-  <!-- <ui-view class="box_col_100" style="{{{backgroundImage:'url(http://api.map.baidu.com/staticimage?ak=evDHwrRoILvlkrvaZEFiGp30'+
-   '&width=400&height=300'+
-  '&center=114.368107,30.543083'+
-  '&zoom=12'+
-  '&markers=116.351296,39.907825|116.344397,39.942352'+
-  '&markerStyles=-1,'+
-  'http://47.98.39.45:9092/icon/map_line_begin.png|-1,http://47.98.39.45:9092/icon/map_line_end.png)'}}}">
-   
-  </> -->
-
- 
  </ui-page>
   
 </template>
@@ -123,6 +129,14 @@ export default {
     navigationBarBackgroundColor: '#39f',
     navigationBarBorderColor: '#39f',
     navigationBarTextStyle: 'white'
+  },
+  filters: {
+    kong:(val)=>{
+      if(val){
+        return val
+      }
+      return 0
+    }
   },
   data () {
     return {
@@ -139,11 +153,18 @@ export default {
        'color':'#FF9966',
        'border-bottom':'1px solid #FF9966',
       },
-      map:''
+      map:'',
+      pjshow:true
     }   
   },
       
   methods: {
+    slide(e){
+      console.log(e)
+      this.pjshow = !this.pjshow
+      // if(e=='show'){
+      // }
+    },
     // bohuixq(){
     //   if(this.orderMess.ddzt == '12'){
     //      ui.showAlert({
@@ -316,7 +337,10 @@ export default {
  <style lang="less">
 .getmess{
   background-color:#ffffff;
-  height:500rpx;
+  // height:500rpx;
+  box-shadow: 8px 10px 5px #888888;
+  border-radius: 12px;
+  padding: 0 26px 12px 26px;
   
 }
 .pingyi{
