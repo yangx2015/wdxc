@@ -36,6 +36,7 @@
           <ui-tab-view-header>已完成</ui-tab-view-header>
         </template>
         <template slot="body">
+          
                   <ui-tab-view-body>
                     <ui-view class="tab-content" bindtap="gomark(item,0)" ui:for="{{ddlist0}}">
                         <ui-view class="tab-dis" style="padding:10px 15px">
@@ -513,10 +514,11 @@ export default {
         
     for (let i = 0; i < this.ddztlist.length; i++) {
       this.getPagerList(i);
-    }
-        ui.showToast({
+       ui.showToast({
           title: "已刷新"
         });
+    }
+       
       }
     },
     navHandle() {
