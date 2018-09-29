@@ -20,31 +20,21 @@
     <ui-view  ui:if="{{orderMess.ddzt =='20' || orderMess.ddzt =='30' || orderMess.ddzt =='40'}}" class="box_col" style="{{{height:carHeight +'px',background:'#0f0'}}}">
       <ui-view class="getmess">
           <ui-view> 
-            <ui-row vertical-align="middle" height="50rpx" border-bottom>
+            <ui-row vertical-align="middle" height=50 border-bottom>
                 <ui-col  align="center" vertical-align="middle">
                   <ui-row height="50rpx">
                       <ui-view style="color: #808080;font-size:16px;font-weight:700;padding:6px">
                         {{orderMess.cph}}
                       </ui-view>
                   </ui-row>
-                  <ui-row>
-                      <ui-view align="center" style="color:#808080;font-size:12px">
-                        {{orderMess.zws}} 座车
-                      </ui-view> 
-                  </ui-row>
                 </ui-col>
-                <ui-col align="center" vertical-align="middle">
-                    <ui-row>
-                     <ui-view style="color: #808080;font-size:16px;font-weight:700;padding:6px">
-                    {{orderMess.sjxm}}
-                      </ui-view>
-                    </ui-row> 
-                    <ui-row>
-                       <ui-view align="center" style="color:#808080;font-size:12px">
-                          {{orderMess.pjdj}}分
-                        </ui-view> 
-                    </ui-row>
-                   
+                <ui-col span=4 align="right"  vertical-align="middle" style="color: #808080;font-size:16px;font-weight:700">
+                        {{orderMess.sjxm}}
+                 </ui-col>
+                 <ui-col span=2 align="left" >
+                         <ui-row style="color:#808080;font-size:12px">
+                                {{orderMess.pjdj}}分
+                          </ui-row>
                 </ui-col>
             </ui-row>
           </ui-view>
@@ -76,8 +66,17 @@
           </ui-row> 
       </ui-view>
     </ui-view>
-    <ui-view ui:else if="{{orderMess.ddzt =='12'}}">
-        
+    <ui-view ui:else if="{{orderMess.ddzt =='12'}}" style="background-color:#ffffff;border-radius: 10px">
+        <ui-row height=50 border-bottom> 
+          <ui-col align="center" vertical-align="middle" style="color:#808080;font-size:14px">
+            驳回原因
+          </ui-col>
+        </ui-row>
+        <ui-row height=100>
+          <ui-col align="center" vertical-align="middle">
+            {{orderMess.bhyy}}
+          </ui-col>
+        </ui-row>
     </ui-view>
     <ui-view ui:else class="box_col">
        <ui-row height=50   style="background-color:#ff8040">
@@ -145,14 +144,14 @@ export default {
   },
       
   methods: {
-    bohuixq(){
-      if(this.orderMess.ddzt == '12'){
-         ui.showAlert({
-          title: '驳回原因',
-          content:  this.orderMess.bhyy
-      })
-      }
-    },
+    // bohuixq(){
+    //   if(this.orderMess.ddzt == '12'){
+    //      ui.showAlert({
+    //       title: '驳回原因',
+    //       content:  this.orderMess.bhyy
+    //   })
+    //   }
+    // },
     show3toggle (str) {
       if (str === 'hide') {
         this.show3 = false
@@ -294,7 +293,7 @@ export default {
     // this.getMarkList()
     console.log("xiangqing",ui.getApp().orderMess);
     this.orderMess = ui.getApp().orderMess
-    this.bohuixq()
+    // this.bohuixq()
     if(this.orderMess.id == undefined){
       this.Goback()
       ui.showToast({ title: '数据丢失，请重新查看' })
@@ -318,6 +317,7 @@ export default {
 .getmess{
   background-color:#ffffff;
   height:500rpx;
+  
 }
 .pingyi{
   transform: translate(-10%,0%);
