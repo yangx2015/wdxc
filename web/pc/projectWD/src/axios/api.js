@@ -1,10 +1,11 @@
-let url = 'http://10.113.4.70:'//8080
-// let url = 'http://47.98.39.45:'//8080
+// let url = 'http://10.113.4.70:'//8080
+let url = 'http://47.98.39.45:'//8080
 // let url = 'http://192.168.31.92:'//8000
 let port = '8080'
 export default {
     // url:url+port+'/biz',
-    url:url+port,
+    // url:url+port+'/biz',//10.113
+    url:url+port,//47
     UPLOAD:url+port+'/biz/upload',
     STATIC_PATH:url+'9092/',//地图icon地址前缀
     // VIDEO_PATH:url+'9091/test/',
@@ -27,7 +28,7 @@ export default {
         zdcx:'/api/zdgl/zdcx',//获取设备状况展示
     },
     LOGIN:{
-        QUERY:'login'
+        QUERY:'/login'
     },
     USER:{
         QUERY:'/api/yh/pager',//用户管理
@@ -160,17 +161,17 @@ export default {
         DELE:'/api/clsbyxsjjl/removeIds'
     },
     SUGGES:{
-        QUERY:'api/yj/pager',//意见管理
+        QUERY:'/api/yj/pager',//意见管理
         CHANGE:'/api/yj/update',
     },
     ADVERTISING:{
-        QUERY:'api/hd/pager',//活动管理
+        QUERY:'/api/hd/pager',//活动管理
         ADD:'/api/hd/save',
         CHANGE:'/api/hd/update',
         DELE:'/api/hd/removeIds'
     },
     ACCIDENT:{
-        QUERY:'api/sg/pager',//事故管理
+        QUERY:'/api/sg/pager',//事故管理
         ADD:'/api/sg/save',
         CHANGE:'/api/sg/update',
         DELE:'/api/sg/removeIds'
