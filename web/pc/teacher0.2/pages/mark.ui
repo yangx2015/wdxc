@@ -95,7 +95,7 @@
           </ui-view>
       </ui-view>
     </ui-view>
-    <ui-view ui:else if="{{orderMess.ddzt =='12'}}" style="background-color:#ffffff;border-radius: 10px">
+    <ui-view ui:if ="{{orderMess.ddzt =='12'}}" style="background-color:#ffffff;border-radius: 10px">
         <ui-row height=50 border-bottom> 
           <ui-col align="center" vertical-align="middle" style="color:#808080;font-size:14px">
             驳回原因
@@ -107,8 +107,8 @@
           </ui-col>
         </ui-row>
     </ui-view>
-    <ui-view ui:else class="box_col">
-       <ui-row height=50   style="background-color:#ff8040">
+    <ui-view ui:if="{{orderMess.ddzt =='10' || orderMess.ddzt =='11' || orderMess.ddzt =='13'}}" class="box_col">
+       <ui-row height=50   style="background-color:#808080">
            <ui-col vertical-align="middle" align="center" style="font-size:24px;color:#ffffff">
              该订单未结束
            </ui-col>
