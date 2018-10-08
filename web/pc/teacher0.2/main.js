@@ -77,7 +77,7 @@ ui.extend({
       method:method,
       success: function (res) {
         console.log('请求成功')
-        if(res.data.code !=200){
+        if(res.data.code == 999){
           ui.showToast({ title: res.data.message})
           ui.redirectTo({
             url: '/pages/login'
