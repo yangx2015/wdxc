@@ -63,7 +63,7 @@ ui.extend({
       method:method,
       success: function (res) {
         console.log('请求成功')
-        if(res.data.code ==403){
+        if(res.data.code == 403){
           ui.showToast({ title: res.data.message})
           ui.redirectTo({
             url: '/pages/login'

@@ -197,6 +197,9 @@ public class TopicMessageListener implements MessageListener {
         if((e - s) < 60000 ){
             return;
         }
+        if((e - s) > 60000 * 60 * 24 ){
+            return;
+        }
         /*if((e - s) < 60000 ){ // 开始时间与结束时间小于1分钟 ， 行程短 ， 过滤
             // 轨迹点不存储
             return;

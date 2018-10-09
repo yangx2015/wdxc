@@ -363,7 +363,8 @@ export default {
        this.map.addOverlay(polyline);
     },
      getDdGpsList(){
-      this.$http('POST',ui.getApp().apis.HISTORYGJ,{orderId: this.orderMess.id},(res)=>{
+       if(this.orderMess.ddzt ==20 || this.orderMess.ddzt ==30 || this.orderMess.ddzt ==40){
+          this.$http('POST',ui.getApp().apis.HISTORYGJ,{orderId: this.orderMess.id},(res)=>{
         console.log(res.result);
         
         if(res.code == 200 && res.result){
@@ -378,6 +379,7 @@ export default {
         }
         // this.addMarker()
       })
+       }
     },
     initMap(){
       var script = document.createElement("script")

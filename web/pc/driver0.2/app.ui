@@ -3,8 +3,8 @@ import ajaxUrl from '#/static/ajax/url'
 export default {
   config: {
     "pages": [
-      "pages/login",
       "pages/index",
+      "pages/login",
       "pages/detail",
       "pages/user",
       "pages/xlMess",

@@ -3,8 +3,8 @@ import ajaxUrl from '#/static/ajax/url'
 export default {
   config: {
     "pages": [
-      "pages/login",
       "pages/index",
+      "pages/login",
       "pages/detail",
       "pages/user",
       "pages/xlMess",
@@ -190,7 +190,7 @@ export default {
   },
     // 初始化
   created () {
-    this.getUserList() 
+    // this.getUserList() 
     //微信js 初始化
     this.getWxJs()
     //微信js初始化END
@@ -205,14 +205,14 @@ export default {
     })
   },
   methods: {
-    getUserList(){
-      this.$http('POST',ui.getApp().apis.USERINFO,{},(res)=>{
-        console.log('************',res);
-        this.userinfo = res.result.userInfo
-        console.log(this.userinfo);
-        this.showSlideMenu = true;
-      })
-    },
+    // getUserList(){
+    //   this.$http('POST',ui.getApp().apis.USERINFO,{},(res)=>{
+    //     console.log('************',res);
+    //     this.userinfo = res.result.userInfo
+    //     console.log(this.userinfo);
+    //     this.showSlideMenu = true;
+    //   })
+    // },
     gologin(){
       ui.navigateTo({
         url: '/pages/login'
