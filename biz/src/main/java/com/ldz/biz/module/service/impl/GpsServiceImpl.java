@@ -115,6 +115,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }catch(Exception e){
         	errorLog.error("解析GPS事件异常", e);
         }
+        saveVersionInfoToRedis(gpsInfo);
         if (!change) return ApiResponse.success();
 
         if (!gpsInfo.getLatitude().equals("-1") && !gpsInfo.getLongitude().equals("-1")) {
@@ -123,7 +124,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 eventBus.post(new SendGpsEvent(gpsInfo));
             }
         }
-        saveVersionInfoToRedis(gpsInfo);
+        
         return ApiResponse.success();
     }
 
