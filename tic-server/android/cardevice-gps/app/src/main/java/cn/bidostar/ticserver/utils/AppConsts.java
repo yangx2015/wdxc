@@ -44,6 +44,11 @@ public class AppConsts {
     public static final String CAR_BASE_SERVER_URL = "CAR_BASE_SERVER_URL_KEY";
 
     /**
+     * 设备进入休眠模式，不再执行GPS监听
+     */
+    public static final String CAR_GOTO_SLEEP = "CAR_GOTO_SLEEP";
+
+    /**
      * 存储纬度
      */
     public static final String CAR_LOCAL_LAT = "CAR_LOCAL_LAT_KEY";//存储纬度

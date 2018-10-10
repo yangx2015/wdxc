@@ -34,6 +34,10 @@ public class AppConsts {
      */
     public static final String CAR_UPLOAD_QUEE = "CAR_UPLOAD_QUEE";
 
+    /**
+     * 设备进入休眠模式，不再执行GPS监听
+     */
+    public static final String CAR_GOTO_SLEEP = "CAR_GOTO_SLEEP";
 
     /**
      * 没有网络和没有GPS信号时的gps临时存储标识  00 正常  10 有数据存储，需要去遍历一下

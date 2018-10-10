@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,8 @@ import cn.bidostar.ticserver.service.API;
 import cn.bidostar.ticserver.service.AppPushService;
 import cn.bidostar.ticserver.service.CarBindService;
 import cn.bidostar.ticserver.service.SocketCarBindService;
+import cn.bidostar.ticserver.utils.AppConsts;
+import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 import cn.bidostar.ticserver.utils.TimeUtils;
@@ -55,33 +58,38 @@ public class TestActivity extends Activity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(cn.bidostar.ticserver.R.layout.activity_main);
+        //2018年9月24日。先取消socket守护线程，以后根据测算情况，如果效果不佳，再开启
+        /*setContentView(cn.bidostar.ticserver.R.layout.activity_main);
         Intent service = new Intent(this,CarBindService.class);
-        startService(service);
+        startService(service);*/
+        PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        boolean ifOpen = powerManager.isScreenOn();
+        if (ifOpen){
+            //屏幕处于点亮状态，设备就不处于休眠状态
+            AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"00");
+        }
         Intent serviceTwo = new Intent();
         serviceTwo.setClass(this, SocketCarBindService.class);
         startService(serviceTwo);
-        I.e(TAG,TestActivity.class.getName());
+        //
+        finish();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d(TAG, "onResume");
         //mApi.registerCarMotionListener(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        Log.d(TAG, "onPause");
         //mApi.unregisterCarMotionListener(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "onDestroy");
      //   mApi.unregisterCarMotionListener(this);
     }
 
