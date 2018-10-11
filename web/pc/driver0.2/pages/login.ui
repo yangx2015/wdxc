@@ -50,10 +50,13 @@ export default {
   data () {
     return {
       form: {
-          xm: '张三',//张三
-          sjh: '123',//123
+          xm: '',//张三
+          sjh: '',//123
       },
     }
+  },
+  created(){
+    localStorage.clear()
   },
   methods: {
     loginYZ(){
