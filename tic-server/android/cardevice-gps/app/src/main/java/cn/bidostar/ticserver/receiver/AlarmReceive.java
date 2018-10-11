@@ -13,6 +13,8 @@ import java.util.List;
 
 import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.service.SocketCarBindService;
+import cn.bidostar.ticserver.utils.AppConsts;
+import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.CarIntents;
 import cn.bidostar.ticserver.utils.I;
 
@@ -25,27 +27,23 @@ public class AlarmReceive extends BroadcastReceiver {
     private static final String TAG = "cn.bidostar.ticserver.receiver.AlarmReceive";
     @Override
     public void onReceive(Context context, Intent intent) {
-        I.e(TAG,"网络有变化了"+intent.getAction());
+        //I.e(TAG,"网络有变化了"+intent.getAction());
         ConnectivityManager manager = null;
         NetworkInfo gprs = null;
         NetworkInfo wifi = null;
 
         if(ConnectivityManager.CONNECTIVITY_ACTION.equals(intent.getAction())){
+            I.e(TAG,"network change："+intent.getAction());
             manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             gprs = manager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             wifi = manager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
             NetworkInfo activeNetwork = manager.getActiveNetworkInfo();
             if (activeNetwork != null) { // connected to the internet
                 if (activeNetwork.isConnected()) {
-                    I.e(TAG,"网络链接正常");
+                    String sleepZt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
                     if(isRun(context)){
-                        I.e(TAG,"开始发送GPS数据");
                         AppApplication.getInstance().uploadGps();
-                        if (wifi.isConnected()) {
-                            // 直接检测文件上传
-                            SocketCarBindService.socketCarBindService.checkUpload();
-                        }
-                    }else{//网络链接之后，如果程序没有启动，直接启动
+                    }else if ("00".equals(sleepZt)){//网络链接之后，如果程序没有启动，直接启动
                         Intent intentMy=new Intent(Intent.ACTION_MAIN);
                         intentMy.addCategory(Intent.CATEGORY_LAUNCHER);
                         ComponentName cn=new ComponentName("cn.bidostar.ticserver",
@@ -56,10 +54,10 @@ public class AlarmReceive extends BroadcastReceiver {
                         context.startActivity(intentMy);
                     }
                 }else{
-                    I.e(TAG, "当前没有网络连接，请确保你已经打开网络 ");
+                    //I.e(TAG, "当前没有网络连接，请确保你已经打开网络 ");
                 }
             }else{
-                I.e(TAG, "当前没有网络连接，请确保你已经打开网络 22");
+                //I.e(TAG, "当前没有网络连接，请确保你已经打开网络 22");
             }
         }
         String filter = CarIntents.ACTION_WAKEUP+CarIntents.ACTION_GOTOSLEEP;

@@ -2,7 +2,9 @@ package cn.bidostar.ticserver.service;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Handler;
 import android.os.Message;
+import android.os.PowerManager;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -17,6 +19,9 @@ import com.igexin.sdk.message.GTTransmitMessage;
 import com.igexin.sdk.message.SetTagCmdMessage;
 import com.igexin.sdk.message.UnBindAliasCmdMessage;
 import com.miramems.carmotion.carMotion;
+
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.TestActivity;
@@ -37,6 +42,9 @@ import cn.bidostar.ticserver.utils.Utils;
  */
 public class PushIntentService extends GTIntentService {
     private static final String TAG = "PushIntentService";
+    PowerManager pm = null;
+    PowerManager.WakeLock wakeLock = null;
+    public static final String TAG_LOCK = "cn.bidostar.ticserver.service.SocketCarBindService";
     /**
      * 为了观察透传数据变化.
      */
@@ -66,10 +74,10 @@ public class PushIntentService extends GTIntentService {
         //I.e(TAG, "onReceiveMessageData -> " + "appid = " + appid + "\ntaskid = " + taskid + "\nmessageid = " + messageid + "\npkg = " + pkg+ "\ncid = " + cid);
 
         if (payload == null) {
-            I.e(TAG, "receiver payload = null");
+            //I.e(TAG, "receiver payload = null");
         } else {
             String data = new String(payload);
-            I.e(TAG, "receiver payload = " + data);
+            //I.e(TAG, "receiver payload = " + data);
             try {
                 RequestCommonParamsDto dto = JSON.parseObject(data,RequestCommonParamsDto.class);
                 if(dto == null || dto.getCmdType()==null || dto.getCmdType().trim().equals("")){
@@ -78,7 +86,10 @@ public class PushIntentService extends GTIntentService {
                     //这里处理具体的命令
                     boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
                             "cn.bidostar.ticserver.service.SocketCarBindService");
-                    I.e(TAG,"isRun SocketCarBindService:"+isRun);
+                    //I.e(TAG,"isRun SocketCarBindService:"+isRun);
+                    if (isRun && SocketCarBindService.socketCarBindService.mApi == null){
+                        SocketCarBindService.socketCarBindService.onCreate();
+                    }
                     switch (dto.getCmdType()){
                         case "01"://01：超速设定 02:灵敏度设定(急加速灵敏度)   11:拍视频 12:拍图片   20 碰撞灵敏度
                             if(isRun){
@@ -277,14 +288,19 @@ public class PushIntentService extends GTIntentService {
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        I.e(TAG, "onReceiveClientId -> " + "clientid = " + clientid);
+        //I.e(TAG, "onReceiveClientId -> " + "clientid = " + clientid);
 
         sendMessage(clientid, 1);
     }
 
+    ScheduledThreadPoolExecutor taskPool = null;
     @Override
     public void onReceiveOnlineState(Context context, boolean online) {
-        I.d(TAG, "onReceiveOnlineState -> " + (online ? "online" : "offline"));
+        I.e(TAG, "onReceiveOnlineState -> " + (online ? "online" : "offline"));
+        //如果推送服务离线了，则开启抓锁，保证网络正常可用
+        if (!online){
+            SocketCarBindService.socketCarBindService.mApi.setMobileEnabled(true);
+        }
     }
 
     @Override

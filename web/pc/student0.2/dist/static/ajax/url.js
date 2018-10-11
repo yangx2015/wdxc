@@ -1,4 +1,4 @@
-let ajaxUrl = "http://47.98.39.45:9099";
+let ajaxUrl = "http://10.113.4.71:9090/biz";
 
 module.exports = {
     url:ajaxUrl,

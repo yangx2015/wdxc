@@ -15,6 +15,8 @@ import org.xutils.x;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.dao.LocalFilesModelDao;
@@ -30,6 +32,8 @@ public class ServerApiUtils {
 
     public static String TAG = "ServerApiUtils";
     private static List<RequestCommonParamsDto> dtos = new ArrayList<>();
+    //网络请求线程队列，同时只让一个线程执行上传操作
+    public static Executor signThread = Executors.newFixedThreadPool(1);
 
     public static void downLoadAppApk(final String url,final String path){
         RequestParams requestParams = new RequestParams(url);
@@ -117,7 +121,6 @@ public class ServerApiUtils {
         if(fileFlag==false){
            // AppApplication.getInstance().UPLOAD_QUEE = false;
             SocketCarBindService.socketCarBindService.setUploadQuee(false);
-            SocketCarBindService.socketCarBindService.checkUpload();
           //  AppApplication.getInstance().uploadDatabase();
         }
         return fileFlag;
@@ -152,8 +155,9 @@ public class ServerApiUtils {
             params.addQueryStringParameter("direction",dto1.getFxj());
             params.addQueryStringParameter("eventType",eventType);
             params.setConnectTimeout(60*1000);//60秒超时
-            params.setMaxRetryCount(2);//重试两次
+            params.setMaxRetryCount(1);//重试1次
             params.setMultipart(true);
+            params.setExecutor(signThread);
             if(video){
 
                 List<KeyValue> list = new ArrayList<KeyValue>();
@@ -204,7 +208,8 @@ public class ServerApiUtils {
         }
         RequestParams params = new RequestParams(AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFOALL);
         params.setAsJsonContent(true);
-        params.setConnectTimeout(5*1000);//5秒超时
+        params.setConnectTimeout(3*1000);//3秒超时
+        params.setExecutor(signThread);
         // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(lists));
         //I.d(TAG,"POST DATA--->"+JSON.toJSONString(lists));
@@ -227,7 +232,7 @@ public class ServerApiUtils {
         String APP_SIMCID = AppApplication.getInstance().getSimICCID();
         dto.setDeviceId(APP_IMEI);
         dto.setDeviceTag(APP_SIMCID);
-        I.e(TAG,"APP_SIMCID:"+APP_SIMCID);
+        //I.e(TAG,"APP_SIMCID:"+APP_SIMCID);
         dto.setLatitude(dto1.getLatitude());
         dto.setLongitude(dto1.getLongitude());
         dto.setSpeed(dto1.getSpeed());
@@ -260,7 +265,8 @@ public class ServerApiUtils {
         String gpsurl = AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFO;
         RequestParams params = new RequestParams(gpsurl);
         params.setAsJsonContent(true);
-        params.setConnectTimeout(5*1000);//5秒超时
+        params.setConnectTimeout(3*1000);//3秒超时
+        params.setExecutor(signThread);
        // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(dto));
         //I.d(TAG,"POST URL --->"+gpsurl);
@@ -296,7 +302,7 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "文件updateFile error:" + ex.getLocalizedMessage() );
+            //I.e(TAG, "文件updateFile error:" + ex.getLocalizedMessage() );
         }
 
         @Override
@@ -326,9 +332,9 @@ public class ServerApiUtils {
 
                 I.d(TAG, "updateFile success:" + result );
             }catch (Exception e){
-                I.e(TAG, "updateFile error:" + e );
+                //I.e(TAG, "updateFile error:" + e );
             }
-            I.e(TAG,"文件网络请求完成,进行下一次上传,结果："+result);
+            //I.e(TAG,"文件网络请求完成,进行下一次上传,结果："+result);
             AppApplication.getInstance().setUploadQuee(false);
             //AppApplication.getInstance().checkUpload();
 
@@ -361,7 +367,7 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "updateFile Img/Log error:" + ex);
+            //I.e(TAG, "updateFile Img/Log error:" + ex);
         }
 
         @Override
@@ -383,7 +389,7 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG+"upload gps error:",ex);
+            //I.e(TAG+"upload gps error:",ex);
         }
 
         @Override
@@ -409,7 +415,7 @@ public class ServerApiUtils {
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
             SocketCarBindService.socketCarBindService.setGpsNoNetWorkFlag("10");//需要进行检测上传了
-            I.e(TAG+"upload gps error:",ex);
+            //I.e(TAG+"upload gps error:",ex);
         }
 
         @Override

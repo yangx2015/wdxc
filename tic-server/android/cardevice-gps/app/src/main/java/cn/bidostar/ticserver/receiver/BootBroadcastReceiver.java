@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.service.CarBindService;
 import cn.bidostar.ticserver.service.SocketCarBindService;
 import cn.bidostar.ticserver.utils.I;
@@ -27,18 +28,23 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         */
 
         if(intent.getAction().equals("com.car.wakeup")){//唤醒
-            I.e("com.car.wakeup ----");
+            AppApplication.getInstance().stopSleepGpsSend();
+            //启动service，调整数据上报时长
+            if (SocketCarBindService.socketCarBindService != null){
+                SocketCarBindService.socketCarBindService.onCreate();
+            }
         }else if(intent.getAction().equals("com.car.gotosleep")){//准备休眠
             I.e("com.car.gotosleep ----");
+            AppApplication.getInstance().sleepGpsSend();
         }else if(intent.getAction().equals("android.net.conn.CONNECTIVITY_CHANGE")){
             //这就是其它操作
         }else{
 
         }
 
-        I.e("BootBroadcastReceiver", "开机自动服务自动启动.....");
+        //I.e("BootBroadcastReceiver", "开机自动服务自动启动.....");
         //启动应用，参数为需要自动启动的应用的包名
-        Intent intent1 = context.getPackageManager().getLaunchIntentForPackage("cn.bidostar.ticserver");
-        context.startActivity(intent1);
+        //Intent intent1 = context.getPackageManager().getLaunchIntentForPackage("cn.bidostar.ticserver");
+        //context.startActivity(intent1);
     }
 }

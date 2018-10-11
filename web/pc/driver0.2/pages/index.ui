@@ -240,7 +240,6 @@ export default {
         ui.navigateTo({
           url: '/pages/login'
         })
-       localStorage.clear()
     },
     getUserMess(){
       var v = this

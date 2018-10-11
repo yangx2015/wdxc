@@ -1,6 +1,8 @@
 package cn.bidostar.ticserver.utils;
 
 import android.app.Application;
+import android.content.Context;
+import android.os.PowerManager;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -16,6 +18,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import cn.bidostar.ticserver.AppApplication;
@@ -33,7 +36,7 @@ public class ServerApiUtils {
     public static String TAG = "ServerApiUtils";
     private static List<RequestCommonParamsDto> dtos = new ArrayList<>();
     //网络请求线程队列，同时只让一个线程执行上传操作
-    public static Executor signThread = Executors.newFixedThreadPool(1);
+    public static ExecutorService signThread = Executors.newFixedThreadPool(1);
 
     public static void downLoadAppApk(final String url,final String path){
         RequestParams requestParams = new RequestParams(url);
@@ -54,7 +57,7 @@ public class ServerApiUtils {
 
             @Override
             public void onSuccess(File result) {
-                I.i(TAG,"download Apk 下载成功，开始执行安装操作");
+                //I.e(TAG,"download Apk success");
                 boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
                         "cn.bidostar.ticserver.service.SocketCarBindService");
                 if(isRun) {
@@ -128,7 +131,6 @@ public class ServerApiUtils {
 
 
     private static boolean uploadFilePrivate(String eventType,String filePath,String taskId, Callback.CommonCallback<String> callback){
-
         if(!NetworkUtil.isConnected(AppApplication.getInstance().getApplicationContext())){
             I.e(TAG,">>>Netword is not connect");
             return false;
@@ -333,9 +335,9 @@ public class ServerApiUtils {
                     dao.deleteLikeFileName(dto.getFileRealName());
                 }
 
-                I.d(TAG, "updateFile success:" + result );
+                //I.d(TAG, "updateFile success:" + result );
             }catch (Exception e){
-                I.e(TAG, "updateFile error:" + e );
+                //I.e(TAG, "updateFile error:" + e );
             }
             //I.e(TAG,"文件网络请求完成,进行下一次上传,结果："+result);
             AppApplication.getInstance().setUploadQuee(false);
@@ -345,8 +347,8 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "文件updateFile error:" + ex);
-            I.e(TAG,"网络请求完成,进行下一次上传");
+            //I.e(TAG, "文件updateFile error:" + ex);
+            //I.e(TAG,"网络请求完成,进行下一次上传");
             AppApplication.getInstance().setUploadQuee(false);
             //AppApplication.getInstance().checkUpload();
         }
@@ -370,7 +372,7 @@ public class ServerApiUtils {
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG, "updateFile Img/Log error:" + ex);
+            //I.e(TAG, "updateFile Img/Log error:" + ex);
         }
 
         @Override
@@ -387,12 +389,13 @@ public class ServerApiUtils {
     public static Callback.CommonCallback<String> gpsInfoCallback = new Callback.CommonCallback<String>() {
         @Override
         public void onSuccess(String result) {
-            I.d(TAG,"upload gps success:"+result);
+            I.e(TAG,"upload gps success:");
         }
 
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
-            I.e(TAG+"upload gps error:",ex);
+
+            //I.e(TAG+"upload gps error:",ex);
         }
 
         @Override
@@ -409,7 +412,7 @@ public class ServerApiUtils {
     public static Callback.CommonCallback<String> gpsInfoAllCallback = new Callback.CommonCallback<String>() {
         @Override
         public void onSuccess(String result) {
-            I.d(TAG,"upload gps success:"+result);
+            //I.d(TAG,"upload gps success:"+result);
             RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
             dao.deleteList(dao.findAll());
 
@@ -418,7 +421,7 @@ public class ServerApiUtils {
         @Override
         public void onError(Throwable ex, boolean isOnCallback) {
             SocketCarBindService.socketCarBindService.setGpsNoNetWorkFlag("10");//需要进行检测上传了
-            I.e(TAG+"upload gps error:",ex);
+            //I.e(TAG+"upload gps error:",ex);
         }
 
         @Override
