@@ -39,8 +39,9 @@ public class DdCtrl extends BaseController<ClDd,String> {
 
     public static String getUserType(){
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+
         String type = (String) request.getAttribute("type");
-        RuntimeCheck.ifBlank(type,"当前登录用户未空！");
+        RuntimeCheck.authCheck(StringUtils.isBlank(type));
         return type;
     }
 
