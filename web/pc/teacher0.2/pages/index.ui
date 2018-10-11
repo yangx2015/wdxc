@@ -55,12 +55,12 @@
 
                 <ui-popup ui:model="{{ show5 }}" height="90%" background="transparent">
                     <ui-view class="popup5">
-                      <ui-row height="40" border-bottom>
+                      <!-- <ui-row height="40" border-bottom>
                         <ui-col vertical-align="middle" space-left="20"></ui-col>
                         <ui-col width="40" vertical-align="middle" align="center" bindtap="handleShow('show5')">
                           <ui-icon name="x" size="18" color="#FC8950"></ui-icon>
                         </ui-col>
-                      </ui-row>
+                      </ui-row> -->
                       <ui-view>
                         <ui-view style="background-color:#ffffff" padding="10px 20px 10px 20px">
                           <ui-row height="50" space-top=15>
@@ -76,7 +76,7 @@
                               <ui-input ui:model="{{form.cklxdh }}"  type="tel" placeholder="请输入手机号码" maxlength="11" style="padding-left:32px"></ui-input>
                             </ui-col>
                           </ui-row>
-                          <ui-row height="50px">
+                          <ui-row height="50px" border-bottom=true>
                             <ui-col space-left="10" space-right="10" vertical-align="middle">
                               <ui-button class="queding"  bindtap="getinputmessage()">确定</ui-button>
                             </ui-col>
@@ -85,11 +85,9 @@
                       </ui-view>
                     <ui-view>
 
-                        <ui-row border-bottom=true>
+                        <ui-row  style="font-size:14px">
                               <ui-divider color="red">
-                                    <ui-text style="font-size:12px">
                                       历史乘车人
-                                    </ui-text>
                                 </ui-divider>
                           </ui-row>
                           <!-- <ui-list-view data="{{ hisList }}">
@@ -105,18 +103,30 @@
                               </ui-list-view-item>
                             </template>
                           </ui-list-view> -->
+                      <ui-view>
                         <ui-scroll-view scroll-y  height="300">
-                          <ui-view style="background-color:#fff">
-                              <ui-row border-bottom=true style="font-size:18px;" ui:for="{{hisList}}" bindtap="getHisck(item)">
-                                <ui-col span=2>
-                                  <ui-icon type="wo" size=22 color="#b5b5b5"></ui-icon>
+                          <ui-view style="background-color:#fff" padding="10 5 10 5">
+                              <ui-row border-bottom=true ui:for="{{hisList}}" bindtap="getHisck(item)">
+                                <ui-col span=1 space-left=10>
+                                  <ui-icon type="wo" size=22 color="#b5b5b5"></ui-icon> 
                                 </ui-col>
-                                <ui-col space-left=5>
-                                  {{item.name}}[{{item.phone}}]
+                                <ui-col >
+                                  <ui-view style="color:#808080;size:20px;font-weight:600">
+                                     {{item.name}}
+                                  </ui-view>
+                                </ui-col>
+                                <ui-col span=1 space-left=20>
+                                  <ui-icon type="dianhua" size=14 color="#b5b5b5"></ui-icon>
+                                </ui-col>
+                                <ui-col align=left>
+                                    <ui-view style="color:#808080;size:12px;font-weight:400">
+                                     {{item.phone}}
+                                  </ui-view>
                                 </ui-col>
                               </ui-row>
                           </ui-view>
                         </ui-scroll-view>
+                       </ui-view>
                       </ui-view>
                     </ui-view>
                   </ui-popup>
@@ -309,15 +319,28 @@ export default {
             } else {
                 if(this.form.ck == '' ){
                       ui.showToast({ title: '请输入乘客姓名' })
-                  }else if (this.form.cklxdh == '') {
+                }else if (this.form.cklxdh == '') {
                       ui.showToast({ title: '请输入乘客手机号码' })
-                  }else{
+                }else{
                       console.log(this.form);
-                        this.hisList.push({name:this.form.ck,phone:this.form.cklxdh})//历史记录添加
-
+                      this.people = this.form.ck
+                      this.show5 = false
+                      for(var item of this.hisList){
+                          if (this.form.ck == item.name && this.form.cklxdh == item.phone) {
+                             return
+                          }
+                      }
+                        // this.hisList.forEach((item,index)=>{
+                        //   debugger
+                        //   if (this.form.ck == item.name && this.form.cklxdh == item.phone) {
+                        //      return
+                        //   }
+                        // })
+                        // setTimeout(() => {
+                          this.hisList.push({name:this.form.ck,phone:this.form.cklxdh})//历史记录添加
                         localStorage.setItem('hisList',JSON.stringify(this.hisList)) 
-                        this.getHisList();
-                        this.people = this.form.ck
+                        // }, 500);
+                        
                   }
             }
     },
