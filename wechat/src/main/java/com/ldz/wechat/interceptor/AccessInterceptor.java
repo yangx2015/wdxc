@@ -2,6 +2,7 @@ package com.ldz.wechat.interceptor;
 
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.JwtUtil;
+import com.ldz.wechat.module.model.ClJsy;
 import com.ldz.wechat.module.model.SysJzgxx;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +62,28 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 		}
 		request.setAttribute("type",type);
 		request.setAttribute("userInfo",userInfo);
+
+		Boolean userLongType=true;
+		if((StringUtils.isEmpty(type) || StringUtils.isEmpty(userInfo))){
+			userLongType=false;
+		}else if ("jzg".equals(type)){
+			SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
+			if (jzg == null){
+				userLongType=false;
+			}
+		}else if ("jsy".equals(type)){
+			ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
+			if (jsy == null){
+				userLongType=false;
+			}
+		}else{
+			userLongType=false;
+		}
+		if (!userLongType){
+			request.getRequestDispatcher("/authFiled").forward(request, response);
+			return false;
+		}
+
 		return super.preHandle(request, response, handler);
 	}
 

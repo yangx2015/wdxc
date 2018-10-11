@@ -86,19 +86,21 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 	public ApiResponse<Map<String, Object>> getInfo() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String userInfo = (String) request.getAttribute("userInfo");
-		if (userInfo == null){
-			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
-			res.setCode(500);
-			res.setMessage("未找到登陆用户");
-			return res;
-		}
+		RuntimeCheck.authCheck(userInfo == null);
+//		if (userInfo == null){
+//			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
+//			res.setCode(500);
+//			res.setMessage("未找到登陆用户");
+//			return res;
+//		}
 		ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
-		if (jsy == null){
-			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
-			res.setCode(500);
-			res.setMessage("获取用户异常");
-			return res;
-		}
+		RuntimeCheck.authCheck(jsy == null);
+//		if (jsy == null){
+//			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
+//			res.setCode(500);
+//			res.setMessage("获取用户异常");
+//			return res;
+//		}
 		Map<String,Object> map = new HashMap<>();
 		map.put("userInfo",userInfo);
 		map.put("grade",getJsyGrade(jsy.getSfzhm()));
