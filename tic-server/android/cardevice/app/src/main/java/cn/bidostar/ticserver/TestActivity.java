@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.PowerManager;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,8 @@ import cn.bidostar.ticserver.service.API;
 import cn.bidostar.ticserver.service.AppPushService;
 import cn.bidostar.ticserver.service.CarBindService;
 import cn.bidostar.ticserver.service.SocketCarBindService;
+import cn.bidostar.ticserver.utils.AppConsts;
+import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 import cn.bidostar.ticserver.utils.TimeUtils;
@@ -59,6 +62,13 @@ public class TestActivity extends Activity{
         /*setContentView(cn.bidostar.ticserver.R.layout.activity_main);
         Intent service = new Intent(this,CarBindService.class);
         startService(service);*/
+        PowerManager powerManager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        boolean ifOpen = powerManager.isScreenOn();
+        if (ifOpen){
+            //屏幕处于点亮状态，设备就不处于休眠状态
+            AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"00");
+        }
+
         Intent serviceTwo = new Intent();
         serviceTwo.setClass(this, SocketCarBindService.class);
         startService(serviceTwo);
