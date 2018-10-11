@@ -104,11 +104,11 @@ export default {
                         return '/static/img/Bus.png'
                 }
     },
-    addMarker(item, point,i) {
+    addMarker(item, point,i){
       var myIcon = ''
       var mess = ""
       if(item.cphm){
-         myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(64, 64), {anchor: new BMap.Size(32, 32)});
+         myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(48, 48), {anchor: new BMap.Size(32, 32)});
          var marker = new BMap.Marker(point,{icon:myIcon});
          mess = item.cphm
          this.map.addOverlay(marker);

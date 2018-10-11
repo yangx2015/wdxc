@@ -213,6 +213,10 @@ export default {
     //     this.showSlideMenu = true;
     //   })
     // },
+    goexit(){
+      localStorage.clear();
+      this.gologin();
+    },
     gologin(){
       ui.navigateTo({
         url: '/pages/login'
@@ -339,7 +343,7 @@ export default {
         <ui-view>
           <ui-row>
             <ui-col space="30">
-              <ui-button class="login" bindtap="gologin()">退出登录</ui-button>
+              <ui-button class="login" bindtap="goexit()">退出登录</ui-button>
             </ui-col>
           </ui-row>
         </ui-view>
