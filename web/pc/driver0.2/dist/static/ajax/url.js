@@ -1,5 +1,6 @@
-let ajaxUrl = "http://47.98.39.45:9099";
-// let ajaxUrl = "http://10.113.4.70:8080";
+// let ajaxUrl = "http://47.98.39.45:9099";
+let ajaxUrl = "http://10.113.4.71:9090/biz";
+// let ajaxUrl = "http://192.168.0.102:9099";
 
 export default {
     url:ajaxUrl,
