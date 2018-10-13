@@ -183,6 +183,13 @@ export let appRouter = [
 				title: '车辆管理',
 				component: () => import('@/views/whdx/VehicleScheduling/vehicle-management')
         	},
+            {
+                path: 'wfxx',
+                icon: 'ios-clipboard',
+                name: 'wfxx',
+                title: '违法管理',
+                component: () => import('@/views/whdx/VehicleScheduling/wfxx')
+            },
         	{
         		path: 'abnormal',
 				icon: 'android-car',

@@ -710,6 +710,11 @@ export default {
             this.$refs.carInfoRef.init(item);
 		},
         changeTabMarkPoint(name){
+		    if (this.choosedCar != null){
+                this.$refs.carInfoRef.close();
+			}
+            this.choosedCar = null;
+
 			try{
                 for (let r of this.allCarList){
                     this.subscribes[r.zdbh].unsubscribe();

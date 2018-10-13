@@ -39,6 +39,7 @@
 					<car-item  :data="col"
 							  @reload="getPageData"
 							  @editCar="editCar"
+							  @addWf="addWf"
 							  @showDoc="showDoc"
 							  @trace="trace"
 							  @showFance="showFance"
@@ -67,13 +68,14 @@
 	import mixins from '@/mixins'
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
+    import addwfxx from './comp/addwfxx.vue'
 	import allmes from './comp/otherMess.vue'
 	import bkShow from './comp/BKshow.vue'
 	import carItem from './comp/carItem'
 	export default {
 	  name:'char',
       components: {
-        expandRow,newmes,allmes,bkShow,carItem
+        expandRow,newmes,allmes,bkShow,carItem,addwfxx
       },
     	mixins:[mixins],
         data () {
@@ -106,7 +108,7 @@
 				param: {
                     cphLike: '',
 					pageNum: 1,
-					pageSize:8
+					pageSize:8,
 				},
                 drivers:[],
                 deviceList:[],
@@ -135,6 +137,16 @@
                 this.derMes.sjId = car.sjId
                 this.derMes.sjxm = car.sjxm
                 this.compName = newmes
+            },
+			//车辆违法录入
+            addWf(car){
+                console.log('addWf',car);
+                this.messType = false
+                this.mess = car
+                //由于数据传递丢失 司机ID 司机 姓名 单独传递
+                this.derMes.sjId = car.sjId
+                this.derMes.sjxm = car.sjxm
+                this.compName = addwfxx
             },
             showDoc(car){
                 this.mess = car

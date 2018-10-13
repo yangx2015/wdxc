@@ -13,13 +13,16 @@ let dictUtil = {
         return '';
     },
     getByCode(v,code){
+        if (!code){
+            return;
+        }
         let dic	= session.getItem('dictMap')
         let val = new Map(dic).get(code)
         if (val){
             return val;
         }else{
             log('字典加载失败，重新登陆',code);
-            console.log('------------------字典加载失败,请从新登录初始化字典-----------------------');
+            console.log('------------------字典加载失败,请从新登录初始化字典-----------------------'+code);
             v.$router.push({ name: 'login' });
         }
     },
