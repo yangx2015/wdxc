@@ -1,9 +1,9 @@
 package com.ldz.ticserver.plugins.push;
 
+import java.io.RandomAccessFile;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -328,23 +328,26 @@ public class AppPushUtils {
 	}
  
 	public static void main(String[] args) {//87aa0967aa2c2e69c60c045479b40c54  e6feafe1ae47694fbb2e64b77402c60a
-		/*865923030006602
-		
+		/**/
 		System.out.println(JsonUtil.toJson(AppPushUtils
-				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038977", "{\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/WeicyCARFDLog/2018-05-08sys-try.txt\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
-		*/
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038498", "{\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/WeicyCARFDLog/2018-09-24error.txt\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+		
+		
+		//下发升级
+		/*PushModel p=new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038498", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-all-0.2.4.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}");
+		//p.setPushAll(true);
+		System.out.println(JsonUtil.toJson(AppPushUtils
+				.pushMessageAllOrClientByAlias(p)));*/
+				
 		/*92 语音播报*/
 		/*System.out.println(JsonUtil.toJson(AppPushUtils
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030032376", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-v0.0.8.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
 		*/	 
 	
-		PushModel p=new PushModel(4, "巡检已经完成22", "这是一条消息", "", "{\"cmdType\":\"90\",\"cmd\":\"http://47.98.39.45:9092/ticserver-v0.1.5.apk\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}");
-		p.setPushAll(true);
-		System.out.println(JsonUtil.toJson(AppPushUtils
-				.pushMessageAllOrClientByAlias(p)));
+		
 			
 		/*System.out.println(JsonUtil.toJson(AppPushUtils
-				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030006602", "{\"cmdType\":\"11\",\"cmd\":\"22222\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
+				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038498", "{\"cmdType\":\"11\",\"cmd\":\"22222\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\",\"taskId\":\"1234567890987654\"}"))));
 */
 		/**/
 		/*System.out.println(JsonUtil.toJson(AppPushUtils
