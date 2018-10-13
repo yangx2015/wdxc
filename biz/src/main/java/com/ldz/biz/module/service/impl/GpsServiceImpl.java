@@ -1,5 +1,29 @@
 package com.ldz.biz.module.service.impl;
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
@@ -10,8 +34,19 @@ import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
 import com.ldz.biz.module.mapper.ClZdglMapper;
-import com.ldz.biz.module.model.*;
-import com.ldz.biz.module.service.*;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClClyxjl;
+import com.ldz.biz.module.model.ClDzwl;
+import com.ldz.biz.module.model.ClGps;
+import com.ldz.biz.module.model.ClGpsLs;
+import com.ldz.biz.module.model.ClPb;
+import com.ldz.biz.module.model.ClSbyxsjjl;
+import com.ldz.biz.module.model.ClZdgl;
+import com.ldz.biz.module.service.ClService;
+import com.ldz.biz.module.service.ClyxjlService;
+import com.ldz.biz.module.service.GpsService;
+import com.ldz.biz.module.service.PbService;
+import com.ldz.biz.module.service.ZdglService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
@@ -25,29 +60,9 @@ import com.ldz.util.gps.Gps;
 import com.ldz.util.gps.PositionUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-import tk.mybatis.mapper.common.Mapper;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
+import tk.mybatis.mapper.common.Mapper;
 
 @Slf4j
 @Service
@@ -453,7 +468,21 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         // 其余异常类型
         clsbyxsjjl.setSjlx(entity.getEventType());
         clsbyxsjjl.setId(genId());
-        redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+        //判断同一个终端同一个事件类型是不是在1分钟内出现过多次，如果是就可以忽略，避免同一个事件被记录多次
+        boolean isExpired = true;
+        String redisKey = ClSbyxsjjl.class.getSimpleName() + "-" + entity.getEventType();
+        String existEvent = (String)redis.boundValueOps(redisKey).get();
+        if (StringUtils.isNotBlank(existEvent)){
+        	org.joda.time.format.DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"); 
+        	DateTime nowDate = DateTime.parse(entity.getStartTime(), format);
+        	isExpired = DateTime.parse(existEvent, format).plusMinutes(1).isBefore(nowDate);
+        }
+        
+        if (isExpired){
+        	redis.boundValueOps(redisKey).set(entity.getStartTime(), 1, TimeUnit.MINUTES);
+            redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
+        }
+        
         return clsbyxsjjl;
     }
 

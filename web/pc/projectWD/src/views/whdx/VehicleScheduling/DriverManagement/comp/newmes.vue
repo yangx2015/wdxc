@@ -21,7 +21,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label="性别： ">
-								<Select filterable clearable  v-model="addmess.xb">
+								<Select filterable  v-model="addmess.xb">
 									<Option value="1">男</Option>
 									<Option value="0">女</Option>
 								</Select>
@@ -36,7 +36,7 @@
 						</Col>
 						<Col span="12">
 							<FormItem label='驾驶证类型：'>
-								<Select filterable clearable  v-model="addmess.zjcx">
+								<Select filterable  v-model="addmess.zjcx">
 									<Option value="A1">A1</Option>
 									<Option value="A2">A2</Option>
 									<Option value="A3">A3</Option>
@@ -70,14 +70,14 @@
 						</Col>
 						<Col span="12">
 							<FormItem label="状态： ">
-								<Select filterable clearable  v-model="addmess.zt">
+								<Select filterable  v-model="addmess.zt">
 									<Option value="00">正常</Option>
 									<Option value="10">休息</Option>
 								</Select>
 							</FormItem>
 						</Col>
 					</Row>
-					<Row>
+					<!--<Row>
 						<Col span="12">
 							<FormItem label="血型： ">
 								<Select filterable clearable  v-model="addmess.xx">
@@ -93,10 +93,10 @@
 								<Input type="text" v-model="addmess.jkzk" placeholder="健康状况"></Input>
 							</FormItem>
 						</Col>
-					</Row>
+					</Row>-->
 					<Row>
 						<Col span="12">
-							<FormItem prop="clrq" label='驾照有效期：'>
+							<FormItem prop="clrq" label='有效期止：'>
 								<DatePicker v-model="jzyxq" format="yyyy-MM-dd" type="date" placement="bottom-end" placeholder="请输时间"  style="width: 220px"></DatePicker>
 							</FormItem>
 						</Col>
@@ -128,7 +128,8 @@
                 	xm:'',
                 	xb:'1',
                 	nl:'',
-                	zjcx:'11',
+					zt:'00',
+                	zjcx:'C1',
                 	sfzhm:'',
                 	cdbh:'',
                 	dabh:'',
@@ -174,7 +175,8 @@
 
             if(!this.messType){
             	this.addmess = this.mess
-			    this.clrq = new Date(this.addmess.clrq)
+			    this.clrq = new Date(this.addmess.clrq);
+                this.jzyxq = new Date(this.addmess.jzyxq)
             }
 		},
 		methods:{

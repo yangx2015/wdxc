@@ -28,4 +28,11 @@ public interface ClService extends BaseService<ClCl,String>{
     ApiResponse<String> bindDriver(String carId, String driverId);
 
     ApiResponse<String> bindDevice(String carId, String devcieId);
+    
+    /**
+     * 更新车辆下一次年审日期
+     * @param id
+     * @return
+     */
+    ApiResponse<String> nextNssjYear(String id);
 }

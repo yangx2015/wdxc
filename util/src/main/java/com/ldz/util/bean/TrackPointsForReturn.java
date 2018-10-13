@@ -22,6 +22,8 @@ public class TrackPointsForReturn {
     private Double distance;
 
     private Double toll_distance;
+    
+    private Double low_speed_distance;
 
     private StartPoint start_point;
 

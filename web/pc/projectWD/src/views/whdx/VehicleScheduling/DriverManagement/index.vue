@@ -56,6 +56,7 @@
 	import mixins from '@/mixins'
 
 	import newmes from './comp/newmes.vue'
+    import moment from 'moment'
 	export default {
     	name:'char',
     	components: {
@@ -112,7 +113,7 @@
                         align:'center',
                         key: 'sfzhm'
                     },
-                    {
+                    /*{
                         title: '血型',
                         align:'center',
                         key: 'xx'
@@ -121,11 +122,26 @@
                         title: '健康状况',
                         align:'center',
                         key: 'jkzk'
-                    },
+                    },*/
                     {
-                        title: '驾照有效期',
+                        title: '有效期止',
                         align:'center',
-                        key: 'jzyxq'
+                        key: 'jzyxq',
+                        render: (h, params) => {
+                            if (moment(params.row.jzyxq).isBefore(new Date())){
+                                return h('div',[
+                                    h('div', params.row.jzyxq),
+                                    h('Tag',
+                                        {
+                                            props: {
+                                                color: 'red'
+                                            }
+                                        }, '逾期未换证'),
+                                ])
+							}
+
+                            return h('div',params.row.jzyxq)
+                        }
                     },
                     {
                         title: '状态',
