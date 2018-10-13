@@ -80,6 +80,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	 * 检查当前线路未排班的车辆列表
 	 * @param xlId  线路ID
 	 * @param date	 排班时间
+	 * @param cx	 车型
 	 * @return
 	 */
 	@RequestMapping(value="/getcllist", method={RequestMethod.POST})

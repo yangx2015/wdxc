@@ -45,7 +45,8 @@ public interface ClClMapper extends Mapper<ClCl> {
 	@Select(" SELECT CL.*,CL.CL_ID AS CLID FROM CL_CL CL " +
 			" WHERE CL.ZT='00' AND CL.SJ_ID IS NOT NULL " +
 			" AND CL.CX=#{cx} " +
-			" AND CL.CL_ID NOT IN (SELECT PB.CL_ID FROM CL_PB PB WHERE PB.XL_ID=#{xlId} AND PB.PBSJ=#{date})" +
+//			" AND CL.CL_ID NOT IN (SELECT PB.CL_ID FROM CL_PB PB WHERE PB.XL_ID=#{xlId} AND PB.PBSJ=#{date})" +
+			" AND CL.CL_ID NOT IN (SELECT PB.CL_ID FROM CL_PB PB WHERE PB.PBSJ=#{date})" +
 			" ORDER BY CL.CJSJ DESC ,CL.CPH DESC" +
 			"")
 	List<ClClModel> getAllNotPbClList(@Param("xlId")String xlId, @Param("date") Date date,@Param("cx")String cx);
