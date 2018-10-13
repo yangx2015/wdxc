@@ -105,7 +105,7 @@ public class ClCtrl extends BaseController<ClCl, String> {
 			.andEqualTo(ClWf.InnerColumn.wfStatus.name(), 0);
 			total = wfxxService.countByCondition(condition);
 		}catch(Exception e){
-			e.printStackTrace();
+			
 		}
 		
 		return new ApiResponse<Integer>(total);
