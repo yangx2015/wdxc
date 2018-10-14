@@ -6,14 +6,14 @@
 	/*5 7 12 20 45 48*/
 </style>
 <template>
-	<div class="box">
+	<div class="box" style="height:700px">
 		<Card>
 			<div class="tit headTit padding">
 				<h1>
 					武汉大学后勤集团运输中心用车单
 				</h1>
 			</div>
-			<div class="body padding-top-10" style="border-top: solid #dddee1 2px;">
+			<div class="body padding-top-10" style="border-top: solid #dddee1 2px;height:560px">
 				<Form :model="formItem" :label-width="50">
 					<Row>
 						<Col span="8">
@@ -61,11 +61,36 @@
 								<h3>
 									出车时间
 								</h3>
-								<DatePicker v-model="formItem.yysj"
-											size="large"  placement="left"
-											format="yyyy-MM-dd HH:mm:ss"
-											type="datetime"
-											placeholder="请填写用车时间" ></DatePicker>
+								<DatePicker
+											:open="openTime"
+											:value="yysjDate"
+											size="large"
+											:options="dateOpts"
+											format="yyyy-MM-dd"
+											type="date"
+											confirm
+											@click="showDateCtl"
+											@on-change="setDateByCtl"
+											@on-ok="()=>{openTime = false}"
+											@on-clear="()=>{formItem.yysj = ''}"
+											placeholder="请填写用车时间" >
+									<a href="javascript:void(0)" @click="showDateCtl">
+										<template>
+											<Input v-model="formItem.yysj" size="large" placeholder="出车时间" icon="ios-calendar-outline"></Input>
+										</template>
+									</a>
+								</DatePicker>
+								<!-- 下面的style根据界面情况调整左和上的偏移位置，保证时间控件在日期控件的右边 -->
+								<TimePicker
+										:open="openTime"
+										:value="yysjTime"
+										format="HH:mm"
+										:steps="[1, 10]"
+										@on-change="setTimeByCtl"
+										style="position: absolute;left:220px;top:60px"
+										>
+									<template>&nbsp;</template>
+								</TimePicker>
 							</FormItem>
 						</Col>
 						<Col span="4">
@@ -157,7 +182,7 @@
 
 <script>
 	import swal from 'sweetalert2'
-
+	import moment from 'moment'
     import addmessList from './comp/addmessList.vue'
     export default {
     	name:'NewCarList',
@@ -166,6 +191,14 @@
         },
         data () {
             return {
+                dateOpts: {
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+				openTime:false,
+                yysjDate:'',
+                yysjTime:'',
                 compName:'',
                 dicListMess:'ZDCLK0045',
                 formItem: {
@@ -253,6 +286,31 @@
 			this.getOrgTree();
 		},
 		methods:{
+            //点击日期文本框时打开控件，同时给控件赋值。引用moment日期处理控件
+		    showDateCtl(){
+				if (this.formItem.yysj == ''){
+					this.yysjDate = moment().format("yyyy-MM-dd");
+					this.yysjTime = moment().format("HH")+":00";
+				}else{
+                    this.yysjDate = this.formItem.yysj.split(" ")[0];
+                    this.yysjTime = this.formItem.yysj.split(" ")[1];
+				}
+
+		      	this.openTime = true;
+			},
+            //日期选择后，回显日期
+			setDateByCtl(fmtStr, date){
+		        let hm = moment().format("HH")+":00";
+		        this.formItem.yysj = fmtStr + " " + hm;
+			},
+            //时间选择后，回显时间
+            setTimeByCtl(fmtStr, time){
+			    if (this.formItem.yysj == ''){
+                    this.formItem.yysj = moment().format("YYYY-MM-DD") + " " + fmtStr;
+				}else{
+                    this.formItem.yysj = this.formItem.yysj.split(" ")[0] + " " + fmtStr;
+				}
+            },
             newKT(){
                 this.compName='addmessList'
 			},
@@ -301,6 +359,10 @@
 			},
 			create(){
                 // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
+				//前台处理后的时间格式是:yyyy-MM-dd HH:mm，这里补上秒数，保证数据格式一致
+				if (this.formItem.yysj != '' && this.formItem.yysj.split(" ")[1].length == 5){
+                    this.formItem.yysj += ":00";
+				}
                 this.$http.post(this.apis.ORDER.ADD,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("创建成功");

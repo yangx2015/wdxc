@@ -470,7 +470,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         clsbyxsjjl.setId(genId());
         //判断同一个终端同一个事件类型是不是在1分钟内出现过多次，如果是就可以忽略，避免同一个事件被记录多次
         boolean isExpired = true;
-        String redisKey = ClSbyxsjjl.class.getSimpleName() + "-" + entity.getEventType();
+        String redisKey = ClSbyxsjjl.class.getSimpleName() + "-" + entity.getDeviceId() + "-" + entity.getEventType();
         String existEvent = (String)redis.boundValueOps(redisKey).get();
         if (StringUtils.isNotBlank(existEvent)){
         	org.joda.time.format.DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"); 

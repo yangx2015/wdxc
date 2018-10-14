@@ -18,6 +18,12 @@
 							<span>车辆管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
+							<Select style="width: 200px" v-model="param.txlx" placeholder="筛选到期数据" filterable clearable @on-change="findMessList()">
+								<Option value="01">近三个月年审到期</Option>
+								<Option value="02">近一个月保险到期</Option>
+								<Option value="03">年审逾期</Option>
+								<Option value="04">保险逾期</Option>
+							</Select>
 							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
@@ -107,6 +113,7 @@
                 //收索
 				param: {
                     cphLike: '',
+                    txlx:'',
 					pageNum: 1,
 					pageSize:8,
 				},
