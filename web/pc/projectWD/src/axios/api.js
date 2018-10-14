@@ -1,7 +1,7 @@
 // let url = 'http://10.113.4.70:'//9090
-let url = 'http://47.98.39.45:'//8080
-// let url = 'http://127.0.0.1:'//8000
-let port = '8080';
+// let url = 'http://47.98.39.45:'//8080
+let url = 'http://127.0.0.1:'//8000
+let port = '80';
 export default {
     // url:url+port+'/biz',
     // url:url+port+'/biz',//10.113

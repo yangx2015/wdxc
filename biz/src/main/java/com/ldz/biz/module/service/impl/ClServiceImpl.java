@@ -10,19 +10,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
 import org.joda.time.Years;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.common.collect.Lists;
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
+import com.ldz.biz.module.model.ClBxjz;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClClyxjl;
 import com.ldz.biz.module.model.ClJsy;
@@ -77,6 +83,38 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	@Override
 	protected Class<?> getEntityCls() {
 		return ClCl.class;
+	}
+	
+	@Override
+	public boolean fillPagerCondition(LimitedCondition condition) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		/**
+		 * 车辆提醒数据筛选
+		 * 01：近三个月年审到期
+		 * 02：近一个月保险到期
+		 * 03：年审逾期
+		 * 04：保险逾期
+		 */
+		String txlx = request.getParameter("txlx");
+		if (StringUtils.isNotBlank(txlx)){
+			Date d = new Date();
+			d.setHours(0);
+			d.setMinutes(0);
+			d.setSeconds(0);
+			if ("01".equals(txlx)){
+				condition.and().andGreaterThan(ClCl.InnerColumn.nssj.name(), d);
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.nssj.name(), new DateTime(d).plusMonths(3).plusDays(1).toDate());
+			}else if ("02".equals(txlx)){
+				condition.and().andGreaterThan(ClCl.InnerColumn.bxsj.name(), d);
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.bxsj.name(), new DateTime(d).plusMonths(1).plusDays(1).toDate());
+			}else if ("03".equals(txlx)){
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.nssj.name(), d);
+			}else if ("04".equals(txlx)){
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.bxsj.name(), d);
+			}
+		}
+        
+		return true;
 	}
 //车辆删除后，同步移除
 	@Override
