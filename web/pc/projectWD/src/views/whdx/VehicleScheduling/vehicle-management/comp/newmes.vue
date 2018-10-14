@@ -260,12 +260,9 @@
 								}
 							})
                     	}else{
-                            console.log(1);
                     	    delete v.addmess.clDzwlCl;
                     	    delete v.addmess.clDzwl;
-                            console.log(2);
                     		v.$http.post(this.apis.CLGL.CHANGE,v.addmess).then((res) =>{
-                    		    console.log(res.code);
 								if(res.code===200){
 									v.$Message.success('车辆修改成功');
                                     v.$parent.getPageData()
