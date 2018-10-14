@@ -63,6 +63,11 @@ public class DdCtrl{
         dateFormat.setLenient(false);
         //true:允许输入空值，false:不能为空值
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+        SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormats.setLenient(false);
+        binder.registerCustomEditor(Date.class,"yysj", new CustomDateEditor(dateFormats, true));
+
     }
 
     /**
