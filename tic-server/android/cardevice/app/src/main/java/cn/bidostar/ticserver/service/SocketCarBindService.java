@@ -41,6 +41,7 @@ import cn.bidostar.ticserver.model.LocalFilesModel;
 import cn.bidostar.ticserver.model.RequestCommonParamsDto;
 import cn.bidostar.ticserver.utils.AppConsts;
 import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
+import cn.bidostar.ticserver.utils.CarIntents;
 import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.NetworkUtil;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
@@ -58,7 +59,8 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     public static boolean UPLOAD_QUEE = false;
     public static SocketCarBindService socketCarBindService = null;
     private Class userPushService = AppPushService.class;
-    private LocationManager locationManager;
+    public LocationManager locationManager = null;
+    public LocationListener locationListener = null;
     public static String APP_IMEI = "";
     public static String APP_SIMCID = "";
     public static API mApi;
@@ -73,11 +75,11 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     //线程任务队列，用于处理定时上传GPS或是写入本地缓存等任务
     private ScheduledThreadPoolExecutor taskPool = new ScheduledThreadPoolExecutor(3);
     //视频文件任务队列
-    private ScheduledThreadPoolExecutor videoTaskPool = new ScheduledThreadPoolExecutor(1);
+    public ScheduledThreadPoolExecutor videoTaskPool = new ScheduledThreadPoolExecutor(1);
     public static RequestCommonParamsDto pubDto;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("SocketCarBindService", "onStartCommand"+TAG);
+        //I.e("SocketCarBindService", "onStartCommand"+TAG);
         initApi();
         getPubDto();
         //注册推送服务
@@ -85,13 +87,43 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
         return START_STICKY;
     }
+
     @SuppressLint("NewApi")
     public void onCreate() {
+        //I.e(TAG, "onCreate");
         super.onCreate();
         socketCarBindService = this;
         initApi();
+        initThread();
         initLocal();//初始化定位
         getPubDto();
+
+        /*
+         * 此线程用监听Service2的状态
+         */
+        mApi.setWakeupLockWhiteList("cn.bidostar.ticserver,com.bidostar.rmt");
+        mApi.setAppKeepAlive("cn.bidostar.ticserver,com.bidostar.rmt");
+        mApi.setAppRTC("cn.bidostar.ticserver,com.bidostar.rmt");
+    }
+
+    public void initThread(){
+        String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
+        //I.e("init GPS ZT:"+zt);
+        //如果设备处于休眠状态，则关闭数据上报功能
+        if ("10".equals(zt)){
+            AppApplication.getInstance().uploadGps();
+            //如果是休眠状态下在线升级了apk，则不会触发sleep，手工触发一次，保证系统逻辑正常运行
+            Intent intent = new Intent(CarIntents.ACTION_GOTOSLEEP);
+            sendBroadcast(intent);
+            return;
+        }
+        if (taskPool == null){
+            taskPool = new ScheduledThreadPoolExecutor(3);
+        }
+        if (videoTaskPool == null){
+            videoTaskPool = new ScheduledThreadPoolExecutor(1);
+        }
+
         //延迟加载配置信息，避免内存泄露
         taskPool.schedule(new Runnable() {
             @Override
@@ -110,18 +142,43 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         taskPool.scheduleWithFixedDelay(timeRunExc, 5, 5, TimeUnit.SECONDS);
         //执行video上传监听事件
         videoTaskPool.scheduleWithFixedDelay(videoTimeRunExc, 10, 30, TimeUnit.SECONDS);
-        /*
-         * 此线程用监听Service2的状态
-         */
-        mApi.setWakeupLockWhiteList("cn.bidostar.ticserver,com.bidostar.rmt");
-        mApi.setAppKeepAlive("cn.bidostar.ticserver,com.bidostar.rmt");
-        mApi.setAppRTC("cn.bidostar.ticserver,com.bidostar.rmt");
     }
+
+    @Override
+    public void onDestroy() {
+        //I.e(TAG, "onDestroy");
+        stopWithSleep();
+        super.onDestroy();
+    }
+
+    public void stopWithSleep(){
+        if (taskPool != null){
+            taskPool.shutdownNow();
+        }
+        if (videoTaskPool != null){
+            videoTaskPool.shutdownNow();
+        }
+        taskPool = null;
+        videoTaskPool = null;
+        try{
+            if (locationManager != null){
+                locationManager.removeUpdates(locationListener);
+                locationManager.removeUpdates(locationListener);
+                locationManager = null;
+
+                locationListener = null;
+            }
+        }catch (Exception e){
+            I.e(TAG, "onDestroy exception:"+e.getMessage());
+        }
+    }
+
     //上传GPS数据线程
     Runnable timeRunExc = new Runnable() {
 
         @Override
         public void run() {
+            //I.e(TAG, "timeRunExc Gps upload");
         //do something
         //上传GPS行驶数据
         RequestCommonParamsDto dto = new RequestCommonParamsDto();
@@ -130,7 +187,6 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     };
     //上传视频线程
     Runnable videoTimeRunExc = new Runnable() {
-
         @Override
         public void run() {
             uploadDatabase();
@@ -141,6 +197,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         taskPool.execute(new Runnable() {
             @Override
             public void run() {
+                I.e(TAG, "get Event:"+value);
                 RequestCommonParamsDto dto = new RequestCommonParamsDto();
 
                 String event = "";
@@ -239,8 +296,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
                 break;
             //TRIM_MEMORY_RUNNING_CRITICAL 表示应用程序仍然正常运行，但是系统已经根据LRU缓存规则杀掉了大部分缓存的进程了。这个时候我们应当尽可能地去释放任何不必要的资源，不然的话系统可能会继续杀掉所有缓存中的进程，并且开始杀掉一些本来应当保持运行的进程，比如说后台运行的服务。
             case Activity.TRIM_MEMORY_RUNNING_CRITICAL:
+                I.e("close gps data thread by TRIM_MEMORY_RUNNING_CRITICAL");
                 taskPool.shutdownNow();
                 videoTaskPool.shutdownNow();
+                closeApi = true;
                 break;
             //当应用程序是缓存的，则会收到以下几种类型的回调：
             //TRIM_MEMORY_BACKGROUND 表示手机目前内存已经很低了，系统准备开始根据LRU缓存来清理进程。这个时候我们的程序在LRU缓存列表的最近位置，是不太可能被清理掉的，但这时去释放掉一些比较容易恢复的资源能够让手机的内存变得比较充足，从而让我们的程序更长时间地保留在缓存当中，这样当用户返回我们的程序时会感觉非常顺畅，而不是经历了一次重新启动的过程。
@@ -248,12 +307,14 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
                 break;
             //TRIM_MEMORY_MODERATE 表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的中间位置，如果手机内存还得不到进一步释放的话，那么我们的程序就有被系统杀掉的风险了。
             case Activity.TRIM_MEMORY_MODERATE:
+                I.e("close gps data thread by TRIM_MEMORY_MODERATE");
                 taskPool.shutdownNow();
                 videoTaskPool.shutdownNow();
                 closeApi = true;
                 break;
             //TRIM_MEMORY_COMPLETE 表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的最边缘位置，系统会最优先考虑杀掉我们的应用程序，在这个时候应当尽可能地把一切可以释放的东西都进行释放。
             case Activity.TRIM_MEMORY_COMPLETE:
+                I.e("close gps data thread by TRIM_MEMORY_COMPLETE");
                 taskPool.shutdownNow();
                 videoTaskPool.shutdownNow();
                 closeApi = true;
@@ -264,6 +325,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
             mApi.unregisterCarMotionListener(this);
             mApi = null;
         }
+        //继续执行上传命令，否则当9分钟无数据上传，网络会被断开
+        /*if (closeApi){
+            stopSelf();
+        }*/
     }
 
     @Nullable
@@ -273,7 +338,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     }
 
 
-    public void setGpsNoNetWorkFlag(String flag){
+    public static void setGpsNoNetWorkFlag(String flag){
         AppSharedpreferencesUtils.put(AppConsts.CAR_GPS_NO_NETWORK_DATA,flag);
     }
 
@@ -281,7 +346,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
      * true 需要去遍历  false 不需要去遍历数据
      * @return
      */
-    public boolean getGpsNoNetWorkFlag(){
+    public static boolean getGpsNoNetWorkFlag(){
         String flag = (String)AppSharedpreferencesUtils.get(AppConsts.CAR_GPS_NO_NETWORK_DATA,"00");
         if(flag.equals("00")){
             return false;
@@ -401,7 +466,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         AppSharedpreferencesUtils.put(AppConsts.CAR_SPEED_KEY,carSpeed);
     }
 
-    public double getCarSpeedSetting(){
+    public static double getCarSpeedSetting(){
         // carSpeed = AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,40.00)
         carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,120.00).toString());
         return carSpeed;
@@ -519,7 +584,38 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     @SuppressLint("MissingPermission")
     public void initLocal() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
+        //I.e("init GPS ZT:"+zt);
+        //如果设备处于休眠状态，则关闭GPS功能
+        if ("10".equals(zt)){
+            return;
+        }
+        if (locationManager == null){
+            //I.e(TAG, "init GPS locationManager");
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        }
+
+        if (locationListener == null){
+            //I.e(TAG, "init GPS locationListener");
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    showLocation(location);
+                }
+
+                public void onProviderDisabled(String provider) {
+                    showLocation(null);
+                }
+
+                @SuppressLint("MissingPermission")
+                public void onProviderEnabled(String provider) {
+                    showLocation(locationManager.getLastKnownLocation(provider));
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    I.e(TAG,"local GPS error "+provider+" status "+ status);
+                }
+            };
+        }
 
         //获取当前可用的位置控制器
         List<String> list = locationManager.getProviders(true);
@@ -539,30 +635,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         @SuppressLint("MissingPermission")
         Location location = locationManager.getLastKnownLocation(provider);
         showLocation(location);
-
-        locationManager.requestLocationUpdates(provider, 2000, 10, new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // TODO Auto-generated method stub
-                showLocation(location);
-            }
-
-            public void onProviderDisabled(String provider) {
-                // TODO Auto-generated method stub
-                showLocation(null);
-            }
-
-            @SuppressLint("MissingPermission")
-            public void onProviderEnabled(String provider) {
-
-                showLocation(locationManager.getLastKnownLocation(provider));
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                // TODO Auto-generated method stub
-                I.e(TAG,"local GPS error "+provider+" status "+ status);
-            }
-        });
+        //
+        locationManager.requestLocationUpdates(provider, 2000, 10, locationListener);
     }
+
     public void showLocation(final Location currentLocation){
         if(currentLocation != null){
             String s = "";

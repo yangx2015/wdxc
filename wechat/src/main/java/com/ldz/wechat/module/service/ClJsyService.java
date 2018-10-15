@@ -9,9 +9,9 @@ import java.util.Map;
 public interface ClJsyService extends BaseService<ClJsy,String> {
 
 	/*
-	 * 通过驾驶员身份证号码,驾驶员姓名获取驾驶员
+	 * 通过驾驶员手机号、密码
 	 */
-	ApiResponse<Map<String,Object>> findJsy(String sfzhm, String xm);
+	ApiResponse<Map<String,Object>> findJsy(String sfzhm, String pwd);
 	/*
 	 * 修改驾驶员信息
 	 */
@@ -20,4 +20,6 @@ public interface ClJsyService extends BaseService<ClJsy,String> {
 	ClJsy findById(String id);
 
     ApiResponse<Map<String, Object>> getInfo();
+
+	ApiResponse<String> mdfPwd(String oldPwd, String newPwd);
 }

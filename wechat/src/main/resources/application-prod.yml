@@ -21,5 +21,5 @@ wechat:
     token: wdxc18
     aesKey: tjlq1glUbSsxADd2fsxExFvDUDo1RgdoQveqrSWyhoy
     agentId: 37
-#静态文件根目录
-staticPath: /app/data/nginx/staticpath
+
+staticUrl: http://10.113.4.70:9090/staticpath

@@ -1,6 +1,7 @@
 package cn.bidostar.ticserver.service;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -29,6 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.util.List;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 
 import cn.bidostar.ticserver.AppApplication;
@@ -38,6 +41,7 @@ import cn.bidostar.ticserver.model.LocalFilesModel;
 import cn.bidostar.ticserver.model.RequestCommonParamsDto;
 import cn.bidostar.ticserver.utils.AppConsts;
 import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
+import cn.bidostar.ticserver.utils.CarIntents;
 import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.NetworkUtil;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
@@ -56,6 +60,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     public static SocketCarBindService socketCarBindService = null;
     private Class userPushService = AppPushService.class;
     private LocationManager locationManager;
+    public LocationListener locationListener = null;
     public static String APP_IMEI = "";
     public static String APP_SIMCID = "";
     public static API mApi;
@@ -66,14 +71,17 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     public static int WIFIGPS = 1;//1 GPS  2 wifi
     private String provider;
-    public static int CAR_UPLOAD_MP4_MODEL = 1;//是否在wifi模式下上传普通视频： 0 不上传普通视频 1 wifi上传普通视频 2 wifi/4G均上传视频
-
+    public static int CAR_UPLOAD_MP4_MODEL = 0;//是否在wifi模式下上传普通视频： 0 不上传普通视频 1 wifi上传普通视频 2 wifi/4G均上传视频
+    //线程任务队列，用于处理定时上传GPS或是写入本地缓存等任务
+    private ScheduledThreadPoolExecutor taskPool = new ScheduledThreadPoolExecutor(3);
     public static RequestCommonParamsDto pubDto;
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("SocketCarBindService", "onStartCommand"+TAG);
+        //Log.e("SocketCarBindService", "onStartCommand"+TAG);
         initApi();
         getPubDto();
+        //注册推送服务
+        AppApplication.getInstance().initPushServer();
 
         return START_STICKY;
     }
@@ -82,62 +90,75 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         super.onCreate();
         socketCarBindService = this;
         initApi();
+        initThread();
         initLocal();//初始化定位
-        timerRun = (Integer)AppSharedpreferencesUtils.get(AppConsts.UPLOAD_GPS_TIMER,10000);//默认20秒更新上传一次的心跳
-        carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,120.00).toString());//车辆超速设定，默认80
-
-        //5秒后执行 每5秒执行
-        handler.postDelayed(timeRunExc, 5000);
-        CAR_UPLOAD_MP4_MODEL = (Integer)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_MP4_MODEL,1);
-
-        if(NetworkUtil.isConnected(this) && NetworkUtil.isWifi(this)){
-            WIFIGPS = 2;//设置为wifi链接状态
-        };
         getPubDto();
-        setUploadQuee(false);
-        /*
-        Toast.makeText(SocketCarBindService.this, "SocketCarBindService 启动中...", Toast.LENGTH_SHORT)
-                .show();*/
-        startService1();
+
         /*
          * 此线程用监听Service2的状态
          */
-        mApi.setWakeupLockWhiteList("com.bidostar.rmt,cn.bidostar.ticserver");
-        mApi.setAppKeepAlive("com.bidostar.rmt,cn.bidostar.ticserver");
-        mApi.setAppRTC("com.bidostar.rmt,cn.bidostar.ticserver");
-        new Thread() {
+        mApi.setWakeupLockWhiteList("cn.bidostar.ticserver,com.bidostar.rmt");
+        mApi.setAppKeepAlive("cn.bidostar.ticserver,com.bidostar.rmt");
+        mApi.setAppRTC("cn.bidostar.ticserver,com.bidostar.rmt");
+    }
+    public void initThread(){
+        String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
+        //I.e("init GPS ZT:"+zt);
+        //如果设备处于休眠状态，则关闭数据上报功能
+        if ("10".equals(zt)){
+            AppApplication.getInstance().uploadGps();
+            //如果是休眠状态下在线升级了apk，则不会触发sleep，手工触发一次，保证系统逻辑正常运行
+            Intent intent = new Intent(CarIntents.ACTION_GOTOSLEEP);
+            sendBroadcast(intent);
+            return;
+        }
+        if (taskPool == null){
+            taskPool = new ScheduledThreadPoolExecutor(3);
+        }
+
+        //延迟加载配置信息，避免内存泄露
+        taskPool.schedule(new Runnable() {
+            @Override
             public void run() {
-                while (true) {
-                    boolean isRun = Utils.isServiceWork(SocketCarBindService.this,
-                            "cn.bidostar.ticserver.service.CarBindService");
-                    if (!isRun) {
-                        Message msg = Message.obtain();
-                        msg.what = 1;
-                        handler.sendMessage(msg);
-                    }
-                    try {
-                        Thread.sleep(1);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
-        }.start();
+                timerRun = (Integer)AppSharedpreferencesUtils.get(AppConsts.UPLOAD_GPS_TIMER,10000);//默认20秒更新上传一次的心跳
+                carSpeed = Double.parseDouble(AppSharedpreferencesUtils.get(AppConsts.CAR_SPEED_KEY,120.00).toString());//车辆超速设定，默认80
+                CAR_UPLOAD_MP4_MODEL = (Integer)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_MP4_MODEL,0);
+                if(NetworkUtil.isConnected(socketCarBindService) && NetworkUtil.isWifi(socketCarBindService)){
+                    WIFIGPS = 2;//设置为wifi链接状态
+                };
+            }
+        }, 500, TimeUnit.MILLISECONDS);
+
+        setUploadQuee(false);
+        //循环执行GPS上传事件
+        taskPool.scheduleWithFixedDelay(timeRunExc, 5, 5, TimeUnit.SECONDS);
     }
 
-    private Handler handler = new Handler() {
-        public void handleMessage(android.os.Message msg) {
-            switch (msg.what) {
-                case 1:
-                    startService1();
-                    break;
+    @Override
+    public void onDestroy() {
+        //I.e(TAG, "onDestroy");
+        stopWithSleep();
+        super.onDestroy();
+    }
 
-                default:
-                    break;
+    public void stopWithSleep(){
+        if (taskPool != null){
+            taskPool.shutdownNow();
+        }
+        taskPool = null;
+        try{
+            if (locationManager != null){
+                locationManager.removeUpdates(locationListener);
+                locationManager.removeUpdates(locationListener);
+                locationManager = null;
+
+                locationListener = null;
             }
+        }catch (Exception e){
+            I.e(TAG, "onDestroy exception:"+e.getMessage());
+        }
+    }
 
-        };
-    };
     Runnable timeRunExc = new Runnable() {
 
         @Override
@@ -145,19 +166,11 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
             //do something
             //上传GPS行驶数据
             RequestCommonParamsDto dto = new RequestCommonParamsDto();
-
             ServerApiUtils.pushGpsInfo(dto, ServerApiUtils.gpsInfoCallback);
-
-            //每隔timerRun 循环执行run方法
-            AppApplication.getInstance().initPushServer();
-            handler.postDelayed(this, timerRun);
-            checkUpload ();
-
-            //mApi.playTts("您已超速，请您减速运行");
         }
     };
     public void onViolentEvent(final int value) {
-        handler.post(new Runnable() {
+        taskPool.execute(new Runnable() {
             @Override
             public void run() {
                 RequestCommonParamsDto dto = new RequestCommonParamsDto();
@@ -247,8 +260,45 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
      */
     @Override
     public void onTrimMemory(int level) {
-        startService1();
-        mApi.unregisterCarMotionListener(this);
+        boolean closeApi = false;
+        switch (level) {
+            //TRIM_MEMORY_UI_HIDDEN 表示应用程序的所有UI界面被隐藏了，即用户点击了Home键或者Back键导致应用的UI界面不可见．这时候应该释放一些资源
+            case Activity.TRIM_MEMORY_UI_HIDDEN:
+                break;
+            //TRIM_MEMORY_RUNNING_MODERATE 表示应用程序正常运行，并且不会被杀掉。但是目前手机的内存已经有点低了，系统可能会开始根据LRU缓存规则来去杀死进程了。
+            case Activity.TRIM_MEMORY_RUNNING_MODERATE:
+                break;
+            //TRIM_MEMORY_RUNNING_LOW 表示应用程序正常运行，并且不会被杀掉。但是目前手机的内存已经非常低了，我们应该去释放掉一些不必要的资源以提升系统的性能，同时这也会直接影响到我们应用程序的性能。
+            case Activity.TRIM_MEMORY_RUNNING_LOW:
+                break;
+            //TRIM_MEMORY_RUNNING_CRITICAL 表示应用程序仍然正常运行，但是系统已经根据LRU缓存规则杀掉了大部分缓存的进程了。这个时候我们应当尽可能地去释放任何不必要的资源，不然的话系统可能会继续杀掉所有缓存中的进程，并且开始杀掉一些本来应当保持运行的进程，比如说后台运行的服务。
+            case Activity.TRIM_MEMORY_RUNNING_CRITICAL:
+                I.e("close gps data thread by TRIM_MEMORY_RUNNING_CRITICAL");
+                taskPool.shutdownNow();
+                closeApi = true;
+                break;
+            //当应用程序是缓存的，则会收到以下几种类型的回调：
+            //TRIM_MEMORY_BACKGROUND 表示手机目前内存已经很低了，系统准备开始根据LRU缓存来清理进程。这个时候我们的程序在LRU缓存列表的最近位置，是不太可能被清理掉的，但这时去释放掉一些比较容易恢复的资源能够让手机的内存变得比较充足，从而让我们的程序更长时间地保留在缓存当中，这样当用户返回我们的程序时会感觉非常顺畅，而不是经历了一次重新启动的过程。
+            case Activity.TRIM_MEMORY_BACKGROUND:
+                break;
+            //TRIM_MEMORY_MODERATE 表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的中间位置，如果手机内存还得不到进一步释放的话，那么我们的程序就有被系统杀掉的风险了。
+            case Activity.TRIM_MEMORY_MODERATE:
+                I.e("close gps data thread by TRIM_MEMORY_MODERATE");
+                taskPool.shutdownNow();
+                closeApi = true;
+                break;
+            //TRIM_MEMORY_COMPLETE 表示手机目前内存已经很低了，并且我们的程序处于LRU缓存列表的最边缘位置，系统会最优先考虑杀掉我们的应用程序，在这个时候应当尽可能地把一切可以释放的东西都进行释放。
+            case Activity.TRIM_MEMORY_COMPLETE:
+                I.e("close gps data thread by TRIM_MEMORY_COMPLETE");
+                taskPool.shutdownNow();
+                closeApi = true;
+                break;
+        }
+
+        if (mApi != null && closeApi){
+            mApi.unregisterCarMotionListener(this);
+            mApi = null;
+        }
     }
 
     private StrongServiceAidlInterface startS1 = new StrongServiceAidlInterface.Stub(){
@@ -269,30 +319,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         }
     };
 
-
-
-
-    /**
-     * 判断Service1是否还在运行，如果不是则启动Service1
-     */
-    private void startService1() {
-        boolean isRun = Utils.isServiceWork(SocketCarBindService.this,
-                "cn.bidostar.ticserver.service.CarBindService");
-        if (isRun == false) {
-            try {
-                startS1.startService();
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-
-
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-        return (IBinder) startS1;
+        return null;
     }
 
 
@@ -397,20 +427,6 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         });
     }
 
-
-    public void checkUpload(){
-        /*ReentrantLock lock = new ReentrantLock();
-        lock.lock();
-        I.d(TAG,"开始检查是否有文件上传");
-        if( getUploadQuee()==true){
-            I.d(TAG,"有文件上传");
-            lock.unlock();
-            return;
-        }
-        setUploadQuee(true);
-        uploadDatabase();
-        lock.unlock();*/
-    }
     public static void setTimerRun(int timerS){
         if(timerS<2){
             timerS = 2;
@@ -506,21 +522,16 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
             setUploadQuee(false);
             return ;
         }
-        boolean isWifi = NetworkUtil.isWifi(AppApplication.getInstance().getContext());//如果有网络链接，但是又不是wifi则是用的流量
+        //没有连接wifi网络不上传视频
+        boolean isWifi = NetworkUtil.isWifi(AppApplication.getInstance().getContext());
+        if (!isWifi){
+            return;
+        }
         LocalFilesModel localFilesModel = new LocalFilesModel();
         localFilesModel.setFlagUpload("0");
-        if (getCarUploadMp4Model() == 0) {//任何情况下不上传普通视频
-            localFilesModel.setJltype("2");
-        }else if(getCarUploadMp4Model() == 1){//wifi模式下上传普通视频
-            if(!isWifi){//不是wifi，则只上传重要的视频
-                localFilesModel.setJltype("2");
-            }else{
-                //是wifi的时候就不用筛选了
-            }
-        }else if(getCarUploadMp4Model() == 2){//wifi和4G模式下上传普通视频
-            //不用筛选，全部查找即可
-        }else{
-            //不用筛选，全部查找即可
+        //后台配置了不上传视频，就不执行操作
+        if (getCarUploadMp4Model() == 0) {
+            return;
         }
 
         LocalFilesModelDao dao = new LocalFilesModelDao();
@@ -564,7 +575,38 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     @SuppressLint("MissingPermission")
     public void initLocal() {
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
+        //I.e("init GPS ZT:"+zt);
+        //如果设备处于休眠状态，则关闭GPS功能
+        if ("10".equals(zt)){
+            return;
+        }
+        if (locationManager == null){
+            //I.e(TAG, "init GPS locationManager");
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        }
+
+        if (locationListener == null){
+            //I.e(TAG, "init GPS locationListener");
+            locationListener = new LocationListener() {
+                public void onLocationChanged(Location location) {
+                    showLocation(location);
+                }
+
+                public void onProviderDisabled(String provider) {
+                    showLocation(null);
+                }
+
+                @SuppressLint("MissingPermission")
+                public void onProviderEnabled(String provider) {
+                    showLocation(locationManager.getLastKnownLocation(provider));
+                }
+
+                public void onStatusChanged(String provider, int status, Bundle extras) {
+                    I.e(TAG,"local GPS error "+provider+" status "+ status);
+                }
+            };
+        }
 
         //获取当前可用的位置控制器
         List<String> list = locationManager.getProviders(true);
@@ -584,31 +626,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         @SuppressLint("MissingPermission")
         Location location = locationManager.getLastKnownLocation(provider);
         showLocation(location);
-
-        locationManager.requestLocationUpdates(provider, 2000, 10, new LocationListener() {
-            public void onLocationChanged(Location location) {
-                // TODO Auto-generated method stub
-                showLocation(location);
-            }
-
-            public void onProviderDisabled(String provider) {
-                // TODO Auto-generated method stub
-                showLocation(null);
-            }
-
-            @SuppressLint("MissingPermission")
-            public void onProviderEnabled(String provider) {
-
-                showLocation(locationManager.getLastKnownLocation(provider));
-            }
-
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-                // TODO Auto-generated method stub
-                I.e(TAG,"local GPS error "+provider+" status "+ status);
-            }
-        });
+        //
+        locationManager.requestLocationUpdates(provider, 2000, 10, locationListener);
     }
-    public void showLocation(Location currentLocation){
+    public void showLocation(final Location currentLocation){
         if(currentLocation != null){
             String s = "";
             s += " Current Location: (";
@@ -620,23 +641,33 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
             s += "\n Direction: ";
             s += currentLocation.getBearing();
             s+="\n Provider:"+currentLocation.getProvider();
-            I.e(TAG,"local:"+s);
+            //I.e(TAG,"local:"+s);
             //mMsgShow.setText("local result: " + s);
             // text.setText(s);
             String cuSpeed = (currentLocation.getSpeed()*3.6)+"";
             cuSpeed= cuSpeed.substring(0,cuSpeed.indexOf("."));
-            int cur = Integer.parseInt(cuSpeed);
+            final int cur = Integer.parseInt(cuSpeed);
             String jd = currentLocation.getAccuracy()+"";
             if(jd.contains(".")){
                 jd = jd.substring(0,jd.indexOf("."));
             }
 
-            DecimalFormat sdf = new DecimalFormat(".00000000000");
-            AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_LAT,sdf.format(currentLocation.getLatitude()));//纬度
-            AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_LNG,sdf.format(currentLocation.getLongitude()));//经度
-            AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_PRE,jd);//定位精度
-            AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_DIRECTION,currentLocation.getBearing()+"");//方向角
-            AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_SPEED,cur+"");//速度
+            final DecimalFormat sdf = new DecimalFormat(".00000000000");
+            //写入本地缓存，使用线程来单独处理
+            taskPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_LAT,sdf.format(currentLocation.getLatitude()));//纬度
+                    AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_LNG,sdf.format(currentLocation.getLongitude()));//经度
+                    String tjd = currentLocation.getAccuracy()+"";
+                    if(tjd.contains(".")){
+                        tjd = tjd.substring(0, tjd.indexOf("."));
+                    }
+                    AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_PRE,tjd);//定位精度
+                    AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_DIRECTION,currentLocation.getBearing()+"");//方向角
+                    AppSharedpreferencesUtils.put(AppConsts.CAR_LOCAL_SPEED,cur+"");//速度
+                }
+            });
             if(pubDto == null){
                 pubDto = new RequestCommonParamsDto();
 
@@ -669,17 +700,10 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
                 List<RequestCommonParamsDto> lis = dao.findAll();
                 ServerApiUtils.pushGpsInfoByLocalDb(lis,ServerApiUtils.gpsInfoAllCallback);
             }
-
-            /*
-            for(int i=0;i<10;i++) {
-                mApi.playTts("您已超速，请您减速运行，当前速度" + pubDto.getSpeed().substring(0, pubDto.getSpeed().indexOf(".")) + "KM");
-            }*/
-
         }
         else{
             // text.setText("");
             I.e(TAG,"local is null");
         }
-        //checkUpload();//检查是否有文件上传
     }
 }

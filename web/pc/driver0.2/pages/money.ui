@@ -51,7 +51,7 @@
                   过桥费/元：
              </ui-col>
              <ui-col vertical-align="middle" align="center" space-right=10>
-                  <ui-input ui:model="{{ form.gqf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+                  <ui-input ui:model="{{ form.gqf }}" type="number"  value="0" placeholder="请输入过桥费" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
             <ui-row height=50 space=20>
@@ -59,7 +59,7 @@
                   过路费/元：
              </ui-col>
              <ui-col vertical-align="middle" align="center" space-right=10>
-                  <ui-input ui:model="{{ form.glf }}" type="number" placeholder="0" bindinput="getInputVal"></ui-input>
+                  <ui-input ui:model="{{ form.glf }}" type="number" placeholder="请输入过路费" bindinput="getInputVal"></ui-input>
              </ui-col>
            </ui-row>
            <ui-row>
@@ -84,8 +84,8 @@ export default {
         id:'',
         lc:'',
         dj:'',
-        gqf:'', 
-        glf:''
+        gqf:'0', 
+        glf:'0'
       },
       orderMess:{}
       // heji:this.orderMess.glf + this.orderMess.gqf+this.orderMess.dj+this.orderMess.lc,
@@ -164,7 +164,7 @@ export default {
         ui.showToast({ title: '请输入过桥费' })
         return
       }else if(this.form.glf == ''){
-        ui.showToast({ title: '请输入路停费' })
+        ui.showToast({ title: '请输入过路费' })
         return
       }else{
         this.orderOk()

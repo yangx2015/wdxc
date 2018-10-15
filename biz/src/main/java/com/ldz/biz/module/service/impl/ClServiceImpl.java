@@ -1,9 +1,38 @@
 package com.ldz.biz.module.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDateTime;
+import org.joda.time.Years;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.google.common.collect.Lists;
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.model.*;
+import com.ldz.biz.module.model.ClBxjz;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClClyxjl;
+import com.ldz.biz.module.model.ClJsy;
+import com.ldz.biz.module.model.ClZdgl;
 import com.ldz.biz.module.service.ClService;
 import com.ldz.biz.module.service.ClyxjlService;
 import com.ldz.biz.module.service.JsyService;
@@ -19,17 +48,8 @@ import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import tk.mybatis.mapper.common.Mapper;
 
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.stream.Collectors;
+import tk.mybatis.mapper.common.Mapper;
 
 
 @Service
@@ -54,6 +74,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private RedisUtil redisUtil;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	private static final String QZBF = "强制报废"; // 强制报废
 	@Override
 	protected Mapper<ClCl> getBaseMapper() {
 		return entityMapper;
@@ -62,6 +83,38 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	@Override
 	protected Class<?> getEntityCls() {
 		return ClCl.class;
+	}
+	
+	@Override
+	public boolean fillPagerCondition(LimitedCondition condition) {
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		/**
+		 * 车辆提醒数据筛选
+		 * 01：近三个月年审到期
+		 * 02：近一个月保险到期
+		 * 03：年审逾期
+		 * 04：保险逾期
+		 */
+		String txlx = request.getParameter("txlx");
+		if (StringUtils.isNotBlank(txlx)){
+			Date d = new Date();
+			d.setHours(0);
+			d.setMinutes(0);
+			d.setSeconds(0);
+			if ("01".equals(txlx)){
+				condition.and().andGreaterThan(ClCl.InnerColumn.nssj.name(), d);
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.nssj.name(), new DateTime(d).plusMonths(3).plusDays(1).toDate());
+			}else if ("02".equals(txlx)){
+				condition.and().andGreaterThan(ClCl.InnerColumn.bxsj.name(), d);
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.bxsj.name(), new DateTime(d).plusMonths(1).plusDays(1).toDate());
+			}else if ("03".equals(txlx)){
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.nssj.name(), d);
+			}else if ("04".equals(txlx)){
+				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.bxsj.name(), d);
+			}
+		}
+        
+		return true;
 	}
 //车辆删除后，同步移除
 	@Override
@@ -113,11 +166,89 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		List<ClCl> carList = clService.findEq(ClCl.InnerColumn.jgdm, orgCode);
 		return carList;
 	}
+	
+	/**
+     * 计算车辆年审时间
+     * @param entity
+     * @return
+     */
+    public Date getNsrq(ClCl entity, boolean nextYear){
+    	Date nsrq = null;
+	    /*
+		  	车辆类型为小型汽车的车辆，且使用性质为非营运的车辆：距注册日期6年以内的每2年检验1次；超过6年的，每年检验1次；超过15年的，每6个月检验1次。
+			车辆类型为中型汽车、大型汽车的车辆，且使用性质为非营运的车辆：距注册日期10年以内每年检验1次；超过10年的，每6个月检验1次。
+			使用性质为营运的车辆：距注册日期5年以内每年检验1次；超过5年的，每6个月检验1次。超过10年的状态为“需强制报废”。
+		*/
+		//车辆初次登记日期
+		DateTime ccdjrqDate = DateTime.now().withMillis(entity.getCcdjrq().getTime());
+		DateTime currentDate = DateTime.now();
+		if (nextYear){
+			currentDate = DateTime.now().withMillis(entity.getNssj().getTime());
+		}
+		//计算初登日期和当前时间相差多少年
+		int year = Years.yearsBetween(ccdjrqDate, currentDate).getYears();
+		if (year == 0){
+			year = 1;
+		}
+		if ("10".equals(entity.getCx())){
+			List<DateTime> dateLists = Lists.newArrayList();
+			//计算出小车的6年内年审日期
+			for (int i=0; i<3; i++){
+				int step = (i + 1) * 2;
+				dateLists.add(ccdjrqDate.plusYears(step));
+			}
+			//小型汽车年审
+			if (year < 6){
+				for (int i=0; i<dateLists.size(); i++){
+					DateTime tmp = dateLists.get(i);
+					if (tmp.isAfter(currentDate)){
+						nsrq = tmp.toDate();
+						break;
+					}
+				}
+			}else{
+				//超过6年小于15年的每1年检验1次
+				DateTime tmp = ccdjrqDate.plusYears(year).dayOfMonth().withMaximumValue();
+				if (tmp.isAfter(currentDate)){
+					nsrq = tmp.toDate();
+				}else{
+					nsrq = tmp.plusYears(1).toDate();
+				}
+			}
+		}else{
+			//非小型汽车年审
+			DateTime tmp = ccdjrqDate.plusYears(year).dayOfMonth().withMaximumValue();
+			if (tmp.isAfter(currentDate)){
+				nsrq = tmp.toDate();
+			}else{
+				nsrq = tmp.plusYears(1).toDate();
+			}
+		}
+		
+		return nsrq;
+    }
+    
+    @Override
+    public ApiResponse<String> nextNssjYear(String id) {
+    	ClCl exist = this.findById(id);
+    	if (exist == null){
+    		return ApiResponse.fail("车辆信息不存在！");
+    	}else if (exist.getNssj() == null){
+    		exist.setNssj(getNsrq(exist, false));
+    	}else{
+    		exist.setNssj(getNsrq(exist, true));
+    	}
+    	
+    	update(exist);
+    	return ApiResponse.success("年审日期更新成功！");
+    }
 
 	@Override
 	public ApiResponse<String> saveEntity(ClCl entity) {
 		SysYh user = getCurrentUser();
 		SysJg org = jgService.findByOrgCode(user.getJgdm());
+		RuntimeCheck.ifBlank(entity.getCph(), "请先输入车牌号码");
+		RuntimeCheck.ifTrue(entity.getCph().length() < 7, "请输入正确的车牌号码");
 		Date now = new Date();
 		entity.setCjr(getOperateUser());
 		entity.setClId(genId());
@@ -127,6 +258,16 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		if (StringUtils.isNotBlank(entity.getSjId())) {
 			ClJsy jsy = jsyService.findById(entity.getSjId());
 			entity.setSjxm(jsy.getXm());
+		}
+		//计算车辆年审日期
+		if (entity.getCcdjrq() != null){
+			//因为前天传到后台的Date类型天数下标是从0开始的，所以后台需要补一天
+			entity.setCcdjrq(DateTime.now().withMillis(entity.getCcdjrq().getTime()).plusDays(1).toDate());
+			entity.setNssj(getNsrq(entity, false));
+		}
+		if (entity.getBxsj() != null){
+			//因为前天传到后台的Date类型天数下标是从0开始的，所以后台需要补一天
+			entity.setBxsj(DateTime.now().withMillis(entity.getBxsj().getTime()).plusDays(1).toDate());
 		}
 
 		SimpleCondition condition = new SimpleCondition(SysZdxm.class);
@@ -154,6 +295,17 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		RuntimeCheck.ifNull(findById, "未找到记录");
 		entity.setXgr(getOperateUser());
 		entity.setXgsj(new Date());
+		if (entity.getBxsj() != null){
+			//因为前天传到后台的Date类型天数下标是从0开始的，所以后台需要补一天
+			entity.setBxsj(DateTime.now().withMillis(entity.getBxsj().getTime()).plusDays(1).toDate());
+		}
+		//如果前台车辆初登日期发生了变化，则重新计算车辆年审日期
+		if (entity.getCcdjrq() != null){
+			entity.setCcdjrq(DateTime.now().withMillis(entity.getCcdjrq().getTime()).plusDays(1).toDate());
+			if (entity.getCcdjrq().getTime() != findById.getCcdjrq().getTime()){
+				entity.setNssj(getNsrq(entity, false));
+			}
+		}
 		update(entity);
 		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.success();

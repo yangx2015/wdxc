@@ -18,6 +18,12 @@
 							<span>车辆管理</span>
 						</div>
 						<div class="body-r-1 inputSty">
+							<Select style="width: 200px" v-model="param.txlx" placeholder="筛选到期数据" filterable clearable @on-change="findMessList()">
+								<Option value="01">近三个月年审到期</Option>
+								<Option value="02">近一个月保险到期</Option>
+								<Option value="03">年审逾期</Option>
+								<Option value="04">保险逾期</Option>
+							</Select>
 							<Input v-model="param.cphLike" placeholder="请输入车牌号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 							<Input v-model="param.zdbhLike" placeholder="请输入终端编号" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
 							<Input v-model="param.sjxmLike" placeholder="请输入司机姓名" style="width: 200px" @on-keyup.enter="findMessList()"></Input>
@@ -39,6 +45,7 @@
 					<car-item  :data="col"
 							  @reload="getPageData"
 							  @editCar="editCar"
+							  @addWf="addWf"
 							  @showDoc="showDoc"
 							  @trace="trace"
 							  @showFance="showFance"
@@ -67,13 +74,14 @@
 	import mixins from '@/mixins'
   	import expandRow from './table-expand.vue'
   	import newmes from './comp/newmes.vue'
+    import addwfxx from './comp/addwfxx.vue'
 	import allmes from './comp/otherMess.vue'
 	import bkShow from './comp/BKshow.vue'
 	import carItem from './comp/carItem'
 	export default {
 	  name:'char',
       components: {
-        expandRow,newmes,allmes,bkShow,carItem
+        expandRow,newmes,allmes,bkShow,carItem,addwfxx
       },
     	mixins:[mixins],
         data () {
@@ -105,8 +113,9 @@
                 //收索
 				param: {
                     cphLike: '',
+                    txlx:'',
 					pageNum: 1,
-					pageSize:8
+					pageSize:8,
 				},
                 drivers:[],
                 deviceList:[],
@@ -135,6 +144,16 @@
                 this.derMes.sjId = car.sjId
                 this.derMes.sjxm = car.sjxm
                 this.compName = newmes
+            },
+			//车辆违法录入
+            addWf(car){
+                console.log('addWf',car);
+                this.messType = false
+                this.mess = car
+                //由于数据传递丢失 司机ID 司机 姓名 单独传递
+                this.derMes.sjId = car.sjId
+                this.derMes.sjxm = car.sjxm
+                this.compName = addwfxx
             },
             showDoc(car){
                 this.mess = car

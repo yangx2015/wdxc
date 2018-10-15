@@ -324,6 +324,9 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			condition.lte(ClDd.InnerColumn.zws, zkl);// zws
 		}
 		condition.eq(ClDd.InnerColumn.ddzt, "11");// TODO: 2018/3/18 这里的是否需要设置为常量？
+
+		condition.and().andCondition( " (TO_CHAR(YYSJ,'YYYY-MM-DD')>=TO_CHAR(SYSDATE,'YYYY-MM-DD')) " );
+
 		condition.setOrderByClause(ClDd.InnerColumn.yysj.desc() + " , " + ClDd.InnerColumn.zws.asc());
 		// 这里还需要判断
 		List<ClDd> orgs = findByCondition(condition);

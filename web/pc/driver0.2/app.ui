@@ -3,8 +3,8 @@ import ajaxUrl from '#/static/ajax/url'
 export default {
   config: {
     "pages": [
-      "pages/login",
       "pages/index",
+      "pages/login",
       "pages/detail",
       "pages/user",
       "pages/xlMess",
@@ -37,8 +37,9 @@ export default {
     //     }
     //   ]
     // },
-    "networkBaseUrl":'http://47.98.39.45:9099',
-    // "networkBaseUrl":'http://10.113.4.71:8080/wechat',
+    // "networkBaseUrl":'http://192.168.0.102:9099',
+    // "networkBaseUrl":'http://47.98.39.45:9099',
+    "networkBaseUrl":'http://10.113.4.71:9090/biz',
     "networkTimeout":"3000"
   },
   data () {

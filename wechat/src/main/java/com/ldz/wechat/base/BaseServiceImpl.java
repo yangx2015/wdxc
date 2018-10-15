@@ -55,17 +55,25 @@ public abstract class BaseServiceImpl<T, PK extends Serializable> implements Bas
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         String type = (String) request.getAttribute("type");
         String userInfo = (String) request.getAttribute("userInfo");
-        RuntimeCheck.ifTrue((StringUtils.isEmpty(type) || StringUtils.isEmpty(userInfo)) && require,"当前登录用户未空！");
+        RuntimeCheck.authCheck((StringUtils.isEmpty(type) || StringUtils.isEmpty(userInfo)) && require);
         if ("jzg".equals(type)){
             SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
-            RuntimeCheck.ifNull(jzg,"未找到教职工信息");
+            if(require){
+                RuntimeCheck.authCheck(jzg==null);
+            }else{
+                RuntimeCheck.ifNull(jzg,"未找到教职工信息");
+            }
             return jzg.getId();
         }else if ("jsy".equals(type)){
             ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
-            RuntimeCheck.ifNull(jsy,"未找到驾驶员信息");
+            if(require){
+                RuntimeCheck.authCheck(jsy==null);
+            }else{
+                RuntimeCheck.ifNull(jsy,"未找到驾驶员信息");
+            }
             return jsy.getSfzhm();
         }else{
-            RuntimeCheck.ifTrue(true,"未知用户类型");
+//            RuntimeCheck.ifTrue(true,"未知用户类型");
             return null;
         }
     }

@@ -2,7 +2,7 @@
 	<div>
 		<Modal
 		    v-model="showModal"
-		    width='800'
+		    width='900'
 		    :closable='false'
 		    :mask-closable="false"
 		    :title="operate+'车辆'">
@@ -14,18 +14,28 @@
     			:styles="{top: '20px'}">
 	    		<div style="overflow: auto;">
 					<Row>
-						<Col span="12">
+						<Col span="8">
 							<FormItem prop="cph" label='车牌号：'>
 								<Input type="text" v-model="addmess.cph" :readonly="!messType" placeholder="请设置车牌号"></Input>
 							</FormItem>
 						</Col>
-						<Col span="12">
+						<Col span="8">
 							<FormItem label='车型：'>
-								<Select filterable clearable  v-model="addmess.cx">
+								<Select filterable  v-model="addmess.cx">
 									<Option v-for="cx in cxDict" :value="cx.key">{{cx.val}}</Option>
 								</Select>
 							</FormItem>
 						</Col>
+						<Col span="8">
+							<FormItem label='初登日期：'>
+								<DatePicker type="date" v-model="addmess.ccdjrq"
+											placement="left-start"
+											style="width: 100%"
+											placeholder="请选着初次登记日期"></DatePicker>
+							</FormItem>
+						</Col>
+					</Row>
+					<Row>
 						<Col span="12">
 							<FormItem prop="zkl" label='载客量：'>
 								<Select v-model="addmess.zkl" placeholder="请设置载客量">
@@ -67,6 +77,33 @@
 							</FormItem>
 						</Col>
 					</Row>
+					<Row>
+						<Col span="12">
+							<FormItem label='生产商：'>
+								<Input type="text" v-model="addmess.scs" placeholder="请填写生产商名称"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='车辆型号：'>
+								<Input type="text" v-model="addmess.xh" placeholder="请填写车辆型号"></Input>
+							</FormItem>
+						</Col>
+
+						<Col span="12">
+							<FormItem label='保险公司名称：'>
+								<Input type="text" v-model="addmess.bxgsmc" placeholder="请填写保险公司名称"></Input>
+							</FormItem>
+						</Col>
+						<Col span="12">
+							<FormItem label='终保日期：'>
+								<DatePicker type="date" v-model="addmess.bxsj"
+											:options="disableDate"
+											placement="top-start"
+											style="width: 100%"
+											placeholder="请选择终保日期"></DatePicker>
+							</FormItem>
+						</Col>
+					</Row>
 	    		</div>
     		</Form>
 		    <div slot='footer'>
@@ -87,17 +124,27 @@
 				showModal:true,
 				operate:'新增',
 				editMode :false,
+                disableDate: {
+                    disabledDate (date) {
+                        return date && date.valueOf() < Date.now();
+                    }
+                },
 				//新增数据
             	addmess: {
-                    cph: '',
-                    cx:'',
+                    cph: '鄂',
+                    cx:'10',
                     dl:'',
                     sjxm:'',
                     zt:'00',
                     zdbh:'',
                     zkl:5,
                     sjId:'',
-                    obdCode:''
+                    obdCode:'',
+                    bxsj:'',
+                    bxgsmc:'',
+                    ccdjrq:'',
+                    xh:'',
+                    scs:'',
                 },
                 ruleInline: {
                   cph: [
@@ -206,11 +253,11 @@
                     		v.$http.post(this.apis.CLGL.ADD,v.addmess).then((res) =>{
 								if(res.code===200){
 			                    	v.$Message.success('车辆添加成功');
+                                    v.$parent.getPageData()
+                                    v.$parent.compName = ''
 								}else{
-									v.$Message.error('车辆添加创建失败');
+									v.$Message.error(res.message);
 								}
-								v.$parent.getPageData()
-                    			v.$parent.compName = ''
 							})
                     	}else{
                     	    delete v.addmess.clDzwlCl;
@@ -218,11 +265,11 @@
                     		v.$http.post(this.apis.CLGL.CHANGE,v.addmess).then((res) =>{
 								if(res.code===200){
 									v.$Message.success('车辆修改成功');
+                                    v.$parent.getPageData()
+                                    v.$parent.compName = ''
 								}else{
-									v.$Message.error('车辆修改失败');
+									v.$Message.error(res.message);
 								}
-								v.$parent.getPageData()
-                    			v.$parent.compName = ''
 							})
                     	}
                     } else {

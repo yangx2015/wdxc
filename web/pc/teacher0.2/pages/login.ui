@@ -54,10 +54,13 @@ export default {
   data () {
     return {
       form:{
-          name:'宋林殊',//宋林殊
-          zjhm:'32948289347289'//32948289347289
+          name:'',//宋林殊
+          zjhm:''//32948289347289
       }
     }
+  },
+  created(){
+    localStorage.clear()
   },
   methods: {//判断用户名和手机号逻辑
     loginYZ(){
@@ -95,6 +98,7 @@ export default {
     },
       
   }
+  
 }
 
 </script>

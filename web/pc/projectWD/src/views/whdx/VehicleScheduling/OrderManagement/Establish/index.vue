@@ -183,13 +183,8 @@
         },
         data() {
             return {
-                optionsDate: {
-                    disabledDate(date) {
-                        return date && date.valueOf() < Date.now() - 86400000;
-                    }
-                },
-                compName: '',
-                dicListMess: 'ZDCLK0045',
+                compName:'',
+                dicListMess:'ZDCLK0045',
                 formItem: {
                     jgmc: '',//单位名称
                     jgdm: '',//单位Code
@@ -268,18 +263,18 @@
             }, {
                 title: '创建订单',
             }]);
-            this.getKT()
-        },
-        mounted() {
-            this.getOrgTree();
-        },
-        methods: {
-            newKT() {
-                this.compName = 'addmessList'
-            },
-            getKT() {
-                this.ctasklList = this.dictUtil.getByCode(this, this.dicListMess)
-                this.fromMoneyList = this.dictUtil.getByCode(this, 'ZDCLK0043')
+			this.getKT()
+		},
+		mounted(){
+			this.getOrgTree();
+		},
+		methods:{
+            newKT(){
+                this.compName='addmessList'
+			},
+            getKT(){
+                this.ctasklList =this.dictUtil.getByCode(this,this.dicListMess)
+				this.fromMoneyList = this.dictUtil.getByCode(this,'ZDCLK0043')
             },
             fyly() {
                 if (this.formItem.fkfs != '课题费用') {
@@ -322,8 +317,8 @@
             },
             create() {
                 // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
-                this.$http.post(this.apis.ORDER.ADD, this.formItem).then((res) => {
-                    if (res.code === 200) {
+                this.$http.post(this.apis.ORDER.ADD,this.formItem).then((res) =>{
+                    if (res.code === 200){
                         this.$Message.success("创建成功");
                         this.formItem = {
                             jgmc: '',//单位名称

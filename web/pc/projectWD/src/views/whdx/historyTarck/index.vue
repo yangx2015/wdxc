@@ -69,7 +69,7 @@
 	.pageListCarH:hover{
 		border: solid 1px #fff;
 	}
-	.choosed{
+	.choosedTrack{
 		border:1px solid white;
 	}
 </style>
@@ -85,10 +85,10 @@
 			<Row v-if="showMap" >
 				<Col span="2" >
 					<ButtonGroup vertical style="margin-top: 120px">
-						<Button type="primary" shape="circle" icon="md-play" size="large" @click="animationDot" v-show="playAndStopBtnGroup.play"></Button>
+						<Button type="primary" shape="circle" icon="md-play" size="large" @click="startAnimation" v-show="playAndStopBtnGroup.play"></Button>
 						<Button type="error" shape="circle" icon="ios-square" size="large" @click="stopAnimation" v-show="playAndStopBtnGroup.stop"></Button>
-						<Button type="warning" shape="circle" icon="md-skip-forward" size="large" @click="playAndStopBtnGroup.timer = 200"></Button>
-						<Button type="warning" shape="circle" icon="md-skip-backward" size="large" @click="playAndStopBtnGroup.timer = 1000"></Button>
+						<Button type="warning" shape="circle" icon="md-skip-forward" size="large" @click="playAndStopBtnGroup.speed = 80;setLushuOptions()"></Button>
+						<Button type="warning" shape="circle" icon="md-skip-backward" size="large" @click="playAndStopBtnGroup.speed = 20;setLushuOptions()"></Button>
 					</ButtonGroup>
 				</Col>
 				<Col span="22" v-if="showMap">
@@ -154,7 +154,7 @@
 					</div>
 				</div>
 				<div class="body" style="padding: 8px;margin-top: 8px">
-					<div class="pageListCarH" v-for="(item,index) in pathList" @click="itemClick(item,index)" :class="{'choosed':choosedIndex == index}">
+					<div class="pageListCarH" v-for="(item,index) in pathList" @click="itemClick(item,index)" :class="{'choosedTrack':choosedIndex == index}">
 						<div>
 							<Icon type="ios-location"
 								color="#00c3c1" size="22"></Icon>
@@ -276,6 +276,7 @@
                 playAndStopBtnGroup:{
                     //默认动画间隔时长，单位：秒
                     timer:1000,
+                    speed:20,
                     //默认动画播放位置和stationList数据对象同步
                     playIndex:0,
                     //动画对象
@@ -287,6 +288,8 @@
                 },
                 //动画marker点
                 movingMarker:null,
+				//动画轨迹路书对象
+				movingLushu:null,
                 //动画速度轨迹chart对象
                 movingChart:null,
                 movingChartOptions:null,
@@ -326,6 +329,7 @@
 		},
 		methods:{
             itemClick(item,index){
+                this.stopAnimation();
                 this.item = item;
                 this.choosedIndex = index;
                 this.getBdData();
@@ -401,7 +405,6 @@
                             r.jsdz = '目的地';
                             this.totalTime += r.sc;
 
-                            console.log(r);
                             //解析开始地址
                             geoc.getLocation(new BMap.Point(r.ksjd,r.kswd), (rs)=>{
                                 var addComp = rs.addressComponents;
@@ -559,24 +562,34 @@
 
                 // 增加起点
                 var pt1 = new BMap.Point(v.stationList[0].longitude, v.stationList[0].latitude);
+                //var myIcon1 = new BMap.Icon(this.apis.STATIC_PATH+"/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var myIcon1 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_begin.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker1 = new BMap.Marker(pt1,{icon:myIcon1});  // 创建标注
                 this.map.addOverlay(marker1);
 
                 //初始化动画marker对象
+                //var moveIcon = new BMap.Icon(this.apis.STATIC_PATH+"/icon/ic_car_online.png", new BMap.Size(32,32), {anchor: new BMap.Size(16,32),});
                 var moveIcon = new BMap.Icon("http://47.98.39.45:9092/icon/ic_car_online.png", new BMap.Size(32,32), {anchor: new BMap.Size(16,32),});
                 this.movingMarker = new BMap.Marker(pt1, {icon:moveIcon});
-                this.map.addOverlay(this.movingMarker);
+                //this.map.addOverlay(this.movingMarker);
 
                 // 增加终点
                 var pt2 = new BMap.Point(v.stationList[v.stationList.length-1].longitude, v.stationList[v.stationList.length-1].latitude);
+                //var myIcon2 = new BMap.Icon(this.apis.STATIC_PATH+"/icon/map_line_end.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var myIcon2 = new BMap.Icon("http://47.98.39.45:9092/icon/map_line_end.png", new BMap.Size(37,62), {anchor: new BMap.Size(19,62),});
                 var marker2 = new BMap.Marker(pt2,{icon:myIcon2});  // 创建标注
                 this.map.addOverlay(marker2);
                 //画轨迹线
 				setTimeout(()=>{
                     v.drawLineChart();
-				},100)
+				},100);
+				//初始化路书
+                this.movingLushu = new BMapLib.LuShu(this.map, pois, {
+                    autoView: true,//是否开启自动视野调整，如果开启那么路书在运动过程中会根据视野自动调整
+                    //icon: new BMap.Icon(this.apis.STATIC_PATH+"http://47.98.39.45:9092/icon/ic_car_online.png", new BMap.Size(32,32), {anchor: new BMap.Size(16,32),}),
+                    icon: new BMap.Icon("http://47.98.39.45:9092/icon/ic_car_online.png", new BMap.Size(32,32), {anchor: new BMap.Size(16,32),}),
+                    speed: this.playAndStopBtnGroup.speed,
+                });
             },
             drawLineChart(){
                 let v = this;
@@ -602,7 +615,8 @@
                             formatter: function (value, index) {
                                 // 格式化成月/日，只在第一个刻度显示年份
                                 var date = new Date(value);
-                                let texts = date.format('MM-dd HH:mm');
+                                //let texts = date.format('HH:mm');
+                                let texts = date.toTimeString().substring(0, 5);
                                 return texts;
                             }
 						},
@@ -679,25 +693,48 @@
                 // 使用刚指定的配置项和数据显示图表。
                 this.movingChart.setOption(this.movingChartOptions);
             },
+            startAnimation(){
+			    if (this.playAndStopBtnGroup.play){
+			        try{
+                        this.movingLushu.start();
+					}catch (e){
+
+					}
+
+                    this.animationDot();
+				}
+            },
+            setLushuOptions(){
+                if (this.movingLushu != null){
+                    this.movingLushu._setOptions({
+                        speed: this.playAndStopBtnGroup.speed
+					});
+                    this.movingLushu.pause();
+                    this.movingLushu.start();
+                }
+            },
             animationDot(){
                 this.playAndStopBtnGroup.play = false;
                 this.playAndStopBtnGroup.stop = true;
+
                 if (this.movingMarker != null){
-                    this.playAndStopBtnGroup.playIndex++;
+                    this.playAndStopBtnGroup.playIndex = this.movingLushu.i;
+                    this.playAndStopBtnGroup.playIndex += 1;
                     if (this.playAndStopBtnGroup.playIndex == this.stationList.length){
                         //循环执行完成后，重置播放轨迹点
                         this.playAndStopBtnGroup.playIndex = 0;
                         this.playAndStopBtnGroup.timer = 1000;
+                        this.playAndStopBtnGroup.speed = 10;
                         //重新开始
                         this.stopAnimation();
                         return;
                     }
                     try{
-                        //取出下一个动画节点
+                        /*//取出下一个动画节点
                         var moveData = this.stationList[this.playAndStopBtnGroup.playIndex];
                         //更新地图移动轨迹
                         var movePoint = new BMap.Point(moveData.longitude, moveData.latitude);
-                        this.movingMarker.setPosition(movePoint);
+                        this.movingMarker.setPosition(movePoint);*/
 
                         //给chart补充完数据后，再开启该方法
                         this.movingChartOptions.animation = false;
@@ -716,6 +753,14 @@
                 }
             },
             stopAnimation(){
+                try{
+                    if (this.movingLushu != null){
+                        this.movingLushu.stop();
+                    }
+				}catch(e){
+
+				}
+
                 this.playAndStopBtnGroup.play = true;
                 this.playAndStopBtnGroup.stop = false;
                 if (this.playAndStopBtnGroup.playTimer != -1){

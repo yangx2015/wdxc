@@ -1,13 +1,13 @@
 package com.ldz.sys.util;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.stereotype.Component;
+
+import com.ldz.util.commonUtil.HttpUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * auther chenwei
@@ -17,17 +17,12 @@ import java.util.Map;
 @Component
 public class RedisUtil {
 
-    @Autowired
-    private RestTemplateBuilder restTemplateBuilder;
-
     public void deleteRedisKey(String url,String key){
-        log.info("================准备发送 deleteRedisKey 请求==================");
-        log.info("================请求 url:"+url);
-        Map<String,Object> params = new HashMap<>();
+        Map<String, String> params = new HashMap<>();
         params.put("key",key);
         try{
-            ResponseEntity<String> responseEntity = restTemplateBuilder.build().postForEntity(url,params,String.class);
-            log.info("deleteRedisKey responst:",responseEntity.toString());
+        	String resultJson = HttpUtil.post(url, params);
+        	System.out.println(resultJson);
         }catch (Exception e){
             log.error("deleteRedisKey 请求异常",e);
         }

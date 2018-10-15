@@ -1,8 +1,34 @@
 <template>
+    <div>
     <Card>
-        <p slot="title" style="font-size: 18px">
+        <p slot="title" style="font-size: 18px;height:58px;">
             <Icon type="ios-car" size="26"/>
             {{data.cph}}
+            <Tag color="cyan" v-if="!showBxgqFlag && data.bxsj != null && data.bxsj != ''">
+                终保日期：{{ data.bxsj.substring(0, 10) }}
+            </Tag>
+            <Tag color="red" v-if="showBxgqFlag && data.bxsj != null && data.bxsj != ''">
+                终保日期：{{ data.bxsj.substring(0, 10) }}
+            </Tag>
+            <br>
+            <Tag color="green" v-if="!showYQNssjFlag && data.nssj != null && data.nssj != ''">
+                年审日期：{{ data.nssj.substring(0, 10) }}
+            </Tag>
+            <Tag color="red" v-if="showYQNssjFlag && data.nssj != null && data.nssj != ''">
+                年审日期：{{ data.nssj.substring(0, 10) }}
+            </Tag>
+
+            <span v-if="showYQNssjFlag">
+                <Poptip
+                        confirm
+                        title="确认已完成本次年审?"
+                        @on-ok="nextNssjYear"
+                        @on-cancel="cancel"
+                >
+                    <Button type="error" ghost>逾期未审</Button>
+                </Poptip>
+            </span>
+            <span style="font-size: 18px;color:#ff9900">{{totalWfxx}}</span><span style="font-size: 12px;">条违法未处理</span>
         </p>
         <a href="#" slot="extra" @click.prevent="changeLimit">
             <Tag color="cyan">{{getCx(data.cx)+data.zkl+'座'}}</Tag>
@@ -97,7 +123,7 @@
                 </Row>
             </Col>
         </Row>
-        <Row type="flex" justify="end" style="padding-top: 20px">
+        <!--<Row type="flex" justify="end" style="padding-top: 20px">
             <Col span="22" style="text-align: center">
                 <ButtonGroup size="large">
                     <Tooltip content="编辑">
@@ -117,11 +143,40 @@
                     </Tooltip>
                 </ButtonGroup>
             </Col>
-        </Row>
+        </Row>-->
     </Card>
+    <Row type="flex">
+        <Col span="5" style="text-align: center">
+        <Tooltip content="编辑" style="width: 100%">
+            <Button  icon="md-create" @click="emit('editCar')" style="width: 100%;border-top: 0px;border-right: 0px;background-color: #f8f8f9"></Button>
+        </Tooltip>
+        </Col>
+        <Col span="5" style="text-align: center">
+            <Tooltip content="违法录入" style="width: 100%">
+                <Button  icon="md-add" @click="emit('addWf')" style="width: 100%;border-top: 0px;;border-right: 0px;background-color: #f8f8f9"></Button>
+            </Tooltip>
+        </Col>
+        <Col span="5" style="text-align: center">
+            <Tooltip content="历史轨迹" style="width: 100%">
+                <Button  icon="ios-map-outline" @click="emit('trace')" style="width: 100%;border-top: 0px;;border-right: 0px;background-color: #f8f8f9"></Button>
+            </Tooltip>
+        </Col>
+        <Col span="5" style="text-align: center">
+            <Tooltip content="电子围栏" style="width: 100%">
+                <Button icon="ios-globe-outline" @click="emit('showFance')" style="width: 100%;border-top: 0px;;border-right: 0px;background-color: #f8f8f9"></Button>
+            </Tooltip>
+        </Col>
+        <Col span="4" style="text-align: center">
+            <Tooltip content="删除" style="width: 100%">
+                <Button icon="ios-trash" @click="emit('delCar')" style="width: 100%;border-top: 0px;;background-color: #f8f8f9"></Button>
+            </Tooltip>
+        </Col>
+    </Row>
+    </div>
 </template>
 
 <script>
+    import moment from 'moment'
     export default {
         name: "carItem",
         data(){
@@ -130,10 +185,14 @@
               deviceList:[],
               driverId:'',
               deviceId:'',
+              totalWfxx:0,
               cxDict:[],
               cxDictCode:'ZDCLK0019',
               bindDriverFlag:false,
               bindDeviceFlag:false,
+              showNssjFlag:true,
+              showYQNssjFlag:false,
+              showBxgqFlag:false,
           }
         },
         props:{
@@ -146,13 +205,33 @@
         },
         created(){
             this.bindDriverFlag = !!this.data.sjxm
-            this.bindDeviceFlag = !!this.data.zdbh
+            this.bindDeviceFlag = !!this.data.zdbh;
+            //判断车辆是否逾期未年审
+            if (this.data.nssj != null && this.data.nssj != ''){
+                this.showYQNssjFlag = moment(this.data.nssj).isBefore(new Date());
+            }
+            //判断车辆保险是否过期
+            if (this.data.bxsj != null && this.data.bxsj != ''){
+                this.showBxgqFlag = moment(this.data.bxsj).isBefore(new Date());
+            }
+            //加载违法未处理数量
+            this.loadWfxxNum();
         },
         mounted(){
+
         },
         methods:{
             emit(method){
+                console.log(method);
                 this.$emit(method,this.data);
+            },
+            loadWfxxNum(){
+                let v = this;
+                v.$http.get(this.apis.CLGL.TOTALWFXX+"/"+this.data.clId).then((res) =>{
+                    if(res.code === 200){
+                        this.totalWfxx = res.result;
+                    }
+                })
             },
             cancelChooseDriver(){
                 this.bindDriverFlag = false
@@ -181,6 +260,17 @@
             unbindDevice(){
                 this.devcieId = '';
                 this.postAndReload(this.apis.CLGL.unbindDevice,{carId:this.data.clId})
+            },
+            nextNssjYear(){
+                let v = this;
+                v.$http.get(this.apis.CLGL.nextNssjYear+"/"+this.data.clId).then((res) =>{
+                    if(res.code === 200){
+                        this.$emit('reload');
+                        this.$Message.success(res.message);
+                    }else{
+                        this.$Message.error(res.message);
+                    }
+                })
             },
             postAndReload(url,param){
                 let v = this;

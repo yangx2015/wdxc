@@ -274,14 +274,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
     }
 
     @Override
-    public ApiResponse<String> evaluate(String orderId, String grade) {
+    public ApiResponse<String> evaluate(String orderId, String grade,String pjnr) {
         RuntimeCheck.ifBlank(orderId,"请选择订单");
         RuntimeCheck.ifBlank(grade,"请输入评分");
         ClDd order = findById(orderId);
         RuntimeCheck.ifNull(order,"未找到订单");
+        String userId = getCurrentUser(true);
+        RuntimeCheck.ifFalse(StringUtils.equals(order.getCkCjl(),userId),"订单有误，稍后请重新尝试");
         ClDd newOrder = new ClDd();
         newOrder.setId(orderId);
         newOrder.setPjdj(new Short(grade));
+        if(StringUtils.isNotEmpty(pjnr)){
+            newOrder.setPjnr(pjnr);
+        }
         entityMapper.updateByPrimaryKeySelective(newOrder);
         return ApiResponse.success();
     }

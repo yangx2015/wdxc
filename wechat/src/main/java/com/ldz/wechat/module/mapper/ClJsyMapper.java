@@ -9,9 +9,9 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface ClJsyMapper extends Mapper<ClJsy> {
 
-	@Select("SELECT * FROM CL_JSY t WHERE t.SJH=#{sjh} AND t.XM=#{xm}")
-	ClJsy findJzg(@Param("sjh") String sjh,@Param("xm") String xm);
+	@Select("SELECT * FROM CL_JSY t WHERE t.SJH=#{sjh} AND t.PWD=#{pwd} AND  rownum=1")
+	ClJsy findJzg(@Param("sjh") String sjh,@Param("pwd") String pwd);
 
-	@Select("SELECT * FROM CL_JSY t WHERE t.SFZHM=#{sfzhm}")
+	@Select("SELECT * FROM CL_JSY t WHERE t.SFZHM=#{sfzhm}  AND  rownum=1 ")
 	ClJsy findById(@Param("sfzhm") String sfzhm);
 }

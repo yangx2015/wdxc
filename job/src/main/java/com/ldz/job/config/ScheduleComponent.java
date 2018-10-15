@@ -1,9 +1,6 @@
 package com.ldz.job.config;
 
-import com.ldz.job.job.ClNianShenJob;
-import com.ldz.job.job.GpsSaveJob;
-import com.ldz.job.job.SbYxSjJlJob;
-import com.ldz.job.job.ZdToYyJob;
+import com.ldz.job.job.*;
 import org.quartz.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,11 +54,21 @@ public class ScheduleComponent {
                 .withSchedule(zdToYyCron).build();
 
 
+        // 清除过期订单job
+        JobDetail oracleJob = JobBuilder.newJob(ClDdJob.class).withIdentity(ClDdJob.class.getName(), "cldd")
+                .build();
+        // 清除过期订单  每天凌晨 2点
+        CronScheduleBuilder clddBuilderns = CronScheduleBuilder.cronSchedule("0 0 2 * * ?");
+        //清除过期订单trigger
+        CronTrigger clddTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClDdJob.class.getName(), "cldd")
+                .withSchedule(clddBuilderns).build();
+
         try {
             schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
             schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
             schedulerFactory.getScheduler().scheduleJob(sbyxsjjlJob,sbyxsjjlTrigger);
             schedulerFactory.getScheduler().scheduleJob(zdToYyJob,zdToYyTrigger);
+            schedulerFactory.getScheduler().scheduleJob(oracleJob,clddTriggerclns);
         } catch (SchedulerException e) {
             errorLog.error("任务创建失败", e);
         }

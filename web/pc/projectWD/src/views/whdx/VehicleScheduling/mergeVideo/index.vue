@@ -14,10 +14,10 @@
                                 :styles="{top: '20px'}">
                               <Row>
                                     <Col span="8">
-                                          <FormItem label='终端编号'>
+                                          <FormItem label='车牌号'>
                                                 <Select v-model="formItem.zdbh" filterable clearable>
                                                       <Option v-for="(item,index) in carList"
-                                                              :value="item.zdbh" :key="item.zdbh">{{item.zdbh}}
+                                                              :value="item.zdbh" :key="item.zdbh">{{item.cph}}
                                                       </Option>
                                                 </Select>
                                           </FormItem>

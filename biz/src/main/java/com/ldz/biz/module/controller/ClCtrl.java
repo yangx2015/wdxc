@@ -1,22 +1,31 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.bean.WebsocketInfo;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.GpsService;
-import com.ldz.sys.base.BaseController;
-import com.ldz.sys.base.BaseService;
-import com.ldz.sys.model.SysYh;
-import com.ldz.util.bean.ApiResponse;
+import java.util.List;
+import java.util.Map;
+
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.List;
-import java.util.Map;
+import com.ldz.biz.module.bean.WebsocketInfo;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClWf;
+import com.ldz.biz.module.service.ClService;
+import com.ldz.biz.module.service.GpsService;
+import com.ldz.biz.module.service.WfService;
+import com.ldz.sys.base.BaseController;
+import com.ldz.sys.base.BaseService;
+import com.ldz.sys.model.SysYh;
+import com.ldz.util.bean.ApiResponse;
+
+import tk.mybatis.mapper.entity.Example;
 
 /**
  * 车辆设定
@@ -28,6 +37,8 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	private ClService clservice;
 	@Autowired
 	private GpsService gpsservice;
+	@Autowired
+	private WfService wfxxService;
 
 	@RequestMapping("getOrgCarList")
 	public ApiResponse<List<ClCl>> getOrgCarList() {
@@ -57,6 +68,47 @@ public class ClCtrl extends BaseController<ClCl, String> {
 	@Override
 	protected BaseService<ClCl, String> getBaseService() {
 		return clservice;
+	}
+	
+	/**
+	 * 更新车辆下一次年审日期
+	 * @param entity
+	 * @return
+	 */
+	@GetMapping(value = "/nextNssjYear/{id}")
+	public ApiResponse<String> nextNssjYear(@PathVariable("id") String id) {
+		return clservice.nextNssjYear(id);
+	}
+	
+	/**
+	 * 车辆违法信息录入
+	 * @param wfxx
+	 * @return
+	 */
+	@PostMapping(value = "/saveWfxx")
+	public ApiResponse<String> saveWfxx(ClWf wfxx) {
+		return wfxxService.saveEntity(wfxx);
+	}
+	
+	/**
+	 * 查询车辆有多少未处理的违法信息
+	 * @param id
+	 * @return
+	 */
+	@GetMapping(value = "/totalWfxx/{id}")
+	public ApiResponse<Integer> totalWfxx(@PathVariable("id") String id) {
+		Integer total = new Integer(0);
+		try{
+			Example condition = new Example(ClWf.class);
+			condition.and()
+			.andEqualTo(ClWf.InnerColumn.wfCl.name(), id)
+			.andEqualTo(ClWf.InnerColumn.wfStatus.name(), 0);
+			total = wfxxService.countByCondition(condition);
+		}catch(Exception e){
+			
+		}
+		
+		return new ApiResponse<Integer>(total);
 	}
 
 	@RequestMapping(value = "/update", method = { RequestMethod.POST })

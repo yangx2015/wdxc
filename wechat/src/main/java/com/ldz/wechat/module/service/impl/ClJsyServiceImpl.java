@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.util.commonUtil.Des;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -32,13 +33,26 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
     private ClJsyMapper jsymapper;
     @Autowired
 	private ClDdMapper ddMapper;
-    
+	/**
+	 * 通过驾驶员手机号、密码
+	 * @param sjh	手机号
+	 * @param pwd	驾驶员登录密码
+	 * @return
+	 */
 	@Override
-	public ApiResponse<Map<String,Object>> findJsy(String sjh, String xm) {
+	public ApiResponse<Map<String,Object>> findJsy(String sjh, String pwd) {
 		RuntimeCheck.ifBlank(sjh, "手机号必填");
-	    RuntimeCheck.ifBlank(xm, "姓名必填");
-		ClJsy jsy = jsymapper.findJzg(sjh,xm);
-		RuntimeCheck.ifNull(jsy, "手机号或者姓名有误");
+	    RuntimeCheck.ifBlank(pwd, "密码必填");
+		String pwdEncrypt="";
+		//加密密码
+		try {
+			pwdEncrypt=Des.encrypt(pwd);
+		} catch (Exception e1) {
+			throw new RuntimeException("密码加密异常",e1);
+		}
+		ClJsy jsy = jsymapper.findJzg(sjh,pwdEncrypt);
+		RuntimeCheck.ifNull(jsy, "账户或密码有误");
+
 		String userInfo = JsonUtil.toJson(jsy);
 		String token = JwtUtil.createWechatToken("jsy",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -51,6 +65,7 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 		map.put("grade",getJsyGrade(jsy.getSfzhm()));
 		return ApiResponse.success(map);
 	}
+
 
 	private int getJsyGrade(String jsyId){
 		SimpleCondition condition = new SimpleCondition(ClDd.class);
@@ -67,7 +82,9 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 
 	@Override
 	public ApiResponse<String> updatejsy(ClJsy jsy) {
+		String userId=getCurrentUser(true);
 		jsy.setZt(null);
+		jsy.setSfzhm(userId);
 		jsymapper.updateByPrimaryKeySelective(jsy);
 		return ApiResponse.updateSuccess();
 	}
@@ -86,22 +103,40 @@ public class ClJsyServiceImpl extends BaseServiceImpl<ClJsy,String> implements C
 	public ApiResponse<Map<String, Object>> getInfo() {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
 		String userInfo = (String) request.getAttribute("userInfo");
-		if (userInfo == null){
-			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
-			res.setCode(500);
-			res.setMessage("未找到登陆用户");
-			return res;
-		}
+		RuntimeCheck.authCheck(userInfo == null);
+
 		ClJsy jsy = JsonUtil.toBean(userInfo,ClJsy.class);
-		if (jsy == null){
-			ApiResponse<Map<String,Object>> res = new ApiResponse<>();
-			res.setCode(500);
-			res.setMessage("获取用户异常");
-			return res;
-		}
+		RuntimeCheck.authCheck(jsy == null);
+
 		Map<String,Object> map = new HashMap<>();
 		map.put("userInfo",userInfo);
 		map.put("grade",getJsyGrade(jsy.getSfzhm()));
 		return ApiResponse.success(map);
+	}
+
+	/**
+	 * 驾驶员修改密码
+	 * @param oldPwd	原密码
+	 * @param newPwd	新密码
+	 * @return
+	 */
+	@Override
+	public ApiResponse<String> mdfPwd(String oldPwd, String newPwd){
+		String userId=getCurrentUser(true);
+		ClJsy jsy=findById(userId);
+		if (jsy == null) return ApiResponse.fail("用户不存在");
+		String newEncrypt;
+		try {
+			String encrypt = Des.encrypt(oldPwd);
+			if (!encrypt.equals(jsy.getPwd())){
+				return ApiResponse.fail("密码错误");
+			}
+			newEncrypt = Des.encrypt(newPwd);
+		} catch (Exception e) {
+			return ApiResponse.fail("加密失败");
+		}
+		jsy.setPwd(newEncrypt);
+		this.update(jsy);
+		return ApiResponse.success();
 	}
 }
