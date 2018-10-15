@@ -58,7 +58,7 @@ public class SysJzgxxServiceImpl extends BaseServiceImpl<SysJzgxx,String> implem
 			throw new RuntimeException("密码加密异常",e1);
 		}
 		SysJzgxx jzg = jzgmapper.findJzg(pwdEncrypt,zjhm);
-		RuntimeCheck.ifNull(jzg, "证件号码或姓名有误");
+		RuntimeCheck.ifNull(jzg, "证件号码或密码有误");
 		String userInfo = JsonUtil.toJson(jzg);
 		String token = JwtUtil.createWechatToken("jzg",userInfo);
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
