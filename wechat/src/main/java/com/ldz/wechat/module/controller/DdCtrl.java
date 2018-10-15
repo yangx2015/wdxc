@@ -74,13 +74,31 @@ public class DdCtrl extends BaseController<ClDd,String> {
         dateFormat.setLenient(false);
         //true:允许输入空值，false:不能为空值
         binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, true));
+
+        SimpleDateFormat dateFormats = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        dateFormats.setLenient(false);
+        binder.registerCustomEditor(Date.class,"yysj", new CustomDateEditor(dateFormats, true));
     }
 
+    /**
+     * 教练员评分
+     * @param orderId  要评价的订单
+     * @param grade     评分
+     * @param pjnr      评论
+     * @return
+     */
     @RequestMapping("evaluate")
-    public ApiResponse<String> evaluate(String orderId,String grade){
-        return service.evaluate(orderId,grade);
+    public ApiResponse<String> evaluate(String orderId,String grade,String pjnr){
+        String type=getUserType();//
+        RuntimeCheck.ifFalse(StringUtils.equals(type,"jzg"),"请用教职工角色登录");
+        return service.evaluate(orderId,grade,pjnr);
     }
 
+    /**
+     * 字典项查询  载客量
+     * @param zdlmdm
+     * @return
+     */
     @RequestMapping(value="/getzdxm", method={RequestMethod.POST})
     public ApiResponse<List<SysZdxm>> save(String zdlmdm){
         if(StringUtils.isEmpty(zdlmdm)){

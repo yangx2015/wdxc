@@ -9,8 +9,8 @@ import tk.mybatis.mapper.common.Mapper;
 
 public interface SysJzgxxMapper extends Mapper<SysJzgxx> {
 	
-	@Select("SELECT * from SYS_JZGXX t WHERE t.XM= #{xm} AND t.ZJHM= #{zjhm} ")
-	SysJzgxx findJzg(@Param("xm") String xm,@Param("zjhm") String zjhm);
+	@Select("SELECT * from SYS_JZGXX t WHERE t.PWD= #{pwd} AND t.ZJHM= #{zjhm}  AND  rownum=1 ")
+	SysJzgxx findJzg(@Param("pwd") String pwd,@Param("zjhm") String zjhm);
 
 	@Select("SELECT * from SYS_JZGXX t WHERE t.ID= #{id} ")
 	SysJzgxx findById(@Param("id") String id);
