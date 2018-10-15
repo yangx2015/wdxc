@@ -22,7 +22,7 @@ var sortable = new Sortable(el, {
 	fallbackTolerance: 0, // Specify in pixels how far the mouse should move before it's considered as a drag.
 
 	scroll: true, // or HTMLElement
-	scrollFn: function(offsetX, offsetY, originalEvent, touchEvt, hoverTargetEl) { ... }, // if you have custom scrollbar scrollFn may be used for autoscrolling
+	scrollFn: function(offsetX, offsetY, originalEvent, touchEvt, hoverTargetEl){ ... }, //  if you have custom scrollbar scrollFn may be used for autoscrolling
 	scrollSensitivity: 30, // px, how near the mouse must be to an edge to start scrolling.
 	scrollSpeed: 10, // px
 

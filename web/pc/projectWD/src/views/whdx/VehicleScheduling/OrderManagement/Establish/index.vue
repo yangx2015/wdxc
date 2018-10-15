@@ -142,7 +142,7 @@
                                                       </FormItem>
                                                 </Col>
                                                 <Col span="12">
-                                                      <FormItem label="">
+                                                      <FormItem label="" v-show="formItem.cllx == '20'">
                                                             <h3>
                                                                   行程费用
                                                             </h3>
@@ -183,8 +183,13 @@
         },
         data() {
             return {
-                compName:'',
-                dicListMess:'ZDCLK0045',
+                optionsDate: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
+                compName: '',
+                dicListMess: 'ZDCLK0045',
                 formItem: {
                     jgmc: '',//单位名称
                     jgdm: '',//单位Code
@@ -287,6 +292,7 @@
                 this.treeValue = vaule;
             },
             changeCLLX(v, s) {
+                // console.log(v)
                 this.formItem.cllx = v[0]
                 this.formItem.zws = v[1]
             },
