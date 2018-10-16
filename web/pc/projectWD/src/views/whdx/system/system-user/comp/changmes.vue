@@ -2,12 +2,12 @@
 <template>
   <div class="root">
     <Modal v-model='RootShow' height="400" :closable='false' :mask-closable="false" title="角色分配">
-      <div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">
-        <Spin fix>
-          <Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>
-          <div style="font-size: 30px;">数据加载中请稍后</div>
-        </Spin>
-      </div>
+      <!--<div v-if="SpinShow" style="width:100%;height:100%;position: fixed;top: 0;left:0;z-index: 1111;">-->
+        <!--<Spin fix>-->
+          <!--<Icon type="load-c" size=55 class="demo-spin-icon-load"></Icon>-->
+          <!--<div style="font-size: 30px;">数据加载中请稍后</div>-->
+        <!--</Spin>-->
+      <!--</div>-->
       <div style="overflow: auto;height: 600px;width: 500px">
         <select-role v-if="showRoleTable" :hasIds="hasIds" @arrIds="arrIds"></select-role>
       </div>
@@ -83,16 +83,19 @@
       },
       save() {
         let v = this;
-        v.SpinShow = true
+        // v.SpinShow = true
         this.$http.post(this.apis.ROLE.MODIFY_USER_ROLES, {
           userId: this.usermes.yhid,
           roleIds: this.checkGroup
         }).then((res) => {
           if (res.code === 200) {
-            this.$Message.success('操作成功');
             this.$emit('listF', res)
-            v.SpinShow = false
+            this.$Message.success(res.message);
+          }else {
+            this.$Message.error(res.message);
           }
+        }).catch(err=>{
+            this.$Message.warning('网络异常');
         })
       },
       arrIds(jsIds) {

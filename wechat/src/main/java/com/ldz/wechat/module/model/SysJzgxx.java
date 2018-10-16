@@ -46,7 +46,18 @@ public class SysJzgxx implements Serializable {
     @Column(name = "SJHM")
     private String sjhm;
 
+    @Column(name = "PWD")
+    private String pwd;
+
     private static final long serialVersionUID = 1L;
+
+    public String getPwd() {
+        return pwd;
+    }
+
+    public void setPwd(String pwd) {
+        this.pwd = pwd;
+    }
 
     public String getSjhm() {
         return sjhm;
@@ -236,6 +247,8 @@ public class SysJzgxx implements Serializable {
         cjr("CJR"),
         cjsj("CJSJ"),
         xgr("XGR"),
+        sjhm("SJHM"),
+        pwd("PWD"),
         xgsj("XGSJ");
 
         private final String column;
