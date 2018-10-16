@@ -329,10 +329,8 @@
 					  },
             //表单数据提交
             AddNewlist() {
-            	console.log(this.formItem.yysj)
             	this.formItem.yysj = this.trimTime(this.formItem.yysj)
-            	console.log(this.formItem)
-//          	this.create();
+            	this.create();
             },
             create() {
                 // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
