@@ -215,7 +215,7 @@
                 this.Dictionary = this.dictUtil.getByCode(this, this.lmdmDictionary);
             },
             getmess() {
-                this.$http.get(this.apis.ROLE.QUERY).then((res) => {
+                this.$http.post(this.apis.ROLE.QUERY,this.param).then((res) => {
                     this.tableData = res.page.list
                     this.SpinShow = false;
                     this.pageTotal = res.page.total
@@ -254,8 +254,8 @@
             },
             pageChange(event) {
                 var v = this
-                v.page.pageNum = event
-//      		log(v.page)
+                v.param.pageNum = event
+								v.getmess()
             }
         }
     }

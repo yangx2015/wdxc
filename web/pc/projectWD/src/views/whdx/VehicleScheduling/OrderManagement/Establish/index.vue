@@ -301,28 +301,42 @@
                     this.orgTree = res.result
                 })
             },
+            trimTime(val) {
+					    var newDate = new Date(val);
+					    let Year = newDate.getFullYear();
+					    let Month = newDate.getMonth() + 1;
+					    let Day = newDate.getDate();
+					    let Hours = newDate.getHours();
+					    let Minutes = newDate.getMinutes();
+					    let Seconds = newDate.getSeconds();
+					    if (Month < 10) {
+					      Month = '0' + Month
+					    }
+					    if (Day < 10) {
+					      Day = '0' + Day
+					    }
+					    if (Hours < 10) {
+					      Hours = '0' + Hours
+					    }
+					    if (Minutes < 10) {
+					      Minutes = '0' + Minutes
+					    }
+					    if (Seconds < 10) {
+					      Seconds = '0' + Seconds
+					    }
+					    let time = Year + '-' + Month + '-' + Day + ' ' + Hours + ':' + Minutes + ':' + Seconds
+					    return time
+					  },
             //表单数据提交
             AddNewlist() {
-                log(this.formItem)
-                // if (this.treeValue.length === 0){
-                //    this.$Message.error('请选择机构');
-                //    return;
-                // }
-                // var v = this
-                // swal({
-                //   title: "是否提交数据?",
-                //   text: "",
-                //   icon: "success",
-                //   buttons:['取消','确认'],
-                // })
-                // .then((willDelete) => {
-                //   if (willDelete) {
-                this.create();
-                //   }
-                // });
+            	console.log(this.formItem.yysj)
+            	this.formItem.yysj = this.trimTime(this.formItem.yysj)
+            	console.log(this.formItem)
+//          	this.create();
             },
             create() {
                 // this.formItem.jgdm = this.treeValue[this.treeValue.length - 1];
+                
                 this.$http.post(this.apis.ORDER.ADD,this.formItem).then((res) =>{
                     if (res.code === 200){
                         this.$Message.success("创建成功");
