@@ -128,44 +128,45 @@
 					{
 						title:'#',
 						type:'index',
+						minWidth:60,
 						align:'center'
 					},
 					{
 						title: '用车人员',
 						key: 'ck',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					},
 					{
 						title: '候车地点',
 						key: 'hcdz',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					},
 					{
 						title: '目的地',
 						key: 'mdd',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '司机',
 						key: 'sjxm',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '车型(座位)',
 						key: 'zws',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '出车时间',
 						key: 'yysj',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '里程(公里)',
 						key: 'lc',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.lc == '') {
@@ -176,7 +177,7 @@
 					}, {
 						title: '里程单价',
 						key: 'dj',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.dj == '') {
@@ -187,7 +188,7 @@
 					}, {
 						title: '过路费',
 						key: 'glf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.glf == '') {
@@ -198,7 +199,7 @@
 					}, {
 						title: '路停费',
 						key: 'gqf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.gqf == '') {
@@ -209,7 +210,7 @@
 					}, {
 						title: '加班费',
 						key: 'jbf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.jbf == '') {
@@ -219,7 +220,7 @@
 						}
 					}, {
 						title: '节假日补助',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						key: 'jjrjl',
 						render: (h, p) => {
@@ -231,7 +232,7 @@
 					}, {
 						title: '车费合计',
 						key: 'zj',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '事由',
@@ -281,39 +282,39 @@
 					{
 						title: '用车人员',
 						key: 'ck',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					},
 					{
 						title: '候车地点',
 						key: 'hcdz',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					},
 					{
 						title: '目的地',
 						key: 'mdd',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '司机',
 						key: 'sjxm',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '车型',
 						key: 'zws',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '出车时间',
 						key: 'yysj',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '里程(公里)',
 						key: 'lc',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.lc == '') {
@@ -324,7 +325,7 @@
 					}, {
 						title: '里程单价',
 						key: 'dj',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.dj == '') {
@@ -335,7 +336,7 @@
 					}, {
 						title: '过路费',
 						key: 'glf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.glf == '') {
@@ -346,7 +347,7 @@
 					}, {
 						title: '路停费',
 						key: 'gqf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.gqf == '') {
@@ -357,7 +358,7 @@
 					}, {
 						title: '加班费',
 						key: 'jbf',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						render: (h, p) => {
 							if(p.row.jbf == '') {
@@ -367,7 +368,7 @@
 						}
 					}, {
 						title: '节假日补助',
-						minWidth:60,
+						minWidth:100,
 						align:'center',
 						key: 'jjrjl',
 						render: (h, p) => {
@@ -379,7 +380,7 @@
 					}, {
 						title: '车费合计',
 						key: 'zj',
-						minWidth:60,
+						minWidth:100,
 						align:'center'
 					}, {
 						title: '事由',

@@ -6,7 +6,10 @@
 </style>
 <template>
 	<div>
-		<Modal v-model="showModal" width='700' :closable='false' :mask-closable="false">
+		<Modal v-model="showModal" width='700' :closable='false' :mask-closable="false" :styles="{top: '10px'}">
+			<div slot="header" v-if="showFooter" style="color: red;">
+				只能使用Chrome(谷歌)浏览器进行打印
+			</div>
 			<div style="text-align: center">
 				<h2>{{item.orgName}}收款单</h2>
 				<h3>({{startTime}} 至 {{endTime}})</h3>
@@ -51,7 +54,7 @@
 					</tbody>
 				</table>
 			</div>
-			<div style="overflow: auto;height: 400px;margin-top:60px;text-align: right">
+			<div style="overflow: auto;height: 300px;margin-top:60px;text-align: right">
 				<span>收款人：_____________________</span>
 			</div>
 			<div slot='footer'>
