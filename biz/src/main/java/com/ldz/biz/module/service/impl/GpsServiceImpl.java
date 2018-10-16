@@ -124,6 +124,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             return ApiResponse.fail("上传的数据中经度,纬度,或者终端编号为空");
         }
 
+		//如果接收的速度值超过每小时100公里，认为无效进行忽略
+        if (gpsInfo.getSpeed() != null && gpsInfo.getSpeed().intValue() >= 100){
+        	errorLog.error("["+gpsInfo.getDeviceId()+"]速度值异常:"+gpsInfo.getSpeed()+"KM/H");
+        	return ApiResponse.success();
+        }
+
         boolean change = false;
         try{
             change = handleEvent(gpsInfo);
@@ -196,6 +202,30 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (gps == null){
                 statusChange = true;
             }else{
+				//2018年10月16日。如果GPS速度值瞬间超过80KM/H，则认为是GPS漂移，可以进行忽略
+            	try{
+            		if (gps.getCjsj() != null && StringUtils.isNotBlank(gpsInfo.getStartTime())){
+            			DateTime endTime = DateTime.parse(gpsInfo.getStartTime(), org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+            			DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
+
+            			Duration d = new Duration(startTime, endTime);  
+						long sMinute = d.getStandardMinutes();  
+						if (sMinute < 2){
+							Integer prevSpeed = Integer.parseInt(gps.getYxsd());
+							//在3分钟内，如果新的GPS运行速度大于上一个点位，则判断GPS速度值是否偏差很大
+							if (gpsInfo.getSpeed() > prevSpeed){
+								int sSpeed = gpsInfo.getSpeed() - prevSpeed;
+								if (sSpeed > 80){
+									errorLog.error("["+gpsInfo.getDeviceId()+"]速度值变化异常["+sSpeed+"]，上一次速度["+startTime.toString("yyyy-MM-dd HH:mm:ss")+"="+gps.getYxsd()+"]，新速度["+endTime.toString("yyyy-MM-dd HH:mm:ss")+"="+gpsInfo.getSpeed()+"]");
+									return false;
+								}
+							}
+						}
+                	}
+            	}catch(Exception e){
+            		
+            	}
+            	//
                 if (!newStatus.equals(gps.getStatus())){
                     statusChange = true;
                 }else if (gps.getBdwd() == null || gps.getBdjd() == null){
