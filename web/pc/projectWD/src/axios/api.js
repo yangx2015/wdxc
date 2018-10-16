@@ -195,6 +195,14 @@ export default {
         unbindDriver:'/api/cl/unbindDriver',
         bindDriver:'/api/cl/bindDriver',
         bindDevice:'/api/cl/bindDevice',
+        nextNssjYear:'/api/cl/nextNssjYear',
+        ADDWF: '/api/cl/saveWfxx',
+        TOTALWFXX: '/api/cl/totalWfxx',
+    },
+    CLWF:{
+        QUERY: '/api/wfxx/pager',
+        DELE: '/api/wfxx/removeIds',
+        UPDATEWFZT: '/api/wfxx/updateWfzt'
     },
     XL:{
         QUERY: '/api/xl/pager',
