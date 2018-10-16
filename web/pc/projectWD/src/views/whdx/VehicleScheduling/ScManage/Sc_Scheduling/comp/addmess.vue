@@ -33,6 +33,8 @@
                               <DatePicker :readonly="vertical=='0'" :value="DatePicker"
                                           format="yyyy-MM-dd" type="daterange"
                                           placement="bottom-end" placeholder="Select date"
+                                          :options="optionsDate"
+                                          :split-panels="true"
                                           @on-change="DatePick"
                                           style="width: 200px"></DatePicker>
                         </div>
@@ -102,6 +104,11 @@
         name: '',
         data() {
             return {
+            	optionsDate: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
                 vertical:'0',
                 showModal: true,
                 chrlist: [],
