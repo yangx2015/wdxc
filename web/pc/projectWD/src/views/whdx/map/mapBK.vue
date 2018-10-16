@@ -146,7 +146,7 @@
 				    polygonOptions: styleOptions, //多边形的样式
 				    rectangleOptions: styleOptions //矩形的样式
 				})
-				drawingManager.addEventListener("overlaycomplete", function(e) {
+                drawingManager.addEventListener("overlaycomplete", function(e) {
                     log(e);
                     v.$emit('choosePoint',e.overlay.ia)
 				});
@@ -154,6 +154,7 @@
 			//清除层
 			clear(){
 				this.map.clearOverlays()
+                this.bk()
 			},
 		}
 	}
