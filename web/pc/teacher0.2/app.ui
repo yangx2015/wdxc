@@ -15,7 +15,7 @@ export default {
       "pages/prop/pages",
       "pages/mark",
       "pages/orders",
-      "pages/others"],
+      "pages/others","pages/password","pages/phonenumber"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -43,8 +43,10 @@ export default {
     //     }
     //   ]
     // },
-    // "networkBaseUrl":'http://47.98.39.45:9099',
-    "networkBaseUrl":'http://10.113.4.71:9090/biz',
+    "networkBaseUrl":'http://47.98.39.45:9099',
+      // "networkBaseUrl":'http://192.168.3.252:9099',
+    // "networkBaseUrl":'http://localhost:9099',
+    // "networkBaseUrl":'http://10.113.4.71:9090/biz',
     "networkTimeout":"3000"
   },
   data () {
@@ -294,7 +296,13 @@ export default {
       ui.navigateTo({
         url: '/pages/prop/add'
       })
-    }
+    },
+    xgpassword(){
+      ui.navigateTo({
+        url: '/pages/password'
+      })
+      this.showSlideMenu = !this.showSlideMenu
+    },
 
   },
   mounted () {
@@ -335,6 +343,13 @@ export default {
         </ui-view>
         <ui-view >
           <ui-row space-top="80">
+            <ui-col space="30">
+              <ui-button style="border-radius: 25px;" bindtap="xgpassword()">修改密码</ui-button>
+            </ui-col>
+          </ui-row>
+        </ui-view>
+        <ui-view >
+          <ui-row>
             <ui-col space="30">
               <ui-button style="border-radius: 25px;" bindtap="godingdan()">历史订单</ui-button>
             </ui-col>

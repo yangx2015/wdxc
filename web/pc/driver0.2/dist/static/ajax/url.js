@@ -1,6 +1,7 @@
-// let ajaxUrl = "http://47.98.39.45:9099";
-let ajaxUrl = "http://10.113.4.71:9090/biz";
+// let ajaxUrl = "http://localhost:9099";
+// let ajaxUrl = "http://10.113.4.71:9090/biz";
 // let ajaxUrl = "http://192.168.0.102:9099";
+let ajaxUrl = "http://47.98.39.45:9099";
 
 export default {
     url:ajaxUrl,
@@ -28,5 +29,6 @@ export default {
     INFO:'/put/jsy/getInfo',//用户信息
     PROPOSAL:'/put/yj/save',//意见反馈 yjLx 00意见 10反馈 20投诉
     PROPList:'/put/yj/pager',//意见列表
-    HISTORYGJ: '/put/dd/getddgps'//历史轨迹
+    HISTORYGJ: '/put/dd/getddgps',//历史轨迹
+    PASSWORD:'/put/jsy/mdfPwd'//司机修改密码
 }
