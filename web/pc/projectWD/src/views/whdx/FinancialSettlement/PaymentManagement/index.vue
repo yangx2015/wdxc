@@ -41,7 +41,14 @@
                         </div>
                   </Col>
             </Row>
-            <Row :gutter="16" class="margin-top-10 body clientList" v-for="(item,index) in list">
+            <Row v-if="list.length == 0">
+            	<Col span="24" align="center">
+            		<div style="padding: 8px 0;font-size: 16px;color: #ff4900;">
+            			请输入司机姓名查找付款信息
+            		</div>
+            	</Col>
+            </Row>
+            <Row v-else :gutter="16" class="margin-top-10 body clientList" v-for="(item,index) in list">
                   <Col span="24" :lg="24" :md="24" :sm="24" :xs="24" class="margin-top-10">
                         <Card style="width:100%" :id="'order_'+item.orderId">
                               <div slot="title">
@@ -61,8 +68,8 @@
                               <div>
                                     <Table ref="table"
                                            border
+                                           :height="tabHeight"
                                            :columns="param.fkzt === '00' ? columns3 : columns4"
-                                           height="220"
                                            :data="item.orderList"
                                            @on-selection-change="(e)=>{tableSelectionChange(e,index)}"
                                     ></Table>
@@ -88,15 +95,18 @@
     import edit from './edit'
     import print from './print'
     import swal from 'sweetalert2'
-
+	import mixins from '@/mixins'
+    
     export default {
         name: 'client',
         components: {
             edit, print
         },
+        mixins: [mixins],
         data() {
             return {
                 v: this,
+                tabHeight:0,
                 componentName: '',
                 choosedItem: null,
                 columns3: [
@@ -107,26 +117,33 @@
                     },
                     {
                         title: '用车人员',
+                        minWidth:100,
                         key: 'ck'
                     },
                     {
                         title: '候车地点',
+                        minWidth:100,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
+                        minWidth:100,
                         key: 'mdd'
                     }, {
                         title: '司机',
+                        minWidth:100,
                         key: 'sjxm'
                     }, {
                         title: '车型',
+                        minWidth:100,
                         key: 'zws'
                     }, {
                         title: '出车时间',
+                        minWidth:100,
                         key: 'yysj'
                     }, {
                         title: '里程(公里)',
+                        minWidth:100,
                         key: 'lc',
                         render: (h, p) => {
                             if (p.row.lc == '') {
@@ -136,6 +153,7 @@
                         }
                     }, {
                         title: '里程单价',
+                        minWidth:100,
                         key: 'dj',
                         render: (h, p) => {
                             if (p.row.dj == '') {
@@ -145,6 +163,7 @@
                         }
                     }, {
                         title: '过路费',
+                        minWidth:100,
                         key: 'glf',
                         render: (h, p) => {
                             if (p.row.glf == '') {
@@ -154,6 +173,7 @@
                         }
                     }, {
                         title: '路停费',
+                        minWidth:100,
                         key: 'gqf',
                         render: (h, p) => {
                             if (p.row.gqf == '') {
@@ -163,6 +183,7 @@
                         }
                     }, {
                         title: '加班费',
+                        minWidth:100,
                         key: 'jbf',
                         render: (h, p) => {
                             if (p.row.jbf == '') {
@@ -172,7 +193,7 @@
                         }
                     }, {
                         title: '节假日补助费',
-                        width: 130,
+                        minWidth:100,
                         key: 'jjrjl',
                         render: (h, p) => {
                             if (p.row.jjrjl == '') {
@@ -182,15 +203,19 @@
                         }
                     }, {
                         title: '车费合计',
+                        minWidth:100,
                         key: 'zj'
                     }, {
                         title: '事由',
+                        minWidth:120,
                         key: 'sy'
                     },
                     {
                         title: '操作',
                         key: 'action',
                         align: 'center',
+                        minWidth:60,
+                        fixed:'right',
                         render: (h, params) => {
                             return h('div', [
                                 h('Button', {
@@ -220,26 +245,33 @@
                     },
                     {
                         title: '用车人员',
+                        minWidth:60,
                         key: 'ck'
                     },
                     {
                         title: '候车地点',
+                        minWidth:100,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
+                        minWidth:100,
                         key: 'mdd'
                     }, {
                         title: '司机',
+                        minWidth:100,
                         key: 'sjxm'
                     }, {
                         title: '车型',
+                        minWidth:100,
                         key: 'zws'
                     }, {
                         title: '出车时间',
+                        minWidth:100,
                         key: 'yysj'
                     }, {
                         title: '里程(公里)',
+                        minWidth:100,
                         key: 'lc',
                         render: (h, p) => {
                             if (p.row.lc == '') {
@@ -249,6 +281,7 @@
                         }
                     }, {
                         title: '里程单价',
+                        minWidth:100,
                         key: 'dj',
                         render: (h, p) => {
                             if (p.row.dj == '') {
@@ -258,6 +291,7 @@
                         }
                     }, {
                         title: '过路费',
+                        minWidth:100,
                         key: 'glf',
                         render: (h, p) => {
                             if (p.row.glf == '') {
@@ -267,6 +301,7 @@
                         }
                     }, {
                         title: '路停费',
+                        minWidth:100,
                         key: 'gqf',
                         render: (h, p) => {
                             if (p.row.gqf == '') {
@@ -276,6 +311,7 @@
                         }
                     }, {
                         title: '加班费',
+                        minWidth:100,
                         key: 'jbf',
                         render: (h, p) => {
                             if (p.row.jbf == '') {
@@ -285,7 +321,7 @@
                         }
                     }, {
                         title: '节假日补助费',
-                        width: 130,
+                        minWidth:100,
                         key: 'jjrjl',
                         render: (h, p) => {
                             if (p.row.jjrjl == '') {
@@ -295,9 +331,11 @@
                         }
                     }, {
                         title: '事由',
+                        minWidth:120,
                         key: 'sy'
                     }, {
                         title: '车费合计',
+                        minWidth:100,
                         key: 'zj'
                     },
                 ],
@@ -319,7 +357,8 @@
             }, {
                 title: '付款管理',
             }])
-            this.getData();
+            this.tabHeight = this.getWindowHeight() - 300
+//          this.getData();
         },
         mounted() {
 
@@ -329,6 +368,9 @@
                 this.selectedData[i] = e;
             },
             getData() {
+            	if(this.param.sjxm==''){
+            		return
+            	}
                 this.list = [];
                 let startTime = this.param.startTime;
                 let endTime = this.param.endTime;

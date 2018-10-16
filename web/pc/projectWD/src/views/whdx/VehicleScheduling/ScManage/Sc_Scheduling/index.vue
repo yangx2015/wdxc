@@ -24,6 +24,7 @@
                                     <DatePicker v-model="todaytime"
                                                 format="yyyy-MM-dd"
                                                 type="date"
+                                                :options="optionsDate"
                                                 placement="bottom-end"
                                                 placeholder="请输时间"
                                                 style="width: 220px"></DatePicker>
@@ -108,6 +109,11 @@
         },
         data() {
             return {
+            	optionsDate: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
                 compName: '',
                 mess: {},
                 tabHeight: 220,

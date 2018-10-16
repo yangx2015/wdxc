@@ -17,6 +17,7 @@
                               <div class="body-r-1 inputSty">
                                     <DatePicker v-model="todaytime"
                                                 format="yyyy-MM-dd"
+                                                :options="optionsDate"
                                                 type="date"
                                                 placement="bottom-end"
                                                 placeholder="请输时间"
@@ -102,6 +103,11 @@
         },
         data() {
             return {
+            	optionsDate: {
+                    disabledDate(date) {
+                        return date && date.valueOf() < Date.now() - 86400000;
+                    }
+                },
                 compName: '',
                 mess: {},
                 tabHeight: 220,
