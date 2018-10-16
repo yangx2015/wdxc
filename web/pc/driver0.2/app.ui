@@ -9,7 +9,7 @@ export default {
       "pages/user",
       "pages/xlMess",
       "pages/xlMap",
-      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/money"],
+      "pages/welcome","pages/common/busline","pages/prop/add","pages/prop/pages","pages/money","pages/password"],
     "theme": {
       "theme-color": "#3399ff"
     },
@@ -38,8 +38,10 @@ export default {
     //   ]
     // },
     // "networkBaseUrl":'http://192.168.0.102:9099',
-    // "networkBaseUrl":'http://47.98.39.45:9099',
-    "networkBaseUrl":'http://10.113.4.71:9090/biz',
+    "networkBaseUrl":'http://47.98.39.45:9099',
+    // "networkBaseUrl":'http://localhost:9099',
+      // "networkBaseUrl":'http://i.tech:35498w1.z498w1.zhexi.tech:35498',
+    // "networkBaseUrl":'http://10.113.4.71:9090/biz',
     "networkTimeout":"3000"
   },
   data () {

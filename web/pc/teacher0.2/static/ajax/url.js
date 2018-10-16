@@ -1,5 +1,8 @@
-// let ajaxUrl = "http://47.98.39.45:9099";
-let ajaxUrl = "http://10.113.4.71:9090/biz";
+let ajaxUrl = "http://47.98.39.45:9099";
+// let ajaxUrl = "http://localhost:9099";
+// let ajaxUrl = "http://10.113.4.71:9090/biz";
+
+// let ajaxUrl = "http://192.168.3.252:9099";
 
 module.exports = {
     SWIPER:{
@@ -36,5 +39,8 @@ module.exports = {
         DOT:'/put/dd/getStartPointAndEndPoint'
     },
     USERINFO:'/put/jzg/getInfo',
-    HISTORYGJ: '/put/dd/getddgps'
+    HISTORYGJ: '/put/dd/getddgps',
+    PASSWORD: '/put/jzg/mdfPwd', //修改密码
+    POLLCODE: '/put/jzg/updateDn',//验证码
+    SENDSMS: '/put/jzg/sendSMS'//教职工修改手机号码短信下发
 }
