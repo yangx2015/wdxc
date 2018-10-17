@@ -1,4 +1,6 @@
+-- 生产环境已更新，联系  武汉大学-信息中心-李老师   已经执行完 2018-10-16号下午更新完成
 -- 生产环境还没有更新 ，需要联系肖老师，更新数据库 20181012 yx
+
 CREATE TABLE CL_WF
 (
     id VARCHAR2(32),
@@ -27,12 +29,15 @@ COMMENT ON COLUMN CL_WF.wf_status IS '违法状态  ZDCLK0053 (0未处理 1已�
 COMMENT ON TABLE CL_WF IS '违法表';
 
 ALTER TABLE CL_WF ADD CONSTRAINT "CL_WF_ID_pk" PRIMARY KEY (ID);
-ALTER TABLE C##WDXC_ADMIN.SYS_JZGXX ADD PWD VARCHAR2(32) NULL;
-COMMENT ON COLUMN C##WDXC_ADMIN.SYS_JZGXX.PWD IS '登录密码';
-COMMENT ON TABLE C##WDXC_ADMIN.SYS_JZGXX IS '教职工表';
+ALTER TABLE SYS_JZGXX ADD PWD VARCHAR2(32) NULL;
+COMMENT ON COLUMN SYS_JZGXX.PWD IS '登录密码';
+COMMENT ON TABLE SYS_JZGXX IS '教职工表';
 
 COMMENT ON COLUMN SYS_JZGXX.ZJHM IS '证件号码-工号';
- 
+
+ALTER TABLE CL_JSY ADD PWD VARCHAR2(64) NULL;
+COMMENT ON COLUMN CL_JSY.PWD IS '登录密码';
+
 
 INSERT INTO SYS_ZDLM (LMDM, LMMC, CJSJ, CJR, XGSJ, XGR, QZ) VALUES ('ZDCLK0053', '违法状态', TO_TIMESTAMP('2018-10-12 16:42:21', 'YYYY-MM-DD HH24:MI:SS'), '1-超级管理员', null, null, null);
 INSERT INTO SYS_ZDLM (LMDM, LMMC, CJSJ, CJR, XGSJ, XGR, QZ) VALUES ('ZDCLK0052', '违法类型 [ZDCLK0052]', TO_TIMESTAMP('2018-10-12 16:35:25', 'YYYY-MM-DD HH24:MI:SS'), '1-超级管理员', null, null, null);
@@ -53,4 +58,10 @@ values ('500623006314266624', '100', '1', 'WFXXGL', to_timestamp('13-10-2018 10:
 
 insert into SYS_JGSQLB (id, jgdm, fwdm, gndm, cjsj, cjr, xgsj, xgr, yxq)
 values ('1', '100', null, 'terminal-station', to_timestamp('25-07-2018 09:50:14.933000', 'dd-mm-yyyy hh24:mi:ss.ff'), '1-超级管理员', null, null, null);
+
+INSERT INTO SYS_JGSQLB (ID, JGDM, FWDM, GNDM, CJSJ, CJR, XGSJ, XGR, YXQ)
+VALUES ('4430917329013964801', '100', '1', 'Assignment_max', TO_TIMESTAMP('2018-10-15 16:48:19', 'YYYY-MM-DD HH24:MI:SS'), '1-超级管理员', null, null, null);
+
+
+
 
