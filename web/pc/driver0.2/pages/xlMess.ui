@@ -39,7 +39,7 @@
     <ui-fixed-view top="{{ fixedTop }}" left="10" right="10">
       <ui-accordion header-height="50">
        <ui-view slot="header" style="background-color:#f5f5f5;border-radius: 5px">
-         <ui-row height=50 border-bottom>
+         <ui-row height=45 border-bottom>
             <!-- <ui-col span=2 align="center" space-lef=10>
                <ui-icon type="wo" size=35 style="color:#000000"></ui-icon>
             </ui-col> -->
@@ -53,20 +53,20 @@
          </ui-row>
         </ui-view>
       
-         <ui-view slot="content" style="background-color:#ffffff;border-radius: 5px">
-         <ui-row  space-top=5>
+         <ui-view slot="content" style="background-color:#ffffff;border-radius: 5px;height:180px">
+         <ui-row height=23  space-top=1>
            <ui-col span=1 vertical-align="middle " align="center">
              <ui-icon type="shijianshizhongdaojishi" size=10 style="color:#c0c0c0"></ui-icon>
            </ui-col>
-           <ui-col vertical-align="middle " style="font-size:12px;color:#000000">
+           <ui-col vertical-align="middle " style="font-size:14px;color:#000000">
              {{orderMess.yysj}}
            </ui-col>
          </ui-row>
-         <ui-row height=20 space-top=3>
+         <ui-row height=25 space-top=3>
            <ui-col span=1 vertical-align="middle " align="center">
               <ui-icon type="webicon318" size=18 style="color:#31af01"></ui-icon>
            </ui-col>
-           <ui-col vertical-align="middle "  style="font-size:12px;color:#000000">
+           <ui-col vertical-align="middle "  style="font-size:14px;color:#000000">
              {{orderMess.hcdz}}
            </ui-col>
          </ui-row>
@@ -74,24 +74,33 @@
            <ui-col span=1 vertical-align="middle " align="center">
               <ui-icon type="webicon318" size=18 style="color:#ff0000"></ui-icon>
            </ui-col>
-           <ui-col vertical-align="middle " style="font-size:12px;color:#000000">
+           <ui-col vertical-align="middle " style="font-size:14px;color:#000000">
              {{orderMess.mdd}}
            </ui-col>
          </ui-row>
+          <ui-row height=30>
+            <ui-col span=1 vertical-align="middle " align="center">
+             <ui-icon type="shijianshizhongdaojishi" size=10 style="color:#c0c0c0"></ui-icon>
+            </ui-col>
+             <ui-col align=left vertical-align="middle"  style="font-size:14px;color:#808080">订单评分： 
+               {{orderMess.pjdj}} 分
+            </ui-col>
+           </ui-row>
+           <ui-row space-top=1 height=80 color="#808080">
+            评价 ：{{orderMess.pjnr}}
+           </ui-row>
          <!-- <ui-row>
            dingdasfdf
          </ui-row> -->
        </ui-view>
        </ui-accordion>
-             <ui-accordion header-height="30">
+             <ui-accordion header-height="40">
                 <ui-view slot="header" style="background-color:#f5f5f5;border-radius: 5px">
-                  <ui-row height=30 border-bottom>
-                      <ui-col align=left space-left=5  vertical-align="middle"  style="font-size:14px;color:#000000">订单评价：</ui-col>
-                  </ui-row>
+                 
                   </ui-view>
       
          <ui-view slot="content" style="background-color:#ffffff;">
-         <ui-row  space-top=5 height=70 color="#808080">
+         <ui-row  space-top=1 height=70 color="#808080">
             {{orderMess.pjnr}}
          </ui-row>
        </ui-view>
