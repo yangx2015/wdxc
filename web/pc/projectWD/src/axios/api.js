@@ -4,12 +4,18 @@ let url = 'http://47.98.39.45:'//8080
 let port = '8080'
 export default {
 // 	url:url+port+'/biz',//10.113
+//  UPLOAD:url+port+'/biz/upload',//10.113
+//  STATIC_PATH:'http://10.113.4.70:9090/staticpath/',//地图icon地址前缀10.113
+//  VIDEO_PATH:'http://218.197.155.115:9090/',//10.113
+
+
     url:url+port,//47
-    UPLOAD:url+port+'/biz/upload',
-    // STATIC_PATH:url+'9092/',//47 地图icon地址前缀
-    // VIDEO_PATH:url+'9091/test/',//47
-    STATIC_PATH:'http://10.113.4.70:9090/staticpath/',//地图icon地址前缀
-    VIDEO_PATH:'http://218.197.155.115:9090/',
+    UPLOAD:url+port+'/upload',//47
+    STATIC_PATH:url+'9092/',//47 地图icon地址前缀
+    VIDEO_PATH:url+'9091/test/',//47
+
+
+//------------------------
     TXT:'/api/clsbyxsjjl/pager',
     fileDR:'/api/zdgl/excel',
     USERROOT:{
