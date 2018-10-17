@@ -2,7 +2,7 @@
   <ui-page  style="overflow-y: hidden;">
       <ui-nav-bar slot="nav-bar" custom-style="{{ {'color':'#fff','background-color':'#FF7F50'} }}">
           <ui-row height="46">
-            <ui-col vertical-align="middle" align="center" width="60" bindtap="backPoject">
+            <ui-col vertical-align="middle" align="center" width="60" bindtap="goexit">
               <ui-icon type="return" size="20" color="#e2e2e2"></ui-icon>
             </ui-col>
             <ui-col vertical-align="middle" align="center">
@@ -159,6 +159,24 @@ export default {
     }
   },
   methods: {
+    goexit(){
+      var v = this
+      const itemLists = [
+       '<span style="color:#0080ff">修改密码</span>',
+       '<span style="color:#ff2f00 ">退出登录</span>'
+      ]
+      ui.showActionSheet({
+        itemList: itemLists,
+        success: (index) => {
+          console.log(index);
+          if(index == 1){
+            v.backPoject()            
+          }else if(index == 0){
+            v.gopassword()
+          }
+        }
+      })
+    },
     dqr(val,num){//待确认列表
       var v = this
       let listType = 2
@@ -211,6 +229,11 @@ export default {
           this.loadMore = true
         }
       // }
+    },
+    gopassword(){
+      ui.navigateTo({
+        url: '/pages/password'
+      })
     },
     goProp(){
       ui.navigateTo({
@@ -344,9 +367,6 @@ export default {
       }
       .mess{
         padding: 20rpx 12rpx 0 12rpx;
-        .time{
-
-        }
       }
       .rightIcon{
         line-height:180rpx;

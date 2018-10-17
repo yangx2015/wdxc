@@ -296,6 +296,7 @@ export default {
     }
   },
   watch:{
+    
   },
   methods: {
     getUserList(){
@@ -704,6 +705,12 @@ export default {
     }
   },
   created () {
+    
+   if(ui.getApp().userinfo.sjhm == "") {
+     ui.navigateTo({
+        url: '/pages/phonenumber'
+    })
+   }
     this.getHisList()
     this.getUserList()
     var v = this

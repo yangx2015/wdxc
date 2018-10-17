@@ -16,7 +16,7 @@
   <div id="allmap" style="{{{height:height+'px'}}}"></div>
 
 
-<ui-fixed-view bottom="30" left="10" right="10">
+<ui-fixed-view bottom="40" left="10" right="10">
     <ui-view  ui:if="{{orderMess.ddzt =='20' || orderMess.ddzt =='30' || orderMess.ddzt =='40'}}" class="box_col" style="{{{height:carHeight +'px'}}}">
       <ui-view class="getmess">
           <ui-view> 
@@ -87,11 +87,16 @@
                 {{starResult}}
               </ui-col>
             </ui-row>
-            <ui-row align=center height=50>
+            <ui-row align=center height=40>
               <ui-col space-right="35">
                 <ui-star value="{{orderMess.pjdj}}" bindchange="pingfen" readonly="{{orderMess.pjdj !=''}}"></ui-star>
               </ui-col> 
             </ui-row> 
+            <ui-row align=center vertical-align="middle" height=30 bindtap="inputpjnr()">
+              <ui-col style="font-size:12px;color:#808080">
+                我想评价更多>>
+              </ui-col>
+            </ui-row>
           </ui-view>
       </ui-view>
     </ui-view>
@@ -140,10 +145,11 @@ export default {
   },
   data () {
     return {
+      pjnr:'',
       show3: false,
       show4: false,
       height:ui.WIN_HEIGHT,
-      carHeight:220,
+      carHeight:240,
       points:[],
       starResult: '评价本次服务',
       orderMess:{},
@@ -159,6 +165,29 @@ export default {
   },
       
   methods: {
+    inputpjnr(){
+      if(this.orderMess.pjdj ==''){
+        ui.showPrompt({
+          title: '评价订单',
+          placeholder: '请输入评价内容',
+          confirmButtonText: '确认',
+          cancelButtonText: '放弃',
+          value:this.pjnr,
+          success: (result) => {
+            if(result.confirm){
+              this.getMarkList();
+            }else{
+              ui.showToast({
+                title:`放弃修改`
+              })
+            }
+          }
+        })
+      }else{
+        return
+      }
+      
+    },
     slide(e){
       console.log(e)
       this.pjshow = !this.pjshow
@@ -231,7 +260,7 @@ export default {
       this.getMarkList(index)
     },
     getMarkList(index){
-      this.$http('POST',ui.getApp().apis.PJDD.QUERTY,{orderId:this.orderMess.id,grade:index},(res)=>{
+      this.$http('POST',ui.getApp().apis.PJDD.QUERTY,{orderId:this.orderMess.id,grade:index,pjnr:this.pjnr},(res)=>{
         console.log("##########################",res)
       })
     },
