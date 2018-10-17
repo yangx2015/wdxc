@@ -77,7 +77,7 @@
                         </Card>
                   </Col>
             </Row>
-            <component :is="componentName"></component>
+            <component :is="compName" :row='listMess'></component>
       </div>
 </template>
 
@@ -107,7 +107,8 @@
             return {
                 v: this,
                 tabHeight:0,
-                componentName: '',
+                compName: '',
+                listMess:{},	
                 choosedItem: null,
                 columns3: [
                     {
@@ -141,7 +142,20 @@
                         title: '出车时间',
                         minWidth:100,
                         key: 'yysj'
-                    }, {
+                    }, 
+                    {
+                        title: '评分',
+                        align: 'center',
+                        minWidth:120,
+                        key: 'pjdj',
+                    },
+                    {
+                        title: '评价内容',
+                        align: 'center',
+                        minWidth:180,
+                        key: 'pjnr',
+                    },
+                    {
                         title: '里程(公里)',
                         minWidth:100,
                         key: 'lc',
@@ -192,8 +206,8 @@
                             return h('div', p.row.jbf)
                         }
                     }, {
-                        title: '节假日补助费',
-                        minWidth:100,
+                        title: '节假日补助',
+                        minWidth:120,
                         key: 'jjrjl',
                         render: (h, p) => {
                             if (p.row.jjrjl == '') {
@@ -214,10 +228,25 @@
                         title: '操作',
                         key: 'action',
                         align: 'center',
-                        minWidth:60,
+                        minWidth:180,
                         fixed:'right',
                         render: (h, params) => {
                             return h('div', [
+                            h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'车单打印'),
                                 h('Button', {
                                     props: {
                                         type: 'primary',
@@ -229,10 +258,10 @@
                                     on: {
                                         click: () => {
                                             this.choosedItem = params.row;
-                                            this.componentName = 'edit';
+                                            this.compName = 'edit';
                                         }
                                     }
-                                }, '编辑')
+                                }, '单据编辑')
                             ]);
                         }
                     }
@@ -245,12 +274,12 @@
                     },
                     {
                         title: '用车人员',
-                        minWidth:60,
+                        minWidth:100,
                         key: 'ck'
                     },
                     {
                         title: '候车地点',
-                        minWidth:100,
+                        minWidth:120,
                         key: 'hcdz'
                     },
                     {
@@ -269,7 +298,20 @@
                         title: '出车时间',
                         minWidth:100,
                         key: 'yysj'
-                    }, {
+                    }, 
+                    {
+                        title: '评分',
+                        align: 'center',
+                        minWidth:120,
+                        key: 'pjdj',
+                    },
+                    {
+                        title: '评价内容',
+                        align: 'center',
+                        minWidth:180,
+                        key: 'pjnr',
+                    },
+                    {
                         title: '里程(公里)',
                         minWidth:100,
                         key: 'lc',
@@ -320,8 +362,8 @@
                             return h('div', p.row.jbf)
                         }
                     }, {
-                        title: '节假日补助费',
-                        minWidth:100,
+                        title: '节假日补助',
+                        minWidth:120,
                         key: 'jjrjl',
                         render: (h, p) => {
                             if (p.row.jjrjl == '') {
@@ -338,12 +380,38 @@
                         minWidth:100,
                         key: 'zj'
                     },
+                    {
+                        title: '操作',
+                        key: 'action',
+                        align: 'center',
+                        minWidth:90,
+                        fixed:'right',
+                        render: (h, params) => {
+                            return h('div', [
+                            h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'车单打印')
+                            ]);
+                        }
+                    }
                 ],
                 munName: '1',
                 param: {
                     fkzt: '00',
                     ck: '',
-                    sjxm: '',
+                    sjxm: '张三',
                 },
                 list: [],
                 selectedData: [],
@@ -358,7 +426,7 @@
                 title: '付款管理',
             }])
             this.tabHeight = this.getWindowHeight() - 300
-//          this.getData();
+            this.getData();
         },
         mounted() {
 
@@ -435,7 +503,7 @@
                 }
                 item.choosedOrderList = this.selectedData[index];
                 this.choosedItem = item;
-                this.componentName = 'print';
+                this.compName = 'print';
             },
             show() {
 

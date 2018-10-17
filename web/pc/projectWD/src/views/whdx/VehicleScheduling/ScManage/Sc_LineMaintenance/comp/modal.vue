@@ -109,6 +109,7 @@
                 showModal: true,
                 tit: '新增',
                 stationId: 0,
+                stationList: [],
                 choosedStations: [],
                 param: {
                     id: '',
@@ -117,7 +118,6 @@
                     lx: '30',
                     yxfs: '10',
                 },
-                stationList: [],
                 spotName: '',
                 routerList: [
                     {

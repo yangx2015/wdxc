@@ -15,6 +15,12 @@ import session from './libs/session';
 
 import swal from 'sweetalert2'
 
+
+import carListPrint from './views/whdx/components/carListPrint'
+Vue.component('CLP',carListPrint)
+
+
+
 Vue.use(VueI18n);
 Vue.use(iView);
 

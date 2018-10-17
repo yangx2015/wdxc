@@ -63,6 +63,11 @@
 				<Button type="primary" @click="handleSubmit('formValidate')">提交</Button>
 			</div>
 		</Modal>
+		<component
+	      :is="compName"
+	      :row='listMess'
+	    >
+	    </component>
     </div>
 </template>
 
@@ -70,12 +75,17 @@
 
 	import mixins from '@/mixins'
 	import swal from 'sweetalert2'
-//	import axios from '@/axios'
+	import jnxx from './BasicsMess'
 	export default {
     	name:'char',
     	mixins:[mixins],
+    	components: {
+            jnxx
+        },
         data () {
             return {
+            	compName:'',
+            	listMess:{},
                 formValidate: {
                     bhyy: ''
                 },
@@ -98,57 +108,126 @@
                 tableTiT: [
                 	{
 	                	title:"序号",
-	                	width:80,
+	                	minWidth:80,
 	                	align:'center',
 	                	type:'index'
 	                },
-	                {
-                        title: '约车时间',
-                        width:180,
-                        align:'center',
-                        key: 'yysj'
-                    },
                     {
                         title: '用车单位',
                         align:'center',
+                        minWidth:100,
                         key: 'jgmc'
+                    },
+                    {
+                        title: '用车事由',
+                        align:'center',
+                        minWidth:180,
+                        key: 'sy'
                     },
                     {
                         title: '用车人',
                         align:'center',
+                        minWidth:100,
                         key: 'ck'
+                    },
+                    {
+                        title: '用车时间',
+                        align:'center',
+                        minWidth:180,
+                        key: 'yysj'
                     },
                     {
                         title: '座位数',
                         align:'center',
                         key: 'ck',
+                        minWidth:100,
                         render: (h, p) => {
                               let cx = this.dictUtil.getValByCode(this, 'ZDCLK0019', p.row.cllx)
                               return h('div',cx+'/'+p.row.zws+'座')
                         }
                     },
                     {
-                        title: '联系电话',
+                        title: '客户电话',
                         align:'center',
+                        minWidth:160,
                         key: 'cklxdh'
                     },
                     {
                         title: '候车地点',
                         align:'center',
+                        minWidth:180,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
                         align:'center',
+                        minWidth:100,
                         key: 'mdd'
                     },
+//                  {
+//                      title:'订单详情',
+//                      fixed:'right',
+//                      align: 'center',
+//                      width:100,
+//                      render:(h,p) =>{
+//                          return h('div',[
+//                              h('Tooltip',
+//                                  {
+//                                      props: {
+//                                          placement: 'top',
+//                                          content: '订单详情',
+//                                          'transfer':true
+//                                      }
+//                                  },
+//                                  [
+//                                      h('Button', {
+//												                  props: {
+//												                    icon: 'md-clipboard',
+//												                    type: 'text',
+//												                    ghost: true,
+//												                    shape: "circle",
+//												
+//												                  },
+//												                  style: {
+//												                    fontSize: '24px',
+//												                    margin:'0 2px',
+//												                    color: '#2db7f5'
+//												                  },
+//												                  on: {
+//												                    click: () => {
+//												                    	this.listMess = p.row
+//												                    	this.compName = 'jnxx'
+//												                    }
+//												                  }
+//												                })
+//                                  ]
+//                              )
+//                          ])
+//                      }
+//                  },
                     {
                         title: '操作',
                         key: 'action',
-                        width: 150,
+                        fixed:'right',
+                        width: 180,
                         align: 'center',
                         render: (h, params) => {
                             return h('div', [
+                            	h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'打印'),
                                 h('Button', {
                                     props: {
                                         type: 'success',

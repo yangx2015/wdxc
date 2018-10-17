@@ -239,6 +239,7 @@
                 this.param = this.$parent.choosedRow;
                 this.operate = '编辑'
                 this.cllx = [this.param.cllx,''+this.param.zws];
+                this.param.yysj = new Date(this.param.yysj)
             }
         },
         mounted(){

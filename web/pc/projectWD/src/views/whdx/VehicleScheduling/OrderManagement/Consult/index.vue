@@ -91,46 +91,64 @@
                     pageSize: 8
                 },
                 columns10: [
-                    {
-                        title: '#',
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
-                        }
-                    },
+//                  {
+//                      title: '#',
+//                      type: 'expand',
+//                      width: 50,
+//                      render: (h, params) => {
+//                          return h(expandRow, {
+//                              props: {
+//                                  row: params.row
+//                              }
+//                          })
+//                      }
+//                  },
+										{
+		                	title:"序号",
+		                	minWidth:80,
+		                	align:'center',
+		                	type:'index'
+	                  },
                     {
                         title: '用车单位',
                         align: 'center',
+                        minWidth:110,
                         key: 'jgmc'
+                    },
+                    {
+                        title: '用车事由',
+                        align:'center',
+                        minWidth:180,
+                        key: 'sy'
                     },
                     {
                         title: '用车人',
                         align: 'center',
+                        minWidth:100,
                         key: 'ck'
                     },
                     {
                         title: '客户电话',
                         align: 'center',
+                        minWidth:140,
                         key: 'cklxdh'
                     },
                     {
                         title: '出车司机',
                         align: 'center',
+                        minWidth:120,
                         key: 'sjxm'
                     },
                     {
                         title: '司机电话',
                         align: 'center',
+                        minWidth:120,
                         key: 'DriverPhone'
                     },
                     {
                         title: '约车时间',
                         align: 'center',
+                        minWidth:120,
                         key: 'yysj',
                         render:(h,p)=>{
                             return h('div', p.row.yysj.substring(0, 13));
@@ -139,15 +157,18 @@
                     {
                         title: '约车地点',
                         align: 'center',
+                        minWidth:140,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
+                        minWidth:140,
                         key: 'mdd'
                     },
                     {
                         title: '座位数',
                         align: 'center',
+                        minWidth:120,
                         key: 'zws',
                         render: (h, p) => {
                             let cx = this.dictUtil.getValByCode(this, 'ZDCLK0019', p.row.cllx)
@@ -155,12 +176,55 @@
                         }
                     },
                     {
+                        title: '评分',
+                        align: 'center',
+                        minWidth:120,
+                        key: 'pjdj',
+                    },
+                    {
+                        title: '评价内容',
+                        align: 'center',
+                        minWidth:180,
+                        key: 'pjnr',
+                    },
+                    {
                         title:'操作',
                         fixed:'right',
                         align: 'center',
-                        minWidth:140,
+                        minWidth:240,
                         render:(h,p) =>{
                             return h('div',[
+                            h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '车单打印',
+                                            'transfer':true
+                                        }
+                                    },
+                                    [
+                                        h('Button', {
+												                  props: {
+												                    icon: 'md-print',
+												                    type: 'text',
+												                    ghost: true,
+												                    shape: "circle",
+												
+												                  },
+												                  style: {
+												                    fontSize: '24px',
+												                    margin:'0 2px',
+												                    color: '#2db7f5'
+												                  },
+												                  on: {
+												                    click: () => {
+												                    	this.listMess = p.row
+												                    	this.compName = 'CLP'
+												                    }
+												                  }
+												                })
+                                    ]
+                                ),
                                 h('Tooltip',
                                     {
                                         props: {
@@ -180,7 +244,7 @@
 												                  },
 												                  style: {
 												                    fontSize: '24px',
-												                    margin:'0 6px',
+												                    margin:'0 2px',
 												                    color: '#2db7f5'
 												                  },
 												                  on: {
@@ -211,7 +275,7 @@
 												                  },
 												                  style: {
 												                    fontSize: '24px',
-												                    margin:'0 6px',
+												                    margin:'0 2px',
 												                    color: '#2db7f5'
 												                  },
 												                  on: {
@@ -227,7 +291,7 @@
                                     {
                                         props: {
                                             placement: 'top',
-                                            content: '流程记录',
+                                            content: '行程轨迹',
                                             'transfer':true
                                         }
                                     },
@@ -242,7 +306,7 @@
 												                  },
 												                  style: {
 												                    fontSize: '24px',
-												                    margin:'0 6px',
+												                    margin:'0 2px',
 												                    color: '#2db7f5'
 												                  },
 												                  on: {
@@ -258,7 +322,7 @@
                                     {
                                         props: {
                                             placement: 'top',
-                                            content: '流程记录',
+                                            content: '原始单据',
                                             'transfer':true
                                         }
                                     },
@@ -273,7 +337,7 @@
 												                  },
 												                  style: {
 												                    fontSize: '24px',
-												                    margin:'0 6px',
+												                    margin:'0 2px',
 												                    color: '#2db7f5'
 												                  },
 												                  on: {

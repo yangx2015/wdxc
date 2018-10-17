@@ -263,7 +263,7 @@
                         var v = this
                         v.$parent.findMessList()
                         this.$Message.success(res.message);
-                        v.$parent.componentName = ''
+                        v.$parent.compName = ''
                     }else{
                         this.$Message.error(res.message);
                     }
@@ -274,7 +274,7 @@
             },
             close(){
                 let v = this;
-                v.$parent.componentName = ''
+                v.$parent.compName = ''
                 v.$parent.findMessList()
             }
 
