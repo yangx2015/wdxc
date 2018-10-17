@@ -15,7 +15,7 @@
 							<span>订单审核</span>
 						</div>
 						<div class="body-r-1 inputSty">
-							<Cascader style="width:300px;float: right;margin-top: 7px;margin-left: 4px;padding-right: 16px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
+							<Cascader style="width:300px;text-align:left;float: right;margin-top: 7px;margin-left: 4px;padding-right: 16px;" @on-change="change" change-on-select :data="orgTree"  placeholder="请选择用车单位"  filterable clearable  ></Cascader>
 							<Input v-model="param.ckLike" type="text" placeholder="输入乘客姓名查询" style="width: 220px"></Input>
 							<Input v-model="param.sjxmLike" type="text" placeholder="输入司机姓名查询" style="width: 220px"></Input>						</div>
 						<div class="butevent">
@@ -103,10 +103,10 @@
 	                	type:'index'
 	                },
 	                {
-                        title: '订单编号',
+                        title: '约车时间',
                         width:180,
                         align:'center',
-                        key: 'id'
+                        key: 'yysj'
                     },
                     {
                         title: '用车单位',
@@ -117,6 +117,15 @@
                         title: '用车人',
                         align:'center',
                         key: 'ck'
+                    },
+                    {
+                        title: '座位数',
+                        align:'center',
+                        key: 'ck',
+                        render: (h, p) => {
+                              let cx = this.dictUtil.getValByCode(this, 'ZDCLK0019', p.row.cllx)
+                              return h('div',cx+'/'+p.row.zws+'座')
+                        }
                     },
                     {
                         title: '联系电话',

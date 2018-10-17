@@ -50,29 +50,33 @@
                           show-elevator show-sizer placement='top'
                           @on-change='pageChange'></Page>
             </Row>
-            <!--</div>-->
-            <Modal
-                    v-model="showModal"
-                    width='800'
-                    :mask-closable="false"
-                    title="信息详情">
-                  <div slot='footer'></div>
-            </Modal>
+            <component
+				      :is="compName"
+				      :row='listMess'
+				    >
+				    </component>
       </div>
 </template>
 <script>
     import mixins from '@/mixins'
 
     import expandRow from './table-expand.vue';
+    
+    import jnxx from './comp/BasicsMess'
+    import lcjl from './comp/flowRecord'
+    import clgj from './comp/trajectory'
+    import ysdj from './comp/Original'
 
     export default {
         components: {
-            expandRow
+            expandRow,jnxx,lcjl,clgj,ysdj
         },
         mixins: [mixins],
         data() {
             return {
                 pageHeight: this.getWindowHeight() - 260,
+                compName:'',
+                listMess:{},
                 //收索
                 datetime: '',
                 param: {
@@ -86,7 +90,6 @@
                     pageNum: 1,
                     pageSize: 8
                 },
-                showModal: false,
                 columns10: [
                     {
                         title: '#',
@@ -127,6 +130,7 @@
                     },
                     {
                         title: '约车时间',
+                        align: 'center',
                         key: 'yysj',
                         render:(h,p)=>{
                             return h('div', p.row.yysj.substring(0, 13));
@@ -134,6 +138,7 @@
                     },
                     {
                         title: '约车地点',
+                        align: 'center',
                         key: 'hcdz'
                     },
                     {
@@ -145,16 +150,142 @@
                         align: 'center',
                         key: 'zws',
                         render: (h, p) => {
-                            let cx = ''
-                            switch (p.row.cllx) {
-                                case '10':
-                                    cx = '小车';
-                                    break;
-                                case '20':
-                                    cx = '大车';
-                                    break;
-                            }
-                            return h('span', cx + '/' + p.row.zws)
+                            let cx = this.dictUtil.getValByCode(this, 'ZDCLK0019', p.row.cllx)
+                            return h('span', cx + '/' + p.row.zws+'座')
+                        }
+                    },
+                    {
+                        title:'操作',
+                        fixed:'right',
+                        align: 'center',
+                        minWidth:140,
+                        render:(h,p) =>{
+                            return h('div',[
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '订单详情',
+                                            'transfer':true
+                                        }
+                                    },
+                                    [
+                                        h('Button', {
+												                  props: {
+												                    icon: 'md-clipboard',
+												                    type: 'text',
+												                    ghost: true,
+												                    shape: "circle",
+												
+												                  },
+												                  style: {
+												                    fontSize: '24px',
+												                    margin:'0 6px',
+												                    color: '#2db7f5'
+												                  },
+												                  on: {
+												                    click: () => {
+												                    	this.listMess = p.row
+												                    	this.compName = 'jnxx'
+												                    }
+												                  }
+												                })
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '流程记录',
+                                            'transfer':true
+                                        }
+                                    },
+                                    [
+                                        h('Button', {
+												                  props: {
+												                    icon: 'logo-steam',
+												                    type: 'text',
+												                    ghost: true,
+												                    shape: "circle",
+												
+												                  },
+												                  style: {
+												                    fontSize: '24px',
+												                    margin:'0 6px',
+												                    color: '#2db7f5'
+												                  },
+												                  on: {
+												                    click: () => {
+												                    	this.listMess = p.row
+												                    	this.compName = 'lcjl'
+												                    }
+												                  }
+												                })
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '流程记录',
+                                            'transfer':true
+                                        }
+                                    },
+                                    [
+                                        h('Button', {
+												                  props: {
+												                    icon: 'md-pulse',
+												                    type: 'text',
+												                    ghost: true,
+												                    shape: "circle",
+												
+												                  },
+												                  style: {
+												                    fontSize: '24px',
+												                    margin:'0 6px',
+												                    color: '#2db7f5'
+												                  },
+												                  on: {
+												                    click: () => {
+												                    	this.listMess = p.row
+												                    	this.compName = 'clgj'
+												                    }
+												                  }
+												                })
+                                    ]
+                                ),
+                                h('Tooltip',
+                                    {
+                                        props: {
+                                            placement: 'top',
+                                            content: '流程记录',
+                                            'transfer':true
+                                        }
+                                    },
+                                    [
+                                        h('Button', {
+												                  props: {
+												                    icon: 'ios-paper',
+												                    type: 'text',
+												                    ghost: true,
+												                    shape: "circle",
+												
+												                  },
+												                  style: {
+												                    fontSize: '24px',
+												                    margin:'0 6px',
+												                    color: '#2db7f5'
+												                  },
+												                  on: {
+												                    click: () => {
+												                    	this.listMess = p.row
+												                    	this.compName = 'ysdj'
+												                    }
+												                  }
+												                })
+                                    ]
+                                )
+                            ])
                         }
                     }
                 ],
