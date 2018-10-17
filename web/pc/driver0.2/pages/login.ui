@@ -8,10 +8,10 @@
             <ui-view class="content_form">
               <ui-form>
                 <ui-view class="input_padding">
-                  <ui-input ui:model="form.xm" maxlength="11" type="tel" placeholder="请输入您的帐号"></ui-input>
+                  <ui-input ui:model="form.sjh" maxlength="11" type="tel" placeholder="请输入您的手机号"></ui-input>
                 </ui-view>
                 <ui-view class="input_padding">
-                  <ui-input ui:model="form.sjh" type="password" placeholder="请输入您的手机号"></ui-input>
+                  <ui-input ui:model="form.pwd" type="password" placeholder="请输入您的密码"></ui-input>
                 </ui-view>
                 <ui-view class="input_padding">
                   <ui-row>
@@ -50,8 +50,8 @@ export default {
   data () {
     return {
       form: {
-          xm: '',//张三
           sjh: '',//123
+          pwd:'' //123456
       },
     }
   },
