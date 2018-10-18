@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,7 +209,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             			DateTime endTime = DateTime.parse(gpsInfo.getStartTime(), org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
             			DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
 
-            			Duration d = new Duration(startTime, endTime);  
+            			Duration d = new Duration(startTime, endTime);
 						long sMinute = d.getStandardMinutes();  
 						if (sMinute < 2){
 							Integer prevSpeed = Integer.parseInt(gps.getYxsd());

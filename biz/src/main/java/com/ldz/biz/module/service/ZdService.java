@@ -13,7 +13,7 @@ public interface ZdService extends BaseService<ClZd,String>{
     ApiResponse<String> saveEntity(ClZd entity);
     ApiResponse<String> updateEntity(ClZd entity);
     List<ClZd> getByXlId(String xlId);
-    List<ClZd> getByXlIds(List<String> xlIds);
+    List<ClZd> getByXlIds(String xlId);
 
     void setStationOrder(ClZd station);
 
