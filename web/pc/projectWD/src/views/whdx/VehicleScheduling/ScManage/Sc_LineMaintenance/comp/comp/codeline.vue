@@ -1,7 +1,7 @@
 <template>
       <div id="lineModel" style="overflow: auto">
             <div class="box-row-z">
-                  <div class="itemSty" v-for="(item,index) in mess">
+                  <div class="itemSty" v-for="(item,index) in mess"  v-show="(item.name.indexOf('辅助点')==-1 && item.name!='') || item.name!=''" >
                         <Tooltip :transfer="true" class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
                               <Button size="small" type="success" shape="circle" icon="md-create"
                                       @click="xg(item,index)"></Button>

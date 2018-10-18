@@ -136,7 +136,9 @@
                 if (!stationList) return;
                 let c = 0;
                 for (let r of stationList) {
-                    this.addStation(r, ++c);
+                		if(r.mc.indexOf('辅助点')==-1){
+                			this.addStation(r, ++c);
+                		}
                 }
             },
             // 站点详情
