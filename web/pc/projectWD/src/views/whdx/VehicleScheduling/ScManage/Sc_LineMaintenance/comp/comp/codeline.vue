@@ -1,12 +1,12 @@
 <template>
       <div id="lineModel" style="overflow: auto">
             <div class="box-row-z">
-                  <div class="itemSty" v-for="(item,index) in mess">
-                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
+                  <div class="itemSty" v-for="(item,index) in mess"  v-show="(item.name.indexOf('辅助点')==-1 && item.name!='') || item.name!=''" >
+                        <Tooltip :transfer="true" class="changeBut"  placement="top" content="站点信息修改" v-show="item.xg">
                               <Button size="small" type="success" shape="circle" icon="md-create"
                                       @click="xg(item,index)"></Button>
                         </Tooltip>
-                        <Tooltip transfer=true class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
+                        <Tooltip :transfer="true" class="changeBut"  placement="top" content="站点移除" v-show="!item.xg">
                               <Button size="small" type="error" shape="circle" icon="md-close"
                                       @click="codeChangeRem(item,index)"></Button>
                         </Tooltip>
@@ -36,10 +36,6 @@
                                             @click='item.xg = !item.xg'></Button>
                               </Tooltip>
                         </div>
-                        <!--<Tooltip class="deleBut"  placement="bottom" content="站点移除">-->
-                              <!--<Button size="small" type="error" shape="circle" icon="trash-a"></Button>-->
-                        <!--</Tooltip>-->
-
                   </div>
             </div>
       </div>

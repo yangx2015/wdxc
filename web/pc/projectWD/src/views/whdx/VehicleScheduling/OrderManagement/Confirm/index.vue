@@ -4,7 +4,6 @@
 </style>
 <template>
       <div class="box">
-            <component :is="componentName"></component>
             <Card>
                   <Row class="margin-top-10" style='background-color: #fff;position: relative;'>
     			<span class="tabPageTit">
@@ -60,6 +59,11 @@
                     title="信息详情">
                   <div slot='footer'></div>
             </Modal>
+            <component
+				      :is="compName"
+				      :row='listMess'
+				    >
+				    </component>
       </div>
 </template>
 <script>
@@ -67,16 +71,18 @@
     import edit from './edit'
     import mixins from '@/mixins'
     import expandRow from './table-expand.vue';
-
+		import jnxx from './BasicsMess'
     export default {
         components: {
-            expandRow, edit
+            expandRow, edit,jnxx
         },
         mixins: [mixins],
         data() {
             return {
+	            	compName:'',
+	            	listMess:{},
                 //收索
-                componentName: '',
+                compName: '',
                 datetime: [],
                 param: {
                     ckLike: '',
@@ -94,64 +100,117 @@
                 },
                 showModal: false,
                 columns10: [
-                    {
-                        title: '#',
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
-                        }
-                    },
+//                  {
+//                      title: '#',
+//                      type: 'expand',
+//                      width: 50,
+//                      render: (h, params) => {
+//                          return h(expandRow, {
+//                              props: {
+//                                  row: params.row
+//                              }
+//                          })
+//                      }
+//                  },
+									{
+	                	title:"序号",
+	                	minWidth:80,
+	                	align:'center',
+	                	type:'index'
+	                },
                     {
                         title: '用车单位',
                         align: 'center',
+                        minWidth:100,
                         key: 'jgmc'
+                    },
+                    {
+                        title: '用车事由',
+                        align:'center',
+                        minWidth:180,
+                        key: 'sy'
                     },
                     {
                         title: '用车人',
                         align: 'center',
+                        minWidth:100,
                         key: 'ck'
                     },
                     {
                         title: '客户电话',
                         align: 'center',
+                        minWidth:100,
                         key: 'cklxdh'
                     },
                     {
                         title: '出车司机',
                         align: 'center',
+                        minWidth:100,
                         key: 'sjxm'
                     },
                     {
                         title: '约车时间',
                         key: 'yysj',
+                        minWidth:100,
                         render:(h,p)=>{
-                            return h('div', p.row.yysj.substring(0, 13));
+                        	let strDate = p.row.yysj.toString()
+                          return h('div', strDate.substring(0, 13));
                         }
                     },
                     {
                         title: '约车地点',
+                        minWidth:100,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
+                        minWidth:100,
                         key: 'mdd'
                     },
                     {
                         title: '座位数',
+                        minWidth:100,
                         align: 'center',
                         key: 'zws'
                     },
                     {
                         title: '操作',
+                        minWidth:240,
                         align: 'center',
+                        fixed:'right',
                         type: 'action',
                         render: (h, params) => {
                             return h('div', [
+                            h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+																						this.compName = 'CLP'
+                                        }
+                                    }
+                                },'打印'),
+                            		h('Button', {
+                                    props: {
+                                        type: 'warning',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+				                    								this.compName = 'jnxx'
+                                        }
+                                    }
+                                }, '详情'),
                                 h('Button', {
                                     props: {
                                         type: 'primary',
@@ -162,7 +221,7 @@
                                     },
                                     on: {
                                         click: () => {
-                                            this.componentName = edit
+                                            this.compName = edit
                                             this.choosedRow = params.row;
                                         }
                                     }

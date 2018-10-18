@@ -83,8 +83,8 @@
                                                 </h3>
                                                 <Select v-model="formItem.wf" filterable clearable size="large"
                                                         placeholder="请选择单据类型" filterable>
-                                                      <Option value="00">单程</Option>
-                                                      <Option value="10">往返</Option>
+                                                      <Option value="10">单程</Option>
+                                                      <Option value="20">往返</Option>
                                                 </Select>
                                           </FormItem>
                                     </Col>

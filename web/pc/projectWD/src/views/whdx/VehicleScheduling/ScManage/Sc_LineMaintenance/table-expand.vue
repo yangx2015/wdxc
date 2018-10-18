@@ -40,7 +40,7 @@
                   </div>
                   <div class="showline stepsList" v-else>
                         <Steps :current="stationList.length" size="small">
-                              <Step icon="ios-disc" :content="item.mc" v-for="(item,index) in stationList"></Step>
+                              <Step v-show="item.mc.indexOf('辅助点')==-1" icon="ios-disc" :content="item.mc" v-for="(item,index) in stationList"></Step>
                         </Steps>
                         <!--<Steps :current="stationList.length">-->
                         <!--<Step title="注册" icon="disc"></Step>-->

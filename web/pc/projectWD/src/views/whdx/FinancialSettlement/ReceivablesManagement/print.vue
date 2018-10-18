@@ -122,7 +122,7 @@
 			},
             close(){
                 let v = this;
-                v.$parent.componentName = ''
+                v.$parent.compName = ''
             },
             print(){
                 this.showFooter = false;

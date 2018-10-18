@@ -73,7 +73,7 @@
 			</Card>
 			</Col>
 		</Row>
-		<component :is="componentName"></component>
+		<component :is="compName" :row='listMess'></component>
 	</div>
 </template>
 <script>
@@ -90,6 +90,7 @@
 		mixins: [mixins],
 		data() {
 			return {
+				listMess:{},
 				tabHeight:0,
 				CascaderList: ['100', '100002', '100002001'],
 				dateOpts: {
@@ -118,7 +119,7 @@
 					]
 				},
 				v: this,
-				componentName: '',
+				compName: '',
 				choosedItem: null,
 				columns3: [{
 						type: 'selection',
@@ -163,7 +164,20 @@
 						key: 'yysj',
 						minWidth:100,
 						align:'center'
-					}, {
+					},
+					{
+                        title: '评分',
+                        align: 'center',
+                        minWidth:120,
+                        key: 'pjdj',
+                    },
+                    {
+                        title: '评价内容',
+                        align: 'center',
+                        minWidth:180,
+                        key: 'pjnr',
+                    },
+					{
 						title: '里程(公里)',
 						key: 'lc',
 						minWidth:100,
@@ -220,7 +234,7 @@
 						}
 					}, {
 						title: '节假日补助',
-						minWidth:100,
+						minWidth:120,
 						align:'center',
 						key: 'jjrjl',
 						render: (h, p) => {
@@ -244,11 +258,26 @@
 						title: '操作',
 						key: 'action',
 						align: 'center',
-						minWidth:60,
+						minWidth:180,
 						align:'center',
 						fixed:'right',
 						render: (h, params) => {
 							return h('div', [
+							 h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'车单打印'),
 								h('Button', {
 									props: {
 										type: 'primary',
@@ -260,10 +289,10 @@
 									on: {
 										click: () => {
 											this.choosedItem = params.row;
-											this.componentName = 'edit';
+											this.compName = 'edit';
 										}
 									}
-								}, '编辑')
+								}, '单据编辑')
 							]);
 						}
 					}
@@ -311,7 +340,20 @@
 						key: 'yysj',
 						minWidth:100,
 						align:'center'
-					}, {
+					}, 
+					{
+                        title: '评分',
+                        align: 'center',
+                        minWidth:120,
+                        key: 'pjdj',
+                    },
+                    {
+                        title: '评价内容',
+                        align: 'center',
+                        minWidth:180,
+                        key: 'pjnr',
+                    },
+					{
 						title: '里程(公里)',
 						key: 'lc',
 						minWidth:100,
@@ -368,7 +410,7 @@
 						}
 					}, {
 						title: '节假日补助',
-						minWidth:100,
+						minWidth:120,
 						align:'center',
 						key: 'jjrjl',
 						render: (h, p) => {
@@ -388,6 +430,32 @@
 						minWidth:120,
 						align:'center'
 					},
+                    {
+                        title: '操作',
+                        key: 'action',
+                        align: 'center',
+                        minWidth:90,
+                        fixed:'right',
+                        render: (h, params) => {
+                            return h('div', [
+                            h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'车单打印')
+                            ]);
+                        }
+                    }
 				],
 				munName: '1',
 				param: {
@@ -502,7 +570,7 @@
 				}
 				item.choosedOrderList = this.selectedData[index];
 				this.choosedItem = item;
-				this.componentName = 'print';
+				this.compName = 'print';
 			},
 			show() {
 
