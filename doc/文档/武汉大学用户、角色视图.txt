@@ -3,6 +3,24 @@
 SELECT * FROM upubdata.v_clgl_yhxx;
 SELECT * FROM upubdata.V_CLGL_JGXX;
 
+-- 模拟数据。
+
+dept_id dept_code,  --机构代码
+dept_code dept_id,  --机构编号
+dept_name,  --机构名称
+parent_id   --父级机构代码
+ 423   641000    汉语国际推广教学资源研究开发基地    3
+ 424  5201502    武汉武大教育发展公司    6
+ 425  2316000    高新技术产业发展部     2
+ 426  2314009    基建管理处    296
+ 427  1201303    期刊社    6
+
+XH  XM SJHM YXDM YXMC JS
+200731060037     赵洋跃   -	    13	      生命科学学院	本科生
+00006526	     张良      -	1304000    生命科学学院	教职工
+2014202040066   来凤玲   -	    204	      生命科学学院	研究生
+
+
 128944条数据
 xh 学号
 xm	姓名
