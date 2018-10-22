@@ -1,0 +1,50 @@
+用户管理
+
+SELECT * FROM upubdata.v_clgl_yhxx;
+SELECT * FROM upubdata.V_CLGL_JGXX;
+
+128944条数据
+xh 学号
+xm	姓名
+sjhm	手机号码
+yxdm	院系代码
+yxmc	院系名称
+JS		角色
+
+
+dept_code	机构代码
+dept_id		 机构编号
+dept_name	机构名称
+parent_id	父级机构代码
+
+
+
+dept_id dept_code,  --机构代码
+dept_code dept_id,  --机构编号
+dept_name,  --机构名称
+parent_id   --父级机构代码
+
+xh,  --学号
+  xm,  --姓名
+  ''sjhm,  --手机号码
+  yxdm,  --院系代码
+  yxmc,  --院系名称
+  '本科生'js  --角色
+  from etl_kettle.bks_jbxx
+union all
+SELECT  xh,  --学号
+  xm,  --姓名
+  ''sjhm,  --手机号码
+  yxdm,  --院系代码
+  yxmc,  --院系名称
+  '研究生'js  --角色
+  from etl_kettle.yjs_jbxx
+union all
+SELECT  tsb.employee_code  xh,    --教工号
+        tsb.name    xm,    --姓名
+  tsb.mobile_phone  sjhm,    --手机号码
+        dept.dept_code    yxdm,    --部门编码
+        dept.dept_name    yxmc,    --部门名称
+  '教职工'js  --角色
+  from urenshi.t_stf_base tsb
+  left join urenshi.t_org_dept dept on dept.dept_id = tsb.dept_id
