@@ -84,6 +84,8 @@ public class MessageApi {
 		if (!res.isSuccess()){
 			return res;
 		}
+
+		xlService.checkRouteInfo(route);
 		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 	}
 

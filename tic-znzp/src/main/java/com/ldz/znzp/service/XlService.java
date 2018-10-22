@@ -4,6 +4,7 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.znzp.base.BaseService;
 import com.ldz.znzp.model.ClPb;
 import com.ldz.znzp.model.ClXl;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.List;
@@ -18,6 +19,9 @@ public interface XlService extends BaseService<ClXl,String>{
      * @return
      */
     public ApiResponse<String> getRouterInfo(ChannelHandlerContext ctx, String tid);
+    public ApiResponse<String> getRouterInfo(Channel channel, String tid);
 
     ClXl getByCarId(ClPb clPb);
+
+    void checkRouteInfo(ClXl route);
 }
