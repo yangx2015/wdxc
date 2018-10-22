@@ -71,10 +71,20 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
     private List<ClXl> getXls(String zpId){
         SimpleCondition condition = new SimpleCondition(ClZpXl.class);
         condition.eq(ClZpXl.InnerColumn.zpId,zpId);
+        condition.setOrderByClause(ClZpXl.InnerColumn.id.asc());// 按ID排序
         List<ClZpXl> zpXlList = zpXlMapper.selectByExample(condition);
         if (zpXlList.size() == 0)return new ArrayList<>();
         List<String> xlIds = zpXlList.stream().map(ClZpXl::getXlId).collect(Collectors.toList());
-        return xlService.findIn(ClXl.InnerColumn.id,xlIds);
+        List<ClXl> list=xlService.findIn(ClXl.InnerColumn.id,xlIds);
+        List<ClXl> newList=new ArrayList<>(list.size());
+        if(list!=null&&list.size()>0){
+            Map<String,ClXl> zdMap = list.stream().collect(Collectors.toMap(ClXl::getId,p->p));
+            for(ClZpXl obj:zpXlList){
+                newList.add(zdMap.get(obj.getXlId()));
+            }
+            return newList;
+        }
+        return list;
     }
 
     /**
