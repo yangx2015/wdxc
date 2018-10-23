@@ -3,10 +3,7 @@ package com.ldz.biz.config;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.model.*;
-import com.ldz.biz.module.service.ClYyService;
-import com.ldz.biz.module.service.GpsLsService;
-import com.ldz.biz.module.service.XcService;
-import com.ldz.biz.module.service.ZdglService;
+import com.ldz.biz.module.service.*;
 import com.ldz.util.bean.*;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
@@ -42,6 +39,7 @@ public class TopicMessageListener implements MessageListener {
     private ClYyService clYyService;
 
     private GpsLsService gpsLsService;
+    private GpsService gpsService;
 
     private ZdglService zdglService;
 
@@ -53,9 +51,10 @@ public class TopicMessageListener implements MessageListener {
 
     Logger error = LoggerFactory.getLogger("error_info");
 
-    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl,double distance) {
+    public TopicMessageListener(XcService xcService,GpsService gpsService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl,double distance) {
         this.xcService = xcService;
         this.clYyService = clYyService;
+        this.gpsService = gpsService;
         this.gpsLsService = gpsLsService;
         this.zdglService = zdglService;
         this.redisTemplate = redisTemplate;
@@ -110,6 +109,13 @@ public class TopicMessageListener implements MessageListener {
                 zdgl.setZxzt("20");
                 zdglService.update(zdgl);
 
+                ClGps gps = gpsService.findById(zdbh);
+                if (gps != null){
+                    gps.setYxsd("0");
+                    gps.setFxj(new BigDecimal(0));
+                    gps.setGxsj(new Date());
+                    gpsService.update(gps);
+                }
                 //独立线程通知其他服务器离线消息
                 pool.submit(new Runnable() {
 
