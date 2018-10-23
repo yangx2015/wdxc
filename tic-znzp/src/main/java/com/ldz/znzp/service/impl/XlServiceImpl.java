@@ -270,7 +270,10 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
         List<ClPb> pbs = pbService.findEq(ClPb.InnerColumn.xlId,route.getId());
         if (pbs.size() == 0) return;
 
-        String carNumStr = (String) redisDao.boundValueOps("xlCarNum-"+route.getId()).get();
+        String carNumStr = "";
+        try {
+            carNumStr = (String) redisDao.boundValueOps("xlCarNum-"+route.getId()).get();
+        }catch (Exception e){e.printStackTrace();}
         int carNum = StringUtils.isEmpty(carNumStr) ? 0 : Integer.parseInt(carNumStr);
         if (carNum != pbs.size()){
             List<ClZnzp> znzps = znzpService.getByXlId(route.getId());

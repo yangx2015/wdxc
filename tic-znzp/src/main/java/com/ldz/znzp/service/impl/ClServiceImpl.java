@@ -151,7 +151,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
         // 经纬度转换
         ClGps clGps = gpsService.changeCoordinates(gpsInfo);
-        Gps gps = new Gps(Double.parseDouble(gpsInfo.getLatitude()),Double.parseDouble(gpsInfo.getLongitude()));
+//        Gps gps = new Gps(Double.parseDouble(String.valueOf(clGps.getBdjd().doubleValue())),Double.parseDouble(gpsInfo.getLongitude()));
+        Gps gps = new Gps(clGps.getBdjd().doubleValue(),clGps.getBdwd().doubleValue());
         // 获取当前站点
         boolean hasRecord = record != null && StringUtils.isNotEmpty(record.getZdId());
         ClZd currentStation = null;
@@ -360,6 +361,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         // 获取线路站点
         SimpleCondition condition = new SimpleCondition(ClXlzd.class);
         condition.eq(ClXlzd.InnerColumn.xlId,xlId);
+        condition.setOrderByClause(ClXlzd.InnerColumn.xh.asc());
         List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
         if (xlzds.size() == 0){
             return null;
@@ -375,6 +377,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             Short xh = stationXhMap.get(station.getId());
             if (xh != null)station.setRouteOrder(xh);
         }
+
         return stations;
     }
 
@@ -430,46 +433,100 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         if (stations == null)return null;
         if (stations.size() == 1)return stations.get(0);
         Map<String,ClZd> stationMap = stations.stream().collect(Collectors.toMap(ClZd::getId,p->p));
-
+//        log.error("1，上一站点["+prvStationId+"]:车辆ID"+car);
+//        log.info("1，上一站点["+prvStationId+"]:车辆ID"+car);
+        short prvStationOrder=0;
+        if(StringUtils.isNotEmpty(prvStationId)){
+            ClZd prvZd=stationMap.get(prvStationId);
+        //         log.error("2，上一站点["+prvStationId+"]prvZd.toString():车辆ID"+car);
+        //         log.info("2，上一站点["+prvStationId+"]prvZd.toString():车辆ID"+car);
+            if(prvZd!=null){
+                prvStationOrder=prvZd.getRouteOrder();
+            }
+            //         log.error("3，上一站点["+prvStationOrder+"]:车辆ID"+car);
+            //         log.info("3，上一站点["+prvStationOrder+"]:车辆ID"+car);
+        }
         Map<String,Double> distanceMap = new HashMap<>();
         short maxStationOrder = 0;
         for (ClZd station : stations) {
-            Gps gps = new Gps(station.getJd(),station.getWd());
-            Double d = DistanceUtil.getShortDistance(currentGps,gps);
-            // 如果距离小于站点范围，则直接返回当前站点
-            if (d < station.getFw()) return station;
-            if (station.getRouteOrder() > maxStationOrder){
-                maxStationOrder = station.getRouteOrder();
+            //         log.info("4，上一站点["+prvStationOrder+"]:"+station.getRouteOrder()+"车辆ID"+car);
+
+            //         log.info("4-1，上一站点["+prvStationOrder+"]"+(prvStationOrder==0?"真":"错")+"，"+(((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2)+"，"+(prvStationOrder>0&&prvStationOrder<=station.getRouteOrder()));
+            //prvStationOrder==0 无历史坐标   (((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2) 当前站如果在最后了，只取最后两站
+            if((prvStationOrder==0)||
+                    (((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2)||
+                    (prvStationOrder>0&&(prvStationOrder<=station.getRouteOrder()&&prvStationOrder+5>=station.getRouteOrder()))
+                    ){
+            //         log.error("**********************:"+station.getRouteOrder()+" 车辆ID"+car);
+                Gps gps = new Gps(station.getJd(),station.getWd());
+                Double d = DistanceUtil.getShortDistance(currentGps,gps);
+                // 如果距离小于站点范围，则直接返回当前站点
+                if (d < station.getFw()) return station;
+                if (station.getRouteOrder() > maxStationOrder){
+                    maxStationOrder = station.getRouteOrder();
+                }
+                distanceMap.put(station.getId(),d);
+
             }
-            distanceMap.put(station.getId(),d);
         }
+            //         log.info("5，上一站点["+prvStationOrder+"]:"+distanceMap.size());
+
         List<Map.Entry<String,Double>> entryList = new ArrayList<>(distanceMap.entrySet());
         entryList.sort((o1, o2) -> {
             Double v1 = o1.getValue();
             Double v2 = o2.getValue();
             return new Double(v1 - v2).intValue();
         });
-        String id0 = entryList.get(0).getKey();
-        String id1 = entryList.get(1).getKey();
-        ClZd station0 = stationMap.get(id0);
-        ClZd station1 = stationMap.get(id1);
         ClZd stationB = null;
-        // 如果比对站点包含
-        if (station0.getRouteOrder() > station1.getRouteOrder()){
-            stationB = station0;
+        String id0 ="";
+        String id1 ="";
+        ClZd station0=null;
+        ClZd station1=null;
+        if(entryList.size()>2){
+            id0 = entryList.get(0).getKey();
+            id1 = entryList.get(1).getKey();
+            station0 = stationMap.get(id0);
+            station1 = stationMap.get(id1);
+            // 如果比对站点包含
+            if (station0.getRouteOrder() > station1.getRouteOrder()){
+                stationB = station0;
+            }else{
+                stationB = station1;
+            }
         }else{
-            stationB = station1;
+            stationB=stationMap.get(entryList.get(0).getKey());
         }
-        log.error("查找站点，上一站点["+prvStationId+"]:", stationB.toString());
+        //         log.error("查找站点，上一站点["+prvStationId+"]:", stationB.toString());
+        //         log.error("6,stationB.getRouteOrder():"+stationB.getRouteOrder() +"maxStationOrder"+maxStationOrder, stationB.getRouteOrder() == maxStationOrder);
+        //         log.info("6,stationB.getRouteOrder():"+stationB.getRouteOrder() +"maxStationOrder"+maxStationOrder, stationB.getRouteOrder() == maxStationOrder);
         if (stationB.getRouteOrder() == maxStationOrder){
+        //         log.info("6,最后一个站点我进来了");
             // 如果上一次站点是最后一个站点，并且状态为到站，则设置当前站点为离线
             if (prvStationId.equals(stationB.getId())){
+                //         log.info("7,最后一个站点我进来了");
+                // 获取线路站点
+                SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+                condition.eq(ClXlzd.InnerColumn.xlId,pb.getXlId());
+                condition.setOrderByClause(ClXlzd.InnerColumn.xh.asc());
+                List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
+                //         log.info("8,查找出线路排班信息：线路ID"+pb.getXlId()+" 总计："+xlzds.size());
+                if(xlzds!=null&&xlzds.size()>0){
+                //         log.info("9,查找出线路排班信息：获取出结束站点的名称"+stationMap.get(xlzds.get(0).getZdId()).getMc());
+
+                    return stationMap.get(xlzds.get(0).getZdId());
+                }
                 return stationB;
             }
         }
-        ClZd currentStation = station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
+        if(entryList.size()>2){
+            ClZd currentStation = station0.getRouteOrder() < station1.getRouteOrder() ? station0 : station1;
+            return currentStation;
+        }else{
+            //         log.info("10、这是最后一个站点。站点名称："+stationB.getMc());
+            return stationB;
+        }
 //        zdService.setStationOrders(station0,station1);
-        return currentStation;
+
     }
 
     @Override

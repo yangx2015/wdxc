@@ -104,11 +104,13 @@ public class MessageReceiver implements MessageListener {
 
 				ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route,clClyxjl);
 				if (!res.isSuccess())return ;
+				xlService.checkRouteInfo(route);
 				clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 				break;
 		}
 		System.out.println("收到一条消息："+topic);
 		}catch (Exception e){
+			e.printStackTrace();
 			errorLog.error("智能站牌，REIDS消息订阅报出异常",e);
 		}
 	}
