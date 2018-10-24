@@ -1,6 +1,7 @@
 package com.ldz.biz.config;
 
 import com.ldz.biz.module.service.*;
+import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.spring.SpringContextUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ public class RedisConfig {
 	public  String bizurl;
 	@Value("${distance}")
 	public double distance;
+	@Autowired
+	private ZdxmService zdxmService;
 	@Autowired
 	private RedisConnectionFactory redisConnectionFactory;
 
@@ -84,7 +87,7 @@ public class RedisConfig {
 		ZdglService zdglService = SpringContextUtil.getBean(ZdglService.class);
 		//topicMessageListener.setRedisTemplate(redisTemplateUtil);
 		container.addMessageListener(messageReceiver, topics);
-		container.addMessageListener(new TopicMessageListener(xcService,gpsservice,clYyService,gpsLsService,zdglService,redisTemplateUtil,url,znzpurl,bizurl,distance) , channelTopic);
+		container.addMessageListener(new TopicMessageListener(zdxmService,xcService,gpsservice,clYyService,gpsLsService,zdglService,redisTemplateUtil,url,znzpurl,bizurl,distance) , channelTopic);
 		//这个container 可以添加多个 messageListener
 		return container;
 	}
