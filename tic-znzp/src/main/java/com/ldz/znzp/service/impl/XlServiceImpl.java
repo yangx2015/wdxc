@@ -41,6 +41,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
     @Autowired
     private ClyxjlService clyxjlService;
     @Autowired
+    private ZdglService zdglService;
+    @Autowired
     private NettyUtil nettyUtil;
     @Autowired
     private ClZpXlMapper zpXlMapper;
@@ -247,8 +249,21 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl,String> implements XlSer
 	    List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 	    if (clClyxjls.size() == 0)return new ArrayList<>();
 
+	    List<String> allZdbh = clClyxjls.stream().map(ClClyxjl::getSzdbh).collect(Collectors.toList());
+	    List<String> onlineZdbh = new ArrayList<>();
+	    SimpleCondition condition1 = new SimpleCondition(ClZdgl.class);
+	    condition1.in(ClZdgl.InnerColumn.zdbh,allZdbh);
+	    condition1.eq(ClZdgl.InnerColumn.zxzt,"00");
+        List<ClZdgl> zdgls = zdglService.findByCondition(condition1);
+        if (zdgls.size() == 0){
+            return new ArrayList<>();
+        }
+        onlineZdbh = zdgls.stream().map(ClZdgl::getZdbh).collect(Collectors.toList());
+
 	    List<Bus> buses = new ArrayList<>();
         for (ClClyxjl clClyxjl : clClyxjls) {
+            // 排除不在线的车辆
+            if (!onlineZdbh.contains(clClyxjl.getSzdbh())) continue;
             Bus bus = new Bus();
             bus.setId(clClyxjl.getClId());
             bus.setCurrentStationNo(""+clClyxjl.getZdbh());
