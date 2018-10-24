@@ -302,7 +302,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		//如果前台车辆初登日期发生了变化，则重新计算车辆年审日期
 		if (entity.getCcdjrq() != null){
 			entity.setCcdjrq(DateTime.now().withMillis(entity.getCcdjrq().getTime()).plusDays(1).toDate());
-			if (entity.getCcdjrq().getTime() != findById.getCcdjrq().getTime()){
+			if (findById.getCcdjrq() == null || entity.getCcdjrq().getTime() != findById.getCcdjrq().getTime()){
 				entity.setNssj(getNsrq(entity, false));
 			}
 		}
