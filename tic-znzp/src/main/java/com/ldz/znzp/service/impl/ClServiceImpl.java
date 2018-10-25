@@ -315,7 +315,16 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                     zt = "inStation"; // 进站
                 }
             }else{
-                currentStation = findCurrentZd(record.getZdId(),gps,car,pb);
+                int threshold=5;
+                try {
+                    Date last=record.getCjsj();//上一个点的创建时间
+                    Date startTime=DateUtils.getDate(gpsInfo.getStartTime(),"yyyy-MM-dd HH:mm:ss");//开始时间
+                    long diff = (startTime.getTime() - last.getTime())/ 1000 / 60;
+                    if(diff<2){
+                        threshold=1;
+                    }
+                }catch (Exception e){}
+                currentStation = findCurrentZd(record.getZdId(),gps,car,pb,threshold);
             }
         }
         if (zt == null){
@@ -426,9 +435,12 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
         return report(tid,pb,car,route,clClyxjls.size() == 0 ? null : clClyxjls.get(0));
     }
-
     @Override
     public ClZd findCurrentZd(String prvStationId,Gps currentGps,ClCl car,ClPb pb){
+        return findCurrentZd(prvStationId,currentGps,car,pb,5);
+    }
+
+    public ClZd findCurrentZd(String prvStationId,Gps currentGps,ClCl car,ClPb pb,long threshold){
         List<ClZd> stations = getStationList(pb);
         if (stations == null)return null;
         if (stations.size() == 1)return stations.get(0);
@@ -454,8 +466,8 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             //         log.info("4-1，上一站点["+prvStationOrder+"]"+(prvStationOrder==0?"真":"错")+"，"+(((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2)+"，"+(prvStationOrder>0&&prvStationOrder<=station.getRouteOrder()));
             //prvStationOrder==0 无历史坐标   (((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2) 当前站如果在最后了，只取最后两站
             if((prvStationOrder==0)||
-                    (((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>=stations.size()-2)||
-                    (prvStationOrder>0&&(prvStationOrder<=station.getRouteOrder()&&prvStationOrder+5>=station.getRouteOrder()))
+                    (((stations.size()-2)<prvStationOrder)&&station.getRouteOrder()>stations.size()-2)||
+                    (prvStationOrder>0&&(prvStationOrder<=station.getRouteOrder()&&prvStationOrder+threshold>=station.getRouteOrder()))
                     ){
             //         log.error("**********************:"+station.getRouteOrder()+" 车辆ID"+car);
                 Gps gps = new Gps(station.getJd(),station.getWd());
@@ -466,6 +478,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                     maxStationOrder = station.getRouteOrder();
                 }
                 distanceMap.put(station.getId(),d);
+                if(prvStationOrder==12||prvStationOrder==13){
+                    log.error("**********************:"+prvStationOrder+"****"+station.getMc()+" 距离"+d);
+                }
 
             }
         }
@@ -487,15 +502,20 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             id1 = entryList.get(1).getKey();
             station0 = stationMap.get(id0);
             station1 = stationMap.get(id1);
+            log.error("**********************:"+entryList.get(0).getValue()+"  "+station0.getMc());
+            log.error("**********************:"+entryList.get(1).getValue()+"  "+station1.getMc());
             // 如果比对站点包含
             if (station0.getRouteOrder() > station1.getRouteOrder()){
+                log.error("**********************1:station0.getRouteOrder() > station1.getRouteOrder(){}",station0.getRouteOrder() > station1.getRouteOrder());
                 stationB = station0;
             }else{
+                log.error("**********************2:station0.getRouteOrder() > station1.getRouteOrder(){}",station0.getRouteOrder() > station1.getRouteOrder());
                 stationB = station1;
             }
         }else{
             stationB=stationMap.get(entryList.get(0).getKey());
         }
+        log.error("**********************:"+prvStationOrder+"****"+stationB.getMc()+" 距离");
         //         log.error("查找站点，上一站点["+prvStationId+"]:", stationB.toString());
         //         log.error("6,stationB.getRouteOrder():"+stationB.getRouteOrder() +"maxStationOrder"+maxStationOrder, stationB.getRouteOrder() == maxStationOrder);
         //         log.info("6,stationB.getRouteOrder():"+stationB.getRouteOrder() +"maxStationOrder"+maxStationOrder, stationB.getRouteOrder() == maxStationOrder);
