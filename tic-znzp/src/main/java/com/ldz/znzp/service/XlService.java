@@ -23,5 +23,5 @@ public interface XlService extends BaseService<ClXl,String>{
 
     ClXl getByCarId(ClPb clPb);
 
-    void checkRouteInfo(ClXl route);
+    void checkRouteInfo(String xlId);
 }

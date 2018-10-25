@@ -10,10 +10,7 @@ import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -85,8 +82,14 @@ public class MessageApi {
 			return res;
 		}
 
-		xlService.checkRouteInfo(route);
+		xlService.checkRouteInfo(route.getId());
 		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
+	}
+
+	@PostMapping("updateRouteInfo")
+	public ApiResponse<String> updateRouteInfo(String xlId){
+		xlService.checkRouteInfo(xlId);
+		return ApiResponse.success();
 	}
 
 	@RequestMapping(value="/media", method={RequestMethod.POST})

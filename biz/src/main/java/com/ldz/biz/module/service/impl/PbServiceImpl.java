@@ -1,20 +1,19 @@
 package com.ldz.biz.module.service.impl;
 
 import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 import com.ldz.biz.module.service.XlService;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.HttpUtil;
+import com.ldz.util.commonUtil.JsonUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
 import com.ldz.biz.module.bean.ClClModel;
@@ -56,6 +55,8 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	private ClClMapper clclmapper;
 	@Autowired
 	private XlService xlService;
+	@Value("${znzpurl}")
+	private String znzpUrl;
 
 	@Override
 	protected Mapper<ClPb> getBaseMapper() {
@@ -218,9 +219,23 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			i = entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
 		}
 		if (i == 0) {
+			updateRouteInfo(xlId);
 			return ApiResponse.fail();
 		} else {
 			return ApiResponse.success();
+		}
+	}
+
+	private void updateRouteInfo(String xlId){
+		Map<String, String> postHeaders = new HashMap<String, String>();
+		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+		Map<String,Object> postData = new HashMap<>();
+		postData.put("xlId",xlId);
+		String postEntity = JsonUtil.toJson(postData);
+		try {
+			String result = HttpUtil.postJson(znzpUrl +"/api/updateRouteInfo", postHeaders, postEntity);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -267,7 +282,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		SysYh currentUser = getCurrentUser();
 		String jgdm = currentUser.getJgdm();
 		pbclxlmodel.setJgdm(jgdm);
-		
+
 		// 校巴车型
 		pbclxlmodel.setClcx("30");
 		ApiResponse<JrXbKb> apiResponse = new ApiResponse<>();
@@ -452,6 +467,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			entityMapper.deleteByExample(simpleCondition);
 		}
 
+		updateRouteInfo(entity.getXlId());
 
 		return ApiResponse.success();
 	}
