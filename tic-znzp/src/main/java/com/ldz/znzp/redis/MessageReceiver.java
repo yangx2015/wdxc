@@ -3,6 +3,7 @@ package com.ldz.znzp.redis;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.bean.GpsInfo;
@@ -76,7 +77,10 @@ public class MessageReceiver implements MessageListener {
 				ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
 				if (car == null)return  ;
 
-				List<ClClyxjl> clClyxjls = clyxjlService.findEq(ClClyxjl.InnerColumn.clId,car.getClId());
+				SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+				condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
+				condition.setOrderByClause(ClClyxjl.InnerColumn.id.desc());
+				List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 
 				ClPb pb = clService.getCarPb(car.getClId());
 				if (pb == null)return ;

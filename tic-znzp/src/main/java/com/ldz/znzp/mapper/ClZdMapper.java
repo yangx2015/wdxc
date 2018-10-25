@@ -5,7 +5,7 @@ import com.ldz.znzp.model.ClZd;
 import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.cache.decorators.FifoCache;
 import tk.mybatis.mapper.common.Mapper;
-
-@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
+// todo 暂时去掉这里的缓存。
+//@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClZdMapper extends Mapper<ClZd> {
 }
