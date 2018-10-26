@@ -219,9 +219,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			i = entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
 		}
 		if (i == 0) {
-			updateRouteInfo(xlId);
 			return ApiResponse.fail();
 		} else {
+			updateRouteInfo(xlId);
 			return ApiResponse.success();
 		}
 	}
