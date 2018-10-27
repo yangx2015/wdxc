@@ -1,50 +1,45 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.ParseException;
-import java.util.*;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
+import com.ldz.biz.module.bean.*;
+import com.ldz.biz.module.mapper.ClClMapper;
+import com.ldz.biz.module.mapper.ClClyxjlMapper;
+import com.ldz.biz.module.mapper.ClPbMapper;
+import com.ldz.biz.module.mapper.PbInfoMapper;
+import com.ldz.biz.module.model.ClCl;
+import com.ldz.biz.module.model.ClClyxjl;
+import com.ldz.biz.module.model.ClPb;
+import com.ldz.biz.module.service.ClService;
+import com.ldz.biz.module.service.PbService;
 import com.ldz.biz.module.service.XlService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.model.SysJg;
+import com.ldz.sys.model.SysYh;
+import com.ldz.sys.service.JgService;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
+import com.ldz.util.exception.RuntimeCheck;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-
-import com.ldz.biz.module.bean.ClClModel;
-import com.ldz.biz.module.bean.JrXbKb;
-import com.ldz.biz.module.bean.PbClXlmodel;
-import com.ldz.biz.module.bean.PbInfo;
-import com.ldz.biz.module.bean.XbXlPb;
-import com.ldz.biz.module.bean.clpbInfo;
-import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.mapper.ClPbMapper;
-import com.ldz.biz.module.mapper.PbInfoMapper;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClDd;
-import com.ldz.biz.module.model.ClPb;
-import com.ldz.biz.module.model.ClXl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.PbService;
-import com.ldz.sys.base.BaseServiceImpl;
-import com.ldz.sys.model.SysJg;
-import com.ldz.sys.model.SysYh;
-import com.ldz.sys.service.JgService;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.util.commonUtil.DateUtils;
-import com.ldz.util.exception.RuntimeCheck;
-
 import tk.mybatis.mapper.common.Mapper;
+
+import java.text.ParseException;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service
 public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbService {
 	@Autowired
 	private ClPbMapper entityMapper;
+	@Autowired
+	private ClClyxjlMapper clClyxjlMapper;
 	@Autowired
 	private JgService jgService;
 	@Autowired
@@ -171,17 +166,42 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		List<XbXlPb> selectXbPb = pbinfomapper.selectXbPb(pbclxlmodel);
 
 		for (XbXlPb xbXlPb : selectXbPb) {
+			Map<String,String> clclasseslistMap=new HashMap<>();
 
 			if (StringUtils.isNotEmpty(xbXlPb.getClidlist())) {
+
 				// 获取车辆id集合
 				List<String> clidlist = Arrays.asList(xbXlPb.getClidlist().split(","));
+				if(StringUtils.isNotEmpty(xbXlPb.getClclasseslist())){
+					String[] aaa = xbXlPb.getClclasseslist().split(",");
+					int seq=0;
+					for(String clId:clidlist){
+						if(!StringUtils.equals(aaa[seq],"0")){
+							String val=clclasseslistMap.get(clId);
+							if(StringUtils.isEmpty(val)){
+								val="";
+							}
+							val+=aaa[seq]+",";
+							clclasseslistMap.put(clId,val);
+						}
+						seq++;
+					}
+				}
 				List<ClCl> allClInfo = clclmapper.getAllClInfo(clidlist);
 				if (StringUtils.isNotEmpty(pbclxlmodel.getClcx())) {
 					// 过滤指定车型的车辆信息
 					List<ClCl> collect = allClInfo.stream().filter(s -> s.getCx().equals(pbclxlmodel.getClcx()))
 							.collect(Collectors.toList());
+					for (ClCl cl:collect){
+						cl.setPbbx(clclasseslistMap.get(cl.getClId()));
+					}
 					xbXlPb.setClList(collect);
 				} else {
+					if(allClInfo!=null&&allClInfo.size()>0){
+						for (ClCl cl:allClInfo){
+							cl.setPbbx(clclasseslistMap.get(cl.getClId()));
+						}
+					}
 					xbXlPb.setClList(allClInfo);
 				}
 
@@ -218,6 +238,12 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if (findXlCl != null && findXlCl.size() == 1 && findXlCl.get(0).getId() != null) {
 			i = entityMapper.deleteByPrimaryKey(findXlCl.get(0).getId());
 		}
+		try {
+			ClClyxjl clClyxjl=new ClClyxjl();
+			clClyxjl.setClId(clId);
+			clClyxjlMapper.delete(clClyxjl);
+		}catch (Exception e){}
+
 		if (i == 0) {
 			return ApiResponse.fail();
 		} else {
@@ -253,6 +279,34 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			RuntimeCheck.ifFalse(false, "排班时间格式异常");
 		}
 		List<ClClModel> clClList = clclmapper.getAllNotPbClList(xlId, pbDate, cx);
+		if(clClList!=null&&clClList.size()>0){
+			List<String> clList = clClList.stream().map(ClClModel::getClId).collect(Collectors.toList());
+			SimpleCondition condition = new SimpleCondition(ClPb.class);
+			condition.in(ClPb.InnerColumn.clId,clList);
+			condition.eq(ClPb.InnerColumn.pbsj,pbDate);
+			List<ClPb> pbList = this.findByCondition(condition);
+			Map<String,String> pbClasses= new HashMap<>();
+			if (pbList.size() > 0){
+				for(ClPb pb:pbList){
+					if(StringUtils.isNotEmpty(pb.getClasses())){
+						String classes=pbClasses.get(pb.getClId());
+						if(StringUtils.isEmpty(classes)){
+							classes="";
+						}
+						classes+=pb.getClasses()+",";
+						pbClasses.put(pb.getClId(),classes);
+					}
+				}
+			}
+			for(ClClModel cl:clClList){
+				String[] valueArray = StringUtils.split(pbClasses.get(cl.getClId()), ",");
+				if(valueArray!=null&&valueArray.length>0){
+					cl.setClassesList(Arrays.asList(valueArray));
+				}else{
+					cl.setClassesList(new ArrayList<String>());
+				}
+			}
+		}
 		return ApiResponse.success(clClList);
 	}
 
@@ -324,10 +378,15 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
     @Override
     public ApiResponse<String> savePbList(ClPb entity) {
 		SysYh currentUser = getCurrentUser();
-		SysJg org = jgService.findByOrgCode(currentUser.getJgdm());
 		RuntimeCheck.ifBlank(entity.getClId(), "请选择车辆");
     	RuntimeCheck.ifBlank(entity.getXlId(), "请选择线路");
     	RuntimeCheck.ifBlank(entity.getCx(), "请选择车型");
+		RuntimeCheck.ifBlank(entity.getClasses(), "排班班次为空，无法进行排班");
+		if(StringUtils.containsNone(entity.getClasses(), new char[]{'1', '2', '4', '7'})){
+			return ApiResponse.fail("请输入正确的排班属性");
+		}
+
+		SysJg org = jgService.findByOrgCode(currentUser.getJgdm());
     	if(StringUtils.isBlank(entity.getKssj())){
     		entity.setKssj(DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
 		}else{
@@ -349,6 +408,8 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		RuntimeCheck.ifNull(clCl, "车辆信息有误，请核实！");
 		String sjId = clCl.getSjId();
 		RuntimeCheck.ifBlank(sjId, "该车辆未绑定司机，无法进行排班");
+
+
 		String clZt = clCl.getZt();
 		if (!StringUtils.equals(clZt, "00")) {
 			RuntimeCheck.ifBlank(sjId, "该车辆状态异常，无法进行排班");
@@ -356,23 +417,34 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if (!StringUtils.equals(entity.getCx(), clCl.getCx())) {
 			RuntimeCheck.ifBlank(sjId, "该车辆车型异常，无法进行排班");
 		}
+
 		List<Date> dates = new ArrayList<>();
 		try {
 			dates = DateUtils.createDateList(entity.getKssj(),entity.getJssj());
 		} catch (ParseException e) {
 			return ApiResponse.fail("时间格式异常");
 		}
+		Map<String,String> classesDescribe=new HashMap<>();
+        classesDescribe.put("1","早班");
+        classesDescribe.put("2","午班");
+        classesDescribe.put("3","早班、午班");
+        classesDescribe.put("4","下午");
+        classesDescribe.put("5","早班、下午");
+        classesDescribe.put("6","午班、下午");
+        classesDescribe.put("7","全班");
 
 		// 根据开始时间和结束时间生成List
 		List<ClPb> clPbs = new ArrayList<>();
-
+        String errorMessage="";
 		if(CollectionUtils.isNotEmpty(dates)){
 			SimpleCondition condition = new SimpleCondition(ClPb.class);
 			condition.eq(ClPb.InnerColumn.clId, entity.getClId());
+			condition.eq(ClPb.InnerColumn.classes, entity.getClasses());
 			condition.lte(ClPb.InnerColumn.pbsj, dates.get(dates.size()-1));
 			condition.gte(ClPb.InnerColumn.pbsj, dates.get(0));
 			// 首先删除掉当前车辆和线路上已经存在的排班
 			int i = entityMapper.deleteByExample(condition);
+
 			for (Date date : dates) {
 				ClPb clPb = new ClPb();
 				clPb.setPbsj(date);
@@ -386,12 +458,41 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 				clPb.setJgmc(org.getJgmc());
 				clPb.setSj(clCl.getSjId());
 				clPb.setSjxm(clCl.getSjxm());
-				clPbs.add(clPb);
+				clPb.setClasses(entity.getClasses());
+				//todo 班次的开始、结束时间需要标记
+				if(StringUtils.equals(entity.getClasses(),"1")){
+					clPb.setStartTime("07:00:00");
+					clPb.setEndTime("11:00:00");
+				}else if(StringUtils.equals(entity.getClasses(),"2")){
+					clPb.setStartTime("11:00:00");
+					clPb.setEndTime("14:00:00");
+				}else if(StringUtils.equals(entity.getClasses(),"4")){
+					clPb.setStartTime("14:00:00");
+					clPb.setEndTime("20:00:00");
+				}else if(StringUtils.equals(entity.getClasses(),"7")){
+					clPb.setStartTime("07:00:00");
+					clPb.setEndTime("20:00:00");
+				}
+				boolean type=true;
+				String classesSum=entityMapper.getClPbClasses(entity.getClId(),DateUtils.getDateStr(new Date(),"yyyyMMdd"));
+                if(StringUtils.isNotEmpty(StringUtils.trim(classesSum))){
+                    Double classessum= Double.parseDouble(classesSum);
+                    if(classessum>0&&classessum+Double.parseDouble(entity.getClasses())>7){
+                        errorMessage+="车辆:"+clCl.getCph()+"在"+DateUtils.getDateStr(new Date(),"yyyyMMdd")+"已有排班次："+classesDescribe.get(classesSum) +" 本次排班失败\n\r";
+                        type=false;
+                    }
+                }
+                if(type){
+                    clPbs.add(clPb);
+                }
 			}
-			entityMapper.insertList(clPbs);
+			if(clPbs!=null&&clPbs.size()>0){
+				entityMapper.insertList(clPbs);
+			}
 		}
-
-
+		if(StringUtils.isNotEmpty(errorMessage)){
+		    return ApiResponse.success(errorMessage);
+        }
 		return ApiResponse.success();
     }
 
