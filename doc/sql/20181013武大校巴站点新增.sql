@@ -1,3 +1,4 @@
+-- 生产环境已更新，yx  2018-10-22号在武大更新完成。
 -- 生产环境还没有更新 ，需要联系肖老师，更新数据库 20181012 yx
 
 INSERT INTO CL_ZD (ID, DZ, MC, JD, WD, CJSJ, CJR, XGSJ, XGR, JGDM, JGMC, ZT, BZ, YXFS, FW, LX) VALUES ('4353835515510784002', null, '信息学部游泳池-下行', 114.364237, 30.535737, TO_TIMESTAMP('2018-10-13 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), '1-超级管理员', TO_TIMESTAMP('2018-09-21 10:36:58', 'YYYY-MM-DD HH24:MI:SS'), '1-超级管理员', '100', '平台', '00', null, null, 50, '30');
