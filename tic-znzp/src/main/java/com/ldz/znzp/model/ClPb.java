@@ -84,6 +84,10 @@ public class ClPb implements Serializable {
      */
     @Column(name = "XGR")
     private String xgr;
+    @Column(name = "START_TIME")
+    private String startTime;
+    @Column(name = "END_TIME")
+    private String endTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -333,6 +337,8 @@ public class ClPb implements Serializable {
         clId("CL_ID"),
         cjsj("CJSJ"),
         cjr("CJR"),
+        startTime("START_TIME"),
+        endTime("END_TIME"),
         xgj("XGJ"),
         xgr("XGR");
 
