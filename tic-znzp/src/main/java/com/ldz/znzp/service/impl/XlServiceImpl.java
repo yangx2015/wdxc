@@ -5,8 +5,10 @@ import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
-import com.ldz.znzp.bean.*;
-import com.ldz.znzp.mapper.ClPbMapper;
+import com.ldz.znzp.bean.Bus;
+import com.ldz.znzp.bean.Route;
+import com.ldz.znzp.bean.RouteInfo;
+import com.ldz.znzp.bean.Station;
 import com.ldz.znzp.mapper.ClXlMapper;
 import com.ldz.znzp.mapper.ClZnzpMapper;
 import com.ldz.znzp.mapper.ClZpXlMapper;
@@ -16,6 +18,8 @@ import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
@@ -25,6 +29,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlService {
+    Logger errorLog = LoggerFactory.getLogger("error_info");
     @Autowired
     private ClXlMapper entityMapper;
     @Autowired
@@ -283,22 +288,27 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
     @Override
     public void checkRouteInfo(String xlId) {
+        errorLog.error("收到消息:线路ID为："+xlId);
         String time = DateUtils.getNowTime().substring(11);
         SimpleCondition condition = new SimpleCondition(ClPb.class);
         condition.eq(ClPb.InnerColumn.xlId, xlId);
-        condition.gte(ClPb.InnerColumn.startTime,time);
-        condition.lte(ClPb.InnerColumn.endTime,time);
+        condition.lte(ClPb.InnerColumn.startTime,time);//>=
+        condition.gte(ClPb.InnerColumn.endTime,time);//<=
+        condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') <= ",DateUtils.getToday("yyyy-MM-dd"));
         List<ClPb> pbs = pbService.findByCondition(condition);
-        if (pbs.size() == 0) return;
+//        if (pbs.size() == 0) return;
 
 
         String carNumStr = "";
         try {
             carNumStr = (String) redisDao.boundValueOps("xlCarNum-" + xlId).get();
         } catch (Exception e) {
+            errorLog.error("报错啦");
             e.printStackTrace();
         }
+        errorLog.error("收到消息:2："+carNumStr);
         int carNum = StringUtils.isEmpty(carNumStr) ? 0 : Integer.parseInt(carNumStr);
+        errorLog.error("收到消息:3："+carNum);
         if (carNum != pbs.size()) {
             List<ClZnzp> znzps = znzpService.getByXlId(xlId);
             if (znzps.size() == 0) return;
@@ -309,7 +319,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
                 xlService.getRouterInfo(channel, entry.getKey());
             }
         }
-        redisDao.boundValueOps("xlCarNum-" + xlId).set(pbs.size());
+        redisDao.boundValueOps("xlCarNum-" + xlId).set(pbs.size()+"");
     }
 
 }

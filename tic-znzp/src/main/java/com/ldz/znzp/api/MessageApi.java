@@ -85,7 +85,7 @@ public class MessageApi {
 		xlService.checkRouteInfo(route.getId());
 		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
 	}
-
+	// todo 这个方法我没有使用。因为用post请求时，一直获取不到xlId.这个方法放弃
 	@PostMapping("updateRouteInfo")
 	public ApiResponse<String> updateRouteInfo(String xlId){
 		xlService.checkRouteInfo(xlId);

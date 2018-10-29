@@ -1,21 +1,15 @@
 package com.ldz.znzp.util;
 
-import net.sf.json.JSON;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonIOException;
-import com.google.gson.JsonParser;
-import com.google.gson.JsonSyntaxException;
+//import com.google.gson.JsonArray;
+//import com.google.gson.JsonIOException;
+//import com.google.gson.JsonParser;
+//import com.google.gson.JsonSyntaxException;
 
 
 /**
@@ -26,24 +20,24 @@ public class postTest {
     private static int compartmentTime=1;//报文发送间格(秒)
 
     public static void main(String[] args) {
-        JsonParser parse =new JsonParser();  //创建json解析器
-        try {
-            //测试文件在项目的doc目录中   /doc/ticService-测试数据/****.json
-            JsonArray json=(JsonArray) parse.parse(new FileReader("D:\\AJC099.json"));  //创建jsonObject对象
-            for(int i=0;i<json.size();i++){
-                System.out.println("JSON报文:"+json.get(i).toString());
-                fahuo("http://47.98.39.45:9095/api/device/gps",json.get(i).toString());
-                System.out.println("第"+i+"条报文 ");
-            }
-
-
-        } catch (JsonIOException e) {
-            e.printStackTrace();
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+//        JsonParser parse =new JsonParser();  //创建json解析器
+//        try {
+//            //测试文件在项目的doc目录中   /doc/ticService-测试数据/****.json
+//            JsonArray json=(JsonArray) parse.parse(new FileReader("D:\\AJC099.json"));  //创建jsonObject对象
+//            for(int i=0;i<json.size();i++){
+//                System.out.println("JSON报文:"+json.get(i).toString());
+//                fahuo("http://47.98.39.45:9095/api/device/gps",json.get(i).toString());
+//                System.out.println("第"+i+"条报文 ");
+//            }
+//
+//
+//        } catch (JsonIOException e) {
+//            e.printStackTrace();
+//        } catch (JsonSyntaxException e) {
+//            e.printStackTrace();
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
     public static void fahuo(String url2,String json){
         url2="http://47.98.39.45:9095/api/device/gps";

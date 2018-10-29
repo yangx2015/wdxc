@@ -2,7 +2,10 @@ package com.ldz.znzp.redis;
 
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.spring.SpringContextUtil;
-import com.ldz.znzp.service.*;
+import com.ldz.znzp.service.ClService;
+import com.ldz.znzp.service.ClyxjlService;
+import com.ldz.znzp.service.XlService;
+import com.ldz.znzp.service.ZnzpService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -78,6 +81,7 @@ public class RedisConfig {
 
 		List<Topic> topics = new ArrayList<>();
 		topics.add(new PatternTopic("gps"));
+		topics.add(new PatternTopic("bizUpdateRouteInfo"));
 		topics.add(new PatternTopic("spk"));
 		ClService clService = SpringContextUtil.getBean(ClService.class);
 		XlService xlService = SpringContextUtil.getBean(XlService.class);

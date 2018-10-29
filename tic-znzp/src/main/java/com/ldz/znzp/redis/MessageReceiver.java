@@ -24,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.Message;
 import org.springframework.data.redis.connection.MessageListener;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -58,59 +59,73 @@ public class MessageReceiver implements MessageListener {
 		log.error("订阅的topic:"+topic);
 		log.error("订阅的值:"+eventMessage.toString());
 		System.out.println(eventMessage);
-		// String topic = Arrays.toString(pattern);
-        GpsInfo gpsInfo = new GpsInfo();
-        RequestCommonParamsDto dto = (RequestCommonParamsDto) eventMessage;
-        BeanUtils.copyProperties(dto,gpsInfo);
-		switch (topic){
-			case "gps":
-				if (StringUtils.isEmpty(gpsInfo.getDeviceId())){
-					return ;
-				}
-				if (StringUtils.isEmpty(gpsInfo.getLongitude())){
-					return ;
-				}
-				if (StringUtils.isEmpty(gpsInfo.getLatitude())){
-					return ;
-				}
-
-				ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
-				if (car == null)return  ;
-
-				SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
-				condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
-				condition.setOrderByClause(ClClyxjl.InnerColumn.id.desc());
-				List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
-
-				ClPb pb = clService.getCarPb(car.getClId());
-				if (pb == null)return ;
-
-				ClXl route = xlService.findById(pb.getXlId());
-				if (route == null)return ;
-				String yxkssj =route.getYxkssj();//运行开始时间
-				String yxjssj =route.getYxjssj();//运行结束时间
-				if(StringUtils.isNotEmpty(yxkssj)&&StringUtils.isNotEmpty(yxjssj)){
-					try {
-						Date ksDate = DateUtils.getDate(DateUtils.getToday()+" "+yxkssj,"yyyy-MM-dd HH:mm");
-						ksDate=new Date(ksDate.getTime() - 1000*60*5);//当前时间向前推5分钟
-						Date jsDate= DateUtils.getDate(DateUtils.getToday()+" "+yxjssj,"yyyy-MM-dd HH:mm");
-						jsDate= new Date(jsDate.getTime()+ 1000*60*30);//当前时间向后推30分钟
-						//开始时间
-						if(ksDate==null || ksDate.compareTo(new Date())>0 ||jsDate==null || new Date().compareTo(jsDate)>0){
-							return ;
-						}
-					} catch (Exception e) {
-						e.printStackTrace();
+		if(StringUtils.equals(topic,"bizUpdateRouteInfo")){
+			errorLog.error("收到排班消息:"+eventMessage.toString());
+			String xlIdList=eventMessage.toString();
+			if(StringUtils.isNotEmpty(xlIdList)){
+				List<String> xlIdLi = Arrays.asList(xlIdList.split(","));
+				if(xlIdLi!=null&&xlIdLi.size()>0){
+					for(String xlid:xlIdLi){
+						xlService.checkRouteInfo(xlid);
 					}
 				}
+			}
+		}else{
+			// String topic = Arrays.toString(pattern);
+			GpsInfo gpsInfo = new GpsInfo();
+			RequestCommonParamsDto dto = (RequestCommonParamsDto) eventMessage;
+			BeanUtils.copyProperties(dto,gpsInfo);
+			switch (topic){
+				case "gps":
+					if (StringUtils.isEmpty(gpsInfo.getDeviceId())){
+						return ;
+					}
+					if (StringUtils.isEmpty(gpsInfo.getLongitude())){
+						return ;
+					}
+					if (StringUtils.isEmpty(gpsInfo.getLatitude())){
+						return ;
+					}
 
-				ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
+					ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
+					if (car == null)return  ;
 
-				ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route,clClyxjl);
-				if (!res.isSuccess())return ;
-				xlService.checkRouteInfo(route);
-				clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
-				break;
+					SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+					condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
+					condition.setOrderByClause(ClClyxjl.InnerColumn.id.desc());
+					List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
+
+					ClPb pb = clService.getCarPb(car.getClId());
+					if (pb == null)return ;
+
+					ClXl route = xlService.findById(pb.getXlId());
+					if (route == null)return ;
+					String yxkssj =route.getYxkssj();//运行开始时间
+					String yxjssj =route.getYxjssj();//运行结束时间
+					if(StringUtils.isNotEmpty(yxkssj)&&StringUtils.isNotEmpty(yxjssj)){
+						try {
+							Date ksDate = DateUtils.getDate(DateUtils.getToday()+" "+yxkssj,"yyyy-MM-dd HH:mm");
+							ksDate=new Date(ksDate.getTime() - 1000*60*5);//当前时间向前推5分钟
+							Date jsDate= DateUtils.getDate(DateUtils.getToday()+" "+yxjssj,"yyyy-MM-dd HH:mm");
+							jsDate= new Date(jsDate.getTime()+ 1000*60*30);//当前时间向后推30分钟
+							//开始时间
+							if(ksDate==null || ksDate.compareTo(new Date())>0 ||jsDate==null || new Date().compareTo(jsDate)>0){
+								return ;
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+
+					ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
+
+					ApiResponse<String> res = clService.updateGps(gpsInfo,pb,car,route,clClyxjl);
+					if (!res.isSuccess())return ;
+					xlService.checkRouteInfo(route.getId());
+					clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
+					break;
+			}
+
 		}
 		System.out.println("收到一条消息："+topic);
 		}catch (Exception e){
