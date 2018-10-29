@@ -1,6 +1,6 @@
 <style lang="less">
       @import '../../../../../styles/common.less';
-      .carListsty {
+      .carListstyIN {
             padding: 3px;
             margin: 8px;
             border: solid #657180 1px;
@@ -52,11 +52,11 @@
                                             size="small"
                                             @click="BJ(item)"
                                             shape="circle" icon="md-create"></Button>
-                                    <div style="min-height: 260px" class="box">
-                                          <div class="body">
+                                    <div style="height: 260px">
+                                          <div style="height: 100%;overflow: auto">
                                                 <div class="box-row-list">
-                                                      <div class="carListsty" v-for="it in item.clList"
-                                                           style="height: 45px">
+                                                      <div class="carListstyIN" v-for="it in item.clList"
+                                                           style="height: 70px;padding:3px 6px">
                                                             <div>
                                                                   <Icon type="md-person" size="16"
                                                                         color="#3bb84b"></Icon>
@@ -67,6 +67,9 @@
                                                                   <Icon type="ios-car" size="16" color="#ff8300"></Icon>
                                                                   ：
                                                                   {{it.cph}}
+                                                            </div>
+                                                            <div style="padding:3px 0;cursor: pointer;">
+                                                                  {{it.pbbx | pbbx}}:{{it.startTime}}~{{it.endTime}}
                                                             </div>
                                                       </div>
                                                 </div>
@@ -106,6 +109,19 @@
         mixins: [mixins],
         components: {
             addmess
+        },
+        filters:{
+            pbbx:(val)=>{
+                if(val == '1'){
+                    return '早班'
+                }else if(val == '2'){
+                    return '中班'
+                }else if(val == '4'){
+                    return '晚班'
+                }else if(val == '7'){
+                        return '全天'
+                }
+            }
         },
         data() {
             return {
@@ -213,8 +229,8 @@
                 title: '校巴管理',
             }, {
                 title: '校巴排班',
-            }]),
-                this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
+            }])
+            this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
             this.tabHeight = this.getWindowHeight() - 220
             this.getmess()
         },
