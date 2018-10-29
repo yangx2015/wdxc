@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.ldz.sys.util.ContextUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -84,7 +85,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	protected Class<?> getEntityCls() {
 		return ClCl.class;
 	}
-	
+
 	@Override
 	public boolean fillPagerCondition(LimitedCondition condition) {
 		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
@@ -113,7 +114,14 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 				condition.and().andLessThanOrEqualTo(ClCl.InnerColumn.bxsj.name(), d);
 			}
 		}
-        
+		SysYh user = ContextUtil.getCurrentUser();
+		if ("20".equals(user.getLx())){
+			condition.eq(ClCl.InnerColumn.cx,"20");
+		}else if ("21".equals(user.getLx())){
+			condition.eq(ClCl.InnerColumn.cx,"10");
+		}else if ("22".equals(user.getLx())){
+			condition.eq(ClCl.InnerColumn.cx,"30");
+		}
 		return true;
 	}
 //车辆删除后，同步移除
@@ -166,7 +174,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		List<ClCl> carList = clService.findEq(ClCl.InnerColumn.jgdm, orgCode);
 		return carList;
 	}
-	
+
 	/**
      * 计算车辆年审时间
      * @param entity
@@ -224,10 +232,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 				nsrq = tmp.plusYears(1).toDate();
 			}
 		}
-		
+
 		return nsrq;
     }
-    
+
     @Override
     public ApiResponse<String> nextNssjYear(String id) {
     	ClCl exist = this.findById(id);
@@ -238,7 +246,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
     	}else{
     		exist.setNssj(getNsrq(exist, true));
     	}
-    	
+
     	update(exist);
     	return ApiResponse.success("年审日期更新成功！");
     }

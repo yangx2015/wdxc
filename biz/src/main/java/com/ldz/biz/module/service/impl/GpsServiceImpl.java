@@ -13,6 +13,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import com.ldz.sys.util.ContextUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
@@ -146,7 +147,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
                 eventBus.post(new SendGpsEvent(gpsInfo));
             }
         }
-        
+
         return ApiResponse.success();
     }
 
@@ -210,7 +211,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             			DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
 
             			Duration d = new Duration(startTime, endTime);
-						long sMinute = d.getStandardMinutes();  
+						long sMinute = d.getStandardMinutes();
 						if (sMinute < 2){
 							Integer prevSpeed = Integer.parseInt(gps.getYxsd());
 							//在3分钟内，如果新的GPS运行速度大于上一个点位，则判断GPS速度值是否偏差很大
@@ -224,7 +225,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 						}
                 	}
             	}catch(Exception e){
-            		
+
             	}
             	//
                 if (!newStatus.equals(gps.getStatus())){
@@ -504,16 +505,16 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String redisKey = ClSbyxsjjl.class.getSimpleName() + "-" + entity.getDeviceId() + "-" + entity.getEventType();
         String existEvent = (String)redis.boundValueOps(redisKey).get();
         if (StringUtils.isNotBlank(existEvent)){
-        	org.joda.time.format.DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"); 
+        	org.joda.time.format.DateTimeFormatter format = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         	DateTime nowDate = DateTime.parse(entity.getStartTime(), format);
         	isExpired = DateTime.parse(existEvent, format).plusMinutes(1).isBefore(nowDate);
         }
-        
+
         if (isExpired){
         	redis.boundValueOps(redisKey).set(entity.getStartTime(), 1, TimeUnit.MINUTES);
             redis.boundListOps(ClSbyxsjjl.class.getSimpleName()).leftPush(JsonUtil.toJson(clsbyxsjjl));
         }
-        
+
         return clsbyxsjjl;
     }
 
@@ -594,6 +595,14 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         }
 
 
+        SysYh user = ContextUtil.getCurrentUser();
+        if ("20".equals(user.getLx())){
+            condition.eq(ClCl.InnerColumn.cx,"20");
+        }else if ("21".equals(user.getLx())){
+            condition.eq(ClCl.InnerColumn.cx,"10");
+        }else if ("22".equals(user.getLx())){
+            condition.eq(ClCl.InnerColumn.cx,"30");
+        }
         // 将终端编号,车辆信息缓存
         List<ClCl> selectAll = clclmapper.selectByExample(condition);
         Map<String, ClCl> zdbhClMap = selectAll.stream().filter(s -> StringUtils.isNotEmpty(s.getZdbh()))

@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -172,7 +171,11 @@ public class ClCl implements Serializable {
     @Column(name = "OBD_CODE")
     private String obdCode;
 
-
+    /**
+     * 排班页面，班型列表 用,分隔
+     */
+    @Transient
+    private String pbbx;
      /*
       * 车辆电子围栏中间关联表
      */

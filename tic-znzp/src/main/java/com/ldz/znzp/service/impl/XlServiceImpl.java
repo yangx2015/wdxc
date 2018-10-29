@@ -2,6 +2,7 @@ package com.ldz.znzp.service.impl;
 
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
 import com.ldz.znzp.bean.*;
@@ -282,8 +283,14 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
     @Override
     public void checkRouteInfo(String xlId) {
-        List<ClPb> pbs = pbService.findEq(ClPb.InnerColumn.xlId, xlId);
+        String time = DateUtils.getNowTime().substring(11);
+        SimpleCondition condition = new SimpleCondition(ClPb.class);
+        condition.eq(ClPb.InnerColumn.xlId, xlId);
+        condition.gte(ClPb.InnerColumn.startTime,time);
+        condition.lte(ClPb.InnerColumn.endTime,time);
+        List<ClPb> pbs = pbService.findByCondition(condition);
         if (pbs.size() == 0) return;
+
 
         String carNumStr = "";
         try {
