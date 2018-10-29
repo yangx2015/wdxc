@@ -54,6 +54,18 @@ public class ScheduleComponent {
                 .withSchedule(zdToYyCron).build();
 
 
+        // 清除过期排班信息job
+        JobDetail pbJob = JobBuilder.newJob(ClPbJob.class).withIdentity(ClPbJob.class.getName(), "clpb")
+                .build();
+        // 清除过期排班信息job  第五分钟执行一次
+//        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("0 0/5 * * * ?");
+        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("1 * * * * ?");
+        //清除过期排班信息trigger
+        CronTrigger clpbTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClPbJob.class.getName(), "clpb")
+                .withSchedule(clPbBuilderns).build();
+
+
+
         // 清除过期订单job
         JobDetail oracleJob = JobBuilder.newJob(ClDdJob.class).withIdentity(ClDdJob.class.getName(), "cldd")
                 .build();
@@ -63,12 +75,15 @@ public class ScheduleComponent {
         CronTrigger clddTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClDdJob.class.getName(), "cldd")
                 .withSchedule(clddBuilderns).build();
 
+
+
         try {
             schedulerFactory.getScheduler().scheduleJob(jobDetail, cronTrigger);
             schedulerFactory.getScheduler().scheduleJob(nianshenJob, cronTriggerclns);
             schedulerFactory.getScheduler().scheduleJob(sbyxsjjlJob,sbyxsjjlTrigger);
             schedulerFactory.getScheduler().scheduleJob(zdToYyJob,zdToYyTrigger);
             schedulerFactory.getScheduler().scheduleJob(oracleJob,clddTriggerclns);
+            schedulerFactory.getScheduler().scheduleJob(pbJob,clpbTriggerclns);
         } catch (SchedulerException e) {
             errorLog.error("任务创建失败", e);
         }
