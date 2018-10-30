@@ -425,6 +425,7 @@ public class ClPb implements Serializable {
         clId("CL_ID"),
         cjsj("CJSJ"),
         cjr("CJR"),
+        endTime("END_TIME"),
         classes("CLASSES"),
         xgj("XGJ"),
         xgr("XGR");

@@ -16,16 +16,17 @@ import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.CopyObjectUtils;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
-import com.ldz.util.commonUtil.HttpUtil;
-import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.exception.RuntimeCheck;
+import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -36,6 +37,10 @@ import java.util.stream.Collectors;
 
 @Service
 public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbService {
+
+	Logger errorLog = LoggerFactory.getLogger("error_info");
+	Logger accessLog = LoggerFactory.getLogger("access_info");
+
 	@Autowired
 	private ClPbMapper entityMapper;
 	@Autowired
@@ -52,6 +57,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	private XlService xlService;
 	@Value("${znzpurl}")
 	private String znzpUrl;
+
+	@Autowired
+	private RedisTemplateUtil redisTemplate;
+
 
 	@Override
 	protected Mapper<ClPb> getBaseMapper() {
@@ -189,20 +198,79 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 				}
 				List<ClCl> allClInfo = clclmapper.getAllClInfo(clidlist);
 				if (StringUtils.isNotEmpty(pbclxlmodel.getClcx())) {
+					List<ClCl> copyCollect=new ArrayList<>();
 					// 过滤指定车型的车辆信息
 					List<ClCl> collect = allClInfo.stream().filter(s -> s.getCx().equals(pbclxlmodel.getClcx()))
 							.collect(Collectors.toList());
 					for (ClCl cl:collect){
-						cl.setPbbx(clclasseslistMap.get(cl.getClId()));
-					}
-					xbXlPb.setClList(collect);
-				} else {
-					if(allClInfo!=null&&allClInfo.size()>0){
-						for (ClCl cl:allClInfo){
-							cl.setPbbx(clclasseslistMap.get(cl.getClId()));
+						String lists=clclasseslistMap.get(cl.getClId());
+						if(StringUtils.isNotEmpty(lists)){
+							List<String> clClassesList = Arrays.asList(clclasseslistMap.get(cl.getClId()).split(","));
+							if(clClassesList!=null&&clClassesList.size()>0){
+								for(String classes:clClassesList){
+									ClCl copyCl= CopyObjectUtils.deepCopy(cl);
+									copyCl.setPbbx(classes);
+									//todo 班次的开始、结束时间需要标记
+									if(StringUtils.equals(classes,"1")){
+										copyCl.setStartTime("07:00:00");
+										copyCl.setEndTime("11:00:00");
+									}else if(StringUtils.equals(classes,"2")){
+										copyCl.setStartTime("11:00:00");
+										copyCl.setEndTime("14:00:00");
+									}else if(StringUtils.equals(classes,"4")){
+										copyCl.setStartTime("14:00:00");
+										copyCl.setEndTime("20:00:00");
+									}else if(StringUtils.equals(classes,"7")){
+										copyCl.setStartTime("07:00:00");
+										copyCl.setEndTime("20:00:00");
+									}
+
+									copyCollect.add(copyCl);
+								}
+							}else{
+								copyCollect.add(cl);
+							}
+						}else{
+							copyCollect.add(cl);
 						}
 					}
-					xbXlPb.setClList(allClInfo);
+					xbXlPb.setClList(copyCollect);
+				} else {
+					List<ClCl> copyCollect=new ArrayList<>();
+					if(allClInfo!=null&&allClInfo.size()>0){
+						for (ClCl cl:allClInfo){
+							String lists=clclasseslistMap.get(cl.getClId());
+							if(StringUtils.isNotEmpty(lists)){
+								List<String> clClassesList = Arrays.asList(clclasseslistMap.get(cl.getClId()).split(","));
+								if(clClassesList!=null&&clClassesList.size()>0){
+									for(String classes:clClassesList){
+										ClCl copyCl= CopyObjectUtils.deepCopy(cl);
+										copyCl.setPbbx(classes);
+										//todo 班次的开始、结束时间需要标记
+										if(StringUtils.equals(classes,"1")){
+											copyCl.setStartTime("07:00:00");
+											copyCl.setEndTime("11:00:00");
+										}else if(StringUtils.equals(classes,"2")){
+											copyCl.setStartTime("11:00:00");
+											copyCl.setEndTime("14:00:00");
+										}else if(StringUtils.equals(classes,"4")){
+											copyCl.setStartTime("14:00:00");
+											copyCl.setEndTime("20:00:00");
+										}else if(StringUtils.equals(classes,"7")){
+											copyCl.setStartTime("07:00:00");
+											copyCl.setEndTime("20:00:00");
+										}
+										copyCollect.add(copyCl);
+									}
+								}else{
+									copyCollect.add(cl);
+								}
+							}else{
+								copyCollect.add(cl);
+							}
+						}
+					}
+					xbXlPb.setClList(copyCollect);
 				}
 
 			}
@@ -252,17 +320,37 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		}
 	}
 
+	/**
+	 * 通知一条线路
+	 * @param xlId
+	 */
 	private void updateRouteInfo(String xlId){
-		Map<String, String> postHeaders = new HashMap<String, String>();
-		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
-		Map<String,Object> postData = new HashMap<>();
-		postData.put("xlId",xlId);
-		String postEntity = JsonUtil.toJson(postData);
-		try {
-			String result = HttpUtil.postJson(znzpUrl +"/api/updateRouteInfo", postHeaders, postEntity);
-		} catch (Exception e) {
-			e.printStackTrace();
+		accessLog.debug("通知一条线路"+xlId);
+		if(StringUtils.isNotEmpty(xlId)){
+			redisTemplate.convertAndSend("bizUpdateRouteInfo", xlId);
 		}
+
+//		Map<String, String> postHeaders = new HashMap<String, String>();
+//		postHeaders.put("Content-Type", MediaType.APPLICATION_JSON_VALUE);
+//		Map<String,Object> postData = new HashMap<>();
+//		postData.put("xlId",xlId);
+//		String postEntity = JsonUtil.toJson(postData);
+//		accessLog.debug("请求的参数："+postEntity);
+//
+//		try{
+//			ResponseEntity<String> responseEntity = restTemplateBuilder.build().postForEntity(znzpUrl +"/updateRouteInfo",postData,String.class);
+//			accessLog.debug("updateMedita responst:",responseEntity.toString());
+//		}catch (Exception e){
+//			accessLog.debug("updateMedia请求异常",e);
+//		}
+
+//		try {
+//			String result = HttpUtil.postJson(znzpUrl +"/updateRouteInfo", postHeaders, postEntity);
+//			accessLog.debug("返回的参数："+result);
+//		} catch (Exception e) {
+//			accessLog.debug("返回的参数："+e);
+//			e.printStackTrace();
+//		}
 	}
 
 	@Override
@@ -376,14 +464,18 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 	 * @return
 	 */
     @Override
-    public ApiResponse<String> savePbList(ClPb entity) {
+    public ApiResponse<Map<String,String>> savePbList(ClPb entity) {
 		SysYh currentUser = getCurrentUser();
 		RuntimeCheck.ifBlank(entity.getClId(), "请选择车辆");
     	RuntimeCheck.ifBlank(entity.getXlId(), "请选择线路");
     	RuntimeCheck.ifBlank(entity.getCx(), "请选择车型");
 		RuntimeCheck.ifBlank(entity.getClasses(), "排班班次为空，无法进行排班");
+		ApiResponse<Map<String,String>> res = new ApiResponse<>();
+
 		if(StringUtils.containsNone(entity.getClasses(), new char[]{'1', '2', '4', '7'})){
-			return ApiResponse.fail("请输入正确的排班属性");
+			res.setCode(500);
+			res.setMessage("请输入正确的排班属性");
+			return res;
 		}
 
 		SysJg org = jgService.findByOrgCode(currentUser.getJgdm());
@@ -391,14 +483,18 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
     		entity.setKssj(DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
 		}else{
     		if(entity.getKssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0 ){
-    			return ApiResponse.fail("排班开始时间需要大于或等于当前时间");
+				res.setCode(500);
+				res.setMessage("排班开始时间需要大于或等于当前时间");
+				return res;
 			}
 		}
 		if(StringUtils.isBlank(entity.getJssj())){
 			entity.setJssj(DateUtils.getToday("yyyy-MM-dd"));
 		}else{
 			if(entity.getJssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0){
-				return ApiResponse.fail("排班结束时间需要大于或等于当前时间");
+				res.setCode(500);
+				res.setMessage("排班结束时间需要大于或等于当前时间");
+				return res;
 			}
 		}
 
@@ -422,8 +518,11 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		try {
 			dates = DateUtils.createDateList(entity.getKssj(),entity.getJssj());
 		} catch (ParseException e) {
-			return ApiResponse.fail("时间格式异常");
+			res.setCode(500);
+			res.setMessage("时间格式异常");
+			return res;
 		}
+		Map<String,String> retMap=new HashMap<>();
 		Map<String,String> classesDescribe=new HashMap<>();
         classesDescribe.put("1","早班");
         classesDescribe.put("2","午班");
@@ -439,7 +538,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if(CollectionUtils.isNotEmpty(dates)){
 			SimpleCondition condition = new SimpleCondition(ClPb.class);
 			condition.eq(ClPb.InnerColumn.clId, entity.getClId());
-			condition.eq(ClPb.InnerColumn.classes, entity.getClasses());
+			if(!StringUtils.equals(entity.getClasses(),"7")){
+				condition.eq(ClPb.InnerColumn.classes, entity.getClasses());
+			}
 			condition.lte(ClPb.InnerColumn.pbsj, dates.get(dates.size()-1));
 			condition.gte(ClPb.InnerColumn.pbsj, dates.get(0));
 			// 首先删除掉当前车辆和线路上已经存在的排班
@@ -461,17 +562,25 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 				clPb.setClasses(entity.getClasses());
 				//todo 班次的开始、结束时间需要标记
 				if(StringUtils.equals(entity.getClasses(),"1")){
+					retMap.put("startTime","07:00:00");
+					retMap.put("endTime","11:00:00");
 					clPb.setStartTime("07:00:00");
 					clPb.setEndTime("11:00:00");
 				}else if(StringUtils.equals(entity.getClasses(),"2")){
+					retMap.put("startTime","11:00:00");
+					retMap.put("endTime","14:00:00");
 					clPb.setStartTime("11:00:00");
 					clPb.setEndTime("14:00:00");
 				}else if(StringUtils.equals(entity.getClasses(),"4")){
+					retMap.put("startTime","14:00:00");
+					retMap.put("endTime","20:00:00");
 					clPb.setStartTime("14:00:00");
 					clPb.setEndTime("20:00:00");
 				}else if(StringUtils.equals(entity.getClasses(),"7")){
 					clPb.setStartTime("07:00:00");
 					clPb.setEndTime("20:00:00");
+					retMap.put("startTime","07:00:00");
+					retMap.put("endTime","20:00:00");
 				}
 				boolean type=true;
 				String classesSum=entityMapper.getClPbClasses(entity.getClId(),DateUtils.getDateStr(new Date(),"yyyyMMdd"));
@@ -491,9 +600,12 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			}
 		}
 		if(StringUtils.isNotEmpty(errorMessage)){
-		    return ApiResponse.success(errorMessage);
+			res.setCode(500);
+			res.setMessage(errorMessage);
+			return res;
         }
-		return ApiResponse.success();
+
+		return ApiResponse.success(retMap);
     }
 
 
@@ -547,12 +659,23 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		return ApiResponse.success(pbInfos);
 	}
 
+	/**
+	 * 取消排班列表
+	 * @param entity
+	 * @return
+	 */
 	@Override
 	public ApiResponse<String> delPbList(ClPb entity) {
+		accessLog.debug("开启线程池，升级终端"+entity.getXlId());
 		RuntimeCheck.ifBlank(entity.getXlId(), "请选择线路");
 		RuntimeCheck.ifBlank(entity.getClId(), "请选择车辆");
+		RuntimeCheck.ifBlank(entity.getClasses(), "请选择排班类型");
 		RuntimeCheck.ifBlank(entity.getKssj(), "请输入开始时间");
 		RuntimeCheck.ifBlank(entity.getJssj(), "请输入结束时间");
+		if(StringUtils.containsNone(entity.getClasses(), new char[]{'1', '2', '4', '7'})){
+			return ApiResponse.fail("请输入正确的排班属性");
+		}
+
 		SimpleCondition simpleCondition = new SimpleCondition(ClPb.class);
 		List<Date> dates = new ArrayList<>();
 		try {
@@ -568,9 +691,64 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			entityMapper.deleteByExample(simpleCondition);
 		}
 
+		try {
+			ClClyxjl clClyxjl=new ClClyxjl();
+			clClyxjl.setClId(entity.getClId());
+			clClyxjlMapper.delete(clClyxjl);
+		}catch (Exception e){}
+		accessLog.debug("要删除线路ID",entity.getXlId());
 		updateRouteInfo(entity.getXlId());
 
 		return ApiResponse.success();
 	}
 
+	/**
+	 * 移除一组排班
+	 * @param pbId  aaa,bbb,
+	 */
+	@Override
+	public  void removePbList(String pbId){
+		String time = DateUtils.getNowTime().substring(11);
+
+		String xlIds="";//线路ID
+		String clIds="";//需要重新加载的列表
+		String delPbId="";
+		if(StringUtils.isNotEmpty(pbId)){
+			// 获取车辆id集合
+			List<String> clidlist = Arrays.asList(pbId.split(","));
+			SimpleCondition condition = new SimpleCondition(ClPb.class);
+			condition.lte(ClPb.InnerColumn.endTime,time);
+			condition.in(ClPb.InnerColumn.id,clidlist);
+			List<ClPb> pbs = this.findByCondition(condition);
+			if(pbs!=null&&pbs.size()>0){
+				for(ClPb pb:pbs){
+					delPbId+=pb.getId()+",";
+					if(StringUtils.indexOf(xlIds,pb.getXlId())<0){
+						xlIds+=pb.getXlId()+",";
+					}
+					if(StringUtils.indexOf(clIds,pb.getClId())<0){
+						clIds+=pb.getClId()+",";
+					}
+				}
+			}
+		}
+
+		if(StringUtils.isNotEmpty(delPbId)){
+			List<String> delPb = Arrays.asList(delPbId.split(","));
+			SimpleCondition condition = new SimpleCondition(ClPb.class);
+			condition.lte(ClPb.InnerColumn.endTime,time);
+			condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') <= ",DateUtils.getToday("yyyy-MM-dd"));
+			condition.in(ClPb.InnerColumn.id,delPb);
+			entityMapper.deleteByExample(condition);
+		}
+		if(StringUtils.isNotEmpty(clIds)){
+			List<String> clId = Arrays.asList(clIds.split(","));
+			SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+			condition.in(ClClyxjl.InnerColumn.clId,clId);
+			clClyxjlMapper.deleteByExample(condition);
+		}
+		if(StringUtils.isNotEmpty(xlIds)){
+			updateRouteInfo(xlIds);
+		}
+	}
 }

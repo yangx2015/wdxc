@@ -187,6 +187,17 @@ public class ClCl implements Serializable {
     @Transient
     private List<ClDzwl> clDzwl;
 
+    /**
+     * 班次开始时间  格式为  HH:mm:ss
+     */
+    @Transient
+    private String startTime;
+    /**
+     * 班次结束时间  格式为  HH:mm:ss
+     */
+    @Transient
+    private String endTime;
+
 	private static final long serialVersionUID = 1L;
 
     /**
