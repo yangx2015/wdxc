@@ -103,6 +103,8 @@ public class ClPb implements Serializable {
      */
     @Column(name = "END_TIME")
     private String endTime;
+    @Column(name = "ENABLE")
+    private String enable;
     @Transient
     private String date;
 
@@ -122,6 +124,14 @@ public class ClPb implements Serializable {
     private String jssj;
 
     private static final long serialVersionUID = 1L;
+
+    public String getEnable() {
+        return enable;
+    }
+
+    public void setEnable(String enable) {
+        this.enable = enable;
+    }
 
     public String getClasses() {
         return classes;
