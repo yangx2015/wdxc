@@ -295,10 +295,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         condition.eq(ClPb.InnerColumn.enable, "1");
         condition.lte(ClPb.InnerColumn.startTime,time);//>=
         condition.gte(ClPb.InnerColumn.endTime,time);//<=
-        condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') <= ",DateUtils.getToday("yyyy-MM-dd"));
+        condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') = ",DateUtils.getToday("yyyy-MM-dd"));
         List<ClPb> pbs = pbService.findByCondition(condition);
-//        if (pbs.size() == 0) return;
-
 
         String carNumStr = "";
         try {

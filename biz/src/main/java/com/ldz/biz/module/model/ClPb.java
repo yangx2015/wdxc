@@ -103,6 +103,9 @@ public class ClPb implements Serializable {
      */
     @Column(name = "END_TIME")
     private String endTime;
+    /**
+     *  排班是否启用    1、启用  0、停用
+     */
     @Column(name = "ENABLE")
     private String enable;
     @Transient

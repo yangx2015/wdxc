@@ -1,8 +1,10 @@
 package com.ldz.znzp.model;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.*;
 
 @Table(name = "CL_PB")
 public class ClPb implements Serializable {
@@ -88,6 +90,9 @@ public class ClPb implements Serializable {
     private String startTime;
     @Column(name = "END_TIME")
     private String endTime;
+    /**
+     * 排班是否启用    1、启用  0、停用
+     */
     @Column(name = "ENABLE")
     private String enable;
 
