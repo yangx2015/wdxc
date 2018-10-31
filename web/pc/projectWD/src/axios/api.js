@@ -263,6 +263,7 @@ export default {
     },
     PB: {//校巴排版
         QUERY: '/api/pb/xbpb/',
+        pager: '/api/pb/pager/',
         banchetj: '/api/pb/banchetj',
     },
     XLPBXX: {//车辆排班信息

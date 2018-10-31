@@ -15,9 +15,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
@@ -163,10 +160,19 @@ public class SysJzgxxServiceImpl extends BaseServiceImpl<SysJzgxx,String> implem
 		String identifyingCode=redisDao.boundValueOps("updateDnSendSms"+userId+"_"+dn).get();
 		RuntimeCheck.ifBlank(identifyingCode,"验证码错误");
 		RuntimeCheck.ifFalse(StringUtils.equals(pollcode,identifyingCode),"验证码错误");
-		SysJzgxx jzgxx=new SysJzgxx();
-		jzgxx.setId(userId);
-		jzgxx.setSjhm(dn);
-		this.update(jzgxx);
-		return ApiResponse.success();
+		SysJzgxx obj=findById(userId);
+		obj.setSjhm(dn);
+		this.update(obj);
+
+		String userInfo = JsonUtil.toJson(obj);
+		String token = JwtUtil.createWechatToken("jzg",userInfo);
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		request.setAttribute("type","jzg");
+		request.setAttribute("orgCode",obj.getJgdm());
+		request.setAttribute("userInfo",userInfo);
+
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setResult(token);
+		return res;
 	}
 }

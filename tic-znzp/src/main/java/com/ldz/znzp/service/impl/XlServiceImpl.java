@@ -292,6 +292,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         String time = DateUtils.getNowTime().substring(11);
         SimpleCondition condition = new SimpleCondition(ClPb.class);
         condition.eq(ClPb.InnerColumn.xlId, xlId);
+        condition.eq(ClPb.InnerColumn.enable, "1");
         condition.lte(ClPb.InnerColumn.startTime,time);//>=
         condition.gte(ClPb.InnerColumn.endTime,time);//<=
         condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') <= ",DateUtils.getToday("yyyy-MM-dd"));

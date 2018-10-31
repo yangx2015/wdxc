@@ -1,10 +1,6 @@
 package com.ldz.biz.module.controller;
 
-import com.ldz.biz.module.bean.ClClModel;
-import com.ldz.biz.module.bean.JrXbKb;
-import com.ldz.biz.module.bean.PbClXlmodel;
-import com.ldz.biz.module.bean.PbInfo;
-import com.ldz.biz.module.bean.XbXlPb;
+import com.ldz.biz.module.bean.*;
 import com.ldz.biz.module.model.ClPb;
 import com.ldz.biz.module.service.PbService;
 import com.ldz.sys.base.BaseController;
@@ -17,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/pb")
@@ -115,7 +112,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	 * 批量排班操作
 	 */
 	@PostMapping("/pbList")
-	public ApiResponse<String> savePbList(ClPb entity){
+	public ApiResponse<Map<String,String>> savePbList(ClPb entity){
 		return pbservice.savePbList(entity);
 	}
 
@@ -128,7 +125,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	}
 
 	/**
-	 * 删除排班列表
+	 * 删除排班列表(取消排班列表)
 	 */
 	@PostMapping("/delPbList")
 	public ApiResponse<String> delPbList(ClPb entity){

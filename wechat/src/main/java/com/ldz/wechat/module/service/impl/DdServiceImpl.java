@@ -5,7 +5,6 @@ import com.github.pagehelper.PageInfo;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
-import com.ldz.util.commonUtil.MathUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.LatLonUtil;
@@ -148,6 +147,19 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
 //        1、查找该ID是否存在
       ClDd clDd=findById(entity.getId());
       RuntimeCheck.ifNull(clDd,"未找到订单记录");
+      if(clDd.getLc()==null){
+          clDd.setLc(0D);
+      }
+      if(entity.getLc()!=null){
+          clDd.setLc(entity.getLc());
+      }
+      if(entity.getGqf()!=null){
+          clDd.setGqf(entity.getGqf());
+      }
+      if(entity.getGlf()!=null){
+          clDd.setGlf(entity.getGlf());
+      }
+
       String ddzt=clDd.getDdzt();
 //        订单状态  10-订单创建；11-订单确认(待派单)；12-订单驳回；13-已派单；20-司机确认(行程结束)；30-队长确认; 40-财务已收
 
@@ -157,43 +169,62 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
       }else{
           RuntimeCheck.ifTrue(true,"订单状态异常，不能进行订单编辑操作");
       }
-
+      // 计算里程费
+      if (clDd.getSjqrsj() == null){
+          clDd.setSjqrsj(new Date());
+      }
       ClDd newClDd=new ClDd();
-      newClDd.setId(clDd.getId());
-      newClDd.setSj(userId);//修改人
-      newClDd.setXgsj(new Date());//修改时间
-      newClDd.setGlf(entity.getGlf());//过路费
-      newClDd.setGqf(entity.getGqf());//过桥费
-      newClDd.setSy(entity.getSy());//事由
-      newClDd.setSc(entity.getSc());//时长
-      newClDd.setDj(entity.getDj());//单价
-      newClDd.setLc(entity.getLc());//里程
-      newClDd.setScf(entity.getScf());//时长费
-      newClDd.setLcf(entity.getLcf());//里程费
-      newClDd.setFkzt("00"); // 未付款
-      newClDd.setDdzt("20");//订单状态
-      newClDd.setSjqrsj(new Date());
+//      Double lcf=0d;
+      if(StringUtils.equals(clDd.getCllx(),"10")){//小车参数计算
+//	 * dj		里程单价
+//	 * lcf		里程费
+//	 * jbfdj	加班单价
+//	 * jbsc		加班时长(小时)
+//	* jbf		加班费
+//	* jjrdj	节假日单价
+//	* jjrsc	节假日
+//	* jjrjl	节假日金额
+          //费用计算
+          Map<String,Double>  retMap = overWorkMoney(clDd);
+          newClDd.setDj(retMap.get("dj"));//单价
+          newClDd.setLcf(retMap.get("lcf"));//里程费
+          newClDd.setJbfdj(String.valueOf(retMap.get("jbfdj")));//加班费单价
+          newClDd.setJbsc((short) retMap.get("jbsc").intValue());//加班时长(小时)
+          newClDd.setJbf(String.valueOf(retMap.get("jbf")));//加班费
+          newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
+          newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
+          newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
+//			过路费	过桥费
+          Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(clDd.getGlf()==null?0:clDd.getGlf())+(clDd.getGqf()==null?0:clDd.getGqf());
+          newClDd.setZj(zj);
+          newClDd.setLc(clDd.getLc());
+          newClDd.setGqf(clDd.getGqf());
+          newClDd.setGlf(clDd.getGlf());
+      }
 
-      Map<String,Double>  retMap = overWorkMoney(newClDd);
-      newClDd.setDj(retMap.get("dj"));//单价
-      newClDd.setLcf(retMap.get("lcf"));//里程费
-      newClDd.setJbfdj(String.valueOf(retMap.get("jbfdj")));//加班费单价
-//			newClDd.setJbsc((short) retMap.get("jbsc").intValue());//加班时长(小时)
-      newClDd.setJbf(String.valueOf(retMap.get("jbf")));//加班费
-      newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
-      newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
-      newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
-
-
-      Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(entity.getGlf()==null?0:entity.getGlf())+(entity.getGqf()==null?0:entity.getGqf());
-      newClDd.setZj(zj);
+//
+//      Map<String,Double>  retMap = overWorkMoney(newClDd);
+//      newClDd.setDj(retMap.get("dj"));//单价
+//      newClDd.setLcf(retMap.get("lcf"));//里程费
+//      newClDd.setJbfdj(String.valueOf(retMap.get("jbfdj")));//加班费单价
+////			newClDd.setJbsc((short) retMap.get("jbsc").intValue());//加班时长(小时)
+//      newClDd.setJbf(String.valueOf(retMap.get("jbf")));//加班费
+//      newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
+//      newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
+//      newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
+//
+//
+//      Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(entity.getGlf()==null?0:entity.getGlf())+(entity.getGqf()==null?0:entity.getGqf());
+//      newClDd.setZj(zj);
 
 
 //      double amount = MathUtil.mul(entity.getLc(),entity.getDj());
 //      amount = MathUtil.add(amount,entity.getGqf());
 //      amount = MathUtil.add(amount,entity.getGlf());
 //      newClDd.setZj(amount);
-
+      newClDd.setId(clDd.getId());
+      newClDd.setDdzt("20");// 订单状态
+      newClDd.setSjqrsj(new Date());
       int i=update(newClDd);
       if(i==0){
           RuntimeCheck.ifFalse(false,"修改订单失败");
