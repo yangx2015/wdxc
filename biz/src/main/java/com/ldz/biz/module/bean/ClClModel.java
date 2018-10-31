@@ -4,8 +4,10 @@ package com.ldz.biz.module.bean;
 import lombok.ToString;
 
 import javax.persistence.Column;
+import javax.persistence.Transient;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 电子围栏和车辆表
@@ -171,8 +173,20 @@ public class ClClModel implements Serializable {
      */
     @Column(name = "CXZTMC")
     private String cxZtMc;
-
+    /**
+     * 排班_班次集合。
+     */
+    @Transient
+    private List<String> classesList;
 	private static final long serialVersionUID = 1L;
+
+    public List<String> getClassesList() {
+        return classesList;
+    }
+
+    public void setClassesList(List<String> classesList) {
+        this.classesList = classesList;
+    }
 
     public String getObdCode() {
         return obdCode;

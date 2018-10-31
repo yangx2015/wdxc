@@ -3,10 +3,9 @@ package com.ldz.biz.config;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.bean.gpsSJInfo;
 import com.ldz.biz.module.model.*;
-import com.ldz.biz.module.service.ClYyService;
-import com.ldz.biz.module.service.GpsLsService;
-import com.ldz.biz.module.service.XcService;
-import com.ldz.biz.module.service.ZdglService;
+import com.ldz.biz.module.service.*;
+import com.ldz.sys.model.SysZdxm;
+import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.*;
 import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
@@ -42,8 +41,11 @@ public class TopicMessageListener implements MessageListener {
     private ClYyService clYyService;
 
     private GpsLsService gpsLsService;
+    private GpsService gpsService;
 
     private ZdglService zdglService;
+
+    private ZdxmService zdxmService;
 
 
 
@@ -53,9 +55,11 @@ public class TopicMessageListener implements MessageListener {
 
     Logger error = LoggerFactory.getLogger("error_info");
 
-    public TopicMessageListener(XcService xcService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl,double distance) {
+    public TopicMessageListener(ZdxmService zdxmService,XcService xcService,GpsService gpsService, ClYyService clYyService, GpsLsService gpsLsService, ZdglService zdglService, RedisTemplateUtil redisTemplate,String url,String znzpurl,String bizurl,double distance) {
+        this.zdxmService = zdxmService;
         this.xcService = xcService;
         this.clYyService = clYyService;
+        this.gpsService = gpsService;
         this.gpsLsService = gpsLsService;
         this.zdglService = zdglService;
         this.redisTemplate = redisTemplate;
@@ -105,33 +109,64 @@ public class TopicMessageListener implements MessageListener {
 
 
         if(ObjectUtils.isEmpty(bean)||bean.getCode() !=200) {
+            boolean isOnline = false;
+            //2018年10月24日。终端的版本号（版本号比对全部字符串）是字典配置的版本，这样就只把设备修改为熄火，速度值之类的更新为0，不做更新时间处理
             ClZdgl zdgl = zdglService.findById(zdbh);
             if (!ObjectUtils.isEmpty(zdgl)) {
+                //字典项如果不存在，也不比较
+                SimpleCondition condition = new SimpleCondition(SysZdxm.class);
+                condition.eq(SysZdxm.InnerColumn.zdlmdm,"bbh");
+                condition.eq(SysZdxm.InnerColumn.zddm,"value");
+                List<SysZdxm> zdxms = zdxmService.findByCondition(condition);
+                if (zdxms.size() != 0){
+                    String value = zdxms.get(0).getZdmc();
+                    if (value.equals(zdgl.getVersion())){
+                        //如果一直把设备修改为熄火，速度值之类的更新为0，不做更新时间处理
+                        isOnline = true;
+                    }
+                }
+            }
+            if (isOnline){
+                zdgl.setZxzt("10");
+                ClGps gps = gpsService.findById(zdbh);
+                if (gps != null){
+                    gps.setYxsd("0");
+                    gps.setFxj(new BigDecimal(0));
+                    gpsService.update(gps);
+                }
+            }else{
                 zdgl.setZxzt("20");
-                zdglService.update(zdgl);
-
                 //独立线程通知其他服务器离线消息
                 pool.submit(new Runnable() {
 
                     @Override
                     public void run() {
-
                         // 并将离线消息通知到gps上传
                         ApiResponse<String> senML = senML(zdbh, bizurl +"/pub/gps/save");
                         //accessLog.debug(senML+"biz接口离线消息返回");
-
                         ApiResponse<String> znzpsenML = senML(zdbh, znzpurl  + "/reporting");
                         //accessLog.debug(znzpsenML+"znzp接口离线消息返回");
-
-
                     }
                 });
-
             }
+
+            zdglService.update(zdgl);
         }else{
             redisTemplate.boundValueOps("offline-" + zdbh).set(1,10,TimeUnit.MINUTES);
-        }
+            ClZdgl zdgl = zdglService.findById(zdbh);
+            if (!ObjectUtils.isEmpty(zdgl)) {
+                zdgl.setZxzt("10");
+                zdglService.update(zdgl);
 
+                ClGps gps = gpsService.findById(zdbh);
+                if (gps != null){
+                    gps.setYxsd("0");
+                    gps.setFxj(new BigDecimal(0));
+                    gps.setGxsj(new Date());
+                    gpsService.update(gps);
+                }
+            }
+        }
     }
 
 

@@ -106,18 +106,19 @@ public class AccessInterceptor extends HandlerInterceptorAdapter {
 			}
 			request.setAttribute("userInfo", user);
 			request.setAttribute("orgCode", user.getJgdm());
-			log.debug("boundValueOps");
-			String userInfoJson = redisDao.boundValueOps(userid + "-userInfo").get();
-			log.debug("boundValueOps");
-			ObjectMapper mapper = new ObjectMapper();
-			log.debug("userInfoJson:" + userInfoJson);
-			SysYh userInfo = mapper.readValue(userInfoJson, SysYh.class);
-			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())) { // su 用户可访问所有权限
-				if (!checkPermission(userInfo, request)) {
-					request.getRequestDispatcher("/403").forward(request, response);
-					return false;
-				}
-			}
+			// 武大不验证用户权限
+//			log.debug("boundValueOps");
+//			String userInfoJson = redisDao.boundValueOps(userid + "-userInfo").get();
+//			log.debug("boundValueOps");
+//			ObjectMapper mapper = new ObjectMapper();
+//			log.debug("userInfoJson:" + userInfoJson);
+//			SysYh userInfo = mapper.readValue(userInfoJson, SysYh.class);
+//			if (!whiteList.contains(request.getRequestURI()) && !"su".equals(userInfo.getLx())) { // su 用户可访问所有权限
+//				if (!checkPermission(userInfo, request)) {
+//					request.getRequestDispatcher("/403").forward(request, response);
+//					return false;
+//				}
+//			}
 		} catch (Exception e) {
 			return false;
 		}

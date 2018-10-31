@@ -86,45 +86,42 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
 		String operator = getOperateUser();
 		Date now = new Date();
-
-		List<ClXlzd> xlzds = new ArrayList<>(stationIds.size());
-		int m =1;
- 		for (int i = 0; i <allClzd.size(); i++) {
-
-			if (i != 0) {
-				++m;
-				List<String> qidian = Arrays.asList(allClzd.get(i).getWd() + "," + allClzd.get(i).getJd());
-				List<String> zhongdian = Arrays.asList(allClzd.get(i - 1).getWd() + "," + allClzd.get(i - 1).getJd());
-				String baiDuTime = getBaiDuTime(qidian, zhongdian);
-				ClXlzd xlzd = new ClXlzd();
-				xlzd.setCjr(operator);
-				xlzd.setCjsj(now);
-				xlzd.setFx(router.getYxfs());
-				xlzd.setXh((short) m);
-				xlzd.setXlId(router.getId());
-				xlzd.setZdId(stationIds.get(i));
-				xlzd.setId(genId());
-				xlzd.setZt("00");
-				xlzd.setYjdzsj(getMinutes(baiDuTime));
-				xlzds.add(xlzd);
-
-			} else {
-				ClXlzd xlzd = new ClXlzd();
-				xlzd.setCjr(operator);
-				xlzd.setCjsj(now);
-				xlzd.setFx(router.getYxfs());
-				xlzd.setXh((short) m);
-				xlzd.setXlId(router.getId());
-				xlzd.setZdId(stationIds.get(i));
-				xlzd.setId(genId());
-				xlzd.setZt("00");
-				xlzd.setYjdzsj(null);
-				xlzds.add(xlzd);
-
+		if(allClzd!=null&&allClzd.size()>0){
+			Map<String,ClZd> zdMap = allClzd.stream().collect(Collectors.toMap(ClZd::getId,p->p));
+			List<ClXlzd> xlzds = new ArrayList<>(allClzd.size());
+			int m =1;
+			String lastZdId="";
+			for(String zdId:stationIds){
+				if(zdMap.get(zdId)!=null){
+					Short yjdzsj=null;
+					if(m>1){
+						try {
+							List<String> qidian = Arrays.asList(zdMap.get(zdId).getWd() + "," + zdMap.get(zdId).getJd());
+							List<String> zhongdian = Arrays.asList(zdMap.get(lastZdId).getWd() + "," + zdMap.get(lastZdId).getJd());
+							String baiDuTime = getBaiDuTime(qidian, zhongdian);
+							yjdzsj=getMinutes(baiDuTime);
+						}catch (Exception e){
+							e.printStackTrace();
+						}
+					}
+					ClXlzd xlzd = new ClXlzd();
+					xlzd.setCjr(operator);
+					xlzd.setCjsj(now);
+					xlzd.setFx(router.getYxfs());
+					xlzd.setXh((short) m);
+					xlzd.setXlId(router.getId());
+					xlzd.setZdId(zdMap.get(zdId).getId());
+					xlzd.setId(genId());
+					xlzd.setZt("00");
+					xlzd.setYjdzsj(yjdzsj);
+					xlzds.add(xlzd);
+					m++;
+					lastZdId=zdId;
+				}
 			}
+			xlzdMapper.insertList(xlzds);
 		}
 
-		xlzdMapper.insertList(xlzds);
 	}
 
 	@Override

@@ -1,12 +1,11 @@
 package com.ldz.biz.module.bean;
 
-import java.util.List;
-
 import com.ldz.biz.module.model.ClCl;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import java.util.List;
 
 /**
  *  用于编辑校巴/车辆 线路排班管理模型
@@ -39,6 +38,10 @@ public class XbXlPb {
 	 * 车辆id集合
 	 */
 	private String clidlist;
+	/**
+	 * 车辆id集合
+	 */
+	private String clclasseslist;
 	/**
 	 * 车辆对象集合
 	 */

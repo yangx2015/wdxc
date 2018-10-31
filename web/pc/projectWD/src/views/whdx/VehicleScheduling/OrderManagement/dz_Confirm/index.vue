@@ -53,6 +53,11 @@
 				title="信息详情">
 			<div slot='footer'></div>
 		</Modal>
+		<component
+	      :is="compName"
+	      :row='listMess'
+	    >
+	    </component>
 	</div>
 </template>
 <script>
@@ -60,13 +65,16 @@
     import edit from './edit'
     import mixins from '@/mixins'
     import expandRow from './table-expand.vue';
+    import jnxx from './BasicsMess'
     export default {
         components: {
-            expandRow,edit
+            expandRow,edit,jnxx
         },
         mixins:[mixins],
         data () {
             return {
+            	compName:'',
+            	listMess:{},
                 //收索
                 componentName:'',
                 datetime:[],
@@ -85,64 +93,121 @@
                 },
                 showModal:false,
                 columns10: [
-                    {
-                        title:'#',
-                        type: 'expand',
-                        width: 50,
-                        render: (h, params) => {
-                            return h(expandRow, {
-                                props: {
-                                    row: params.row
-                                }
-                            })
-                        }
-                    },
+//                  {
+//                      title:'#',
+//                      type: 'expand',
+//                      width: 50,
+//                      render: (h, params) => {
+//                          return h(expandRow, {
+//                              props: {
+//                                  row: params.row
+//                              }
+//                          })
+//                      }
+//                  },
+					{
+	                	title:"序号",
+	                	minWidth:80,
+	                	align:'center',
+	                	type:'index'
+	                },
                     {
                         title: '用车单位',
                         align:'center',
+                        minWidth:100,
                         key: 'jgmc'
                     },
                     {
+                        title: '用车事由',
+                        align:'center',
+                        minWidth:180,
+                        key: 'sy'
+                    },
+                    {
                         title: '用车人',
+                        minWidth:100,
                         align:'center',
                         key: 'ck'
                     },
                     {
+                        title: '约车时间',
+                        minWidth:100,
+                        key: 'yysj',
+                        render:(h,p)=>{
+                        	let strDate = p.row.yysj.toString()
+                            return h('div', strDate.substring(0, 13));
+                        }
+                    },
+                    {
                         title: '客户电话',
+                        minWidth:120,
                         align:'center',
                         key: 'cklxdh'
                     },
                     {
                         title: '出车司机',
+                        minWidth:100,
                         align:'center',
                         key: 'sjxm'
                     },
                     {
-                        title: '约车时间',
-                        key: 'yysj',
-                        render:(h,p)=>{
-                            return h('div', p.row.yysj.substring(0, 13));
-                        }
-                    },
-                    {
-                        title: '约车地点',
+                        title: '候车地点',
+                        minWidth:100,
                         key: 'hcdz'
                     },
                     {
                         title: '目的地',
+                        minWidth:100,
                         key: 'mdd'
                     },
                     {
                         title: '座位数',
                         align:'center',
-                        key: 'zws'
+                        minWidth:100,
+                        key: 'zws',
+                        render: (h, p) => {
+                              let cx = this.dictUtil.getValByCode(this, 'ZDCLK0019', p.row.cllx)
+                              return h('div',cx+'/'+p.row.zws+'座')
+                        }
                     },
                     {
                         title:'操作',
                         align:'center',
+                        minWidth:240,
+                        fixed:'right',
                         type: 'action',
                         render: (h, params) => {
                             return h('div', [
+                            	h('Button', {
+                                    props: {
+                                        type: 'info',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+											this.compName = 'CLP'
+                                        }
+                                    }
+                                },'打印'),
+                            	h('Button', {
+                                    props: {
+                                        type: 'warning',
+                                        size: 'small'
+                                    },
+                                    style: {
+                                        marginRight: '5px'
+                                    },
+                                    on: {
+                                        click: () => {
+                                            this.listMess = params.row
+				                    		this.compName = 'jnxx'
+                                        }
+                                    }
+                                }, '详情'),
                                 h('Button', {
                                     props: {
                                         type: 'primary',

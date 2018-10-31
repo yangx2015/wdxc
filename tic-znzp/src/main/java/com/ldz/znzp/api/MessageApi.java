@@ -10,10 +10,7 @@ import com.ldz.znzp.model.ClXl;
 import com.ldz.znzp.service.*;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -84,7 +81,15 @@ public class MessageApi {
 		if (!res.isSuccess()){
 			return res;
 		}
+
+		xlService.checkRouteInfo(route.getId());
 		return clService.report(gpsInfo.getDeviceId(),pb,car,route,clClyxjl);
+	}
+	// todo 这个方法我没有使用。因为用post请求时，一直获取不到xlId.这个方法放弃
+	@PostMapping("updateRouteInfo")
+	public ApiResponse<String> updateRouteInfo(String xlId){
+		xlService.checkRouteInfo(xlId);
+		return ApiResponse.success();
 	}
 
 	@RequestMapping(value="/media", method={RequestMethod.POST})

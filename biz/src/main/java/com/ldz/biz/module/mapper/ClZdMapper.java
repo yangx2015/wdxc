@@ -2,14 +2,14 @@ package com.ldz.biz.module.mapper;
 
 import com.ldz.biz.module.bean.DdClModel;
 import com.ldz.biz.module.model.ClZd;
-import com.ldz.util.cache.MybatisRedisCache;
-import org.apache.ibatis.annotations.*;
-import org.apache.ibatis.cache.decorators.FifoCache;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
-@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClZdMapper extends Mapper<ClZd> {
     /**
      *

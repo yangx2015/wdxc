@@ -14,6 +14,12 @@ import dictUtil from './libs/dictUtil';
 import session from './libs/session';
 
 import swal from 'sweetalert2'
+Vue.prototype.swal = swal;
+
+import carListPrint from './views/whdx/components/carListPrint'
+Vue.component('CLP',carListPrint)
+
+
 
 Vue.use(VueI18n);
 Vue.use(iView);

@@ -7,6 +7,9 @@
 <template>
 	<div>
 		<Modal v-model="showModal" width='700' :closable='false' :mask-closable="false">
+			<div slot="header" v-if="showFooter" style="color: red;">
+				只能使用Chrome(谷歌)浏览器进行打印
+			</div>
 			<div style="text-align: center">
 				<h2>{{item.driverName}}付款单</h2>
 				<h3>({{startTime}} 至 {{endTime}})</h3>
@@ -138,7 +141,7 @@
 			},
             close(){
                 let v = this;
-                v.$parent.componentName = ''
+                v.$parent.compName = ''
             },
             print(){
                 this.showFooter = false;

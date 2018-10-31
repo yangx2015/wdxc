@@ -84,6 +84,12 @@ public class ClPb implements Serializable {
      */
     @Column(name = "XGR")
     private String xgr;
+    @Column(name = "START_TIME")
+    private String startTime;
+    @Column(name = "END_TIME")
+    private String endTime;
+    @Column(name = "ENABLE")
+    private String enable;
 
     private static final long serialVersionUID = 1L;
 
@@ -231,6 +237,30 @@ public class ClPb implements Serializable {
         this.jgmc = jgmc;
     }
 
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getEnable() {
+        return enable;
+    }
+
+    public void setEnable(String enable) {
+        this.enable = enable;
+    }
+
     /**
      * 获取车辆id
      *
@@ -333,6 +363,9 @@ public class ClPb implements Serializable {
         clId("CL_ID"),
         cjsj("CJSJ"),
         cjr("CJR"),
+        enable("ENABLE"),
+        startTime("START_TIME"),
+        endTime("END_TIME"),
         xgj("XGJ"),
         xgr("XGR");
 

@@ -195,13 +195,15 @@
             },
             videoColse(item, index) {
                 var v = this
-                swal({
+                this.swal({
                     title: "是否删除数据?",
                     text: "",
-                    icon: "warning",
-                    buttons: ['取消', '确认'],
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: '取消',
+                    confirmButtonText: '删除',
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.value) {
                         this.$http.post(this.apis.CLOUD.DELE + '/' + item.id).then((res) => {
                             if (res.code == 200) {
                                 v.$Message.success(res.message);

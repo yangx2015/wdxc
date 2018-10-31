@@ -64,7 +64,9 @@
                 stationIconUrl: this.apis.STATIC_PATH+'icon/running.png',
                 colors: ['#4876FF', '#FF0000', '#5CACEE', '#EE00EE', '#00BFFF', '#BF3EFF'],
                 colorIndex: 0,
-                yxjlList:[]
+                yxjlList:[],
+                pbList:[],
+                pbCphs:[]
             }
         },
         created() {
@@ -79,11 +81,32 @@
             this.getLineList()
         },
         methods: {
-            initData(){
+            getPbList(){
+                let now = new Date();
+                let time = now.format('yyyy-MM-dd hh:mm:ss').substring(11);
+                let param = {
+                    pageSize : 10000,
+                    enable:'1',
+                    startTimeLte:time,
+                    endTimeGte:time
+                }
+                this.$http.get(this.apis.PB.pager,{params:param}).then((res)=>{
+                    if (res.code == 200 && res.page.list){
+                        this.pbList = res.page.list;
+                        for (let r of this.pbList){
+                            this.pbCphs.push(r.cph);
+                        }
+                        this.getCarList();
+                    }
+                })
+            },
+            getCarList(){
                 this.$http.get(this.apis.clyxjl.QUERY,{params:{pageSize:100}}).then((res)=>{
                     if (res.code == 200 && res.page.list){
                         this.yxjlList = res.page.list;
                         for(let r of this.yxjlList){
+                            // 过滤排班
+                            if (this.pbCphs.indexOf(r.cphm) < 0) continue
                             for (let l of this.lineList){
                                 if (l.id == r.xlId){
                                     let item = {
@@ -136,7 +159,9 @@
                 if (!stationList) return;
                 let c = 0;
                 for (let r of stationList) {
-                    this.addStation(r, ++c);
+                	if(r.mc.indexOf('辅助点')==-1){
+                		this.addStation(r, ++c);
+                	}
                 }
             },
             showAllCars() {
@@ -162,7 +187,7 @@
                             this.lineList[i].color = this.getColor();
                             this.getLineStations(i);
                         }
-                        this.initData();
+                        this.getPbList();
                     }
                 })
             },

@@ -1310,12 +1310,12 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(order.getGlf()==null?0:order.getGlf())+(order.getGqf()==null?0:order.getGqf());
 			newClDd.setZj(zj);
 		}
-		newClDd.setLcf(lcf);
+//		newClDd.setLcf(lcf);
 		newClDd.setId(order.getId());
 		newClDd.setDdzt("20");// 订单状态
-		if (order.getSjqrsj() == null){
-			newClDd.setSjqrsj(new Date());
-		}
+		newClDd.setSjqrsj(new Date());
+//		if (order.getSjqrsj() == null){
+//		}
 		int i = update(newClDd);
 		RuntimeCheck.ifTrue(i == 0, "操作数据库失败");
 

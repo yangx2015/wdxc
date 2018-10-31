@@ -1,15 +1,12 @@
 package com.ldz.biz.module.service;
 
-import java.util.List;
-
-import com.ldz.biz.module.bean.ClClModel;
-import com.ldz.biz.module.bean.JrXbKb;
-import com.ldz.biz.module.bean.PbClXlmodel;
-import com.ldz.biz.module.bean.PbInfo;
-import com.ldz.biz.module.bean.XbXlPb;
+import com.ldz.biz.module.bean.*;
 import com.ldz.biz.module.model.ClPb;
 import com.ldz.sys.base.BaseService;
 import com.ldz.util.bean.ApiResponse;
+
+import java.util.List;
+import java.util.Map;
 
 public interface PbService extends BaseService<ClPb, String> {
 	ApiResponse<String> saveEntity(ClPb entity);
@@ -41,9 +38,11 @@ public interface PbService extends BaseService<ClPb, String> {
     //校巴开班条形图
 	ApiResponse<JrXbKb> xbkb(PbClXlmodel pbclxlmodel);
 
-    ApiResponse<String> savePbList(ClPb entity);
+    ApiResponse<Map<String,String>> savePbList(ClPb entity);
 
 	ApiResponse<List<PbInfo>> checkPbCl(ClPb entity);
 
 	ApiResponse<String> delPbList(ClPb entity);
+	//移除一组排班
+    void removePbList(String pbId);
 }

@@ -87,7 +87,48 @@ public class ClPb implements Serializable {
     @Column(name = "XGR")
     private String xgr;
 
+
+    /**
+     * 排班_班次([ZDCLK0054]1 早班、2 午班、4、下午、7 全天 )
+     */
+    @Column(name = "CLASSES")
+    private String classes;
+    /**
+     * 班次开始时间  格式为  HH:mm:ss
+     */
+    @Column(name = "START_TIME")
+    private String startTime;
+    /**
+     * 班次结束时间  格式为  HH:mm:ss
+     */
+    @Column(name = "END_TIME")
+    private String endTime;
+
     private static final long serialVersionUID = 1L;
+
+    public String getClasses() {
+        return classes;
+    }
+
+    public void setClasses(String classes) {
+        this.classes = classes;
+    }
+
+    public String getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(String startTime) {
+        this.startTime = startTime;
+    }
+
+    public String getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(String endTime) {
+        this.endTime = endTime;
+    }
 
     /**
      * 获取ID
@@ -330,6 +371,8 @@ public class ClPb implements Serializable {
         pbsj("PBSJ"),
         sj("SJ"),
         sjxm("SJXM"),
+        startTime("START_TIME"),
+        endTime("END_TIME"),
         jgdm("JGDM"),
         jgmc("JGMC"),
         clId("CL_ID"),
