@@ -140,6 +140,7 @@ export default {
     // 获取一条线路的途径点
    
 showLine(points){
+    console.log("1111111",points);
     let ps = [];
     for (let r of points){
         ps.push(new BMap.Point(r.lng, r.lat));
@@ -233,12 +234,13 @@ getLinePoints(stationList){
       v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
       var point = new BMap.Point(114.368107, 30.543083);
       v.map.centerAndZoom(point, 16); 
-
       v.getxlmess((res)=>{
         let c = 0;
         for (let r of res) {
-          var point = new BMap.Point(r.jd, r.wd);
-          v.addMarker(r, point,++c);
+          if(r.zdName.indexOf('辅助点') == -1){
+            var point = new BMap.Point(r.jd, r.wd);
+            v.addMarker(r, point,++c);
+          }
         };  
       },(reslist)=>{
         v.getLinePoints(reslist)

@@ -17,7 +17,7 @@
           <ui-view class="demo">
             <ui-ex-swiper ui:if="swiperShow" pagination autoplay="{{ {delay:2*1000} }}" loop>
               <ui-ex-swiper-item ui:for="{{swiperImg}}">
-                <ui-image width=100% height=100% src="{{item.url}}" mode="simple"></ui-image>
+                <ui-image width=100% height=100% src="{{item.img}}" mode="simple"></ui-image>
               </ui-ex-swiper-item>
             </ui-ex-swiper>
           </ui-view>
@@ -131,6 +131,7 @@ export default {
   },
   data () {
     return {
+      imgid:'',
       tabCurrent:ui.getApp().swiperIndex,
       swiperShow:false,
       swiperImg: [],
@@ -222,8 +223,16 @@ export default {
       this.$http('POST',ui.getApp().apis.SWIPER,{},(res)=>{
         console.log('轮播图片',res);
         if(res.code == 200){
+            res.result.forEach(element => {
+              console.log("11111111",element.img);
+              
+              element.img = "http://10.113.4.70:9090/staticpath/" + element.img;
+
+               console.log("22222",element.img);
+            });
             this.swiperImg = res.result
             this.swiperShow = true
+
         }
         
       })
@@ -256,10 +265,6 @@ export default {
     this.getGPSmess()
   },
   mounted() {
-    
-    
-
-
 
     //首屏页面需要在mounted中延时才能调用框架api，其他页面不需要延时
     setTimeout(() => {
