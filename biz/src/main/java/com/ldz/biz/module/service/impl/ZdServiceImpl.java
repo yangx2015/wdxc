@@ -55,6 +55,16 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
     protected Class<?> getEntityCls(){
         return ClZd.class;
     }
+    /**
+     * 按指定字段进行排序
+     * @param condition
+     * @return
+     */
+    @Override
+    public boolean fillPagerCondition(LimitedCondition condition){
+        condition.setOrderByClause(" id desc");
+        return true;
+    }
 
     @Override
     public ApiResponse<String> saveEntity(ClZd entity) {

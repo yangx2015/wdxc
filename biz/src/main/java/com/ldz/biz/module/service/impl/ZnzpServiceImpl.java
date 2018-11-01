@@ -1,13 +1,12 @@
 package com.ldz.biz.module.service.impl;
 
-import com.github.pagehelper.PageInfo;
-import com.ldz.biz.module.mapper.ClZpXlMapper;
-import com.ldz.biz.module.model.ClZpXl;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.biz.module.mapper.ClZnzpMapper;
+import com.ldz.biz.module.mapper.ClZpXlMapper;
 import com.ldz.biz.module.model.ClZnzp;
+import com.ldz.biz.module.model.ClZpXl;
 import com.ldz.biz.module.service.ZnzpService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +42,10 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         entity.setCjr(getOperateUser());
         entity.setCjsj(new Date());
         save(entity);
+        if (StringUtils.isNotEmpty(entity.getXlIds())){
+            List<String> xlIds = Arrays.asList(entity.getXlIds().split(","));
+            setZnzpXl(xlIds,entity.getZdbh());
+        }
         return ApiResponse.saveSuccess();
     }
 
