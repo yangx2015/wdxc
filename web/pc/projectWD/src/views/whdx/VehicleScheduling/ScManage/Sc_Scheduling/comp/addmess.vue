@@ -57,7 +57,7 @@
                   <div>
                         <div style="height: 200px;border: solid 1px #000;overflow: auto">
                               <Row>
-                                    <Col span="6" v-if="mess.clList.length>0" v-for='(item,index) in mess.clList'>
+                                    <Col span="4" v-if="mess.clList.length>0" v-for='(item,index) in mess.clList'>
                                           <div class="carListsty">
                                                 <div style="padding: 0 3px">
                                                       <Icon type="md-person" size="16" color="#3bb84b"></Icon>
@@ -84,7 +84,7 @@
                         </div>
                         <div style="height: 200px;border: solid 1px #000;overflow: auto">
                               <Row>
-                                    <Col v-show="chrlist" span="6" v-for='(item,index) in chrlist'>
+                                    <Col v-show="chrlist" span="4" v-for='(item,index) in chrlist'>
                                           <div class="carListstyB">
                                                 <div style="padding: 0 3px">
                                                       <Icon type="md-person" size="16" color="#3bb84b"></Icon>
@@ -97,25 +97,25 @@
                                                       {{item.cph}}
                                                 </div>
                                                 <Row style="margin-top: 3px">
-                                                      <Col span='6' align="center" class-name="clickSty borRight">
+                                                      <Col span='8' align="center" class-name="clickSty borRight">
                                                             <Button type="info" size="small" long
                                                                     :disabled="item.classesList.indexOf('1')!=-1 || item.classesList.indexOf('7')!=-1"
                                                                     @click="AddList(item.clId,item.cph,item.sjxm,'1')"
                                                             >早班</Button>
                                                       </Col>
-                                                      <Col span='6' align="center" class-name="clickSty borRight">
+                                                      <!--<Col span='6' align="center" class-name="clickSty borRight">
                                                             <Button type="info" size="small" long
                                                                     :disabled="item.classesList.indexOf('2')!=-1 || item.classesList.indexOf('7')!=-1"
                                                                     @click="AddList(item.clId,item.cph,item.sjxm,'2')"
                                                             >中班</Button>
-                                                      </Col>
-                                                      <Col span='6' align="center" class-name="clickSty borRight">
+                                                      </Col>-->
+                                                      <Col span='8' align="center" class-name="clickSty borRight">
                                                             <Button type="info" size="small" long
-                                                                    :disabled="item.classesList.indexOf('4')!=-1 || item.classesList.indexOf('7')!=-1"
-                                                                    @click="AddList(item.clId,item.cph,item.sjxm,'4')"
+                                                                    :disabled="item.classesList.indexOf('2')!=-1 || item.classesList.indexOf('7')!=-1"
+                                                                    @click="AddList(item.clId,item.cph,item.sjxm,'2')"
                                                             >晚班</Button>
                                                       </Col>
-                                                      <Col span='6' align="center" class-name="clickSty borRight">
+                                                      <Col span='8' align="center" class-name="clickSty borRight">
                                                             <Button type="info" size="small" long
                                                                     :disabled="item.classesList.indexOf('7')!=-1"
                                                                     @click="AddList(item.clId,item.cph,item.sjxm,'7')"
