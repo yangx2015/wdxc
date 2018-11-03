@@ -58,8 +58,8 @@ public class ScheduleComponent {
         JobDetail pbJob = JobBuilder.newJob(ClPbJob.class).withIdentity(ClPbJob.class.getName(), "clpb")
                 .build();
         // 清除过期排班信息job  第五分钟执行一次
-//        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("0 0/5 * * * ?");
-        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("1 * * * * ?");
+        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("0 0/5 * * * ?");
+//        CronScheduleBuilder clPbBuilderns = CronScheduleBuilder.cronSchedule("1 * * * * ?");
         //清除过期排班信息trigger
         CronTrigger clpbTriggerclns = TriggerBuilder.newTrigger().withIdentity(ClPbJob.class.getName(), "clpb")
                 .withSchedule(clPbBuilderns).build();

@@ -86,19 +86,15 @@ public class MessageReceiver implements MessageListener {
 					if (StringUtils.isEmpty(gpsInfo.getLatitude())){
 						return ;
 					}
-
+					//ZNZP_CL_ 缓存的KEY
 					ClCl car = clService.getByDeviceId(gpsInfo.getDeviceId());
 					if (car == null)return  ;
 
-					SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
-					condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
-					condition.setOrderByClause(ClClyxjl.InnerColumn.id.desc());
-					List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
-
+					//ZNZP_PB_ 缓存的KEY
 					ClPb pb = clService.getCarPb(car.getClId());
 					if (pb == null)return ;
-
-					ClXl route = xlService.findById(pb.getXlId());
+//					ZNZP_XL_{{xlId}}  缓存的KEY
+					ClXl route = xlService.getCarXlfindById(pb.getXlId());
 					if (route == null)return ;
 					String yxkssj =route.getYxkssj();//运行开始时间
 					String yxjssj =route.getYxjssj();//运行结束时间
@@ -116,6 +112,11 @@ public class MessageReceiver implements MessageListener {
 							e.printStackTrace();
 						}
 					}
+
+					SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+					condition.eq(ClClyxjl.InnerColumn.clId,car.getClId());
+					condition.setOrderByClause(ClClyxjl.InnerColumn.id.desc());
+					List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 
 					ClClyxjl clClyxjl = clClyxjls.size() == 0 ? null : clClyxjls.get(0);
 
