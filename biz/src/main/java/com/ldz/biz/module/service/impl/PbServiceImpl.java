@@ -288,7 +288,7 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		RuntimeCheck.ifBlank(xlId, "线路ID不能为空");
 		RuntimeCheck.ifBlank(clId, "车辆ID不能为空");
 		RuntimeCheck.ifBlank(date, "排班时间不能为空");
-
+//
 		Date pbDate = null;
 		try {
 			pbDate = DateUtils.getDate(date, "yyyy-MM-dd");
@@ -316,6 +316,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if (i == 0) {
 			return ApiResponse.fail();
 		} else {
+			try {
+				redisTemplate.delete("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+clId);
+			}catch (Exception e){e.printStackTrace();}
 			updateRouteInfo(xlId);
 			return ApiResponse.success();
 		}
@@ -677,6 +680,12 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			clClyxjl.setClId(entity.getClId());
 			clClyxjlMapper.delete(clClyxjl);
 		}catch (Exception e){}
+
+		try {
+			redisTemplate.delete("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+entity.getClId());
+		}catch (Exception e){e.printStackTrace();}
+
+
 		accessLog.debug("要删除线路ID",entity.getXlId());
 		updateRouteInfo(entity.getXlId());
 
