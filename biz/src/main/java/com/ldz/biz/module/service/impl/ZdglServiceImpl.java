@@ -62,6 +62,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
+
     private ExecutorService pool = Executors.newSingleThreadExecutor();
 
     @Override
@@ -138,9 +139,37 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
 //        entity.setXgr(getOperateUser());
         entity.setXgsj(new Date());
         update(entity);
+        try {
+            redisTemplateUtil.delete("ZNZP_CL_"+entity.getZdbh());
+        }catch (Exception e){e.printStackTrace();}
         return ApiResponse.success();
     }
+    @Override
+    public void remove(String id) {
+        try {
+            redisTemplateUtil.delete("ZNZP_CL_"+id);
+        }catch (Exception e){e.printStackTrace();}
+        getBaseMapper().deleteByPrimaryKey(id);
+    }
 
+    @Override
+    public void remove(ClZdgl entity) {
+        try {
+            redisTemplateUtil.delete("ZNZP_CL_"+entity.getZdbh());
+        }catch (Exception e){e.printStackTrace();}
+        getBaseMapper().delete(entity);
+    }
+
+    @Override
+    public ApiResponse<String> removeIds(String[] ids) {
+        for (String id : ids) {
+            try {
+                redisTemplateUtil.delete("ZNZP_CL_"+id);
+            }catch (Exception e){e.printStackTrace();}
+            getBaseMapper().deleteByPrimaryKey(id);
+        }
+        return ApiResponse.deleteSuccess();
+    }
     public ApiResponse<List<ClZdgl>> unboundList(){
         SysYh currentUser = getCurrentUser();
         String jgdm = currentUser.getJgdm();

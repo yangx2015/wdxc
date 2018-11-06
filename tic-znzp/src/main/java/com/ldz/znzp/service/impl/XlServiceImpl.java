@@ -1,5 +1,8 @@
 package com.ldz.znzp.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
@@ -17,6 +20,7 @@ import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +29,10 @@ import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlService {
     Logger errorLog = LoggerFactory.getLogger("error_info");
@@ -54,6 +60,9 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
     private ClZpXlMapper zpXlMapper;
     @Autowired
     private RedisTemplateUtil redisDao;
+
+    // 忽略当接收json字符串中没有bean结构中的字段时抛出异常问题
+    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
     @Override
     protected Mapper<ClXl> getBaseMapper() {
@@ -289,14 +298,18 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
     @Override
     public void checkRouteInfo(String xlId) {
         errorLog.error("收到消息:线路ID为："+xlId);
-        String time = DateUtils.getNowTime().substring(11);
-        SimpleCondition condition = new SimpleCondition(ClPb.class);
-        condition.eq(ClPb.InnerColumn.xlId, xlId);
-        condition.eq(ClPb.InnerColumn.enable, "1");
-        condition.lte(ClPb.InnerColumn.startTime,time);//>=
-        condition.gte(ClPb.InnerColumn.endTime,time);//<=
-        condition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') = ",DateUtils.getToday("yyyy-MM-dd"));
-        List<ClPb> pbs = pbService.findByCondition(condition);
+
+        SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+        condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+        Date today = new Date();
+        today.setHours(0);
+        today.setMinutes(0);
+        today.setSeconds(0);
+        condition.gte(ClClyxjl.InnerColumn.cjsj,today);
+        condition.eq(ClClyxjl.InnerColumn.xlId,xlId);
+        condition.and().andNotEqualTo(ClClyxjl.InnerColumn.zt.name(),"off");
+        condition.setOrderByClause(ClClyxjl.InnerColumn.cjsj.asc());
+        List<ClClyxjl> clClyxjls = clyxjlService.findByCondition(condition);
 
         String carNumStr = "";
         try {
@@ -307,18 +320,65 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         }
         errorLog.error("收到消息:2："+carNumStr);
         int carNum = StringUtils.isEmpty(carNumStr) ? 0 : Integer.parseInt(carNumStr);
-        errorLog.error("收到消息:3："+carNum);
-        if (carNum != pbs.size()) {
+        errorLog.error("收到消息:3："+clClyxjls.size());
+        if (carNum != clClyxjls.size()) {
             List<ClZnzp> znzps = znzpService.getByXlId(xlId);
             if (znzps.size() == 0) return;
             List<String> zpIds = znzps.stream().map(ClZnzp::getZdbh).collect(Collectors.toList());
             Map<String, Object> channelMap = nettyUtil.getChannelByTids(zpIds);
-            for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
-                Channel channel = (Channel) entry.getValue();
-                xlService.getRouterInfo(channel, entry.getKey());
+            if(channelMap!=null){
+                for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
+                    Channel channel = (Channel) entry.getValue();
+                    xlService.getRouterInfo(channel, entry.getKey());
+                }
             }
         }
-        redisDao.boundValueOps("xlCarNum-" + xlId).set(pbs.size()+"");
+        redisDao.boundValueOps("xlCarNum-" + xlId).set(clClyxjls.size()+"");
+    }
+
+    /**
+     * "ZNZP_XL_{{xlId}}"
+     * 通过线路ID获取线路明细
+     * @param xlId
+     * @return
+     */
+    @Override
+    public ClXl getCarXlfindById(String xlId){
+        ClXl clXl =null;
+        String redisValue="";
+        try {
+            redisValue= (String) redisDao.boundValueOps("ZNZP_XL_"+xlId).get();
+            if(StringUtils.equals(redisValue,"-")){
+                return null;
+            }
+            try {
+                clXl= mapper.readValue(redisValue,ClXl.class);
+            } catch (Exception e) {
+//                loge.error("ZNZP_XL_json转换异常",e);
+                e.printStackTrace();
+            }
+            if(clXl==null){
+                clXl= findById(xlId);
+                try {
+                    if(clXl!=null){
+                        redisValue= mapper.writeValueAsString(clXl);
+                    }
+                } catch (JsonProcessingException e) {
+                }
+
+                if(StringUtils.isNotEmpty(redisValue)){
+                    String endTime =DateUtils.getToday("yyyy-MM-dd")+" 23:59:59";//拼接出失效时间
+                    long interval = (DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss").getTime() - new Date().getTime())/1000;
+                    redisDao.boundValueOps("ZNZP_XL_"+xlId).set(redisValue,interval, TimeUnit.SECONDS);//当天23.59.59秒失效
+                }else{
+                    redisDao.boundValueOps("ZNZP_XL_"+xlId).set("-",1*60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
+                }
+                log.info("通过线路ID获取线路明细(ZNZP_XL_{{xlId}})_从数据库中获取"+redisValue+" 。");
+            }else{
+                log.info("通过线路ID获取线路明细(ZNZP_XL_{{xlId}})_从redis中获取"+redisValue+" 。");
+            }
+        }catch (Exception e){}
+        return clXl;
     }
 
 }
