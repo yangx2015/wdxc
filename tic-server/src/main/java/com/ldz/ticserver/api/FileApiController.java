@@ -194,6 +194,7 @@ public class FileApiController {
                         }
                         //
 
+                        logger.info("文件保存的名称为：" + suffixName.contains("jpg")+">>>>>>>>"+suffixName.contains("ts"));
                         if (!suffixName.contains("jpg")) {
                             dto.setFileLocalPath(filePath + fileName);
                             dto.setFilePath(uriPath + fileName);
@@ -204,6 +205,7 @@ public class FileApiController {
                             String cpimgDir = filelocalpath + dto.getDeviceId() + File.separator + DateUtils.getToday() + File.separator + cacheImgDir + File.separator;
 
                             String extpic = mp4cacheimg.replace("@videofile", filePath + fileName);
+                            logger.info("文件执行命令：" + extpic);
                             if (suffixName.contains("ts")) {//只有ts文件才转换
                                 dto.setFileLocalPath(filePath + fileName.replace(".ts", ".mp4"));
                                 dto.setFilePath(uriPath + fileName.replace(".ts", ".mp4"));
@@ -224,13 +226,8 @@ public class FileApiController {
                             sp.setMessage(file.getOriginalFilename());
                             sp.setResult(dto);
                         }
-                    } catch (IllegalStateException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
                     } catch (Exception e) {
-                        // TODO: handle exception
-                        e.printStackTrace();
+                        logger.error("文件保存异常" , e);
                     } finally {
                     }
 

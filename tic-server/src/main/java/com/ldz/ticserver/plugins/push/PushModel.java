@@ -14,7 +14,7 @@ public class PushModel {
 	private String clientId;// 推送消息到某一个人这个填写一个客户端id即可
 	private String url;//打开的指定链接，几乎用户到，除非广告
 	private Boolean pushAll = false; //是否全部推送 设置为true之后，clientId 和 clientIds将失效
-	private Integer runAppState = 1;//1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
+	private Integer runAppState = 2;//1为强制启动应用，客户端接收到消息后就会立即启动应用；2为等待应用启动
 	
 	public int getPushType() {
 		return pushType;
