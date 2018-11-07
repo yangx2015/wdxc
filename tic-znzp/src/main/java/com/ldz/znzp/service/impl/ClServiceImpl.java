@@ -105,10 +105,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         reportData.setBus_plate(clClyxjl.getCphm());
         reportData.setDirect("up");
         Map<String,Object> channelMap = nettyUtil.getChannelByTids(zpIds);
+        log.info(JsonUtil.toJson(reportData));
         if(channelMap!=null){
             for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
                 reportData.setTid(entry.getKey());
-                log.info(JsonUtil.toJson(reportData));
                 writeResult((Channel)entry.getValue(),reportData);
             }
         }
@@ -122,9 +122,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             return ApiResponse.notFound("未找到车辆线路");
         }
         // 判断当前线路站点是否缓存至redis
-        if(!geoUtil.hasKey(route.getId()+"_stations")){
-            initXlZd(route.getId());
-        }
+//        if(!geoUtil.hasKey(route.getId()+"_stations")){
+//            initXlZd(route.getId());
+//        }
         // 判断设备在线状态
         String zt = "running";
         Date now = new Date();

@@ -61,12 +61,12 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
         if (StringUtils.isEmpty(station.getId()) || StringUtils.isEmpty(station.getXlId())){
             return;
         }
-        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
-        condition.eq(ClXlzd.InnerColumn.zdId,station.getId());
-        condition.eq(ClXlzd.InnerColumn.xlId,station.getXlId());
-        List<ClXlzd> xlzds = xlzdService.findByCondition(condition);
-        if (xlzds.size() == 0)return;
-        station.setRouteOrder(xlzds.get(0).getXh());
+        ClXlzd entity = new ClXlzd();
+        entity.setXlId(station.getXlId());
+        entity.setZdId(station.getId());
+        ClXlzd xlzd = xlzdService.findOneByEntity(entity);
+        if (xlzd == null)return;
+        station.setRouteOrder(xlzd.getXh());
     }
 
     @Override
