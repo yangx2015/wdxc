@@ -9,6 +9,7 @@ import org.apache.ibatis.annotations.Select;
 import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClXlMapper extends Mapper<ClXl> {
 
@@ -22,4 +23,12 @@ public interface ClXlMapper extends Mapper<ClXl> {
             @Result(property = "vehicleScope", column = "FW")
     })
     List<DdClModel> getBySiteVehicleList(@Param("id") String id);
+
+    @Select({
+            "<script> " +
+                    " SELECT XH, XM, SJHM, YXDM, YXMC, JS FROM upubdata.v_clgl_yhxx WHERE XH = #{userId} " +
+                    " AND JS =  #{JS}  " +
+                    " group by XH DESC " +
+                    " </script>"})
+    List<Map<String,String>> getUserView(@Param("userId") String userId, @Param("js") String js);
 }
