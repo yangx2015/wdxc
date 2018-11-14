@@ -1,10 +1,10 @@
 package com.ldz.util.commonUtil;
 
 import org.apache.commons.lang.StringUtils;
-import java.time.LocalDateTime;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -116,7 +116,11 @@ public class DateUtils {
 
 
 	public static void main(String[] args) throws ParseException {
-		System.out.println(createDateList("2018-09-08","2018-09-08"));
+//		System.out.println(createDateList("2018-09-08","2018-09-08"));
+//		System.out.println(getNowTime().substring(11)+"1");
+//		System.out.println(DateUtils.getDate("07:00:00","HH:mm:ss"));
+		System.out.println(hourMinuteBetween("06:00:00","07:00:00","22:00:00"));
+
 	}
 	public static String getNowTime() {
 		return getToday("yyyy-MM-dd HH:mm:ss");
@@ -129,4 +133,28 @@ public class DateUtils {
 		return false;
 	}
 
+	/**
+	 *
+	 * @param nowDate   要比较的时间
+	 * @param startDate   开始时间
+	 * @param endDate   结束时间
+	 * @return   true在时间段内，false不在时间段内
+	 * @throws Exception
+	 */
+	public static boolean hourMinuteBetween(String nowDate, String startDate, String endDate)  {
+	try {
+			SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
+
+			Date now = format.parse(nowDate);
+			Date start = format.parse(startDate);
+			Date end = format.parse(endDate);
+
+			long nowTime = now.getTime();
+			long startTime = start.getTime();
+			long endTime = end.getTime();
+
+			return nowTime >= startTime && nowTime <= endTime;
+		}catch (Exception e){}
+		return false;
+	}
 }
