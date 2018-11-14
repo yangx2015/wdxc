@@ -170,7 +170,11 @@ public class ClCl implements Serializable {
      */
     @Column(name = "OBD_CODE")
     private String obdCode;
-
+    /**
+     * 排班排班ID
+     */
+    @Transient
+    private String pbId;
     /**
      * 排班页面，班型列表 用,分隔
      */

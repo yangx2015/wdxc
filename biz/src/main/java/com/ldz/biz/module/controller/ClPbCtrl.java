@@ -132,5 +132,15 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 		return pbservice.delPbList(entity);
 	}
 
-
+	/**
+	 * 修改排班时间.
+	 * id	排班ID
+	 * startTime	开始时间
+	 * endTime	结束时间
+	 *
+	 */
+	@RequestMapping(value="/updatepbtime", method={RequestMethod.POST})
+	public ApiResponse<String> updPbTime(ClPb entity){
+		return pbservice.updPbTime(entity);
+	}
 }
