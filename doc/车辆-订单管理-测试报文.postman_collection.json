@@ -1,0 +1,479 @@
+{
+	"id": "827cbf70-db4d-44b8-87be-2ecfdef9a045",
+	"name": "车辆-订单管理",
+	"description": "",
+	"auth": null,
+	"events": null,
+	"variables": null,
+	"order": [
+		"d3e8a80a-ac87-4510-bdee-f480df151149",
+		"01e1f856-bb59-406d-8571-ed373658b739",
+		"0f40e689-f7b3-4c0c-94ff-5e314f788390",
+		"ee848f36-cd91-422f-b329-d6ed6d8f551e",
+		"6705197f-b4b3-48e9-87b6-9a70119b7486",
+		"a04b9439-7861-4f8f-b1dd-396d6e97c7aa",
+		"8cd3ebca-bd1c-4d40-8e3c-8f61ab99c863",
+		"24e8e10c-91b1-46e5-9beb-55f038376c35",
+		"f4dd0997-60d0-4a4e-9124-eef43d755607",
+		"f666c1d8-c675-4270-9c5a-620ee1548eb4",
+		"a6ec0d43-a9b4-4c66-98f8-32c8be34c0d1",
+		"b9633dfd-aa10-4f12-bc40-6621329aae11",
+		"61ab207e-29ce-40eb-a6b6-e182d874b183"
+	],
+	"folders_order": [],
+	"folders": [],
+	"requests": [
+		{
+			"id": "01e1f856-bb59-406d-8571-ed373658b739",
+			"name": "订单分页查询",
+			"url": "127.0.0.1:8088/dd/pager",
+			"description": "",
+			"data": [
+				{
+					"key": "ddzt",
+					"value": "10",
+					"description": "订单状态",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "pageSize",
+					"value": "10",
+					"description": "页面大小",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "pageNum",
+					"value": "1",
+					"description": "页码",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "0f40e689-f7b3-4c0c-94ff-5e314f788390",
+			"name": "订单分页查询 Copy",
+			"url": "127.0.0.1:8088/dd/pager",
+			"description": "",
+			"data": [
+				{
+					"key": "ddzt",
+					"value": "10",
+					"description": "订单状态",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "pageSize",
+					"value": "10",
+					"description": "页面大小",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "pageNum",
+					"value": "1",
+					"description": "页码",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "24e8e10c-91b1-46e5-9beb-55f038376c35",
+			"name": "派单司机列表",
+			"url": "127.0.0.1:8088/dd/pdsjlb",
+			"description": "",
+			"data": [
+				{
+					"key": "",
+					"value": "",
+					"description": "12",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "61ab207e-29ce-40eb-a6b6-e182d874b183",
+			"name": "订单确认-操作",
+			"url": "127.0.0.1:8088/dd/ddqr",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "6705197f-b4b3-48e9-87b6-9a70119b7486",
+			"name": "订单审核操作-审核通过",
+			"url": "127.0.0.1:8088/dd/orderAuditing",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "ddzt",
+					"value": "11",
+					"description": "订单状态",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "8cd3ebca-bd1c-4d40-8e3c-8f61ab99c863",
+			"name": "订单分派-待分配的订单列表",
+			"url": "127.0.0.1:8088/dd/dfp",
+			"description": "",
+			"data": [
+				{
+					"key": "ck",
+					"value": "姓名",
+					"description": "乘客",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "a04b9439-7861-4f8f-b1dd-396d6e97c7aa",
+			"name": "订单查询-订单明细页面查询",
+			"url": "127.0.0.1:8088/dd/orderDetails?id=425137245750558720",
+			"description": "",
+			"data": [
+				{
+					"key": "",
+					"value": "",
+					"description": "12",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "GET",
+			"pathVariableData": [],
+			"queryParams": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "a6ec0d43-a9b4-4c66-98f8-32c8be34c0d1",
+			"name": "取消派单操作",
+			"url": "127.0.0.1:8088/dd/qxpd",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "b9633dfd-aa10-4f12-bc40-6621329aae11",
+			"name": "订单确认-订单编辑",
+			"url": "127.0.0.1:8088/dd/update",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "zj",
+					"value": "2003",
+					"description": "单价",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "d3e8a80a-ac87-4510-bdee-f480df151149",
+			"name": "订单新增",
+			"url": "127.0.0.1:8088/dd/save",
+			"description": "",
+			"data": [
+				{
+					"key": "hcdz",
+					"value": "候车地址",
+					"description": "候车地址",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "mdd",
+					"value": "北京",
+					"description": "目的地",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "ck",
+					"value": "乘客姓名",
+					"description": "乘客姓名",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "ckzw",
+					"value": "11",
+					"description": "乘客职务",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "cklxdh",
+					"value": "13311111111",
+					"description": "乘客联系电话",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "yysj",
+					"value": "2017-12-01",
+					"description": "预约时间",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "wf",
+					"value": "1",
+					"description": "往返",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "ee848f36-cd91-422f-b329-d6ed6d8f551e",
+			"name": "订单审核操作-审核驳回",
+			"url": "127.0.0.1:8088/dd/orderAuditing",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "1",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "ddzt",
+					"value": "12",
+					"description": "订单状态",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "f4dd0997-60d0-4a4e-9124-eef43d755607",
+			"name": "派单操作",
+			"url": "127.0.0.1:8088/dd/pd",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "12",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "sjSx",
+					"value": "10",
+					"description": "司机属性 sjSx 司机属性：10:内部司机，关联CL_JSY表 11：外部车，关联临时车表",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "sj",
+					"value": "1",
+					"description": "驾驶员ID(驾驶员证件号) ",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		},
+		{
+			"id": "f666c1d8-c675-4270-9c5a-620ee1548eb4",
+			"name": "已分配订单查询",
+			"url": "127.0.0.1:8088/dd/yfp",
+			"description": "",
+			"data": [
+				{
+					"key": "id",
+					"value": "425137245750558720",
+					"description": "订单ID",
+					"type": "text",
+					"enabled": false
+				},
+				{
+					"key": "sjSx",
+					"value": "10",
+					"description": "司机属性 sjSx 司机属性：10:内部司机，关联CL_JSY表 11：外部车，关联临时车表",
+					"type": "text",
+					"enabled": true
+				},
+				{
+					"key": "sj",
+					"value": "1",
+					"description": "驾驶员ID(驾驶员证件号) ",
+					"type": "text",
+					"enabled": true
+				}
+			],
+			"dataMode": "params",
+			"headerData": [],
+			"method": "POST",
+			"pathVariableData": [],
+			"queryParams": [],
+			"auth": null,
+			"events": null,
+			"folder": null,
+			"headers": "",
+			"pathVariables": {}
+		}
+	]
+}
