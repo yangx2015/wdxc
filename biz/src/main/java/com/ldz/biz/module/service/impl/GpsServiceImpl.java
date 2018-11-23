@@ -1,31 +1,5 @@
 package com.ldz.biz.module.service.impl;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import com.ldz.sys.util.ContextUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Duration;
-import org.joda.time.format.DateTimeFormat;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
-
 import com.google.common.eventbus.AsyncEventBus;
 import com.google.common.eventbus.Subscribe;
 import com.ldz.biz.bean.SendGpsEvent;
@@ -36,35 +10,46 @@ import com.ldz.biz.module.bean.WebsocketInfo;
 import com.ldz.biz.module.mapper.ClClMapper;
 import com.ldz.biz.module.mapper.ClGpsMapper;
 import com.ldz.biz.module.mapper.ClZdglMapper;
-import com.ldz.biz.module.model.ClCl;
-import com.ldz.biz.module.model.ClClyxjl;
-import com.ldz.biz.module.model.ClDzwl;
-import com.ldz.biz.module.model.ClGps;
-import com.ldz.biz.module.model.ClGpsLs;
-import com.ldz.biz.module.model.ClPb;
-import com.ldz.biz.module.model.ClSbyxsjjl;
-import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.ClyxjlService;
-import com.ldz.biz.module.service.GpsService;
-import com.ldz.biz.module.service.PbService;
-import com.ldz.biz.module.service.ZdglService;
+import com.ldz.biz.module.model.*;
+import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.util.ContextUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.TrackPoint;
 import com.ldz.util.bean.YingyanResponse;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.gps.DistanceUtil;
 import com.ldz.util.gps.Gps;
 import com.ldz.util.gps.PositionUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 import tk.mybatis.mapper.common.Mapper;
+
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -131,7 +116,8 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         	errorLog.error("["+gpsInfo.getDeviceId()+"]速度值异常:"+gpsInfo.getSpeed()+"KM/H");
         	return ApiResponse.success();
         }
-
+        //2018年11月23日。将行程计算提前到GPS点存储之前
+        clXc(gpsInfo);
         boolean change = false;
         try{
             change = handleEvent(gpsInfo);
@@ -277,7 +263,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
             sendWebsocket(websocketInfo);
         }
-        clXc(gpsInfo);
+        // clXc(gpsInfo);
         saveClSbyxsjjl(gpsInfo, newGps, car);
         return change;
     }
@@ -698,49 +684,59 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      * @param gpsInfo
      */
     private void clXc(GpsInfo gpsInfo){
-        // 只有已录入的设备才上传到鹰眼
-        if (!isDeviceExist(gpsInfo.getDeviceId())){
-            return;
-        }
-        // 获取 gps 存储事件的 终端号 和 时间
-        String time = gpsInfo.getStartTime();
-        String startTime  = time; // 开始时间
-        String zdbh = gpsInfo.getDeviceId();  // 终端编号
-        String routeType = "1"; //0: 行程开始  1： 行程中 2 ： 行程结束
-        if(StringUtils.equals(gpsInfo.getEventType(),"50")){
-            routeType = "0";
-        }else if(StringUtils.equals(gpsInfo.getEventType(),"60")) {
-            routeType = "2";
-        }
-        String s = (String) redis.boundValueOps("CX_" + zdbh).get();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        // 判断 redis中的实时点位是否存在
-        if(StringUtils.isNotBlank(s)){ // 实时点位为空 存储当前点位第一开始的点位
-            // 更新 开始时间和结束时间的 key 值 （redis 过期事件只能发送 key , 需要用 key 作为业务数据）
-            String[] times = s.split(",");
-            String type = times[2];
-            LocalDateTime preTime = LocalDateTime.parse(times[0],formatter);
-            LocalDateTime nowTime = LocalDateTime.parse(time,formatter);
-            if(preTime.plusMinutes(5).compareTo(nowTime) > 0 && !StringUtils.equals(type,"2")){ // 说明当前时间仍在行程中
-                if(StringUtils.equals(routeType,"2") || StringUtils.equals(routeType,"1")){
+    	DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    	// 终端编号
+    	String zdbh = gpsInfo.getDeviceId();
+    	//行程Redis key
+        String clxcKey = "CX," + zdbh;
+        String xcMainKey = null;
+    	// 当前GPS点时间
+        String currentTime = gpsInfo.getStartTime();
+        //上一次的GPS点时间
+    	String prevTime = null;
+    	//
+    	String existValue = null;
+    	try{
+    		Set<Object> keys = redis.keys(clxcKey+"*");
+            //查询上一次记录的行程
+            if (keys.size() > 0){
+            	String tmpKey = keys.iterator().next().toString();
+            	prevTime = tmpKey.split(",")[2];
+            	existValue = (String)redis.boundValueOps(tmpKey).get();
+            }
+    	}catch(Exception e){}
 
-                    // 更新实时点位时间
-                    startTime = times[1];
-                   /* //删除当前终端的开始结束
-                    redis.delete("start_end," + zdbh +","+ startTime + "," +times[0] );*/
+    	if (StringUtils.isBlank(existValue)){
+            existValue = currentTime;
+        }
 
-                }
+        if (StringUtils.isBlank(prevTime)){
+        	//2018年11月23日。查看设备上一次的GPS点位
+            String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
+            if (StringUtils.isNotBlank(gpsJson)){
+                ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
+                prevTime = DateTime.now().withMillis(gps.getCjsj().getTime()).toString("yyyy-MM-dd HH:mm:ss");
+            }else{
+            	prevTime = currentTime;
             }
         }
-        // 更新标记
-        redis.boundValueOps("CX_"+zdbh).set(time + "," + startTime  + "," + routeType );  // 结束时间 + 开始时间 + 行程状态
-        // 添加一条新的记录
-        redis.boundValueOps("start_end," + zdbh +","+ startTime ).set("1",5,TimeUnit.MINUTES);
+        //判断接收的数据时间是新的，还是旧的补传数据，如果是补传数据，则忽略
+        DateTime prevDate = DateTime.parse(existValue, formatter);
+    	DateTime currentDate = DateTime.parse(currentTime, formatter);
+    	if (currentDate.isBefore(prevDate)){
+    		return;
+    	}
+    	xcMainKey = clxcKey + "," + prevTime;
 
-        redis.boundValueOps("start_end," + zdbh + "xc"+ startTime).set(time,10,TimeUnit.MINUTES);
+        //如果上一次时间和本次数据时间相隔大于5分钟或是GPS事件状态为熄火或是为离线，就保存一次行程
+        if(prevDate.plusMinutes(5).isBefore(currentDate) || StringUtils.equals(gpsInfo.getEventType(),"60") || StringUtils.equals(gpsInfo.getEventType(),"80")) {
+        	//如果是接收到熄火事件，直接保存该次行程
+            redis.boundValueOps(xcMainKey).set(currentTime, 1, TimeUnit.SECONDS);
+            return;
+        }
 
-
-
+        redis.boundValueOps(xcMainKey).set(currentTime, 5, TimeUnit.MINUTES);
+        redis.boundValueOps("start_end," + zdbh + "xc"+ prevTime).set(currentTime, 10, TimeUnit.MINUTES);
     }
 
 
