@@ -117,7 +117,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         	return ApiResponse.success();
         }
         //2018年11月23日。将行程计算提前到GPS点存储之前
-        clXc(gpsInfo);
+		try{
+            clXc(gpsInfo);
+        }catch(Exception e){
+        	errorLog.error("轨迹保存异常", e);
+        }
+        
         boolean change = false;
         try{
             change = handleEvent(gpsInfo);
