@@ -122,6 +122,7 @@ public class MainServiceImpl  implements MainService {
 			obj.setZjhm(xh);//手机号码
 			obj.setJgdm(jgList.get(0).getJgdm());//机构ID
 			obj.setJdmc(jgList.get(0).getJgmc());//机构名称
+			obj.setSjhm(phone);
 			obj.setCjsj(new Date());
 			obj.setCjr(name);
 			jzgmapper.insert(obj);

@@ -39,7 +39,7 @@ public class XbXlPb {
 	 */
 	private String clidlist;
 	/**
-	 * 车辆id集合
+	 * 车辆排班id集合
 	 */
 	private String clclasseslist;
 	/**

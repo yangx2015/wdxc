@@ -10,6 +10,7 @@ import tk.mybatis.mapper.common.Mapper;
 
 import java.util.List;
 
+//@CacheNamespace(implementation=MybatisRedisCache.class, eviction=FifoCache.class)
 public interface ClZdMapper extends Mapper<ClZd> {
     /**
      *

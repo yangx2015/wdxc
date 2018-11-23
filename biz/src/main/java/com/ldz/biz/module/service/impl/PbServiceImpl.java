@@ -14,7 +14,9 @@ import com.ldz.biz.module.service.XlService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
+import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
+import com.ldz.sys.service.ZdxmService;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.CopyObjectUtils;
 import com.ldz.util.bean.SimpleCondition;
@@ -60,6 +62,8 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 
 	@Autowired
 	private RedisTemplateUtil redisTemplate;
+	@Autowired
+	private ZdxmService zdxmService;
 
 
 	@Override
@@ -175,11 +179,11 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		// 获取指定线路下面的排班信息
 		List<XbXlPb> selectXbPb = pbinfomapper.selectXbPb(pbclxlmodel);
 
+if(selectXbPb!=null&&selectXbPb.size()>0){
+
 		for (XbXlPb xbXlPb : selectXbPb) {
 			Map<String,String> clclasseslistMap=new HashMap<>();
-
 			if (StringUtils.isNotEmpty(xbXlPb.getClidlist())) {
-
 				// 获取车辆id集合
 				List<String> clidlist = Arrays.asList(xbXlPb.getClidlist().split(","));
 				if(StringUtils.isNotEmpty(xbXlPb.getClclasseslist())){
@@ -197,6 +201,15 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 						seq++;
 					}
 				}
+
+				List<String> clPbList = Arrays.asList(xbXlPb.getClclasseslist().split(","));
+				SimpleCondition pbCondition = new SimpleCondition(ClPb.class);
+				pbCondition.in(ClPb.InnerColumn.id,clPbList);
+				List<ClPb> allPbList = this.findByCondition(pbCondition);
+
+				Map<String,ClPb> pbListMap = allPbList.stream().collect(Collectors.toMap(ClPb::getId,p->p));
+
+
 				List<ClCl> allClInfo = clclmapper.getAllClInfo(clidlist);
 				if (StringUtils.isNotEmpty(pbclxlmodel.getClcx())) {
 					List<ClCl> copyCollect=new ArrayList<>();
@@ -210,22 +223,13 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 							if(clClassesList!=null&&clClassesList.size()>0){
 								for(String classes:clClassesList){
 									ClCl copyCl= CopyObjectUtils.deepCopy(cl);
-									copyCl.setPbbx(classes);
-									//todo 班次的开始、结束时间需要标记   7点到14点  晚班14点到22点
-									if(StringUtils.equals(classes,"1")){
-										copyCl.setStartTime("07:00:00");
-										copyCl.setEndTime("14:00:00");
-									}else if(StringUtils.equals(classes,"2")){
-										copyCl.setStartTime("14:00:00");
-										copyCl.setEndTime("22:00:00");
-//									}else if(StringUtils.equals(classes,"4")){
-//										copyCl.setStartTime("14:00:00");
-//										copyCl.setEndTime("20:00:00");
-									}else if(StringUtils.equals(classes,"7")){
-										copyCl.setStartTime("07:00:00");
-										copyCl.setEndTime("22:00:00");
-									}
-
+                                    ClPb pb=pbListMap.get(classes);
+                                    if(pb!=null){
+                                        copyCl.setPbId(pb.getId());
+                                        copyCl.setPbbx(pb.getClasses());
+                                        copyCl.setStartTime(pb.getStartTime());
+                                        copyCl.setEndTime(pb.getEndTime());
+                                    }
 									copyCollect.add(copyCl);
 								}
 							}else{
@@ -246,21 +250,13 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 								if(clClassesList!=null&&clClassesList.size()>0){
 									for(String classes:clClassesList){
 										ClCl copyCl= CopyObjectUtils.deepCopy(cl);
-										copyCl.setPbbx(classes);
-										//todo 班次的开始、结束时间需要标记   7点到14点  晚班14点到22点
-										if(StringUtils.equals(classes,"1")){
-											copyCl.setStartTime("07:00:00");
-											copyCl.setEndTime("14:00:00");
-										}else if(StringUtils.equals(classes,"2")){
-											copyCl.setStartTime("14:00:00");
-											copyCl.setEndTime("22:00:00");
-//										}else if(StringUtils.equals(classes,"4")){
-//											copyCl.setStartTime("14:00:00");
-//											copyCl.setEndTime("20:00:00");
-										}else if(StringUtils.equals(classes,"7")){
-											copyCl.setStartTime("07:00:00");
-											copyCl.setEndTime("22:00:00");
-										}
+                                        ClPb pb=pbListMap.get(classes);
+                                        if(pb!=null){
+                                            copyCl.setPbId(pb.getId());
+                                            copyCl.setPbbx(pb.getClasses());
+                                            copyCl.setStartTime(pb.getStartTime());
+                                            copyCl.setEndTime(pb.getEndTime());
+                                        }
 										copyCollect.add(copyCl);
 									}
 								}else{
@@ -273,11 +269,9 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 					}
 					xbXlPb.setClList(copyCollect);
 				}
-
 			}
-
 		}
-
+    }
 		pbinflist.setResult(selectXbPb);
 
 		return pbinflist;
@@ -480,13 +474,10 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			}
 		}
 
-
-
 		ClCl clCl = clService.findByOrgCode(entity.getClId());
 		RuntimeCheck.ifNull(clCl, "车辆信息有误，请核实！");
 		String sjId = clCl.getSjId();
 		RuntimeCheck.ifBlank(sjId, "该车辆未绑定司机，无法进行排班");
-
 
 		String clZt = clCl.getZt();
 		if (!StringUtils.equals(clZt, "00")) {
@@ -544,28 +535,36 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 				clPb.setSj(clCl.getSjId());
 				clPb.setSjxm(clCl.getSjxm());
 				clPb.setClasses(entity.getClasses());
-				//todo 班次的开始、结束时间需要标记   7点到14点  晚班14点到22点
-				if(StringUtils.equals(entity.getClasses(),"1")){
-					retMap.put("startTime","07:00:00");
-					retMap.put("endTime","14:00:00");
-					clPb.setStartTime("07:00:00");
-					clPb.setEndTime("14:00:00");
-				}else if(StringUtils.equals(entity.getClasses(),"2")){
-					retMap.put("startTime","14:00:00");
-					retMap.put("endTime","22:00:00");
-					clPb.setStartTime("14:00:00");
-					clPb.setEndTime("22:00:00");
-//				}else if(StringUtils.equals(entity.getClasses(),"4")){
-//					retMap.put("startTime","14:00:00");
-//					retMap.put("endTime","20:00:00");
-//					clPb.setStartTime("14:00:00");
-//					clPb.setEndTime("20:00:00");
-				}else if(StringUtils.equals(entity.getClasses(),"7")){
-					clPb.setStartTime("07:00:00");
-					clPb.setEndTime("22:00:00");
-					retMap.put("startTime","07:00:00");
-					retMap.put("endTime","22:00:00");
+
+				String startTime="";
+				String endTime="";
+				try {
+					//字典项如果不存在，也不比较
+					SimpleCondition zdcondition = new SimpleCondition(SysZdxm.class);
+					zdcondition.eq(SysZdxm.InnerColumn.zdlmdm,"ZDCLK0055");
+					zdcondition.eq(SysZdxm.InnerColumn.zddm,entity.getClasses());
+					List<SysZdxm> zdxms = zdxmService.findByCondition(zdcondition);
+					if (zdxms!=null&& zdxms.size() != 0){
+						String value = zdxms.get(0).getZdmc();
+						if(StringUtils.isNotEmpty(value)){
+							String[] datas=value.split("-");
+							DateUtils.getDate(datas[0],"HH:mm:ss");
+							DateUtils.getDate(datas[1],"HH:mm:ss");
+							startTime=datas[0];
+							endTime=datas[1];
+						}
+					}
+				}catch (Exception e){
+					e.printStackTrace();
+					RuntimeCheck.ifTrue(true, "获取排班时间异常，无法进行排班");
 				}
+				RuntimeCheck.ifBlank(startTime, "获取排班开始时间异常，无法进行排班");
+				RuntimeCheck.ifBlank(endTime, "获取排班结束时间异常，无法进行排班");
+				clPb.setStartTime(startTime);
+				clPb.setEndTime(endTime);
+				retMap.put("startTime",startTime);
+				retMap.put("endTime",endTime);
+
 				boolean type=true;
 				String classesSum=entityMapper.getClPbClasses(entity.getClId(),DateUtils.getDateStr(new Date(),"yyyyMMdd"));
                 if(StringUtils.isNotEmpty(StringUtils.trim(classesSum))){
@@ -623,8 +622,8 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		List<PbInfo> pbInfos = new ArrayList<>();
 		List<ClPb> clPbs = findByCondition(simpleCondition);
 		for (ClPb clPb : clPbs) {
-
 			PbInfo pbInfo = new PbInfo();
+			pbInfo.setId(clPb.getId());
 			pbInfo.setClXl(xlService.findById(clPb.getXlId()));
 			pbInfo.setXlId(clPb.getXlId());
 			ClCl clCl = clService.findById(clPb.getClId());
@@ -638,8 +637,6 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 			pbInfo.setSjxm(clPb.getSjxm());
 			pbInfos.add(pbInfo);
 		}
-
-
 		return ApiResponse.success(pbInfos);
 	}
 
@@ -739,5 +736,103 @@ public class PbServiceImpl extends BaseServiceImpl<ClPb, String> implements PbSe
 		if(StringUtils.isNotEmpty(xlIds)){
 			updateRouteInfo(xlIds);
 		}
+	}
+
+	/**
+	 * 修改排班时间.
+	 * id	排班ID
+	 * kssj	开始时间
+	 * jssj	结束时间
+	 */
+	@Override
+	public ApiResponse<String> updPbTime(ClPb entity){
+		RuntimeCheck.ifBlank(entity.getId(), "请选择排班信息");
+		RuntimeCheck.ifBlank(entity.getStartTime(), "请输入开始时间");
+		RuntimeCheck.ifBlank(entity.getEndTime(), "请输入结束时间");
+		ClPb pb=this.findById(entity.getId());
+		RuntimeCheck.ifNull(pb,"排班信息有误，请核实");
+		RuntimeCheck.ifTrue(StringUtils.equals(pb.getEnable(),"0"),"该排班已过期，无需修改结束时间。");
+
+		Map<String,String> classesDescribe=new HashMap<>();
+		classesDescribe.put("1","早班");
+		classesDescribe.put("2","午班");
+		classesDescribe.put("3","早班、午班");
+		classesDescribe.put("4","下午");
+		classesDescribe.put("5","早班、下午");
+		classesDescribe.put("6","午班、下午");
+		classesDescribe.put("7","全班");
+
+
+		Boolean pbTime=true;
+		String startTime=entity.getStartTime();
+		String endTime=entity.getEndTime();
+		try {
+			DateUtils.getDate(startTime,"HH:mm:ss");
+		}catch (Exception e){
+			e.printStackTrace();
+			RuntimeCheck.ifTrue(true, "开始时间格式不正确");
+		}
+		try {
+			DateUtils.getDate(endTime,"HH:mm:ss");
+		}catch (Exception e){
+			e.printStackTrace();
+			RuntimeCheck.ifTrue(true, "结束时间格式不正确");
+		}
+		String bcName="";
+		try {
+			String clId=pb.getClId();
+			Date pbsj=pb.getPbsj();
+			ClPb obj=new ClPb();
+			obj.setClId(clId);
+			obj.setEnable("1");
+			obj.setPbsj(pbsj);
+			List<ClPb> pbList=this.findByEntity(obj);
+			if(pbList!=null&&pbList.size()>0){
+				for(ClPb l:pbList){
+					if(!StringUtils.equals(l.getId(),entity.getId())){
+						//判断开始时间是否在当前排班中
+						Boolean type=DateUtils.hourMinuteBetween(startTime,l.getStartTime(),l.getEndTime());
+						if(type){
+							bcName=classesDescribe.get(l.getClasses());
+							pbTime=false;
+							break;
+						}
+						//判断结束时间是否在当前排班中
+						type=DateUtils.hourMinuteBetween(endTime,l.getStartTime(),l.getEndTime());
+						if(type){
+							bcName=classesDescribe.get(l.getClasses());
+							pbTime=false;
+							break;
+						}
+						//判断
+						type=DateUtils.hourMinuteBetween(l.getStartTime(),startTime,endTime);
+						if(type){
+							bcName=classesDescribe.get(l.getClasses());
+							pbTime=false;
+							break;
+						}
+						type=DateUtils.hourMinuteBetween(l.getEndTime(),startTime,endTime);
+						if(type){
+							bcName=classesDescribe.get(l.getClasses());
+							pbTime=false;
+							break;
+						}
+					}
+				}
+			}
+
+		}catch (Exception e){
+			e.printStackTrace();
+			pbTime=false;
+			RuntimeCheck.ifTrue(true, "排班时间统计失败");
+		}
+		if(pbTime){
+			pb.setStartTime(entity.getStartTime());
+			pb.setEndTime(entity.getEndTime());
+			entityMapper.updateByPrimaryKey(pb);
+		}else{
+			return ApiResponse.fail("当前排班时间与班次："+bcName+"重叠，排班时间修改失败");
+		}
+		return ApiResponse.success();
 	}
 }
