@@ -81,7 +81,7 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            if((StringUtils.contains(itemValue,"start_end") && !StringUtils.contains(itemValue,"xc")) || StringUtils.contains(itemValue,"compencate")){
+            if((StringUtils.contains(itemValue,"CX") && !StringUtils.contains(itemValue,"xc")) || StringUtils.contains(itemValue,"compencate")){
                 // 过期事件存储车辆行程
                 saveClXc(itemValue, simpleDateFormat);
             }else if(StringUtils.contains(itemValue,"offline")){
@@ -210,17 +210,9 @@ public class TopicMessageListener implements MessageListener {
         String zdbh = vals[1];
         String startTime = vals[2];
         String endTime = (String)redisTemplate.boundValueOps("start_end," + zdbh + "xc" + startTime).get();
-
-        // String endTime = vals[3];
-       /* SimpleCondition condition = new SimpleCondition(ClXc.class);
-        condition.eq(ClXc.InnerColumn.xcKssj,startTime);
-        condition.eq(ClXc.InnerColumn.clZdbh,zdbh);
-        List<ClXc> clXcs = xcService.findByCondition(condition);
-        if(CollectionUtils.isNotEmpty(clXcs)){
-            ClXc clXc = clXcs.get(0);
-            clXc.setXcJssj(endTime);
-            xcService.update(clXc);
-        }*/
+        if (StringUtils.isBlank(endTime)){
+        	return;
+        }
 
         long s = 0;
         long e = 0;
@@ -244,7 +236,7 @@ public class TopicMessageListener implements MessageListener {
             // start_end =  newGuiJiJiuPian(zdbh, startTime, endTime);  // 新纠偏接口
             start_end = guiJiJiuPian(zdbh,s,e); // 鹰眼纠偏接口
         }catch (Exception e2){
-            if(StringUtils.equals(type,"start_end")) {
+            if(StringUtils.equals(type,"CX")) {
                 // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
                 redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime).set("1", 1, TimeUnit.MINUTES);
                 return;
