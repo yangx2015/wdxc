@@ -651,7 +651,7 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
                     long interval = (DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss").getTime() - new Date().getTime())/1000;
                     redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).set(redisValue,interval,TimeUnit.SECONDS);//有效期排班信息中，最早的一次
                 }else{
-                    redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).set("-",60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
+                    redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).set("-",15*60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
                 }
                 log.info("通过车辆ID查询该车辆的排班信息_从数据库中获取"+redisValue+" 。");
             }else{
