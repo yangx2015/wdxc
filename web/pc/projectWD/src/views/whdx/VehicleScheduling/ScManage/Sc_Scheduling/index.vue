@@ -1,5 +1,6 @@
 <style lang="less">
       @import '../../../../../styles/common.less';
+
       .carListstyIN {
             padding: 3px;
             margin: 8px;
@@ -52,45 +53,61 @@
                                             size="small"
                                             @click="BJ(item)"
                                             shape="circle" icon="md-create"></Button>
-                                    <div style="height: 260px">
-                                          <div style="height: 100%;overflow: auto">
-                                                <div class="box-row-list">
-                                                      <div class="carListstyIN" v-for="it in item.clList"
-                                                           style="height: 70px;padding:3px 6px">
-                                                            <div>
-                                                                  <Icon type="md-person" size="16"
-                                                                        color="#3bb84b"></Icon>
-                                                                  ：
-                                                                  {{it.sjxm}}
-                                                            </div>
-                                                            <div>
-                                                                  <Icon type="ios-car" size="16" color="#ff8300"></Icon>
-                                                                  ：
-                                                                  {{it.cph}}
-                                                            </div>
-                                                            <div style="padding:3px 0;cursor: pointer;">
-                                                                  {{it.pbbx | pbbx}}:{{it.startTime}}~{{it.endTime}}
+                                    <div :style="{height:tabHeight+'px'}">
+                                          <Card style="width:100%" v-for="(val,key) of item.clMapList">
+                                                <div slot="title">
+                                                      <p>{{key}}</p>
+                                                </div>
+                                                <div :style="{height:tabHeight/3-83+'px',overflow:'auto'}">
+                                                      <div class="box-row-list">
+                                                            <div class="carListstyIN" v-for="it in val"
+                                                                 style="height: 70px;padding:3px 6px">
+                                                                  <div>
+                                                                        <Icon type="md-person" size="16"
+                                                                              color="#3bb84b"></Icon>
+                                                                        ：
+                                                                        {{it.sjxm}}
+                                                                  </div>
+                                                                  <div>
+                                                                        <Icon type="ios-car" size="16"
+                                                                              color="#ff8300"></Icon>
+                                                                        ：
+                                                                        {{it.cph}}
+                                                                  </div>
+                                                                  <div style="padding:3px 0;cursor: pointer;">
+                                                                        <!--{{it.pbbx | pbbx}}:-->
+                                                                        {{it.startTime}}~{{it.endTime}}
+                                                                  </div>
                                                             </div>
                                                       </div>
                                                 </div>
-                                          </div>
+                                          </Card>
+                                          <!--<div style="height: 100%;overflow: auto">-->
+                                          <!--<div class="box-row-list">-->
+                                          <!--<div class="carListstyIN" v-for="it in item.clList"-->
+                                          <!--style="height: 70px;padding:3px 6px">-->
+                                          <!--<div>-->
+                                          <!--<Icon type="md-person" size="16"-->
+                                          <!--color="#3bb84b"></Icon>-->
+                                          <!--：-->
+                                          <!--{{it.sjxm}}-->
+                                          <!--</div>-->
+                                          <!--<div>-->
+                                          <!--<Icon type="ios-car" size="16" color="#ff8300"></Icon>-->
+                                          <!--：-->
+                                          <!--{{it.cph}}-->
+                                          <!--</div>-->
+                                          <!--<div style="padding:3px 0;cursor: pointer;">-->
+                                          <!--{{it.pbbx | pbbx}}:{{it.startTime}}~{{it.endTime}}-->
+                                          <!--</div>-->
+                                          <!--</div>-->
+                                          <!--</div>-->
+                                          <!--</div>-->
                                     </div>
                               </Card>
                         </Col>
                   </Row>
             </div>
-            <!--<Row style="position: relative;">-->
-            <!--<Table ref="table" -->
-            <!--size='large'-->
-            <!--:height="tabHeight"-->
-            <!--:row-class-name="rowClassName"-->
-            <!--:columns="tableTiT"-->
-            <!--:data="tableData"></Table>-->
-            <!--</Row>-->
-            <!--<Row class="margin-top-10 pageSty">
-                    <Page :total=pageTotal :current=param.pageNum :page-size=param.pageSize :page-size-opts=[8,10,20,30,40,50]  @on-page-size-change='(e)=>{param.pageSize=e;pageChange()}' show-total show-elevator show-sizer placement='top' @on-change='pageChange'></Page>
-            </Row>-->
-            <!--</Card>-->
             <component
                     :is="compName"
                     :mess="mess"
@@ -100,8 +117,6 @@
 
 <script>
     import mixins from '@/mixins'
-
-
     import addmess from './comp/addmess'
 
     export default {
@@ -110,22 +125,22 @@
         components: {
             addmess
         },
-        filters:{
-            pbbx:(val)=>{
-                if(val == '1'){
+        filters: {
+            pbbx: (val) => {
+                if (val == '1') {
                     return '早班'
-                }else if(val == '2'){
+                } else if (val == '2') {
                     return '中班'
-                }else if(val == '4'){
+                } else if (val == '4') {
                     return '晚班'
-                }else if(val == '7'){
-                        return '全天'
+                } else if (val == '7') {
+                    return '全天'
                 }
             }
         },
         data() {
             return {
-            	optionsDate: {
+                optionsDate: {
                     disabledDate(date) {
                         return date && date.valueOf() < Date.now() - 86400000;
                     }
@@ -231,7 +246,7 @@
                 title: '校巴排班',
             }])
             this.giveTime = this.todaytime = this.getdateParaD(this.getdate())
-            this.tabHeight = this.getWindowHeight() - 220
+            this.tabHeight = this.getWindowHeight() - 340
             this.getmess()
         },
         watch: {
@@ -262,6 +277,15 @@
                     'lulx': '30'
                 }).then((res) => {
                     log('排班数据2', res)
+                    res.result.forEach((it, index) => {
+                        for(var item in it.clMapList){
+                              it.clMapList[item].forEach((its, val) => {
+                                    its.readTime = false
+                              })
+                        }
+                    })
+
+
                     v.tableData = res.result
                 }).then((res) => {
                     v.SpinShow = false;

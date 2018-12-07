@@ -13,7 +13,7 @@
         <Card>
             <p slot="title">
                 <Icon type="soup-can-outline"></Icon>
-                {{car.zdbh}}
+                {{car.cph}}
             </p>
             <a href="#" slot="extra">
                 <Icon type="md-close" @click.native="close"></Icon>
