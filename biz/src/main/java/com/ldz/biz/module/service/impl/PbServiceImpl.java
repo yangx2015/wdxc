@@ -211,11 +211,10 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 
 
 				List<ClCl> allClInfo = clclmapper.getAllClInfo(clidlist);
+				List<ClCl> copyCollect=new ArrayList<>();
 				if (StringUtils.isNotEmpty(pbclxlmodel.getClcx())) {
-					List<ClCl> copyCollect=new ArrayList<>();
 					// 过滤指定车型的车辆信息
-					List<ClCl> collect = allClInfo.stream().filter(s -> s.getCx().equals(pbclxlmodel.getClcx()))
-							.collect(Collectors.toList());
+					List<ClCl> collect = allClInfo.stream().filter(s -> s.getCx().equals(pbclxlmodel.getClcx())).collect(Collectors.toList());
 					for (ClCl cl:collect){
 						String lists=clclasseslistMap.get(cl.getClId());
 						if(StringUtils.isNotEmpty(lists)){
@@ -239,9 +238,8 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 							copyCollect.add(cl);
 						}
 					}
-					xbXlPb.setClList(copyCollect);
+
 				} else {
-					List<ClCl> copyCollect=new ArrayList<>();
 					if(allClInfo!=null&&allClInfo.size()>0){
 						for (ClCl cl:allClInfo){
 							String lists=clclasseslistMap.get(cl.getClId());
@@ -267,8 +265,57 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 							}
 						}
 					}
-					xbXlPb.setClList(copyCollect);
 				}
+			//将LIST排序，先按车牌号排序。再按排班的班形排序
+			copyCollect.sort(new Comparator<ClCl>() {
+				@Override
+				public int compare(ClCl o1, ClCl o2) {
+
+					String o1Pbbx=o1.getPbbx();
+					if(StringUtils.isBlank(o1Pbbx)){
+						o1Pbbx="";
+					}
+					String o2Pbbx=o2.getPbbx();
+					if(StringUtils.isBlank(o2Pbbx)){
+						o2Pbbx="";
+					}
+					int i=o1Pbbx.compareTo(o2Pbbx);
+					return i>0?1:i==0?0:-1;
+				}
+			});
+
+			xbXlPb.setClList(copyCollect);
+				Map<String,List<ClCl>> mapClList=new HashMap<>();
+				mapClList.put("bx1",new ArrayList<ClCl>());//早班
+				mapClList.put("bx2",new ArrayList<ClCl>());//中班
+				mapClList.put("bx7",new ArrayList<ClCl>());//全天
+				if(copyCollect!=null&&copyCollect.size()>0){
+//					List<ClCl> copyCollect=
+					for(ClCl l:copyCollect){
+						String pbbx=l.getPbbx();
+						if(StringUtils.isNotBlank(pbbx)){
+							if(StringUtils.indexOf("127",pbbx)>-1){
+								List<ClCl> clList=mapClList.get("bx"+pbbx);
+								if(clList==null){
+									clList=new ArrayList<ClCl>();
+								}
+								String startTime=l.getStartTime();
+								String endTime=l.getEndTime();
+								startTime=StringUtils.substring(startTime,0,5);
+								endTime=StringUtils.substring(endTime,0,5);
+								l.setStartTime(startTime);
+								l.setEndTime(endTime);
+								clList.add(l);
+								mapClList.put("bx"+pbbx,clList);
+							}
+						}
+					}
+				}
+				Map<String,List<ClCl>> mapClListCopy=new HashMap<>();
+				mapClListCopy.put("早班",mapClList.get("bx1"));
+				mapClListCopy.put("中班",mapClList.get("bx2"));
+				mapClListCopy.put("全天",mapClList.get("bx7"));
+				xbXlPb.setClMapList(mapClListCopy);
 			}
 		}
     }
@@ -454,6 +501,7 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 			return res;
 		}
 
+
 		SysJg org = jgService.findByOrgCode(currentUser.getJgdm());
     	if(StringUtils.isBlank(entity.getKssj())){
     		entity.setKssj(DateUtils.getDateStr(new Date(),"yyyy-MM-dd"));
@@ -464,13 +512,35 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 				return res;
 			}
 		}
-		if(StringUtils.isBlank(entity.getJssj())){
-			entity.setJssj(DateUtils.getToday("yyyy-MM-dd"));
+		Date kssj=null;
+		try {
+			kssj=DateUtils.getDate(entity.getKssj(),"yyyy-MM-dd");
+		} catch (ParseException e) {
+			res.setCode(500);
+			res.setMessage("请输入正确的排班开始日期 日期格式为：yyyy-MM-dd");
+			return res;
+		}
+        int pbts=-1;//批量排班天数
+        if(StringUtils.isNotBlank(entity.getPbts())){
+        	try {
+				pbts=Integer.parseInt(entity.getPbts());
+			}catch (Exception e){}
+        }
+        if(pbts>1){
+//        	确定结束时间
+			Calendar calendar = new GregorianCalendar();
+			calendar.setTime(kssj);
+			calendar.add(Calendar.DATE, pbts);// 把日期往后增加指定月份.整数往后推,负数往前移动
+			entity.setJssj(DateUtils.getDateStr(calendar.getTime(),"yyyy-MM-dd"));
 		}else{
-			if(entity.getJssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0){
-				res.setCode(500);
-				res.setMessage("排班结束时间需要大于或等于当前时间");
-				return res;
+			if(StringUtils.isBlank(entity.getJssj())){
+				entity.setJssj(DateUtils.getToday("yyyy-MM-dd"));
+			}else{
+				if(entity.getJssj().compareTo(DateUtils.getToday("yyyy-MM-dd")) < 0){
+					res.setCode(500);
+					res.setMessage("排班结束时间需要大于或等于当前时间");
+					return res;
+				}
 			}
 		}
 
@@ -580,6 +650,7 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 			}
 			if(clPbs!=null&&clPbs.size()>0){
 				entityMapper.insertList(clPbs);
+				retMap.put("pbId",clPbs.get(0).getId());
 			}
 		}
 		if(StringUtils.isNotEmpty(errorMessage)){
@@ -767,16 +838,22 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 		String startTime=entity.getStartTime();
 		String endTime=entity.getEndTime();
 		try {
-			DateUtils.getDate(startTime,"HH:mm:ss");
+			DateUtils.getDate(startTime,"HH:mm");
 		}catch (Exception e){
 			e.printStackTrace();
 			RuntimeCheck.ifTrue(true, "开始时间格式不正确");
 		}
+		if(startTime.length()==5){
+			startTime=startTime+":00";
+		}
 		try {
-			DateUtils.getDate(endTime,"HH:mm:ss");
+			DateUtils.getDate(endTime,"HH:mm");
 		}catch (Exception e){
 			e.printStackTrace();
 			RuntimeCheck.ifTrue(true, "结束时间格式不正确");
+		}
+		if(endTime.length()==5){
+			endTime=endTime+":00";
 		}
 		String bcName="";
 		try {
