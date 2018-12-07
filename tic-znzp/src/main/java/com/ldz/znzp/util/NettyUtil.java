@@ -3,6 +3,7 @@ package com.ldz.znzp.util;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.znzp.bean.ZnzpOnlineBean;
 import com.ldz.znzp.server.IotServer;
 import io.netty.buffer.ByteBuf;
@@ -26,7 +27,26 @@ public class NettyUtil {
     private StringRedisTemplate redisDao;
     private static ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-
+    public static void main(String[] args) {
+        String yxkssj ="07:00";//运行开始时间
+        String yxjssj ="08:00";//运行结束时间
+        if(StringUtils.isNotEmpty(yxkssj)&&StringUtils.isNotEmpty(yxjssj)){
+            try {
+                Date ksDate = DateUtils.getDate(DateUtils.getToday()+" "+yxkssj,"yyyy-MM-dd HH:mm");
+                ksDate=new Date(ksDate.getTime() - 1000*60*5);//当前时间向前推5分钟
+                Date jsDate= DateUtils.getDate(DateUtils.getToday()+" "+yxjssj,"yyyy-MM-dd HH:mm");
+                jsDate= new Date(jsDate.getTime()+ 1000*60*30);//当前时间向后推30分钟
+                //开始时间
+                if(ksDate==null || ksDate.compareTo(new Date())>0 ||jsDate==null || new Date().compareTo(jsDate)>0){
+                    System.out.println("不成立");
+                    return ;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("我要继续执行");
+    }
     public void sendData(ChannelHandlerContext ctx, Object sendData){
         writeDataByte(ctx, sendData);
     }
