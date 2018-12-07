@@ -33,7 +33,7 @@ SELECT * FROM CL_PB t where t.CL_ID =#{clid} and  t.PBSJ=#{date}
 		listagg(t3.cl_id, ',') within group( order by cl_id) as clidlist,
 		listagg(NVL(t3.classes,'0'), ',') within group( order by cl_id) as clclasseslist
 		from
-		(select T1.*,t2.cl_id,t2.classes from CL_XL t1 left join CL_PB t2 on T1."ID"=T2.XL_ID
+		(select T1.*,t2.cl_id,t2.id as classes from CL_XL t1 left join CL_PB t2 on T1."ID"=T2.XL_ID
 		and t2.PBSJ=#{date2}
 		) t3
 		<if test="lulx != null">
