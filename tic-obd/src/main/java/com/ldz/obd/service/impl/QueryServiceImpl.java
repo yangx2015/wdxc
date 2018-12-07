@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import javax.xml.bind.DatatypeConverter;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -67,6 +68,7 @@ public class QueryServiceImpl implements QueryService {
     public void getGpsObdMessage(PackageData msg){
         GpsObdMessageBean obd=new GpsObdMessageBean();
         byte[] bodyBytes=msg.getBodyBytes();
+        accessLog.debug("通道接收数据:"+ DatatypeConverter.printHexBinary(bodyBytes));
 
         /**
          * 数据类型 1 0x00 或者 0x01,其中 0x00 表示盲区数据，0x01 表示实时数据
@@ -100,7 +102,7 @@ public class QueryServiceImpl implements QueryService {
          * 纬度。得到的数据需要进行度分转换。22438816/10000=22度43.8816分(43.8816/60)=22.73136度
          */
         String latitude=msgDecoder.parseBcdStringFromBytes(bodyBytes,9,4);
-        obd.setLatitude(latitude.substring(0,2)+"."+(Double.parseDouble(latitude.substring(2))/10000/60));
+        obd.setLatitude(""+(Double.parseDouble(latitude.substring(0,2))+(Double.parseDouble(latitude.substring(2))/10000/60)));
         /**
          * 经度 4.5   实际经度乘以 10000 的值,DDDMM.MMMM 格式11334.5678 则上传 0x11 0x33 0x45 0x67 0x
          * //经度+位指示一共5个字节，最后一个字节97,7表示的是位状态数据
@@ -108,7 +110,7 @@ public class QueryServiceImpl implements QueryService {
          //最后一个字节，表示的是位指示
          */
         String longitude=msgDecoder.parseBcdStringFromBytes(bodyBytes,13,5);
-        obd.setLongitude(longitude.substring(0,3)+"."+(Double.parseDouble(longitude.substring(3,9))/10000/60));
+        obd.setLongitude(""+(Double.parseDouble(longitude.substring(0,3))+(Double.parseDouble(longitude.substring(3,9))/10000/60)));
 
         /**
          * 位指示 GPS 是否定位,东西经及南北纬等.请参见
@@ -226,13 +228,19 @@ public class QueryServiceImpl implements QueryService {
          ((BYTE1-0X80)*256)+BYTE2)*0.1 单位%
          Else (BYTE1*256+BYTE2)*0.1 单位 L
          */
+        double syyl1=msgDecoder.parseIntFromBytes(bodyBytes,49,1);
+        double syyl2=msgDecoder.parseIntFromBytes(bodyBytes,50,1);
         double syyl;
-        if((bodyBytes[48]&0X80)==0X80){
-            syyl = (((bodyBytes[49]-0X80)*256)+bodyBytes[50])*0.1;
+        if(syyl1==255&&syyl2==255){
+            //剩余油量 ff ff 就表示不支持
         }else{
-            syyl = (bodyBytes[49] * 256 + bodyBytes[50]) * 0.1;
+            if((bodyBytes[49]&0X80)==0X80){
+                syyl = (((syyl1-0X80)*256)+syyl2)*0.1;
+            }else{
+                syyl = (syyl1 * 256 + syyl2) * 0.1;
+            }
+            obd.setSyyl(""+syyl);
         }
-        obd.setSyyl(""+syyl);
 
         /**
          *基站 8 4 字节运营商代码(IMSI 前 5 位),2 字节 LAC,2 字节 CELL
