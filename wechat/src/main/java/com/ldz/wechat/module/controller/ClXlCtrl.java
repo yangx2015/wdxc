@@ -1,7 +1,6 @@
 package com.ldz.wechat.module.controller;
 
 import com.ldz.util.bean.ApiResponse;
-import com.ldz.wechat.module.bean.NearbyStation;
 import com.ldz.wechat.module.model.ClClyxjl;
 import com.ldz.wechat.module.model.ClXl;
 import com.ldz.wechat.module.model.ClZd;
@@ -9,6 +8,8 @@ import com.ldz.wechat.module.model.SysHdyx;
 import com.ldz.wechat.module.service.HdService;
 import com.ldz.wechat.module.service.XlService;
 import com.ldz.wechat.module.service.ZdService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -21,6 +22,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("put/xl")
 public class ClXlCtrl {
+	Logger accessLog = LoggerFactory.getLogger("access_info");
+
     @Autowired
     private XlService wxXlService;
 
@@ -76,12 +79,11 @@ public class ClXlCtrl {
 
 	@RequestMapping("getStationInfo")
 	public ApiResponse<Map<String,Object>> getStationInfo(String lng,String lat){
+//		accessLog.debug();
+		accessLog.debug("getStationInfo:lng{} lat:{}",lng,lat);
 		return zdservice.getStationInfo(lng,lat);
 	}
-//
-//	@RequestMapping("getNearbyStations")
-//	public ApiResponse<List<NearbyStation>> getNearbyStations(String lng, String lat){
-//		return ApiResponse.success(zdservice.getNearbyStations(lng,lat));
-//	}
+
+
 
 }

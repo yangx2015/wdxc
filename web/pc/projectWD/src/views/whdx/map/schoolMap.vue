@@ -66,10 +66,16 @@
                 colorIndex: 0,
                 yxjlList:[],
                 pbList:[],
-                pbCphs:[]
+                pbCphs:[],
+                stompClient:null,
+                subscribes:{},
             }
         },
         created() {
+            this.$store.commit('clearOtherTags', this);
+        },
+        beforeDestroy() {
+            this.unsubscribeAll()
         },
         mounted() {
             //点布控
@@ -81,6 +87,19 @@
             this.getLineList()
         },
         methods: {
+            unsubscribeAll(){
+                console.log('unsubscribeAll');
+                try {
+                    for (let k in this.subscribes) {
+                        this.subscribes[k].unsubscribe();
+                    }
+                    this.stompClient.disconnect(function () {
+                        console.log('disconnect');
+                    });
+                } catch (e) {
+                    console.log(e);
+                }
+            },
             getPbList(){
                 let now = new Date();
                 let time = now.format('yyyy-MM-dd hh:mm:ss').substring(11);
@@ -270,6 +289,45 @@
                     }
                 })
             },
+
+            wsconnect(){
+                if (this.stompClient == null){
+                    return;
+                }
+                let v = this;
+                for (let r of v.addDeviceList) {
+                    this.subscribes[r.zdbh] = this.stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
+                        let weksocketBody = JSON.parse(data.body)
+                        if (weksocketBody.cx === "30") {//校巴
+                            let xlId = weksocketBody.xlId;
+                            //let xlId = '435390474602151936';
+                            v.lineList.forEach((item, index) => {
+                                //console.log(item.id +'='+xlId);
+                                if (item.id === xlId) {
+                                    if (!item.carList) {
+                                        item.carList = [weksocketBody];
+                                    } else {
+                                        let index = -1;
+                                        for (let i in item.carList) {
+                                            if (item.carList[i].zdbh === weksocketBody.zdbh) {
+                                                index = i
+                                                break;
+                                            }
+                                        }
+                                        if (index >= 0) {
+                                            item.carList.splice(index, 1, weksocketBody);
+                                        } else {
+                                            item.carList.push(weksocketBody);
+                                        }
+                                    }
+                                }
+                            })
+                            v.lineChange(v.choosedLineIndexs);
+                        }
+                    });
+                }
+            },
+
             //订阅消息
             subscribe() {
                 var v = this
@@ -279,39 +337,9 @@
                 };
                 v.socket.onclose = function () {
                 };
-                let stompClient = Stomp.over(v.socket);
-                stompClient.connect({}, function (frame) {
-                    for (let r of v.addDeviceList) {
-                        stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
-                            let weksocketBody = JSON.parse(data.body)
-                            if (weksocketBody.cx === "30") {//校巴
-                                let xlId = weksocketBody.xlId;
-                                //let xlId = '435390474602151936';
-                                v.lineList.forEach((item, index) => {
-                                    //console.log(item.id +'='+xlId);
-                                    if (item.id === xlId) {
-                                        if (!item.carList) {
-                                            item.carList = [weksocketBody];
-                                        } else {
-                                            let index = -1;
-                                            for (let i in item.carList) {
-                                                if (item.carList[i].zdbh === weksocketBody.zdbh) {
-                                                    index = i
-                                                    break;
-                                                }
-                                            }
-                                            if (index >= 0) {
-                                                item.carList.splice(index, 1, weksocketBody);
-                                            } else {
-                                                item.carList.push(weksocketBody);
-                                            }
-                                        }
-                                    }
-                                })
-                                v.lineChange(v.choosedLineIndexs);
-                            }
-                        });
-                    }
+                this.stompClient = Stomp.over(v.socket);
+                this.stompClient.connect({}, function (frame) {
+                    v.wsconnect();
                 });
             },
             // 站点详情

@@ -70,7 +70,7 @@ public class MessageApi {
 			return ApiResponse.notFound("未找到车辆排班");
 		}
 
-		ClXl route = xlService.findById(pb.getXlId());
+		ClXl route = xlService.getCarXlfindById(pb.getXlId());
 		if (route == null){
 			return ApiResponse.notFound("未找到车辆线路");
 		}

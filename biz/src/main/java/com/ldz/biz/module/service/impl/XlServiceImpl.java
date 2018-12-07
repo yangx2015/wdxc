@@ -22,6 +22,7 @@ import com.ldz.util.gps.bean.RouteMatrixResult;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
@@ -46,6 +47,11 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 	private String deleteZnzpRedisKeyUrl;
 	@Autowired
 	private RedisUtil redisUtil;
+
+	@Autowired
+	private StringRedisTemplate redisDao;
+
+
 
 	@Override
 	protected Mapper<ClXl> getBaseMapper() {
@@ -80,6 +86,8 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 		SimpleCondition condition = new SimpleCondition(ClXlzd.class);
 		condition.eq(ClXlzd.InnerColumn.xlId, router.getId());
 		xlzdMapper.deleteByExample(condition);
+
+
 
 		// 获取站点信息
 		List<ClZd> allClzd = clzdMapper.getAllClzd(stationIds);
@@ -136,6 +144,13 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 			List<String> stationIds = Arrays.asList(entity.getZdIds().split(","));
 			saveRouterStations(entity, stationIds);
 		}
+
+		try {
+//			- ZNZP_XL_{{xlId}}           BIZ 修改、删除线路时后，需要清除     ``
+//			- ZNZP_XLZD_{{xlId}}
+			redisDao.delete("ZNZP_XL_"+entity.getId());
+			redisDao.delete("ZNZP_XLZD_"+entity.getId());
+		}catch (Exception e){e.printStackTrace();}
 		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClXlMapper");
 		return ApiResponse.success();
 	}

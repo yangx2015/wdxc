@@ -81,7 +81,7 @@ public class TopicMessageListener implements MessageListener {
         String topic =  new String(message.getChannel());
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         if (StringUtils.contains(topic, "expired")) {
-            if((StringUtils.contains(itemValue,"start_end") && !StringUtils.contains(itemValue,"xc")) || StringUtils.contains(itemValue,"compencate")){
+            if((StringUtils.contains(itemValue,"CX") && !StringUtils.contains(itemValue,"xc")) || StringUtils.contains(itemValue,"compencate")){
                 // 过期事件存储车辆行程
                 saveClXc(itemValue, simpleDateFormat);
             }else if(StringUtils.contains(itemValue,"offline")){
@@ -210,17 +210,9 @@ public class TopicMessageListener implements MessageListener {
         String zdbh = vals[1];
         String startTime = vals[2];
         String endTime = (String)redisTemplate.boundValueOps("start_end," + zdbh + "xc" + startTime).get();
-
-        // String endTime = vals[3];
-       /* SimpleCondition condition = new SimpleCondition(ClXc.class);
-        condition.eq(ClXc.InnerColumn.xcKssj,startTime);
-        condition.eq(ClXc.InnerColumn.clZdbh,zdbh);
-        List<ClXc> clXcs = xcService.findByCondition(condition);
-        if(CollectionUtils.isNotEmpty(clXcs)){
-            ClXc clXc = clXcs.get(0);
-            clXc.setXcJssj(endTime);
-            xcService.update(clXc);
-        }*/
+        if (StringUtils.isBlank(endTime)){
+        	return;
+        }
 
         long s = 0;
         long e = 0;
@@ -244,7 +236,7 @@ public class TopicMessageListener implements MessageListener {
             // start_end =  newGuiJiJiuPian(zdbh, startTime, endTime);  // 新纠偏接口
             start_end = guiJiJiuPian(zdbh,s,e); // 鹰眼纠偏接口
         }catch (Exception e2){
-            if(StringUtils.equals(type,"start_end")) {
+            if(StringUtils.equals(type,"CX")) {
                 // 百度轨迹点异常 ， 存储异常行程 ， 等待第二次纠偏
                 redisTemplate.boundValueOps("compencate," + zdbh + "," + startTime).set("1", 1, TimeUnit.MINUTES);
                 return;
@@ -340,7 +332,7 @@ public class TopicMessageListener implements MessageListener {
         guijis.setEntity_name(zdbh);
         guijis.setIs_processed("1");
         // 查询 去燥 ，抽希 ， 绑路 的坐标点
-        guijis.setProcess_option("need_denoise=0,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
+        guijis.setProcess_option("need_denoise=1,need_vacuate=1,need_mapmatch=1,transport_mode=driving");
         guijis.setSupplement_mode("driving");
         guijis.setSort_type("asc");
         guijis.setCoord_type_output("bd09ll");

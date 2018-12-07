@@ -337,7 +337,7 @@ export default {
 			allCarCount:0,
 			socket : new SockJS(this.$http.url+"/gps"),
             stompClient:null,
-            subscribes:[],
+            subscribes:{},
             // socket : new SockJS("http://127.0.0.1/gps"),
             changeBtnIcon:'ios-arrow-down',
             qblabel: (h) => {
@@ -414,6 +414,10 @@ export default {
         }])
 		// this.init();
         this.initGps()
+        this.$store.commit('clearOtherTags', this);
+    },
+    beforeDestroy() {
+        this.unsubscribeAll();
     },
     methods: {
         showFance(carId) {
@@ -458,6 +462,7 @@ export default {
             v.socket.onmessage = function(e) { };
             v.socket.onclose = function() { };
             this.stompClient = Stomp.over(v.socket);
+            console.log(v.socket);
             this.stompClient.connect({}, function(frame) {
                 v.wsconnect();
             });
@@ -484,6 +489,19 @@ export default {
                 });
             }
 		},
+        unsubscribeAll(){
+            console.log('unsubscribeAll');
+            try {
+                for (let k in this.subscribes) {
+                    this.subscribes[k].unsubscribe();
+                }
+                this.stompClient.disconnect(function () {
+                    console.log('disconnect');
+                });
+            } catch (e) {
+                console.log(e);
+            }
+        },
         formateLongDate(long){
             log(long);
             if (typeof long == 'string'){

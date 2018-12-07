@@ -1,5 +1,8 @@
 package com.ldz.znzp.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.geo.bean.GeoModel;
 import com.ldz.geo.util.GeoUtil;
 import com.ldz.util.bean.ApiResponse;
@@ -20,12 +23,9 @@ import com.ldz.znzp.service.*;
 import com.ldz.znzp.util.NettyUtil;
 import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.geo.GeoResult;
-import org.springframework.data.geo.GeoResults;
-import org.springframework.data.redis.connection.RedisGeoCommands;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import tk.mybatis.mapper.common.Mapper;
@@ -67,6 +67,11 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
     private XlzdService xlzdService;
     @Autowired
     private GeoUtil geoUtil;
+    // 忽略当接收json字符串中没有bean结构中的字段时抛出异常问题
+    private ObjectMapper mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+    @Autowired
+    private StringRedisTemplate redisDao;
+
     @Override
     protected Mapper<ClCl> getBaseMapper() {
         return entityMapper;
@@ -100,10 +105,12 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         reportData.setBus_plate(clClyxjl.getCphm());
         reportData.setDirect("up");
         Map<String,Object> channelMap = nettyUtil.getChannelByTids(zpIds);
-        for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
-            reportData.setTid(entry.getKey());
-            log.info(JsonUtil.toJson(reportData));
-            writeResult((Channel)entry.getValue(),reportData);
+        log.info(JsonUtil.toJson(reportData));
+        if(channelMap!=null){
+            for (Map.Entry<String, Object> entry : channelMap.entrySet()) {
+                reportData.setTid(entry.getKey());
+                writeResult((Channel)entry.getValue(),reportData);
+            }
         }
         return ApiResponse.success();
     }
@@ -115,9 +122,9 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
             return ApiResponse.notFound("未找到车辆线路");
         }
         // 判断当前线路站点是否缓存至redis
-        if(!geoUtil.hasKey(route.getId()+"_stations")){
-            initXlZd(route.getId());
-        }
+//        if(!geoUtil.hasKey(route.getId()+"_stations")){
+//            initXlZd(route.getId());
+//        }
         // 判断设备在线状态
         String zt = "running";
         Date now = new Date();
@@ -364,30 +371,75 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         return ApiResponse.success();
     }
 
+    /**
+     * ZNZP_XLZD_{{xlId}}
+     * 通过线路ID 查询这条线路下所有的站点信息
+     * @param pb
+     * @return
+     */
     private List<ClZd> getStationList(ClPb pb){
         // 获取车辆当天线路信息
         String xlId = pb.getXlId();
-        // 获取线路站点
-        SimpleCondition condition = new SimpleCondition(ClXlzd.class);
-        condition.eq(ClXlzd.InnerColumn.xlId,xlId);
-        condition.setOrderByClause(ClXlzd.InnerColumn.xh.asc());
-        List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
-        if (xlzds.size() == 0){
-            return null;
-        }
-        Map<String,Short> stationXhMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
+        List<ClZd> retList =null;
+        String redisValue="";
 
-        List<String> stationIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
-        condition = new SimpleCondition(ClZd.class);
-        condition.in(ClZd.InnerColumn.id,stationIds);
-        List<ClZd> stations = zdMapper.selectByExample(condition);
-        for (ClZd station : stations) {
-            station.setXlId(xlId);
-            Short xh = stationXhMap.get(station.getId());
-            if (xh != null)station.setRouteOrder(xh);
-        }
+        try {
+            redisValue=redisDao.boundValueOps("ZNZP_XLZD_"+xlId).get();
+            if(StringUtils.equals(redisValue,"-")){
+                return null;
+            }
+            try {
+                retList =  mapper.readValue(redisValue,mapper.getTypeFactory().constructParametricType(List.class,ClZd.class));
+            } catch (Exception e) {
+                log.error("ZNZP_CL_json转换异常",e);
+                e.printStackTrace();
+            }
+            if(retList==null){
+                //查询数据库
+                SimpleCondition condition = new SimpleCondition(ClXlzd.class);
+                condition.eq(ClXlzd.InnerColumn.xlId,xlId);
+                condition.setOrderByClause(ClXlzd.InnerColumn.xh.asc());
+                List<ClXlzd> xlzds = xlzdMapper.selectByExample(condition);
+                if (xlzds.size() == 0){
+                    return null;
+                }
+                Map<String,Short> stationXhMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
 
-        return stations;
+                List<String> stationIds = xlzds.stream().map(ClXlzd::getZdId).collect(Collectors.toList());
+                condition = new SimpleCondition(ClZd.class);
+                condition.in(ClZd.InnerColumn.id,stationIds);
+                List<ClZd> stations = zdMapper.selectByExample(condition);
+                for (ClZd station : stations) {
+                    station.setXlId(xlId);
+                    Short xh = stationXhMap.get(station.getId());
+                    if (xh != null)station.setRouteOrder(xh);
+                }
+
+                try {
+                    if(stations!=null&&stations.size()>0){
+                        redisValue= mapper.writeValueAsString(stations);
+                        retList=stations;
+                    }
+                } catch (JsonProcessingException e) {
+                    log.error("json转换异常",e);
+                }
+
+                if(StringUtils.isNotEmpty(redisValue)){//set("1",5,TimeUnit.MINUTES);
+                    String endTime =DateUtils.getToday("yyyy-MM-dd")+" 23:59:59";//拼接出失效时间
+                    long interval = (DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss").getTime() - new Date().getTime())/1000;
+                    redisDao.boundValueOps("ZNZP_XLZD_"+xlId).set(redisValue,interval,TimeUnit.SECONDS);//当天23.59.59秒失效
+                }else{
+                    redisDao.boundValueOps("ZNZP_XLZD_"+xlId).set("-",1*60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
+                }
+
+                log.info("通过线路ID 查询这条线路下所有的站点信息 ZNZP_XLZD_{{xlId}} _从数据库中获取"+redisValue+" 。");
+            }else{
+                log.info("通过线路ID 查询这条线路下所有的站点信息 ZNZP_XLZD_{{xlId}} _从redis中获取"+redisValue+" 。");
+            }
+
+        }catch (Exception e){}
+
+        return retList;
     }
 
     @Override
@@ -549,17 +601,67 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
 
     }
 
+    /**
+     * 通过车辆ID查询该车辆的排班信息
+     * ZNZP_PB_{{DateUtils.getToday("yyyyMMdd")}}_{{cl_id}}
+     * @param carId
+     * @return
+     */
     @Override
     public ClPb getCarPb(String carId)  {
-        SimpleCondition condition = new SimpleCondition(ClPb.class);
-        condition.eq(ClPb.InnerColumn.clId,carId);
+//        ZNZP_PB_{{DateUtils.getToday("yyyyMMdd")}}_{{cl_id}}
+        List<ClPb> clPbs =null;
+        String redisValue="";
         try {
-            condition.eq(ClPb.InnerColumn.pbsj,DateUtils.getDateToday("yyyy-MM-dd"));
-        } catch (ParseException e) {
-            log.error("时间转换出错");
+            redisValue=redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).get();
+            if(StringUtils.equals(redisValue,"-")){
+                return null;
+            }
+            try {
+                clPbs =  mapper.readValue(redisValue,mapper.getTypeFactory().constructParametricType(List.class,ClPb.class));
+            } catch (Exception e) {
+                log.error("ZNZP_PB_json转换异常",e);
+                e.printStackTrace();
+            }
+            if(clPbs==null){
+                SimpleCondition condition = new SimpleCondition(ClPb.class);
+                condition.eq(ClPb.InnerColumn.clId,carId);
+                try {
+                    condition.eq(ClPb.InnerColumn.pbsj,DateUtils.getDateToday("yyyy-MM-dd"));
+                } catch (ParseException e) {
+                    log.error("时间转换出错");
+                }
+                String time = DateUtils.getNowTime().substring(11);
+                condition.eq(ClPb.InnerColumn.enable, "1");
+                condition.lte(ClPb.InnerColumn.startTime,time);//>=
+                condition.gte(ClPb.InnerColumn.endTime,time);//<=
+                condition.setOrderByClause(ClPb.InnerColumn.endTime.asc());
+                clPbs = clPbMapper.selectByExample(condition);
+                if(clPbs!=null&&clPbs.size()>0){
+                    try {
+                        redisValue= mapper.writeValueAsString(clPbs);
+                    } catch (JsonProcessingException e) {
+                        log.error("json转换异常",e);
+                    }
+
+                }
+
+                if(StringUtils.isNotEmpty(redisValue)){
+                    String endTime =DateUtils.getToday("yyyy-MM-dd")+" "+clPbs.get(0).getEndTime();//取出这条排班到期时间
+                    long interval = (DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss").getTime() - new Date().getTime())/1000;
+                    redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).set(redisValue,interval,TimeUnit.SECONDS);//有效期排班信息中，最早的一次
+                }else{
+                    redisDao.boundValueOps("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+carId).set("-",15*60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
+                }
+                log.info("通过车辆ID查询该车辆的排班信息_从数据库中获取"+redisValue+" 。");
+            }else{
+                log.info("通过车辆ID查询该车辆的排班信息_从redis中获取"+redisValue+" 。");
+            }
+        }catch (Exception e){
+            e.printStackTrace();
         }
-        List<ClPb> clPbs = clPbMapper.selectByExample(condition);
-        if (clPbs.size() == 0){
+
+        if (clPbs==null||clPbs.size() == 0){
             return null;
         }
         return clPbs.get(0);
@@ -575,11 +677,51 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl,String> implements ClSer
         return getCarPb(cars.get(0).getClId());
     }
 
+    /**
+     * 通过终端ID查询车辆
+     * ZNZP_CL_{{终端编号}}
+     * @param deviceId
+     * @return
+     */
     @Override
     public ClCl getByDeviceId(String deviceId) {
+        List<ClCl> cars =null;
+        String redisValue="";
+        try {
+            redisValue=redisDao.boundValueOps("ZNZP_CL_"+deviceId).get();
+            if(StringUtils.equals(redisValue,"-")){
+                return null;
+            }
+            try {
+                cars =  mapper.readValue(redisValue,mapper.getTypeFactory().constructParametricType(List.class,ClCl.class));
+            } catch (Exception e) {
+                log.error("ZNZP_CL_json转换异常",e);
+                e.printStackTrace();
+            }
+            if(cars==null){
+                cars = findEq(ClCl.InnerColumn.zdbh,deviceId);
+                try {
+                    if(cars!=null&&cars.size()>0){
+                        redisValue= mapper.writeValueAsString(cars);
+                    }
+                } catch (JsonProcessingException e) {
+                    log.error("json转换异常",e);
+                }
+
+                if(StringUtils.isNotEmpty(redisValue)){//set("1",5,TimeUnit.MINUTES);
+                    String endTime =DateUtils.getToday("yyyy-MM-dd")+" 23:59:59";//拼接出失效时间
+                    long interval = (DateUtils.getDate(endTime,"yyyy-MM-dd HH:mm:ss").getTime() - new Date().getTime())/1000;
+                    redisDao.boundValueOps("ZNZP_CL_"+deviceId).set(redisValue,interval,TimeUnit.SECONDS);//当天23.59.59秒失效
+                }else{
+                    redisDao.boundValueOps("ZNZP_CL_"+deviceId).set("-",1*60,TimeUnit.SECONDS);//当没有查询到这条记录。系统默认1分钟后再查
+                }
+                log.info("通过终端ID查询车辆_从数据库中获取"+redisValue+" 。");
+            }else{
+                log.info("通过终端ID查询车辆_从redis中获取"+redisValue+" 。");
+            }
+        }catch (Exception e){}
         // 获取车辆信息
-        List<ClCl> cars = findEq(ClCl.InnerColumn.zdbh,deviceId);
-        if (cars.size() == 0){
+        if (cars==null||cars.size() == 0){
             return null;
         }
         return cars.get(0);

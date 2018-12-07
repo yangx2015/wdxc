@@ -56,6 +56,8 @@ public class BizApiServiceImpl implements BizApiService{
 			errorLog.error("dto:"+dto.toString());
 			String topic = serverUrl.equals(fileApi) ? "spk" : "gps";
 			redisTemplate.convertAndSend(topic, dto);
+			//2018年11月2日。新增终端的原始数据存储，包含推送的channelid值，用于发送指令时匹配CID值
+			redisTemplate.boundValueOps(RequestCommonParamsDto.class.getSimpleName()+"-"+dto.getDeviceId()).set(dto);
 		}
 	}
 

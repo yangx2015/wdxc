@@ -8,6 +8,7 @@ import com.ldz.biz.module.service.ZnzpService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
+import com.ldz.util.redis.RedisTemplateUtil;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,10 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
     private ClZnzpMapper entityMapper;
     @Autowired
     private ClZpXlMapper zpXlMapper;
+
+    @Autowired
+    private RedisTemplateUtil redisTemplateUtil;
+
 
     @Override
     protected Mapper<ClZnzp> getBaseMapper() {
@@ -77,9 +82,17 @@ public class ZnzpServiceImpl extends BaseServiceImpl<ClZnzp,String> implements Z
         }
         String cjr = getOperateUser();
         Date cjsj = new Date();
-
+//        LISTXL_{{xlId}}
         SimpleCondition condition = new SimpleCondition(ClZpXl.class);
         condition.eq(ClZpXl.InnerColumn.zpId,znzpId);
+        List<ClZpXl> list= zpXlMapper.selectByExample(condition);
+        if(list!=null&&list.size()>0){
+            for(ClZpXl l:list){
+                try {
+                    redisTemplateUtil.delete("ZNZP_LISTXL_"+l.getXlId());
+                }catch (Exception e){e.printStackTrace();}
+            }
+        }
         zpXlMapper.deleteByExample(condition);
 
         for (String xlId : xlIds) {

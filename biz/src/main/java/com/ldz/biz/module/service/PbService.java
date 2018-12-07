@@ -45,4 +45,11 @@ public interface PbService extends BaseService<ClPb, String> {
 	ApiResponse<String> delPbList(ClPb entity);
 	//移除一组排班
     void removePbList(String pbId);
+	/**
+	 * 修改排班时间.
+	 * id	排班ID
+	 * kssj	开始时间
+	 * jssj	结束时间
+	 */
+	ApiResponse<String> updPbTime(ClPb entity);
 }

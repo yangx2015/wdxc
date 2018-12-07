@@ -1,35 +1,9 @@
 package com.ldz.biz.module.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
-import com.ldz.sys.util.ContextUtil;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.LocalDateTime;
-import org.joda.time.Years;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.google.common.collect.Lists;
 import com.ldz.biz.module.bean.ClClModel;
 import com.ldz.biz.module.bean.SafedrivingModel;
 import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.model.ClBxjz;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClClyxjl;
 import com.ldz.biz.module.model.ClJsy;
@@ -45,12 +19,28 @@ import com.ldz.sys.model.SysYh;
 import com.ldz.sys.model.SysZdxm;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.ZdxmService;
+import com.ldz.sys.util.ContextUtil;
 import com.ldz.sys.util.RedisUtil;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.exception.RuntimeCheck;
-
+import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Years;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -75,6 +65,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 	private RedisUtil redisUtil;
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+
+	@Autowired
+	private RedisTemplateUtil redisTemplateUtil;
+
 	private static final String QZBF = "强制报废"; // 强制报废
 	@Override
 	protected Mapper<ClCl> getBaseMapper() {
@@ -133,23 +127,37 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 			ClClyxjl clClyxjl=new ClClyxjl();
 			clClyxjl.setClId(id);//车辆ID
 			clyxjlService.remove(clClyxjl);
+
+			ClCl cl=this.findById(id);
+			try {
+				redisTemplateUtil.delete("ZNZP_CL_"+cl.getZdbh());
+			}catch (Exception e){e.printStackTrace();}
+
 		}
 	}
 
 	@Override
 	public void remove(ClCl entity) {
+
 		int i=getBaseMapper().delete(entity);
 		if(i==1){
 //			移除 CL_CLYXJL
 			ClClyxjl clClyxjl=new ClClyxjl();
 			clClyxjl.setClId(entity.getClId());//车辆ID
 			clyxjlService.remove(clClyxjl);
+
+			ClCl cl=this.findById(entity.getClId());
+			try {
+				redisTemplateUtil.delete("ZNZP_CL_"+cl.getZdbh());
+			}catch (Exception e){e.printStackTrace();}
 		}
 	}
 
 	@Override
 	public ApiResponse<String> removeIds(String[] ids) {
 		for (String id : ids) {
+
+
 			int i=getBaseMapper().deleteByPrimaryKey(id);
 			if(i==1){
 //			移除 CL_CLYXJL
@@ -157,6 +165,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 				clClyxjl.setClId(id);//车辆ID
 				clyxjlService.remove(clClyxjl);
 			}
+
+			ClCl cl=this.findById(id);
+			try {
+				redisTemplateUtil.delete("ZNZP_CL_"+cl.getZdbh());
+			}catch (Exception e){e.printStackTrace();}
+
+
 		}
 		return ApiResponse.deleteSuccess();
 	}
@@ -315,6 +330,10 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 			}
 		}
 		update(entity);
+
+		try {
+			redisTemplateUtil.delete("ZNZP_CL_"+findById.getZdbh());
+		}catch (Exception e){e.printStackTrace();}
 		redisUtil.deleteRedisKey(deleteZnzpRedisKeyUrl + "/deleteRedisKey","com.ldz.znzp.mapper.ClClMapper");
 		return ApiResponse.success();
 	}
@@ -573,8 +592,13 @@ public class ClServiceImpl extends BaseServiceImpl<ClCl, String> implements ClSe
 		RuntimeCheck.ifBlank(carId,"请选择车辆");
 		ClCl car = entityMapper.selectByPrimaryKey(carId);
 		RuntimeCheck.ifNull(car,"未找到车辆");
+		String zdbh=car.getZdbh();
 		car.setZdbh(null);
 		entityMapper.updateByPrimaryKey(car);
+
+		try {
+			redisTemplateUtil.delete("ZNZP_CL_"+zdbh);
+		}catch (Exception e){e.printStackTrace();}
 		return ApiResponse.success();
 	}
 
