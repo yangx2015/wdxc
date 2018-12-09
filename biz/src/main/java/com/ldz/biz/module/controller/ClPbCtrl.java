@@ -68,7 +68,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 	 * @param pbclxlmodel
 	 * @return
 	 */
-	@PostMapping("/xbbjpb/")
+	@PostMapping("/xbbjpb")
 	public ApiResponse<List<XbXlPb>> getAllPbInfo(PbClXlmodel  pbclxlmodel) {
 		return pbservice.getAllPbInfo(pbclxlmodel);
 	}
@@ -87,7 +87,7 @@ public class ClPbCtrl extends BaseController<ClPb, String> {
 
 	/**
 	 * 班车统计
-	 * @param 
+	 * @param
 	 * @return
 	 */
 	@PostMapping("/banchetj")

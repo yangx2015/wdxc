@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  *  用于编辑校巴/车辆 线路排班管理模型
@@ -46,6 +47,10 @@ public class XbXlPb {
 	 * 车辆对象集合
 	 */
 	private List<ClCl> clList;
+	/**
+	 * 车辆对象集合
+	 */
+	private Map<String,List<ClCl>> clMapList;
 	/**
 	 * 司机姓名
 	 */

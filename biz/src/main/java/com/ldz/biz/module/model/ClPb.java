@@ -125,8 +125,21 @@ public class ClPb implements Serializable {
      */
     @Transient
     private String jssj;
+    /**
+     * 批量排班天数
+     */
+    @Transient
+    private String pbts;
 
     private static final long serialVersionUID = 1L;
+
+    public String getPbts() {
+        return pbts;
+    }
+
+    public void setPbts(String pbts) {
+        this.pbts = pbts;
+    }
 
     public String getEnable() {
         return enable;

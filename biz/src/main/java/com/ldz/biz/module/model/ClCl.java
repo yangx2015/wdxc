@@ -176,7 +176,7 @@ public class ClCl implements Serializable {
     @Transient
     private String pbId;
     /**
-     * 排班页面，班型列表 用,分隔
+     * 排班页面，班型列表
      */
     @Transient
     private String pbbx;
