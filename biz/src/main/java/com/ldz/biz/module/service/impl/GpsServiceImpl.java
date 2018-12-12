@@ -721,11 +721,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         	//2018年11月23日。查看设备上一次的GPS点位
             String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
             
-            if(StringUtils.equals(gpsInfo.getEventType(),"50")) {
-            	prevTime = currentTime;
-            }else if (StringUtils.isNotBlank(gpsJson)){
+            if (StringUtils.isNotBlank(gpsJson)){
                 ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
-                Period per = new Period(DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")), DateTime.now().withMillis(gps.getCjsj().getTime()), PeriodType.minutes());
+                DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
+                DateTime endTime = DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+                Period per = new Period(startTime, endTime, PeriodType.minutes());
                 int minute = per.getMinutes();
                 //如果新的GPS点数据和上一次缓存的GPS点数据相差30分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
                 if (minute >= 30){

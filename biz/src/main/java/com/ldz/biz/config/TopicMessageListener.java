@@ -171,20 +171,19 @@ public class TopicMessageListener implements MessageListener {
 
 
     @SuppressWarnings("unchecked")
-    public ApiResponse<String> senML(String zdbh, String url) {
+     public ApiResponse<String> senML(String zdbh, String url) {
         String bean2 = (String) redisTemplate.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
         ClGps object2 = JsonUtil.toBean(bean2, ClGps.class);
         GpsInfo gpsinfo = new GpsInfo();
         gpsinfo.setDeviceId(zdbh);
         gpsinfo.setEventType("80");
         //百度经纬度
-        gpsinfo.setLatitude(object2.getBdjd().toString());
-        gpsinfo.setLongitude(object2.getBdwd().toString());
+        gpsinfo.setLatitude(object2.getWd().toString());
+        gpsinfo.setLongitude(object2.getJd().toString());
         gpsinfo.setFxj(object2.getFxj().toString());
         gpsinfo.setGpsjd(object2.getJd().toString());
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String starttime = simpleDateFormat.format(object2.getCjsj());
+        String starttime = DateTime.now().toString("yyyy-MM-dd HH:mm:ss");
         gpsinfo.setStartTime(starttime);
         String postEntity = JsonUtil.toJson(gpsinfo);
         ApiResponse<String> apiResponse = null;
