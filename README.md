@@ -13,3 +13,16 @@ redis 标签KEY管理
 - ZNZP_XL_{{xlId}}           BIZ 修改、删除线路时后，需要清除     `xlserviceimp.updateEntity`  
 - ZNZP_XLZD_{{xlId}}         BIZ 修改、删除线路时后，需要清除     `xlserviceimp.updateEntity`  
 - ZNZP_LISTXL_{{xlId}}   智能站牌在修改时，会先删除线路，这里需要在删除前，先查询一下所有的线路，将所有线路的redis做移除后，再做下面的操作。
+
+
+---------
+清除一个终端号的历史线路 SQL 
+SELECT * FROM CL_XC where CL_ZDBH='865923030009978' ORDER BY ID DESC;
+select * from CL_GPS where ZDBH='865923030009978';
+select * from CL_GPS_LS where ZDBH='865923030009978' order by id desc ;
+SELECT * FROM CL_YY WHERE ZDBH ='865923030009978';
+
+delete from CL_XC where CL_ZDBH='865923030009978';
+delete from CL_GPS where ZDBH='865923030009978';
+delete from CL_GPS_LS where ZDBH='865923030009978';
+delete FROM CL_YY WHERE ZDBH ='865923030009978';
