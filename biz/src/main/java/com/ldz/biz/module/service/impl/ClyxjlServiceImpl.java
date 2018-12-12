@@ -1,21 +1,19 @@
 package com.ldz.biz.module.service.impl;
 
-import com.ldz.biz.module.model.ClPb;
-import com.ldz.biz.module.service.PbService;
-import com.ldz.sys.base.LimitedCondition;
-import com.ldz.util.bean.ApiResponse;
-import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.biz.module.mapper.ClClyxjlMapper;
 import com.ldz.biz.module.model.ClClyxjl;
+import com.ldz.biz.module.model.ClPb;
 import com.ldz.biz.module.service.ClyxjlService;
+import com.ldz.biz.module.service.PbService;
+import com.ldz.sys.base.BaseServiceImpl;
+import com.ldz.sys.base.LimitedCondition;
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.commonUtil.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.common.Mapper;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,8 +38,10 @@ public class ClyxjlServiceImpl extends BaseServiceImpl<ClClyxjl,String> implemen
 
     @Override
     public boolean fillPagerCondition(LimitedCondition condition){
+        String time = DateUtils.getNowTime().substring(11);
         //排班
         SimpleCondition pbCondition = new SimpleCondition(ClPb.class);
+        condition.lte(ClPb.InnerColumn.endTime,time);
         pbCondition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') = ",DateUtils.getToday("yyyy-MM-dd"));
         List<ClPb> pbList=pbService.findByCondition(pbCondition);
         List<String> clList=null;

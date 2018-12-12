@@ -800,11 +800,20 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 		}
 		if(StringUtils.isNotEmpty(clIds)){
 			List<String> clId = Arrays.asList(clIds.split(","));
-			SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
-			condition.in(ClClyxjl.InnerColumn.clId,clId);
-			clClyxjlMapper.deleteByExample(condition);
+			if(clId!=null&&clId.size()>0){
+                SimpleCondition condition = new SimpleCondition(ClClyxjl.class);
+                condition.in(ClClyxjl.InnerColumn.clId,clId);
+                clClyxjlMapper.deleteByExample(condition);
+
+                try {
+                    for(String clid:clId){
+                        redisTemplate.delete("ZNZP_PB_"+DateUtils.getToday("yyyyMMdd")+"_"+clid);
+                    }
+                }catch (Exception e){e.printStackTrace();}
+            }
 		}
 		if(StringUtils.isNotEmpty(xlIds)){
+
 			updateRouteInfo(xlIds);
 		}
 	}
