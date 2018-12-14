@@ -208,7 +208,7 @@ public class TopicMessageListener implements MessageListener {
         String type = vals[0];
         String zdbh = vals[1];
         String startTime = vals[2];
-        String endTime = (String)redisTemplate.boundValueOps("start_end," + zdbh + "xc" + startTime).get();
+        String endTime = DateTime.now().toString("yyyy-MM-dd HH:mm:ss");//(String)redisTemplate.boundValueOps("start_end," + zdbh + "xc" + startTime).get();
         if (StringUtils.isBlank(endTime)){
         	return;
         }
