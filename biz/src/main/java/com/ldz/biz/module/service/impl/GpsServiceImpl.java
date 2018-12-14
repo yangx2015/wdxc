@@ -713,27 +713,18 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             }
     	}catch(Exception e){}
     	
-    	//2018年11月23日。查看设备上一次的GPS点位
-        String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
-        
     	if (StringUtils.isBlank(prevTime)){
-    		if (StringUtils.isNotBlank(gpsJson)){
-                ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
-                DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
-                DateTime endTime = DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
-                Period per = new Period(startTime, endTime, PeriodType.minutes());
-                int minute = per.getMinutes();
-                //如果新的GPS点数据和上一次缓存的GPS点数据相差20分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
-                if (minute >= 20){
-                	redis.delete(clxcKey+"*");
-                	
-                	prevTime = currentTime;
-                }else{
-                	prevTime = DateTime.now().withMillis(gps.getCjsj().getTime()).toString("yyyy-MM-dd HH:mm:ss");	
-                }
-            }else{
+    		DateTime startTime = DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
+            DateTime endTime = DateTime.now();
+            Period per = new Period(startTime, endTime, PeriodType.minutes());
+            int minute = per.getMinutes();
+            //如果新的GPS点数据和上一次缓存的GPS点数据相差20分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
+            if (minute >= 20){
             	redis.delete(clxcKey+"*");
-            	prevTime = currentTime;
+            	
+            	prevTime = endTime.toString("yyyy-MM-dd HH:mm:ss");
+            }else{
+            	prevTime = startTime.toString("yyyy-MM-dd HH:mm:ss");	
             }
         }
     	xcMainKey = clxcKey + "," + prevTime;
