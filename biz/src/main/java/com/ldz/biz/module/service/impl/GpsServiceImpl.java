@@ -722,7 +722,9 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (minute >= 20){
             	redis.delete(clxcKey+"*");
             	
-            	prevTime = endTime.toString("yyyy-MM-dd HH:mm:ss");
+            	//prevTime = endTime.toString("yyyy-MM-dd HH:mm:ss");
+            	errorLog.error("历史数据不进行轨迹计算，接收到的GPS时间["+currentTime+"]");
+            	return;
             }else{
             	prevTime = startTime.toString("yyyy-MM-dd HH:mm:ss");	
             }
