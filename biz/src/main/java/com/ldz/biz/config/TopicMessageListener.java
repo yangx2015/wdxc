@@ -249,7 +249,8 @@ public class TopicMessageListener implements MessageListener {
             ClXc clXc = new ClXc();
             clXc.setClZdbh(zdbh);
             clXc.setXcKssj(startTime);
-            clXc.setXcJssj(endTime);
+			String[] arrs = start_end.split(",");
+            clXc.setXcJssj(arrs[3]);
             clXc.setXcStartEnd(start_end);
             List<ClXc> entity = xcService.findByEntity(clXc);
             if(CollectionUtils.isEmpty(entity)) {
@@ -368,7 +369,7 @@ public class TopicMessageListener implements MessageListener {
                 return null;
             }
             clYyService.saveBatch(yyList);
-            return start_end + "," + points.getDistance();
+            return start_end + "," + points.getDistance() + "," + yyList.get(yyList.size()-1).getLoc_time();
         } else {
             return null;
         }

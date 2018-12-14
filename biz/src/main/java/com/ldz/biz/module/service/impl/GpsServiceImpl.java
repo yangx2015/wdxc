@@ -691,9 +691,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
      * @param gpsInfo
      */
     private void clXc(GpsInfo gpsInfo){
-    	DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
+    	if(StringUtils.equals(gpsInfo.getEventType(),"80")) {
+        	//如果是接收到离线事件，直接退出
+            return;
+        }
     	// 终端编号
-    	String zdbh = gpsInfo.getDeviceId();
+    	String zdbh = gpsInfo.getDeviceId();  
     	//行程Redis key
         String clxcKey = "CX," + zdbh;
         String xcMainKey = null;
@@ -701,84 +704,41 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
         String currentTime = gpsInfo.getStartTime();
         //上一次的GPS点时间
     	String prevTime = null;
-    	//
-    	String existValue = null;
     	try{
     		Set<Object> keys = redis.keys(clxcKey+"*");
             //查询上一次记录的行程
             if (keys.size() > 0){
             	String tmpKey = keys.iterator().next().toString();
             	prevTime = tmpKey.split(",")[2];
-            	existValue = (String)redis.boundValueOps(tmpKey).get();
             }
     	}catch(Exception e){}
-
-    	if (StringUtils.isBlank(existValue)){
-            existValue = currentTime;
-        }
-
-        /*if (StringUtils.isBlank(prevTime)){
-        	//2018年11月23日。查看设备上一次的GPS点位
-            String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
-            
-            if (StringUtils.isNotBlank(gpsJson)){
+    	
+    	//2018年11月23日。查看设备上一次的GPS点位
+        String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
+        
+    	if (StringUtils.isBlank(prevTime)){
+    		if (StringUtils.isNotBlank(gpsJson)){
                 ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
                 DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
                 DateTime endTime = DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
                 Period per = new Period(startTime, endTime, PeriodType.minutes());
                 int minute = per.getMinutes();
-                //如果新的GPS点数据和上一次缓存的GPS点数据相差30分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
-                if (minute >= 30){
+                //如果新的GPS点数据和上一次缓存的GPS点数据相差20分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
+                if (minute >= 20){
+                	redis.delete(clxcKey+"*");
+                	
                 	prevTime = currentTime;
                 }else{
                 	prevTime = DateTime.now().withMillis(gps.getCjsj().getTime()).toString("yyyy-MM-dd HH:mm:ss");	
                 }
-                	
             }else{
+            	redis.delete(clxcKey+"*");
             	prevTime = currentTime;
             }
-            
-        }*/
-		//2018年11月23日。查看设备上一次的GPS点位
-        String gpsJson = (String) redis.boundValueOps(ClGps.class.getSimpleName() + zdbh).get();
-        
-        if (StringUtils.isNotBlank(gpsJson)){
-            ClGps gps = JsonUtil.toBean(gpsJson, ClGps.class);
-            DateTime startTime = DateTime.now().withMillis(gps.getCjsj().getTime());
-            DateTime endTime = DateTime.parse(currentTime, DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss"));
-            Period per = new Period(startTime, endTime, PeriodType.minutes());
-            int minute = per.getMinutes();
-            //如果新的GPS点数据和上一次缓存的GPS点数据相差20分钟，认为上一次行程已经结束，新传入的GPS点作为开始时间
-            if (minute >= 20){
-            	redis.delete("start_end," + zdbh + "xc"+ prevTime);
-            	
-            	prevTime = currentTime;
-            	existValue = currentTime;
-            }else{
-            	prevTime = DateTime.now().withMillis(gps.getCjsj().getTime()).toString("yyyy-MM-dd HH:mm:ss");	
-            }
-            	
         }
-    	if (StringUtils.isBlank(prevTime)){
-            prevTime = currentTime;
-        }
-        //判断接收的数据时间是新的，还是旧的补传数据，如果是补传数据，则忽略
-        DateTime prevDate = DateTime.parse(existValue, formatter);
-    	DateTime currentDate = DateTime.parse(currentTime, formatter);
-    	if (currentDate.isBefore(prevDate)){
-    		return;
-    	}
     	xcMainKey = clxcKey + "," + prevTime;
-
-        //如果上一次时间和本次数据时间相隔大于5分钟或是GPS事件状态为熄火或是为离线，就保存一次行程
-        if(prevDate.plusMinutes(5).isBefore(currentDate) || StringUtils.equals(gpsInfo.getEventType(),"60") || StringUtils.equals(gpsInfo.getEventType(),"80")) {
-        	//如果是接收到熄火事件，直接保存该次行程
-            redis.boundValueOps(xcMainKey).set(currentTime, 1, TimeUnit.SECONDS);
-            return;
-        }
-
+        
         redis.boundValueOps(xcMainKey).set(currentTime, 5, TimeUnit.MINUTES);
-        redis.boundValueOps("start_end," + zdbh + "xc"+ prevTime).set(currentTime, 10, TimeUnit.MINUTES);
     }
 
 
