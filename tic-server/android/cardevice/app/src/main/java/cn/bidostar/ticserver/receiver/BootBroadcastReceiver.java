@@ -1,15 +1,20 @@
 package cn.bidostar.ticserver.receiver;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
+import android.os.SystemClock;
 import android.util.Log;
 
+import java.util.Calendar;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import cn.bidostar.ticserver.AppApplication;
+import cn.bidostar.ticserver.service.AlarmService;
 import cn.bidostar.ticserver.service.CarBindService;
 import cn.bidostar.ticserver.service.SocketCarBindService;
 import cn.bidostar.ticserver.utils.AppConsts;
@@ -43,11 +48,12 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             I.e("com.car.wakeup ---- taskPool:");
             AppApplication.getInstance().stopSleepGpsSend();
             //启动service，调整数据上报时长
-            if (SocketCarBindService.socketCarBindService != null){
-                SocketCarBindService.socketCarBindService.onCreate();
-            }
+            Intent serviceTwo = new Intent();
+            serviceTwo.setClass(context, SocketCarBindService.class);
+            context.startService(serviceTwo);
         }else if(intent.getAction().equals("com.car.gotosleep")){//准备休眠
             I.e("com.car.gotosleep ----");
+
             AppApplication.getInstance().sleepGpsSend();
 
                 /*Intent intentService = new Intent(context, SocketCarBindService.class);

@@ -77,7 +77,7 @@ public class PushIntentService extends GTIntentService {
             //I.e(TAG, "receiver payload = null");
         } else {
             String data = new String(payload);
-            //I.e(TAG, "receiver payload = " + data);
+            I.e(TAG, "receiver payload = " + data);
             try {
                 RequestCommonParamsDto dto = JSON.parseObject(data,RequestCommonParamsDto.class);
                 if(dto == null || dto.getCmdType()==null || dto.getCmdType().trim().equals("")){
@@ -86,10 +86,17 @@ public class PushIntentService extends GTIntentService {
                     //这里处理具体的命令
                     boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
                             "cn.bidostar.ticserver.service.SocketCarBindService");
-                    //I.e(TAG,"isRun SocketCarBindService:"+isRun);
-                    if (isRun && SocketCarBindService.socketCarBindService.mApi == null){
-                        SocketCarBindService.socketCarBindService.onCreate();
+                    I.e(TAG,"isRun SocketCarBindService:"+isRun);
+                    String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
+                    if ("10".equals(zt) || !isRun){
+                        //休眠状态下，休眠service服务
+                        //给出30秒钟加锁时长
+                        AppApplication.getInstance().acquire(30);
+                        Intent serviceTwo = new Intent();
+                        serviceTwo.setClass(this, SocketCarBindService.class);
+                        startService(serviceTwo);
                     }
+
                     switch (dto.getCmdType()){
                         case "01"://01：超速设定 02:灵敏度设定(急加速灵敏度)   11:拍视频 12:拍图片   20 碰撞灵敏度
                             if(isRun){
@@ -224,7 +231,7 @@ public class PushIntentService extends GTIntentService {
                             break;
                         case "90"://apk更新
                             if(AppApplication.getInstance()!=null){
-                                ServerApiUtils.downLoadAppApk(dto.getCmd(),"/mnt/sdcard/carserver.apk");
+                                ServerApiUtils.downLoadAppApk(context, dto.getCmd(),"/mnt/sdcard/carserver.apk");
                             }
                             break;
                         case "91"://设置app提交数据得baseServer http://127.0.0.1:8089/api 这种路径
@@ -288,7 +295,7 @@ public class PushIntentService extends GTIntentService {
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        //I.e(TAG, "onReceiveClientId -> " + "clientid = " + clientid);
+        I.e(TAG, "onReceiveClientId -> " + "clientid = " + clientid);
 
         sendMessage(clientid, 1);
     }
@@ -298,9 +305,12 @@ public class PushIntentService extends GTIntentService {
     public void onReceiveOnlineState(Context context, boolean online) {
         I.e(TAG, "onReceiveOnlineState -> " + (online ? "online" : "offline"));
         //如果推送服务离线了，则开启抓锁，保证网络正常可用
-        if (!online){
-            SocketCarBindService.socketCarBindService.mApi.setMobileEnabled(true);
-        }
+        /*if (!online){
+            AppApplication.getInstance().acquire();
+        }else{
+            AppSharedpreferencesUtils.put(AppConsts.NO_NETWORK, new Integer(0));
+            AppApplication.getInstance().unacquire();
+        }*/
     }
 
     @Override

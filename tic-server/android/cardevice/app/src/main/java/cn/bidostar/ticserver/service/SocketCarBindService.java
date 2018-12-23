@@ -77,6 +77,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
     //视频文件任务队列
     public ScheduledThreadPoolExecutor videoTaskPool = new ScheduledThreadPoolExecutor(1);
     public static RequestCommonParamsDto pubDto;
+    public static final String PKGNAME = "cn.bidostar.ticserver,com.bidostar.rmt";
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         //I.e("SocketCarBindService", "onStartCommand"+TAG);
@@ -90,7 +91,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     @SuppressLint("NewApi")
     public void onCreate() {
-        //I.e(TAG, "onCreate");
+        I.e(TAG, "onCreate");
         super.onCreate();
         socketCarBindService = this;
         initApi();
@@ -101,17 +102,16 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         /*
          * 此线程用监听Service2的状态
          */
-        mApi.setWakeupLockWhiteList("cn.bidostar.ticserver,com.bidostar.rmt");
-        mApi.setAppKeepAlive("cn.bidostar.ticserver,com.bidostar.rmt");
-        mApi.setAppRTC("cn.bidostar.ticserver,com.bidostar.rmt");
+        mApi.setWakeupLockWhiteList(PKGNAME);
+        mApi.setAppKeepAlive(PKGNAME);
+        mApi.setAppRTC(PKGNAME);
     }
 
     public void initThread(){
         String zt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
-        //I.e("init GPS ZT:"+zt);
         //如果设备处于休眠状态，则关闭数据上报功能
         if ("10".equals(zt)){
-            AppApplication.getInstance().uploadGps();
+            AppApplication.getInstance().uploadGpsSleep();
             //如果是休眠状态下在线升级了apk，则不会触发sleep，手工触发一次，保证系统逻辑正常运行
             Intent intent = new Intent(CarIntents.ACTION_GOTOSLEEP);
             sendBroadcast(intent);
@@ -146,7 +146,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
 
     @Override
     public void onDestroy() {
-        //I.e(TAG, "onDestroy");
+        I.e(TAG, "onDestroy");
         stopWithSleep();
         super.onDestroy();
     }
@@ -479,11 +479,11 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
         I.d(TAG,"文件上传设置队列状态"+AppApplication.getInstance().UPLOAD_QUEE);
     }
 
-    public boolean getUploadQuee(){
+    /*public boolean getUploadQuee(){
         AppApplication.getInstance().UPLOAD_QUEE = (boolean)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_QUEE,false);
         I.d(TAG,"文件上传队列状态"+AppApplication.getInstance().UPLOAD_QUEE);
         return  (boolean)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_QUEE,false);
-    }
+    }*/
 
 
     public String getCarGPSFlag(){
@@ -651,7 +651,7 @@ public class SocketCarBindService extends Service implements API.CarMotionListen
             s += "\n Direction: ";
             s += currentLocation.getBearing();
             s+="\n Provider:"+currentLocation.getProvider();
-            //I.e(TAG,"local:"+s);
+            I.e(TAG,"local:"+s);
             //mMsgShow.setText("local result: " + s);
             // text.setText(s);
             String cuSpeed = (currentLocation.getSpeed()*3.6)+"";

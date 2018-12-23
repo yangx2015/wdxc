@@ -18,6 +18,7 @@ import cn.bidostar.ticserver.utils.AppConsts;
 import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.CarIntents;
 import cn.bidostar.ticserver.utils.I;
+import cn.bidostar.ticserver.utils.NetworkUtil;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 
 /**
@@ -48,9 +49,9 @@ public class AlarmReceive extends BroadcastReceiver {
                 if (activeNetwork.isConnected()) {
                     String sleepZt = AppSharedpreferencesUtils.get(AppConsts.CAR_GOTO_SLEEP,"00").toString();
                     //
-                    if(isRun(context)){
-                        AppApplication.getInstance().uploadGps();
-                    }else if ("00".equals(sleepZt)){//网络链接之后，如果程序没有启动，直接启动
+                    if("10".equals(sleepZt)){
+                        AppApplication.getInstance().uploadGpsSleep();
+                    }else if (!isRun(context) && "00".equals(sleepZt)){//网络链接之后，如果程序没有启动，直接启动
                         Intent intentMy=new Intent(Intent.ACTION_MAIN);
                         intentMy.addCategory(Intent.CATEGORY_LAUNCHER);
                         ComponentName cn=new ComponentName("cn.bidostar.ticserver",
@@ -61,14 +62,18 @@ public class AlarmReceive extends BroadcastReceiver {
                         context.startActivity(intentMy);
                     }
                 }else{
-                    //I.e(TAG, "当前没有网络连接，请确保你已经打开网络 ");
+                    /*I.e(TAG,"network not work");
+                    //网络连接出现问题，则开启锁，启动网络
+                    AppApplication.getInstance().acquire();
+                    AppApplication.getInstance().initPushServer();*/
                 }
             }else{
-                //I.e(TAG, "当前没有网络连接，请确保你已经打开网络 22");
+                /*AppApplication.getInstance().acquire();
+                AppApplication.getInstance().initPushServer();*/
             }
         }
 
-        String filter = CarIntents.ACTION_WAKEUP+CarIntents.ACTION_GOTOSLEEP;
+        /*String filter = CarIntents.ACTION_WAKEUP+CarIntents.ACTION_GOTOSLEEP;
         if(filter.contains(intent.getAction())){
             if(!isRun(context)){//程序没有运行，直接启动应用程序
                 Intent intentMy=new Intent(Intent.ACTION_MAIN);
@@ -80,7 +85,7 @@ public class AlarmReceive extends BroadcastReceiver {
                 intentMy.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intentMy);
             }
-        }
+        }*/
     }
 
 

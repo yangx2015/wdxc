@@ -1,7 +1,6 @@
 package com.ldz.ticserver.plugins.file;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.concurrent.Executor;
@@ -11,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import com.ldz.ticserver.api.DeviceApiConteroller;
-import com.ldz.util.bean.RequestCommonParamsDto;
 
 /**
  * 文件转换类
@@ -30,7 +26,9 @@ public class FileConvertManager {
 	 * @param cmd
 	 */
 	public void convertMp4OrExtrPic(String cmd){
+		logger.info(cmd); 
 		if(StringUtils.isNotBlank(cmd)){
+			logger.info("开启线程执行----"); 
 			executor.execute(new ThreedTsConvertMp4OrExtrPic(cmd));
 		}
 	}
@@ -41,7 +39,7 @@ public class FileConvertManager {
 	 * @author admins
 	 *
 	 */
-	class ThreedTsConvertMp4OrExtrPic extends Thread{
+	class ThreedTsConvertMp4OrExtrPic implements Runnable{
 		String cmdStr = "";
 		public ThreedTsConvertMp4OrExtrPic(){
 			
@@ -53,10 +51,9 @@ public class FileConvertManager {
 		@Override
 		public void run() {
 			// TODO Auto-generated method stub
-			super.run();
 			BufferedReader br = null;
 			 try {  
-				 logger.debug(cmdStr); 
+				 logger.info("线程执行命令------"+cmdStr); 
 		            Process p = Runtime.getRuntime().exec(cmdStr); 
 		            br = new BufferedReader(new InputStreamReader(p.getInputStream(),Charset.forName("UTF-8"))); 
 		            String line = null;  
@@ -64,7 +61,6 @@ public class FileConvertManager {
 		            while ((line = br.readLine()) != null) {
 		                sb.append(line + "\n");  
 		            }
-		            logger.debug(sb.toString());
 			 }catch (Exception e) {  
 		            e.printStackTrace(); 
 		            logger.error("exeCmd error:"+e);

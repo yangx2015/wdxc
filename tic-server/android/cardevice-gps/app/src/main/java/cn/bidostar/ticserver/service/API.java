@@ -333,10 +333,9 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
                 ServerApiUtils.uploadFile("102", filename,new String(SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID), ServerApiUtils.fileUploadCallback);//截图视频，直接上传
                 SocketCarBindService.socketCarBindService.CAR_HB_MP4_TASKID = "";
             }
-            I.e(TAG, "capture fileinfo cameraid = " + cameraid
-                            + " filename = " + filename + " error = " + error+" takeId = "+takeId);
+            //I.e(TAG, "capture fileinfo cameraid = " + cameraid+ " filename = " + filename + " error = " + error+" takeId = "+takeId);
         }else if(intent.getAction().equals(Intent.ACTION_POWER_CONNECTED)){
-            I.e(TAG,"Intent.ACTION_POWER_CONNECTED="+intent);//点火
+            //I.e(TAG,"Intent.ACTION_POWER_CONNECTED="+intent);//点火
             AppSharedpreferencesUtils.put(AppConsts.CAR_ON_RUN_FLAG,true);//设置汽车为点火状态
             AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"00");
             RequestCommonParamsDto dto = new RequestCommonParamsDto();
@@ -345,7 +344,7 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             ServerApiUtils.pushGpsInfo(dto,ServerApiUtils.gpsInfoCallback);
 
         }else if(intent.getAction().equals(Intent.ACTION_POWER_DISCONNECTED)){
-            I.e(TAG,"Intent.ACTION_POWER_DISCONNECTED="+intent);//熄火  设置汽车为熄火状态
+            //I.e(TAG,"Intent.ACTION_POWER_DISCONNECTED="+intent);//熄火  设置汽车为熄火状态
             AppSharedpreferencesUtils.put(AppConsts.CAR_ON_RUN_FLAG,false);
             AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"10");
             RequestCommonParamsDto dto = new RequestCommonParamsDto();
@@ -409,6 +408,8 @@ public final class API extends BroadcastReceiver implements carMotion.carMotionE
             if (mCarMotion != null && mCarMotionListeners.size() == 0) {
                 mCarMotion.UnRegisteOncarMotionEventListener(this);
             }
+
+            mAppContext.unregisterReceiver(this);
         }
     }
 

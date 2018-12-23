@@ -8,8 +8,8 @@ def getGitVersion() {
 }
 android {
     def globalConfiguration = rootProject.ext.android
-    compileSdkVersion globalConfiguration.AndroidCompileSdkVersion
-    buildToolsVersion globalConfiguration.AndroidBuildToolsVersion
+    compileSdkVersion 25
+    buildToolsVersion '27.0.3'
 
     useLibrary 'org.apache.http.legacy'
 
@@ -44,6 +44,11 @@ android {
                 GETUI_APP_KEY : "9M7caq81LGAiCxFPkhdZW7",
                 GETUI_APP_SECRET : "avPK2zQTma6P1P5Nb3qB54"
         ]
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
     }
     buildTypes {
         release {
@@ -61,30 +66,34 @@ android {
         }
 
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
-apply plugin: 'android-apt'
+//apply plugin: 'android-apt'
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     def googleDependencies = rootProject.ext.goodleDependencies
     def otherDependencies = rootProject.ext.otherDependdencies
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile googleDependencies.support_v4
-    compile googleDependencies.appcompat_v7
-    compile googleDependencies.design
-    compile googleDependencies.recyclerview_v7
-    compile googleDependencies.cardview_v7
-    testCompile otherDependencies.junit
-    compile otherDependencies.fastjson
-    compile otherDependencies.okhttp3
-    compile otherDependencies.okhttp3_logging_interceptor
-    compile otherDependencies.okio
-    compile otherDependencies.multidex
-    compile otherDependencies.jsbridge
-    compile otherDependencies.googleGson
-    compile otherDependencies.jsoup
-    compile otherDependencies.xutils
-    compile otherDependencies.androidannotations
-
+    implementation googleDependencies.support_v4
+    implementation googleDependencies.appcompat_v7
+    implementation googleDependencies.design
+    implementation googleDependencies.recyclerview_v7
+    implementation googleDependencies.cardview_v7
+    testImplementation otherDependencies.junit
+    implementation otherDependencies.fastjson
+    implementation otherDependencies.okhttp3
+    implementation otherDependencies.okhttp3_logging_interceptor
+    implementation otherDependencies.okio
+    implementation otherDependencies.multidex
+    implementation otherDependencies.jsbridge
+    implementation otherDependencies.googleGson
+    implementation otherDependencies.jsoup
+    implementation otherDependencies.xutils
+    implementation otherDependencies.androidannotations
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
 }

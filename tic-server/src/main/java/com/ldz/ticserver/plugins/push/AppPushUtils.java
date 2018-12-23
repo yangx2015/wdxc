@@ -415,18 +415,18 @@ public class AppPushUtils {
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038498", "{\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/WeicyCARFDLog/2018-10-24error.txt\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
 		*/
 		
-		System.out.println(checkIdByChannelId("8ad57eb37313c6da027cb640217de5b8").getCode());
+		System.out.println(checkIdByChannelId("bd1349a36f807b29309dfc73e5352ead").getCode());
 		//System.out.println(checkIdMessage("865923030038753").getCode());
 		
 		RequestCommonParamsDto dto = new RequestCommonParamsDto();
 		dto.setCmdType("12");
-		dto.setDeviceId("865923030038860");
+		dto.setDeviceId("865923030038662");
 		dto.setCmdParams("0-0");
 		dto.setCmd("123904893892392");
 		
 		IGtPush push = new IGtPush(url, appKey, masterSecret);
 		PushModel pushModel = new PushModel();
-		pushModel.setClientId("8ad57eb37313c6da027cb640217de5b8");
+		pushModel.setClientId("bd1349a36f807b29309dfc73e5352ead");
 		pushModel.setPushData(dto);
 		pushModel.setPushType(4);
 		PushResult result = new PushResult();

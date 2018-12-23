@@ -2,6 +2,7 @@ package cn.bidostar.ticserver.utils;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.os.PowerManager;
 
 import com.alibaba.fastjson.JSON;
@@ -34,11 +35,11 @@ import cn.bidostar.ticserver.service.SocketCarBindService;
 public class ServerApiUtils {
 
     public static String TAG = "ServerApiUtils";
-    private static List<RequestCommonParamsDto> dtos = new ArrayList<>();
+    private static List<RequestCommonParamsDto> dtos = new ArrayList<RequestCommonParamsDto>();
     //网络请求线程队列，同时只让一个线程执行上传操作
     public static ExecutorService signThread = Executors.newFixedThreadPool(1);
 
-    public static void downLoadAppApk(final String url,final String path){
+    public static void downLoadAppApk(final Context context, final String url,final String path){
         RequestParams requestParams = new RequestParams(url);
         requestParams.setSaveFilePath(path);
         x.http().get(requestParams, new Callback.ProgressCallback<File>() {
@@ -60,9 +61,17 @@ public class ServerApiUtils {
                 //I.e(TAG,"download Apk success");
                 boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
                         "cn.bidostar.ticserver.service.SocketCarBindService");
-                if(isRun) {
+
+                Intent intent = new Intent(CarIntents.ACTION_APK_INSTALL);
+                intent.putExtra(CarIntents.EXTRA_PATH_INSTALL, path);
+                intent.putExtra(CarIntents.EXTRA_PACKAGE_INSTALL, "cn.bidostar.ticserver");
+                intent.putExtra(CarIntents.EXTRA_CLASS_INSTALL, "cn.bidostar.ticserver.TestActivity");
+                context.sendBroadcast(intent);
+                /*if(isRun) {
                     SocketCarBindService.socketCarBindService.mApi.installApk(path, "cn.bidostar.ticserver", "cn.bidostar.ticserver.TestActivity");
-                }
+                }else{
+
+                }*/
             }
 
             @Override
@@ -146,7 +155,18 @@ public class ServerApiUtils {
                 video = true;
             }
             RequestParams params = new RequestParams(AppApplication.getInstance().getServerUrlBase()+ (video == true? AppConsts.API_UPLOADS:AppConsts.API_UPLOAD));
-            RequestCommonParamsDto dto1 = SocketCarBindService.socketCarBindService.getPubDto();
+            RequestCommonParamsDto dto1 = null;
+            if (SocketCarBindService.socketCarBindService == null){
+                dto1 = new RequestCommonParamsDto();
+                dto1.setLatitude("-1");
+                dto1.setLongitude("-1");
+                dto1.setSpeed("0");
+                dto1.setFxj("0");
+                dto1.setDwjd("0");
+                dto1.setGpsjd("0");
+            }else{
+                dto1 = SocketCarBindService.socketCarBindService.getPubDto();
+            }
             String deviceId  = AppApplication.getInstance().getDeviceIMEI();
             params.addQueryStringParameter("deviceId", deviceId);
             params.addQueryStringParameter("channelId", PushManager.getInstance().getClientid(AppApplication.getInstance().getApplicationContext()));
@@ -229,6 +249,9 @@ public class ServerApiUtils {
      * @return
      */
     public static boolean pushGpsInfo(RequestCommonParamsDto dto, Callback.CommonCallback<String> callback){
+        if (SocketCarBindService.socketCarBindService == null){
+            return false;
+        }
         RequestCommonParamsDto dto1 = SocketCarBindService.socketCarBindService.getPubDto();
         if (dto1 == null){
             return false;
@@ -273,6 +296,59 @@ public class ServerApiUtils {
         params.setConnectTimeout(3*1000);//3秒超时
         params.setExecutor(signThread);
        // params.setUseCookie(false);
+        params.setBodyContent(JSON.toJSONString(dto));
+        //I.d(TAG,"POST URL --->"+gpsurl);
+        //I.d(TAG,"POST DATA--->"+JSON.toJSONString(dto));
+        if(APP_IMEI==null || APP_IMEI.trim().equals("")){
+            I.e(TAG,"APP_IMEI is null");
+            return false;
+        }
+        x.http().post(params,callback);
+        return true;
+    }
+
+    public static boolean pushGpsInfoSleep(RequestCommonParamsDto dto, Callback.CommonCallback<String> callback){
+        RequestCommonParamsDto dto1 = new RequestCommonParamsDto();
+        String APP_IMEI = AppApplication.getInstance().getDeviceIMEI();
+        String APP_SIMCID = AppApplication.getInstance().getSimICCID();
+        dto.setDeviceId(APP_IMEI);
+        dto.setDeviceTag(APP_SIMCID);
+        //I.e(TAG,"APP_SIMCID:"+APP_SIMCID);
+        dto.setLatitude("-1");
+        dto.setLongitude("-1");
+        dto.setSpeed("0");
+        dto.setFxj("0");
+        dto.setDwjd("0");
+        dto.setGpsjd("0");
+        dto.setChannelId(PushManager.getInstance().getClientid(AppApplication.getInstance().getApplicationContext()));
+        dto.setEndTime(TimeUtils.getNowDateTime());
+        dto.setStartTime(TimeUtils.getNowDateTime());
+        //dto.setEventType(getCarGPSFlag());//设置GPS 状态[车辆状态]
+        dto.setSczt("20");
+
+        dto.setCmdParams(AppApplication.getInstance().getVersionStr());
+        if(!NetworkUtil.isConnected(AppApplication.getInstance().getApplicationContext())){
+            SocketCarBindService.socketCarBindService.setGpsNoNetWorkFlag("10");//需要进行检测上传了
+            RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
+            dao.insertObj(dto);
+            I.e(TAG,">>>Netword is not connect");
+            return false;
+        }
+        /*
+        if(dto.getLatitude().equals("-1") && (dto.getEventType()==null || dto.getEventType().equals(""))){
+            //GPS 为-1 不进行上传直接记录在本地，等有记录的时候替换
+            I.e(TAG,"local data is error:"+dto.toString());
+            AppApplication.getInstance().setGpsNoNetWorkFlag("10");//需要进行检测上传了
+            RequestCommonParamsDtoDao dao = new RequestCommonParamsDtoDao();
+            dao.insertObj(dto);
+            return false;
+        }*/
+        String gpsurl = AppApplication.getInstance().getServerUrlBase()+AppConsts.API_GPSINFO;
+        RequestParams params = new RequestParams(gpsurl);
+        params.setAsJsonContent(true);
+        params.setConnectTimeout(3*1000);//3秒超时
+        params.setExecutor(signThread);
+        // params.setUseCookie(false);
         params.setBodyContent(JSON.toJSONString(dto));
         //I.d(TAG,"POST URL --->"+gpsurl);
         //I.d(TAG,"POST DATA--->"+JSON.toJSONString(dto));

@@ -1,12 +1,16 @@
 package cn.bidostar.ticserver;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.Application;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.PowerManager;
 import android.support.multidex.MultiDex;
+import android.support.v4.content.WakefulBroadcastReceiver;
 import android.telephony.TelephonyManager;
 
 import com.alibaba.fastjson.JSON;
@@ -15,6 +19,7 @@ import com.igexin.sdk.PushManager;
 import org.json.JSONArray;
 import org.xutils.x;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,12 +30,14 @@ import cn.bidostar.ticserver.dao.LocalFilesModelDao;
 import cn.bidostar.ticserver.handler.CrashHandler;
 import cn.bidostar.ticserver.model.LocalFilesModel;
 import cn.bidostar.ticserver.model.RequestCommonParamsDto;
+import cn.bidostar.ticserver.service.AlarmService;
 import cn.bidostar.ticserver.service.AppPushService;
 import cn.bidostar.ticserver.service.PushIntentService;
 import cn.bidostar.ticserver.service.SocketCarBindService;
 import cn.bidostar.ticserver.utils.AppConsts;
 import cn.bidostar.ticserver.utils.AppSharedpreferencesUtils;
 import cn.bidostar.ticserver.utils.I;
+import cn.bidostar.ticserver.utils.NetworkUtil;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 import cn.bidostar.ticserver.utils.Utils;
 
@@ -84,8 +91,19 @@ public class AppApplication extends Application  {
     }
 
     public boolean uploadGps(){
+        if (SocketCarBindService.socketCarBindService == null){
+            return false;
+            /*Intent serviceTwo = new Intent();
+            serviceTwo.setClass(this, SocketCarBindService.class);
+            startService(serviceTwo);*/
+        }
         RequestCommonParamsDto dto = new RequestCommonParamsDto();
         return ServerApiUtils.pushGpsInfo(dto, ServerApiUtils.gpsInfoCallback);
+    }
+
+    public boolean uploadGpsSleep(){
+        RequestCommonParamsDto dto = new RequestCommonParamsDto();
+        return ServerApiUtils.pushGpsInfoSleep(dto, ServerApiUtils.gpsInfoCallback);
     }
     /**
      * 是否主线程
@@ -109,11 +127,11 @@ public class AppApplication extends Application  {
         I.d(TAG,"文件上传设置队列状态"+AppApplication.getInstance().UPLOAD_QUEE);
     }
 
-    public boolean getUploadQuee(){
+    /*public boolean getUploadQuee(){
         AppApplication.getInstance().UPLOAD_QUEE = (boolean)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_QUEE,false);
         I.d(TAG,"文件上传队列状态"+AppApplication.getInstance().UPLOAD_QUEE);
         return  (boolean)AppSharedpreferencesUtils.get(AppConsts.CAR_UPLOAD_QUEE,false);
-    }
+    }*/
 
 
     @Override
@@ -134,51 +152,48 @@ public class AppApplication extends Application  {
 
         versionStr = getAPPVersionCode(this);
     }
+
     ScheduledThreadPoolExecutor taskPool = null;
     public void sleepGpsSend(){
         //进入休眠模式
         AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"10");
         //启动service，调整数据上报时长
         if (SocketCarBindService.socketCarBindService != null){
-            SocketCarBindService.socketCarBindService.stopWithSleep();
+            //SocketCarBindService.socketCarBindService.stopWithSleep();
+            SocketCarBindService.socketCarBindService.stopSelf();
         }
 
+        //AppApplication.getInstance().initPushServer();
         if (taskPool == null){
             taskPool = new ScheduledThreadPoolExecutor(1);
-            //5分钟执行一次
+            //10分钟执行一次
             taskPool.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
                     try{
                         AppApplication.getInstance().initPushServer();
-                        //启动锁
-                        AppApplication.getInstance().acquire();
-                        if (SocketCarBindService.socketCarBindService != null && SocketCarBindService.socketCarBindService.mApi != null){
-                            //I.e(TAG,"setMobileEnabled:");
-                            SocketCarBindService.socketCarBindService.mApi.setMobileEnabled(true);
+                        AppApplication.getInstance().acquire(30);
+                        //网络在线就发送一次心跳包
+                        if(NetworkUtil.isConnected(AppApplication.getInstance().getApplicationContext())){
+                            boolean flag = AppApplication.getInstance().uploadGpsSleep();
+                            if (flag){
+                                AppApplication.getInstance().unacquire();
+                            }
                         }
-
-                        //执行上传GPS和个推消息连接，保证网络一直有数据传输，防止系统自动断网
-                        boolean success = AppApplication.getInstance().uploadGps();
-                        //I.e(TAG,"uploadGps:"+success);
-                        /*if (success){
-                            AppApplication.getInstance().unacquire();
-                        }*/
                     }catch (Exception e){
                         I.e(TAG,"run exception not:"+e.getMessage());
                     }
                 }
-            }, 0, 60 * 3, TimeUnit.SECONDS);
+            }, 0, 60 * 6, TimeUnit.SECONDS);
         }
     }
 
     public void stopSleepGpsSend(){
-        I.e("com.car.wakeup ---- stopSleepGpsSend:"+taskPool);
         if (taskPool != null){
             taskPool.shutdownNow();
+            taskPool = null;
         }
 
-        taskPool = null;
         AppSharedpreferencesUtils.put(AppConsts.CAR_GOTO_SLEEP,"00");
         AppApplication.getInstance().unacquire();
     }
@@ -196,6 +211,22 @@ public class AppApplication extends Application  {
             long timeout = 1000 * 60 * 5;
             wakeLock.acquire(timeout);
             //I.e("AppApplication", "wakeLock acquire lock time:"+timeout+"======================"+wakeLock.isHeld());
+        }
+    }
+
+    public void acquire(int time){
+        if (wakeLock == null){
+            pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
+            wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, TAG);
+        }
+
+        if(wakeLock.isHeld()){
+            //I.e(TAG,"is lock");
+        }else{
+            //I.e("AppApplication", "wakeLock acquire success======================"+wakeLock.isHeld());
+            long timeout = 1000 * time;
+            wakeLock.acquire(timeout);
+            I.e("AppApplication", "wakeLock acquire lock time:"+timeout+"======================"+wakeLock.isHeld());
         }
     }
 
@@ -217,7 +248,7 @@ public class AppApplication extends Application  {
     public static String getAPPVersionCode(Context ctx) {
         int currentVersionCode = 0;
         PackageManager manager = ctx.getPackageManager();
-        Map<String,Object> vmap = new HashMap<>();
+        Map<String,Object> vmap = new HashMap<String, Object>();
         try {
             PackageInfo info = manager.getPackageInfo(ctx.getPackageName(), 0);
             String appVersionName = info.versionName; // 版本名
@@ -264,12 +295,17 @@ public class AppApplication extends Application  {
     }
 
     public void initPushServer(){
+        boolean isRun = Utils.isServiceWork(AppApplication.getContext(),
+                "cn.bidostar.ticserver.service.PushIntentService");
+        I.e(TAG,"initPushServer： "+isRun);
+
         PushManager.getInstance().initialize(this.getApplicationContext(), userPushService);
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), PushIntentService.class);
         PushManager.getInstance().bindAlias(this.getApplicationContext(), getDeviceIMEI());
         if(!PushManager.getInstance().isPushTurnedOn(this.getApplicationContext())) {
             PushManager.getInstance().turnOnPush(this.getApplicationContext());
         }
+
         //BasicPushNotificationBuilder bBuilder = new BasicPushNotificationBuilder();
         //bBuilder.setChannelId(getDeviceIMEI());
         //bBuilder.setChannelName(getDeviceIMEI()+"@"+getSimICCID());

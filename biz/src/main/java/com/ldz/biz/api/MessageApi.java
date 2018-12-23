@@ -1,5 +1,17 @@
 package com.ldz.biz.api;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.model.ClZdgl;
@@ -14,15 +26,6 @@ import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.commonUtil.JwtUtil;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /*
  * 业务系统对外开放的接口
@@ -48,7 +51,7 @@ public class MessageApi {
 	private RedisTemplateUtil redisTemplateUtil;
 	@Autowired
 	private GpsLsService gpsLsService;
-
+	
 	/*
 	 * 给tic-server提供gps存储接口
 	 */

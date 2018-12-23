@@ -48,6 +48,8 @@ public class AppConsts {
      */
     public static final String CAR_GOTO_SLEEP = "CAR_GOTO_SLEEP";
 
+    public static final String PUSH_ZT = "PUSH_ZT";
+
     /**
      * 存储纬度
      */

@@ -54,7 +54,7 @@ public class DeviceApiConteroller {
 		//}else{
 			redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).add(dto.getDeviceId()+Consts.CAR_SPLITE+dto.getChannelId());
 		//}
-		ar.setResult(dto.toString());
+			
 		return ar;
 	}
 	
@@ -81,7 +81,7 @@ public class DeviceApiConteroller {
 		if(dtos!=null){
 			redisDao.boundSetOps(Consts.CAR_ONLINE_KEY).add(dtos.get(0).getDeviceId()+Consts.CAR_SPLITE+dtos.get(0).getChannelId());
 		}
-		//ar.setResult(dto.toString());
+		
 		return ar;
 	}
 	

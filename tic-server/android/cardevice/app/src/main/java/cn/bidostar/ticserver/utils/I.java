@@ -164,14 +164,14 @@ public class I {
     {
         if (isSaveCrashInfo)
         {
-            new Thread()
+            /*new Thread()
             {
                 public void run()
                 {
                     write("sys-try",time() + tag + " [CRASH] --> "
                             + getStackTraceString(tr) + "\n");
                 };
-            }.start();
+            }.start();*/
         }
     }
 

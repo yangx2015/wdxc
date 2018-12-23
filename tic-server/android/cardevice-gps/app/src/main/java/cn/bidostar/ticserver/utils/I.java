@@ -64,80 +64,80 @@ public class I {
 
     public static void d( final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.d(TAG, "log--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("debug", msg);
-        }
+        }*/
     }
 
     public static void i(final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.i(TAG, "log--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("info", msg);
-        }
+        }*/
     }
 
     public static void w(final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.w(TAG, "log--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("warn", msg);
-        }
+        }*/
     }
 
 
     public static void v(final String tag, final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.v(tag, "--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("verbose", tag + ":>>" + msg);
-        }
+        }*/
     }
 
     public static void d(final String tag, final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.d(tag, "--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("debug", tag + ":>>" + msg);
-        }
+        }*/
     }
 
     public static void i(final String tag, final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.i(tag, "--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("info", tag + ":>>" + msg);
-        }
+        }*/
     }
 
     public static void w(final String tag, final String msg)
     {
-        if (isDebugModel)
+        /*if (isDebugModel)
         {
             Log.w(tag, "--> " + msg);
         }
         if(isSaveDebugInfo) {
             taskAysnc("warn", tag + ":>>" + msg);
-        }
+        }*/
     }
 
     /**

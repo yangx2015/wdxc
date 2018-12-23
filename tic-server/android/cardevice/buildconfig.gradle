@@ -3,11 +3,11 @@
 ext {
     android = [
             AndroidBuildToolsVersion : "25.0.2",
-            AndridMinSdkVersion : 18,
+            AndridMinSdkVersion : 19,
             AndroidTargetSdkVersion : 25,
             AndroidCompileSdkVersion : 25,
             applicationId : "cn.bidostar.ticserver",
-            versionCode:18,
+            versionCode:37,
             versionName:"0.2.4",
             testInstrumentationRunner:"android.support.test.runner.AndroidJUnitRunner",
             corLibVCode:16,

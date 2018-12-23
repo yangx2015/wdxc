@@ -1,0 +1,76 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "cn.bidostar.ticserver"
+        minSdkVersion 21
+        targetSdkVersion 27
+        versionCode 1006
+        versionName "0.2.5"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            abiFilters "armeabi","armeabi-v7a","x86_64"
+        }
+        manifestPlaceholders = [
+                GETUI_APP_ID : "20P0M5r3FJ6DiUA5x2u3w6",
+                GETUI_APP_KEY : "9M7caq81LGAiCxFPkhdZW7",
+                GETUI_APP_SECRET : "avPK2zQTma6P1P5Nb3qB54"
+        ]
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath true
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    signingConfigs {
+        debug {
+            storeFile file('D:/workspace/CarApplication/cm7.keystore')
+        }
+        release {
+            storeFile file('D:/workspace/CarApplication/ticserver.jks')
+            storePassword "1245104255"
+            keyAlias "key0"
+            keyPassword "1245104255"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "app-release.apk"
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    sourceSets {
+        main {
+            java.srcDirs = ['src/main/java', 'src/main/aidl']
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    implementation files('libs/GetuiSDK2.12.5.0.jar')
+    implementation 'org.xutils:xutils:3.5.0'
+    implementation 'com.orhanobut:logger:2.2.0'
+    implementation 'com.alibaba:fastjson:1.2.51'
+    implementation 'org.androidannotations:androidannotations:4.2.0'
+}

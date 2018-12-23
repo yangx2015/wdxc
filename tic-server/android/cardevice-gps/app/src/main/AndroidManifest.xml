@@ -78,9 +78,9 @@
         android:name=".AppApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:process=":pushservice"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:process=":pushservice"
         android:theme="@android:style/Theme.NoDisplay" >
         <activity android:name=".TestActivity"
             android:excludeFromRecents="true"
@@ -92,6 +92,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="PUSH_APPID"
             android:value="${GETUI_APP_ID}"/>
@@ -107,41 +108,48 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED"></action>
                 <action android:name="com.car.wakeup"></action>
                 <action android:name="com.car.gotosleep"></action>
+                <action android:name="com.car.alarmwakeup"></action>
+                <action android:name="sendHeartPkg"></action>
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".receiver.AlarmReceive">
+        <receiver android:name=".receiver.APIReceive">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="com.car.monitor.notify"></action>
+                <action android:name="com.car.writestorage.slow"></action>
+                <action android:name="com.car.custom.capture"></action>
+                <action android:name="com.car.capture.file"></action>
+                <action android:name="com.car.camera.snapshot.callback"></action>
+                <action android:name="android.intent.action.ACTION_POWER_CONNECTED"></action>
+                <action android:name="android.intent.action.ACTION_POWER_DISCONNECTED"></action>
+
+                <action android:name="downloadAppApk"></action>
+                <action android:name="capturePhoto"></action>
+                <action android:name="captureVideo"></action>
+                <action android:name="captureVideoJoin"></action>
+                <action android:name="setViolent_Set_Parma"></action>
+                <action android:name="setCollisionSensitivity"></action>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </receiver>
+
+        <!--<receiver android:name=".receiver.AlarmReceive">
             <intent-filter>
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.NET.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.Net.conn.CONNECTIVITY_CHANGE" />
                 <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
                 <action android:name="android.net.wifi.STATE_CHANGE" />
-                <action android:name="com.car.wakeup"/>
-                <action android:name="com.car.gotosleep" />
             </intent-filter>
-        </receiver>
+        </receiver>-->
 
-
-        <activity android:name=".MainActivity"></activity>
-
-
-        <service android:name=".service.CarBindService"
-            android:enabled="true"
-            android:process=":pushservice"
-            >
-            <intent-filter>
-                <action android:name="cn.bidostar.ticserver.service.CarBindService" />
-            </intent-filter>
-
-        </service>
         <service android:name=".service.SocketCarBindService"
-            android:enabled="true"
-            android:process=":pushservice">
-            <intent-filter>
-                <action android:name="cn.bidostar.ticserver.service.SocketCarBindService" />
-            </intent-filter>
+            android:enabled="true">
+        </service>
+
+        <service android:name=".service.SleepIntentService" android:process="cn.bidostar.ticserver">
         </service>
 
         <!-- 配置SDK核心服务 -->
@@ -185,7 +193,8 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
 
         <!-- 用户自定义服务继承自GTIntentService,作为SDK与APP桥梁服务,用来接收各种消息和命令回复-->
-        <service android:name=".service.PushIntentService"/>
+        <service
+            android:name=".service.PushIntentService"/>
 
         <!-- 用户自定义服务名 -->
         <service

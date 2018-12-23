@@ -82,7 +82,6 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
 			String key = (String)s;
 			try{
 				if(StringUtils.contains(key,"ClGpsLs")) {
-
 					BoundListOperations<Object, Object> boundListOps = redis.boundListOps(key);
 					String index = (String) boundListOps.index(0);
 					if (StringUtils.isNotEmpty(index)) {

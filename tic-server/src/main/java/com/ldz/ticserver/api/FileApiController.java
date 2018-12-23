@@ -205,13 +205,14 @@ public class FileApiController {
                             String cpimgDir = filelocalpath + dto.getDeviceId() + File.separator + DateUtils.getToday() + File.separator + cacheImgDir + File.separator;
 
                             String extpic = mp4cacheimg.replace("@videofile", filePath + fileName);
-                            logger.info("文件执行命令：" + extpic);
+                            
                             if (suffixName.contains("ts")) {//只有ts文件才转换
                                 dto.setFileLocalPath(filePath + fileName.replace(".ts", ".mp4"));
                                 dto.setFilePath(uriPath + fileName.replace(".ts", ".mp4"));
                                 dto.setFilePostfix("mp4");
                                 String convsp = tsconvertmp4.replace("@localfile", filePath + fileName);
                                 convsp = convsp.replace("@newfile", filePath + fileName.replace(".ts", ".mp4"));
+                                logger.info("文件ts->mp4执行命令：" + convsp);
                                 convertManager.convertMp4OrExtrPic(convsp);//转换ts为mp4
                                 extpic = extpic.replace("@cachefile", cpimgDir + fileName.replace(".ts", ".jpg"));
                             } else {

@@ -15,7 +15,7 @@ import java.util.Map;
 public class AppSharedpreferencesUtils {
 
     private static  SharedPreferences sharedPreferences;
-    private static Context context;
+    public static Context context;
 
 
     /**

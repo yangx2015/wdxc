@@ -10,6 +10,7 @@ import com.miramems.carmotion.carMotion;
 
 import cn.bidostar.ticserver.AppApplication;
 import cn.bidostar.ticserver.model.RequestCommonParamsDto;
+import cn.bidostar.ticserver.utils.I;
 import cn.bidostar.ticserver.utils.ServerApiUtils;
 import cn.bidostar.ticserver.utils.TimeUtils;
 
@@ -26,18 +27,14 @@ public class AppPushService extends Service{
     @Override
     public void onCreate() {
         // 该行日志在 release 版本去掉
-        Log.d(TAG, TAG + " call -> onCreate -------");
 
         super.onCreate();
         GTServiceManager.getInstance().onCreate(this);
-
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         // 该行日志在 release 版本去掉
-        Log.d(TAG, TAG + " call -> onStartCommand -------");
-
         super.onStartCommand(intent, flags, startId);
         return GTServiceManager.getInstance().onStartCommand(this, intent, flags, startId);
     }
@@ -45,15 +42,12 @@ public class AppPushService extends Service{
     @Override
     public IBinder onBind(Intent intent) {
         // 该行日志在 release 版本去掉
-        Log.d(TAG, "onBind -------");
         return GTServiceManager.getInstance().onBind(intent);
     }
 
     @Override
     public void onDestroy() {
         // 该行日志在 release 版本去掉
-        Log.d(TAG, "onDestroy -------");
-
         super.onDestroy();
         GTServiceManager.getInstance().onDestroy();
     }
@@ -62,7 +56,6 @@ public class AppPushService extends Service{
     public void onLowMemory() {
         super.onLowMemory();
         GTServiceManager.getInstance().onLowMemory();
-
     }
 
 
