@@ -249,9 +249,25 @@ public class TopicMessageListener implements MessageListener {
             ClXc clXc = new ClXc();
             clXc.setClZdbh(zdbh);
             clXc.setXcKssj(startTime);
-			String[] arrs = start_end.split(",");
-            clXc.setXcJssj(arrs[3]);
+			try{
+            	String[] arrs = start_end.split(",");
+                clXc.setXcJssj(arrs[3]);
+            }catch(Exception ex){
+            	clXc.setXcJssj(endTime);
+            }
             clXc.setXcStartEnd(start_end);
+			try {
+                Date startDate = DateUtils.getDate(startTime,"yyyy-MM-dd HH:mm:ss");
+                Date endDate = DateUtils.getDate(clXc.getXcJssj(),"yyyy-MM-dd HH:mm:ss");
+                long subTime = endDate.getTime() - startDate.getTime();
+                int vaildMinute = 1000 * 60 * 5;
+                if (subTime < vaildMinute){
+                	error.error("["+zdbh+"]-["+startTime+"="+clXc.getXcJssj()+"]行程时长小于5分钟，不存储");
+                	return;
+                }
+            } catch (ParseException e1) {
+                error.error("日期转换异常",e1);
+            }
             List<ClXc> entity = xcService.findByEntity(clXc);
             if(CollectionUtils.isEmpty(entity)) {
                 xcService.saveEntity(clXc);
