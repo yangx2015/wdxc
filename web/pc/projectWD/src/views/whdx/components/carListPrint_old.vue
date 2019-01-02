@@ -34,10 +34,6 @@
 		height: 70px;
 		word-break:break-all;
 	}
-	.blank{
-		display: inline-block;
-		width: 50px;
-	}
 </style>
 <template>
 	<div>
@@ -50,45 +46,15 @@
 				只能使用Chrome(谷歌)浏览器进行打印
 		  </div>
 	      <div>
-			  <Row>
-				  <Col span="24">
-					  <div style="text-align: center;">
-						  <h1>
-							  武汉大学用车单
-						  </h1>
-					  </div>
-				  </Col>
-			  </Row>
-			  <Row>
-				  <Col span="24">
-					  <div style="text-align: center;">
-						  <span class="blank"></span><h3>年</h3><span class="blank"></span><h3>月</h3><span class="blank"></span><h3>日</h3>
-					  </div>
-				  </Col>
-			  </Row>
-			  <table border="1" cellpadding="0" cellspacing="0" style="width: 100%">
-				  <tbody>
-				  	<tr>
-						<td rowspan="2" width="20%">用车单位</td>
-						<td rowspan="2" width="20%"></td>
-						<td colspan="3" width="30%">出车时间</td>
-						<td colspan="3" width="30%">目的地</td>
-					</tr>
-				  <tr>
-					<td>上午</td>
-					<td>时 分</td>
-				  </tr>
-				  <tr>
-					<td>用车人</td>
-					<td></td>
-					<td>下午</td>
-					<td>时分</td>
-				  </tr>
-				  <tr>
-					  <td></td>
-				  </tr>
-				  </tbody>
-			  </table>
+	      	<Row>
+	      		<Col span="24">
+	      			<div style="text-align: center;">
+	      				<h1>
+	      					武汉大学用车单
+	      				</h1>
+	      			</div>
+	      		</Col>
+	      	</Row>
 	      	<div style="padding: 4px 16px;">
 		      	<Row>
 		      		<Col class-name='ColBorderlt' span="8">
