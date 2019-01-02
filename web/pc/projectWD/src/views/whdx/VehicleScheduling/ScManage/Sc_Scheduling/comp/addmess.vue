@@ -270,11 +270,15 @@
         props: {
             mess: {
                 type: Object,
-                default: {}
+                default: {
+                      clList:[],
+                      clMapList:{}
+                }
             },
             pbTime: ''
         },
         created() {
+              this.mess.clMapList = {};
             this.pagerHeight = this.getWindowHeight()
             if (this.mess.clList == (null || "")) {
                 this.mess.clList = []
@@ -321,7 +325,7 @@
                 }).then((res) => {
                     log('数据数据数据车量', res)
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             getCarList() {//获取车辆列表
@@ -381,6 +385,7 @@
                         //     'startTime': res.result.startTime,
                         //     'endTime': res.result.endTime
                         // })
+                          v.mess.clMapList[classNum] = []
                         v.mess.clMapList[classNum].push({
                                 'cph': cph,
                                 'clId': carID,
@@ -394,7 +399,7 @@
                         v.$Message.error(res.message);
                     }
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             deleteById(carID, index, num) {
@@ -425,7 +430,7 @@
                         v.$Message.error(res.message);
                     }
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             finish() {
