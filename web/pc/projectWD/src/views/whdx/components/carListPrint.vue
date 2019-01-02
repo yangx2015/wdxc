@@ -83,11 +83,50 @@
 					<td></td>
 					<td>下午</td>
 					<td>时分</td>
+					<td></td>
 				  </tr>
 				  <tr>
+					  <td>候车地点</td>
+					  <td></td>
+					  <td>用户签字</td>
+					  <td></td>
+					  <td rowspan="2">事由</td>
 					  <td></td>
 				  </tr>
+				  <tr>
+					  <td>车型</td>
+					  <td></td>
+					  <td>司机</td>
+					  <td></td>
+				  </tr>
+				  <tr>
+					  <td>公里数</td>
+					  <td></td>
+					  <td>单价</td>
+					  <td></td>
+					  <td>金额</td>
+					  <td></td>
+				  </tr>
+				  <tr>
+					  <td>等时</td>
+					  <td></td>
+					  <td>路停费</td>
+					  <td></td>
+					  <td>过桥费</td>
+					  <td></td>
+				  </tr>
+				  <tr>
+					  <td colspan="2">用户电话</td>
+					  <td colspan="2"></td>
+					  <td colspan="2">车费合计</td>
+					  <td colspan="2"></td>
+				  </tr>
 				  </tbody>
+			  </table>
+			  <table border="1" cellspacing="0" cellpadding="0" style="width: 100%">
+				<thead>
+				<tr>安全</tr>
+				</thead>
 			  </table>
 	      	<div style="padding: 4px 16px;">
 		      	<Row>
