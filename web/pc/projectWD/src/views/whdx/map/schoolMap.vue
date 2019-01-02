@@ -77,6 +77,7 @@
             }
         },
         created() {
+            console.log('18:15更新');
             this.$store.commit('clearOtherTags', this);
         },
         beforeDestroy() {
