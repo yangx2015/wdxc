@@ -1,55 +1,16 @@
 package com.ldz.biz.module.service.impl;
 
-import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.ldz.biz.module.bean.*;
+import com.ldz.biz.module.mapper.*;
 import com.ldz.biz.module.model.*;
 import com.ldz.biz.module.service.ClYyService;
-import com.ldz.sys.mapper.SysRlbMapper;
-import com.ldz.sys.model.*;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import com.ldz.biz.module.bean.CcTjTx;
-import com.ldz.biz.module.bean.ClJsyModel;
-import com.ldz.biz.module.bean.DdTjTx;
-import com.ldz.biz.module.bean.DdTjTxReturn;
-import com.ldz.biz.module.bean.DdTongjiTJ;
-import com.ldz.biz.module.bean.Ddtongji;
-import com.ldz.biz.module.mapper.ClCdMapper;
-import com.ldz.biz.module.mapper.ClClMapper;
-import com.ldz.biz.module.mapper.ClDdMapper;
-import com.ldz.biz.module.mapper.ClDdlsbMapper;
-import com.ldz.biz.module.mapper.ClDdrzMapper;
-import com.ldz.biz.module.mapper.ClGpsLsMapper;
-import com.ldz.biz.module.mapper.ClJsyMapper;
-import com.ldz.biz.module.mapper.ClLscMapper;
 import com.ldz.biz.module.service.DdService;
 import com.ldz.biz.module.service.DdrzService;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.mapper.SysHsgsMapper;
+import com.ldz.sys.mapper.SysRlbMapper;
+import com.ldz.sys.model.*;
 import com.ldz.sys.service.JgService;
 import com.ldz.sys.service.SysMessageService;
 import com.ldz.util.bean.ApiResponse;
@@ -58,8 +19,25 @@ import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.commonUtil.MathUtil;
 import com.ldz.util.exception.RuntimeCheck;
-
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import tk.mybatis.mapper.common.Mapper;
+
+import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 @Service
 public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdService {
@@ -1037,7 +1015,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 
 		RuntimeCheck.ifNull(entity.getZj(), "订单总价不能为空");
 
-		entity.setSj(userId);// 修改人
+		entity.setXgr(userId);// 修改人
 		entity.setXgsj(new Date());// 修改时间
 		// 3、修改订单
 		int i = update(entity);
@@ -1306,8 +1284,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 			newClDd.setJjrdj(String.valueOf(retMap.get("jjrdj")));//节假日单价
 			newClDd.setJjrsc(String.valueOf(retMap.get("jjrsc")));//节假日时长
 			newClDd.setJjrjl(String.valueOf(retMap.get("jjrjl")));//节假日金额
-//			过路费	过桥费
-			Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(order.getGlf()==null?0:order.getGlf())+(order.getGqf()==null?0:order.getGqf());
+//			里程费 加班费	过桥费	节假日金额
+//			Double zj=retMap.get("lcf")+retMap.get("jbf")+retMap.get("jjrjl")+(order.getGlf()==null?0:order.getGlf())+(order.getGqf()==null?0:order.getGqf());
+//			里程费 过桥费	节假日金额
+			Double zj=retMap.get("lcf")+retMap.get("jjrjl")+(order.getGlf()==null?0:order.getGlf())+(order.getGqf()==null?0:order.getGqf());
 			newClDd.setZj(zj);
 		}
 //		newClDd.setLcf(lcf);

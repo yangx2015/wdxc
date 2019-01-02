@@ -13,10 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
 
 @RestController
 @RequestMapping("api/clzd")
@@ -55,6 +54,15 @@ public class ClZDCtrl extends BaseController<ClZd, String> {
 	@RequestMapping("/getByXlId")
 	public ApiResponse<List<ClZd>> getByXlId(String xlId){
 		List<ClZd> stations = zdservice.getByXlId(xlId);
+		if(stations!=null&&stations.size()>0){
+			for(ClZd zd:stations){
+				String mc=zd.getMc();
+				try {
+					mc=StringUtils.remove(mc,"-回行");
+				}catch (Exception e){}
+				zd.setMc(mc);
+			}
+		}
 		return ApiResponse.success(stations);
 	}
 
