@@ -69,6 +69,11 @@
                 pbCphs:[],
                 stompClient:null,
                 subscribes:{},
+                specialLine1 :{
+                    total:3,
+                    current:0,
+                    parts:[[],[],[]]
+                },
             }
         },
         created() {
@@ -88,13 +93,11 @@
         },
         methods: {
             unsubscribeAll(){
-                console.log('unsubscribeAll');
                 try {
                     for (let k in this.subscribes) {
                         this.subscribes[k].unsubscribe();
                     }
                     this.stompClient.disconnect(function () {
-                        console.log('disconnect');
                     });
                 } catch (e) {
                     console.log(e);
@@ -221,11 +224,23 @@
                     }
                 })
             },
+            getSpecialLine(lineIndex){
+                let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
+                let stationList0 = stationList.splice(0,16);
+                this.getDrivingLine(lineIndex,0,stationList0)
+                let stationList1 = stationList.splice(0,2);
+                this.getRidingLine(lineIndex,1,stationList1)
+                let stationList2 = stationList;
+                this.getDrivingLine(lineIndex,2,stationList2)
+            },
             // 获取一条线路的途径点
             getLinePoints(index) {
-                console.log('线路途径点',index);
                 let line = this.lineList[index];
                 if (!line || !line.stationList) {
+                    return;
+                }
+                if (line.xlmc === '武汉大学大循环线校园巴士'){
+                    this.getSpecialLine(index);
                     return;
                 }
                 let stationList = line.stationList;
@@ -266,6 +281,97 @@
                     }
                 })
             },
+            getDrivingLine(lineIndex,partIndex,stationList){
+                let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
+                let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
+                let waypoints = '';
+                for (let i = 1; i <= stationList.length - 2; i++) {
+                    let station = stationList[i];
+                    waypoints += station.wd + ',' + station.jd;
+                    if (i < stationList.length - 2) {
+                        waypoints += '|';
+                    }
+                }
+                let url = 'http://api.map.baidu.com/direction/v2/driving?origin=' + stationList[0].wd + ',' + stationList[0].jd + '&destination=' + stationList[stationList.length - 1].wd + ',' + stationList[stationList.length - 1].jd + '&ak=evDHwrRoILvlkrvaZEFiGp30';
+                url += '&waypoints=' + waypoints;
+                let points = [];
+                let v = this;
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    dataType: 'JSONP',
+                    success: function (res) {
+                        if (res.status == 0) {
+                            let route = res.result.routes[0];
+                            points.push({lat: route.origin.lat, lng: route.origin.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.start_location.lng, lat: step.start_location.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.end_location.lng, lat: step.end_location.lat});
+                            }
+                            v.specialLine1.parts[partIndex] = points;
+                            v.specialLine1.current ++
+                            if (v.specialLine1.current >= v.specialLine1.total){
+                                v.showSpecialLine(lineIndex);
+                            }
+                        }
+                    }
+                })
+            },
+            showSpecialLine(lineIndex){
+                let points = [];
+                for (let r of this.specialLine1.parts){
+                    points = points.concat(r);
+                }
+                this.lineList[lineIndex].points = points
+            },
+            getRidingLine(lineIndex,partIndex,stationList){
+                let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
+                let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
+                let waypoints = '';
+                for (let i = 1; i <= stationList.length - 2; i++) {
+                    let station = stationList[i];
+                    waypoints += station.wd + ',' + station.jd;
+                    if (i < stationList.length - 2) {
+                        waypoints += '|';
+                    }
+                }
+                let url = 'http://api.map.baidu.com/direction/v2/riding?origin=' + stationList[0].wd + ',' + stationList[0].jd + '&destination=' + stationList[stationList.length - 1].wd + ',' + stationList[stationList.length - 1].jd + '&ak=evDHwrRoILvlkrvaZEFiGp30';
+                url += '&waypoints=' + waypoints;
+                let points = [];
+                let v = this;
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    dataType: 'JSONP',
+                    success: function (res) {
+                        if (res.status == 0) {
+                            let route = res.result.routes[0];
+                            points.push({lat: route.originLocation.lat, lng: route.originLocation.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.stepOriginLocation.lng, lat: step.stepOriginLocation.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.stepDestinationLocation.lng, lat: step.stepDestinationLocation.lat});
+                            }
+                            v.specialLine1.parts[partIndex] = points;
+                            v.specialLine1.current ++
+                            if (v.specialLine1.current >= v.specialLine1.total){
+                                v.showSpecialLine(lineIndex);
+                            }
+                        }
+                    }
+                })
+            },
             // 线路复选框选中值发生变化时触发此事件
             lineChange(e) {
                 this.map.clearOverlays();
@@ -300,9 +406,7 @@
                         let weksocketBody = JSON.parse(data.body)
                         if (weksocketBody.cx === "30") {//校巴
                             let xlId = weksocketBody.xlId;
-                            //let xlId = '435390474602151936';
                             v.lineList.forEach((item, index) => {
-                                //console.log(item.id +'='+xlId);
                                 if (item.id === xlId) {
                                     if (!item.carList) {
                                         item.carList = [weksocketBody];
