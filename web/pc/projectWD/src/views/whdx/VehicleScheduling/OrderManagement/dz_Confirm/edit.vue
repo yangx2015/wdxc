@@ -31,7 +31,7 @@
 							</FormItem>
 						</Col>
 						<Col span="8">
-							<FormItem label="出车时间">
+							<FormItem label="预约时间">
 								<DatePicker v-model="param.yysj" size="large"  format="yyyy-MM-dd HH:mm:ss" type="datetime" placement="bottom-end" placeholder="请填写用车时间" ></DatePicker>
 							</FormItem>
 						</Col>
@@ -259,6 +259,9 @@
                 let v = this
                 this.SpinShow = true
                 let url = this.apis.ORDER.CHANGE;
+				if(typeof this.param.yysj === 'object'){
+					this.param.yysj = this.param.yysj.format('yyyy-MM-dd hh:mm:ss')
+				}
                 this.$http.post(url,this.param).then((res) =>{
                     this.SpinShow = false
                     if(res.code===200){
