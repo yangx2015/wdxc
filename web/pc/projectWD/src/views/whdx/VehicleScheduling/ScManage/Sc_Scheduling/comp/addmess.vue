@@ -278,7 +278,9 @@
             pbTime: ''
         },
         created() {
-              this.mess.clMapList = {};
+            console.log('mess',this.mess);
+            if (!this.mess.clMapList)this.mess.clMapList = {};
+
             this.pagerHeight = this.getWindowHeight()
             if (this.mess.clList == (null || "")) {
                 this.mess.clList = []
@@ -305,8 +307,17 @@
                         v.mess.clList[index].startTime=this.TimeVal[0]
                         v.mess.clList[index].endTime=this.TimeVal[1]
                         v.mess.clList[index].readTime = false
-
+                        for (let k in v.mess.clMapList){
+                            for (let r of v.mess.clMapList[k]){
+                                r.readTime = false
+                            }
+                        }
                         v.getCarList()
+                    }else{
+                        this.swal({
+                            title:res.message,
+                            type:'error'
+                        })
                     }
                 }).catch(eer=>{
 
@@ -391,6 +402,7 @@
                                 'clId': carID,
                                 'sjxm': sjxm,
                                 'pbbx': num,
+                                    readTime:false,
                                 'startTime': res.result.startTime,
                                 'endTime': res.result.endTime
                         })
