@@ -74,6 +74,14 @@
                     current:0,
                     parts:[[],[],[]]
                 },
+                specialLine2 :{
+                    total:3,
+                    current:0,
+                    parts:[[],[],[]],
+                    excludePoints:[
+                        {lngGte:114.3733}
+                    ],
+                },
             }
         },
         created() {
@@ -225,14 +233,47 @@
                     }
                 })
             },
-            getSpecialLine(lineIndex){
+            getSpecialLine1(lineIndex){
+                console.log('lineIndex',lineIndex);
                 let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
-                let stationList0 = stationList.splice(0,16);
-                this.getDrivingLine(lineIndex,0,stationList0)
+                let index = 0;
+                for (let i in stationList){
+                    if (stationList[i].mc === '一站式中心'){
+                        index = parseInt(i)+1;
+                        break;
+                    }
+                }
+                index = parseInt(index)
+                console.log('index',index);
+                let stationList0 = stationList.splice(0,index);
+                this.getDrivingLine(this.specialLine1,lineIndex,0,stationList0)
+
                 let stationList1 = stationList.splice(0,2);
-                this.getRidingLine(lineIndex,1,stationList1)
+                this.getRidingLine(this.specialLine1,lineIndex,1,stationList1)
+
                 let stationList2 = stationList;
-                this.getDrivingLine(lineIndex,2,stationList2)
+                this.getDrivingLine(this.specialLine1,lineIndex,2,stationList2)
+            },
+            getSpecialLine2(lineIndex){
+                console.log('lineIndex',lineIndex);
+                let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
+                let index = 0;
+                for (let i in stationList){
+                    if (stationList[i].routeOrder === 11){
+                        index = parseInt(i)+1;
+                        break;
+                    }
+                }
+                index = parseInt(index)
+                console.log('index',index);
+                let stationList0 = stationList.splice(0,index);
+                this.getDrivingLine(this.specialLine2,lineIndex,0,stationList0)
+
+                let stationList1 = stationList.splice(0,2);
+                this.getRidingLine(this.specialLine2,lineIndex,1,stationList1)
+
+                let stationList2 = stationList;
+                this.getDrivingLine(this.specialLine2,lineIndex,2,stationList2)
             },
             // 获取一条线路的途径点
             getLinePoints(index) {
@@ -241,7 +282,11 @@
                     return;
                 }
                 if (line.xlmc === '武汉大学大循环线校园巴士'){
-                    this.getSpecialLine(index);
+                    this.getSpecialLine1(index);
+                    return;
+                }
+                if (line.xlmc === '工学部线校园巴士'){
+                    this.getSpecialLine2(index);
                     return;
                 }
                 let stationList = line.stationList;
@@ -282,7 +327,7 @@
                     }
                 })
             },
-            getDrivingLine(lineIndex,partIndex,stationList){
+            getDrivingLine(specialLine,lineIndex,partIndex,stationList){
                 let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
                 let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
                 let waypoints = '';
@@ -315,23 +360,33 @@
                                 }
                                 points.push({lng: step.end_location.lng, lat: step.end_location.lat});
                             }
-                            v.specialLine1.parts[partIndex] = points;
-                            v.specialLine1.current ++
-                            if (v.specialLine1.current >= v.specialLine1.total){
-                                v.showSpecialLine(lineIndex);
+                            specialLine.parts[partIndex] = points;
+                            specialLine.current ++
+                            if (specialLine.current >= specialLine.total){
+                                v.showSpecialLine(specialLine,lineIndex);
                             }
                         }
                     }
                 })
             },
-            showSpecialLine(lineIndex){
+            isExcludePoint(specialLine,lat,lng){
+                if (!specialLine.excludePoints)return false;
+                for (let r of specialLine.excludePoints){
+                    if (r.lngGte && lng >= r.lngGte) return true;
+                    if (r.latGte && lat >= r.latGte) return true;
+                    if (r.latLte && lat <= r.latLte) return true;
+                    if (r.lngLte && lng <= r.lngLte) return true;
+                }
+                return false;
+            },
+            showSpecialLine(specialLine,lineIndex){
                 let points = [];
-                for (let r of this.specialLine1.parts){
+                for (let r of specialLine.parts){
                     points = points.concat(r);
                 }
                 this.lineList[lineIndex].points = points
             },
-            getRidingLine(lineIndex,partIndex,stationList){
+            getRidingLine(specialLine,lineIndex,partIndex,stationList){
                 let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
                 let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
                 let waypoints = '';
@@ -364,10 +419,10 @@
                                 }
                                 points.push({lng: step.stepDestinationLocation.lng, lat: step.stepDestinationLocation.lat});
                             }
-                            v.specialLine1.parts[partIndex] = points;
-                            v.specialLine1.current ++
-                            if (v.specialLine1.current >= v.specialLine1.total){
-                                v.showSpecialLine(lineIndex);
+                            specialLine.parts[partIndex] = points;
+                            specialLine.current ++
+                            if (specialLine.current >= specialLine.total){
+                                v.showSpecialLine(specialLine,lineIndex);
                             }
                         }
                     }
