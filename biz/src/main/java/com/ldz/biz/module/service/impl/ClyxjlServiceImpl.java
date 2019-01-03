@@ -41,7 +41,7 @@ public class ClyxjlServiceImpl extends BaseServiceImpl<ClClyxjl,String> implemen
         String time = DateUtils.getNowTime().substring(11);
         //排班
         SimpleCondition pbCondition = new SimpleCondition(ClPb.class);
-        condition.lte(ClPb.InnerColumn.endTime,time);
+        pbCondition.lte(ClPb.InnerColumn.endTime,time);
         pbCondition.and().andCondition(" TO_CHAR (PBSJ, 'yyyy-MM-dd') = ",DateUtils.getToday("yyyy-MM-dd"));
         List<ClPb> pbList=pbService.findByCondition(pbCondition);
         List<String> clList=null;
