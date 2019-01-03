@@ -16,9 +16,15 @@ let configs = {
         UPLOAD: 'http://47.98.39.45:9090/upload',
         STATIC_PATH: 'http://47.98.39.45:9092/', // 局域网测试时图片地址可以用47的服务器
         VIDEO_PATH: 'http://47.98.39.45:9091/test/',
+    },
+    s192_6: {//192 (局域网）
+        BIZ_URL: 'http://192.168.123.6:8080/',
+        UPLOAD: 'http://47.98.39.45:9090/upload',
+        STATIC_PATH: 'http://47.98.39.45:9092/', // 局域网测试时图片地址可以用47的服务器
+        VIDEO_PATH: 'http://47.98.39.45:9091/test/',
     }
 }
-let config = configs.s47;
+let config = configs.s10;
 export default {
     url: config.BIZ_URL,
     UPLOAD: config.UPLOAD,

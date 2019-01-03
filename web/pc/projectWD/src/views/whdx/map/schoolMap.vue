@@ -389,7 +389,7 @@
             },
             // 获取设备信息
             getAllDevice() {
-                this.$http.get(this.apis.ZDGL.QUERY + '?pageSize=10000').then((res) => {
+                this.$http.get(this.apis.ZDGL.QUERY,{params:{pageSize:10000,pb:'pb'}}).then((res) => {
                     if (res.code == 200 && res.page.list) {
                         this.addDeviceList = res.page.list;
                         this.subscribe();
