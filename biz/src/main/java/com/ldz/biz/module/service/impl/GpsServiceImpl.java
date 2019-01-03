@@ -255,7 +255,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (car != null){
                 SimpleCondition condition = new SimpleCondition(ClPb.class);
                 condition.eq(ClPb.InnerColumn.clId,car.getClId());
-                condition.like(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(), "yyyy-MM-dd"));
+                condition.and().andCondition(" TO_CHAR(PBSJ,'yyyy-MM-dd') like   '" +DateUtils.getDateStr(new Date(),"yyyy-MM-dd") +"'");
                 pbList = pbService.findByCondition(condition);
                 if (pbList.size() != 0){
                     ClPb pb = pbList.get(0);

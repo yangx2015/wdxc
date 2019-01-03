@@ -5,19 +5,19 @@ import com.ldz.biz.module.bean.GpsInfo;
 import com.ldz.biz.module.mapper.ClZdglMapper;
 import com.ldz.biz.module.model.ClCl;
 import com.ldz.biz.module.model.ClCssd;
+import com.ldz.biz.module.model.ClPb;
 import com.ldz.biz.module.model.ClZdgl;
-import com.ldz.biz.module.service.ClService;
-import com.ldz.biz.module.service.CssdService;
-import com.ldz.biz.module.service.InstructionService;
-import com.ldz.biz.module.service.ZdglService;
+import com.ldz.biz.module.service.*;
 import com.ldz.sys.base.BaseServiceImpl;
 import com.ldz.sys.base.LimitedCondition;
 import com.ldz.sys.model.SysJg;
 import com.ldz.sys.model.SysYh;
 import com.ldz.sys.service.JgService;
 import com.ldz.util.bean.ApiResponse;
+import com.ldz.util.bean.SimpleCondition;
 import com.ldz.util.bean.YingyanResponse;
 import com.ldz.util.bean.YyEntity;
+import com.ldz.util.commonUtil.DateUtils;
 import com.ldz.util.exception.RuntimeCheck;
 import com.ldz.util.redis.RedisTemplateUtil;
 import com.ldz.util.yingyan.GuiJIApi;
@@ -58,7 +58,8 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
     private InstructionService instructionService;
     @Autowired
     private JgService jgService;
-
+    @Autowired
+    private PbService pbService;
     @Autowired
     private RedisTemplateUtil redisTemplateUtil;
 
@@ -191,6 +192,18 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             }
             List<String> zdbhs = carList.stream().map(ClCl::getZdbh).collect(Collectors.toList());
             condition.in(ClZdgl.InnerColumn.zdbh,zdbhs);
+        }
+        String pb = getRequestParamterAsString("pb");
+        if(StringUtils.isNotBlank(pb)){
+            SimpleCondition pbCondition = new SimpleCondition(ClPb.class);
+            pbCondition.and().andCondition(" to_char(pbsj,'yyyy-MM-dd') like '" + DateUtils.getDateStr(new Date(), "yyyy-MM-dd") + "'");
+            List<ClPb> clPbs = pbService.findByCondition(pbCondition);
+            if(!CollectionUtils.isEmpty(clPbs)){
+                List<String> collect = clPbs.stream().map(ClPb::getClId).collect(Collectors.toList());
+                List<ClCl> cls = clService.findIn(ClCl.InnerColumn.clId,collect);
+                List<String> zdbhs = cls.stream().map(ClCl::getZdbh).collect(Collectors.toList());
+                condition.in(ClZdgl.InnerColumn.zdbh,zdbhs);
+            }
         }
         return true;
     }
