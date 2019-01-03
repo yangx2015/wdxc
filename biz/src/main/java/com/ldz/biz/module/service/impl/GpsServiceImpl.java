@@ -77,6 +77,7 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
     @Autowired
     private SimpMessagingTemplate websocket;
 
+
     AsyncEventBus eventBus = new AsyncEventBus(Executors.newFixedThreadPool(1));
 
     public GpsServiceImpl() {
@@ -250,10 +251,12 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             redis.boundValueOps(ClGps.class.getSimpleName() + deviceId).set(JsonUtil.toJson(newGps));
 
             String xlId = "";
+            List<ClPb> pbList = new ArrayList<>();
             if (car != null){
                 SimpleCondition condition = new SimpleCondition(ClPb.class);
                 condition.eq(ClPb.InnerColumn.clId,car.getClId());
-                List<ClPb> pbList = pbService.findByCondition(condition);
+                condition.like(ClPb.InnerColumn.pbsj, DateUtils.getDateStr(new Date(), "yyyy-MM-dd"));
+                pbList = pbService.findByCondition(condition);
                 if (pbList.size() != 0){
                     ClPb pb = pbList.get(0);
                     if(pb != null) {
@@ -267,8 +270,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (newGps.getBdwd() == null ){
             	newGps.setBdwd(new BigDecimal(-1));
             }
-            WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
-            sendWebsocket(websocketInfo);
+            if(!(car != null && car.getCx().equals("30") && CollectionUtils.isEmpty(pbList))){
+                WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
+                sendWebsocket(websocketInfo);
+            }
         }
         // clXc(gpsInfo);
         saveClSbyxsjjl(gpsInfo, newGps, car);

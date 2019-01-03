@@ -286,10 +286,9 @@
                     this.formItem.task = ''
                 }
             },
-            change(vaule, selectedData) {
-                this.formItem.jgmc = selectedData[selectedData.length - 1].label
-                this.formItem.jgdm = selectedData[selectedData.length - 1].value
-                this.treeValue = vaule;
+            change(value, selectedData) {
+                  this.formItem.jgdm = value.length > 0 ? value[value.length - 1] :''
+                this.treeValue = value;
             },
             changeCLLX(v, s) {
                 // console.log(v)
