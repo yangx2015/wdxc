@@ -152,6 +152,12 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
                 ClZd zd = zdMap.get(zdId);
                 zd.setXlId(xlId);
                 zdService.setStationOrder(zd);
+
+                String mc=zd.getMc();
+                try {
+                    mc=StringUtils.remove(mc,"-回行");
+                }catch (Exception e){}
+                zd.setMc(mc);
                 Station station = new Station(zd);
                 if (xlZdMap.containsKey(xlId)) {
                     xlZdMap.get(xlId).add(station);
@@ -167,7 +173,13 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         // 数据封装
         RouteInfo routeInfo = new RouteInfo();
         routeInfo.setTid(tid);
-        routeInfo.setShowName(zp.getMc());
+
+        String mc=zp.getMc();
+        try {
+            mc=StringUtils.remove(mc,"-回行");//
+        }catch (Exception e){}
+
+        routeInfo.setShowName(mc);
         List<Route> routes = new ArrayList<>(xlIds.size());
         for (ClXl xl : xls) {
             Route route = new Route(xl);
@@ -221,6 +233,12 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
                 ClZd zd = zdMap.get(zdId);
                 zd.setXlId(xlId);
                 zdService.setStationOrder(zd);
+                String mc=zd.getMc();
+                try {
+                    mc=StringUtils.remove(mc,"-回行");
+                }catch (Exception e){}
+                zd.setMc(mc);
+
                 Station station = new Station(zd);
                 if (xlZdMap.containsKey(xlId)) {
                     xlZdMap.get(xlId).add(station);
@@ -236,7 +254,12 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         // 数据封装
         RouteInfo routeInfo = new RouteInfo();
         routeInfo.setTid(tid);
-        routeInfo.setShowName(zp.getMc());
+        String mc=zp.getMc();
+        try {
+            mc=StringUtils.remove(mc,"-回行");
+        }catch (Exception e){}
+
+        routeInfo.setShowName(mc);
         List<Route> routes = new ArrayList<>(xlIds.size());
         for (ClXl xl : xls) {
             Route route = new Route(xl);
