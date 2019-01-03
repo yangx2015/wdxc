@@ -270,11 +270,17 @@
         props: {
             mess: {
                 type: Object,
-                default: {}
+                default: {
+                      clList:[],
+                      clMapList:{}
+                }
             },
             pbTime: ''
         },
         created() {
+            console.log('mess',this.mess);
+            if (!this.mess.clMapList)this.mess.clMapList = {};
+
             this.pagerHeight = this.getWindowHeight()
             if (this.mess.clList == (null || "")) {
                 this.mess.clList = []
@@ -301,8 +307,17 @@
                         v.mess.clList[index].startTime=this.TimeVal[0]
                         v.mess.clList[index].endTime=this.TimeVal[1]
                         v.mess.clList[index].readTime = false
-
+                        for (let k in v.mess.clMapList){
+                            for (let r of v.mess.clMapList[k]){
+                                r.readTime = false
+                            }
+                        }
                         v.getCarList()
+                    }else{
+                        this.swal({
+                            title:res.message,
+                            type:'error'
+                        })
                     }
                 }).catch(eer=>{
 
@@ -321,7 +336,7 @@
                 }).then((res) => {
                     log('数据数据数据车量', res)
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             getCarList() {//获取车辆列表
@@ -381,11 +396,13 @@
                         //     'startTime': res.result.startTime,
                         //     'endTime': res.result.endTime
                         // })
+                          v.mess.clMapList[classNum] = []
                         v.mess.clMapList[classNum].push({
                                 'cph': cph,
                                 'clId': carID,
                                 'sjxm': sjxm,
                                 'pbbx': num,
+                                    readTime:false,
                                 'startTime': res.result.startTime,
                                 'endTime': res.result.endTime
                         })
@@ -394,7 +411,7 @@
                         v.$Message.error(res.message);
                     }
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             deleteById(carID, index, num) {
@@ -425,7 +442,7 @@
                         v.$Message.error(res.message);
                     }
                 }).catch((error) => {
-                    v.$Message.error('出错了！！！');
+                      console.log(error);
                 })
             },
             finish() {

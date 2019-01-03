@@ -259,7 +259,7 @@
         },
         methods: {
             BJ(item) {
-                if (item.clList != null && item.clList.length > 0) {
+                  if (item.clList != null && item.clList.length > 0) {
                     item.clList.forEach(function (item, index) {
                         item.ico = false
                     })

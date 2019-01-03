@@ -218,7 +218,8 @@
 												                  },
 												                  on: {
 												                    click: () => {
-												                    	this.listMess = p.row
+                                                                        console.log('车单打印');
+                                                                        this.listMess = p.row
 												                    	this.compName = 'CLP'
 												                    }
 												                  }
