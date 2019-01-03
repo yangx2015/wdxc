@@ -200,7 +200,7 @@ public class ZdglServiceImpl extends BaseServiceImpl<ClZdgl,String> implements Z
             List<ClPb> clPbs = pbService.findByCondition(pbCondition);
             if(!CollectionUtils.isEmpty(clPbs)){
                 List<String> collect = clPbs.stream().map(ClPb::getClId).collect(Collectors.toList());
-                List<ClCl> cls = clService.findByIds(collect);
+                List<ClCl> cls = clService.findIn(ClCl.InnerColumn.clId,collect);
                 List<String> zdbhs = cls.stream().map(ClCl::getZdbh).collect(Collectors.toList());
                 condition.in(ClZdgl.InnerColumn.zdbh,zdbhs);
             }
