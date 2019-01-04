@@ -270,10 +270,10 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps, String> implements Gp
             if (newGps.getBdwd() == null ){
             	newGps.setBdwd(new BigDecimal(-1));
             }
-            if(!(car != null && car.getCx().equals("30") && CollectionUtils.isEmpty(pbList))){
+            /*if(!(car != null && car.getCx().equals("30") && CollectionUtils.isEmpty(pbList))){*/
                 WebsocketInfo websocketInfo = changeSocketNew(gpsInfo, newGps, xlId);
                 sendWebsocket(websocketInfo);
-            }
+//            }
         }
         // clXc(gpsInfo);
         saveClSbyxsjjl(gpsInfo, newGps, car);
