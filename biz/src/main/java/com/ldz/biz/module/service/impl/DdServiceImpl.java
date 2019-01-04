@@ -637,8 +637,11 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd, String> implements DdSe
 		} else {
 			RuntimeCheck.ifTrue(true, "订单状态异常，不能进行订单编辑操作");
 		}
+		if(entity.getLc()==null){
+			entity.setLc((double) 0);
+		}
 
-		RuntimeCheck.ifTrue(StringUtils.equals(clDd.getCllx(),"10")&&entity.getLc()<=0,"小车的里程数必须大于0");
+//		RuntimeCheck.ifTrue(StringUtils.equals(clDd.getCllx(),"10")&&entity.getLc()<=0,"小车的里程数必须大于0");
 
 		ClDd newClDd = new ClDd();
 		newClDd.setId(clDd.getId());
