@@ -60,13 +60,13 @@
                             <td>用户签字</td>
                             <td colspan="2"></td>
                             <td rowspan="2" width="10%" style="max-width: 80px">事由</td>
-                            <td colspan="2" rowspan="2" width="20%"></td>
+                            <td colspan="2" rowspan="2" width="20%">{{row.sy}}</td>
                         </tr>
                         <tr>
                             <td>车型</td>
-                            <td></td>
+                            <td>{{cx(row.cllx,row.zws)}}</td>
                             <td>司机</td>
-                            <td colspan="2"></td>
+                            <td colspan="2">{{row.sjxm}}</td>
                         </tr>
                         <tr>
                             <td>公里数</td>
