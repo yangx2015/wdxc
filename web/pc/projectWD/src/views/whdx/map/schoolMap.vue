@@ -85,7 +85,6 @@
             }
         },
         created() {
-            console.log('18:15更新');
             this.$store.commit('clearOtherTags', this);
         },
         beforeDestroy() {
@@ -234,7 +233,6 @@
                 })
             },
             getSpecialLine1(lineIndex){
-                console.log('lineIndex',lineIndex);
                 let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
                 let index = 0;
                 for (let i in stationList){
@@ -244,7 +242,6 @@
                     }
                 }
                 index = parseInt(index)
-                console.log('index',index);
                 let stationList0 = stationList.splice(0,index);
                 this.getDrivingLine(this.specialLine1,lineIndex,0,stationList0)
 
@@ -255,7 +252,6 @@
                 this.getDrivingLine(this.specialLine1,lineIndex,2,stationList2)
             },
             getSpecialLine2(lineIndex){
-                console.log('lineIndex',lineIndex);
                 let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
                 let index = 0;
                 for (let i in stationList){
@@ -265,7 +261,6 @@
                     }
                 }
                 index = parseInt(index)
-                console.log('index',index);
                 let stationList0 = stationList.splice(0,index);
                 this.getDrivingLine(this.specialLine2,lineIndex,0,stationList0)
 
@@ -458,6 +453,7 @@
                 }
                 let v = this;
                 for (let r of v.addDeviceList) {
+                    console.log(r);
                     this.subscribes[r.zdbh] = this.stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
                         let weksocketBody = JSON.parse(data.body)
                         if (weksocketBody.cx === "30") {//校巴
