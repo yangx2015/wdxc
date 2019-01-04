@@ -519,7 +519,6 @@
                     'background-color': 'rgba(255,255,255,0.6)',
                     'border-radius': '4px',
                 });
-                myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
                 this.map.addOverlay(myLabel);
             },
             addCar(item) {
