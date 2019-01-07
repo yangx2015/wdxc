@@ -1,4 +1,6 @@
+-- 2019-01-07yx导入生产环境
 -- 测试数据库导入成功
+
 
 INSERT INTO "SYS_RLB"("RQDM", "XQ", "ZT", "RQ") VALUES ('20190101', '2', '2', '2019-01-01');
 INSERT INTO "SYS_RLB"("RQDM", "XQ", "ZT", "RQ") VALUES ('20190102', '3', '1', '2019-01-02');
