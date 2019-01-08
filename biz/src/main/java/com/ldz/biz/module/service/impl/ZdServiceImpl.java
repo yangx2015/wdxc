@@ -96,46 +96,44 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
 
         Map<String,Short> orderMap = xlzds.stream().collect(Collectors.toMap(ClXlzd::getZdId,ClXlzd::getXh));
         List<ClZd> stations = findIn(ClZd.InnerColumn.id,routeIds);
-//        if(StringUtils.equals(xlId,"435390953470033920")){//工学部增加两个标点
-//            ClZd zd1=new ClZd();//辅助点
-//            zd1.setId("5023163305573224641");
-//            zd1.setMc("辅助点-0001");
-//            zd1.setJd(114.372848);
-//            zd1.setWd(30.54922);
-//            zd1.setJgdm("100");
-//            zd1.setJgmc("武汉大学");
-//            zd1.setZt("00");
-//            zd1.setLx("30");
-//            zd1.setRouteOrder((short) 10);
-//            ClZd zd2=new ClZd();//辅助点
-//            zd2.setId("5023163305573224642");
-//            zd2.setMc("辅助点-0002");
-//            zd2.setJd(114.370386);
-//            zd2.setWd(30.548991);
-//            zd2.setJgdm("100");
-//            zd2.setJgmc("武汉大学");
-//            zd2.setZt("00");
-//            zd2.setLx("30");
-//            zd2.setRouteOrder((short) 11);
-//            for (ClZd station : stations) {
-//                Short seq =orderMap.get(station.getId());
-//                if(seq!=null&&seq>9){
-//                    int i=seq+2;
-//                    station.setRouteOrder((short) i);
-//                }else{
-//                    station.setRouteOrder(seq);
-//                }
-//            }
-//            stations.add(zd1);
-//            stations.add(zd2);
-//        }else{
-//            for (ClZd station : stations) {
-//                station.setRouteOrder(orderMap.get(station.getId()));
-//            }
-//        }
-        for (ClZd station : stations) {
-            station.setRouteOrder(orderMap.get(station.getId()));
+        if(StringUtils.equals(xlId,"435390953470033920")){//工学部增加两个标点
+            ClZd zd1=new ClZd();//辅助点
+            zd1.setId("5023163305573224641");
+            zd1.setMc("辅助点-0001");
+            zd1.setJd(114.3727011698);
+            zd1.setWd(30.5492380292);//30.5492380292,114.3727011698
+            zd1.setJgdm("100");
+            zd1.setJgmc("武汉大学");
+            zd1.setZt("00");
+            zd1.setLx("30");
+            zd1.setRouteOrder((short) 10);
+            ClZd zd2=new ClZd();//辅助点
+            zd2.setId("5023163305573224642");
+            zd2.setMc("辅助点-0002");
+            zd2.setJd(114.370386);
+            zd2.setWd(30.548991);
+            zd2.setJgdm("100");
+            zd2.setJgmc("武汉大学");
+            zd2.setZt("00");
+            zd2.setLx("30");
+            zd2.setRouteOrder((short) 11);
+            for (ClZd station : stations) {
+                Short seq =orderMap.get(station.getId());
+                if(seq!=null&&seq>9){
+                    int i=seq+2;
+                    station.setRouteOrder((short) i);
+                }else{
+                    station.setRouteOrder(seq);
+                }
+            }
+            stations.add(zd1);
+            stations.add(zd2);
+        }else{
+            for (ClZd station : stations) {
+                station.setRouteOrder(orderMap.get(station.getId()));
+            }
         }
+
 
         stations.sort(Comparator.comparingInt(ClZd::getRouteOrder));
         return stations;
