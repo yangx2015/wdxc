@@ -289,10 +289,10 @@
         },
         methods: {
             changeDay(){
-                let ld = moment().subtract(parseInt(this.plpb),'d');
-                let endDate = this.DatePicker[1];
+                let ld = moment().add(parseInt(this.plpb),'d');
+                let startDate = this.DatePicker[0];
                 this.DatePicker = null;
-                this.DatePicker= [ld.format('YYYY[-]MM[-]DD'),endDate];
+                this.DatePicker= [startDate,ld.format('YYYY[-]MM[-]DD')];
             },
             pbtsClick(val){
                 console.log(val);
