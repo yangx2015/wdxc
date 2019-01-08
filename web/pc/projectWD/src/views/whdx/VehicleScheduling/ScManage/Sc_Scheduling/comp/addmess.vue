@@ -59,12 +59,10 @@
                         </div>
                         <div style="padding-left:8px" class="pbGroup">
                               <RadioGroup v-model="plpb" type="button" size="large" @click="pbtsClick">
-                                    <Radio label="3">
-                                          3天
-                                    </Radio>
-                                    <Radio label="7">7天</Radio>
-                                    <Radio label="15">15天</Radio>
-                                    <Radio label="30">30天</Radio>
+                                    <Radio label="3" @click="changeDay(3)">3天</Radio>
+                                    <Radio label="7" @click="changeDay(7)">7天</Radio>
+                                    <Radio label="15" @click="changeDay(15)">15天</Radio>
+                                    <Radio label="30" @click="changeDay(30)">30天</Radio>
                               </RadioGroup>
                         </div>
                         <div class="body-O" style="text-align: right">
@@ -289,6 +287,9 @@
             this.getCarList()
         },
         methods: {
+            changeDay(d){
+
+            },
             pbtsClick(val){
                 console.log(val);
                 console.log(this.pbts);
