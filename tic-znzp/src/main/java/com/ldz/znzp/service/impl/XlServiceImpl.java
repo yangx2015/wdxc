@@ -155,7 +155,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
                 String mc=zd.getMc();
                 try {
-                    mc=StringUtils.remove(mc,"-回行");
+                    mc=mc.replaceAll("-回行"," ");
                 }catch (Exception e){}
                 zd.setMc(mc);
                 Station station = new Station(zd);
@@ -176,7 +176,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
 
         String mc=zp.getMc();
         try {
-            mc=StringUtils.remove(mc,"-回行");//
+            mc=mc.replaceAll("-回行","\n_");
         }catch (Exception e){}
 
         routeInfo.setShowName(mc);
@@ -235,7 +235,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
                 zdService.setStationOrder(zd);
                 String mc=zd.getMc();
                 try {
-                    mc=StringUtils.remove(mc,"-回行");
+                    mc=mc.replaceAll("-回行","\n_");
                 }catch (Exception e){}
                 zd.setMc(mc);
 
@@ -256,7 +256,7 @@ public class XlServiceImpl extends BaseServiceImpl<ClXl, String> implements XlSe
         routeInfo.setTid(tid);
         String mc=zp.getMc();
         try {
-            mc=StringUtils.remove(mc,"-回行");
+            mc=mc.replaceAll("-回行","\n_");
         }catch (Exception e){}
 
         routeInfo.setShowName(mc);
