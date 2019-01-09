@@ -261,8 +261,12 @@
             //     }
             // },
             vertical: function (val) {
-                if (val == '0') {
-                    this.DatePicker = [this.pbTime, this.pbTime]
+                this.DatePicker = [this.pbTime, this.pbTime]
+                if (val === '0'){
+                  this.plpb = ''
+                }else{
+                    this.plpb = '3'
+                    this.changeDay();
                 }
             }
         },
@@ -277,9 +281,7 @@
             pbTime: ''
         },
         created() {
-            console.log('mess',this.mess);
             if (!this.mess.clMapList)this.mess.clMapList = {};
-
             this.pagerHeight = this.getWindowHeight()
             if (this.mess.clList == (null || "")) {
                 this.mess.clList = []
@@ -293,6 +295,7 @@
                 let startDate = this.DatePicker[0];
                 this.DatePicker = null;
                 this.DatePicker= [startDate,ld.format('YYYY[-]MM[-]DD')];
+                this.vertical = '1';
             },
             pbtsClick(val){
                 console.log(val);
