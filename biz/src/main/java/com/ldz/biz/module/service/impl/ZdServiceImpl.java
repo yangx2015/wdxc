@@ -100,8 +100,8 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
             ClZd zd1=new ClZd();//辅助点
             zd1.setId("5023163305573224641");
             zd1.setMc("辅助点-0001");
-            zd1.setJd(114.372848);
-            zd1.setWd(30.54922);
+            zd1.setJd(114.3727011698);
+            zd1.setWd(30.5492380292);//30.5492380292,114.3727011698
             zd1.setJgdm("100");
             zd1.setJgmc("武汉大学");
             zd1.setZt("00");
@@ -133,6 +133,7 @@ public class ZdServiceImpl extends BaseServiceImpl<ClZd,String> implements ZdSer
                 station.setRouteOrder(orderMap.get(station.getId()));
             }
         }
+
 
         stations.sort(Comparator.comparingInt(ClZd::getRouteOrder));
         return stations;

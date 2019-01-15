@@ -228,16 +228,16 @@
                     label: '大车',
                     children: [{
                         value: '20',
-                        label: '20',
+                        label: '20座',
                     }, {
                         value: '32',
-                        label: '32',
+                        label: '32座',
                     }, {
                         value: '45',
-                        label: '45',
+                        label: '45座',
                     }, {
                         value: '48',
-                        label: '48',
+                        label: '48座',
                     }]
                 }, {
                     value: '10',
@@ -245,13 +245,13 @@
                     disabled: false,
                     children: [{
                         value: '5',
-                        label: '5',
+                        label: '5座',
                     }, {
                         value: '7',
-                        label: '7',
+                        label: '7座',
                     }, {
                         value: '11',
-                        label: '11',
+                        label: '11座',
                     }]
                 }],
                 treeValue: [],
@@ -286,10 +286,9 @@
                     this.formItem.task = ''
                 }
             },
-            change(vaule, selectedData) {
-                this.formItem.jgmc = selectedData[selectedData.length - 1].label
-                this.formItem.jgdm = selectedData[selectedData.length - 1].value
-                this.treeValue = vaule;
+            change(value, selectedData) {
+                  this.formItem.jgdm = value.length > 0 ? value[value.length - 1] :''
+                this.treeValue = value;
             },
             changeCLLX(v, s) {
                 // console.log(v)

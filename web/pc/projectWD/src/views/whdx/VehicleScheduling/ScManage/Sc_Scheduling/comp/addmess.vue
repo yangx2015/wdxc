@@ -58,10 +58,8 @@
                                           style="width: 200px"></DatePicker>
                         </div>
                         <div style="padding-left:8px" class="pbGroup">
-                              <RadioGroup v-model="plpb" type="button" size="large" @click="pbtsClick">
-                                    <Radio label="3">
-                                          3天
-                                    </Radio>
+                              <RadioGroup v-model="plpb" type="button" size="large" @on-change="changeDay">
+                                    <Radio label="3">3天</Radio>
                                     <Radio label="7">7天</Radio>
                                     <Radio label="15">15天</Radio>
                                     <Radio label="30">30天</Radio>
@@ -223,6 +221,7 @@
 
 <script>
     import mixins from '@/mixins'
+    import moment from 'moment'
     export default {
         name: '',
         mixins: [mixins],
@@ -256,14 +255,18 @@
             }
         },
         watch: {
-            plpb:function(n,o){
-                if(n!==''){
-                    this.vertical = '1'
-                }
-            },
+            // plpb:function(n,o){
+            //     if(n!==''){
+            //         this.vertical = '1'
+            //     }
+            // },
             vertical: function (val) {
-                if (val == '0') {
-                    this.DatePicker = [this.pbTime, this.pbTime]
+                this.DatePicker = [this.pbTime, this.pbTime]
+                if (val === '0'){
+                  this.plpb = ''
+                }else{
+                    this.plpb = '3'
+                    this.changeDay();
                 }
             }
         },
@@ -278,9 +281,7 @@
             pbTime: ''
         },
         created() {
-            console.log('mess',this.mess);
             if (!this.mess.clMapList)this.mess.clMapList = {};
-
             this.pagerHeight = this.getWindowHeight()
             if (this.mess.clList == (null || "")) {
                 this.mess.clList = []
@@ -289,6 +290,13 @@
             this.getCarList()
         },
         methods: {
+            changeDay(){
+                let ld = moment().add(parseInt(this.plpb),'d');
+                let startDate = this.DatePicker[0];
+                this.DatePicker = null;
+                this.DatePicker= [startDate,ld.format('YYYY[-]MM[-]DD')];
+                this.vertical = '1';
+            },
             pbtsClick(val){
                 console.log(val);
                 console.log(this.pbts);

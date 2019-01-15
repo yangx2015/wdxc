@@ -42,6 +42,12 @@
                   <Col span="6" class="margin-top-5">
                         <h5>合计金额：</h5>{{item.zj}}
                   </Col>
+                  <Col span="6" class="margin-top-5">
+                        <h5>修改人：</h5>{{item.xgr}}
+                  </Col>
+                  <Col span="6" class="margin-top-5">
+                        <h5>修改时间：</h5>{{item.xgsj}}
+                  </Col>
                   <Col>
                         <div style="border-bottom: 1px solid gainsboro"></div>
                   </Col>
