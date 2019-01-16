@@ -229,7 +229,6 @@
         }else if (this.$store.state.app.listType==0){
           this.addmap()
         }
-
       },
         methods:{
           mapKS(val){

@@ -1,12 +1,10 @@
 <template>
-    <div style="overflow-y: hidden">
-      <Row :height="46">
-        <Col align="center"></Col>
-        <Col align="center">
-          <view class="nav_title">首页</view>
-        </Col>
-        <Col align="center"></Col>
-      </Row>
+    <div>123
+      <mt-swipe :auto="4000">
+        <mt-swipe-item>1</mt-swipe-item>
+        <mt-swipe-item>2</mt-swipe-item>
+        <mt-swipe-item>3</mt-swipe-item>
+      </mt-swipe>
     </div>
 </template>
 

@@ -2,7 +2,7 @@
   <div class="hello">
     <img src="../assets/logo.png">
     <div @click="go" style="height: 200px;background-color: #10AEFF">
-      welcome
+      index
     </div>
     <div @click="goxlmess" style="height: 200px;background-color: #10AEFF">
       xlmess
@@ -20,7 +20,7 @@ export default {
   },
   methods:{
     go(){
-      this.$router.push({name:'welcome'})
+      this.$router.push({name:'index'})
     },
     goxlmess(){
       this.$router.push({name:'xlMess'})
