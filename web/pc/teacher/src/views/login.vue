@@ -1,4 +1,4 @@
-<style lang="less">
+ <style lang="less">
   @import './login.less';
   @import "../styles/box";
 </style>
