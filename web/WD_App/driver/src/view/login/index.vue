@@ -1,5 +1,5 @@
 <template>
-      <div>
+      <div class="box_col">
         登录
       </div>
 </template>
