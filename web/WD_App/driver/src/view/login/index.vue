@@ -12,7 +12,7 @@
         <div class="formItem">
           <input class="input" type="password" placeholder="请输入您的密码">
         </div>
-        <div class="subBut"> 登 录 </div>
+        <div class="subBut"> 登 录</div>
       </div>
     </div>
     <div style="height: 200px">
@@ -24,32 +24,32 @@
 
 <script>
   export default {
-    name: "index"
+    name: "index",
   }
 </script>
 
 <style lang="less">
-.login{
-  .form{
-    .formItem{
-      padding: 12px 0;
-      text-align: center;
-      .input{
-        width: 80%;
+  .login {
+    .form {
+      .formItem {
+        padding: 12px 0;
+        text-align: center;
+        .input {
+          width: 80%;
+        }
+      }
+      .subBut {
+        width: 78%;
+        margin: auto;
+        text-align: center;
+        font-size: 18px;
+        font-weight: bold;
+        color: #fff;
+        background-color: #5cadff;
+        padding: 10px;
+        margin-top: 22px;
+        border-radius: 5px;
       }
     }
-    .subBut{
-      width: 78%;
-      margin: auto;
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      color: #fff;
-      background-color: #5cadff;
-      padding: 10px;
-      margin-top: 22px;
-      border-radius: 5px;
-    }
   }
-}
 </style>
