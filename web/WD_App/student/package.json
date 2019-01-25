@@ -14,11 +14,13 @@
     "iview": "^2.11.0",
     "mint-ui": "^2.2.13",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "js-cookie": "^2.2.0",
+    "jquery": "^3.3.1"
   },
   "devDependencies": {
-    "axios": "^0.17.1",
     "autoprefixer": "^7.1.2",
+    "axios": "^0.17.1",
     "babel-core": "^6.22.1",
     "babel-helper-vue-jsx-merge-props": "^2.0.3",
     "babel-loader": "^7.1.1",
@@ -34,6 +36,7 @@
     "file-loader": "^1.1.4",
     "friendly-errors-webpack-plugin": "^1.6.1",
     "html-webpack-plugin": "^2.30.1",
+    "http-server": "^0.11.1",
     "less": "^3.0.1",
     "less-loader": "^4.1.0",
     "node-notifier": "^5.1.2",
@@ -51,11 +54,11 @@
     "vue-loader": "^13.3.0",
     "vue-style-loader": "^3.0.1",
     "vue-template-compiler": "^2.5.2",
+    "vuex": "^3.0.1",
     "webpack": "^3.6.0",
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-server": "^2.9.1",
-    "webpack-merge": "^4.1.0",
-    "vuex": "^3.0.1"
+    "webpack-merge": "^4.1.0"
   },
   "engines": {
     "node": ">= 6.0.0",
