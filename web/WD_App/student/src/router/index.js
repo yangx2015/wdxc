@@ -8,7 +8,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: () => import('@/components/HelloWorld')
+      component: () => import('@/pages/index')
     },{
       path: '/index',
       name: 'index',
@@ -25,6 +25,10 @@ export default new Router({
       path: '/xlMess',
       name: 'xlMess',
       component: () => import('@/pages/xlMess')
+    },{
+      path: '/advise',
+      name: 'advise',
+      component: () => import('@/pages/advise')
     }
   ]
 })

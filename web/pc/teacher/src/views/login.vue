@@ -16,21 +16,21 @@
       <div class="form body-D">
         <md-field>
           <md-input-item
-            title="姓名"
-            type="text"
-            v-model="form.name"
-            placeholder="请填写您的姓名"
-            clearable
-          ></md-input-item>
-          <md-input-item
             title="工号"
             type="text"
             v-model="form.zjhm"
             placeholder="请输入您的工号"
             clearable
           ></md-input-item>
+          <md-input-item
+            title="密码"
+            type="text"
+            v-model="form.pwd"
+            placeholder="请输入密码"
+            clearable
+          ></md-input-item>
         </md-field>
-        <div class="submit"  @click="login">
+        <div class="submit"  @click="loginYZ">
           <md-button>登录</md-button>
         </div>
       </div>
@@ -39,8 +39,7 @@
 </template>
 
 <script>
-  import {InputItem, Field ,Button} from 'mand-mobile'
-
+  import {InputItem, Field ,Button,Toast} from 'mand-mobile'
   export default {
     name: 'input-item-demo',
     /* DELETE */
@@ -55,7 +54,8 @@
       return{
         form:{
           name:'宋林殊',
-            zjhm:'32948289347289'
+          zjhm:'32948289347289',//工号
+          pwd:'123456'//密码
         }
       }
     },
@@ -67,6 +67,19 @@
         this.$router.push({
             name:'Home'
         })
+      },
+      loginYZ(){
+        var v = this
+        if(v.form.zjhm==''){
+          Toast('请输入工号!');
+          return
+        }else if(v.form.pwd==''){
+
+          Toast('请输入密481481894194819148919841984124891248124812481948124141852码!');
+          return
+        }else {
+          v.login()
+        }
       },
       login(){
         var v = this
