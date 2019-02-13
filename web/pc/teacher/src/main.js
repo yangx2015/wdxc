@@ -10,6 +10,7 @@ import http from './axios/index';
 import Cookies from 'js-cookie';
 import store from './store';
 import local from './unit/local'
+// import { Toast } from 'mint-ui';
 
 Vue.prototype.$http = http;
 Vue.prototype.apis = apis;
