@@ -146,6 +146,7 @@
     },
     created() {
       this.login()
+      
       // let a= [
       //   {
       //     name:'王小二',
