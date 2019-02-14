@@ -36,12 +36,10 @@
           </div> -->
         </div>
         <div  class="row" align="center" style="padding: 20px 50px;width: 80%;font-size: 22px">
-          <button class="login" style="width: 80%;height: 45px">确定</button>
+          <Button class="login" style="width: 80%;height: 45px" @click="submit">确定</Button>
         </div>
       </div>
 </template>
-
-
 <script>
   import headTit from "@/views/comp/headTit"
   import {InputItem, Field, Toast, Button} from 'mand-mobile'
@@ -55,19 +53,31 @@
         },
         data(){
           return{
-            form:{},
+            form:{
+              oldPwd:'',
+              newPwd:'',
+              secPwd:''
+            },
           }
         },
        methods:{
          getpassword(){
-
+           this.$http.post('/put/jzg/mdfPwd',this.form,(res)=>{
+             if(res.code == 200){
+               Toast.info('密码修改成功');
+               this.$route.push({name:home})
+             }else{
+               Toast.info(res.message)
+             }
+           })
          },
           submit(){
-              if(this.oldPwd == '' || this.newPwd == '' || this.secPwd == ''){
-                Toast.failed('操作失败')
+            console.log(123);
+            if(this.form.oldPwd == '' || this.form.newPwd == '' || this.form.secPwd == ''){
+                Toast.info('密码不能为空')
               }
-              else if(this.newPwd != this.secPwd){
-                Toast.failed('操作失败')
+              else if(this.form.newPwd != this.form.secPwd){
+                Toast.info('两次密码不一致')
               }
               else{
                 this.getpassword()

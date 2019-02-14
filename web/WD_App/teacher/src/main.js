@@ -9,13 +9,15 @@ import apis from './axios/config';
 import http from './axios/index';
 import Cookies from 'js-cookie';
 import store from './store';
-import local from './unit/local'
+import local from './unit/local';
+import MapUtil from './lib/MapUtil'
 // import { Toast } from 'mint-ui';
 
 Vue.prototype.$http = http;
 Vue.prototype.apis = apis;
 Vue.prototype.cok = Cookies;
 Vue.prototype.local = local;
+Vue.prototype.MapUtil = MapUtil;
 
 FastClick.attach(document.body)
 
