@@ -9,9 +9,8 @@ let MapUtil = {
     map.addEventListener("click",function(e){
       var geoc = new BMap.Geocoder();
       geoc.getLocation(new BMap.Point(e.point.lng,e.point.lat), (rs)=>{
-        var addComp = rs.addressComponents;
-        let address = addComp.street;
-        callback(address)
+        console.log(rs);
+        callback(rs)
       });
     });
   },

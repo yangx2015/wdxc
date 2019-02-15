@@ -12,7 +12,6 @@ import store from './store';
 import local from './unit/local';
 import MapUtil from './lib/MapUtil'
 // import { Toast } from 'mint-ui';
-
 Vue.prototype.$http = http;
 Vue.prototype.apis = apis;
 Vue.prototype.cok = Cookies;
