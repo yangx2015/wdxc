@@ -175,7 +175,7 @@
           }
         ],
         lxfsF:'',
-        lxfs:'换乘车人',
+        lxfs:'他人乘车',
         // showPic:false,
         currentDate: new Date(),
         isDatePickerShow:false,

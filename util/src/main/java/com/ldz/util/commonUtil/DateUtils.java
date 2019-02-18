@@ -116,10 +116,11 @@ public class DateUtils {
 
 
 	public static void main(String[] args) throws ParseException {
+		System.out.println("123s".compareTo("123"));
 //		System.out.println(createDateList("2018-09-08","2018-09-08"));
 //		System.out.println(getNowTime().substring(11)+"1");
 //		System.out.println(DateUtils.getDate("07:00:00","HH:mm:ss"));
-		System.out.println(hourMinuteBetween("06:00:00","07:00:00","22:00:00"));
+//		System.out.println(hourMinuteBetween("06:00:00","07:00:00","22:00:00"));
 
 	}
 	public static String getNowTime() {

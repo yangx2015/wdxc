@@ -69,6 +69,19 @@
                 pbCphs:[],
                 stompClient:null,
                 subscribes:{},
+                specialLine1 :{
+                    total:3,
+                    current:0,
+                    parts:[[],[],[]]
+                },
+                specialLine2 :{
+                    total:3,
+                    current:0,
+                    parts:[[],[],[]],
+                    excludePoints:[
+                        {lngGte:114.3733}
+                    ],
+                },
             }
         },
         created() {
@@ -88,13 +101,11 @@
         },
         methods: {
             unsubscribeAll(){
-                console.log('unsubscribeAll');
                 try {
                     for (let k in this.subscribes) {
                         this.subscribes[k].unsubscribe();
                     }
                     this.stompClient.disconnect(function () {
-                        console.log('disconnect');
                     });
                 } catch (e) {
                     console.log(e);
@@ -221,11 +232,56 @@
                     }
                 })
             },
+            getSpecialLine1(lineIndex){
+                let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
+                let index = 0;
+                for (let i in stationList){
+                    if (stationList[i].mc === '一站式中心'){
+                        index = parseInt(i)+1;
+                        break;
+                    }
+                }
+                index = parseInt(index)
+                let stationList0 = stationList.splice(0,index);
+                this.getDrivingLine(this.specialLine1,lineIndex,0,stationList0)
+
+                let stationList1 = stationList.splice(0,2);
+                this.getRidingLine(this.specialLine1,lineIndex,1,stationList1)
+
+                let stationList2 = stationList;
+                this.getDrivingLine(this.specialLine1,lineIndex,2,stationList2)
+            },
+            getSpecialLine2(lineIndex){
+                let stationList = JSON.parse(JSON.stringify(this.lineList[lineIndex].stationList))
+                let index = 0;
+                for (let i in stationList){
+                    if (stationList[i].routeOrder === 11){
+                        index = parseInt(i)+1;
+                        break;
+                    }
+                }
+                index = parseInt(index)
+                let stationList0 = stationList.splice(0,index);
+                this.getDrivingLine(this.specialLine2,lineIndex,0,stationList0)
+
+                let stationList1 = stationList.splice(0,2);
+                this.getRidingLine(this.specialLine2,lineIndex,1,stationList1)
+
+                let stationList2 = stationList;
+                this.getDrivingLine(this.specialLine2,lineIndex,2,stationList2)
+            },
             // 获取一条线路的途径点
             getLinePoints(index) {
-                console.log('线路途径点',index);
                 let line = this.lineList[index];
                 if (!line || !line.stationList) {
+                    return;
+                }
+                if (line.xlmc === '武汉大学大循环线校园巴士'){
+                    this.getSpecialLine1(index);
+                    return;
+                }
+                if (line.xlmc === '工学部线校园巴士'){
+                    this.getSpecialLine2(index);
                     return;
                 }
                 let stationList = line.stationList;
@@ -266,6 +322,107 @@
                     }
                 })
             },
+            getDrivingLine(specialLine,lineIndex,partIndex,stationList){
+                let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
+                let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
+                let waypoints = '';
+                for (let i = 1; i <= stationList.length - 2; i++) {
+                    let station = stationList[i];
+                    waypoints += station.wd + ',' + station.jd;
+                    if (i < stationList.length - 2) {
+                        waypoints += '|';
+                    }
+                }
+                let url = 'http://api.map.baidu.com/direction/v2/driving?origin=' + stationList[0].wd + ',' + stationList[0].jd + '&destination=' + stationList[stationList.length - 1].wd + ',' + stationList[stationList.length - 1].jd + '&ak=evDHwrRoILvlkrvaZEFiGp30';
+                url += '&waypoints=' + waypoints;
+                let points = [];
+                let v = this;
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    dataType: 'JSONP',
+                    success: function (res) {
+                        if (res.status == 0) {
+                            let route = res.result.routes[0];
+                            points.push({lat: route.origin.lat, lng: route.origin.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.start_location.lng, lat: step.start_location.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.end_location.lng, lat: step.end_location.lat});
+                            }
+                            specialLine.parts[partIndex] = points;
+                            specialLine.current ++
+                            if (specialLine.current >= specialLine.total){
+                                v.showSpecialLine(specialLine,lineIndex);
+                            }
+                        }
+                    }
+                })
+            },
+            isExcludePoint(specialLine,lat,lng){
+                if (!specialLine.excludePoints)return false;
+                for (let r of specialLine.excludePoints){
+                    if (r.lngGte && lng >= r.lngGte) return true;
+                    if (r.latGte && lat >= r.latGte) return true;
+                    if (r.latLte && lat <= r.latLte) return true;
+                    if (r.lngLte && lng <= r.lngLte) return true;
+                }
+                return false;
+            },
+            showSpecialLine(specialLine,lineIndex){
+                let points = [];
+                for (let r of specialLine.parts){
+                    points = points.concat(r);
+                }
+                this.lineList[lineIndex].points = points
+            },
+            getRidingLine(specialLine,lineIndex,partIndex,stationList){
+                let startPoint = new BMap.Point(stationList[0].wd, stationList[0].jd);
+                let endPoint = new BMap.Point(stationList[stationList.length - 1].wd, stationList[stationList.length - 1].jd);
+                let waypoints = '';
+                for (let i = 1; i <= stationList.length - 2; i++) {
+                    let station = stationList[i];
+                    waypoints += station.wd + ',' + station.jd;
+                    if (i < stationList.length - 2) {
+                        waypoints += '|';
+                    }
+                }
+                let url = 'http://api.map.baidu.com/direction/v2/riding?origin=' + stationList[0].wd + ',' + stationList[0].jd + '&destination=' + stationList[stationList.length - 1].wd + ',' + stationList[stationList.length - 1].jd + '&ak=evDHwrRoILvlkrvaZEFiGp30';
+                url += '&waypoints=' + waypoints;
+                let points = [];
+                let v = this;
+                $.ajax({
+                    url: url,
+                    type: "get",
+                    dataType: 'JSONP',
+                    success: function (res) {
+                        if (res.status == 0) {
+                            let route = res.result.routes[0];
+                            points.push({lat: route.originLocation.lat, lng: route.originLocation.lng});
+                            for (let step of route.steps) {
+                                points.push({lng: step.stepOriginLocation.lng, lat: step.stepOriginLocation.lat});
+                                let paths = step.path.split(";");
+                                for (let path of paths) {
+                                    if (path === '') continue
+                                    let point = path.split(",");
+                                    points.push({lng: point[0], lat: point[1]});
+                                }
+                                points.push({lng: step.stepDestinationLocation.lng, lat: step.stepDestinationLocation.lat});
+                            }
+                            specialLine.parts[partIndex] = points;
+                            specialLine.current ++
+                            if (specialLine.current >= specialLine.total){
+                                v.showSpecialLine(specialLine,lineIndex);
+                            }
+                        }
+                    }
+                })
+            },
             // 线路复选框选中值发生变化时触发此事件
             lineChange(e) {
                 this.map.clearOverlays();
@@ -282,7 +439,7 @@
             },
             // 获取设备信息
             getAllDevice() {
-                this.$http.get(this.apis.ZDGL.QUERY + '?pageSize=10000').then((res) => {
+                this.$http.get(this.apis.ZDGL.QUERY,{params:{pageSize:10000,pb:'pb'}}).then((res) => {
                     if (res.code == 200 && res.page.list) {
                         this.addDeviceList = res.page.list;
                         this.subscribe();
@@ -296,13 +453,12 @@
                 }
                 let v = this;
                 for (let r of v.addDeviceList) {
+                    console.log(r);
                     this.subscribes[r.zdbh] = this.stompClient.subscribe('/topic/sendgps-' + r.zdbh, function (data) { //订阅消息
                         let weksocketBody = JSON.parse(data.body)
                         if (weksocketBody.cx === "30") {//校巴
                             let xlId = weksocketBody.xlId;
-                            //let xlId = '435390474602151936';
                             v.lineList.forEach((item, index) => {
-                                //console.log(item.id +'='+xlId);
                                 if (item.id === xlId) {
                                     if (!item.carList) {
                                         item.carList = [weksocketBody];
@@ -363,7 +519,6 @@
                     'background-color': 'rgba(255,255,255,0.6)',
                     'border-radius': '4px',
                 });
-                myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
                 this.map.addOverlay(myLabel);
             },
             addCar(item) {
