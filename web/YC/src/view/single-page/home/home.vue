@@ -168,7 +168,7 @@
       }
     },
     created() {
-      this.login()
+      this.login('123456')
 
       // let a= [
       //   {
@@ -197,8 +197,8 @@
         this.orderItemMess = null
         this.clear()
       },
-      login() {
-        this.$http.post('/put/jzg/jzgLogin', {key: '123456'}).then(res => {
+      login(key) {
+        this.$http.post('/put/jzg/jzgLogin', {key: key}).then(res => {
           if (res.code == 200) {
             localStorage.setItem('tokenKey', res.result)
             this.getUserInfo()
