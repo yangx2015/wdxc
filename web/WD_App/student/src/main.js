@@ -11,6 +11,11 @@ import http from './axios/index';
 import Mint from 'mint-ui';
 import 'mint-ui/lib/style.css'
 import '@/assets/css/box.less'
+import iView from 'iview';
+Vue.use(iView);
+import 'iview/dist/styles/iview.css';
+
+Vue.component(Header.name, Header);
 Vue.use(Mint);
 Vue.prototype.apis = apis;
 import { Button } from 'mint-ui';

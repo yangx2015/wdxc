@@ -25,7 +25,7 @@
           <span v-else>暂无车辆</span>
         </div>
         <span class="arr">到达</span>
-        <span class="next_site">{{text}}</span>
+        <span class="next_site">{{siteName}}</span>
       </div>
     </div>
     <div class="site_list">
@@ -36,7 +36,7 @@
             <span class='dot_r'></span>
             <div class='name'>
               <span class='dot_d ' :class="{'dot_d_show': ind === index}"></span>
-              <span class='text ' :class="{'text_show': ind === index}">{{item.zdName}}</span>
+              <span class='siteName ' :class="{'text_show': ind === index}">{{item.zdName}}</span>
             </div>
           </div>
         </div>
@@ -60,8 +60,8 @@
     name: 'simpleMap',
     data () {
       return {
-        siteId: this.$route.params.StationMess.id,
-        lineName: this.$route.params.StationMess.name,
+        siteId:null,
+        lineName: null,
         siteName: this.$route.query.siteName,
         siteList: [],
         time_s: '',
@@ -74,7 +74,6 @@
         isActive: false,
         pay: '',
         ind: '',
-        text: this.$route.query.siteName,
         lineId: '',
         backImage: {
           backgroundImage: 'url(' + require('../assets/line/bus.png') + '),url(' + require('../assets/line/bus.png') + '),url(' + require('../assets/line/bus.png') + ')',
@@ -88,17 +87,19 @@
       }
     },
     created(){
-      var lineMess = this.$route.params.StationMess;
-      console.log(lineMess);
+      var lineMess = localStorage.getItem('lineMess');
+      lineMess = JSON.parse(lineMess)
+      console.log('lineMess',lineMess);
       this.time_s = lineMess.startTime
       this.time_e = lineMess.endTime
       this.from = lineMess.endStation.mc
       this.to = lineMess.endStation.mc
       this.getLineMess()
-      console.log('123456789',localStorage.getItem('xlid'));
-      if (sessionStorage.getItem('xlid')){
-        var Mess =sessionStorage.getItem('xlid') ;
-        console.log(Mess);
+      if (lineMess){
+        var Mess =lineMess ;
+        this.siteId = Mess.id
+        this.lineName = Mess.name
+        // this.siteName = Mess.id
         this.time_s = Mess.startTime
         this.time_e = Mess.endTime
         this.from = Mess.endStation.mc
@@ -188,7 +189,8 @@
       },
       showActive: function (index, siteName) {
         this.ind = index
-        this.text = siteName
+        this.siteName = siteName
+        localStorage.setItem('siteName',siteName)
         var TF = false
         for (let i = 0; i <= this.busPosition.length; i++) {
           if (index + 1 > this.busPosition[i]) {
@@ -241,6 +243,9 @@
 </script>
 <style lang="less">
   @import "./index.css";
+  .distance{
+    padding-left: 16px;
+  }
   .info_wapper {
     height: 3.12rem;
     background: #36A3F9;
@@ -253,13 +258,13 @@
     font-size: 0.32rem;
     color: #fff;
     margin-bottom: 0.2rem;
-    text-align: left;
+    siteName-align: left;
   }
 
   .info_wapper .site span {
     width: 40%;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    siteName-overflow: ellipsis;
   }
 
   .info_wapper .from {
@@ -288,7 +293,7 @@
     font-size: 0rem;
     color: #B7BABB;
     line-height: 1.3rem;
-    text-align: center;
+    siteName-align: center;
   }
 
   .info_wapper .time {
@@ -314,7 +319,7 @@
     width: 40%;
     font-size: 0.32rem;
     color: #353738;
-    text-overflow: ellipsis;
+    siteName-overflow: ellipsis;
     line-height: 0.4rem;
     display: inline-block;
     vertical-align: middle;
@@ -346,7 +351,7 @@
     font-size: 0.12rem;
     color: #36A3F9;
     line-height: 0.34rem;
-    text-align: center;
+    siteName-align: center;
   }
   .site_list .button {
     width: 0.64rem;
@@ -358,7 +363,7 @@
     font-size: 0.12rem;
     color: #36A3F9;
     line-height: 0.34rem;
-    text-align: center;
+    siteName-align: center;
   }
 
   .site_list .bus_road {
@@ -442,7 +447,7 @@
     color: #F0585D;
   }
 
-  .site_list .text {
+  .site_list .siteName {
     font-size: 0.32rem;
     width: 0.36rem;
     margin-top: 0.2rem;

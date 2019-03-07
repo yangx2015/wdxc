@@ -11,8 +11,10 @@
   },
   "dependencies": {
     "fastclick": "^1.0.6",
-    "mand-mobile": "^1.2.1",
+    "iview": "^3.2.2",
+    "mint-ui": "^2.2.13",
     "js-cookie": "^2.2.0",
+    "mand-mobile": "^1.2.1",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1"
   },
