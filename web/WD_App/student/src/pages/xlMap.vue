@@ -41,7 +41,9 @@
       }
     },
     created(){
-      this.xlID= this.$route.params.xlId.id
+      var lineMess = localStorage.getItem('lineMess');
+      lineMess = JSON.parse(lineMess)
+      this.xlID= lineMess.id
       if(!this.xlID){
         this.Goback()
       }
@@ -79,8 +81,6 @@
         })
       },
       Goback(){
-        // localStorage.setItem('xlid',this.$route.params.xlId)
-        // console.log(this.$route.params.xlId);
         this.$router.back();
       },
       getIcon(car) {

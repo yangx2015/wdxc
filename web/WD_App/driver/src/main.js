@@ -1,20 +1,29 @@
-// The Vue build version to load with the `import` command
-// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
 import App from './App'
+import VueRouter from 'vue-router';
 import router from './router'
-import '@/assets/css/box.less'
 
-import Mint from 'mint-ui';
-Vue.use(Mint);
-import 'mint-ui/lib/style.css'
+import iView from 'iview';
+import 'iview/dist/styles/iview.css';
+import store from './store';
 
-Vue.config.productionTip = false
 
+import http from './axios/index';
+import apis from './axios/config';
+Vue.prototype.$http = http;
+Vue.prototype.apis = apis;
+
+Vue.use(VueRouter);
+Vue.use(iView);
+Vue.config.productionTip = true
+const RouterConfig = {
+    routes: router
+};
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  router,
+  router: router,
+  store:store,
   components: { App },
   template: '<App/>'
 })
