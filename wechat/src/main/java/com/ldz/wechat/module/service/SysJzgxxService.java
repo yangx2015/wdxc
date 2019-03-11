@@ -25,4 +25,6 @@ public interface SysJzgxxService extends BaseService<SysJzgxx,String> {
 	ApiResponse<String> updateDnSendSMS(String dn);
 
     ApiResponse<String> updateDn(String dn, String pollcode);
+
+    ApiResponse<String> JzgLogin(String key);
 }

@@ -413,6 +413,20 @@ public class ClDd implements Serializable {
     @Column(name = "JJRJL")
     private String jjrjl;
 
+
+    /**
+     * 乘客姓名(实际乘车人)
+     */
+    @Column(name = "CKXM")
+    private String ckxm;
+
+    /**
+     * 乘客电话(实际乘客电话)
+     */
+    @Column(name = "CKDH")
+    private String ckdh;
+
+
     public String getJjrdj() {
         return jjrdj;
     }
@@ -511,6 +525,22 @@ public class ClDd implements Serializable {
 
     public static long getSerialVersionUID() {
         return serialVersionUID;
+    }
+
+    public String getCkxm() {
+        return ckxm;
+    }
+
+    public void setCkxm(String ckxm) {
+        this.ckxm = ckxm;
+    }
+
+    public String getCkdh() {
+        return ckdh;
+    }
+
+    public void setCkdh(String ckdh) {
+        this.ckdh = ckdh;
     }
 
     /**
