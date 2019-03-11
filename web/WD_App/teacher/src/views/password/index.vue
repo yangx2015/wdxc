@@ -62,7 +62,7 @@
         },
        methods:{
          getpassword(){
-           this.$http.post('/put/jzg/mdfPwd',this.form,(res)=>{
+           this.$http.post('/put/jzg/mdfPwd',this.form).then((res)=>{
              if(res.code == 200){
                Toast.info('密码修改成功');
                this.$route.push({name:home})

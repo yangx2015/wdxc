@@ -5,12 +5,12 @@
       <!--<mt-button icon="back">返回</mt-button>-->
       <!--<mt-button @click="handleClose">关闭</mt-button>-->
       <!--</router-link>-->
-      <mt-button icon="more" slot="right">建议</mt-button>
+      <mt-button  slot="right"  @click="goadvise">反馈</mt-button>
     </mt-header>
     <div style="height: 200px;padding-top: 35px">
       <mt-swipe :auto="4000">
-        <mt-swipe-item style="background-color: #a8111e">
-          <image v-for="item in swiperImg" src= "item.img" style="width: 100%;height: 100%;"></image>
+        <mt-swipe-item v-for="item in swiperImg">
+          <img  :src= "item.img" style="width: 100%;height: 100%;">
         </mt-swipe-item>
       </mt-swipe>
     </div>
@@ -106,16 +106,20 @@
             </mt-tab-container>  
       </div>
     </div>
+    <!--<component :is="compName"></component>-->
   </div>
 </template>
 
 <script>
   import $ from 'jQuery'
+  import advise from './advise'
     export default {
       name: "index",
+      components:{advise},
       data(){
         return{
-          selected:'1',
+          compName:'',
+          selected:'2',
           swiperImg: [],//轮播图
           StationMess:{},//站点信息
           GPSMESS:{},
@@ -131,6 +135,7 @@
       methods:{
         goxlmess(item){
           console.log('123',item);
+          localStorage.setItem('lineMess',JSON.stringify(item))
           this.$router.push({name:'xlMess',params:{StationMess:item}})
           // this.$store.commit('setxlMess',item)
         },
@@ -142,6 +147,11 @@
                 this.StationMess = res.result
               }
           })
+        },
+        goadvise(){
+          console.log(124444444);
+          // this.compName = 'advise'
+          this.$router.push({name:'advise'})
         },
         getGps(){
           var v =this
@@ -175,7 +185,7 @@
             if(res.code == 200){
               res.result.forEach(element => {
                 console.log("11111111",element.img);
-                element.img = "http://47.98.39.45:9090/staticpath/" + element.img;
+                // element.img = "http://47.98.39.45:9092/staticpath/" + element.img;
                 console.log("22222",element.img);
               });
               this.swiperImg = res.result
@@ -187,6 +197,9 @@
 </script>
 
 <style lang="less">
+  body{
+    background-color: #FFFFFF !important;
+  }
   *{
     margin: 0;
     padding: 0;

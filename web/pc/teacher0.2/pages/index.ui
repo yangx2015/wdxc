@@ -704,7 +704,6 @@ export default {
     }
   },
   created () {
-    
    if(ui.getApp().userinfo.sjhm == "") {
      ui.navigateTo({
         url: '/pages/phonenumber'

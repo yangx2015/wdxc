@@ -31,7 +31,11 @@
             <Icon type="md-flag" color="#ed4014" size="22" slot="prepend" />
           </Input>
         </FormItem>
-
+        <FormItem>
+          <Input v-model="ycMess.sy" placeholder="备注事由" clearable type="textarea"
+                 :autosize="{minRows:3,maxRows: 3}">
+          </Input>
+        </FormItem>
 
         <div>
           <div style="font-size: 18px;font-weight: 600;margin: 12px 0">
@@ -41,19 +45,19 @@
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('10',5)">
               <img src="../img/car5.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==5?'#f00':'#000'}">
-                  5座
+                小车-5座
               </div>
             </div>
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('10',7)">
               <img src="../img/car7.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==7?'#f00':'#000'}">
-                7座
+                小车-7座
               </div>
             </div>
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('10',11)">
               <img src="../img/car11.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==11?'#f00':'#000'}">
-                11座
+                小车-11座
               </div>
             </div>
           </div>
@@ -62,25 +66,25 @@
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('20',20)">
               <img src="../img/car20.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==20?'#f00':'#000'}">
-                20座
+                大车-20座
               </div>
             </div>
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('20',32)">
               <img src="../img/car32.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==32?'#f00':'#000'}">
-                32座
+                大车-32座
               </div>
             </div>
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('20',45)">
               <img src="../img/car45.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==45?'#f00':'#000'}">
-                45座
+                大车-45座
               </div>
             </div>
             <div class="box_row_100" style="margin: 0 6px" @click="getCarTyp('20',48)">
               <img src="../img/car48.png" width="100%" alt="">
               <div class="carItem" :style="{color:carTyp==48?'#f00':'#000'}">
-                48座
+                大车-48座
               </div>
             </div>
           </div>
@@ -110,7 +114,8 @@
           cklxdh:'',//电话
           yysj:'',//约车时间
           cllx:'',//10小车，20大车
-          zws:''
+          zws:'',
+          sy:''//备注事由
         }
       }
     },
@@ -212,7 +217,7 @@
       .carTypSty{
         padding-bottom: 12px;cursor: pointer;
         .carItem{
-          text-align: center;font-size: 20px;font-weight: 600
+          text-align: center;font-size: 16px;font-weight: 600
         }
       }
     }

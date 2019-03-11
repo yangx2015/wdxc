@@ -482,7 +482,8 @@ export default {
     this.form.id = this.orderMess.id
     if(this.orderMess.lc!='' && this.orderMess.dj!='' && this.orderMess.gqf!='' && this.orderMess.glf!=''){
     }
-    this.getZoom(parseFloat(this.orderMess.gpsDistance))
+    this.getZoom
+    (parseFloat(this.orderMess.gpsDistance))
   },
   mounted() {
      this.initMap();

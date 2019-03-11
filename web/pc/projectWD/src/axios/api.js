@@ -24,7 +24,7 @@ let configs = {
         VIDEO_PATH: 'http://47.98.39.45:9091/test/',
     }
 }
-let config = configs.s10;
+let config = configs.s47;
 export default {
     url: config.BIZ_URL,
     UPLOAD: config.UPLOAD,
