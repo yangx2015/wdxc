@@ -11,12 +11,9 @@ $00029{json}
 每包以$(0x24)开头；
 包长度为5个字节（不足长度左补0）
 包体为json消息体
-
-{
-"command":"login",
-"tid":"1234567890ab",
-}
-
+$00043{"command":"tick","tid":"0000123456780305"}
+$00040{"command":"login","tid":"1234567890ab"}
+$00044{"command":"login","tid":"0000123456780305"}
 //buses下面的state 共有三项:inStation进站，runing正常  off离线
 {
 "command": "routeInfo",
