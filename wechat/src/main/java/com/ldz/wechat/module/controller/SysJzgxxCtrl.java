@@ -15,7 +15,10 @@ public class SysJzgxxCtrl {
 
 	@Autowired
 	private SysJzgxxService jzgxxService;
-
+	@PostMapping("/jzgLogin")
+	ApiResponse<String> JzgLogin(String key){
+		return jzgxxService.JzgLogin(key);
+	}
 	/**
 	 * 通过身份证,姓名获取到教职工信息
 	 * @param zjhm  证件号码  也叫工号

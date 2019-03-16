@@ -44,6 +44,24 @@ public class SysJzgxxServiceImpl extends BaseServiceImpl<SysJzgxx,String> implem
 	}
 
 	@Override
+	public ApiResponse<String> JzgLogin(String key){
+		if(StringUtils.isBlank(key)){
+			key="123456";
+		}
+
+		SysJzgxx jzg = jzgmapper.findById(key);
+		RuntimeCheck.ifNull(jzg, "证件号码或密码有误");
+		String userInfo = JsonUtil.toJson(jzg);
+		String token = JwtUtil.createWechatToken("jzg",userInfo);
+		HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+		request.setAttribute("type","jzg");
+		request.setAttribute("orgCode",jzg.getJgdm());
+		request.setAttribute("userInfo",userInfo);
+		ApiResponse<String> res = new ApiResponse<>();
+		res.setResult(token);
+		return res;
+	}
+	@Override
 	public ApiResponse<String> findJzg(String zjhm, String pwd) {
 		RuntimeCheck.ifBlank(zjhm, "工号不为空");
 		RuntimeCheck.ifBlank(pwd, "密码不为空");
@@ -80,6 +98,7 @@ public class SysJzgxxServiceImpl extends BaseServiceImpl<SysJzgxx,String> implem
 		if ("jzg".equals(type)){
 			SysJzgxx jzg = JsonUtil.toBean(userInfo,SysJzgxx.class);
 			RuntimeCheck.ifNull(jzg,"未找到教职工信息");
+			jzg.setPwd("");
 			map.put("userInfo",jzg);
 		}else{
 			RuntimeCheck.ifTrue(true,"您不属于教职工");

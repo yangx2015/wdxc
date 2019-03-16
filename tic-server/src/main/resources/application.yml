@@ -66,3 +66,5 @@ logging:
 mapper:
   identity: MYSQL
 
+socketServerUrl: http://www.168car.net:10088/
+

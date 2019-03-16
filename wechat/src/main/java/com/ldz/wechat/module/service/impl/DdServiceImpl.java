@@ -97,7 +97,7 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
             if (StringUtils.isEmpty(driverId))continue;
             ClJsy driver = driverMap.get(driverId);
             if (driver == null)continue;
-            dd.setSjdh(driver.getSjh());
+            dd.setSjdh(driver.getSjh());//返回司机电话
 
 
         }
@@ -114,10 +114,10 @@ public class DdServiceImpl extends BaseServiceImpl<ClDd,String> implements DdSer
         RuntimeCheck.ifNull(entity.getYysj(),"乘客预车时间不能为空");
 
 
-		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
-		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
-		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
-		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
+//		RuntimeCheck.ifFalse(entity.getOriginLat()!=null, "起始纬度不能为空");
+//		RuntimeCheck.ifFalse(entity.getOriginLng()!=null, "起始经度不能为空");
+//		RuntimeCheck.ifFalse(entity.getDestinationLat()!=null, "结束点纬度不能为空");
+//		RuntimeCheck.ifFalse(entity.getDestinationLng()!=null, "结束点经度不能为空");
 
         String orderId=genId();
         entity.setId(orderId);

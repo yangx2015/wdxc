@@ -913,8 +913,10 @@ if(selectXbPb!=null&&selectXbPb.size()>0){
 			RuntimeCheck.ifTrue(true, "排班时间统计失败");
 		}
 		if(pbTime){
-			pb.setStartTime(entity.getStartTime());
-			pb.setEndTime(entity.getEndTime());
+			pb.setStartTime(startTime);
+//			pb.setStartTime(entity.getStartTime());
+//			pb.setEndTime(entity.getEndTime());
+			pb.setEndTime(endTime);
 			entityMapper.updateByPrimaryKey(pb);
 		}else{
 			return ApiResponse.fail("当前排班时间与班次："+bcName+"重叠，排班时间修改失败");

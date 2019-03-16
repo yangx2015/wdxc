@@ -475,7 +475,6 @@ export default {
     },
     getGPS(){
       console.log('GPS');
-      
       var v = this
       ui.getLocation({
         type: 'wgs84',
@@ -705,7 +704,6 @@ export default {
     }
   },
   created () {
-    
    if(ui.getApp().userinfo.sjhm == "") {
      ui.navigateTo({
         url: '/pages/phonenumber'

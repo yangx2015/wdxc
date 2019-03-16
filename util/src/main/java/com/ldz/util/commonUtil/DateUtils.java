@@ -116,7 +116,9 @@ public class DateUtils {
 
 
 	public static void main(String[] args) throws ParseException {
-		System.out.println("123s".compareTo("123"));
+		System.out.println(DateUtils.getNowTime().substring(11));
+//		Date aaa = getDate("2019-01-11 09:10:00", "yyyy-MM-dd HH:mm");
+//		System.out.println("123s".compareTo("123"));
 //		System.out.println(createDateList("2018-09-08","2018-09-08"));
 //		System.out.println(getNowTime().substring(11)+"1");
 //		System.out.println(DateUtils.getDate("07:00:00","HH:mm:ss"));

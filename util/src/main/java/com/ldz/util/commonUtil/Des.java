@@ -11,6 +11,17 @@ import java.security.SecureRandom;
  * DES加密解密类.     
  */
 public class Des {
+    public static void main(String[] args) {
+        try {
+            System.out.println(decrypt("E57063737D0576EE"));
+            System.out.println(encrypt("111111"));
+            System.out.println(encrypt("123456"));
+            System.out.println(encrypt("1"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /** 加密、解密key. */
     private static final String PASSWORD_CRYPT_KEY = "kEHrDooxWHCWtfeSxvDvgqZq";
     /** 加密算法,可用 DES,DESede,Blowfish. */

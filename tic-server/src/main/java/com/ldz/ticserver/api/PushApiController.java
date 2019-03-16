@@ -1,20 +1,21 @@
 package com.ldz.ticserver.api;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.ldz.ticserver.plugins.push.AppPushUtils;
 import com.ldz.ticserver.plugins.push.PushModel;
 import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.commonUtil.HttpUtil;
+import com.ldz.util.commonUtil.JsonUtil;
 import com.ldz.util.redis.RedisTemplateUtil;
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 /**
@@ -25,6 +26,9 @@ import com.ldz.util.redis.RedisTemplateUtil;
 @RestController
 @RequestMapping("/api/push")
 public class PushApiController {
+
+	@Value("${socketServerUrl}")
+	private String socketServerUrl;
 	Logger accessLog = LoggerFactory.getLogger("access_info");
 	
 	Logger errorLog = LoggerFactory.getLogger("error_info");
@@ -75,14 +79,30 @@ public class PushApiController {
 				AppPushUtils.pushMessageAllOrClientByAlias(pm);
 			}
 		}
-		
+
+
 		if(checkOnline){
 			ar.setMessage("操作成功");
 		}else{
-			
-			accessLog.debug("下发指令失败，设备不在线,指令数据：["+dto.toString()+"]");
-			ar.setCode(ApiResponse.FAILED);
-			ar.setMessage("设备不在线，发送指令失败");
+
+			accessLog.debug("下发指令失败，设备不在线,通过socket发送指令，指令数据：["+dto.toString()+"]");
+//			ar.setCode(ApiResponse.FAILED);
+//			ar.setMessage("设备不在线，发送指令失败");
+			//使用新方法发送
+			Map<String,String> header = new HashMap<>();
+			header.put("Content-Type","application/json");
+			String res = null;
+			try {
+				res = HttpUtil.postJson(socketServerUrl+"api/set",header, JsonUtil.toJson(dto));
+				accessLog.debug("通过socket发送指令，结果："+res);
+				if (res.contains("未在线")){
+					return ApiResponse.fail("当前终端未在线！");
+				}
+			} catch (Exception e) {
+				errorLog.error("发送失败",e);
+				return ApiResponse.fail("发送失败");
+			}
+			return ar;
 		}
 		return ar;
 	}
@@ -113,12 +133,18 @@ public class PushApiController {
 				checkOnline = true;
 			}
 		}
-		
+
 		if(checkOnline){
 			ar.setMessage("设备目前在线");
 		}else{
-			ar.setCode(ApiResponse.FAILED);
-			ar.setMessage("设备不在线");
+//			ar.setCode(ApiResponse.FAILED);
+//			ar.setMessage("设备不在线");
+			//使用新接口判断是否在线
+			Map<String,String> param = new HashMap<>();
+			param.put("zdbh",deviceId);
+			String res = HttpUtil.get(socketServerUrl+"api/checkOnline",param);
+			ApiResponse<String> result = JsonUtil.toBean(res,ApiResponse.class);
+			return result;
 		}
 		return ar;
 	}

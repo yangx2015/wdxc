@@ -6,10 +6,15 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 
-//import com.google.gson.JsonArray;
-//import com.google.gson.JsonIOException;
-//import com.google.gson.JsonParser;
-//import com.google.gson.JsonSyntaxException;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 
 /**
@@ -17,13 +22,17 @@ import org.apache.http.impl.client.DefaultHttpClient;
  * Created by Administrator on 2018/10/23.
  */
 public class postTest {
-    private static int compartmentTime=1;//报文发送间格(秒)
+    private static int compartmentTime=5;//报文发送间格(秒)
 
     public static void main(String[] args) {
+        String mc="校大门";
+        mc=mc.substring(0,mc.length()-1)+" "+mc.substring(mc.length()-1,mc.length());
+        System.out.println(mc);
+//        System.out.println(60000 * 60 * 24);
 //        JsonParser parse =new JsonParser();  //创建json解析器
 //        try {
 //            //测试文件在项目的doc目录中   /doc/ticService-测试数据/****.json
-//            JsonArray json=(JsonArray) parse.parse(new FileReader("D:\\AJC099.json"));  //创建jsonObject对象
+//            JsonArray json=(JsonArray) parse.parse(new FileReader("C:\\Users\\udjpy\\Desktop\\222.json"));  //创建jsonObject对象
 //            for(int i=0;i<json.size();i++){
 //                System.out.println("JSON报文:"+json.get(i).toString());
 //                fahuo("http://47.98.39.45:9095/api/device/gps",json.get(i).toString());

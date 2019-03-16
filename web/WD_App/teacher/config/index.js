@@ -1,10 +1,21 @@
 'use strict'
-// Template version: 1.3.1
+// Template version: 1.0.0
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
 
+function resolve (dir) {
+  return path.join(__dirname, '..', dir)
+}
+
 module.exports = {
+  mand: {
+    pxtorem: {
+      // If you modify rootValue, you also need to modify rem in static/responsive.js
+      rootValue: 100, // 1rem=100px
+      propWhiteList: []
+    }
+  },
   dev: {
 
     // Paths
@@ -13,7 +24,7 @@ module.exports = {
     proxyTable: {},
 
     // Various Dev Server settings
-    host: '192.168.123.4', // can be overwritten by process.env.HOST
+    host: 'localhost', // can be overwritten by process.env.HOST
     port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
