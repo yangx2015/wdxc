@@ -65,7 +65,7 @@
         var v = this
         this.$http.post(this.apis.ZDMESS,{xlid:this.xlID}).then((res)=>{
           if(res.code==200&&res.result){
-            v.stationList =  res.result.list;
+            v.carList =  res.result.list;
             v.getBusCode((lis)=>{
               callback && callback(lis)
             })
@@ -89,6 +89,7 @@
       addMarker(item, point,i){
         var myIcon = ''
         var mess = ""
+        console.log('item',item);
         if(item.cphm){
           myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(48, 48), {anchor: new BMap.Size(32, 32)});
           var marker = new BMap.Marker(point,{icon:myIcon});
@@ -100,7 +101,7 @@
           mess = item.zdName
           this.map.addOverlay(marker);
         }
-        this.map.addOverlay(marker);
+        // this.map.addOverlay(marker);
         let html = '<div style=" width: 120px;height: 28px;padding:4px;text-align: center">' +
           '<span>' + mess +'</span> ' +
           '</div>';
@@ -212,15 +213,20 @@
         v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
         var point = new BMap.Point(114.368107, 30.543083);
         v.map.centerAndZoom(point, 16);
-        setTimeout(
+        // setTimeout(
         v.getxlmess((res)=>{
+          console.log('r.stationNumber',res);
           let c = 0;
           let stationNumber = 0;
           for (let r of res) {
+            console.log('r',r);
             stationNumber ++;
             r.stationNumber = stationNumber;
             if(!r.zdName||r.zdName === ''){
               continue
+            }
+            for(let car of r.vehicleList){
+
             }
             if(r.zdName.indexOf('辅助点') == -1){
               var point = new BMap.Point(r.jd, r.wd);
@@ -230,7 +236,8 @@
         },(reslist)=>{
           v.getLinePoints(reslist)
           v.pointList = reslist
-        }),5000)
+        })
+          // ,5000)
         v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
         v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
         delete window[callbackName];
