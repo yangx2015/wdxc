@@ -29,6 +29,8 @@
     },
     data() {
       return {
+        carMap:new Map(),
+        labelMap:new Map(),
         thisIndex:5,
         height:'',
         map:'',
@@ -114,7 +116,12 @@
         myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(48, 48), {anchor: new BMap.Size(32, 32)});
         var marker = new BMap.Marker(point,{icon:myIcon});
         mess = item.cphm
+        console.log('carMap',this.carMap);
+        if(this.carMap.get(mess)){
+          this.map.clearOverlay(this.carMap.get(mess))
+        }
         this.map.addOverlay(marker);
+        this.carMap.set(mess,marker)
         let html = '<div style=" width: 120px;height: 28px;padding:4px;text-align: center">' +
           '<span>' + mess +'</span> ' +
           '</div>';
@@ -128,6 +135,10 @@
           'background-color': 'rgba(255,255,255,0.6)',
           'border-radius': '4px',
         });
+        if(this.labelMap.get(mess)){
+          this.map.clearOverlay(this.labelMap.get(mess))
+        }
+        this.labelMap.set(mess,myLabel)
         this.map.addOverlay(myLabel);
       },
       addStation(item, point,i){
