@@ -1,6 +1,11 @@
 <!---->
 <template>
   <div class="box_col" style="overflow-y: hidden;">
+    <mu-appbar style="width: 100%;" color="primary">
+      <mu-button flat slot="right"></mu-button>
+      地图查看
+      <mu-button flat slot="right" @click="Goback">关闭</mu-button>
+    </mu-appbar>
     <div class="box_col_100">
       <div id="allmap" style="height:800px;width: 100%"></div>
     </div>
@@ -39,8 +44,7 @@
     created(){
       if(this.$store.state.app.lineID!=0){
         this.xlID = this.$store.state.app.lineID
-        setTimeout(this.getxlmess(),5000)
-
+        this.getxlmess()
       }else {
         this.$router.push({
           name:'center'
@@ -61,13 +65,16 @@
         var v = this
         this.$http.post(this.apis.ZDMESS,{xlid:this.xlID}).then((res)=>{
           if(res.code==200&&res.result){
-            v.stationList =  res.result.list
+            v.stationList =  res.result.list;
             v.getBusCode((lis)=>{
               callback && callback(lis)
             })
             callback2 && callback2(res.result.list)
           }
         })
+      },
+      Goback(){
+        this.$router.back();
       },
       getIcon(car) {
         switch (car.zxzt) {
@@ -146,7 +153,6 @@
           dataType:'JSONP',
           success:function(res){
             if (res.status == 0){
-
               let route = res.result.routes[0];
               points.push({lat: route.origin.lat, lng: route.origin.lng});
               for (let step of route.steps) {
@@ -189,7 +195,7 @@
             break;
         }
 
-        var label = new BMap.Label(number, {
+        var label = new BMap.Label(number,{
           offset: offsetSize
         });
         label.setStyle(labelStyle);
@@ -206,6 +212,7 @@
         v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
         var point = new BMap.Point(114.368107, 30.543083);
         v.map.centerAndZoom(point, 16);
+        setTimeout(
         v.getxlmess((res)=>{
           let c = 0;
           let stationNumber = 0;
@@ -223,7 +230,7 @@
         },(reslist)=>{
           v.getLinePoints(reslist)
           v.pointList = reslist
-        })
+        }),5000)
         v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
         v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
         delete window[callbackName];

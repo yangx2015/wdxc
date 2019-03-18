@@ -3,23 +3,20 @@
 	@import "./pageIndex";
 </style>
 <template>
-	<div class="box">
-		<div class="header">
-			<div class="box-row">
-				<!--<div class="titLeft" @click="MyCenter()">-->
-					<!--<Icon type="person" color="#949494" size='26'></Icon>-->
-				<!--</div>-->
-				<div class="titCenter body-O" style="text-align: center;">
-            <h2 style="color: #929292;">
-              武汉大学校巴班车线路查询
-            </h2>
-					 <!--<Input v-model="titFind" size="small" placeholder="请输入站点名称" ></Input>-->
-				</div>
-				<!--<div class="titRight" @click="feedback()">-->
-					<!--<Icon type="ios-compose" color="#949494" size='26'></Icon>-->
-				<!--</div>-->
-			</div>
-		</div>
+	<div>
+    <div class="titbar">
+      <mu-appbar style="width: 100%;" color="#fb8c00">
+        <mu-button icon slot="left">
+
+        </mu-button>
+        主页
+        <mu-menu slot="right">
+          <mu-button flat>
+            <mu-icon size="26" value="local_library" color="#FFF"></mu-icon>
+          </mu-button>
+        </mu-menu>
+      </mu-appbar>
+    </div>
 		<div>
 			<swiper
 				:list="imglist"
@@ -52,25 +49,25 @@
             <div class="demo-text" v-if="active1 === 0">
               <mu-container>
                 <mu-expansion-panel
-                  :expand="panel === 'panel1'"
-                  @change="toggle('panel1')"
-                  v-for="item in StationMess.scheduledBusRouters"
-                  @click="lineMess(item.id)">
+                  @change="toggle('panel')"
+                  v-for="(item,index) in StationMess.scheduledBusRouters"
+                  :expand="panel === 'panel'+(index+1)"
+                  >
                   <div slot="header" style="font-weight: 600">
-                    {{item.xlmc}}
+                    {{item.name}}
                   </div>
-                  <div>
+                  <div @click="lineMess(item.id)">
                     <mu-row>
                       <mu-col align="left"><div>
                         <mu-icon size="13" value="departure_board" color="green" style="padding-top: 2px"></mu-icon>
                         开往 -{{item.endStation.mc}}
                       </div></mu-col>
-                      <mu-col align="right"><div>2站</div></mu-col>
+                      <mu-col align="right"><div v-if="item.nextBus == ''">*站</div><div v-else>{{item.nextBus}}站</div></mu-col>
                     </mu-row>
                     <mu-row>
                       <mu-col align="left"><div>
                         <mu-icon size="13" value="departure_board" color="red"></mu-icon>
-                        开往 - 珞珈山南路
+                        {{item.starTime}} - {{item.endTime}}
                       </div></mu-col>
                       <mu-col align="right"><div class="icon-container">
                         <mu-icon size="20" value="directions_bus" color="red"></mu-icon>
@@ -80,9 +77,9 @@
                 </mu-expansion-panel>
               </mu-container>
             </div>
-            <div class="demo-text" v-if="active1 === 2">
+            <div class="demo-text" v-if="active1 === 1">
               <mu-container>
-                <mu-expansion-panel :expand="panel === 'panel1'" @change="toggle('panel1')">
+                <mu-expansion-panel :expand="panel === 'panel1'" @change="toggle('panel1')" v-for="item in StationMess.otherRouters">
                   <div slot="header" style="font-weight: 600">
                     武汉大学班车
                   </div>
@@ -107,57 +104,6 @@
               </mu-container>
             </div>
           </mu-container>
-				</div>
-				<div class="body">
-					<div class="list">
-						<div class="listTiT box-row"
-							v-for="(item,index) in lineList"
-							@click="lineMess(item.id)">
-							<div class="body-O">
-								<i class="iconfont icon-003lubiao"></i>
-								{{item.xlmc}}
-							</div>
-							<div>
-								<i class="iconfont icon-right"></i>
-							</div>
-						</div>
-					</div>
-					<div class="list" v-show="false">
-						<div class="listTiT box-row">
-							<div class="body-O">
-								<i class="iconfont icon-003lubiao"></i>
-								校巴一号站点
-							</div>
-							<div>
-								<i class="iconfont icon-right"></i>
-							</div>
-						</div>
-						<ul>
-							<li v-for="item in [,,,,,,]">
-								<div class="carNum">
-									202
-								</div>
-								<div class="box-row line lineTop" @click="lineMess">
-									<div class="body-O">
-										<i class="iconfont icon-jiantouarrow591"></i>
-										开往校图书馆
-									</div>
-									<div>
-										<i class="iconfont icon-xinhao"></i>2站
-									</div>
-								</div>
-								<div class="box-row line" @click="lineMess">
-									<div class="body-O">
-										<i class="iconfont icon-jiantouarrow591"></i>
-										第一食堂
-									</div>
-									<div>
-										<i class="iconfont icon-xinhao"></i>4站
-									</div>
-								</div>
-							</li>
-						</ul>
-					</div>
 				</div>
 			</div>
 		</div>
@@ -295,7 +241,6 @@
     left: 0;
     right: 0;
   }
-
   .demo-text {
     padding: 1px;
     background: #fff;
