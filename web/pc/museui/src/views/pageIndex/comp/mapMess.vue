@@ -44,7 +44,7 @@
     created(){
       if(this.$store.state.app.lineID!=0){
         this.xlID = this.$store.state.app.lineID
-        this.getxlmess()
+        // this.getxlmess()
       }else {
         this.$router.push({
           name:'center'
@@ -52,24 +52,45 @@
       }
     },
     methods: {
-      getBusCode(callback){
+      getBusCode(){
         var v = this
         this.$http.post(this.apis.XLMAP,{xlId:this.xlID}).then((res)=>{
-          if(res.code==200&&res.result){
-            v.carList = v.carList.concat(res.result)
+          if(res.code === 200 && res.result){
+            v.carList = res.result
+            console.log('r.stationNumber',res);
+            let stationNumber = 0;
+            for (let r of v.carList) {
+              console.log('r',r);
+              stationNumber ++;
+              r.stationNumber = stationNumber;
+              if(r.zdName.indexOf('辅助点') == -1){
+                var point = new BMap.Point(r.jd, r.wd);
+                v.addCar(r, point);
+              }
+            };
           }
-          callback && callback(v.carList)
         })
       },
-      getxlmess(callback,callback2){
+      getxlmess(){
         var v = this
         this.$http.post(this.apis.ZDMESS,{xlid:this.xlID}).then((res)=>{
           if(res.code==200&&res.result){
-            v.carList =  res.result.list;
-            v.getBusCode((lis)=>{
-              callback && callback(lis)
-            })
-            callback2 && callback2(res.result.list)
+            v.stationList =  res.result.list;
+            let stationNumber = 0;
+            for (let r of v.stationList) {
+              console.log('r',r);
+              stationNumber ++;
+              r.stationNumber = stationNumber;
+              if(!r.zdName||r.zdName === ''){
+                continue
+              }
+              if(r.zdName.indexOf('辅助点') == -1){
+                var point = new BMap.Point(r.jd, r.wd);
+                v.addStation(r, point,stationList);
+              }
+            };
+            v.getLinePoints(v.stationList)
+            v.pointList = v.stationList
           }
         })
       },
@@ -86,22 +107,37 @@
             return '/static/img/Bus.png'
         }
       },
-      addMarker(item, point,i){
+      addCar(item, point){
         var myIcon = ''
         var mess = ""
         console.log('item',item);
-        if(item.cphm){
-          myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(48, 48), {anchor: new BMap.Size(32, 32)});
-          var marker = new BMap.Marker(point,{icon:myIcon});
-          mess = item.cphm
-          this.map.addOverlay(marker);
-        }else{
-          var marker = new BMap.Marker(point);
-          marker.setLabel(this.getNumberLabel(i));
-          mess = item.zdName
-          this.map.addOverlay(marker);
-        }
-        // this.map.addOverlay(marker);
+        myIcon =  new BMap.Icon(this.getIcon(item), new BMap.Size(48, 48), {anchor: new BMap.Size(32, 32)});
+        var marker = new BMap.Marker(point,{icon:myIcon});
+        mess = item.cphm
+        this.map.addOverlay(marker);
+        let html = '<div style=" width: 120px;height: 28px;padding:4px;text-align: center">' +
+          '<span>' + mess +'</span> ' +
+          '</div>';
+        var myLabel = new BMap.Label(html,                 //为lable填写内容
+          {
+            offset: new BMap.Size(-80, -70),           //label的偏移量，为了让label的中心显示在点上
+            position: point
+          });                                            //label的位置
+        myLabel.setStyle({                                 //给label设置样式，任意的CSS都是可以的
+          fontSize: "16px",                              //字号
+          'background-color': 'rgba(255,255,255,0.6)',
+          'border-radius': '4px',
+        });
+        this.map.addOverlay(myLabel);
+      },
+      addStation(item, point,i){
+        var myIcon = ''
+        var mess = ""
+        console.log('item',item);
+        var marker = new BMap.Marker(point);
+        marker.setLabel(this.getNumberLabel(i));
+        mess = item.zdName
+        this.map.addOverlay(marker);
         let html = '<div style=" width: 120px;height: 28px;padding:4px;text-align: center">' +
           '<span>' + mess +'</span> ' +
           '</div>';
@@ -213,33 +249,10 @@
         v.map.centerAndZoom(new BMap.Point(114.368107 , 30.543083), 11);  // 初始化地图,设置中心点坐标和地图级别
         var point = new BMap.Point(114.368107, 30.543083);
         v.map.centerAndZoom(point, 16);
-        // setTimeout(
-        v.getxlmess((res)=>{
-          console.log('r.stationNumber',res);
-          let c = 0;
-          let stationNumber = 0;
-          for (let r of res) {
-            console.log('r',r);
-            stationNumber ++;
-            r.stationNumber = stationNumber;
-            if(!r.zdName||r.zdName === ''){
-              continue
-            }
-            for(let car of r.vehicleList){
-
-            }
-            if(r.zdName.indexOf('辅助点') == -1){
-              var point = new BMap.Point(r.jd, r.wd);
-              v.addMarker(r, point,++c);
-            }
-          };
-        },(reslist)=>{
-          v.getLinePoints(reslist)
-          v.pointList = reslist
-        })
-          // ,5000)
         v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
         v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        v.getBusCode()
+        v.getxlmess()
         delete window[callbackName];
       }
       script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
