@@ -77,8 +77,8 @@ let bindRoad = {
             }
             if (!find){
                 console.log('!find');
-                pointInfo.bdjd = linePoints[index].lng;
-                pointInfo.bdwd = linePoints[index].lat;
+                // pointInfo.bdjd = linePoints[index].lng;
+                // pointInfo.bdwd = linePoints[index].lat;
                 return pointInfo
             }
         }else{

@@ -63,10 +63,8 @@
               console.log('r',r);
               stationNumber ++;
               r.stationNumber = stationNumber;
-              if(r.zdName.indexOf('辅助点') == -1){
                 var point = new BMap.Point(r.jd, r.wd);
                 v.addCar(r, point);
-              }
             };
           }
         })
@@ -86,7 +84,7 @@
               }
               if(r.zdName.indexOf('辅助点') == -1){
                 var point = new BMap.Point(r.jd, r.wd);
-                v.addStation(r, point,stationList);
+                v.addStation(r, point,stationNumber);
               }
             };
             v.getLinePoints(v.stationList)
@@ -108,6 +106,7 @@
         }
       },
       addCar(item, point){
+        bindRoad.bindPoint3(item,this.pointList,1000,this.xlId,this.carList)
         var myIcon = ''
         var mess = ""
         console.log('item',item);
