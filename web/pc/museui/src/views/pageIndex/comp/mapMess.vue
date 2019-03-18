@@ -67,6 +67,7 @@
                 v.addCar(r, point);
             };
           }
+          setTimeout(()=>{v.getBusCode()},5000)
         })
       },
       getxlmess(){
