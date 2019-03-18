@@ -1,12 +1,12 @@
 package com.ldz.znzp.service.impl;
 
+import com.ldz.util.bean.ApiResponse;
 import com.ldz.util.gps.Gps;
 import com.ldz.util.gps.PositionUtil;
 import com.ldz.znzp.base.BaseServiceImpl;
 import com.ldz.znzp.bean.GpsInfo;
 import com.ldz.znzp.mapper.ClGpsMapper;
 import com.ldz.znzp.model.ClGps;
-import com.ldz.util.bean.ApiResponse;
 import com.ldz.znzp.service.GpsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -47,7 +47,11 @@ public class GpsServiceImpl extends BaseServiceImpl<ClGps,String> implements Gps
         }
         clGps.setCjsj(new Date());
         if (entity.getGpsjd() != null && entity.getGpsjd().length()<=3) {
-            clGps.setDwjd(Short.valueOf(entity.getGpsjd()));
+            String jd = entity.getGpsjd();
+            if (jd.contains(".")){
+                jd = jd.substring(0,jd.indexOf("."));
+            }
+            clGps.setDwjd(Short.valueOf(jd));
         }
         if (entity.getFxj() != null) {
             clGps.setFxj(new BigDecimal(entity.getFxj()));

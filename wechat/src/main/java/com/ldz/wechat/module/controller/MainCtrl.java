@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 公共跳转接口
+ * 公共跳转接口  微信端 接口
  * Created by Administrator on 2018/5/12.
  */
 @RestController

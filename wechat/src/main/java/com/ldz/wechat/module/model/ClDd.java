@@ -301,7 +301,7 @@ public class ClDd implements Serializable {
     @Transient
     private String xh;  // 车辆型号
     @Transient
-    private String sjdh;
+    private String sjdh;//司机电话
     /**
      * 载客量  筛选条件
      */
@@ -370,6 +370,35 @@ public class ClDd implements Serializable {
      */
     @Column(name = "JJRJL")
     private String jjrjl;
+
+
+    /**
+     * 乘客姓名(实际乘车人)
+     */
+    @Column(name = "CKXM")
+    private String ckxm;
+
+    /**
+     * 乘客电话(实际乘客电话)
+     */
+    @Column(name = "CKDH")
+    private String ckdh;
+
+    public String getCkxm() {
+        return ckxm;
+    }
+
+    public void setCkxm(String ckxm) {
+        this.ckxm = ckxm;
+    }
+
+    public String getCkdh() {
+        return ckdh;
+    }
+
+    public void setCkdh(String ckdh) {
+        this.ckdh = ckdh;
+    }
 
     public Short getJbsc() {
         return jbsc;

@@ -30,3 +30,5 @@ wechat:
     agentId: 37
 
 staticPath: /develop/static/8081/
+
+staticUrl: http://47.98.39.45:9092

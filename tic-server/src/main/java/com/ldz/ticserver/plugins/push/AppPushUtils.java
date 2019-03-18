@@ -3,10 +3,13 @@ package com.ldz.ticserver.plugins.push;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.http.MediaType;
 
 import com.gexin.fastjson.JSON;
 import com.gexin.rp.sdk.base.IAliasResult;
@@ -25,6 +28,7 @@ import com.gexin.rp.sdk.template.NotificationTemplate;
 import com.gexin.rp.sdk.template.TransmissionTemplate;
 import com.gexin.rp.sdk.template.style.Style0;
 import com.ldz.util.bean.RequestCommonParamsDto;
+import com.ldz.util.commonUtil.HttpUtil;
 import com.ldz.util.commonUtil.JsonUtil;
 
 /**
@@ -414,54 +418,11 @@ public class AppPushUtils {
 		/*System.out.println(JsonUtil.toJson(AppPushUtils
 				.pushMessageAllOrClientByAlias(new PushModel(4, "巡检已经完成22", "这是一条消息", "865923030038498", "{\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/WeicyCARFDLog/2018-10-24error.txt\",\"cmdParams\":\"0-10\",\"ifRedirect\":\"00\",\"jsr\":22,\"msgId\":162,\"appRedirect\":\"\",\"msgContent\":\"职能部门管理人员审核、完善整改措施\",\"msgTitle\":\"审核补充巡检单-单号[YGS-ZL-RC-20171213-001]\",\"sjrxm\":\"陶凯\",\"msgFrom\":\"流程启动\",\"state\":\"10\"}"))));
 		*/
-		
-		System.out.println(checkIdByChannelId("bd1349a36f807b29309dfc73e5352ead").getCode());
+		Map<String, String> header = new HashMap<String, String>();
+		header.put("Content type", MediaType.APPLICATION_JSON_UTF8_VALUE);
+		String result = HttpUtil.postJson("http://119.23.242.234:9095/api/push/carcmd", header, "{\"deviceId\":\"865923030038753\",\"cmdType\":\"97\",\"cmd\":\"/storage/emulated/0/TicServer/20190219logs_0.txt\"}");
+		System.out.println(result);
 		//System.out.println(checkIdMessage("865923030038753").getCode());
-		
-		RequestCommonParamsDto dto = new RequestCommonParamsDto();
-		dto.setCmdType("12");
-		dto.setDeviceId("865923030038662");
-		dto.setCmdParams("0-0");
-		dto.setCmd("123904893892392");
-		
-		IGtPush push = new IGtPush(url, appKey, masterSecret);
-		PushModel pushModel = new PushModel();
-		pushModel.setClientId("bd1349a36f807b29309dfc73e5352ead");
-		pushModel.setPushData(dto);
-		pushModel.setPushType(4);
-		PushResult result = new PushResult();
-		result.setPushData(pushModel);
-		IPushResult ret = null;
-		// 所有app都推送
-		ITemplate template = geTemplate(pushModel);
-		// 推送到指定用户（单个用户）
-		if (StringUtils.isNotBlank(pushModel.getClientId())) {
-			SingleMessage message = new SingleMessage();
-			message.setOffline(true);
-			// 离线有效时间，单位为毫秒，可选
-			message.setOfflineExpireTime(EXP_TIME);
-			message.setData(template);
-			// 可选，1为wifi，0为不限制网络环境。根据手机处于的网络情况，决定是否下发
-			message.setPushNetWorkType(0);
-			Target target = new Target();
-			target.setAppId(appId);
-			target.setClientId(pushModel.getClientId());
-			// target.setAlias(Alias);
-
-			try {
-				ret = push.pushMessageToSingle(message, target);
-
-			} catch (RequestException e) {
-				e.printStackTrace();
-				ret = push.pushMessageToSingle(message, target, e.getRequestId());
-			}
-			if (ret != null) {
-
-				System.out.println(ret.getResponse().toString());
-			} else {
-				System.out.println("服务器响应异常");
-			}
-		}
 		
 		/*List<String> lines = FileUtils.readLines(new File("e:/access_info.log"), "UTF-8");
 		for (int i=0; i<lines.size(); i++){

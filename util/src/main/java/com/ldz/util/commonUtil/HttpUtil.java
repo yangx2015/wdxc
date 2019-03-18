@@ -80,7 +80,9 @@ public class HttpUtil {
 		try {
 			//发送数据对象，转化为JSON格式
 			StringEntity entity = new StringEntity(postEntity, "UTF-8");
-			
+			entity.setContentEncoding("UTF-8");  
+			entity.setContentType("application/json");  
+            
 			post.setEntity(entity);
 			HttpResponse response = client.execute(post);
 			//返回数据结果
