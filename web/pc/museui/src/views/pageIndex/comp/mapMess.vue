@@ -69,6 +69,7 @@
               }
             };
           }
+          setTimeout(()=>{v.getBusCode()},5000)
         })
       },
       getxlmess(){
