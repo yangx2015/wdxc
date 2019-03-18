@@ -1,14 +1,8 @@
 <!---->
 <template>
   <div class="box_col" style="overflow-y: hidden;">
-    <!--<mt-header  fixed title="地图查看">-->
-      <!--<mt-button slot="left" @click="Goback" icon="back">返回</mt-button>-->
-      <!--&lt;!&ndash;<mt-button @click="handleClose">关闭</mt-button>&ndash;&gt;-->
-    <!--</mt-header>-->
     <div class="box_col_100">
-      <!-- 页面内容 start-->
       <div id="allmap" style="height:800px;width: 100%"></div>
-      <!-- 页面内容 end-->
     </div>
   </div>
 </template>
@@ -36,8 +30,8 @@
         item:[
           {Icon:"../static/img/Bus.png",}
         ],
-        carList:[
-        ],
+        carList:[],
+        stationList:[],
         xlID:'',
         pointList:''
       }
@@ -52,59 +46,13 @@
           name:'center'
         })
       }
-      // var lineMess = localStorage.getItem('lineMess');
-      // lineMess = JSON.parse(lineMess)
-      // this.xlID= lineMess.id
-      // if(!this.xlID){
-      //   this.Goback()
-      // }
     },
     methods: {
-      showRoute(line) {
-        // 显示线路
-        this.showLine(line);
-        // 显示站点
-        this.showStations(line);
-        // 显示车辆
-        this.showCars(line);
-      },
-      showCars(line) {
-        let carList = line.carList;
-        if (!carList) return;
-        let c = 0;
-        for (let r of carList){
-          this.addCar(r);
-        }
-      },
-      addCar(item) {
-        bindRoad.bindPoint3(item,this.pointList,1000,this.xlId,this.carList)
-        var myIcon = new BMap.Icon(this.getIcon(item), new BMap.Size(32, 32), {anchor: new BMap.Size(16, 32)});
-        var marker = new BMap.Marker(new BMap.Point(item.bdjd, item.bdwd), {icon: myIcon});
-        this.map.addOverlay(marker);
-        let html = '<div style="width: 120px;height: 28px;padding:4px;text-align: center">' +
-          '<span>' + item.cph + '</span> ' +
-          '</div>';
-        let point = new BMap.Point(item.bdjd, item.bdwd);
-        var myLabel = new BMap.Label(html,     //为lable填写内容
-          {
-            offset: new BMap.Size(-65, -70),                  //label的偏移量，为了让label的中心显示在点上
-            position: point
-          });                                //label的位置
-        myLabel.setStyle({                                   //给label设置样式，任意的CSS都是可以的
-          // color:"red",                   //颜色
-          fontSize: "16px",               //字号
-          'background-color': 'rgba(255,255,255,0.6)',
-          'border-radius': '4px',
-        });
-        myLabel.setTitle(item.cph);               //为label添加鼠标提示
-        this.map.addOverlay(myLabel);
-      },
       getBusCode(callback){
         var v = this
         this.$http.post(this.apis.XLMAP,{xlId:this.xlID}).then((res)=>{
           if(res.code==200&&res.result){
             v.carList = v.carList.concat(res.result)
-
           }
           callback && callback(v.carList)
         })
@@ -113,17 +61,13 @@
         var v = this
         this.$http.post(this.apis.ZDMESS,{xlid:this.xlID}).then((res)=>{
           if(res.code==200&&res.result){
-            v.carList =  res.result.list
-
+            v.stationList =  res.result.list
             v.getBusCode((lis)=>{
               callback && callback(lis)
             })
             callback2 && callback2(res.result.list)
           }
         })
-      },
-      Goback(){
-        this.$router.back();
       },
       getIcon(car) {
         switch (car.zxzt) {
@@ -164,9 +108,7 @@
           'background-color': 'rgba(255,255,255,0.6)',
           'border-radius': '4px',
         });
-        myLabel.setTitle("我是文本标注label");               //为label添加鼠标提示
         this.map.addOverlay(myLabel);
-        // this.addClickHandler(item, marker);
       },
       // 获取一条线路的途径点
 
@@ -267,8 +209,10 @@
         v.map.centerAndZoom(point, 16);
         v.getxlmess((res)=>{
           let c = 0;
+          let stationNumber = 0;
           for (let r of res) {
-
+            stationNumber ++;
+            r.stationNumber = stationNumber;
             if(!r.zdName||r.zdName === ''){
               continue
             }
@@ -281,27 +225,13 @@
           v.getLinePoints(reslist)
           v.pointList = reslist
         })
-
-        // 自定义icon,创建标注
-
-// 创建标注
-        // v.map.addOverlay(marker2);
-
-
-        //添加地图类型控件
-        v.map.addControl(new BMap.MapTypeControl({
-          mapTypes:[
-            BMAP_NORMAL_MAP
-          ]}));
         v.map.setCurrentCity("武汉");          // 设置地图显示的城市 此项是必须设置的
         v.map.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
         delete window[callbackName];
       }
       script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
       document.body.appendChild(script)
-
     }
-
   }
 </script>
 

@@ -82,10 +82,10 @@ let bindRoad = {
                 return pointInfo
             }
         }else{
-            console.log('CarIndexMap.index',CarIndexMap.get(pointInfo.zdbh));
-            if (CarIndexMap.has(pointInfo.zdbh)){
+            console.log('CarIndexMap.index',CarIndexMap.get(pointInfo.cphm));
+            if (CarIndexMap.has(pointInfo.cphm)){
                 let find = false;
-                let index = CarIndexMap.get(pointInfo.zdbh);
+                let index = CarIndexMap.get(pointInfo.cphm);
                 let max = index + 10;
                 if (max > linePoints.length) max = linePoints.length;
                 for (let i = index ;i< max ;i++){
@@ -94,7 +94,7 @@ let bindRoad = {
                     if (d < range){
                         p.distance = d;
                         nearPoints.push(p);
-                        CarIndexMap.set(pointInfo.zdbh,i);
+                        CarIndexMap.set(pointInfo.cphm,i);
                         find = true;
                     }
                 }
@@ -106,7 +106,7 @@ let bindRoad = {
                         if (d < range){
                             p.distance = d;
                             nearPoints.push(p);
-                            CarIndexMap.set(pointInfo.zdbh,i);
+                            CarIndexMap.set(pointInfo.cphm,i);
                             find = true;
                         }
                     }
@@ -125,7 +125,7 @@ let bindRoad = {
                     if (d < range){
                         p.distance = d;
                         nearPoints.push(p);
-                        CarIndexMap.set(pointInfo.zdbh,i);
+                        CarIndexMap.set(pointInfo.cphm,i);
                     }
                 }
             }
