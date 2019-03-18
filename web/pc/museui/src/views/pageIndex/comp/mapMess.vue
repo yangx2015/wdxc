@@ -229,7 +229,6 @@
           backgroundColor: "0.05",
           border: "0"
         };
-
         //不同数字长度需要设置不同的样式。
         switch ((number + '').length) {
           case 1:
