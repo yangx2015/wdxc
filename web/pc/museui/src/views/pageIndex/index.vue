@@ -5,19 +5,17 @@
 <template>
 	<div>
     <div class="titbar">
-      <mu-appbar style="width: 100%;" color="#fb8c00">
-        <mu-button icon slot="left">
-
-        </mu-button>
-        主页
+      <mu-appbar style="width: 100%;" color="#fb8c00" align="center">
+        <mu-button @click="refalse" icon slot="left"><mu-icon size="26" value="rotate_right" color="#FFF"></mu-icon> </mu-button>
+            主页
         <mu-menu slot="right">
-          <mu-button flat>
-            <mu-icon size="26" value="local_library" color="#FFF"></mu-icon>
+          <mu-button flat @click="feedback">
+            <mu-icon size="26" value="local_post_office" color="#FFF"></mu-icon>
           </mu-button>
         </mu-menu>
       </mu-appbar>
     </div>
-		<div>
+		<div style="width: 100%;padding-top: 58px">
 			<swiper
 				:list="imglist"
 				v-model="imglistV"
@@ -35,23 +33,23 @@
 				    <!--</tab>-->
           <mu-container>
             <mu-tabs :value.sync="active1" inverse color="secondary" text-color="rgba(0, 0, 0, .54)" full-width>
-              <!--<mu-tab>附近站点</mu-tab>-->
+              <mu-tab>附近站点</mu-tab>
               <mu-tab>校园巴士</mu-tab>
               <mu-tab>班车线路</mu-tab>
             </mu-tabs>
-            <!--<div class="demo-text" v-if="active1 === 0">-->
-              <!--<div style="height:350px;font-weight: 700;font-size: 24px;color: #7f7f7f">-->
-                <!--<mu-row style="line-height:170px;">-->
-                  <!--<mu-col>附近无站点</mu-col>-->
-                <!--</mu-row>-->
-              <!--</div>-->
-            <!--</div>-->
             <div class="demo-text" v-if="active1 === 0">
+              <div style="height:350px;font-weight: 700;font-size: 24px;color: #7f7f7f">
+                <mu-row style="line-height:170px;">
+                  <mu-col>附近无站点</mu-col>
+                </mu-row>
+              </div>
+            </div>
+            <div class="demo-text" v-if="active1 === 1">
               <mu-container>
                 <mu-expansion-panel
-                  @change="toggle('panel')"
                   v-for="(item,index) in StationMess.scheduledBusRouters"
                   :expand="panel === 'panel'+(index+1)"
+                  @change="toggle('panel'+(index+1))"
                   >
                   <div slot="header" style="font-weight: 600">
                     {{item.name}}
@@ -67,7 +65,7 @@
                     <mu-row>
                       <mu-col align="left"><div>
                         <mu-icon size="13" value="departure_board" color="red"></mu-icon>
-                        {{item.starTime}} - {{item.endTime}}
+                        {{item.startTime}} - {{item.endTime}}
                       </div></mu-col>
                       <mu-col align="right"><div class="icon-container">
                         <mu-icon size="20" value="directions_bus" color="red"></mu-icon>
@@ -77,29 +75,28 @@
                 </mu-expansion-panel>
               </mu-container>
             </div>
-            <div class="demo-text" v-if="active1 === 1">
+            <div class="demo-text" v-if="active1 === 2">
               <mu-container>
-                <mu-expansion-panel :expand="panel === 'panel1'" @change="toggle('panel1')" v-for="item in StationMess.otherRouters">
+                <mu-expansion-panel v-for="(item,index) in StationMess.otherRouters" :expand="panel === 'panel'+(index+1)" @change="toggle('panel'+(index+1))">
                   <div slot="header" style="font-weight: 600">
-                    武汉大学班车
+                    {{item.name}}
                   </div>
-                  <div>
+                  <div @click="lineMess(item.id)">
                     <mu-row>
                       <mu-col align="left"><div><mu-icon size="13" value="departure_board" color="green" style="padding-top: 2px"></mu-icon>
-                        开往 - 新校区
+                        开往 - {{item.endStation.mc}}
                       </div></mu-col>
-                      <mu-col align="right"><div>2站</div></mu-col>
+                      <mu-col align="right" style="font-weight: 500"><div v-if="item.nextBus == ''">*站</div><div v-else>{{item.nextBus}}站</div></mu-col>
                     </mu-row>
                     <mu-row>
-                      <mu-col align="left"><div><mu-icon size="13" value="departure_board" color="red" style="padding-top: 2px"></mu-icon>
-                        开往 - 老校区
+                      <mu-col span="9" align="left"><div><mu-icon size="13" value="departure_board" color="red" style="padding-top: 2px"></mu-icon>
+                        {{item.startTime}} - {{item.endTime}}
                       </div></mu-col>
                       <mu-col align="right"><div class="icon-container">
                         <mu-icon size="20" value="directions_bus" color="red"></mu-icon>
                       </div></mu-col>
                     </mu-row>
                   </div>
-
                 </mu-expansion-panel>
               </mu-container>
             </div>
@@ -138,6 +135,18 @@
 			}
 		},
 		created(){
+      var script = document.createElement("script")
+      script.type = "text/javascript"
+      var callbackName = '_callback'+Date.now()
+      let v = this;
+      window[callbackName]= function(){
+        jsBridge.postNotification("CLIENT_USER_LOCATION", {});
+        jsBridge.bind('CLIENT_USER_LOCATION', v.getLocation(object));
+        delete window[callbackName];
+      }
+      script.src="http://mc.m.5read.com/CXJSBridge.js"
+      document.body.appendChild(script)
+
 		  if(this.barNum == 0){
 			  this.getLineMess(30)
       }else if(this.barNum == 1){
@@ -147,6 +156,14 @@
       this.getGps();
 		},
 		methods:{
+      getLocation(object){
+        console.log(object);
+      },
+      refalse(){
+        this.getSwiperMess();
+        this.getGps();
+
+      },
       getStationMess(GPS){
         console.log(GPS)
         this.$http.post(this.apis.STATIONCODE,{lng:GPS.lng,lat:GPS.lat}).then((res)=>{
@@ -244,8 +261,8 @@
   .demo-text {
     padding: 1px;
     background: #fff;
-  p {
-    margin: 8px 0;
-  }
+    p {
+      margin: 8px 0;
+    }
   }
 </style>

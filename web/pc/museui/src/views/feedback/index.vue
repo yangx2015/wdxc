@@ -36,13 +36,16 @@
       }
   }
   .button{
-    padding: 0.4rem 0.8rem;
+    padding: 0.4rem 0.4rem;
         button{
-          height: 30px;
+          height: 50px;
           width: 100%;
           background-color: #ff8a00;
           border: none;
           color: #fff;
+          font-size: 18px;
+          font-weight: 500;
+          /*padding-bottom: 40px;*/
         }
   }
 </style>
@@ -86,9 +89,14 @@
         </group>
       </div>
       <div class="button" @click="submit">
-        <button>
-          提    交
-        </button>
+        <mu-container class="button-wrapper">
+          <mu-flex justify-content="center" align-items="center">
+            <mu-button round color="success">提  交</mu-button>
+          </mu-flex>
+          <!--<mu-flex justify-content="center" align-items="center">-->
+            <!--<mu-button full-width color="primary">full width button</mu-button>-->
+          <!--</mu-flex>-->
+        </mu-container>
       </div>
 	</div>
 </template>
@@ -147,7 +155,7 @@
         var v = this
         AlertModule.show({
           title: '提交成功',
-          content: '信息提交成功，请留意短信查看处理结果。',
+          content: '信息提交成功!',
           onShow () {
             console.log('Plugin: I\'m showing')
           },
