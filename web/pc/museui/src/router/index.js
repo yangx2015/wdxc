@@ -29,7 +29,12 @@ const router = new Router({
 	       	path:'/feedback',
 	       	name:'feedback',
 	       	component: () => import('@/views/feedback'),
-	      }
+	      },
+        {
+          path:'/feedbackHis',
+          name:'feedbackHis',
+          component: () => import('@/views/feedbackHis'),
+        }
       ]
     },
     {

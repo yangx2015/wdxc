@@ -10,7 +10,7 @@
 			}
 		}
 		.carmess{
-			padding: 4px 10px;
+			padding: 20px 10px;
 			background-color: #fff;
 			border-bottom: solid 1px #CCCCCC;
 			.direction{
@@ -56,18 +56,29 @@
 </style>
 <template>
 	<div class="linemess box">
-		<div class="header">
-	  		<x-header
-	  			:left-options="{showBack: false}">
-	  			<span slot="left" @click="back">
-	  				<i class="iconfont icon-left"></i>
-	  			</span>
-	  			<span class="tit">{{XBline.name}}</span>
-	  			<span slot="right" @click="mapmess">
-	  				<i class="iconfont icon-ditu"></i>
-	  			</span>
-	  			</x-header>
-	  	</div>
+    <div>
+        <mu-appbar style="width: 100%;text-align: center" color="orange600">
+          <mu-button icon slot="left" @click="back">
+            <mu-icon value="chevron_left"></mu-icon>
+          </mu-button>
+          {{XBline.name}}
+          <mu-button flat slot="right" @click="mapmess">
+            <mu-icon value="place"></mu-icon>
+          </mu-button>
+        </mu-appbar>
+    </div>
+		<!--<div class="header">-->
+	  		<!--<x-header-->
+	  			<!--:left-options="{showBack: false}">-->
+	  			<!--<span slot="left" @click="back">-->
+	  				<!--<i class="iconfont icon-left"></i>-->
+	  			<!--</span>-->
+	  			<!--<span class="tit">{{XBline.name}}</span>-->
+	  			<!--<span slot="right" @click="mapmess">-->
+	  				<!--<i class="iconfont icon-ditu"></i>-->
+	  			<!--</span>-->
+	  			<!--</x-header>-->
+	  	<!--</div>-->
 	  	<div class="carmess">
 	  		<div class="direction">
 	  			<span>{{XBline.list[0].zdName}}</span>

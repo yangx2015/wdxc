@@ -48,14 +48,31 @@
           /*padding-bottom: 40px;*/
         }
   }
+  .titbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+  }
+  .select-control-row{
+    padding: 8px 0;
+  }
 </style>
 <template>
-	<div class="box" style="height: 100%;">
-		  <div class="header">
-	  		<x-header
-	  			:left-options="{showBack: true}">
-	  			<span class="tit">反馈</span>
-	  			</x-header>
+	<div class="box" style="">
+		  <div class="titbar">
+	  		<!--<x-header-->
+	  			<!--:left-options="{showBack: true}">-->
+	  			<!--<span class="tit">反馈</span>-->
+	  			<!--</x-header>-->
+        <mu-appbar style="width: 100%;text-align: center" color="#fb8c00">
+          <mu-button icon slot="left" @click="goback">
+            <mu-icon value="chevron_left"></mu-icon>
+          </mu-button>
+          意见反馈
+
+          <mu-button flat slot="right" @click="goFeedbackHis">记录</mu-button>
+        </mu-appbar>
 	  	</div>
       <div class="body" style="padding: 1rem">
         <!--<div class="textarea">-->
@@ -63,29 +80,36 @@
                                 <!--:placeholder="'请输入您的'+placeholder+'信息'"-->
                       <!--&gt;</textarea>-->
         <!--</div>-->
-        <group>
-          <x-input
-            title="姓名  "
-            :min="2"
-            :max="4"
-            v-model="form.lxrxm"
-            :is-type="rulName"
-            placeholder="请填写姓名"></x-input>
-        </group>
-        <group>
-          <x-input
-              title="手机号码"
-              mask="999 9999 9999"
-              v-model="form.lxfs" :max="13"
-              placeholder="请填写联系方式"
-              :is-type="rul"></x-input>
-        </group>
+        <div style="padding-top: 50px">
+          <mu-tabs @change="getyjlx" :value.sync="active" inverse color="secondary" text-color="rgba(0, 0, 0, .54)"  center>
+            <mu-tab>意见</mu-tab>
+            <mu-tab>反馈</mu-tab>
+            <mu-tab>投诉</mu-tab>
+          </mu-tabs>
+        </div>
+        <!--<group>-->
+          <!--<x-input-->
+            <!--title="姓名  "-->
+            <!--:min="2"-->
+            <!--:max="4"-->
+            <!--v-model="form.lxrxm"-->
+            <!--:is-type="rulName"-->
+            <!--placeholder="请填写姓名"></x-input>-->
+        <!--</group>-->
+        <!--<group>-->
+          <!--<x-input-->
+              <!--title="手机号码"-->
+              <!--mask="999 9999 9999"-->
+              <!--v-model="form.lxfs" :max="13"-->
+              <!--placeholder="请填写联系方式"-->
+              <!--:is-type="rul"></x-input>-->
+        <!--</group>-->
         <group>
           <!--<x-input :placeholder="placeholder" ></x-input>-->
           <x-textarea
-            title="反馈内容"
+            title="内容"
             v-model="form.nr"
-            :max="200" name="description" placeholder="请填写反馈信息"></x-textarea>
+            :max="200" name="description" placeholder="请输入您的内容"></x-textarea>
         </group>
       </div>
       <div class="button" @click="submit">
@@ -111,30 +135,51 @@
 		},
     data(){
 		  return{
+        active:0,
         form:{
           lxfs:'',
           nr:'',
           lxrxm:'',
-          yjlx:'00'
+          yjlx:'00'//00意见 10反馈 20投诉
         },
-        rulName: function (value) {
-          return {
-            valid: value.length==2|| value.length==3|| value.length==4,
-            msg: '请输入你的名字'
-          }
-        },
-        rul: function (value) {
-          return {
-            valid: value.length ==13,
-            msg: '请输入正确的电话号码！'
-          }
-        },
+        // rulName: function (value) {
+        //   return {
+        //     valid: value.length==2|| value.length==3|| value.length==4,
+        //     msg: '请输入你的名字'
+        //   }
+        // },
+        // rul: function (value) {
+        //   return {
+        //     valid: value.length ==13,
+        //     msg: '请输入正确的电话号码！'
+        //   }
+        // },
         placeholder:''
       }
     },
     methods:{
+      goback(){
+        this.$router.back()
+      },
+      goFeedbackHis(){
+        this.$router.push({name:'feedbackHis'})
+      },
+      getyjlx(){
+        if(this.active ===0){
+          this.form.yjlx = '00'
+          console.log(this.form.yjlx);
+        }
+        if(this.active === 1){
+          this.form.yjlx = '10'
+          console.log(this.form.yjlx);
+        }
+        if(this.active === 2){
+          this.form.yjlx = '20'
+          console.log(this.form.yjlx);
+        }
+      },
       submit(){
-        if(this.rul(this.form.lxfs).valid&&this.form.nr.length!=0&&this.rulName(this.form.lxrxm).valid){
+        if(this.form.nr.length!=0){
           this.sub()
         }else{
           alert('请将信息填写完整')

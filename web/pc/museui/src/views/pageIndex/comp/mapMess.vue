@@ -1,10 +1,12 @@
 <!---->
 <template>
   <div class="box_col" style="overflow-y: hidden;">
-    <mu-appbar style="width: 100%;" color="primary">
-      <mu-button flat slot="right"></mu-button>
+    <mu-appbar style="width: 100%;text-align: center" color="orange600">
+      <mu-button flat slot="left" @click="Goback">
+        <mu-icon value="chevron_left"></mu-icon>
+      </mu-button>
       地图查看
-      <mu-button flat slot="right" @click="Goback">关闭</mu-button>
+      <mu-button flat slot="right"></mu-button>
     </mu-appbar>
     <div class="box_col_100">
       <div id="allmap" style="height:800px;width: 100%"></div>

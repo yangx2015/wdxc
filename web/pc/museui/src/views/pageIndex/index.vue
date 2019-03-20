@@ -135,17 +135,11 @@
 			}
 		},
 		created(){
-      var script = document.createElement("script")
-      script.type = "text/javascript"
-      var callbackName = '_callback'+Date.now()
-      let v = this;
-      window[callbackName]= function(){
-        jsBridge.postNotification("CLIENT_USER_LOCATION", {});
-        jsBridge.bind('CLIENT_USER_LOCATION', v.getLocation(object));
-        delete window[callbackName];
-      }
-      script.src="http://mc.m.5read.com/CXJSBridge.js"
-      document.body.appendChild(script)
+      this.jsBridge.postNotification("CLIENT_USER_LOCATION", {});
+      this.jsBridge.bind('CLIENT_USER_LOCATION', function(object){
+        console.log(object);
+        alert('经纬度:',object.longitude+','+object.latitude)
+      });
 
 		  if(this.barNum == 0){
 			  this.getLineMess(30)
@@ -158,11 +152,15 @@
 		methods:{
       getLocation(object){
         console.log(object);
+        alert('经纬度:',object.longitude+','+object.latitude)
+        var nr = JOSN.stringify(object)
+        this.$http.post(this.apis.FEEDBACK.QUERTY,{nr:nr,yjlx:'00'}).then((res) =>{
+          console.log('*****',res)
+        })
       },
       refalse(){
         this.getSwiperMess();
         this.getGps();
-
       },
       getStationMess(GPS){
         console.log(GPS)
