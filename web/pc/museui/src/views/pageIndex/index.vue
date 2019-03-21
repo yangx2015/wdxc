@@ -135,8 +135,8 @@
 			}
 		},
 		created(){
-      this.jsBridge.postNotification("CLIENT_USER_LOCATION", {});
-      this.jsBridge.bind('CLIENT_USER_LOCATION', function(object){
+      this.jsBridge.postNotification("CLIENT_LONGITUDE_LATITUDE", {});
+      this.jsBridge.bind('CLIENT_LONGITUDE_LATITUDE', function(object){
         console.log(object);
         alert('经纬度:',object.longitude+','+object.latitude)
       });
@@ -147,7 +147,17 @@
         this.getLineMess(20)
       }
 			this.getSwiperMess();
-      this.getGps();
+      var script = document.createElement("script")
+      script.type = "text/javascript"
+      var callbackName = '_callback'+Date.now()
+      let v = this;
+      window[callbackName]= function(){
+        v.getGps();
+        delete window[callbackName];
+      }
+      script.src="https://api.map.baidu.com/api?v=2.0&ak=mSjqt13IyQy0GOlkAEGBO5FA2aiIT4q7&callback="+callbackName
+      document.body.appendChild(script)
+
 		},
 		methods:{
       getLocation(object){
